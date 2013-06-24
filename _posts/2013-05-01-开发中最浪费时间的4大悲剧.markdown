@@ -1,0 +1,54 @@
+---
+layout: post
+title:  "开发中最浪费时间的4大悲剧"
+date:   2013-05-01 18:28:36
+author: 
+categories: program
+---
+
+## 开发中最浪费时间的4大悲剧
+### by 
+### at 2013-05-01 18:28:36
+### original <http://simple-is-better.com/news/1004>
+
+<p>
+	码农的4大悲剧:</p>
+<ul>
+	<li>
+		<p>
+			各种typeo输入错误，动态脚本不检查笔误，就等运行期给你抛异常，一走神就要悲剧</p>
+	</li>
+	<li>
+		<p>
+			拼装 sql 字符串 导致的mysql 语法出错</p>
+	</li>
+	<li>
+		<p>
+			需要计算公式的代码，比如图像剪裁，你需要先推导一遍公式：x/y= z/u ==&gt;x = y*z/u；比如自定义一个二进制文件格式，读写之前，你得先在纸上画格子，几个Byte几个Byte的数数</p>
+	</li>
+	<li>
+		<p>
+			垃圾语法，导致键盘敲多了容易得腱膜炎，比如php中的<code>-&gt;,$,=&gt;</code>这类符号，我拿用php写过几万行代码，发明了若干轮子，这些轮子攒出了一个每天服务400万用户的网站，但我还是很厌恶，记不住任何函数使用方法，用 array_search函数都要查手册</p>
+	</li>
+</ul>
+<p>
+	能自动纠错的IDE，性能打折不多的ORM 那才是业界良心啊</p>
+
+                    <p># 来源：<a href="http://lutaf.com/135.htm" title="开发中最浪费时间的4大悲剧">鲁塔弗的博客</a></p>
+                    <hr>
+                    <p>
+                        在微博上关注：
+                        <a href="http://t.sina.com.cn/pythoncn">新浪</a>,
+                        <a href="http://t.qq.com/simple-is-better">腾讯</a>
+                         
+                        <a href="http://simple-is-better.com/tougao">投稿</a>
+                    </p>
+                    <p><strong>最新招聘</strong></p>
+                    <ul>
+                        <li><a href="http://simple-is-better.com/jobs/detail-254">[北京] 网易(北京)网站部招聘系统运维管理工程师 </a> - 网易</li>
+                        <li><a href="http://simple-is-better.com/jobs/detail-487">[北京] 项目实施经理</a> - 易云捷讯科技（北京）有限公司</li>
+                        <li><a href="http://simple-is-better.com/jobs/detail-111">[北京] Python开发工程师(Django)</a> - 北京知道创宇信息技术有限公司</li>
+                        <li><a href="http://simple-is-better.com/jobs/detail-488">[北京] Web开发工程师</a> - 易云捷讯科技（北京）有限公司</li>
+                        <li><a href="http://simple-is-better.com/jobs/detail-297">[上海] Python 程序开发(Flask)</a> - 上海多米网络</li>
+                    </ul>
+                    <p><a href="http://simple-is-better.com/jobs/">更多&gt;&gt;</a></p><img src="http://www1.feedsky.com/t1/727481762/simple-is-better/feedsky/s.gif?r=http://simple-is-better.com/news/1004" border="0" height="0" width="0">

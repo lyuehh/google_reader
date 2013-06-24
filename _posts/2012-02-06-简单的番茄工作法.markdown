@@ -1,0 +1,64 @@
+---
+layout: post
+title:  "简单的番茄工作法"
+date:   2012-02-06 17:01:52
+author: 陈一斌
+categories: program
+---
+
+## 简单的番茄工作法
+### by 陈一斌
+### at 2012-02-06 17:01:52
+### original <http://www.ifanr.com/71778>
+
+<p style="text-align:center"><a href="http://www.ifanr.com/wp-content/uploads/2012/02/iStock_000009443672Small.jpg"><img title="OLYMPUS DIGITAL CAMERA" src="http://www.ifanr.com/wp-content/uploads/2012/02/iStock_000009443672Small.jpg" alt="" width="500" height="389"></a></p>
+<p>“番茄工作法”的本质是利用小小的定时器，让人专心致志做完一件事，提高工作效率。</p>
+<p>它设定每 25 分钟就是一个“番茄时间”，人们在这段时间里面一心一意的完成手头上的工作，当 25 分钟过后，就休息 5 分钟，而每完成四个番茄时间，就休息比较长的时间。每个番茄时间都不容打断，打断后需要重新计时，这样能够保证既能够专心的工作，专心的休息，也能够从容的处理一些临时需要处理的事情。<span></span></p>
+<p>Android 上有一个小巧的番茄时钟计时器 <a href="https://market.android.com/details?id=net.artifix.pomodroido.free&amp;hl=en">Pomodroido</a>，能够帮助大家利用番茄工作法来高效工作：</p>
+<p style="text-align:center"><a href="http://www.ifanr.com/wp-content/uploads/2012/02/Pomodroido01.jpg"><img title="Pomodroido01" src="http://www.ifanr.com/wp-content/uploads/2012/02/Pomodroido01.jpg" alt="" width="400" height="353"></a></p>
+<p>左图是应用的主界面，这个应用就只有这一个界面，很简单。从上往下分别是：</p>
+<ul>
+<li>一个星期内完成“番茄时间”的数量；</li>
+<li>一些对完成工作有帮助的小提示；</li>
+<li>评级，完成一定任务数量后，就能够升级；</li>
+<li>一个任务提示，关于这一个番茄时间要完成什么工作；</li>
+<li>计时器，初始设定是 25 分钟一个番茄时间，倒计时完毕后会提醒，让人选择休息还是继续；</li>
+<li>“开始”和“停止”按钮。</li>
+</ul>
+<p>右图是设定界面，可以设定每个“番茄时间”的长度，休息时间，是否让屏幕一直显示，是否播放通知声音等等。</p>
+<p>“番茄工作法”就一个倒计时这么简单？不，为了让人真正提高效率，它还要求人自行估算每天自己有多少个“番茄”时间可以利用，每完成一个任务需要多少个“番茄时间”，并进行规划。因此，还需要别的工具来真正实现“番茄工作法”。</p>
+<p>如果要知道自己每天有多少“番茄时间”可以利用，可以列一张表，每开始做一件事情就开始一次计时，把开始和完成的时间都记录下来，然后计算自己每天工作会拥有多少个“番茄时间”。比如下图，一个上午实际拥有的“番茄时间”是七个：</p>
+<p style="text-align:center"><a href="http://www.ifanr.com/wp-content/uploads/2012/02/logger.jpg"><img title="logger" src="http://www.ifanr.com/wp-content/uploads/2012/02/logger.jpg" alt="" width="519" height="148"></a></p>
+<p>思维导图可以帮助我们进行任务规划，并确定自己所需要的番茄数量，比如像这样以一周的时间单位进行任务分解：</p>
+<p style="text-align:center"><a href="http://www.ifanr.com/wp-content/uploads/2012/02/promo.jpg"><img title="promo" src="http://www.ifanr.com/wp-content/uploads/2012/02/promo.jpg" alt="" width="410" height="276"></a></p>
+<p>然后自己可以每天对照这张规划表，计算自己的实际使用的“番茄时间”和完成任务的数量，进行评估，下次再改进。“番茄工作法”的每个步骤都非常明确，并不形而上学，容易理解，所借助的工具也比较简单，难怪有那么多人喜欢。</p>
+<p>题图来自 <a href="http://pragprog.com/magazines/2009-11/the-pompatus-of-pomodoro">pragprog</a></p>
+	<div style="border:1px solid #ccc;font-size:14px;margin:27px auto;font-family:Arial">
+		<div style="overflow:hidden"> <a href="http://www.ifanr.com/author/yibie" style="color:#000;text-decoration:none"><img src="http://www.ifanr.com/wp-content/uploads/avatar/243.jpg" width="50" height="50" style="display:block;float:left;padding:0;margin:15px"></a>
+			<div style="text-align:left;line-height:23px;margin-left:80px">
+				<div style="padding:10px 10px 10px 0">
+					<div style="margin:0;font-size:14px"><strong><a href="http://www.ifanr.com/author/yibie" style="color:#000;text-decoration:none">陈一斌</a></strong></div>
+					<div style="font-size:13px;line-height:20px">组织过软件汉化，写过时间管理文章，研究过个人知识管理。关注科技的发展，创投资讯、移动互联网。</div>
+				</div>
+			</div>
+		</div>
+		<div style="text-align:right;border-top:1px dotted #ccc;padding:2px 10px;font-size:12px">
+			<div>
+								<a href="mailto:gunshotbox@gmail.com" style="margin-right:14px;text-decoration:none">邮箱</a>				<a href="http://twitter.com/yibie" style="margin-right:14px;text-decoration:none">Twitter</a>				<a href="http://www.facebook.com/yibie" style="margin-right:14px;text-decoration:none">Facebook</a>				<a href="http://weibo.com/yibie" style="margin-right:14px;text-decoration:none">新浪微博</a>			</div>
+		</div>
+	</div>
+<p><small><a href="http://www.ifanr.com">爱范儿 · Beats of Bits</a> |
+<a href="http://www.ifanr.com/71778">原文链接</a> ·
+<a href="http://www.ifanr.com/71778#comments">10 热评</a> ·
+<a href="http://www.weibo.com/ifanr">新浪微博</a> ·
+<a href="http://www.ifanr.com/feed">订阅全文</a> ·
+<a href="https://plus.google.com/114725869543399343504/">Google+</a> ·
+<a href="http://live.ifanr.com/">#ifanrlive</a> ·
+<a href="http://bbs.ifanr.com/">加入爱范社区！</a> 
+</small></p>
+
+<div style="text-align:right;border-top:1px dotted #ccc">
+</div> 
+<br>
+
+<a href="http://event.ifanr.com/463"><img src="http://www.ifanr.com/wp-content/uploads/2012/02/ft-open-live.jpg"></a>

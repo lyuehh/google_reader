@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "iDebug v1.0 发布"
+date:   2010-12-13 12:37:34
+author: chencheng
+categories: program
+---
+
+## iDebug v1.0 发布
+### by chencheng
+### at 2010-12-13 12:37:34
+### original <http://www.chencheng.org/blog/2010/12/13/idebug-v1-release/>
+
+<p>iDebug 就像是一个魔术桶，把页面倒进去，可以出来任意你想要的东西。</p><p></p><p><img title="T181VUXeBrXXXXXXXX-876-566.png" src="http://img03.taobaocdn.com/tps/i3/T181VUXeBrXXXXXXXX-876-566.png" border="0" alt="T181VUXeBrXXXXXXXX-876-566.png" width="600"></p><h2>他包含以下功能：</h2><ul>
+<li>抓网页：<br>    通过点击 Bookmarklet 把网页抓过来，或修改，或存档</li>
+<li>responder：<br>    模拟 Fiddler 的 Responder 功能，对 HTML 内容进行替换</li>
+<li>查看所有 CSS 和 JS：<br>    模拟 YSlow 里包含的一个功能，对于不常开 Firefox 的 Chrome 用户来说非常有用</li>
+<li>JS Beautify：<br>    格式化压缩后的脚本文件(不支持 Packer 解压缩)，格式化 JSON</li>
+<li>HTML Beautify：<br>    格式化HTML</li>
+<li>Demo 模式：<br>    切换到 Demo 模式，保存后可在本页刷新 Demo</li>
+</ul><h2>以下为淘宝特色功能：</h2><ul><li>还原 Combo：<br>    把 http://a.tbcdn.cn/??a.js,b.js 替换成 http://a.tbcdn.cn/a.js 和 http://a.tbcdn.cn/b.js</li>
+<li>删除 assets 路径上的 -min<br>    把 http://a.tbcdn.cn/a-min.css 替换成 http://a.tbcdn.cn/a.css</li>
+<li>切换 Hosts<br>    不用修改 Hosts 文件，直接切换 Taobao 环境的日常／预发／线上等环境</li>
+</ul><h2>使用方法：</h2><ol><li>确认配有 PHP 环境，并支持 SQLite</li>
+<li>上 github 把 iDebug clone 或 下载下来</li>
+<li>修改 idebug.sqlite.sample 为 idebug.sqlite</li>
+<li>访问  idebug/idebug.php</li>
+<li>根据引导，添加页头的 bookmarklet 到收藏夹</li>
+<li>--- 准备完毕 ---</li>
+<li>访问要抓取/测试的页面</li>
+<li>点击刚才添加的 bookmarklet</li>
+<li>--- 剩下的大家应该都会了 ---</li>
+</ol><h2>快捷键：</h2><div>Shift + A：查看所有 CSS 和 JS<br>Shift + V：查看 Demo<br>Shift + ?：查看帮助<br>Shift + H：切换 Demo Mode<br>Ctrl + Enter：保存</div><h2>规则示例：</h2><pre>a.css<br>----<br>b.css<br>====<br>c.js<br>----<br>d.js<br>e.js</pre><h2>说明PPT：</h2><p>见 docs/idebug_20101030.pdf</p>

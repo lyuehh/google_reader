@@ -1,0 +1,50 @@
+---
+layout: post
+title:  "TOR++ 一个强大的tor组合包"
+date:   2011-05-29 17:05:05
+author: iGFW
+categories: program
+---
+
+## TOR++ 一个强大的tor组合包
+### by iGFW
+### at 2011-05-29 17:05:05
+### original <http://igfw.tk/archives/2980>
+
+<div>TOR++ 是一个强大的tor组合包，集合Tor、Gpass、Gtunnel、Polipo、Privoxy和Proxifier PE，连接上Tor后可以使用Polipo或Privoxy转化成http代理127.0.0.1端口8000，也可以配置Proxifier PE让整机或指定程序通过tor代理，还可以配置Gpass或Gtunnel使用它们的tor模式连接（点击Tunneling和Others来选择，选择后点击软件右下角图标运行）。不过这一切的前提是你要能连接上Tor网络，连接TOR的方法参考：<a href="http://igfw.tk/archives/1037">http://igfw.tk/archives/1037</a>，原版下载：<a href="http://www.4shared.com/file/VAyuxWMa/tor.html">http://www.4shared.com/file/VAyuxWMa/tor.html</a> （需自行设置网桥或代理）。</div>
+<div>我在原来的基础修改了下，默认使用https代理来连接tor网络，<strong>下载地址</strong>：<a href="http://sharesend.com/r7smg">http://sharesend.com/r7smg</a></div>
+<div><span></span>下载后如果不能连接Tor请更换可用的https代理，找到torrc文件用记事本打开，找到HTTPSProxy 165.193.102.220:80把里面的165.193.102.220:80改为其他可用的https代理，https代理可以在<a href="http://www.proxy-list.org/">http://www.proxy-list.org/</a>网站查找（方法参考：<a href="http://igfw.tk/archives/587">http://igfw.tk/archives/666</a>）；默认只使用美国的出口节点，如果你想使用其他国家的可以修改torrc文件里的ExitNodes {us}，比如修改为ExitNodes {us},{de} ,{nl} 这样就会使用美国德国荷兰的出口节点了。只要你找的https代理足够快看youtube不成问题。</div>
+<div>
+<p><img src="http://i32.servimg.com/u/f32/15/42/52/78/untitl10.jpg" alt=""></p>
+</div>
+<div><strong>Advantage:</strong></div>
+<p>Many option for TOR combination.<br>
+Portable no .net framework needed.<br>
+Very easy for establishing connection on TOR network.</p>
+<p><strong>Q:</strong> What is TOR++ ?<br>
+<strong>A:</strong> Tor++ is a combination of 4 main tunneling software such as Polipo, Privoxy, Gpass, and Gtunnel which using the TOR engine to access the internet through TOR network.</p>
+<p><strong>Q:</strong> how to use it?<br>
+<strong>A:</strong><strong> </strong><br>
+* Download tor++<br>
+* Connect your PC in your ISP.<br>
+* Execute tor++, and wait until it build a TOR circuit.<br>
+* And now you can deploy the embedded tunneling software.</p>
+<p><strong>Q: </strong>How do I configure my browser.<br>
+<strong>A:</strong> Configuring your web browser is depend on what tunneling sw you’ve depoyed.</p>
+<p>PRIVOXY 127.0.0.1:8000<br>
+POLIPO 127.0.0.1:8000<br>
+GPASS 127.0.0.1:8000<br>
+GTUNNEL 127.0.0.1:8081<br>
+Proxifier Directly No need</p>
+<p><strong>Note:</strong> I assigned privoxy, polipo and gpass on the same port so that it would be easy for us to<br>
+switch if we wanted. When you deploy GTUNNEL you dont need to configure your browser<br>
+it’s automatically configure and run browser for you.</p>
+<p><strong>Q: </strong>How about proxifier?<br>
+<strong>A:</strong> Running Proxifier is optional, if you dont want to configure your browser manualy then</p>
+<p>* Run Proxifier as relay – you can use proxifier to tunnel you programs (AV, YM, amfrog, etc) on deployed tunneling sw.<br>
+<em>Programs &lt;–&gt; Proxifier &lt;–&gt; Gpass/Polipo/Privoxy/Gtunnel &lt;–&gt; Tor &lt;–&gt; Internet </em></p>
+<p>* Run Proxifier Directly – you can use proxifier to tunnel you programs (AV, YM, amfrog, etc) on TOR network directly.<br>
+Programs &lt;–&gt; Proxifier &lt;–&gt; Tor &lt;–&gt; Internet</p>
+<p><strong>Note:</strong> <em>Source files will be extracted at C:\FBT. [kung gusto nyo likutin setting]</em></p>
+<p>感谢AS网友推荐同时他还推荐了<a href="https://xijie.wordpress.com/2011/03/25/torplus%E7%BB%84%E5%90%88%E5%8C%85-2-1-30-1/">TORPlus组合包</a>有兴趣的可以试试。</p>
+<p><strong>本文原始地址</strong>：<a href="http://igfw.tk/archives/2980">http://igfw.tk/archives/2980</a></p>

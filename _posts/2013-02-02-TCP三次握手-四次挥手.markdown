@@ -1,0 +1,249 @@
+---
+layout: post
+title:  "TCP三次握手 四次挥手"
+date:   2013-02-02 12:57:18
+author: xsky
+categories: program
+---
+
+## TCP三次握手 四次挥手
+### by xsky
+### at 2013-02-02 12:57:18
+### original <http://www.udpwork.com/item/9203.html>
+
+<p><strong>TCP状态迁移</strong>
+
+<br>
+大家对netstat -a命令很熟悉，但是，你有没有注意到STATE一栏呢，基本上显示着established,time_wait,close_wait等，这些到底是 什么意思呢，在这篇文章，我将会详细的阐述。
+<br>
+大家很明白TCP初始化连接三次握手吧：发SYN包，然后返回SYN/ACK包，再发ACK包，连接正式建立。但是这里有点出入，当请求者收到SYS /ACK包后，就开始建立连接了，而被请求者第三次握手结束后才建立连接。但是大家明白关闭连接的工作原理吗？关闭连接要四次握手：发FIN包，ACK 包，FIN包，ACK包，四次握手！！为什么呢，因为TCP连接是全双工，我关了你的连接，并不等于你关了我的连接。</p>
+<p>客户端TCP状态迁移：
+<br>
+CLOSED-&gt;SYN_SENT-&gt;ESTABLISHED-&gt;FIN_WAIT_1-&gt;FIN_WAIT_2-&gt;TIME_WAIT-&gt;CLOSED
+<br>
+服务器TCP状态迁移：
+<br>
+CLOSED-&gt;LISTEN-&gt;SYN收到 -&gt;ESTABLISHED-&gt;CLOSE_WAIT-&gt;LAST_ACK-&gt;CLOSED</p>
+<p>当客户端开始连接时，服务器还处于LISTENING，
+<br>
+客户端发一个SYN包后，他就处于SYN_SENT状态,服务器就处于SYS收到状态,
+<br>
+然后互相确认进入连接状态ESTABLISHED.
+<br>
+当客户端请求关闭连接时,客户端发送一个FIN包后,客户端就进入FIN_WAIT_1状态,等待对方的确认包,
+<br>
+服务器发送一个ACK包给客户,客户端收到ACK包后结束FIN_WAIT_1状态,进入FIN_WAIT_2状态,等待服务器发过来的关闭请求,
+<br>
+服务器发一个FIN包后,进入CLOSE_WAIT状态,
+<br>
+当客户端收到服务器的FIN包,FIN_WAIT_2状态就结束,然后给服务器端的FIN包给以一个确认包,客户端这时进入TIME_WAIT,
+<br>
+当服务器收到确认包后,CLOSE_WAIT状态结束了,
+<br>
+这时候服务器端真正的关闭了连接.但是客户端还在TIME_WAIT状态下,</p>
+<p>什么时候结束呢.我在这里再讲到一个新名词:2MSL等待状态,其实TIME_WAIT就是2MSL等待状态,
+<br>
+为什么要设置这个状态,原因是有足够的时间让ACK包到达服务器端,如果服务器端没收到ACK包，超时了，然后重新发一个FIN包，直到服务器收到ACK 包.</p>
+<p>TIME_WAIT状态等待时间是在TCP重新启动后不连接任何请求的两倍.
+<br>
+大家有没有发现一个问题:如果对方在第三次握手的时候出问题,如发FIN包的时候,不知道什么原因丢了这个包,然而这边一直处在FIN_WAIT_2状 态,而且TCP/IP并没有设置这个状态的过期时间,那他一直会保留这个状态下去,越来越多的FIN_WAIT_2状态会导致系统崩溃.</p>
+<p>上面我碰到的这个问题主要因为TCP的结束流程未走完，造成连接未释放。现设客户端主动断开连接，流程如下</p>
+<div><p><img src="http://hiphotos.baidu.com/22000254/pic/item/ea646f17b8136b2bc83d6d56.jpg"></p>
+</div>
+<p>如上图所示，</p>
+<p>Client                            消息                                    Server</p>
+<p>close()
+<br>
+—— FIN ——-&gt;
+<br>
+FIN_WAIT1                                                         CLOSE_WAIT
+<br>
+&lt;—– ACK ——-
+<br>
+FIN_WAIT2
+<br>
+close()
+<br>
+&lt;—— FIN ——
+<br>
+TIME_WAIT                                                       LAST_ACK</p>
+<p>—— ACK ——-&gt;
+<br>
+CLOSED
+<br>
+CLOSED
+<br>
+由于Server的Socket在客户端已经关闭时而没有调用关闭，
+<br>
+造成服务器端的连接处在“挂起”状态，而客户端则处在等待应答的状态上。
+<br>
+此问题的典型特征是：
+<br>
+一端处于FIN_WAIT2 ，而另一端处于CLOSE_WAIT.</p>
+<p>不过，根本问题还是程序写的不好，有待提高</p>
+<p>————————————————————————-</p>
+<p>CLOSE_WAIT，TCP的癌症，TCP的朋友。</p>
+<p>CLOSE_WAIT状态的生成原因
+<br>
+首先我们知道，如果我们的服务器程序APACHE处于CLOSE_WAIT状态的话，说明套接字是被动关闭的！</p>
+<p>因为如果是CLIENT端主动断掉当前连接的话，那么双方关闭这个TCP连接共需要四个packet：</p>
+<p>Client —&gt; FIN —&gt; Server</p>
+<p>Client &lt;— ACK &lt;— Server</p>
+<p>这时候Client端处于FIN_WAIT_2状态；而Server 程序处于CLOSE_WAIT状态。</p>
+<p>Client &lt;— FIN &lt;— Server</p>
+<p>这时Server 发送FIN给Client，Server 就置为LAST_ACK状态。</p>
+<p>Client —&gt; ACK —&gt; Server</p>
+<p>Client回应了ACK，那么Server 的套接字才会真正置为CLOSED状态。</p>
+<p>Server 程序处于CLOSE_WAIT状态，而不是LAST_ACK状态，说明还没有发FIN给Client，那么可能是在关闭连接之前还有许多数据要发送或者其 他事要做，导致没有发这个FIN packet。</p>
+<p>通常来说，一个CLOSE_WAIT会维持至少2个小时的时间。如果有个流氓特地写了个程序，给你造成一堆的 CLOSE_WAIT，消耗你的资源，那么通常是等不到释放那一刻，系统就已经解决崩溃了。</p>
+<p>只能通过修改一下TCP/IP的参数，来缩短这个时间：修改tcp_keepalive_*系列参数有助于解决这个 问题。</p>
+<p>解决这个问题的方法是修改系统的参数，系统默认超时时间的是7200秒，也就是2小时， 这个太大了，可以修改如下几个参数：</p>
+<p>sysctl -w net.ipv4.tcp_keepalive_time=30
+<br>
+sysctl -w net.ipv4.tcp_keepalive_probes=2
+<br>
+sysctl -w net.ipv4.tcp_keepalive_intvl=2</p>
+<p>然后，执行sysctl命令使修改生效。</p>
+<div><p>连接进程是通过一系列状态表示的，这些状态有：
+<br>
+LISTEN，SYN-SENT，SYN-RECEIVED，ESTABLISHED，FIN-WAIT-1，FIN-WAIT-2，CLOSE- WAIT，CLOSING，LAST-ACK，TIME-WAIT和CLOSED。</p>
+<p>各个状态的意义如下：
+<br>
+LISTEN - 侦听来自远方TCP端口的连接请求；
+<br>
+SYN-SENT -在发送连接请求后等待匹配的连接请求；
+<br>
+SYN-RECEIVED - 在收到和发送一个连接请求后等待对连接请求的确认；
+<br>
+ESTABLISHED- 代表一个打开的连接，数据可以传送给用户；
+<br>
+FIN-WAIT-1 - 等待远程TCP的连接中断请求，或先前的连接中断请求的确认；
+<br>
+FIN-WAIT-2 - 从远程TCP等待连接中断请求；
+<br>
+CLOSE-WAIT - 等待从本地用户发来的连接中断请求；
+<br>
+CLOSING -等待远程TCP对连接中断的确认；
+<br>
+LAST-ACK - 等待原来发向远程TCP的连接中断请求的确认；
+<br>
+TIME-WAIT -等待足够的时间以确保远程TCP接收到连接中断请求的确认；
+<br>
+CLOSED - 没有任何连接状态；</p>
+<p>TCP连接过程是状态的转换，促使发生状态转换的是用户调用：
+<br>
+OPEN，SEND，RECEIVE，CLOSE，ABORT和STATUS；
+<br>
+传送过来的数据段，特别那些包括以下标记的数据段SYN，ACK，RST和FIN；
+<br>
+还有超时，上面所说的都会时TCP状态发生变化。</p>
+</div>
+<div><img src="http://c.hiphotos.baidu.com/space/pic/item/f11f3a292df5e0fe2bb15aa65c6034a85fdf72e8.jpg">TCP连接的状态转换图<div><p>这个图n多人都 知道，它对排除和定 位网络或系统故障时大有帮助，但是怎样牢牢地将这张图刻在脑中呢？那么你就一定要对 这张图的每一个状态，及转换的过程有深刻地认识，不能只停留在一知半解之中。下面对这张图的11种状 态详细解释一下，以便加强记忆！不过在这之前，先回顾一下TCP建立连接的三次握手过程，以及关闭连接的四次握手过程。</p>
+<p>1、建立连接协议（三次握手）
+<br>
+（1）客户 端发送一个带SYN标志的TCP报文到服务器。这是三次握手过程中的报文1。</p>
+<p>（2） 服务器端回应客户端的，这是三次握手中的第2个报文，这个报文同时带ACK标志和SYN标 志。因此它表示对刚才客户端SYN报文的回应；同时又标志SYN给客户端，询问客户端是否准备好进行数据通 讯。</p>
+<p>（3） 客户必须再次回应服务段一个ACK报文，这是报文段3。</p>
+<p>2、连接终止协议（四次握手）
+<br>
+由于TCP连 接是全双工的，因此每个方向都必须单独进行关闭。这原则是当一方完成它的数据发送任务后就能发送一个FIN来终 止这个方向的连接。收到一个 FIN只意味着这一方向上没有数据流动，一个TCP连接 在收到一个FIN后仍能发送数据。首先进行关闭的一方将执行主动关闭，而另一方执行被动关闭。</p>
+<p>（1） TCP客 户端发送一个FIN，用来关闭客户到服务器的数据传送（报文段4）。
+<br>
+（2） 服务器收到这个FIN，它发回一个ACK，确认序号为收到的序号加1（报文段5）。和SYN一 样，一个FIN将占用一个序号。
+<br>
+（3） 服务器关闭客户端的连接，发送一个FIN给客户端（报文段6）。
+<br>
+（4） 客户段发回ACK报文确认，并将确认序号设置为收到序号加1（报文段7）。</p>
+<p>CLOSED: 这个没什么好说的了，表示初始状态。</p>
+<p>LISTEN: 这个也是非常容易理解的一个状态，表示服务器端的某个SOCKET处 于监听状态，可以接受连接了。</p>
+<p>SYN_RCVD: 这个状态表示接受到了SYN报 文，在正常情况下，这个状态是服务器端的SOCKET在建立TCP连接时的三次握手会话过程中的一个中间状态，很短暂，基本上用netstat你是很难看到这种状态的，除非你特意写了一个客户端测试程序，故意将三次TCP握手 过程中最后一个ACK报文不予发送。因此这种状态时，当收到客户端的ACK报文 后，它会进入到ESTABLISHED状态。</p>
+<p>SYN_SENT: 这个状态与SYN_RCVD遥想呼应，当客户端SOCKET执行CONNECT连接时，它首先发送SYN报文，因此也随即它会进入到了SYN_SENT状态，并等待服务端的发送三次握手中的第2个报文。SYN_SENT状态表示客户端已发送SYN报文。</p>
+<p>ESTABLISHED：这个容易理解了，表示连接已经建立了。</p>
+<p>FIN_WAIT_1: 这个状态要好好解释一下，其实FIN_WAIT_1和FIN_WAIT_2状态的真正含义都是表示等待对方的FIN报 文。而这两种状态的区别是：FIN_WAIT_1状态实际上是当SOCKET在ESTABLISHED状态时，它想主动关闭连接，向对方发送了FIN报文，此时该SOCKET即进入到FIN_WAIT_1状态。而当对方回应ACK报文后，则进入到FIN_WAIT_2状态，当然在实际的正常情况 下，无论对方何种情况下，都应该马上回应ACK报文，所以FIN_WAIT_1状态一般是比较难见到的，而FIN_WAIT_2状态还有时常常可以用netstat看到。</p>
+<p>FIN_WAIT_2：上面已经详细解释了这种状态，实际上FIN_WAIT_2状态下的SOCKET，表示半连接，也即有一方要求close连接，但另外还告诉对方，我暂时还有点 数据需要传送给你，稍后再关闭连接。</p>
+<p>TIME_WAIT: 表示收到了对方的FIN报 文，并发送出了ACK报文，就等2MSL后即可回到CLOSED可用状态了。如果FIN_WAIT_1状态下，收到了对方同时带FIN标 志和ACK标志的报文时，可以直接进入到TIME_WAIT状态，而无须经过FIN_WAIT_2状态。</p>
+<p>CLOSING: 这种状态比较特殊，实际情况中应该是很少见，属于一种比较罕见的例外状态。正常情况下，当你发 送FIN报文后，按理来说是应该先收到（或同时收到）对方的ACK报 文，再收到对方的FIN报文。但是CLOSING状态表示你发送FIN报文后，并没有收到对方的ACK报 文，反而却也收到了对方的FIN报文。什么情况下会出现此种情况呢？其实细想一下，也不难得出结论：那就是如果双方几乎在同时close一 个SOCKET的话，那么就出现了双方同时发送FIN报文的情况，也即会出现CLOSING状态，表示双方都正在关闭SOCKET连接。</p>
+<p>CLOSE_WAIT: 这种状态的含义其实是表示在等待关闭。怎么理解呢？当对方close一 个SOCKET后发送FIN报文给自己，你系统毫无疑问地会回应一个ACK报文 给对方，此时则进入到CLOSE_WAIT状态。接下来呢，实际上你真正需要考虑的事情是察看你是否还有数据发送给对方，如果没有的话， 那么你也就可以close这个SOCKET，发送FIN报文给对方，也即关闭连接。所以你在CLOSE_WAIT状态下，需要完成的事情是等待你去关闭连接。</p>
+<p>LAST_ACK: 这个状态还是比较容易好理解的，它是被动关闭一方在发送FIN报 文后，最后等待对方的ACK报文。当收到ACK报文后，也即可以进入到CLOSED可用状态了。</p>
+<p>最后有2个问题 的回答，我自己分析后的结论（不一定保证100%正确）</p>
+<p>1、 为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？</p>
+<p>这是因为服务端的LISTEN状态下的SOCKET当收到SYN报文的建连请求后，它可以把ACK和SYN（ACK起 应答作用，而SYN起同步作用）放在一个报文里来发送。但关闭连接时，当收到对方的FIN报文 通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可以未必会马上会关闭SOCKET,也即你可能还需要发送一些数据给对方之后，再发送FIN报文给对方来表示你同意现在可以关闭连接了，所以它这里的ACK报文 和FIN报文多数情况下都是分开发送的。</p>
+<p>2、 为什么TIME_WAIT状态还需要等2MSL后才能返回到CLOSED状 态？</p>
+<p>这是因为：虽然双方 都同意关闭连接了，而且握手的4个报文也都协调和发送完毕，按理可以直接回到CLOSED状 态（就好比从SYN_SEND状态到ESTABLISH状态那样）；但是因为我们必须要假想网络是不可靠的，你无法保证你最后发送的ACK报 文会一定被对方收到，因此对方处于LAST_ACK状态下的SOCKET可能会因为超时未收到ACK报文，而重发FIN报 文，所以这个TIME_WAIT状态的作用就是用来重发可能丢失的ACK报 文，并保证于此。</p>
+</div>
+</div>
+<p><img src="http://hiphotos.baidu.com/22000254/pic/item/99c88e348af2ae0e5ab5f5e6.jpg"></p>
+<p>断开连接的时候， 当发起主动关闭的左边这方发送一个FIN过去后，
+<br>
+右边被动关闭的这方要回应一个ACK，这个ACK是TCP回应的，而不是应用程序发送的，
+<br>
+此时，被动关闭的一方就处于CLOSE_WAIT状态了。</p>
+<p>如果此时被动关闭的这一方不再继续调用closesocket,那么他就不会发送接下来的FIN，导致自己老是处于CLOSE_WAIT。
+<br>
+只有被动关闭的这一方调用了 closesocket,才会发送一个FIN给主动关闭的这一方，同时也使得自己的状态变迁为LAST_ACK。</p>
+<p>比如被动关闭的是客户端.</p>
+<p>当对方调用closesocket的时候，你的程序正在</p>
+<p>int nRet = recv(s,….);
+<br>
+if (nRet == SOCKET_ERROR)
+<br>
+{
+<br>
+// closesocket(s);
+<br>
+return FALSE;
+<br>
+}</p>
+<p>很多人就是忘记了那句closesocket，这种代码太常见了。
+<br>
+我的理解，
+<br>
+当主动关闭的一方发送FIN到被动关闭这边后，被动关闭这边的TCP马上回应一个ACK过去，同时向上面应用程序提交一个ERROR，
+<br>
+导致上面的SOCKET的send或者recv返回SOCKET_ERROR.</p>
+<p>正常情况下，如果上面在返回SOCKET_ERROR后调用了closesocket, 那么被动关闭的者一方的TCP就会发送一个FIN过去，自己的状态就变迁到LAST_ACK.</p>
+<p> </p>
+<p>服务器上出现大量的close_wait的例子和解决方法（例子从网上找的，基本差不多）</p>
+<p><a>oracle9i@RHEL3</a> oracle9i]$ /usr/sbin/lsof -i | grep 6800
+<br>
+oracle    22725 oracle9i    3u IPv4 18621468       TCP RHEL3:6800 (LISTEN)
+<br>
+oracle    22725 oracle9i    4u IPv4 18621469       TCP RHEL3:6800-&gt;RHEL3:2174 (CLOSE_WAIT)
+<br>
+oracle    22725 oracle9i    8u IPv4 18621568       TCP RHEL3:6800-&gt;RHEL3:2175 (CLOSE_WAIT)
+<br>
+oracle    22725 oracle9i    9u IPv4 18621578       TCP RHEL3:6800-&gt;RHEL3:2176 (CLOSE_WAIT)
+<br>
+oracle    22726 oracle9i    3u IPv4 18621468       TCP RHEL3:6800 (LISTEN)
+<br>
+oracle    22726 oracle9i    4u IPv4 18621469       TCP RHEL3:6800-&gt;RHEL3:2174 (CLOSE_WAIT)
+<br>
+oracle    22726 oracle9i    8u IPv4 18621568       TCP RHEL3:6800-&gt;RHEL3:2175 (CLOSE_WAIT)
+<br>
+oracle    22726 oracle9i    9u IPv4 18621578       TCP RHEL3:6800-&gt;RHEL3:2176 (CLOSE_WAIT)</p>
+<p>[oracle9i@RHEL3 oracle9i]$ kill -9 22725</p>
+<p># 22725, 22726就是使用该6800端口的进程号(PID)。
+<br>
+[oracle9i@RHEL3 oracle9i]$ /usr/sbin/lsof -i | grep 6800</p>
+<p>进程被kill时，会释放占用的所有链接句柄。</p>
+<p>该问题的出现原因网上到处都是，也就是Socket的Client端出现异常没有Close就退出了。</p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/9203.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/9203.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/9203.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

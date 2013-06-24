@@ -1,0 +1,225 @@
+---
+layout: post
+title:  "IPV6+GAE——内网用户轻松穿越外网"
+date:   2010-11-10 12:30:24
+author: iGFW
+categories: program
+---
+
+## IPV6+GAE——内网用户轻松穿越外网
+### by iGFW
+### at 2010-11-10 12:30:24
+### original <http://igfw.tk/archives/1459>
+
+<h2>引言：</h2>
+<p>此文为校园网用户量身打造。<br>
+按本文介绍的方法，成功后的效果是：你只需登录内网，然后通过IPv6网络和GAE个人代理服务，即可访问外网。最妙的是，还顺便翻了墙。<br>
+本方案可以为你节省全部网费开支，当然运营商不大愿意看到的这样的结果，但我知道这是广大对于电信行业的垄断式经营怨声载道却又无可奈何的学子们梦寐以求的上网方案。我是站在群众一边的。<br>
+话又说回来，各位电信巨头在每个季度赚得盆满钵满之余，稍稍为祖国的教育事业让出一份利润，也不为过吧？要知道，大多数学生都是没有收入的，而目前提供给我们的各种网络业务，质量参差不齐，服务令人失望，而且仅此一家别无分号。<br>
+所以，每一个神奇的穿越技巧，都对应着一个糟糕的既有业务。<br>
+如果我们可以有选择，如果现在的各种服务都合情合理正规正常，没人会吃饱了撑的去折腾这些。<br>
+闲话到此为止，下面开始正式的技术讨论：）     <span></span><br>
+首先，概述操作步骤如下，这是你将要在本文的指导下完成的整个配置流程：<br>
+1. 开启IPv6服务<br>
+2. 申请Google账号<br>
+3. 创建个人GAE应用<br>
+4. 配置GAppProxy/WallProxy代理<br>
+5. 更改本机hosts文件<br>
+6. 设置浏览器代理地址<br>
+7. 启动代理，开始上网！<br>
+以下是详细操作流程，按着步骤一步一步来，一定能成功的，祝你好运！</p>
+<h2><strong>一、</strong><strong>IPV6</strong><strong>篇</strong></h2>
+<h3><strong>1.1 </strong><strong>准备工作：</strong></h3>
+<p>1）关闭本地连接的第三方防火墙<br>
+当然你把本校的隧道地址添加为防火墙的白名单也可，但由于不同的防火墙软件设置不一样，一旦设置不对了就完全用不了IPv6，这里不再展开讨论。<br>
+关闭防火墙步骤：右击本地连接→属性，在“在连接时使用下列项目”中找到有你防火墙软件的名字那个选项，把前面的勾去掉，确定即可。<br>
+2）开启IPv6 helper服务<br>
+开始菜单，运行，输入“services.msc”（不要引号），打开服务窗口，找到“IPv6 helper service”，双击打开，启动类型改为“自动”，然后点击“启动”按钮，确定。<a href="http://andnot.files.wordpress.com/2010/11/clip_image003.jpg"><img title="clip_image003" src="http://andnot.files.wordpress.com/2010/11/clip_image003_thumb.jpg?w=434&amp;h=188" border="0" alt="clip_image003" width="434" height="188"></a></p>
+<p>此外对于使用360安全卫士或者类似的国内所谓安全软件，由于它们会自作聪明地把这个必需服务给“优化”掉，所以你需要特别留意把禁掉的服务还原回来，否则IPv6是用不成的。</p>
+<p>3）某些安装不成功情况下，在“运行”中输入“esentutl /p %windir%\security\Database\secedit.sdb”（不要引号），也可解决问题。</p>
+<h3><strong>1.2 </strong><strong>安装</strong><strong>IPv6</strong></h3>
+<p>（仅针对WinXP/2003，Vista和Win7自带IPv6，不必安装。）<br>
+开始，运行，输入“cmd”，回车打开命令提示符窗口；再输入“IPv6 install”，回车。</p>
+<h3><strong>1.3 </strong><strong>配置</strong><strong>IPv6 </strong></h3>
+<p>由于校园网通常不是纯IPv6环境，所以需要一个“隧道”（很形象的比喻，具体技术细节大家有兴趣自己去搜吧），以电子科大的Ipv6隧道设置为例（地址为：202.115.255.242）<br>
+配置步骤：<br>
+开始，运行，输入“cmd”，回车打开命令提示符窗口，输入“netsh”，回车：<br>
+netsh&gt;int<br>
+netsh interface&gt;IPv6<br>
+netsh interface IPv6&gt;isatap<br>
+netsh interface IPv6 isatap&gt;set router 202.115.255.242<br>
+（注： 对于非校园网用户，其实也可以借助隧道应用IPv6服务，比如设置为上海交大的隧道地址：isatap.sjtu.edu.cn，但速度就不很理想了，看 IPTV通常会很卡。所以对于公网用户，不妨直接参考下文GAE篇进行代理，Google可是IPv4/IPv6通吃的。）<br>
+完成后可打开<a href="http://www.6rank.edu.cn/">http://www.6rank.edu.cn/</a>网站进行验证，看能否登录，若可，则表示你的IPv6大功告成！（也可通过在命令行中输入“ipconfig”查看本机IP地址中有无形如“2001:******”的地址段，这个地址就是你的IPv6地址，若有，即表示配置成功。）<a href="http://andnot.files.wordpress.com/2010/11/clip_image004.jpg"><img title="clip_image004" src="http://andnot.files.wordpress.com/2010/11/clip_image004_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image004" width="434" height="246"></a></p>
+<h3><strong>1.4 </strong><strong>更改</strong><strong>hosts</strong><strong>文件</strong></h3>
+<p>更改hosts是最初等的翻墙术了，但在IPv6环境下效果那是出奇的好~<br>
+打开“C:\WINDOWS\system32\drivers\etc\”路径下的hosts文件（可用记事本打开）<br>
+在末尾添加一组以Google为首的n多IPv6网站地址目录（传送门——最新Google IPv6 hosts地址集合：<a href="https://docs.google.com/View?id=dfkdmxnt_61d9ck9ffq">https://docs.google.com/View?id=dfkdmxnt_61d9ck9ffq</a>，你会发现Google的IPv6地址数量很可观，多多益善啊！都复制进hosts里吧，这些可都是捷径啊~）<br>
+保存，退出。<br>
+你再用浏览器打开<a href="http://www.google.com/">Google</a>看看，是不是可以登上了？还不会跳转到Google HK，而且居然还可以查看网页快照！开心吧？且慢，再输入一个<a href="http://www.youtube.com/">youtube.com</a>试试，额滴神啊，阔别多年的U2B又回来了！爽翻了吧，呵呵~<br>
+好，我们歇一下，先开罐啤酒为生猛的IPv6干一杯~</p>
+<p>接下来，轮到第二位主角——GAE——登场了，有了Google的引擎推动，IPv6那可是如虎添翼啊！</p>
+<h2><strong>二、</strong><strong>GAE</strong><strong>篇</strong><strong>——</strong><strong>暨</strong><strong>GAppProxy</strong><strong>代理详解</strong></h2>
+<p>前文所介绍的IPv6技术只能达到访问部分外网的目的，可网络的世界是广阔的，天下甚多网站，一个小小的hosts岂能装得下？<br>
+况且hosts翻墙，是很不稳妥的。<br>
+景德镇的局域网总是会出现各种意想不到的问题，所谓道高一尺魔高一丈，想用傻瓜的方式翻过GFW的高墙，那是不可能滴~<br>
+老罗不是说过么，坏人总是更勤奋一些。（我是坏人么？）<br>
+其实，下面将要介绍的GAE应用下的GAppProxy代理方法也不复杂，按照步骤操作，很快就能搞定~<br>
+Here we go！</p>
+<h3><strong>2.1 </strong><strong>准备工作</strong></h3>
+<p>准备工作只有一条：你必须有一个Google账号,也就是一个Gmail。<br>
+什么？你只用Qmail？呃，你还是真不关心自己的邮件安全，趁早换吧~原因不多说了……总之这种“网络严肃服务”（我自己下的定义，就是指邮箱、域名、账号等对自己来说等很重要的服务）还是尽量远离天朝IT企业，这些服务在他们的托管下，用着心里不踏实。<br>
+当然，这不是他们的错。<br>
+况且你已经摆平IPv6了，还添加了n多的Google hosts地址，不整个Google账号享用一下，岂非暴殄天物？<br>
+好了，赶紧申请一个吧~（传送门：<a href="https://www.google.com/accounts/">https://www.google.com/accounts/</a>）</p>
+<h3><strong>2.2 </strong><strong>创建</strong><strong>GAE</strong></h3>
+<p>毫不夸张地说，GAE（Google App Engine）是Google划时代的产品。它的强大和便捷超乎你的想象……打住打住。<br>
+下面是具体操作步骤图解：<br>
+1）打开”<a href="http://appengine.google.com/">http://appengine.google.com/</a>“,输入你的Google账户、密码，登录； <a href="http://andnot.files.wordpress.com/2010/11/clip_image005.jpg"><img title="clip_image005" src="http://andnot.files.wordpress.com/2010/11/clip_image005_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image005" width="434" height="246"></a><br>
+2) 点击“Create an Application”,国家一栏选“Other”，电话号码填“+86 你的手机号”；<a href="http://andnot.files.wordpress.com/2010/11/clip_image006.jpg"><img title="clip_image006" src="http://andnot.files.wordpress.com/2010/11/clip_image006_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image006" width="434" height="246"></a></p>
+<p>注意一个手机号只能注册一次，否则：</p>
+<p><a href="http://andnot.files.wordpress.com/2010/11/clip_image007.jpg"><img title="clip_image007" src="http://andnot.files.wordpress.com/2010/11/clip_image007_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image007" width="434" height="246"></a><br>
+3) 片刻之后，Google会给你发送一个验证短信，输入进去，确定；<br>
+<a href="http://andnot.files.wordpress.com/2010/11/clip_image008.jpg"><img title="clip_image008" src="http://andnot.files.wordpress.com/2010/11/clip_image008_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image008" width="434" height="246"></a><br>
+4）填写你的Application  Identifer，这个就是你以后上外网要仰仗的永久地址了，想个好点的名字哈（只能使用小写字母、数字和连字符”-“，长度不能小于6个字符。这里我 使用的是uestcproxy，望文知意啊）；然后输入Application Title，确定；<a href="http://andnot.files.wordpress.com/2010/11/clip_image009.jpg"><img title="clip_image009" src="http://andnot.files.wordpress.com/2010/11/clip_image009_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image009" width="434" height="246"></a><br>
+注：“Authentication  Options (Advanced)”中最好选择默认选项，即“Open to all Google Accounts  user”，其中第三个选项（Open to all users with an OpenID  Provider）貌似很有用，不过现在尚处于实验阶段，不推荐使用。<br>
+5）GAE应用创建成功！ <a href="http://andnot.files.wordpress.com/2010/11/clip_image010.jpg"><img title="clip_image010" src="http://andnot.files.wordpress.com/2010/11/clip_image010_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image010" width="434" height="246"></a><br>
+以后使用时可以进入“Dashboard”，查看流量等使用信息：<a href="http://andnot.files.wordpress.com/2010/11/clip_image011.jpg"><img title="clip_image011" src="http://andnot.files.wordpress.com/2010/11/clip_image011_thumb.jpg?w=434&amp;h=242" border="0" alt="clip_image011" width="434" height="242"></a><br>
+注：每个Google账号可以申请10个GAE应用，每个GAE应用每天都有1G的流量（我通常一天的流量不超过100MB），足够用了。</p>
+<h3><strong>2.3 </strong><strong>配置服务器端</strong></h3>
+<p>上一步仅仅是在Google为你申请了一个应用，但还未激活。你现在需要一个小小的上载工具，把Google服务器中的那个GAE代理激活，成为你的专属代理服务器！<br>
+下面先介绍应用GAppProxy代理的方法，下一篇再介绍WallProxy代理方案。<br>
+GappProxy可以去项目下载专页下载，这里的版本最新。（传送门：<a href="http://code.google.com/p/gappproxy/downloads/list">http://code.google.com/p/gappproxy/downloads/list</a>）<br>
+下面是具体操作步骤图解：</p>
+<p>1）点击“GAppProxy服务端源码+windows自动布署工具”，进入下载页面进行下载（下载地址：<a href="http://gappproxy.googlecode.com/files/uploader-2.0.0-win.zip">http://gappproxy.googlecode.com/files/uploader-2.0.0-win.zip</a>）；</p>
+<p>2）把压缩包解开，点击uploader.exe，在AppID后输入你的Application Identifer，回车；<br>
+3）输入你的Gmail；<br>
+4）输入密码（注意：在输入密码的时候，屏幕不会有任何显示，不要紧，输完后回车即可）<a href="http://andnot.files.wordpress.com/2010/11/clip_image012.jpg"><img title="clip_image012" src="http://andnot.files.wordpress.com/2010/11/clip_image012_thumb.jpg?w=434&amp;h=285" border="0" alt="clip_image012" width="434" height="285"></a><br>
+5）稍等片刻，待配置完毕，当出现”ready to start serving“，大功告成！<a href="http://andnot.files.wordpress.com/2010/11/clip_image013.jpg"><img title="clip_image013" src="http://andnot.files.wordpress.com/2010/11/clip_image013_thumb.jpg?w=434&amp;h=288" border="0" alt="clip_image013" width="434" height="288"></a><br>
+打开<a href="http://uestcproxy.appspot.com/fetch.py"> http://uestcproxy.appspot.com/fetch.py</a> ，会看到你的GAppProxy服务器端已经在工作了：<a href="http://andnot.files.wordpress.com/2010/11/clip_image014.jpg"><img title="clip_image014" src="http://andnot.files.wordpress.com/2010/11/clip_image014_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image014" width="434" height="246"></a></p>
+<h3><strong>2.4 </strong><strong>配置</strong><strong>GAppProxy</strong><strong>本地代理</strong></h3>
+<p>现在在Google的服务器中已经有了你的一席之地，接下来你就要在你的电脑和Google服务器之间打通一条通道，然后就能以Googl为跳板，遨游外面广阔的网络世界了！</p>
+<p>这个通道，就由本地代理来开启。</p>
+<p>所谓万事俱备，只欠代理^ ^</p>
+<p>下面是具体操作步骤图解：<br>
+1）打开GAppProxy下载专页下载GAppProxy的Windows版客户端(下载地址:<a href="http://gappproxy.googlecode.com/files/localproxy-2.0.0-win.zip">http://gappproxy.googlecode.com/files/localproxy-2.0.0-win.zip</a>）；<br>
+2）解开压缩包，用记事本打开proxy.conf文件；<br>
+在末行添加fetch_server = http://xxxxxx.appspot.com/fetch.py，这里的xxxxxx即为前面你申请的Application Identifer（注意行首没有“#”号），保存退出；<a href="http://andnot.files.wordpress.com/2010/11/clip_image015.jpg"><img title="clip_image015" src="http://andnot.files.wordpress.com/2010/11/clip_image015_thumb.jpg?w=410&amp;h=364" border="0" alt="clip_image015" width="410" height="364"></a><br>
+3）点击proxy.exe，开启代理！<br>
+此时若已经登录公网，那么将会出现如下画面：Direct Fetch后面是Yes，表示你已经与Google服务器上你自己的GAE应用建立了直接连接。<a href="http://andnot.files.wordpress.com/2010/11/clip_image016.jpg"><img title="clip_image016" src="http://andnot.files.wordpress.com/2010/11/clip_image016_thumb.jpg?w=434&amp;h=361" border="0" alt="clip_image016" width="434" height="361"></a><br>
+这时你再在浏览器中设置好如下代理：”127.0.0.1:8000“,就可以轻松翻墙,自由浏览了~而且你现在查询一下你的IP地理位置（传送门：<a href="http://www.geoiptool.com/">http://www.geoiptool.com/</a>），居然是美国加州山景城的IP，神奇吧~<br>
+当然，我们的最终目的是在不登录公网的情况下也可以自由浏览，作为一个准Geek，这种半自由状态是不能接受的。<br>
+下面在最后一节，隆重推出内网直通公网的杀手锏，各位童鞋打起精神咯~</p>
+<h3><strong>2.5 </strong><strong>配置</strong><strong>appspot</strong><strong>的</strong><strong>hosts</strong><strong>地址映射</strong></h3>
+<p>在开始真正的自由浏览之前，你还需做最后的一项工作： 为hosts添加当前的Google IPv6解析地址。<br>
+具体操作如下：</p>
+<p>1）拨号进入校内网络；开始菜单，运行，输入“cmd”打开命令行窗口；</p>
+<p>2）输入“ping ipv6.google.com”，回车,得到最新Google的IPv6解析地址，记下来；</p>
+<p><a href="http://andnot.files.wordpress.com/2010/11/clip_image017.jpg"><img title="clip_image017" src="http://andnot.files.wordpress.com/2010/11/clip_image017_thumb.jpg?w=434&amp;h=290" border="0" alt="clip_image017" width="434" height="290"></a></p>
+<p>3）用记事本打开hosts文件（位于C:\Windows\System32\drivers\etc），在末尾添加两行：<br>
+2404:6800:8007::63 uestcproxy.appspot.com<br>
+2404:6800:8007::63 www.appspot.com<br>
+这里“2404:6800:8007::63”即为Google的IPv6解析地址（2010-10-31下午ping得到），“uestcproxy.appspot.com”是我申请的GAE地址。<a href="http://andnot.files.wordpress.com/2010/11/clip_image018.jpg"><img title="clip_image018" src="http://andnot.files.wordpress.com/2010/11/clip_image018_thumb.jpg?w=434&amp;h=160" border="0" alt="clip_image018" width="434" height="160"></a><br>
+注：添加appspot与Google的hosts地址映射非常重要，这是实现穿越的关键一环！</p>
+<p>4）点击proxy.exe，开启代理！</p>
+<p>此时Direct Fetch 后面为No，不必担心，这是因为你现在处于内网环境。但通过IPv6网络照样可以连接到Google的服务器。<a href="http://andnot.files.wordpress.com/2010/11/clip_image019.jpg"><img title="clip_image019" src="http://andnot.files.wordpress.com/2010/11/clip_image019_thumb.jpg?w=434&amp;h=191" border="0" alt="clip_image019" width="434" height="191"></a></p>
+<p>5）现在，打开Internet选项，设置浏览器代理地址。<br>
+然后后打开你的浏览器，输入任意一个外网网址，回车！<br>
+哈哈，怎么样，是不是顺利打开了~再看看此时的proxy程序窗口，一行行的数据正滚滚而过，表示你的网卡与Google的服务器沟通良好~<br>
+然后再输入一个墙外的网站地址试试，是不是也可以顺畅打开了？<br>
+Congratulation！<br>
+至此，依托IPv6+GAppProxy技术，从内网穿越外网的任务大功告成！</p>
+<p>好好享用吧：）</p>
+<p><a href="http://andnot.files.wordpress.com/2010/11/clip_image020.jpg"><img title="clip_image020" src="http://andnot.files.wordpress.com/2010/11/clip_image020_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image020" width="434" height="246"></a><a href="http://andnot.files.wordpress.com/2010/11/clip_image021.jpg"><img title="clip_image021" src="http://andnot.files.wordpress.com/2010/11/clip_image021_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image021" width="434" height="246"></a></p>
+<h2><strong>三、</strong><strong>GAE</strong><strong>番外篇</strong><strong>——</strong><strong>比</strong><strong>GAppProxy</strong><strong>更强大的</strong><strong>WallProxy</strong></h2>
+<p>第三篇所介绍的方法是基于GAppProxy代理服务的，是个完整的解决方案。但GAppProxy有一个很不方便的地方，就是对https的支持 很不好，比如Facebook和Twitter的加密账户页面就无法正常显示。还有就是对于很多SSL连接，每次打开浏览器都会弹出证书无效警告，由于我 平时经常用Google的SSL搜索，每次打开新页面都要处理一下那个警告页面，使用久了也会感到不爽。<a href="http://andnot.files.wordpress.com/2010/11/clip_image022.jpg"><img title="clip_image022" src="http://andnot.files.wordpress.com/2010/11/clip_image022_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image022" width="434" height="246"></a><br>
+对于这个问题，GAppProxy项目的Groups上也讨论了很久，可解决方案不是太繁琐就是不完善，毕竟这只是个非商业项目，开发人员都是出于兴趣和爱好来维护，你也不能奢求太多。<br>
+后来在Twitter上偶然见一位网友提到另一个基于GAE的代理服务——WallProxy，据说可以很好地支持https，甚至还可以导入根证书而一劳永逸地解决SSL问题。<br>
+我顿时眼前一亮，连忙去搜索WallProxy的相关页面，很快看到步调博客上的<a href="http://www.budiao.biz/google-app-engineWallProxy.html">《使用Google App Engine+WallProxy来看YouTube和玩Twitese》</a>，然后按照博主的方案一路操作下来，挂上代理一试——加密网站可以正常访问了~然后又试了下WallProxy独有的多app共存实现负载均衡技术，感觉也很不错，这下我申请的多个GAE-app地址都能派上用场，也不用担心每天1G的流量限制了。<br>
+虽然前文已经给出了完整的内网穿越外网的攻略，但鉴于WallProxy对加密服务的改善和灵活配置，我还是决定补充一个GAE的番外篇，把WallProxy隆重推荐给大家。<br>
+不过这里先说明下，WallProxy的设置步骤比之GAppProxy是比较繁琐的，而且你还要预装Python环境，如果实在懒得费功夫，而且对SSL应用要求不高的话，用GAppProxy代理足矣。<br>
+好，关于WallProxy的背景介绍到此为止，下面跟我来一起摆平这个不可多得的上网利器吧~</p>
+<h3><strong>3.1 </strong><strong>拥有至少一个</strong><strong>GAE</strong><strong>应用地址（方法同</strong><strong>2.1~2.2</strong><strong>）</strong></h3>
+<h3><strong>3.2 </strong><strong>安装</strong><strong>Python</strong></h3>
+<p>要求2.5以上，3.0以下版本。建议下载步调博主提供的压缩包（传送门：<a href="http://dl.dbank.com/c003f1c64w">http://dl.dbank.com/c003f1c64w</a>），这个压缩包已经包含了下文将要用到的所有工具，挺方便。</p>
+<h3><strong>3.3 </strong><strong>安装</strong><strong>GAE SDK</strong></h3>
+<p>SDK可以去GAE官方页面下载（传送门：<a href="http://code.google.com/intl/zh-CN/appengine/downloads.html">http://code.google.com/intl/zh-CN/appengine/downloads.html</a>）或者用3.2节给出的压缩包。<br>
+SDK这个套件不是必需的，但由于SDK用来管理上载服务实在很便捷，远比命令行来得直观，推荐安装。而且以后如果用到其他GAE服务（比如自建博客，自架Twitter API等）也会用得到。<br>
+如果你实在不想往电脑安装什么，可以用一个第三方上传工具SDUpload（传送门：<a href="http://code.google.com/p/sdapp/downloads/detail?name=SDUpload%200.1.rar&amp;can=2&amp;q=">http://code.google.com/p/sdapp/downloads/detail?name=SDUpload%200.1.rar&amp;can=2&amp;q=</a>），不过对不熟悉命令行操作的人来说用起来稍显不便，这里不再赘述。<br>
+下文还是以SDK操作为例。</p>
+<h3><strong>3.4 </strong><strong>设置</strong><strong>SDK</strong></h3>
+<p>1）安装完SDK后，启动“Google App Engine Launcher”程序（图标是一个涡轮引擎），打开Edit-Preference；<br>
+2）Python栏选择你的Python安装路径；<br>
+3）App Engine SDK栏选择你的SDK安装路径；<br>
+4）Editor栏可选一个你用着顺手的编辑器，也可空着；OK。 <a href="http://andnot.files.wordpress.com/2010/11/clip_image023.jpg"><img title="clip_image023" src="http://andnot.files.wordpress.com/2010/11/clip_image023_thumb.jpg?w=434&amp;h=288" border="0" alt="clip_image023" width="434" height="288"></a></p>
+<h3><strong>3.5 </strong><strong>配置上传文件</strong></h3>
+<p>1）去WallProxy的下载页面下载WallProxy工具包（V0.3.7 for windows版传送门：<a href="http://code.google.com/p/wallproxy/downloads/detail?name=wallproxy-win.7z&amp;can=2&amp;q=">http://code.google.com/p/wallproxy/downloads/detail?name=wallproxy-win.7z&amp;can=2&amp;q=</a>），或者使用3.2节给出的压缩包；<br>
+2）解压缩后得到三个文件夹：gae_server、php_server、local；<br>
+3）启动Google App Engine Launcher；<br>
+4）打开File-Existing Application，在Application Path中指定三个文件夹中的gae_server所在的硬盘地址，点击“Add”；<br>
+5）此时会发现SDK窗口中添加了一行内容，选中，然后点击“Edit”按钮，开始编辑app文件；<br>
+6）把application:后面的“your-gae-id”替换为你自己创建的GAE-app名称，即Application Identifer，保存；<br>
+<a href="http://andnot.files.wordpress.com/2010/11/clip_image024.jpg"><img title="clip_image024" src="http://andnot.files.wordpress.com/2010/11/clip_image024_thumb.jpg?w=345&amp;h=278" border="0" alt="clip_image024" width="345" height="278"></a><br>
+7）回到SDK面板，你会发现name一栏中已经更新为你刚刚替换的Application Identifer；<br>
+点击“Deploy”，然后在打开的窗口中输入你的Gmail账号、密码；<br>
+点击“OK”，开始上传；<a href="http://andnot.files.wordpress.com/2010/11/clip_image025.jpg"><img title="clip_image025" src="http://andnot.files.wordpress.com/2010/11/clip_image025_thumb.jpg?w=434&amp;h=193" border="0" alt="clip_image025" width="434" height="193"></a><br>
+8）上传成功后即可关闭SDK程序。</p>
+<h3><strong>3.6 </strong><strong>添加</strong><strong>appspot</strong><strong>与</strong><strong>Google</strong><strong>的</strong><strong>IPv6</strong><strong>地址的</strong><strong>hosts</strong><strong>地址映射（</strong><strong>同</strong><strong>2.5</strong><strong>节</strong><strong>）。</strong></h3>
+<h3><strong>3.7 </strong><strong>配置本地代理</strong></h3>
+<p>1）打开三个文件夹中的local，点击WallProxy.exe；<br>
+2）点击“设置”按钮；</p>
+<p>在打开的窗口中，把紧跟GAE_PROXY的一行中的’url’后面的地址替换为你自己的GAE应用地址，格式为’http://XXXXXX.appspot.com/fetch.php’（注意是php），确定退出；</p>
+<p>3）点击“启动”按钮，此时若一切操作无误，代理便开始工作了；<br>
+4）设置浏览器代理地址为：127.0.0.1:8086（注意是8086，GAppProxy的是8000）。<br>
+现在随便打开一个网站试试吧~不出意外的话，你已经能够畅游万维网了！</p>
+<h3><strong>3.8 WallProxy</strong><strong>拓展应用</strong></h3>
+<p>1）设置多GAE-app，只需在本地代理设置中添加多行url即可（当然前提是这些GAE-app已经开通并且配置成功，检验是否配置成功的方法 是：在浏览器中打开这个url，如果页面自动跳转到一个叫做“和谐社”的Twitter页面，就表示成功了- -III）<br>
+<a href="http://andnot.files.wordpress.com/2010/11/clip_image026.jpg"><img title="clip_image026" src="http://andnot.files.wordpress.com/2010/11/clip_image026_thumb.jpg?w=429&amp;h=364" border="0" alt="clip_image026" width="429" height="364"></a><br>
+2）导入ca根证书<br>
+这是WallProxy的特色功能，也是我青睐它的主要原因；<br>
+在第一次执行WallProxy.exe后，会在local文件夹下生成一个cert文件夹，打开后会看到一个ca证书文件；<a href="http://andnot.files.wordpress.com/2010/11/clip_image027.jpg"><img title="clip_image027" src="http://andnot.files.wordpress.com/2010/11/clip_image027_thumb.jpg?w=434&amp;h=331" border="0" alt="clip_image027" width="434" height="331"></a><br>
+打开后点击“安装证书”，然后按照提示将之装入“受信任的根证书颁发机构”；<a href="http://andnot.files.wordpress.com/2010/11/clip_image028.jpg"><img title="clip_image028" src="http://andnot.files.wordpress.com/2010/11/clip_image028_thumb.jpg?w=434&amp;h=338" border="0" alt="clip_image028" width="434" height="338"></a><br>
+安装完成后，再打开任何SSL等加密连接都不会出现使用GAppProxy时遇到的证书无效问题！<br>
+终于可以把默认搜索引擎设为Google with SSL了~</p>
+<h3><strong>3.9 WallProxy</strong><strong>与</strong><strong>GAppProxy</strong><strong>同时使用</strong></h3>
+<p>虽然WallProxy已经足够优秀，但我还是不愿让它完全取代GAppProxy，GAppProxy的简单易用特性还是蛮招人喜爱的；另一方 面，毕竟人家做这个完全是义务劳动，再加上n多“不可控”因素（你懂的），谁也说不准某天某时某个代理就挂了，到那时该如何是好？<br>
+不如两个代理服务共存吧~<br>
+可以吗？<br>
+可以的~就算你手头只有一个GAE-app，也可以同时开两个代理！<br>
+还 是以前文我申请的名为uestcproxy的GAE-app为例，现在已有http://uestcproxy.appspot.com /fetch.py配置为我的GAppProxy代理服务器，如果我再用SDK的把uestcproxy配置为WallProxy的代理服务器的话，很显 然GAppProxy就不能用了。<br>
+解决思路就在于每个GAE-app服务其实可以有多个版本，不同版本对应不同的地址，然后让GAppProxy和WallProxy客户端代理不同的地址，就不会产生冲突了。<br>
+具体操作步骤如下：<br>
+1）在3.5节中，注意app文件内容中第二行有“version”，这就是版本号，默认为1；<br>
+现在将之改为2。然后保存，上传。<br>
+<a href="http://andnot.files.wordpress.com/2010/11/clip_image029.jpg"><img title="clip_image029" src="http://andnot.files.wordpress.com/2010/11/clip_image029_thumb.jpg?w=351&amp;h=254" border="0" alt="clip_image029" width="351" height="254"></a><br>
+2）此时GAE将会为你分配两个不同的地址，分别是：</p>
+<p>http://1.latest.uestcproxy.appspot.com</p>
+<p>http://2.latest.uestcproxy.appspot.com</p>
+<p>对应两个不同的版本。<a href="http://andnot.files.wordpress.com/2010/11/clip_image030.jpg"><img title="clip_image030" src="http://andnot.files.wordpress.com/2010/11/clip_image030_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image030" width="434" height="246"></a><br>
+你若输入http://uestcproxy.appspot.com/fetch.php，回车后将显示错误；<br>
+而如果改换成http://2.latest.uestcproxy.appspot.com/fetch.php，就可以顺利跳转到那个Twitter页面。<br>
+3）现在，把WallProxy的设置页面中的url改成http://2.latest.uestcproxy.appspot.com/fetch.php，就可以顺利使用WallProxy代理上网了~<br>
+<a href="http://andnot.files.wordpress.com/2010/11/clip_image031.jpg"><img title="clip_image031" src="http://andnot.files.wordpress.com/2010/11/clip_image031_thumb.jpg?w=429&amp;h=364" border="0" alt="clip_image031" width="429" height="364"></a><br>
+4）对于GAppProxy端，则无需任何改动。<br>
+这是因为，尽管http://1.latest.uestcproxy.appspot.com为版本1的地址，但它同时也是默认版本，而默认地址的格式是不变的。<br>
+现在，两个代理共存共用了！你可以一个代理用来看Youtube，另一个用来上Twitter，何等的畅快啊~<a href="http://andnot.files.wordpress.com/2010/11/clip_image032.jpg"><img title="clip_image032" src="http://andnot.files.wordpress.com/2010/11/clip_image032_thumb.jpg?w=434&amp;h=261" border="0" alt="clip_image032" width="434" height="261"></a><a href="http://andnot.files.wordpress.com/2010/11/clip_image033.jpg"><img title="clip_image033" src="http://andnot.files.wordpress.com/2010/11/clip_image033_thumb.jpg?w=434&amp;h=246" border="0" alt="clip_image033" width="434" height="246"></a></p>
+<h2><strong>后记</strong></h2>
+<p>写这篇文章缘于某天在学校BBS上闲逛来到IPv6版块，看到大量令人惊奇的IPv6应用文章，其中最令人激动的就是借助更改hosts文件访问几乎所有Google服务，对于我这个Google重度依赖用户，IPv6简直就是福音书。<br>
+后来又发生了一件让人很不愉快的事，让我对电信的服务彻底失望。我就想，我们缴的网费并不便宜，却只得到这么差劲的服务，原因还不就是因为它无可动摇的垄断地位，这是多么令人愤懑的事情啊。<br>
+作为一个学理工的，我只能从技术上寻找对策了。<br>
+恰逢在Google Reader中看到一篇介绍GAE的文章，其中提到了搭建个人GAE应用，然后可借助GAppProxy代理上网。<br>
+在此之前，我已经用过了不下5种代理工具，然而要么我对其安全不放心，要么效果差强人意。<br>
+有着Google血统的东东，应该不会让人失望吧？<br>
+抱 着尝鲜的心态（凡是跟Google沾边的服务，我总是要试一试的），用自己的Gmail账号建立了一个GAE应用，然后下载GAppProxy工具包，简 单几步配置完成后，打开浏览器一试，OMG，这速度真快啊！除了个别SSL网址打开有异常外，其他一切服务堪称完美~我从未想象在景德镇看 Youtube，缓冲速度会这么猛。<br>
+爽了一段时间后，我的网费再次告急。<br>
+在去购买新的充值卡的路上，我突然想到在我的hosts文件中包含了大量Google的IPv6地址，让我得以直接从内网访问Google，那么，为何不能以此为通道，借Google作跳板，直接从内网访问公网呢？<br>
+思路有了，剩下的一切都好办。<br>
+一天之内，我就搞定了所有的配置工作，然后成功登录自己的Blog。</p>
+<p>感谢教育网率先开通IPv6服务，感谢GFW的技术迟钝以致IPv6至今仍是一方净土，感谢Google一如既往地提供上乘的互联网服务，感谢那些热心的人编写出如此强劲的代理程序。</p>
+<p>采用这种依托GAE平台的代理服务上网，最实际的效益就是：网费开支为零——没有哪位同学要请我喝一杯么？<br>
+不过最令我感到欣慰的，并非省去了一笔网费，而是我在完全合理、合法的情况下，完成了一次对既有约束的突破。</p>
+<p>在这个死气沉沉的大局域网之内，我通过某种不温不火的方式为自己找到了一丝自由的感觉，这，才是最大的收获。</p>
+<blockquote><p>与非<br>
+2010年11月4日 初稿<br>
+2010年11月8日 终稿</p>
+<p><a title="IPv6+GAE.ODT" href="https://docs.google.com/document/d/1wJuPnPFhw7BOU6JwkozchB71vjbw9KwwcgIOYj6kl7k/edit?hl=zh_CN">本文Google文档链接</a></p></blockquote>
+<p>来源：<a href="http://andnot.wordpress.com/">与非的零空间</a> 原文：<a href="http://andnot.wordpress.com/2010/11/09/ipv6gae%E5%86%85%E7%BD%91%E7%94%A8%E6%88%B7%E8%BD%BB%E6%9D%BE%E7%A9%BF%E8%B6%8A%E5%A4%96%E7%BD%91-4/">IPV6+GAE——内网用户轻松穿越外网</a></p>

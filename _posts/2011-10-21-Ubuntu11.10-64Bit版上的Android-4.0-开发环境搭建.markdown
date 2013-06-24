@@ -1,0 +1,152 @@
+---
+layout: post
+title:  "Ubuntu11.10 64Bit版上的Android 4.0 开发环境搭建"
+date:   2011-10-21 08:37:11
+author: forlong401
+categories: program
+---
+
+## Ubuntu11.10 64Bit版上的Android 4.0 开发环境搭建
+### by forlong401
+### at 2011-10-21 08:37:11
+### original <http://blog.csdn.net/forlong401/article/details/6890908>
+
+<p>据说Android以后新版本只支持64bit版本开发，所以搭建一个64bit系统的Android开发环境为将来的Android4.0 及更高版本 开发打好基础。</p>
+<h1>一、准备工作</h1>
+<h2>1.1 硬件</h2>
+<p>PC 一台（支持64bit），内存最好4G，硬盘最好1T，CPU最好4核心，显卡无所谓，光驱一个。<br>
+</p>
+<h2>1.2. 软件</h2>
+<h3>1.2.1 Ubuntu 11.10 64bit desktop版光盘一张</h3>
+<p>下载地址：<a href="http://www.ubunut.com.cn">www.ubuntu.com.cn<br>
+</a></p>
+<p>本次使用的是：<a href="http://www.ubuntu.com/download/ubuntu/download">http://www.ubuntu.com/download/ubuntu/download</a><br>
+</p>
+<p>下载以后刻录一张系统启动盘。</p>
+<h3>1.2.2 Eclipse J2EE版最新Linux 64Bit 软件</h3>
+<p>下载地址：<a href="http://www.eclipse.org">www.eclipse.org</a></p>
+<p>本次使用的是：<a href="http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/SR1/eclipse-jee-indigo-SR1-linux-gtk-x86_64.tar.gz">http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/indigo/SR1/eclipse-jee-indigo-SR1-linux-gtk-x86_64.tar.gz</a><br>
+</p>
+<h3>1.2.3 Android SDK 最新版</h3>
+<p>下载地址：<a href="http://developer.android.com/index.html">http://developer.android.com/index.html</a></p>
+<p>本次使用的是：<a href="http://developer.android.com/sdk/android-4.0.html">http://developer.android.com/sdk/android-4.0.html</a></p>
+<h1>二、开始干<br>
+</h1>
+<h2>2.1 安装Ubuntu 11.10 64bit系统</h2>
+<p>插入Ubuntu 11.10 64bit的系统光盘，BIOS设置为光盘引导。具体的就不详细讲了，如果不会或者有问题，搜索一下就可以搞定的啦。<span style="color:#ff0000"><u><strong>这里要强调的一点的是，安装时选择English语言安装。</strong></u></span></p>
+<p><span style="color:#ff0000"><span style="color:#000000"><strong>关于安装系统可以参看链接：<a href="http://wiki.ubuntu.org.cn/UbuntuHelp:Installation/zh">http://wiki.ubuntu.org.cn/UbuntuHelp:Installation/zh</a></strong></span><u><strong><br>
+</strong></u></span></p>
+<h2>2.2 安装基本软件</h2>
+<p>调起终端命令行，输入如下命令：</p>
+<p><span style="font-size:18px">$ sudo apt-get install git gitk git-gui valgrind ssh<br>
+</span></p>
+<p>python就不用管啦，默认系统就有了。</p>
+<h2>2.3 JDK 安装</h2>
+<p>调起终端命令行，输入如下命令：</p>
+<p><span style="font-size:18px">$ sudo add-apt-repository &quot;deb http://archive.canonical.com lucid partner&quot;</span></p>
+<p><span style="font-size:18px">$ sudo apt-get update</span></p>
+<p><span style="font-size:18px">$ sudo apt-get install sun-java6-jdk</span></p>
+<p><strong>这里安装JDK时，有一些协议需要确认，按tab键，切换焦点，空格或者回车确认。</strong></p>
+<h2>2.4 安装需要的包<code></code></h2>
+<p>调起终端命令行，输入如下命令：<br>
+</p>
+<p><span style="font-size:18px">$ sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev libc6-dev lib32ncurses5-dev ia32-libs x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev g++-multilib mingw32 tofrodos python-markdown
+ libxml2-utils lib32readline-gplv2-dev gcc-4.5 g++-4.5 gcc-4.5-multilib g++-4.5-multilib</span></p>
+<p><span style="font-size:18px"><br>
+</span></p>
+<p><strong>这里要说明的是lib32readline-gplv2-dev是为了代替lib32readline5-dev。</strong></p>
+<p><strong>gcc-4.5 g++-4.5 gcc-4.5-multilib g++-4.5-multilib这几个包是为了兼容较早版本的Android系统。如果没有安装的话，编译Android 2.3及以前版本的源代码时，会导致编译错误。这些错误是由于Ubuntu11.10系统自带的gcc4.6导致的。</strong></p>
+<p><strong>其中一些包是为了配合Android系统中一些还没有完全切换到64bit的软件或者代码而安装的。如果没有安装这些软件，编译Android 的源代码时，会导致32bit和64bit引起的不兼容性链接错误。如：</strong></p>
+<pre style="font-size:12px;white-space:pre-wrap;max-width:80em;padding-left:0.7em">/usr/bin/ld: skipping incompatible /usr/lib/gcc/i486-linux-gnu/4.3.4/libstdc++.a when searching for -lstdc++
+/usr/bin/ld: cannot find -lstdc++</pre>
+<p></p>
+<h2>2.5 USB 访问配置</h2>
+切换到root用户，创建<code>/etc/udev/rules.d/51-android.rules</code>文件，拷贝如下内容到此文件保存。<br>
+<br>
+<p></p>
+<pre><code># adb protocol on passion (Nexus One)
+SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e12&quot;, MODE=&quot;0600&quot;, OWNER=&quot;&lt;username&gt;&quot;
+# fastboot protocol on passion (Nexus One)
+SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;0bb4&quot;, ATTR{idProduct}==&quot;0fff&quot;, MODE=&quot;0600&quot;, OWNER=&quot;&lt;username&gt;&quot;
+# adb protocol on crespo/crespo4g (Nexus S)
+SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e22&quot;, MODE=&quot;0600&quot;, OWNER=&quot;&lt;username&gt;&quot;
+# fastboot protocol on crespo/crespo4g (Nexus S)
+SUBSYSTEM==&quot;usb&quot;, ATTR{idVendor}==&quot;18d1&quot;, ATTR{idProduct}==&quot;4e20&quot;, MODE=&quot;0600&quot;, OWNER=&quot;&lt;username&gt;&quot;</code></pre>
+<p></p>
+<p><strong>如果root用户密码不正确，那是因为初次安装完系统后，root被禁用了，参照另外一个文章使能。</strong></p>
+<p><a href="http://blog.csdn.net/forlong401/article/details/6884860">http://blog.csdn.net/forlong401/article/details/6884860</a><br>
+</p>
+<h2>2.6 安装常用的软件</h2>
+<p>打开应用商店（Ubuntu Software Center），找到下面的软件，然后安装。</p>
+<p><strong>Meld, SQLite database browser, SQLiteman, Skype, VirtualBox, Chromium Web Browser, StarDict, openFetion, iptux.</strong> 按照自己的需求安装吧。</p>
+<p>Ubuntu 11.10默认没安装GNOME桌面系统，对于习惯老Ubunut的用户是一个挑战，如果你还怀念gnome，那么可以安装gnome桌面环境 The GNOME Desktop Environment。</p>
+<h2>2.7 安装中文</h2>
+<p>打开language Support应用（按下windows的那个键，就会出现Dash home，然后输入language support，选中即可），按照提示安装，再切换到中文，应用后，重启后再切换回英文。</p>
+<p><strong>这一步的目的是让系统在英文环境下不要乱码（当然有些地方难免还是会有），还有中文输入法还是要的。最后我们的工作环境是英文系统。</strong><br>
+</p>
+<p><br>
+</p>
+<h2>2.8 配置Eclipse和Android开发工具</h2>
+<p>把下载的Eclipse和Android SDK放到一个目录下并解压，如Android_tools文件夹。</p>
+<p>然后确认eclispe那个可执行文件的权限（需要执行权限），按下windows的那个键，就会出现Dash home，然后输入main menu，选择Programming，点击New Item，将Eclipse的路径加入即可通过菜单执行了。图标也是可以换的。<br>
+</p>
+<p>运行Eclipse，选择help-&gt;Install new software<br>
+选择add，将会弹出一个框：<br>
+输入http://dl-ssl.google.com/Android/eclipse或者https://dl-ssl.google.com/Android/eclipse,点ok（点击无反应，按回车）<br>
+<br>
+选择要安装的软件，点next，然后选择接受协议，直接安装成功，Eclipse会建议你重启，<br>
+点击yes即可。</p>
+<p>重启Eclipse，设置Android SDK Home，选择Window-&gt;Preference-&gt;Android<br>
+SDK Location<br>
+在SDK Location中输入SDK tools的路径，如：~/android_tools/android-sdk-linux_86/，<br>
+点击Ok。这样在Linux机上Android的开发环境就搭建完成了。<br>
+打开Android SDK and AVD Manager，可以运行SDK 目录中Tools目录下android程序，<br>
+或者在Eclipse中选择&quot;window&quot; -&gt; &quot;Android SDK 和 AVD Manager&quot;菜单<br>
+<br>
+在打开的Android SDK窗口中，选择Available Packages，勾选你要的组件，<br>
+然后安装选择的即可，在弹出来的窗口中记得选择“Accept All”。<br>
+否则某些默认不是Accept的组建不会安装。</p>
+<p>安装完成后，就可以选择Android virtual Device manager窗口，点击<br>
+“New”新建一个设备，名字随便。选择一个target，如4.0的，创建好之后就可以点击<br>
+“Start”运行模拟器了<br>
+</p>
+<h2>2.9 配置环境变量</h2>
+<p>打开~/.bashrc文件，在最后添加PROJECT_HOME, ANDROID_PRODUCT_OUT, ANDROID_SWT三个变量。</p>
+<h2>3.0 VirtualBox的配置</h2>
+<p>一般安装一个xp系统配合ubuntu系统使用，新建一个，然后找到xp的iso安装后做两个配置：</p>
+<p>第一个是共享目录设置（为了xp和ubuntu交换数据），在virtualbox的setting中的Shared Floders中添加一个路径即可。</p>
+<p>第二个是usb访问，在ubuntu的命令行中输入</p>
+<p>$ sudo usermod -G vboxusers -a &quot;这里是管理员用户名&quot;</p>
+<h1>三、参考链接</h1>
+<p><a href="http://www.ubuntu.com">http://www.ubuntu.com</a></p>
+<p><a href="http://developer.android.com">http://developer.android.com</a></p>
+<p><a href="http://source.android.com">http://source.android.com</a></p>
+<p><a href="http://source.android.com/source/initializing.html">http://source.android.com/source/initializing.html</a></p>
+<p><a href="http://wiki.ubuntu.org.cn/UbuntuHelp:VirtualBox/USB">http://wiki.ubuntu.org.cn/UbuntuHelp:VirtualBox/USB</a></p>
+<p><a href="http://blog.sina.com.cn/s/blog_59cf67260100l3zh.html">http://blog.sina.com.cn/s/blog_59cf67260100l3zh.html</a></p>
+<p><a href="http://blog.csdn.net/forlong401/article/details/6284337">http://blog.csdn.net/forlong401/article/details/6284337</a></p>
+<p><a href="http://blog.csdn.net/forlong401/article/details/6871076">http://blog.csdn.net/forlong401/article/details/6871076</a></p>
+<p><a href="http://blog.csdn.net/forlong401/article/details/6871054">http://blog.csdn.net/forlong401/article/details/6871054</a></p>
+<p><a href="http://blog.csdn.net/forlong401/article/details/6885451">http://blog.csdn.net/forlong401/article/details/6885451<br>
+</a></p>
+<p><a href="http://www.eclipse.org">http://www.eclipse.org</a><br>
+</p>
+<h1>四、结束语</h1>
+<p>在比较新的机器上发现了系统重启时死机的问题，可以参考下面的方法解决：</p>
+<p></p>
+<p>/boot/grub/grub.cfg 的111行（如果内核更新，请参照相关部分修改）</p>
+         linux   /boot/vmlinuz-3.0.0-12-generic root=UUID=c9c8fe57-c581-4289-9f94-394ff632e611 ro   quiet splash vt.handoff=7<span style="color:#ff0000"><strong>noapic=yes</strong></span>
+<p>添加红色的部分，禁用apic。</p>
+<p>是不是觉得很麻烦啊，哈哈，哥哥我默默唧唧也搞了好几天（很多时候是由于网速太慢，哈哈），遇到问题也是<span style="color:#ff0000"><strong><em>摆了很久的度</em></strong></span>啊。</p>
+<p>前几年，也在不同的ubuntu版本上配置了不同的android开发环境。慢慢总结了一些有用的东西，也有一些更新和改进。<br>
+</p>
+<p>也是由于这些原因，所以写了这篇文章和大家分享，希望能给大家点帮助。</p>
+<p>当然由于本人能力有限，文中难免有不足和错误，还请大家在评论中指出，以便后来看的朋友能少走弯路，当然我也可以完善一下本文。</p>
+<br>
+
+        <div>
+            作者：forlong401 发表于2011-10-20 17:37:11 <a href="http://blog.csdn.net/forlong401/article/details/6890908">原文链接</a>
+        </div>
+        <div>
+            阅读：128 评论：0 <a href="http://blog.csdn.net/forlong401/article/details/6890908#comments">查看评论</a>
+        </div>

@@ -1,0 +1,229 @@
+---
+layout: post
+title:  "Ubuntu 中的编程语言(中)"
+date:   2010-06-16 23:15:00
+author: 银河
+categories: program
+---
+
+## Ubuntu 中的编程语言(中)
+### by 银河
+### at 2010-06-16 23:15:00
+### original <http://www.cnblogs.com/skyivben/archive/2010/06/16/1759265.html>
+
+<p><a href="http://www.cnblogs.com/skyivben/"><img src="http://pic.cnblogs.com/face/u10093.gif" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/skyivben/">银河</a> 发表于 2010-06-16 23:15 <a href="http://www.cnblogs.com/skyivben/archive/2010/06/16/1759265.html">原文链接</a> 阅读: 1187 评论: 5</p><p>在<a href="http://www.cnblogs.com/skyivben/archive/2010/06/15/1758600.html">上一篇随笔</a>中介绍了十种编程语言。这次介绍四种编程语言：Perl、PHP、Pascal 和 Delphi。</p> <h2>Perl</h2> <p>Perl 语言在<a href="http://news.cnblogs.com/n/65846/">2010年6月编程语言排行榜</a>中排名第八位。下面就是 GregorianTest.pl 程序：</p><pre>use Time::Piece;
+use Time::Local;
+use Time::Seconds;
+my $dt = localtime(timelocal(0, 0, 0, 4, 10 - 1, 1582));
+print $dt."\n";
+$dt += ONE_DAY;
+print $dt."\n";
+</pre>
+<p>Ubuntu 操作系统中已经预装了 Perl。解释执行：</p>
+<pre>ben@ben-1520:~/work$ <strong>perl -v</strong>
+This is perl, v5.10.1 (*) built for x86_64-linux-gnu-thread-multi
+Copyright 1987-2009, Larry Wall
+Perl may be copied only under the terms of either the Artistic License or the
+GNU General Public License, which may be found in the Perl 5 source kit.
+Complete documentation for Perl, including FAQ lists, should be found on
+this system using "man perl" or "perldoc perl".  If you have access to the
+Internet, point your browser at http://www.perl.org/, the Perl Home Page.
+ben@ben-1520:~/work$ <strong>perl GregorianTest.pl</strong>
+<font color="#ff0000">Mon Oct  4 00:00:00 1582
+Tue Oct  5 00:00:00 1582</font>
+ben@ben-1520:~/work$ 
+</pre> 
+<p>运行结果和 .NET 平台的编程语言一样。</p>
+<p>此外，还可以使用 cpan 命令来安装 DateTime 模块：</p>
+<pre>ben@ben-1520:~/work$ <strong>sudo cpan</strong>
+Terminal does not support AddHistory.
+cpan shell -- CPAN exploration and modules installation (v1.9402)
+Enter &#39;h&#39; for help.
+cpan[1]&gt; <strong>install DateTime</strong>
+cpan[2]&gt; <strong>m DateTime</strong>
+Module id = DateTime
+    DESCRIPTION  A complete, easy to use date and time object
+    CPAN_USERID  DROLSKY (Dave Rolsky )
+    CPAN_VERSION 0.55
+    CPAN_FILE    D/DR/DROLSKY/DateTime-0.55.tar.gz
+    UPLOAD_DATE  2010-03-16
+    DSLIP_STATUS bmpOp (beta,mailing-list,perl,object-oriented,Standard-Perl)
+    MANPAGE      DateTime - A date and time object
+    INST_FILE    /usr/local/lib/perl/5.10.1/DateTime.pm
+    INST_VERSION 0.55
+cpan[3]&gt; <strong>q</strong>
+Terminal does not support GetHistory.
+Lockfile removed.
+ben@ben-1520:~/work$ 
+</pre> 
+<p>下面就是使用 DateTime 模块的 GregorianTest2.pl 程序： </p><pre>use DateTime;
+my $dt = DateTime-&gt;new(year=&gt;1582, month=&gt;10, day=&gt;4);
+print $dt-&gt;day_abbr.&quot; &quot;.$dt-&gt;ymd.&quot;\n&quot;;
+$dt-&gt;add(days=&gt;1);
+print $dt-&gt;day_abbr.&quot; &quot;.$dt-&gt;ymd.&quot;\n&quot;;
+</pre>
+<p>解释执行：</p>
+<pre>ben@ben-1520:~/work$ <strong>perl GregorianTest2.pl</strong>
+<font color="#ff0000">Mon 1582-10-04
+Tue 1582-10-05</font>
+ben@ben-1520:~/work$ 
+</pre> 
+<p>运行结果还是和仅使用 Perl 核心模块的程序一样，没有什么改善。</p>
+<h2>PHP</h2>
+<p>PHP 语言在<a href="http://news.cnblogs.com/n/65846/">2010年6月编程语言排行榜</a>中排名第四位。下面就是 GregorianTest.php 程序：</p><pre>&lt;?php
+$date = new DateTime();
+echo $date-&gt;getTimezone()-&gt;getName().&quot;\n&quot;;
+echo $date-&gt;format(&#39;D Y-m-d&#39;).&quot;\n&quot;;
+$date-&gt;setDate(1582, 10, 4);
+echo $date-&gt;format(&#39;D Y-m-d&#39;).&quot;\n&quot;;
+$date-&gt;add(new DateInterval(&#39;P1D&#39;));
+echo $date-&gt;format(&#39;D Y-m-d&#39;).&quot;\n&quot;;
+?&gt;
+</pre>
+<p>安装 PHP 客户端工具，可以作为交互窗口(使用 --interactive 或者 -a 参数)，也可以解释执行：</p>
+<pre>ben@ben-1520:~/work$ <strong>sudo apt-get install php5-cli</strong>
+ben@ben-1520:~/work$ <strong>php -v</strong>
+PHP 5.3.2-1ubuntu4.2 with Suhosin-Patch (cli) (built: May 13 2010 20:03:45) 
+Copyright (c) 1997-2009 The PHP Group
+Zend Engine v2.3.0, Copyright (c) 1998-2010 Zend Technologies
+ben@ben-1520:~/work$ <strong>php -a</strong>
+Interactive shell
+php &gt; <strong>echo "PHP ".phpversion();</strong>
+PHP 5.3.2-1ubuntu4.2
+php &gt; <strong>exit;</strong>
+ben@ben-1520:~/work$ <strong>php GregorianTest.php</strong>
+Asia/Chongqing
+Wed 2010-06-16
+<font color="#ff0000">Tue 1582-10-04
+Wed 1582-10-05</font>
+ben@ben-1520:~/work$ 
+</pre> 
+<p>非常奇怪，PHP 语言的 DateTime 类居然认为1582年10月4日是星期二，既不是正确的星期四，也不是把格里历外推到1582年10月15日之前而得到的星期一。如果有哪位朋友知道这是什么原因，请在评论中告诉我。谢谢！</p>
+<p>此外，PHP 语言还有和历法相关的函数。下面就是 GregorianTest2.php 程序：</p><pre>&lt;?php
+function writeline($cal, $jd)
+{
+  $dt = cal_from_jd($jd, $cal);
+  $info = cal_info($cal);
+  echo $dt[&quot;abbrevdayname&quot;].&quot; &quot;.$dt[&quot;date&quot;];
+  echo &quot;\tdays from 4713-01-01 B.C.: &quot;.$jd;
+  echo &quot;\t&quot;.$info[&quot;calname&quot;];
+  echo &quot;\n&quot;;
+}
+$jd = cal_to_jd(CAL_JULIAN, 10, 4, 1582);
+writeline(CAL_JULIAN   , 0);
+writeline(CAL_JULIAN   , 1);
+writeline(CAL_JULIAN   , $jd);
+writeline(CAL_GREGORIAN, $jd + 1);
+writeline(CAL_JULIAN   , $jd + 1);
+?&gt;
+</pre>
+<p>解释执行：</p>
+<pre>ben@ben-1520:~/work$ <strong>php GregorianTest2.php</strong>
+Mon 0/0/0	days from 4713-01-01 B.C.: 0	Julian
+Tue 1/2/-4713	days from 4713-01-01 B.C.: 1	Julian
+<font color="#ff0000">Thu 10/4/1582	days from 4713-01-01 B.C.: 2299160	Julian
+Fri 10/15/1582	days from 4713-01-01 B.C.: 2299161	Gregorian</font>
+Fri 10/5/1582	days from 4713-01-01 B.C.: 2299161	Julian
+ben@ben-1520:~/work$ 
+</pre> 
+<p>注意，在 GregorianTest2.php 程序中必须由用户自己指定使用儒略历还是格里历。</p>
+<p>PHP 语言主要应用是服务端，是 <a href="http://en.wikipedia.org/wiki/LAMP_%28software_bundle%29">LAMP</a> (Linux + Apache + MySQL + PHP, or Perl, or Python) 的重要组成部分，用于架设动态网站。</p>
+<h2>Pascal</h2>
+<p>Pascal 语言在<a href="http://news.cnblogs.com/n/65846/">2010年6月编程语言排行榜</a>中排名第十五位。下面就是 GregorianTest.pas 程序：</p><pre>Program GregorianTest(output);
+type
+  StringArray = array[0..6] of string[3];
+var
+  t: TimeStamp;
+  a: StringArray;
+procedure Init;
+begin
+  a[0] := "Sun";
+  a[1] := "Mon";
+  a[2] := "Tue";
+  a[3] := "Wed";
+  a[4] := "Thu";
+  a[5] := "Fri";
+  a[6] := "Sat";
+end;
+begin
+  Init;
+  GetTimeStamp(t);
+  WriteLn(a[t.DayOfWeek], ' ', Date(t));
+  t.Year := 1582;
+  t.Month := 10;
+  t.Day := 4;
+  t.DayOfWeek := 4;
+  WriteLn(a[t.DayOfWeek], ' ', Date(t));
+end.</pre>
+<p>安装 GNU Pascal，编译和运行：</p>
+<pre>ben@ben-1520:~/work$ <strong>sudo apt-get install gpc</strong>
+ben@ben-1520:~/work$ <strong>gpc --version</strong>
+gpc 20070904, based on gcc-4.1.3 20080704 (prerelease) (Ubuntu 2.1-4.1.2-27ubuntu2)
+Copyright (C) 2006 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ben@ben-1520:~/work$ <strong>gpc -o GregorianTest GregorianTest.pas</strong>
+ben@ben-1520:~/work$ <strong>./GregorianTest</strong>
+Wed 16 Jun 2010
+<font color="#ff0000">Thu  4 Oct 1582</font>
+ben@ben-1520:~/work$ 
+</pre> 
+<p>在 GNU Pascal 中，我没有找到计算某一日期是星期几的函数，也没有找到计算某一日期的下一天的函数。程序之所以能够正确输出星期四，是由于在 GregorianTest.pas 程序的第24行对 DayOfWeek 字段进行了赋值。</p>
+<h2>Delphi</h2>
+<p>Delphi 语言在<a href="http://news.cnblogs.com/n/65846/">2010年6月编程语言排行榜</a>中排名第十位。下面就是 GregorianTest2.pas 程序：</p><pre>Program GregorianTest2;
+Uses sysutils;
+var
+  t: TTimeStamp;
+procedure WriteLine(t: TTimeStamp);
+begin
+  Write(FormatDateTime('ddd yyyy-mm-dd', TimeStampToDateTime(t)));
+  Writeln('  days past 0001-01-01: ', t.Date);
+end;
+Begin
+  t := DateTimeToTimeStamp(EnCodeDate(1, 1, 1));
+  WriteLine(t);
+  t := DateTimeToTimeStamp(EnCodeDate(1582, 10, 4));
+  WriteLine(t);
+  t.Date := t.Date + 1;
+  WriteLine(t);
+  t := DateTimeToTimeStamp(Now);
+  WriteLine(t);
+  t.Date := t.Date + 1;
+  WriteLine(t);
+End.
+</pre>
+<p>安装兼容 Delphi 的 Free Pascal，编译和运行：</p>
+<pre>ben@ben-1520:~/work$ <strong>sudo apt-get install fp-compiler</strong>
+ben@ben-1520:~/work$ <strong>fpc GregorianTest2.pas</strong>
+Free Pascal Compiler version 2.4.0-2 [2010/03/06] for x86_64
+Copyright (c) 1993-2009 by Florian Klaempfl
+Target OS: Linux for x86-64
+Compiling GregorianTest2.pas
+Linking GregorianTest2
+/usr/bin/ld: warning: link.res contains output sections; did you forget -T?
+22 lines compiled, 0.4 sec 
+ben@ben-1520:~/work$ <strong>./GregorianTest2</strong>
+Sat 0001-01-01  days past 0001-01-01: 1
+<font color="#ff0000">Sat 1582-10-04  days past 0001-01-01: 577725
+Fri 1582-10-05  days past 0001-01-01: 577726</font>
+Wed 2010-06-16  days past 0001-01-01: 733939
+Thu 2010-06-17  days past 0001-01-01: 733940
+ben@ben-1520:~/work$ 
+</pre> 
+<p>非常奇怪，Free Pascal 的 <a href="http://www.freepascal.org/docs-html/rtl/sysutils/datetimeroutines.html">Date/Time routines</a> 居然认为1582年10月4日是星期六，既不是正确的星期四，也不是把格里历外推到1582年10月15日之前而得到的星期一。而且更奇怪的是，它认为1582年10月4日星期六的下一天是1582年10月5日星期五，从星期六倒退回星期五了。如果有哪位朋友知道这是什么原因，请在评论中告诉我。谢谢！</p>
+<p> </p>
+<p>更多的编程语言将在下一篇随笔中介绍。</p>
+<p> </p>
+<h2>参考资料</h2>
+<ol>
+<li><a href="http://www.perl.org/">The Perl Programming Language</a> 
+<li><a href="http://datetime.perl.org/">Perl: DateTime</a> 
+<li><a href="http://search.cpan.org/~stbey/Date-Calc-6.3/lib/Date/Calc.pod">Perl: Date::Calc - Gregorian calendar date calculations</a> 
+<li><a href="http://perldoc.perl.org/Time/Local.html">Perl: Time::Local - efficiently compute time from local and GMT time</a>  <li><a href="http://www.php.net/">PHP: Hypertext Preprocessor</a> 
+<li><a href="http://docs.php.net/manual/en/refs.calendar.php">PHP: Date and Time Related Extensions</a> 
+<li><a href="http://en.wikipedia.org/wiki/Pascal_%28programming_language%29">Wikipedia: Pascal (programming language)</a> 
+<li><a href="http://www.gnu-pascal.de/gpc/Date-And-Time-Routines.html#Date-And-Time-Routines">The GNU Pascal Manual: Date And Time Routines</a> 
+<li><a href="http://www.freepascal.org/">Free Pascal – Advanced open source Pascal compiler for Pascal and Object Pascal</a> 
+<li><a href="http://www.freepascal.org/docs-html/rtl/sysutils/datetimeroutines.html">Free Pascal: Date/time routines</a>  <li><a href="http://en.wikipedia.org/wiki/LAMP_%28software_bundle%29">Wikipedia: LAMP (software bundle)</a></li></li></li></li></li></li></li></li></li></li></li></ol>
+<p> </p>
+<p>(待续)</p><img src="http://www.cnblogs.com/skyivben/aggbug/1759265.html?type=1" width="1" height="1" alt=""><p>评论: 5　<a href="http://www.cnblogs.com/skyivben/archive/2010/06/16/1759265.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/skyivben/archive/2010/06/16/1759265.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35721/">众里寻你千百度，百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66446/">微软改变Office营销策略：允许厂商捆绑</a><span style="color:gray">(2010-06-17 14:11)</span><br>· <a href="http://news.cnblogs.com/n/66445/">木马来袭：Linux IRC服务器软件发现后门</a><span style="color:gray">(2010-06-17 14:08)</span><br>· <a href="http://news.cnblogs.com/n/66444/">股神模仿秀：“与史玉柱对话三小时”</a><span style="color:gray">(2010-06-17 13:43)</span><br>· <a href="http://news.cnblogs.com/n/66443/">用户眼中已经消亡的十大IT技术</a><span style="color:gray">(2010-06-17 13:23)</span><br>· <a href="http://news.cnblogs.com/n/66442/">传 Android 下次更新将集中于改进用户体验，终结自定义 UI</a><span style="color:gray">(2010-06-17 13:19)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/miloyip/archive/2010/06/14/Kinematics_ParticleSystem.html">用JavaScript玩转游戏物理：运动学模拟与粒子系统</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

@@ -1,0 +1,285 @@
+---
+layout: post
+title:  "各浏览器中鼠标按键值的差异"
+date:   2010-11-27 12:00:06
+author: 
+categories: program
+---
+
+## 各浏览器中鼠标按键值的差异
+### by 
+### at 2010-11-27 12:00:06
+### original <http://www.javaeye.com/topic/826212>
+
+<p>我们知道标准鼠标有左，中，右三个键。鼠标按下时如何判断按下的是哪个键呢？<br><br><a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-MouseEvent-button">W3C DOM-Level-2</a>
+ 定义如下</p>
+<div>W3C DOM 写道</div>
+<div>During mouse events caused by the depression or release of a mouse button, button is used to indicate which mouse button changed state. The values for button range from zero to indicate the left button of the mouse, one to indicate the middle button if present, and two to indicate the right button. For mice configured for left handed use in which the button actions are reversed the values are instead read from right to left.<br>
+</div>
+<p> </p>
+<p>说的很明确，0，1，2分别代表左，中，右三个键。以下分别在mousedown，mouseup，click，dbclick中测试。</p>
+<p> </p>
+<pre name="code">&lt;p id=&quot;p1&quot;&gt;Test mousedown&lt;/p&gt;
+&lt;p id=&quot;p2&quot;&gt;Test mouseup&lt;/p&gt;
+&lt;p id=&quot;p3&quot;&gt;Test click&lt;/p&gt;
+&lt;p id=&quot;p4&quot;&gt;Test dbclick&lt;/p&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+	function $(id){return document.getElementById(id)}
+	
+	var p1 = $(&#39;p1&#39;), p2 = $(&#39;p2&#39;), p3 = $(&#39;p3&#39;), p4 = $(&#39;p4&#39;);
+	p1.onmousedown = function(e){
+		e = window.event || e;
+		alert(e.button);
+	}
+	p2.onmouseup = function(e){
+		e = window.event || e;
+		alert(e.button);
+	}
+	p3.onclick = function(e){
+		e = window.event || e;
+		alert(e.button);
+	}
+	p4.ondbclick = function(e){
+		e = window.event || e;
+		alert(e.button);
+	}		
+&lt;/script&gt;</pre>
+<p> </p>
+<p> </p>
+<table style="height:125px;border:1px solid" border="1" width="512">
+<caption>鼠标左键测试结果</caption>
+
+<tbody>
+<tr>
+<td></td>
+<td>IE6/7/8</td>
+<td>IE9beta</td>
+<td>Firefox3.6</td>
+<td>Chrome7</td>
+<td>Safari5</td>
+<td>Opera10</td>
+</tr>
+<tr>
+<td>mousedown</td>
+<td>1</td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>mouseup</td>
+<td>1</td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>click</td>
+<td>0</td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>dbclick</td>
+<td>error</td>
+<td></td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>即：</p>
+<p>IE6/7/8中，mousedown/mouseup 事件中获取左键的值为1，click事件中获取的却是0。</p>
+<p>其它浏览器，mousedown/mouseup/click 事件中获取左键值均为0。完全遵循标准。</p>
+<p>所有浏览器，dbclick事件中均无法获取</p>
+<p> </p>
+<table style="height:109px" border="1" width="507">
+<caption>鼠标中键测试结果</caption>
+
+<tbody>
+<tr>
+<td></td>
+<td>IE6/7</td>
+<td>IE8</td>
+<td>IE9beta</td>
+<td>Firefox3.6</td>
+<td>Chrome7</td>
+<td>Safari5</td>
+<td>Opera10</td>
+</tr>
+<tr>
+<td>mousedown</td>
+<td>4</td>
+<td>4</td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>error</td>
+</tr>
+<tr>
+<td>mouseup</td>
+<td>4</td>
+<td>4</td>
+<td></td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>error</td>
+</tr>
+<tr>
+<td>click</td>
+<td>error</td>
+<td>0</td>
+<td></td>
+<td>error</td>
+<td>1</td>
+<td>1</td>
+<td>error</td>
+</tr>
+<tr>
+<td>dbclick</td>
+<td>error</td>
+<td></td>
+<td></td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+<td>
+<p>error</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>即：</p>
+<p>IE6/7/8中，mousedown/mouseup 事件中获取中键的值为4。</p>
+<p>IE6/7中，click事件无法获取中键的值。IE8则可以，但值为0。</p>
+<p>Firefox3.6/Chrome7/Safari5中，mousedown/mouseup 事件中获取中键值为1。</p>
+<p>Chrome7/Safar5中，click事件也能获取中键值，亦为1。</p>
+<p>Opera10中无法获取中键值。</p>
+<p> </p>
+<p> </p>
+<table style="height:104px" border="1" width="509">
+<caption>鼠标右键测试结果</caption>
+
+<tbody>
+<tr>
+<td></td>
+<td>IE6/7/8</td>
+<td>IE9beta</td>
+<td>Firefox3.6</td>
+<td>Chrome7</td>
+<td>Safari5</td>
+<td>Opera10</td>
+</tr>
+<tr>
+<td>mousedown</td>
+<td>2</td>
+<td></td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>mouseup</td>
+<td>2</td>
+<td></td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<td>click</td>
+<td>error</td>
+<td></td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+</tr>
+<tr>
+<td>dbclick</td>
+<td>error</td>
+<td></td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+<td>error</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>即：</p>
+<p>所有浏览器，mousedown/mouseup事件中均能获取右键值，且都为2.</p>
+<p>所有浏览器，click/dbclick事件中均不能获取到右键值。</p>
+<p> </p>
+<p> </p>
+<p>以上可看到，<strong>判断鼠标按下了哪个键</strong>
+ ，<strong>应该选择合适的事件</strong>
+。这里选mousedown/mouseup。Opera10中仍然无法获取到中键的值，因为Opera压根不触发中键的事件(mousedown,mouseup,click,dbclick)。</p>
+<p> </p>
+<p>以下代码将IE6/7/8的值转换成符合W3C标准的</p>
+<pre name="code">var ie678 = function(ua){
+    function check(r){
+        return r.test(ua);
+    }
+	var isOpera = check(/opera/),
+		isIE = !isOpera &amp;&amp; check(/msie/),
+		isIE6 = isIE &amp;&amp; check(/msie 6/),	
+        isIE7 = isIE &amp;&amp; check(/msie 7/),
+        isIE8 = isIE &amp;&amp; check(/msie 8/);
+    
+    return isIE6 || isIE7 || isIE8;
+}(navigator.userAgent.toLowerCase());
+
+function getButton(e){
+	var code = e.button;
+	var ie678Map = {
+		1 : 0,
+		4 : 1,
+		2 : 2
+	}
+	if(ie678){
+		return ie678Map[code];
+	}
+	return code;
+}</pre>
+<p> </p>
+<p> </p>
+<p> </p>
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/eda1067e-fe42-37b9-a5f7-7cb2ef6ba69f">ebutton.rar</a> (784 Bytes)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://snandy.javaeye.com">zhouyrt</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/826212" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

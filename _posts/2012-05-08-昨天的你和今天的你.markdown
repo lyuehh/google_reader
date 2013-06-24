@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "昨天的你和今天的你"
+date:   2012-05-08 16:31:20
+author: address-withheld@my.opera.com.invalid (F0)
+categories: program
+---
+
+## 昨天的你和今天的你
+### by address-withheld@my.opera.com.invalid (F0)
+### at 2012-05-08 16:31:20
+### original <http://my.opera.com/freewinger/blog/show.dml/47707312>
+
+;今天翻译Drangonfly的是看到下面的代码, 迷惑了下觉得(new iface obj:@self-sym); 这有点问题<br>;下面代码来之ObjNL.lsp<br><br>(define (instantiate class)<br>	(letn (	obj-sym	(sym (string class &quot;#&quot; (++ class:@instance-counter)))<br>			obj		(new class obj-sym)<br>		)<br>		;你认为 obj 和 obj-sym 一样吗<br>		(println  (source &#39;obj-sym) &quot;\n&quot; (source &#39;obj) &quot;===\n&quot;)<br>		(println  (symbol?  obj-sym) (symbol?  obj))<br>		(println  (context?  obj-sym) (context?  obj))<br>		(set &#39;obj:@self obj &#39;obj:@self-sym obj-sym)<br>	)<br>)<br><br>;结果<br>&gt; (instantiate Class)<br>(set &#39;obj-sym &#39;Class#1)<br><br><br><br>(context &#39;Class#1)<br><br>(set &#39;@instance-counter 1)<br><br>(define (Class#1:Class#1 )<br>  (cons (context) (args)))<br><br><br>(context MAIN)<br><br>===<br><br>truenil<br>niltrue<br>Class#1<br><br><br>Class#1<br><br>;昨天的你和今天的你不一样 世界知道 但是人们知道吗<br><br><br><br>;下面两个函数的作用呢 他们产生的效果一样吗<br>(define (add-interface iface obj)<br>	(new iface obj:@self-sym);<br>	(push iface obj:@interfaces)<br>)<br><br>(define (add-interface2 iface obj)<br>	(new iface obj:@self);<br>	(push iface obj:@interfaces)<br>)<br><br><br>;效果是一样的 为什么?<br>;因为(new iface obj:@self-sym) 这样一条语句 nl 为我们自动把每个参数都eval 了再送给函数new<br>;这就是为什么<br>&gt;(println (add 4 5))<br>7<br>;而不是输出&#39;(add 4 5) 的原因<br>;有种东西叫宏, 他非常清正廉洁 任何人他都 平等相待 不计算他的值.<br>;这也是他强大的地方, 一切都只是symbol.<br><br>所以想不被symbol 搞糊涂了 就得记住 大部分时候 表达式都会将参数先eval 再传递给函数<br>如果想不糊涂 就像macro一样思考 &quot;看破三界 万物归虚&quot;<br><br>大部分人只看到当下的你 <br>而你清楚往日的你和今天的你 不再一样<br>如果你还不清楚 那就执行两遍 (delete you nil)<br>因为你已经被(new Other you &quot;kill mind&quot;)太多次了<br><br><br><br><br><br>

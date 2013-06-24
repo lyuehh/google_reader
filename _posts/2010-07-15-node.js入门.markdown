@@ -1,0 +1,77 @@
+---
+layout: post
+title:  "node.js入门"
+date:   2010-07-15 22:04:00
+author: 司徒正美
+categories: program
+---
+
+## node.js入门
+### by 司徒正美
+### at 2010-07-15 22:04:00
+### original <http://www.cnblogs.com/rubylouvre/archive/2010/07/15/1778403.html>
+
+<p><a href="http://www.cnblogs.com/rubylouvre/"><img src="http://pic.cnblogs.com/face/u65123.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/rubylouvre/">司徒正美</a> 发表于 2010-07-15 22:04 <a href="http://www.cnblogs.com/rubylouvre/archive/2010/07/15/1778403.html">原文链接</a> 阅读: 1380 评论: 7</p><p>由于跑到另一个城市，手头没电脑，dom framework不能如期发布，趁此学习一些新东西。这时期最迫切的需要是寻求一个超累量的后端来架起我的框架，于是触爪伸向传说中的Server-Side Javascrpt。后端JS最出名无疑是Ryan Dahl的node.js，另一个是aptana IDE提供商搞出的jaxer。</p>
+<p>http://github.com/tlrobinson/narwhal</p>
+<p>首先下载<a href="http://files.cnblogs.com/rubylouvre/nodejs.rar">node.js</a>，然后解压到E盘，改名为node，然后开始菜单输入cmd，用cd命令切换到nodejs的解压目录：</p>
+<div><center><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/253006/o_node1.jpg"></center></div>
+<p>第一个例子：hello world。</p>
+<p>在node目录下建立hello.js文件，然后在里面输入：</p>
+<pre>
+var sys = require("sys");
+sys.puts("Hello world");
+</pre>
+<p>然后我们在命名台中输入命令<span style="text-indent:1em;color:red">node hello.js</span>，就能看到命名台输出结果Hello world。</p>
+<p>第二个例子：hello world2。</p>
+<p>好了，这次我们试从游览器中输出hello world。在node目录下建立http.js，然后输入：</p>
+<pre>
+var sys = require("sys"),
+    http = require("http");
+http.createServer(function(request, response) {
+    response.sendHeader(200, {"Content-Type": "text/html"});
+    response.write("Hello World!");
+    response.close();
+}).listen(8080);
+sys.puts("Server running at http://localhost:8080/");
+</pre>
+<p>然后我们在命名台中输入命令<span style="text-indent:1em;color:red">node http.js</span>，在浏览器输入<span style="text-indent:1em;color:red">node http.js</span></p>
+<div><center><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/253006/o_node2.jpg"></center></div>
+<div><center><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/253006/o_node3.jpg"></center></div>
+<p>第三个例子：hello world2。</p>
+<p>node.js提供一个Buffer类用于转换不同编码的字符串。目前支持三种类型：'ascii'，'utf8'与'binary'。详见<a href="http://nodejs.org/api.html">这里</a></p>
+<pre>
+var Buffer = require('buffer').Buffer,
+buf = new Buffer(256),
+len = buf.write('\u00bd + \u00bc = \u00be', 0);
+console.log(len + " bytes: " + buf.toString('utf8', 0, len));
+</pre>
+<p>第四个例子：hello world3。</p>
+<pre>
+//synopsis.js
+//synopsis 摘要, 梗概，大纲
+var http = require('http');
+
+http.createServer(function (request, response) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  response.end('Hello World\n');
+}).listen(8124);
+
+console.log('Server running at http://127.0.0.1:8124/');
+</pre>
+<p>前台地址栏：<span style="text-indent:1em;color:red">http://localhost:8124/</span></p>
+<div>
+<p>第五个例子：编译C文件</p>
+
+#include 
+#include 
+
+int main(){
+    printf("Hello World!!!");
+    exit(0);
+}
+
+<div><center><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/253006/o_hello_c.jpg"></center></div>
+</div>
+
+
+<img src="http://www.cnblogs.com/rubylouvre/aggbug/1778403.html?type=1" width="1" height="1" alt=""><p>评论: 7　<a href="http://www.cnblogs.com/rubylouvre/archive/2010/07/15/1778403.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/rubylouvre/archive/2010/07/15/1778403.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/68456/">别紧盯Windows 8了 微软未来二十年的重头戏是云计算</a><span style="color:gray">(2010-07-16 11:27)</span><br>· <a href="http://news.cnblogs.com/n/68450/">传惠普平板电脑放弃Android系统</a><span style="color:gray">(2010-07-16 09:27)</span><br>· <a href="http://news.cnblogs.com/n/68449/">传苹果将推11.6寸新超薄MacBook Air</a><span style="color:gray">(2010-07-16 09:26)</span><br>· <a href="http://news.cnblogs.com/n/68448/">Facebook准备正式宣布用户数达到5亿</a><span style="color:gray">(2010-07-16 08:54)</span><br>· <a href="http://news.cnblogs.com/n/68447/">视频：10大迹象表明你买了一部蹩脚的 iPhone 4</a><span style="color:gray">(2010-07-16 08:43)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/sumtec/archive/2010/07/15/1778119.html">一片祥和的底下原来是暴风雨</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

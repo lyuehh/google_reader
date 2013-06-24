@@ -1,0 +1,671 @@
+---
+layout: post
+title:  "媒体查询与http请求"
+date:   2012-05-24 08:00:06
+author: 神飞
+categories: program
+---
+
+## 媒体查询与http请求
+### by 神飞
+### at 2012-05-24 08:00:06
+### original <http://www.qianduan.net/media-query-and-http-requests.html>
+
+<p>Jason Grigsby发表了篇文章，《<a href="http://blog.cloudfour.com/css-media-query-for-mobile-is-fools-gold/">CSS Media Query for Mobile is Fool’s Gold</a>》对媒体查询(media query)吐槽，大意是在移动设备上使用媒体查询会造成很多资源的浪费——浏览器请求到很多用不到的图片等资源，然后<a href="http://cloudfour.com/examples/mediaqueries/image-test/">写了一些测试用例</a>测试一些可用方法。然后Tim Kadlec写了篇《<a href="http://www.qianduan.net/">Media Query &amp; Asset Downloading Results</a>》，用js自动化的测试了Jason Grigsby的用例。</p>
+<p>本文主要整理自Tim的这篇文章。我们来看看到底会不会浪费资源，并寻找下最优的方案。</p>
+<p>直接看结果吧~~</p>
+<h2>测试一：img标签</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test1.php">运行测试</a></p>
+<p>本测试尝试通过对img标签的父级元素使用display:none来隐藏图片。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test1&quot;</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">img</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;images/test1.png&quot;</span> <span style="color:#000066">alt</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;&quot;</span> <span style="color:#66cc66">/</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace"><span style="color:#a1a100">@media all and (max-width: 600px) {</span>
+	<span style="color:#cc00cc">#test1</span> <span style="color:#00aa00">{</span> <span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span><span style="color:#993333">none</span><span style="color:#00aa00">;</span> <span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<p>如果有一种应该100%避免的隐藏图片的方法，那就是display:none。它基本上是没有用的。貌似Opera Mobile和Opera mini不会下载图片，而其它浏览器都会下载。Opera可以比较好的控制资源的下载，对于用户看不到的内容，它不会预先下载。</p>
+
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>请求图片</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1+</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Blackberry (6.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Chrome (4.1)+</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>IE</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>RockMelt</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Safari (4+)</td>
+<td>请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>很简单：不要这样用。</p>
+<h2>测试二：背景图片display:none</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test2.php">运行测试</a></p>
+<p>在本例中，div被设置了background-image。如果屏幕宽度小于600px，div就被设置为display:none。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test2&quot;</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td><pre style="font-family:monospace"><span style="color:#cc00cc">#test2</span> <span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test2.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media all and (max-width: 600px) {</span>
+	<span style="color:#cc00cc">#test2</span> <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span><span style="color:#993333">none</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<p>结果和测试一一样：除了Opera mini和Opera Mobile和<strong>Firefox</strong>，所有浏览器都会下载图片。</p>
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>请求图片</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1+</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Blackberry (6.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Chrome (4.1)+</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>IE</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>RockMelt</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Safari (4+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Silk</td>
+<td>请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>同样：不要这样做。不过，像后面其它的测试，有其它的方法可以隐藏背景图片同时避免多余请求。</p>
+<h2>测试三：背景图片的父级元素被设置为display:none</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test3.php">运行测试</a></p>
+<p>本测试中，对一个div标签设置背景图片，然后对其父元素(也是个div)在浏览器宽度小于600px时设置display:none。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test3&quot;</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace"><span style="color:#cc00cc">#test3</span> div <span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test3.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media all and (max-width: 600px) {</span>
+	<span style="color:#cc00cc">#test3</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span><span style="color:#993333">none</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<p>表面上，这个测试貌似和测试二没太明显的区别，但是结论是这个方法是比较靠谱的。。。</p>
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>请求图片</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Blackberry (6.0+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome (16+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>IE 9+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Safari (4+)</td>
+<td>不请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>这个方法不错。除了不太成熟的Fennec，其它浏览器都不请求不必要显示的图片。</p>
+<h2>测试四：背景图片层叠</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test4.php">运行测试</a></p>
+<p>本测试中，一个div被设置了背景图片。如果浏览器宽度小于600px，该div会被给到另一个背景图片。该测试用来检测是否两个图片都会被请求，还是只请求需要的。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test4&quot;</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace"><span style="color:#cc00cc">#test4</span> <span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test4-desktop.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media all and (max-width: 600px) {</span>
+	<span style="color:#cc00cc">#test4</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test4-mobile.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<p>比设置display:none好一些，这种方法的结果有点儿乱：</p>
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>同时请求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1-3.0?</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Android 4.0</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Blackberry 6.0</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Blackberry 7.0</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome (16+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>IE 9+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Safari 4.0</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Safari 5.0+</td>
+<td>不请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>我会避免使用这种方法。尽管环境在改善，但是在Android市场中占主导地位的Android 2.x版本依然会像Fennec和Kindle一样同时下载两个图片。三者中，尤其因为Android(的碎片化)，我会推荐寻找别的方案。</p>
+<h2>测试五：大背景图片被设置min-width</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test5.php">运行测试</a></p>
+<p>本测试中，一个div元素在浏览器宽度大于601px时被设置一个背景图片，然后在浏览器宽度小于600px时被设置为另一个背景图片。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test5&quot;</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td><pre style="font-family:monospace"><span style="color:#a1a100">@media all and (min-width: 601px) {</span>
+	<span style="color:#cc00cc">#test5</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test5-desktop.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media all and (max-width: 600px) {</span>
+	<span style="color:#cc00cc">#test5</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test5-mobile.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<p>这种方案好一点儿：</p>
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>同时请求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Blackberry (6.0+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome (16+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>IE 9+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Safari (4+)</td>
+<td>不请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>这次更多的浏览器一起玩了。但是，Fennec一如既往得不能自已。<del>Android 2.x比较怪异。它会同时请求两个图片——但只有在屏幕宽度大于600px匹配到min-width时才这样。这种行为貌似在Android 3.0版本中被改进了。这是件诡异的事情，我很好奇它为什么会这样。</del> <ins>其实，有个好消息。Jason Grigsby 说他的对本例的测试结果和我的不太一样。所以我又在一些Android 2.x机器上跑了一下这个测试。结论是，我最初的测试结果不太正确，Android 2.x表现很好，我最初测试的那个平台有问题。这不仅仅对于开发者来说是个好消息，对我本人来说更是恢复了对人类的信心。。。。。。。</ins></p>
+<p>但是这依然不够，你将需要对IE8以下浏览器提供替代方案，那些版本的浏览器不支持media query，所以没有图片会被显示。当然，这个问题可以用条件注释来简单的兼容一下。</p>
+<h2>测试六：背景图片display:none(max-device-width)</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test6.php">运行测试</a></p>
+<p>本测试和测试二类似，但是使用了max-device-width来替代max-width。HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test6&quot;</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace"><span style="color:#cc00cc">#test6</span> <span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test6.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media all and (max-device-width: 600px) {</span>
+	<span style="color:#cc00cc">#test6</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span><span style="color:#993333">none</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>结论</h3>
+<p>好吧，不用浪费时间了，这个测试结果和测试二的基本一致。</p>
+<h2>测试七：层叠覆盖高分辨率</h2>
+<p><a href="http://labs.qianduan.net/mediaquerytest/test7.php">运行测试</a></p>
+<p>最后一个测试，是为了new ipad提供的，它使用了retina屏幕，这样它就要使用更高分辨率的图片了。</p>
+<p>本例中，一个div被给到一个背景图片。然后，通过使用min-device-pixel-ratio属性，如果比例大于1.5，一个新的背景图片将会被用到。</p>
+<p>HTML和CSS代码如下：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">id</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;test7&quot;</span>&gt;&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td><td><pre style="font-family:monospace"><span style="color:#cc00cc">#test7</span> <span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test7-lowres.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media only screen and (-webkit-min-device-pixel-ratio: 1.5),</span>
+only screen and <span style="color:#00aa00">(</span>-moz-min-device-pixel-ratio<span style="color:#00aa00">:</span> <span style="color:#cc66cc">1.5</span><span style="color:#00aa00">)</span><span style="color:#00aa00">,</span>
+only screen and <span style="color:#00aa00">(</span>-o-min-device-pixel-ratio<span style="color:#00aa00">:</span> <span style="color:#cc66cc">3</span>/<span style="color:#cc66cc">2</span><span style="color:#00aa00">)</span><span style="color:#00aa00">,</span>
+only screen and <span style="color:#00aa00">(</span>min-device-pixel-ratio<span style="color:#00aa00">:</span> <span style="color:#cc66cc">1.5</span><span style="color:#00aa00">)</span> <span style="color:#00aa00">{</span>
+	<span style="color:#cc00cc">#test7</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">background-image</span><span style="color:#00aa00">:</span><span style="color:#993333">url</span><span style="color:#00aa00">(</span><span style="color:#ff0000">'images/test7-highres.png'</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">200px</span><span style="color:#00aa00">;</span>
+		<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">75px</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<h3>测试结果</h3>
+<table cellspacing="3">
+<thead>
+<tr>
+<th>浏览器</th>
+<th>同时请求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 2.1-3.0?</td>
+<td>请求</td>
+</tr>
+<tr>
+<td>Android 4.0</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Blackberry 6.0</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Blackberry 7.0</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome (16+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Chrome Mobile</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Fennec (10.0+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Firefox (3.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>IE 9+</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>iOS (4.26+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Kindle (3.0)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera (11.6+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mini (6.5+)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Opera Mobile (11.5)</td>
+<td>不请求</td>
+</tr>
+<tr>
+<td>Safari 4.0+</td>
+<td>不请求</td>
+</tr>
+</tbody>
+</table>
+<h3>结论</h3>
+<p>为了安全，这个方案可以多测试一些。看起来这种方法在绝大多数情况下是可用的。但是不幸的是，貌似Android 2.x会同时下载两个图片<em>如果设备像素比大于或等于1.5时(或者你在media query中设置的别的任何值)</em>。所以，在本例中，如果你使用了一个高分辨率的Android 2.x的设备，会比较苦逼。。。</p>
+<p>好消息是，到目前位置，我还没听说有那一款Android 2.x的设备的屏幕比例超过1.5.所以如果你的项目面向使用retina屏幕的ios设备，你可以将min-device-pixel-ratio设置到2或者更高，这样会比较安全一点儿。。。</p>
+<h2>推荐</h2>
+<ul>
+<li>如果你要隐藏一张内容图片，display:none是无效的，所以我推荐使用javascript方案或者服务器端实现；</li>
+<li>如果你要隐藏一张背景图片，最好的方法是隐藏其父级元素。如果你不方便这样做，那就用一个层叠样式覆盖掉它吧(就像上面的第五个方案)，然后将设置background-image:none；</li>
+<li>如果你要切换多张图片，就把他们全部用media query定义吧。</li>
+</ul>
+<h2>关于响应式设计的思考</h2>
+<p>媒体查询现在最大的用处就是响应式设计了，神飞翻译这篇文章也是因为最近在思考响应式设计的效率问题。通过这些测试结果，我们在实现响应式设计的网站时，最好先处理移动设备，然后再向高分辨率设备升级。然后使用图片等外部资源的选择器，一定要写到媒体查询中去。</p>
+<h2>反馈</h2>
+<p>如果你觉得这些测试结果有任何错误的地方，欢迎在评论中提出，然后这些测试用例Tim都在<a href="https://github.com/tkadlec/Media-Query-test">GitHub</a>上开源了，感兴趣的话可以fork下。。。</p>

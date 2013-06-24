@@ -1,0 +1,37 @@
+---
+layout: post
+title:  "分享 7 大开源微博客程序【图文】"
+date:   2010-12-27 22:06:40
+author: 
+categories: program
+---
+
+## 分享 7 大开源微博客程序【图文】
+### by 
+### at 2010-12-27 22:06:40
+### original <http://news.cnblogs.com/n/86101/>
+
+<p>　　微博客成为最流行的信息传播平台之一。微博客为用户提供一个信息分享、传播以及获取的平台，以片言只字实现即时分享。于2009年，微博客正式进入中文上网主流人群的视野，瞬间，红遍了整个中国。</p>
+<p>　　下面与大家分享7个常用的微博客系统：</p>
+<p>　　1. StatusNet</p>
+<p>　　StatusNet 的前身是 Laconica，是一个开源的微博客平台软件，采用 PHP 开发。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122721595397.png" alt=""></p>
+<p>　　StatusNet是个相当老牌的开源微博程序，相当多的国外微博网站都是基于它架设的。不过StatusNet对于服务器的要求的确是多。</p>
+<p>　　2. Sharetronix</p>
+<p>　　Sharetronix (<strong>blogtronix</strong>) 作为一个多媒体微博客平台，具备微博客必备的特性——相互关注、私信、收藏等，同时还具有内建的图片上传和视频分享（支持来自YouTube、 MySpace、MetaCafe、Vimeo和Revver的视频）功能。Sharetronix还拥有一套好友邀请系统，可以方便地通过电子邮件邀请 您生活中的朋友，并且可以在自己的帐户中查看谁受邀而来。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722001477.gif" alt=""></p>
+<p>　　3. Jisko</p>
+<p>　　Jisko的界面和Twitter很像，能够自动通过AJAX更新，也是基于PHP和MySQL的，这个系统可能是西班牙人开发的，使用SVN<a href="http://jisko.org/">到这里</a>下载其源代码。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722003083.png" alt=""></p>
+<p>　　4. PageCookery</p>
+<p>　　PageCookery是国内首款公开发行的单用户版开源微博程序，基于 PHP + MySQL 架构。采用Plurk的谓语模式，可以为自己发布的内容添加分享、说、推荐、喜欢、讨厌、爱等等，并且谓语动词还可以自定义的（自定义的谓语动词，需手动 编写CSS代码为其设置颜色）</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722004811.jpg" alt=""></p>
+<p>　　5. JaikuEngine</p>
+<p>　　JaikuEngine是一个2007年被Google收购的微博客平台。但是今年，Google决定在Google Code上将其完全开源。JaikuEngine能够部署在Google AppEngine上，所以使用JaikuEngine架设微博客社区可以说是一个完全免费的解决方案，您只需要拥有一个Google帐户，然后开通 AppEngine服务即可。同时JaikuEngine也具有完备的移动设备访问接口。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722010158.jpg" alt=""></p>
+<p>　　6. EasyTalk</p>
+<p>　　EasyTalk 是一个国产的开源微博客程序，界面挺像饭否的，API接口也和饭否类似，基于PHP和MySQL。由国人开发的、适合中国国情的、相当强大的社区型微博客程序。除了微博客必备的功能，在EasyTalk上用户还可以分享图片、视频和音乐，并且可以在线查看。EasyTalk还具备相册功能，每位用户都可以为自己添加不限数量的影集。</p>
+<p>　　EasyTalk用户并不能设定个性化的背景，但是网站管理员可以方便的设定整个网站的主题风格。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722012583.jpg" alt="">　　7. Floopo</p>
+<p>　　Floopo是一个中规中矩的微博客建站程序，除了模仿所有Twitter功能，外加能够上传和在线查看图片，以及支持通过Yahoo、 GMail、Hotmail、 Mail.com和Rediffcom的联系人邀请好友，似乎没有别的亮点。用户还可以自定义网页背景和配色方案。</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/157064/201012/2010122722014764.jpg" alt=""></p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/65343/">Gish开源</a><span style="color:gray">(2010-05-31)</span><br>　　· <a href="http://news.cnblogs.com/n/69493/">倪光南：遵守开源许可证的开源软件真实合法</a><span style="color:gray">(2010-07-28)</span><br>　　· <a href="http://news.cnblogs.com/n/61164/">再论对开源SOA解决方案的偏见</a><span style="color:gray">(2010-04-09)</span><br>　　· <a href="http://news.cnblogs.com/n/66881/">50款教育类应用程序的开源替代品</a><span style="color:gray">(2010-06-24)</span><br>　　· <a href="http://news.cnblogs.com/n/63026/">开源数据库10%的投入实现90%的理想</a><span style="color:gray">(2010-04-28)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/86101/">http://news.cnblogs.com/n/86101/</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=86101" width="1" height="1" alt="">

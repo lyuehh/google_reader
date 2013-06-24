@@ -1,0 +1,255 @@
+---
+layout: post
+title:  "前端开发必须知道的JS（二） 闭包及应用"
+date:   2010-07-06 08:25:00
+author: JayChow
+categories: program
+---
+
+## 前端开发必须知道的JS（二） 闭包及应用
+### by JayChow
+### at 2010-07-06 08:25:00
+### original <http://www.cnblogs.com/ljchow/archive/2010/07/06/1768749.html>
+
+<p><a href="http://www.cnblogs.com/ljchow/"><img src="http://pic.cnblogs.com/face/u53347.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/ljchow/">JayChow</a> 发表于 2010-07-06 08:25 <a href="http://www.cnblogs.com/ljchow/archive/2010/07/06/1768749.html">原文链接</a> 阅读: 1853 评论: 8</p>
+<p>　　在<a href="http://www.cnblogs.com/ljchow/archive/2010/06/08/1753526.html"><span style="font-family:Arial">前端开发必须知道的JS（一） 原型和继承</span></a>一文中说过下面写篇闭包，加之最近越来越发现需要加强我的闭包应用能力，所以此文不能再拖了。本文讲的是函数闭包，不涉及对象闭包（如用with实现）。如果你觉得我说的有偏差，欢迎拍砖，欢迎指教。</p>
+<p> </p>
+<p>　　<strong>一. 闭包的理论</strong></p>
+<p>　　首先必须了解以下几个概念：</p>
+<p> </p>
+<p>　　<strong>执行环境</strong></p>
+<p>　　每调用一个函数时（执行函数时），系统会为该函数创建一个封闭的局部的运行环境，即该函数的执行环境。函数总是在自己的执行环境中执行，如读写局部变量、函数参数、运行内部逻辑。创建执行环境的过程包含了创建函数的作用域，函数也是在自己的作用域下执行的。从另一个角度说，每个函数执行环境都有一个作用域链，子函数的作用域链包括它的父函数的作用域链。关于作用域、作用域链请看下面。</p>
+<p> </p>
+<p>　　<strong>作用域、作用域链</strong><strong>、调用对象</strong></p>
+<p>　　函数作用域分为词法作用域和动态作用域。</p>
+<p>　　词法作用域是函数定义时的作用域，即静态作用域。当一个函数定义时，他的词法作用域就确定了，词法作用域说明的是在函数结构的嵌套关系下，函数作用的范围。这个时候也就形成了该函数的作用域链。作用域链就是把这些具有嵌套层级关系的作用域串联起来。函数的内部[[scope]]属性指向了该作用域链。</p>
+<p>　　动态作用域是函数调用执行时的作用域。当一个函数被调用时，首先将函数内部[[scope]]属性指向了函数的作用域链，然后会创建一个调用对象，并用该调用对象记录函数参数和函数的局部变量，将其置于作用域链顶部。动态作用域就是通过把该调用对象加到作用域链的顶部来创建的，此时的[[scope]]除了具有定义时的作用域链，还具有了调用时创建的调用对象。换句话说，执行环境下的作用域等于该函数定义时就确定的作用域链加上该函数刚刚创建的调用对象，从而也形成了新的作用域链。所以说是动态的作用域，并且作用域链也随之发生了变化。再看这里的作用域，其实是一个对象链，这些对象就是函数调用时创建的调用对象，以及他上面一层层的调用对象直到最上层的全局对象。　</p>
+<p>　　譬如全局环境下的函数A内嵌套了一个函数B，则该函数B的作用域链就是：函数B的作用域—&gt;函数A的作用域—&gt;全局window的作用域。当函数B调用时，寻找某标识符，会按函数B的作用域—&gt;函数A的作用域—&gt;全局window的作用域去寻找，实际上是按函数B的调用对象—&gt;函数A的调用对象—&gt;全局对象这个顺序去寻找的。也就是说当函数调用时，函数的作用域链实际上是调用对象链。</p>
+<p> </p>
+<p>　　<strong>闭包</strong></p>
+<p>　　在动态执行环境中，数据实时地发生变化，为了保持这些非持久型变量的值，我们用闭包这种载体来存储这些动态数据（看完下面的应用就会很好的体会这句话）。闭包的定义：所谓“闭包”，指的是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。</p>
+<p>　　闭包就是嵌套在函数里面的内部函数，并且该内部函数可以访问外部函数中声明的所有局部变量、参数和其他内部函数。当该内部函数在外部函数外被调用，就生成了闭包。（实际上任何函数都是全局作用域的内部函数，都能访问全局变量，所以都是window的闭包）</p>
+<p>　　譬如下面这个例子：</p>
+<pre>    &lt;script type=&quot;text/javascript&quot;&gt;
+        function f(x) {
+            var a = 0;
+            a++;
+            x++;
+            var inner = function() {
+                return a + x;
+            }
+            return inner;
+        }
+        var test = f(1);
+        alert(test());
+    &lt;/script&gt;
+</pre>
+<p>　　垃圾回收机制：如果某个对象不再被引用，该对象将被回收。　　</p>
+<p>　　再结合前面所讲的一些概念，在执行var test=f(1)时创建了f的调用对象，这里暂且记作obj，执行完后虽然退出了外部执行环境，但内部函数inner被外部函数f外面的一个变量test引用。由于外部函数创建的调用对象obj有一个属性指向此内部函数，而现在这个内部函数又被引用，所以调用对象obj会继续存在，不会被垃圾回收器回收，其函数参数x和局部变量a都会在这个调用对象中得以维持。虽然调用对象不能被直接访问，但是该调用对象已成为内部函数作用域链中的一部分，可以被内部函数访问并修改，所以执行test()时，可以正确访问x和a。所以说， 当执行了外部函数时，生成了闭包，被引用的外部函数的变量将继续存在。</p>
+<p> </p>
+<p><strong>　　二. 闭包的应用</strong></p>
+<p><strong>　　应用1：</strong></p>
+<p>　　这个是我在用js模拟排序算法过程遇到的问题。我要输出每一次插入排序后的数组，如果在循环中写成</p>
+<p>　　setTimeout(function() { $(&quot;proc&quot;).innerHTML += arr + &quot;&lt;br/&gt;&quot;; }, i * 500);</p>
+<p>会发现每次输出的都是最终排好序的数组，因为arr数组不会为你保留每次排序的状态值。为了保存会不断发生变化的数组值，我们用外面包裹一层函数来实现闭包，用闭包存储这个动态数据。下面用了2种方式实现闭包，一种是用参数存储数组的值，一种是用临时变量存储，后者必须要深拷贝。所有要通过闭包存储非持久型变量，均可以用临时变量或参数两种方式实现。</p>
+<p>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;&lt;!--
+        var arr = [4, 5, 6, 8, 7, 9, 3, 2, 1, 0];
+        var $ = function(id) { return document.getElementById(id); }
+        var Sort = {
+            Insert: function() {
+                for (var i = 1; i &lt; arr.length; i++) {
+                    for (var j = 0; j &lt; i; j++) {
+                        if (arr[i] &lt; arr[j]) {
+                            arr[i] = [arr[j], arr[j] = arr[i]][0];
+                        }
+                    }
+                    setTimeout((function() {
+                        var m = [];
+                        for (var j = 0; j &lt; arr.length; j++) {
+                            m[j] = arr[j];
+                        }
+                        return function() {
+                            $(&quot;proc&quot;).innerHTML += m + &quot;&lt;br /&gt;&quot;;
+                        }
+                    })(), i * 500);
+                    //or 写成下面这样也可以
+                    /*
+                    setTimeout((function(m) {
+                        return function() {
+                            $(&quot;proc&quot;).innerHTML += m + &quot;&lt;br /&gt;&quot;;
+                        }
+                    })(arr.join(&quot;,&quot;)), i * 500);
+                    */
+                }
+                return arr;
+            }
+        }
+// --&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        var a = [4, 5, 6, 8, 7, 9, 3, 2, 1, 0];&lt;/div&gt;
+    &lt;div&gt;
+        &lt;input type=&quot;button&quot; value=&quot;插入排序&quot; onclick=&quot;Sort.Insert();&quot; /&gt;
+    &lt;/div&gt;
+    Proc:&lt;br /&gt;
+    &lt;div id=&quot;proc&quot;&gt;
+    &lt;/div&gt;    
+&lt;/body&gt;
+&lt;/html&gt;
+<br></p>
+<p> </p>
+<p>　　<strong>应用2：</strong></p>
+<p>　　这个是无忧上的例子（点击<a href="http://bbs.51js.com/viewthread.php?tid=84815">这里</a>查看原帖），为每个&lt;li&gt;结点绑定click事件弹出循环的索引值。起初写成</p>
+<div style="overflow-x:hidden;overflow-y:hidden;width:1px;height:1px">id.onclick = function(){</div>
+<div style="overflow-x:hidden;overflow-y:hidden;width:1px;height:1px">    <span style="white-space:pre"> </span>alert(i);</div>
+<div style="overflow-x:hidden;overflow-y:hidden;width:1px;height:1px">   }</div>
+<div></div>
+<p>　　id.onclick = function(){alert(i);}</p>
+<p>发现最终弹出的都是4，而不是想要的 1、2、3，因为循环完毕后i值变成了4。为了保存i的值，同样我们用闭包实现：</p>
+<p>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;&lt;!--
+        window.onload = function() {
+            for (var i = 1; i &lt; 4; i++) {
+                var id = document.getElementById(&quot;a&quot; + i);
+                id.onclick = (function(i) {
+                    return function() {
+                        alert(i);
+                    }
+                })(i);
+            }
+        }
+    
+// --&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;ul&gt;
+        &lt;li id=&quot;a1&quot;&gt;aa&lt;/li&gt;
+        &lt;li id=&quot;a2&quot;&gt;aa&lt;/li&gt;
+        &lt;li id=&quot;a3&quot;&gt;aa&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+<br></p>
+<p>　　（ps：var a = (function(){})(); 与 var a =new function(){}效果是一样的，均表示自执行函数。）</p>
+<p> </p>
+<p>　　<strong>应用3：</strong></p>
+<p>　　下面的code是缓存的应用，catchNameArr。在匿名函数的调用对象中保存catch的值，返回的对象由于被CachedBox变量引用导致匿名函数的调用对象不会被回收，从而保持了catch的值。可以通过CachedBox.getCatch("regionId");来操作，若找不到regionId则从后台取，catchNameArr 主要是为了防止缓存过大。</p>
+<pre>    &lt;script type=&quot;text/javascript&quot;&gt;
+        var CachedBox = (function() {
+            var cache = {}, catchNameArr = [], catchMax = 10000;
+            return {
+                getCatch: function(name) {
+                    if (name in cache) {
+                        return cache[name];
+                    }
+                    var value = GetDataFromBackend(); 
+                    cache[name] = value;
+                    catchNameArr.push(name);
+                    this.clearOldCatch();
+                    return value;
+                },
+                clearOldCatch: function() {
+                    if (catchNameArr.length &gt; catchMax) {
+                        delete cache[catchNameArr.shift()];
+                    }
+                }
+            };
+        })();
+    &lt;/script&gt;
+</pre>
+<div></div>
+<p>　　同理，也可以用这种思想实现自增长的ID。　　</p>
+<pre>    &lt;script type=&quot;text/javascript&quot;&gt;
+        var GetId = (function() {
+            var id = 0;
+            return function() {
+                return id++;
+            }
+        })();
+        var newId1 = GetId();
+        var newId2 = GetId();
+    &lt;/script&gt;
+</pre>
+<p> </p>
+<p>　　<strong>应用4：</strong></p>
+<p>　　这个是无忧上月MM的例子（点击<a href="http://bbs.51js.com/viewthread.php?tid=66361">这里</a>查看原帖），用<span>闭包实现程序的暂停执行功能，还蛮创意的</span>。</p>
+<p>&lt;input type=&quot;button&quot; value=&quot;继续&quot; onclick=&#39;st();&#39;/&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;&lt;!--
+        var st = (function() {
+            alert(1);
+            alert(2);
+            return function() {
+                alert(3);
+                alert(4);
+            }
+        })();
+    
+// --&gt;&lt;/script&gt;
+<br></p>
+<p> </p>
+<p>　　把这个作用延伸下，我想到了用他来实现window.confirm。</p>
+<p>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        var $ = function(id) { return &quot;string&quot; == typeof id ? document.getElementById(id) : id; }
+        var doConfirm = function(divId) {
+            $(divId).style.display = &quot;&quot;;
+            function closeDiv() {
+                $(divId).style.display = &quot;none&quot;;
+            }
+            return function(isOk) {
+                if (isOk) {
+                    alert(&quot;Do deleting...&quot;);
+                }
+                closeDiv();
+            }
+        }
+    &lt;/script&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+        body
+        {
+            font-family: Arial;
+            font-size: 13px;
+            background-color: #FFFFFF;
+        }
+        #confirmDiv
+        {
+            width: 200px;
+            height: 100px;
+            border: dashed 1px black;
+            position: absolute;
+            left: 200px;
+            top: 150px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;input name=&quot;btn2&quot; type=&quot;button&quot; value=&quot;删除&quot; onclick=&quot;doConfirm(&#39;confirmDiv&#39;);&quot; /&gt;
+        &lt;div id=&quot;confirmDiv&quot; style=&quot;display: none;&quot;&gt;
+            &lt;div style=&#39;position: absolute; left: 50px; top: 15px;&#39;&gt;
+                &lt;p&gt;
+                    你确定要删除吗?&lt;/p&gt;
+                &lt;input type=&quot;button&quot; value=&quot;确定&quot; onclick=&quot;doConfirm(&#39;confirmDiv&#39;)(true);&quot; /&gt;
+                &lt;input type=&quot;button&quot; value=&quot;取消&quot; onclick=&quot;doConfirm(&#39;confirmDiv&#39;)(false);&quot; /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+<br> </p>
+<p> </p>
+<p>　　看了上面的这些应用，再回到前面的一句话：在动态执行环境中，数据实时地发生变化，为了保持这些非持久型变量的值，我们用闭包这种载体来存储这些动态数据。这就是闭包的作用。也就说遇到需要存储动态变化的数据或将被回收的数据时，我们可以通过外面再包裹一层函数形成闭包来解决。</p>
+<p>　　当然，闭包会导致很多外部函数的调用对象不能释放，滥用闭包会使得内存泄露，所以在频繁生成闭包的情景下我们要估计下他带来的副作用。</p>
+<p> </p>
+<p>　　毕了。希望能对大家有所帮助。</p><img src="http://www.cnblogs.com/ljchow/aggbug/1768749.html?type=1" width="1" height="1" alt=""><p>评论: 8　<a href="http://www.cnblogs.com/ljchow/archive/2010/07/06/1768749.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ljchow/archive/2010/07/06/1768749.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67697/">Meego平台必知的常识 你知道多少？</a><span style="color:gray">(2010-07-06 22:16)</span><br>· <a href="http://news.cnblogs.com/n/67696/">Twitter或将推新服务拓展营收模式</a><span style="color:gray">(2010-07-06 22:11)</span><br>· <a href="http://news.cnblogs.com/n/67695/">腾讯公告称回购100万股涉资1.3亿港元</a><span style="color:gray">(2010-07-06 22:10)</span><br>· <a href="http://news.cnblogs.com/n/67694/">苹果谷歌Hulu抢夺电视广告市场 局面尚不明朗</a><span style="color:gray">(2010-07-06 21:47)</span><br>· <a href="http://news.cnblogs.com/n/67693/">乔布斯的iPhone 4 再一次改变一切？</a><span style="color:gray">(2010-07-06 21:04)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/topic/53/">C#大论战：在讨论中学习</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

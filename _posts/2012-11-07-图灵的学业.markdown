@@ -1,0 +1,188 @@
+---
+layout: post
+title:  "图灵的学业"
+date:   2012-11-07 11:48:51
+author: baiyuzhong
+categories: program
+---
+
+## 图灵的学业
+### by baiyuzhong
+### at 2012-11-07 11:48:51
+### original <http://www.programmer.com.cn/14064/>
+
+<div>
+<p><span style="color:#888888"><strong>文/Petzold,C.</strong></span></p>
+<p><span style="color:#888888"><strong>阿兰•图灵（1912—1954）是英国数学家、逻辑学家，被称为计算机科学之父、人工智能之父，是计算机逻辑的奠基者，提出了“图灵机”和“图灵测试”等重要概念。为纪念他在计算机领域的卓越贡献，美国计算机协会于1966年设立图灵奖，此奖项被誉为计算机科学界的诺贝尔奖。</strong></span></p>
+<p>研究过计算机的历史、技术或理论的人，都会接触到“图灵机”这个概念。在1936<span style="font-family:方正书宋简体">年，为帮助解决数理逻辑中的一个问题，英国数学家阿兰</span>·图灵（<span style="font-family:Times New Roman">1912—1954</span><span style="font-family:方正书宋简体">）提出了图灵机</span>。它是一种纯属虚构的计算机，连计算机假设也算不上。而由此得到的意外收获是，图灵创立了一个新的研究领域<span style="font-family:Times New Roman">——</span>计算理论（或可计算性），它主要研究数字计算机的功能和局限性。<img title="封面" src="http://www.programmer.com.cn/wp-content/uploads/2012/11/%E5%B0%81%E4%B8%80_%E5%89%AF%E6%9C%AC.jpg" alt="" width="200" height="264"></p>
+</div>
+<div><span></span>阿兰·图灵10<span style="font-family:方正书宋简体">岁时得到一本</span>埃德温·坦尼·布鲁斯特所著的《每个儿童应该知道的自然奇观》。图灵后来说，这本书开启了他的科学视野，并对他理解人与机器之间的关系产生了更深刻的影响。“显然，人体也是一台机器。”那本书对此解释道：</div>
+<blockquote><p>它是一台极其复杂的机器。虽然比任何手工制作的机器都要复杂千万倍，但其本质上仍然是一台机器。有人曾将人体比作一台蒸汽机，但那时我们还不太了解它的工作原理。现在，我们会把它比喻为一台内燃机，就像是汽车、轮船和飞机的内燃机一样。</p></blockquote>
+<p>20<span style="font-family:方正书宋简体">世纪初，“人体是机器”的想法被看成是非常无知的，就像现在儿童读物里很幼稚的想法一样。但事实并非如此。在阿兰</span>·图灵出生前<span style="font-family:Times New Roman">200</span><span style="font-family:方正书宋简体">年，法国医生兼哲学家朱利安·奥佛雷·拉·美特利（</span><span style="font-family:Times New Roman">1709</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1751</span><span style="font-family:方正书宋简体">）在其</span><span style="font-family:Times New Roman">1747</span><span style="font-family:方正书宋简体">年的争议性作品</span>L’Homme Machine（《机械人》）中，毫不掩饰地描述了人体甚至思维的机械般的工作机制。阿兰·图灵从小就觉得自己的身体也是一台机器，后来也因探索机器和人类间的联系而被世人铭记。</p>
+<p>阿兰·麦席森·图灵于<span style="font-family:Times New Roman">1912</span><span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">6</span><span style="font-family:方正书宋简体">月</span><span style="font-family:Times New Roman">23</span><span style="font-family:方正书宋简体">日</span>出生在伦敦帕丁顿的疗养院里。他的父亲曾在印度公务署为英帝国效力，母亲出生在马德拉斯，外祖父是一位在印度修建桥梁和铁路而赚了大钱的工程师。<span style="font-family:Times New Roman">1907</span><span style="font-family:方正书宋简体">年</span>，图灵的父母在一艘从印度到英国的船上相遇，同年他们在都柏林结婚。<span style="font-family:Times New Roman">1908</span><span style="font-family:方正书宋简体">年年初</span>，他们回到印度。阿兰是他们的第二个男孩，他母亲<span style="font-family:Times New Roman">1911</span><span style="font-family:方正书宋简体">年在印</span>度怀上了他，但他出生在英国。</p>
+<p>在幼年，阿兰和他的哥哥约翰被留在英国，由一对退休夫妇照顾，而他们的父母住在印度，这在当时很常见。1922年，阿兰进入肯特的哈兹勒赫斯特预备学校学习。他最初的兴趣是地图、国际象棋和化学。 1926年，他被一所最古老的英国公立学校舍伯恩录取。图灵在舍伯恩第一学期的第一天被大罢工所阻，不能乘火车去学校。于是，阿兰决定骑车60英里上学，这一壮举被当地的报纸所报道。</p>
+<p>在舍伯恩，阿兰没能与其他男孩打成一片。他害羞、孤独，似乎总是衣衫不整、墨迹斑斑。“他的所有特征都容易成为笑柄，尤其是他那害羞、犹豫、尖细的声音——不完全是口吃，而是吞吞吐吐，就像在等待一个复杂的程序将他的想法转化成人类语言一样。”他本可以在学习上表现优异而弥补自己的不足，但事实并非如此。只有在数学上，他才表现出一些智力天赋的端倪。</p>
+<p>到了1929年，阿兰开始着迷于《物理世界的自然》（1928）一书。这是一本广为流行并极具影响力的书，由剑桥大学天文学家亚瑟·埃丁顿爵士所著，书中探讨了相对论和量子理论的新科学所带来的影响。阿兰同时和一个名为克里斯托弗·莫科姆的同学交往密切，他和阿兰在科学和数学上有着共同的兴趣，而且出生在一个比阿兰家更有意思并兼具科学气氛的家庭。克里斯托弗的外祖父是约瑟夫·斯万爵士，他在1879年发明了白炽灯泡，独立于爱迪生的发明。</p>
+<p>回想起来，阿兰·图灵很可能在那时发现了他的同性恋倾向，克里斯托弗是他的初恋。但是没有任何迹象表明，这两名青年之间发生了身体接触，他们一起做化学实验，交流数学公式，并探讨埃丁顿和剑桥大学另一位天文学教授詹姆斯·简爵士所著书中的新天文学和新物理学。</p>
+<p>剑桥大学是有抱负的英国科学家追逐向往之地，其在科学和数学上最享有盛名的学院就是三一学院。1929年12月，阿兰和克里斯托弗花了一周的时间到剑桥大学参加奖学金考试，一起沐浴在弗朗西斯·培根、艾萨克·牛顿、詹姆斯·克拉克·麦克斯韦母校的氛围中。他们回到舍伯恩一周后，考试结果公布在了《泰晤士报》上。阿兰没被录取，而克里斯托弗被录取了。克里斯托弗将前往三一学院，而阿兰最大的希望是能争取在下一年入学三一学院或者剑桥的其他学院。</p>
+<p>两个月后，克里斯托弗突然生病并在一周内去世，病因是他小时候所感染的牛结核病。他们舍伯恩的一位旧日同窗在信中写道：“可怜的图灵因为这个打击几乎崩溃，他们一定是极其要好的朋友。”虽然阿兰·图灵也与其他男人有着更亲密的性关系，但显然他对克里斯托弗的爱与崇拜是其他人所不能比的。</p>
+<p>1930<span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">12</span><span style="font-family:方正书宋简体">月，图灵再次参加了三一学院的考试，但</span>仍然未被录取。他的第二选择是剑桥大学国王学院。这一次，他决定专攻数学，全心钻研G. H. 哈代的经典著作《纯数学教程》（A Course of Pure Mathematics）备考，这本书在当时已经是第<span style="font-family:Times New Roman">15</span><span style="font-family:方正书宋简体">版了。</span><span style="font-family:Times New Roman">1931</span><span style="font-family:方正书宋简体">年秋，阿兰开始了他在</span>剑桥大学国王学院的学习。</p>
+<p>接下来的一年，图灵研究起一本叫做《量子力学的数学基础》的新书，这本书由年轻的匈牙利数学家约翰·冯·诺依曼所著。20世纪20年代中期，冯·诺依曼曾与大卫·希尔伯特在哥廷根大学一起共事。绝大多数早期量子力学的数学研究工作都是在哥根廷大学进行的。20世纪30年代，冯·诺依曼移民美国并在普林斯顿大学任教，1933年成为普林斯顿高等研究院聘任的首批数学家之一。现在，在几个有趣的地方，约翰·冯·诺依曼和阿兰·图灵的生活有了交集。</p>
+<p>图灵与冯·诺依曼的第一次见面很可能是在1935年夏天，当时冯·诺依曼利用在普林斯顿大学的工作假期来到剑桥大学做关于殆周期函数的演讲。图灵已经熟知演讲的主题以及冯·诺依曼在这方面的研究工作。就在那年春天，图灵已经发表了他的第一篇论文，共两页，讨论了“左右殆周期性的等价性”（Equivalence of Left and Right Almost Periodicity，伦敦数学学会，<span style="font-family:Times New Roman">1935</span><span style="font-family:方正书宋简体">）</span>，推广了冯·诺依曼在前一年发表的一篇论文。</p>
+<p>他们都没想到，两人会在次年于新泽西州的普林斯顿再次相遇。</p>
+<p>图灵对于数理逻辑这一精妙深奥领域的兴趣可能开始于<span style="font-family:Times New Roman">1933</span><span style="font-family:方正书宋简体">年，当时他阅读了伯特兰</span>·罗素<span style="font-family:Times New Roman">1919</span><span style="font-family:方正书宋简体">年的作品《数学哲学导论》。书的末尾写道：</span></p>
+<blockquote><p>如果有学生因为这本书而迈入数理逻辑的大门，并进行认真的研究，那么这本书就达到当时写作的初衷了。</p></blockquote>
+<p>1935年的春季学期，图灵修读了“数学基础”课程，授课人是麦克斯韦·赫尔曼·亚历山大·纽曼（<span style="font-family:Times New Roman">1897</span>—1984<span style="font-family:方正书宋简体">）</span>，其姓名缩写<span style="font-family:Times New Roman">M. H. A.</span><span style="font-family:方正书宋简体">。纽曼更为人熟知，人们常亲切地称他麦克斯</span>。麦克斯·纽曼名声在外的是他在组合拓扑方面的工作，不过他也可能是剑桥大学在数理逻辑方面最有见识的人。纽曼整个课程的高潮是对哥德尔不完备性定理的证明。（研究生水平的数理逻辑导论课程至今仍然采用类似的结构。）</p>
+<p>此外，纽曼的课程也涵盖了尚未解决的判定性问题。“是否有一种确定的方法，或者纽曼所说的‘机械过程’，它可以应用于一个数学命题，并得出该命题能否被证明的结论？”当然，对于“机械过程”，纽曼指的不是一台机器。机器也许能够进行简单的算术，但几乎不能解决实际意义上的数学问题。纽曼暗指的是后人称为“算法”的一类过程——用于解决某个问题的一组明确（但无意识的、非智能的）指令集。图灵开始研究判定性问题很可能是在1935年初夏。 那时，他已经获得了剑桥大学奖学金，每年300英镑。图灵后来说，想到判定性问题的解决思路时，他正躺在格兰切斯特草坪上，这是剑桥学生很喜欢的一个休闲场所，距国王学院大约两英里。</p>
+<p>到<span style="font-family:Times New Roman">1936</span><span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">4</span><span style="font-family:方正书宋简体">月，图灵把论文“论可计算数及其在判定性问题上的应用”</span>的草稿交给了纽曼。</p>
+<p>图灵的论文采用了一种不同寻常的数学证明方法。一开始，他描述了一个虚构的可以做一些简单操作的计算机器。尽管这个机器很简单，但是图灵断言它在功能上等价于一个进行数学运算的人。他设置好这些机器来计算数字。作为示例，图灵给出的第一台机器可以计算<span style="font-family:Times New Roman">1/3</span><span style="font-family:方正书宋简体">的二进制形式（</span><span style="font-family:Times New Roman">.010101…</span><span style="font-family:方正书宋简体">），第二台机器可以计算一个无理并很可能也是超越数的数（</span><span style="font-family:Times New Roman">.001011011101111</span>…）。他说服我们，还可以定义出机器来计算π、e及其他有名的数学常量。图灵甚至创造了一个通用机器，它能模拟其他任何一台计算机器的操作。</p>
+<p>然而，图灵机——这些假想装备的后来叫法——无法计算每个实数。他设计的机器只能进行有限数量的操作，通过用数字表示这些操作，他指出每一台机器唯一地用一个整数来描述，我们把这个整数称为描述数（Description Number）。因此，图灵机是可数的，可计算数——图灵机可以计算的数——也一定是可数的，但实数是不可数的（从康托尔的证明中可知）。可计算数当然包括代数数，而且还包括π和e等超越数，但由于可计算数是可数的，因而它们根本无法涵盖所有的实数。</p>
+<p>图灵机也是会出错的，我们完全可以定义一个根本不会正确工作或者不会做任何有意义工作的图灵机。图灵将他定义的机器分为“符合要求的”和“不符合要求的”两种。</p>
+<p>由于图灵机完全由描述数定义，我们也许有可能创造一台这样的图灵机，它能够分析这些描述数，以确定某一特定的机器是否是符合要求的。图灵证明了这是不可能的：没有一种判定图灵机是否符合要求的通用过程。一台图灵机可以分析另一台图灵机的唯一方式，是一步一步地跟踪机器的操作。总之，你必须实际运行一台机器，以确定它接下来会干什么。</p>
+<p>图灵机的这些性质也适用于计算机程序。一般情况下，一个计算机程序不可能分析另一个计算机程序，除非一步一步地模拟它的运行。</p>
+<p>图灵还证明了，我们甚至无法定义图灵机去做一些看似简单的事，例如确定另一台机器是否会打印数字0。在其论文的最后一节（将在本书第三部分讨论），图灵构造了一个数理逻辑上的命题，它等价于判定一个特定的图灵机是否将会打印数字0。由于他已经得出这样的“判定”是不可能的，所以这个命题在逻辑上是不可证明的，因此“判定性问题不可解”（图灵论文第262页，本书263页）。</p>
+<p>大约在麦克斯·纽曼阅读图灵论文手稿的同一时间，他又收到美国数学家阿隆索·邱奇寄来的短论文“判定性问题的笔记”的单行本。基于已刊出的另一篇论文，邱奇的文章同样做出了判定性问题不可解的结论。</p>
+<p>别人比图灵捷足先登了。这通常意味着他的论文不能发表，注定要被遗忘。但麦克斯·纽曼意识到，图灵的方法更具创新性，并且与邱奇的方法有着很大的差异。他仍然建议图灵向伦敦数学学会提交论文发表。（从发表的论文看，该学会于1936年5月28日收到它。）图灵在5月29日给他母亲的信上对此做出了解释：</p>
+<blockquote><p>现在，有一篇论文同时在美国发表，作者是阿隆索·邱奇，他和我做的事相同，只是方法不同。尽管如此，纽曼先生和我觉得，截然不同的方法完全能够让我的论文得以发表。阿隆索·邱奇住在普林斯顿，所以我已经相当确定，我将去那里。</p></blockquote>
+<p>5<span style="font-family:方正书宋简体">月</span><span style="font-family:Times New Roman">31</span><span style="font-family:方正书宋简体">日，麦克斯</span>·纽曼同时写信给阿隆索·邱奇和伦敦数学学会的秘书长。在给邱奇的信中，他写道：</p>
+<blockquote><p>在你送给我的论文单行本中，你定义了“可计算数”（<span style="font-family:Times New Roman">C</span>alculable Numbers），并指出了希尔伯特逻辑上的判定性问题是无法解决的，这一问题也是另一位年轻人所苦苦思索的。这个年轻人就是阿兰·图灵，他正想发表一篇论文，其中出于同样的目的定义了“可计算数”（<span style="font-family:Times New Roman">Computable Numbers</span><span style="font-family:方正楷体简体">）。在他的处理方法中，涉及一种能产生任何一个可计算序列的机器，这与你的方法很不同，但看上去优点很多。我觉得如果可能，明年他应该和你在一起研究</span>。</p></blockquote>
+<p>在给伦敦数学学会秘书长<span style="font-family:Times New Roman">F. P. </span><span style="font-family:方正书宋简体">怀特的信中，纽曼写道：</span></p>
+<blockquote><p>我想你已经知道了图灵关于可计算数的论文。正当这篇论文完成并准备发表时，我收到了来自普林斯顿的阿隆索·邱奇的单行本，这篇文章在很大程度上率先给出了图灵论文的结果。尽管如此，我仍然希望你们能发表图灵的论文，因为他们的方法极其不同。而且，由于这个结果非常之重要，因而我们应该关注不同的处理方法。邱奇和图灵的论文的主要结果就是希尔伯特的追随者们研究了多年的判定性问题，即找到一种机械的方法以判定一行给定的符号所表述的是否是一条可由希尔伯特公理证明的定理，它的一般形式是不可解的。</p></blockquote>
+<p>图灵增加了一个附录，主要阐述他的计算性（<span style="font-family:Times New Roman">Computability</span><span style="font-family:方正书宋简体">）理念和邱奇的“有效计算性”是等价的。伦敦数学学会于</span><span style="font-family:Times New Roman">1936</span><span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">8</span><span style="font-family:方正书宋简体">月</span><span style="font-family:Times New Roman">28</span><span style="font-family:方正书宋简体">日收到这个附录。</span></p>
+<p>图灵的论文发表在伦敦数学学会<span style="font-family:Times New Roman">1936</span><span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">11</span><span style="font-family:方正书宋简体">月和</span><span style="font-family:Times New Roman">12</span><span style="font-family:方正书宋简体">月的论文集里</span>，<span style="font-family:Times New Roman">1937</span><span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">12</span><span style="font-family:方正书宋简体">月发表了</span>一份三页纸的修订稿。阿隆索·邱奇在1937<span style="font-family:方正书宋简体">年</span><span style="font-family:Times New Roman">5</span><span style="font-family:方正书宋简体">月的《符号逻辑杂志》（</span>Journal of Symbolic Logic）中针对这篇论文写了一篇只有四段的评论，其中写道：“一位持有铅笔、纸和一串明确指令的人类计算者，可以被看做是一种图灵机。”这是已知的“图灵机”一词最早见诸文字的地方。</p>
+<p>图灵的论文分为<span style="font-family:Times New Roman">11</span><span style="font-family:方正书宋简体">章及一个附录。论文开头的引言直接开始描述图灵构想的这一类新的数。</span></p>
+<blockquote><p>论可计算数及其在判定性问题上的应用A. M. Turing[1936<span style="font-family:方正楷体简体">年</span><span style="font-family:Times New Roman">5</span><span style="font-family:方正楷体简体">月</span><span style="font-family:Times New Roman">28</span><span style="font-family:方正楷体简体">日收到。</span><span style="font-family:Times New Roman">1936</span><span style="font-family:方正楷体简体">年</span><span style="font-family:Times New Roman">11</span><span style="font-family:方正楷体简体">月</span><span style="font-family:Times New Roman">12</span><span style="font-family:方正楷体简体">日审完。</span>]可计算数可以被简单描述为其小数表达式可在有限步骤内计算出来的实数。</p></blockquote>
+<p>图灵只考虑实数集，他指出，可计算数是实数集的一个子集，这也意味着存在一些不可计算的实数。当然，这一点并不显然。</p>
+<p>对于“小数表达式”，图灵意指<span style="font-family:Times New Roman">1/3</span><span style="font-family:方正书宋简体">应该表示为</span><span style="font-family:Times New Roman">0.33333</span>…，π应该计算成<span style="font-family:Times New Roman">3.14159</span>…，这乍看起来与他的“有限步骤”这一理念相冲突。显然，我们永远不能真正算完<span style="font-family:Times New Roman">1/3</span><span style="font-family:方正书宋简体">或</span>π的小数。然而，在图灵的论文中，“步骤”并不是指确定数位的实际过程，而是指确定数位的方法。用诸如“下一位是<span style="font-family:Times New Roman">4</span><span style="font-family:方正书宋简体">，下一位是</span><span style="font-family:Times New Roman">7</span><span style="font-family:方正书宋简体">，下一位是</span><span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">……”的方法，显然可以计算任何实数，但这不是一个有限的方法。</span><span style="font-family:Times New Roman">1/3</span><span style="font-family:方正书宋简体">和</span>π都可以用一套算法计算出来（其中一个的算法更简单一些），我们计算它们所采用的步骤（长除法或更复杂的方法）只用到有限数量的规则。</p>
+<blockquote><p>尽管从表面上看本论文的主题是可计算数，但是我们很容易用几乎相同的方法定义和研究关于整数变量，或者实数、可计算数变量的可计算函数，可计算谓词等，每种情况下涉及的基本问题都一样。我选择可计算数进行具体的研究，是因为它所涉及的技术细节最简单。我希望可以很快就给出可计算数、可计算函数等之间的关系，这将包括一套用可计算数表示实变函数的理论。</p></blockquote>
+<p>图灵并未按其论文说的继续写下去。哥德尔也打算续写自己关于不完备性的著名论文，甚至预先在标题里加了罗马数字Ⅰ，但他从未写过续篇，因为他的论文很快就被接受了，超出了他的预想。图灵则是因为后来开始关注其他事情了。</p>
+<p>图灵用下面这句陈述总结了论文的第一段。</p>
+<blockquote><p>根据我的定义，如果一个数的小数形式可以被机器写下来，那么它就是可计算的。</p></blockquote>
+<p>在<span style="font-family:Times New Roman">1936</span><span style="font-family:方正书宋简体">年，这样的说法非常奇怪，因为当时并不存在一般意义上图灵所要求的那种机器。</span></p>
+<p>图灵很可能知道英国数学家查尔斯·巴贝奇（<span style="font-family:Times New Roman">1791</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1871</span><span style="font-family:方正书宋简体">）的一些研</span><br>
+究。巴贝奇曾设计了一个“差分机”（Difference Engine）用来计算对数表，然后大约在<span style="font-family:Times New Roman">1833</span><span style="font-family:方正书宋简体">年放弃了这个项目，转而研究一种更像通用计算机的“分析机”（</span>Analytical Engine）。巴贝奇也曾在剑桥工作，其未完成的机器上的零件在肯辛顿的科学博物馆展出过。不过，图灵似乎一点都未受到巴贝奇的概念或术语的影响。</p>
+<p>图灵可能知道微分分析仪（Differential Analyzer），也可能不知道。自<span style="font-family:Times New Roman">1927</span><span style="font-family:方正书宋简体">年起，万尼瓦尔·布什（</span><span style="font-family:Times New Roman">1890</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1974</span><span style="font-family:方正书宋简体">）和他在</span><span style="font-family:Times New Roman">MIT</span><span style="font-family:方正书宋简体">的学生开始研制这台机器。但是，这个模拟的（非数字式的）计算机主要用来解决工程应用中的微分方程。从数学或工程角度来讲，图灵或许会对这台机器感兴趣，不过这台机器并不能为这一特定问题提供很大帮助。</span></p>
+<p>很难想象在<span style="font-family:Times New Roman">20</span><span style="font-family:方正书宋简体">世纪</span><span style="font-family:Times New Roman">30</span><span style="font-family:方正书宋简体">年代中期，图灵如何能知道其他的早期计算机项目。图灵肯定不知道工程专业学生康拉德·楚泽（</span><span style="font-family:Times New Roman">1910</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1995</span><span style="font-family:方正书宋简体">）自</span><span style="font-family:Times New Roman">1935</span><span style="font-family:方正书宋简体">年起开始在其父母位于柏林的公寓里建造计算机。乔治·斯蒂比兹（</span><span style="font-family:Times New Roman">1904</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1995</span><span style="font-family:方正书宋简体">）曾利用他从贝尔实验室拿回家的一些电话继电器搭接二进制加法器，不过这已经是</span><span style="font-family:Times New Roman">1937</span><span style="font-family:方正书宋简体">年图灵论文发表之后的事情了。也是在</span><span style="font-family:Times New Roman">1937</span><span style="font-family:方正书宋简体">年，哈佛大学研究生霍华德·艾肯（</span><span style="font-family:Times New Roman">1900</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1973</span><span style="font-family:方正书宋简体">）开始探索自动计算，从而促使哈佛大学与</span><span style="font-family:Times New Roman">IBM</span><span style="font-family:方正书宋简体">合作，创造了哈佛马克一型计算机（</span>Harvard Mark I）。</p>
+<p>这个时期，在解决可计算性问题和希尔伯特的判定性问题的先驱中，图灵是其中之一，其余人包括阿隆索·邱奇、埃米尔·波斯特（<span style="font-family:Times New Roman">1897</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1954</span><span style="font-family:方正书宋简体">）、斯蒂芬·克莱尼（</span><span style="font-family:Times New Roman">1909</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">1994</span><span style="font-family:方正书宋简体">）。</span>在<span style="font-family:Times New Roman">20</span><span style="font-family:方正书宋简体">世纪</span><span style="font-family:Times New Roman">30</span><span style="font-family:方正书宋简体">年代中期研究自动计算的那些人里，图灵也算其一。</span></p>
+<p>图灵总结了出现在论文后面章节中的部分结论，他写道：</p>
+<blockquote><p>在§9<span style="font-family:方正楷体简体">、</span>§10<span style="font-family:方正楷体简体">中，我会给出一些论证，说明可计算数也包括那些理当被认为是可计算的数。特别地，我会指出有几大类的数都是可计算的，例如所有代数数的实部、贝塞尔函数零点的实部、数</span>π和e，等等。</p></blockquote>
+<p>“理当被认为是可计算的数”就是人们实际生活中计算的，并且存在相应算法的数。图灵根本不屑提及所有的有理数都是可计算的，因为这是显而易见的。他很快便把代数数也加进了可计算数的行列（他认为只有代数数的实部符合要求，因为代数方程的解有可能有实部和虚部两部分，而他已经限制了可计算数为实数）。</p>
+<p>图灵断言了代数数是可计算数，随后开始在超越数领域讨论这一问题。不过，他说只有某些超越数是可计算的。贝塞尔函数是特定形式的微分方程的解。零点就是函数取值为<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">的点。它们曾被刊印成表，因此被认为是可计算的。（现在，需要用这些数时，一般可以用计算机程序来计算。）虽然图灵没有提到，但三角函数和对数函数的一般取值都是超越数，这些数也是可计算数。同样，</span>π<span style="font-family:方正书宋简体">、</span><span style="font-family:Times New Roman">e</span>等常数也如此。</p>
+<p>图灵并没有声称所有的超越数都是可计算的，否则可计算数就会和实数一样了。</p>
+<blockquote><p>尽管如此，可计算数并不完全包括所有可定义的数，我们将给出一个可定义的却不可计算的数。</p></blockquote>
+<p>我们就先在这儿留下一个悬念吧。到时候图灵将定义一个他（以及他的机器）不能计算的数。</p>
+<p>现在，图灵谈及了实数与可计算数之间差异的关键。</p>
+<blockquote><p>尽管可计算数如此之多，并且在很多方面与实数相似，但它是可数的。</p></blockquote>
+<p>可计算数是可数的。可计算数的可数性显示了它们与实数的不同，因为实数是不可数的。</p>
+<blockquote><p>在§8<span style="font-family:方正楷体简体">中，我将仔细考察几个论证，它们似乎能证明出与此相反的结论。正确地应用其中的某个论证，可以得到与哥德尔的结论</span>†大致相似的结论。</p></blockquote>
+<p>这就是著名的哥德尔不完备性定理。注意，图灵的脚注引用的是哥德尔论文的德文标题，英文译本直到<span style="font-family:Times New Roman">1962</span><span style="font-family:方正书宋简体">年才出版。</span></p>
+<blockquote><p>这些结果的应用价值很大。特别地，它表明希尔伯特的判定性问题是无解的（§11<span style="font-family:方正楷体简体">）。</span></p></blockquote>
+<p>这是接下来的<span style="font-family:Times New Roman">18</span><span style="font-family:方正书宋简体">页论文中最后一次提到希尔伯特。</span></p>
+<p>图灵在了解了阿隆索·邱奇的证明，并断定两种方法是等价的之后，觉得需要为他的论文增加一个附录。引言的最后一段也是在那时加进来的。</p>
+<blockquote><p>阿隆索·邱奇在其近期的论文中†引入了“有效可计算性”（effective calculability）的概念，这和我的“可计算性”（computability）是等价的，但定义方式十分不同。邱奇也就判定性问题得出了相同的结论‡。关于“可计算性”和“有效可计算性”的等价性证明将在本文的附录中给出。</p></blockquote>
+<p>这是图灵的论文，接下来的<span style="font-family:Times New Roman">28</span><span style="font-family:方正书宋简体">页中最后一次提到判定性问题。《牛津英语字典（第</span><span style="font-family:Times New Roman">2</span><span style="font-family:方正书宋简体">版）》指出，除了</span><span style="font-family:Times New Roman">1889</span><span style="font-family:方正书宋简体">年的一本字典，上述文字首次使用了“可计算性”一词。自那之后，</span><span style="font-family:Times New Roman">30</span><span style="font-family:方正书宋简体">多本书的书名中使用了“可计算性”，第一本书是马丁</span>·戴维斯的《可计算性和不可解性》，由McGraw-Hill出版社于<br>
+1958<span style="font-family:方正书宋简体">年出版。</span></p>
+<p>图灵的论文有<span style="font-family:Times New Roman">11</span><span style="font-family:方正书宋简体">节，第</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">节现在开始。</span></p>
+<blockquote><p>1.计算机器我们已经提到，可计算数是那些小数表达式可以通过有限步骤计算出来的数。这一概念需要更加明确的定义。在§9<span style="font-family:方正楷体简体">之前，我们不会真正尝试证明这个定义的合理性。就目前而言，我只能说，合理性的证明依赖于人类记忆的有限性。</span></p></blockquote>
+<p>图灵曾说可计算数就是那些可以被机器写下来的数，而现在又用人类记忆的有限性来解释定义中的“有限步骤”。将人与机器随意地关联起来，这种做法是图灵研究的一大特点。</p>
+<p>图灵最初说，可计算数是可以通过有限步骤计算出来的，当时听着确实很有道理。但是，现在他要通过人类思维的有限性来解读它，这就提出了关于数学真实性的本质问题。我们称实数为“实”数，尽管事实上绝大多数的数从没有人见过。此外，图灵还将在论文中指出，大部分实数都不能通过有限的算法计算出来。实数究竟在什么意义上存在呢？这是个哲学问题，对此，图灵也只是在其论文的修订版中模糊地提及（见本书第<span style="font-family:Times New Roman">16</span><span style="font-family:方正书宋简体">章）。</span></p>
+<p>人类思维的状态是离散的。据此，图灵将人与机器关联了起来。</p>
+<blockquote><p>我们可以将一个正在进行实数计算的人比作一台只能处理有限种情况q1, q2, q3, …, qR的机器，这些情况称为“<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局”。</span></p></blockquote>
+<p>这里，<span style="font-family:Times New Roman">m</span><span style="font-family:方正书宋简体">代表</span>机器（<span style="font-family:Times New Roman">machine</span><span style="font-family:方正书宋简体">），一台机器有有限个格局，并根据当前格局做不同的事情。更现代的术语则是</span>状态（<span style="font-family:Times New Roman">state</span><span style="font-family:方正书宋简体">），后来图灵引用“思维状态”来类比这些机器状态。举个例子，一台简单的洗衣机有注水、洗涤、漂洗、甩干四个状态。作长除法同样也涉及一系列不同的大脑格局或者思维状态：“现在要作乘法”、“现在要作减法”、“现在要借位”。机器的运转实际上就是在不同的格局间来回切换，通常以一种重复的方式进行。</span></p>
+<blockquote><p>该机器配有“纸带”（可以与纸类比）。纸带穿过机器运转，同时被分成一个个区段（称作“方格”），每个方格中都可以放置一个符号。</p></blockquote>
+<p>图灵说这种纸带“可以与纸类比”，因为人就是在纸上计算数字的。图灵机中的纸带往往被想象成真的纸带，但如果真要构建一台图灵机，那么这张纸带或许会是上了磁的，或者仅仅是计算机内存中的一块。</p>
+<p>人类通常使用二维的纸张，而图灵限制他的机器只能用分成一格一格的一维纸带。方格中的字符可以是十进制的<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">到</span><span style="font-family:Times New Roman">9</span><span style="font-family:方正书宋简体">，或者可以包括字母表中所有的英文字母，抑或键盘上的所有</span><span style="font-family:Times New Roman">95</span><span style="font-family:方正书宋简体">个字符。（正如你将看到的，图灵甚至允许一个“符号”包含多个字符。）</span></p>
+<p>为了在这一节论文中表示这些符号，图灵使用了大写的德文哥特式字体<span style="font-family:Times New Roman">S</span><span style="font-family:方正书宋简体">（意指“</span><span style="font-family:Times New Roman">symbol</span><span style="font-family:方正书宋简体">”），它看起来是这样的：</span>。你将不止一次看到这个符号。</p>
+<blockquote><p>任何时刻，只有一个方格，比如说第r个，它里边的符号 (r)<span style="font-family:方正楷体简体">是“在机器里”的。</span></p></blockquote>
+<p>这里，图灵假设纸带的方格可以通过编号来识别。例如  (3451) <span style="font-family:方正书宋简体">代表纸带第</span><span style="font-family:Times New Roman">3451</span><span style="font-family:方正书宋简体">个方格上的符号。如果那个方格中包含字符“</span><span style="font-family:Times New Roman">A</span><span style="font-family:方正书宋简体">”，那么 </span> (3451) <span style="font-family:方正书宋简体">就是“</span><span style="font-family:Times New Roman">A</span><span style="font-family:方正书宋简体">”。但是严格地说，纸带的方格并没有被编号，机器也并不通过编号来找到特定的方格。（换言之，方格没有一个具体的地址。）</span></p>
+<p>图灵说，在任何时候，纸带上只有一个方格“在机器里”，并可以被机器检测。</p>
+<p>我们可以称这个方格为“扫描格”，扫描格中的符号可以称为“扫描符”。可以这么说，“扫描符”是机器当前唯一可以“直接感知”的符号。</p>
+<p>机器不能一次“看到”整个纸带，它每次只能“看”纸带中的一个方格。</p>
+<blockquote><p>尽管如此，通过调节<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局，机器可以有效地记住之前“看到”（扫描）的字符。</span></p></blockquote>
+<p>一台机器可以从一种<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局转换到另一种</span><span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局，这是由当前的扫描符决定的。例如，在特定的</span><span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局</span>q34下，如果扫描符是“<span style="font-family:Times New Roman">A</span><span style="font-family:方正书宋简体">”，它可能转换到</span><span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局</span>q17；如果扫描符是“<span style="font-family:Times New Roman">B</span><span style="font-family:方正书宋简体">”，它可能转换到</span><span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局</span>q123。因此，<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局</span>q17就“知道”前一个扫描符为“<span style="font-family:Times New Roman">A</span><span style="font-family:方正书宋简体">”，</span><span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局</span>q123就知道前一个扫描符为“<span style="font-family:Times New Roman">B</span><span style="font-family:方正书宋简体">”。（这并不完全正确，其他格局也可能转换到</span>q17和q123，但是从机器的设计意图来看，q17和q123应该对之前的情况了解足够多，从而可以继续工作下去。）</p>
+<blockquote><p>机器在任何时候可能的行为都是由当前的<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局</span>qn和扫描符(r)<span style="font-family:方正楷体简体">决定的。这对</span>qn与(r)<span style="font-family:方正楷体简体">的组合称为“格局”。因此，格局决定了机器可能的行为。</span></p></blockquote>
+<p>m-<span style="font-family:方正书宋简体">格局可以是</span>q1、q2等，当<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局与一个扫描符配对时，图灵简单地称之为</span>格局（<span style="font-family:Times New Roman">configuration</span><span style="font-family:方正书宋简体">）。</span></p>
+<p>图灵已经暗示，机器会根据扫描符在<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局之间的切换。这个机器还能做些其他什么呢？能做的并不多。</span></p>
+<blockquote><p>在某些格局里，扫描格为空（即里边没有符号），机器会在这个扫描格写下一个新的符号，在其他格局中则会擦除这个扫描符。机器也可以改变正被扫描的方格，但只能移到左边或右边一格。</p></blockquote>
+<p>如果我把这个读写符号的机制叫做机器的读写头，我想我并没有违背图灵的意思。就好像录音机或录像机，读写头与纸带只在一个点相接触。图灵的读写头可以从纸带读取一个符号或者擦除一个符号，或者在其上写一个新的符号。它也可以向左或向右移动一格。（尽管读写头很可能是固定的，移动的是穿过机器的纸带，最好还是将读写头想象成是相对纸带移动的。）</p>
+<blockquote><p>除了这些操作外，<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局也可能会变化。有一部分写下的符号将组成一串数字序列，即被计算实数的小数表达；另一部分则是用来“协助记忆”的草稿。只有这些草稿才可以被擦除。</span></p></blockquote>
+<p>因为图灵希望他的机器能计算数，因此机器需要打印出数字，并且一般情况下，要打印一个无限长的数字序列。为了帮助这个过程本身顺利进行下去，机器可能需要把纸带的一部分作为某种便笺来使用。</p>
+<p>图灵机是什么样子的呢？你可以想象一些模样古怪的机器，不过更好的方法则是去照照镜子。正如一部著名科幻影片的高潮所说，“图灵机就是人”——以一种非常受限却又十分精确的方式进行算法运算的人。</p>
+<blockquote><p>我的观点是：这些操作包括了在计算数字中用到的所有操作。</p></blockquote>
+<p>也就是说，人在计算数字中用到的所有操作。如果你觉得这台机器缺少一些基本的算术运算，比如加法或减法，那你说得一点没错。加法运算和减法运算没有内建在图灵机里。不过，只要有了正确的格局，图灵机便可以执行相应的算术运算。</p>
+<blockquote><p>读者熟悉这一机器理论后，将会更容易理解我的这一观点。因此，下一节我将开始探讨这一理论，假设你已经知道了“机器”、“纸带”、“扫描”等词的含义。</p></blockquote>
+<p>大家或许已经准备好要看一些真正的机器了，但图灵还不想让我们如愿，他想先抛出一些定义。</p>
+<blockquote><p>2. <span style="font-family:黑体">定义</span>自动机如果机器在每一阶段的动作（在§1<span style="font-family:方正楷体简体">的意义下</span>）完全由格局所决定，我们称这样的机器为“自动机”（或a-<span style="font-family:方正楷体简体">机器）。</span>我们也可能出于某些目的，使用那些格局只能部分决定动作的机器（选择机或c-<span style="font-family:方正楷体简体">机器）。（因此，我们在</span>§1里用了“可能”一词。）</p></blockquote>
+<p>当描述格局如何决定一台机器的行为时（本书第<span style="font-family:Times New Roman">61</span><span style="font-family:方正书宋简体">页），图灵的表述是“机器可能的行为”。行为的描述可以是不完整的，因为在一些机器中，行为会因人的交互动作（机器之外的“操作者”）而改变。</span></p>
+<blockquote><p>当这样的一台机器达到某种模糊的格局时，除非有机器之外操作者给出选择，否则它不会继续工作。我们用机器来处理公理系统时就会出现这种情况。在本文中，我只讨论自动机，因此会经常省略前缀a-<span style="font-family:方正楷体简体">。</span></p></blockquote>
+<p>图灵对自动机和选择机的划分，某种程度上使我们联想到划分程序的一个传统方法：将程序分为批处理的和交互式的。现在，我们进行交互计算的经历如此之多，以至于可能会忘记仍然有许多不需要等待用户的键盘输入和鼠标点击就能运行的计算机程序。</p>
+<p>选择机虽然可能很有趣，但是它们在图灵的论文中无足轻重。图灵论文中自动机的行为完全由其自身的格局决定。</p>
+<blockquote><p>计算机器如果一台自动机（a-<span style="font-family:方正楷体简体">机器）打印两种符号，第一类符号（称为数字）完全由</span><span style="font-family:Times New Roman">0</span><span style="font-family:方正楷体简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正楷体简体">组成（其他符号称为第二类符号），那么这样的机器就称为计算机器。</span></p></blockquote>
+<p>在展示样机之前，图灵就已经把机器限制为只打印数字<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">，这也是用来表示二进制数</span>的两个数字。使用二进制数是明智之举，但这一点对于1937<span style="font-family:方正书宋简体">年的大多数读者来说远没有我们今天所想的那么显而易见。克劳德·</span><span style="font-family:Times New Roman">E. </span>香农（<span style="font-family:Times New Roman">1916</span><span style="font-family:方正书宋简体">—</span><span style="font-family:Times New Roman">2001</span><span style="font-family:方正书宋简体">）在其</span><span style="font-family:Times New Roman">1937</span><span style="font-family:方正书宋简体">年麻省理工学院的硕士论文《</span>继电器与开关电路的符号分析》中描述了电路与布尔代数的等价性，他一定很推崇选择二进制。但在早期的计算机中使用二进制并不普遍，尽管康拉德·楚泽使用了二进制，但艾肯和斯蒂比兹的机器都是基于十进制的，<span style="font-family:Times New Roman">ENIAC</span><span style="font-family:方正书宋简体">（</span><span style="font-family:Times New Roman">1943</span><span style="font-family:方正书宋简体">—</span><br>
+1945<span style="font-family:方正书宋简体">）也是一台十进制机器。直到香农</span><span style="font-family:Times New Roman">1948</span><span style="font-family:方正书宋简体">年的一篇论文</span>里，<span style="font-family:Times New Roman">bit</span><span style="font-family:方正书宋简体">（比特，</span><span style="font-family:Times New Roman">binary digit</span><span style="font-family:方正书宋简体">的缩写）一词才首次出现。</span></p>
+<p>图灵并不打算论证在其机器中使用二进制数的合理性，使用它的好处直到论文的第<span style="font-family:Times New Roman">245</span><span style="font-family:方正书宋简体">页（本书第</span><span style="font-family:Times New Roman">146</span><span style="font-family:方正书宋简体">页）才显现出来。但为了让大家尽快放下这些疑问，我将在下一章比较一些简单的二进制机器和十进制机器。</span></p>
+<blockquote><p>如果给机器装上空白纸带，并且从正确的初始<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局开始运转，那么机器打印出的第一类符号组成的子序列就叫做“</span>机器计算出的序列”。</p></blockquote>
+<p>一台装有空白纸带的机器开始运作，打印出<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">（第一类符号）以及其他的符号（第二类符号）。这些</span><span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">组成了计算出的序列。图灵将计算出的序列与计算出的数区分开来了。</span></p>
+<blockquote><p>在这个序列的最前面加上一个十进制小数点（<span style="font-family:Times New Roman">decimal point</span><span style="font-family:方正楷体简体">），并把它当作一个二进制小数（</span><span style="font-family:Times New Roman">binary decimal</span><span style="font-family:方正楷体简体">），所得的实数就称为机器计算出的数。</span></p></blockquote>
+<p>某种程度上，这句话读起来有点费力，因为里面的术语并不完全正确。但是，我们需要原谅图灵用词的混淆，因为那时的人们根本不习惯讨论二进制数。即便在今天，那些熟悉二进制的人一般也不善于面对二进制小数。即使把<span style="font-family:Times New Roman">Windows</span><span style="font-family:方正书宋简体">的计算器设为科学模式也没有用：把一个数转成二进制时，它会直接去掉小数部分。</span></p>
+<p>“十进制”的英文“<span style="font-family:Times New Roman">decimal</span><span style="font-family:方正书宋简体">”是从拉丁文的“</span><span style="font-family:Times New Roman">ten</span><span style="font-family:方正书宋简体">”演变而来的，这个单词的使用仅限于十进制数。下面是十进制小数：</span></p>
+<p>.25</p>
+<p>.5</p>
+<p>.75</p>
+<p>十进制小数点（<span style="font-family:Times New Roman">decimal point</span><span style="font-family:方正书宋简体">）把整数部分（如果有的话）和小数部分分开。</span></p>
+<p>上面三个数的二进制表示为：</p>
+<p>.01</p>
+<p>.1</p>
+<p>.11</p>
+<p>那个点不是十进制的小数点，实际上应该称为二进制小数点（<span style="font-family:Times New Roman">binary point</span><span style="font-family:方正书宋简体">）。</span></p>
+<p>正如二进制整数部分的每一位上的数字代表<span style="font-family:Times New Roman">2</span><span style="font-family:方正书宋简体">的幂，小数部分的每一位二进制数字代表</span><span style="font-family:Times New Roman">2</span><span style="font-family:方正书宋简体">的负幂。</span></p>
+<p>.1<span style="font-family:方正书宋简体">相当于</span><span style="font-family:Times New Roman">2</span>-1的二进制形式或者十进制分数的<span style="font-family:Times New Roman">1/2</span></p>
+<p>.01<span style="font-family:方正书宋简体">相当于</span><span style="font-family:Times New Roman">2</span>-2或者<span style="font-family:Times New Roman">1/4</span></p>
+<p>.001<span style="font-family:方正书宋简体">是</span><span style="font-family:Times New Roman">2</span>-3或者<span style="font-family:Times New Roman">1/8</span></p>
+<p>.0001<span style="font-family:方正书宋简体">是</span><span style="font-family:Times New Roman">2</span>-4或者<span style="font-family:Times New Roman">1/16</span></p>
+<p>.00001<span style="font-family:方正书宋简体">是</span><span style="font-family:Times New Roman">2</span>-5或者<span style="font-family:Times New Roman">1/32</span></p>
+<p>等等，因此二进制数<span style="font-family:Times New Roman">.10101</span><span style="font-family:方正书宋简体">就是：<img title="10101" src="http://www.programmer.com.cn/wp-content/uploads/2012/11/QQ%E6%88%AA%E5%9B%BE20121107111913.jpg" alt="" width="322" height="31"></span></p>
+<p>这么写或许看着更清楚：<img title="10101" src="http://www.programmer.com.cn/wp-content/uploads/2012/11/QQ%E6%88%AA%E5%9B%BE201211071119241.jpg" alt="" width="165" height="58"></p>
+<p>等价于十进制的<span style="font-family:Times New Roman">21/32</span><span style="font-family:方正书宋简体">或者</span><span style="font-family:Times New Roman">.65625</span><span style="font-family:方正书宋简体">。和十进制中一样，许多二进制的小数部分也是循环的。下面是</span><span style="font-family:Times New Roman">1/3</span><span style="font-family:方正书宋简体">的二进制表示：</span></p>
+<p>.01010101…</p>
+<p>2/3<span style="font-family:方正书宋简体">是：</span></p>
+<p>.10101010…</p>
+<p>类似地：</p>
+<p>1/5 <span style="font-family:方正书宋简体">是 </span><span style="font-family:Times New Roman">.001100110011</span>…</p>
+<p>2/5 <span style="font-family:方正书宋简体">是 </span><span style="font-family:Times New Roman">.011001100110</span>…</p>
+<p>3/5<span style="font-family:方正书宋简体">是 </span><span style="font-family:Times New Roman">.100110011001</span>…</p>
+<p>4/5 <span style="font-family:方正书宋简体">是 </span><span style="font-family:Times New Roman">.110011001100</span>…</p>
+<p>图灵的措词更加准确：“在这个序列的最前面加上一个十进制小数点（decimal point<span style="font-family:方正书宋简体">），并把它当作一个二进制小数（</span><span style="font-family:Times New Roman">binary </span>decimal），所得的实数就称为机器计算出的数。”</p>
+<p>趁现在还在解释这块，我们来进一步审视这句话：“用机器计算出来的数是一个以二进制小数点开头的序列表达出来的二进制小数。”</p>
+<p>例如，如果有一台图灵计算机器只打印出一个<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和一个</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">，没有其他字符，那么“机器计算出的序列”就是</span></p>
+<p>0 1</p>
+<p>而“机器计算出的数”就是一个以二进制小数点开头的序列</p>
+<p>.01</p>
+<p>这就是<span style="font-family:Times New Roman">1/4</span><span style="font-family:方正书宋简体">的二进制形式。</span></p>
+<p>因为二进制小数点总是位于计算出的序列之前，所以图灵的机器将只会计算介于<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">与</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">之间的二进制数，不过这么小的范围已经足够用来研究可数性了。</span></p>
+<blockquote><p>在机器运转中的任何阶段，被扫描方格的标号、纸带上所有符号构成的序列以及<span style="font-family:Times New Roman">m-</span><span style="font-family:方正楷体简体">格局，共同描述了这个阶段的</span>完全格局。</p></blockquote>
+<p>这是图灵从不同角度讨论这些机器时出现的“格局”一词的第三种用法，将它们理清楚是很重要的：</p>
+<ul>
+<li>m-格局是机器的一种状态；</li>
+<li>格局由一个<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局和一个扫描符组成；</span></li>
+<li>完全格局是整个纸带在某一时刻的“快照”，加上当前的<span style="font-family:Times New Roman">m-</span><span style="font-family:方正书宋简体">格局及读写头的位置。</span></li>
+</ul>
+<blockquote><p>在相邻的两个完全格局之间机器和纸带发生的变化，称为机器的“移动”。</p></blockquote>
+<p>下面两个定义在论文的后面才用到。</p>
+<blockquote><p>循环机和非循环机如果一台计算机器只能写下有限个第一类符号，它就被称为是循环的（<span style="font-family:Times New Roman">c</span>ircular），否则称为非循环的（circle-free）。如果一台机器运行到了某个不能移动的格局上，或者它能继续移动并有可能打印出第二类符号但永远不能打印出第一类符号了，那么它就是循环的。我们将在§8<span style="font-family:方正楷体简体">中解释“循环”这个概念的重要意义。</span></p></blockquote>
+<p>我之前提到一台仅打印了<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">、不再打印其他字符的机器。它只打印了有限个数字，根据图灵的定义，它属于循环机。这台机器会在某处卡住并且不能再打印数字，这不是件好事。图灵希望这台机器能永不停息地打印数</span>字。</p>
+<p>非循环机是好的机器。一台只打印一个<span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">、不再打印其他东西的机器不是非循环机。如果机器真的想要计算</span><span style="font-family:Times New Roman">1/4</span><span style="font-family:方正书宋简体">的二进制形式，它就必须在打印完</span><span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">和</span><span style="font-family:Times New Roman">1</span><span style="font-family:方正书宋简体">后继续不停地打印</span><span style="font-family:Times New Roman">0</span><span style="font-family:方正书宋简体">。</span></p>
+<p>尽管图灵没有提到这个问题，但是他好像在暗示他的计算机器是从左至右打印数字的，正如我们从二进制小数点后读数字一样。</p>
+<blockquote><p>可计算序列和可计算数如果一个序列可以被非循环机计算出来，那么它就是可计算序列。如果一个数与非循环机计算出来的数只相差一个整数，那么它就是可计算数。</p></blockquote>
+<p>图灵在这里区分了序列和数。一个可计算的序列是：</p>
+<p>010000…</p>
+<p>对应的可计算数是：</p>
+<p>.010000…</p>
+<p>数</p>
+<p>1.010000…</p>
+<p>也可以认为是可计算的，因为它与机器计算出来的数只相差一个整数。数</p>
+<p>10.01000…</p>
+<p>也是如此。同样，负数也是可计算的。</p>
+<blockquote><p>为了避免混淆，我们会更多地提及可计算序列，而非可计算数。</p></blockquote>
+<p><strong><span style="color:#888888">作者Charles Petzold ，Windows<span style="font-family:宋体">编程大师、世界顶级技术作家、微软资深</span><span style="font-family:Times New Roman">MVP</span><span style="font-family:宋体">，拥有</span><span style="font-family:Times New Roman">25</span><span style="font-family:宋体">年的</span><span style="font-family:Times New Roman">Windows</span><span style="font-family:宋体">编程经验。</span><span style="font-family:Times New Roman">1994</span><span style="font-family:宋体">年</span><span style="font-family:Times New Roman">5</span><span style="font-family:宋体">月，</span><span style="font-family:Times New Roman">Petzold</span><span style="font-family:宋体">作为唯一的作家，获得由微软公司和</span><span style="font-family:Times New Roman">Window Magazine</span><span style="font-family:宋体">授予的</span><span style="font-family:Times New Roman">Windows </span><span style="font-family:宋体">先锋奖（仅</span><span style="font-family:Times New Roman">7</span><span style="font-family:宋体">人获奖），直到今天，他依然是</span><span style="font-family:Times New Roman">Windows GDI </span><span style="font-family:宋体">程序设计首席技术作家。他出版过十几本著作，其中包括</span><span style="font-family:Times New Roman">Win32 API</span><span style="font-family:宋体">编程经典《</span><span style="font-family:Times New Roman">Windows</span><span style="font-family:宋体">程序设计》、《编码》等。</span></span></strong></p>
+<p><strong>本文节选自《图灵的秘密 : 他的生平、思想及论文解读》一书。本书佩措尔德 (Petzold,C.) 著 ; 杨卫东等译，由人民邮电出版社出版。</strong></p>

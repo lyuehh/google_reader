@@ -1,0 +1,114 @@
+---
+layout: post
+title:  "如果编程语言是汽车……"
+date:   2011-06-19 20:51:01
+author: freetstar
+categories: program
+---
+
+## 如果编程语言是汽车……
+### by freetstar
+### at 2011-06-19 20:51:01
+### original <http://wowubuntu.com/if-programming-languages-were-cars.html>
+
+<p>原文： If programming languages were cars... <a href="http://www.cs.caltech.edu/~mvanier/hacking/rants/cars.html">http://www.cs.caltech.edu/~mvanier/hacking/rants/cars.html</a>,有筛减</p>
+<p>本文是一系列把编程语言和汽车对比的老笑话合集，添加了几种最近流行的语言。欢迎提任何建议给我！<span></span><br>
+注：似乎 Digg/Reddit/StumbleUpon 对本文进行了挖掘/阅读/踩，结果我收到了一大坨儿的新建议。这正验证了 Vanier 的定律： “任何与编程相关的文章，不管多么愚蠢，最后都会被发到 Digg/Reddit/StumbleUpon 等网站上头。” 感谢所有给我建议的人们。我仔细查看了所有建议，并且把我最喜欢的加到了这个页面上。我也擅自从 digg.com 的评论中选了一些加进来，如果你是评论作者并且不允许我发到这里，我会把你的评论删除。如果我没有评论你精彩的评论，请理解：这并不是说我不喜欢你，也许只是因为我是一个缺乏幽默感的混蛋。同时，有些人在推测我自己编程语言水平。我是一个注重实用的程序员（甚至可以说是一个smug&lt;?&gt;的程序员），我的编程语言大致是这样：Haskell &gt; Ocaml &gt; Scheme/Lisp &gt; Erlang &gt; Python/Ruby &gt; C. 我也喜欢其它语言（比如 Prolog 和 Smalltalk），但是我不怎么用那些语言。我也有很讨厌的语言，不过我不在这里表达厌恶之情，免得陷入无意义的口水仗（口水仗——比如说说有的人会发送内容为“你TMD！”的邮件给我）。<br>
+不管你相信不相信，这页面已经被翻译至<a href="http://www.gorbikoff.com/2009/01/28/if-programming-languages-were-cars/">俄语</a>。感谢 Nick Gorbikoff 做了翻译。这篇文章也被翻译到<a href="http://wp.me/pcoPx-xc">阿拉伯语</a>，我不知道译者是谁，不过我也感谢他/她。</p>
+<p>列表: </p>
+<ul>
+<li><strong>Ada</strong> 是一种异常神勇永远不会损坏的坦克。如果你跟别人说你驾驶 的是Ada 他们会笑疯的，但是，说真的，你愿意在战场上开跑车吗？</li>
+<li><strong>汇编语言</strong> 仅仅是一台引擎。你需要自己搭建汽车，并且在行驶过程中手动注入燃料，不过如果你足够小心的话，它可以跑得像脱缰野马一般快。</li>
+<li><strong>Basic </strong> 这种汽车用来开到附近的商店去购物还不错.Basic曾经在学习驾驶的人中很流行。但是最近被剥得只剩皮,被一个主要生产者重新设计，新版本可以胜任长途旅行，与旧版本之间只有外表上比较像，但其余部分都已经改变了</li>
+<li><strong>C </strong>快得难以置信但是每五十分钟坏一次的跑车。</li>
+<li><strong>Cobol</strong> 是个有名气的汽车，但是任何尊重自己的驾驶员都不承认曾经驾驶过。</li>
+<li><strong>C#</strong> 家用旅行车的有力竞争者。一旦你用这种汽车，就不能用它的竞争对手的汽车了。</li>
+<li><strong>C++</strong> 是C跑车的加强马力版，比C多了几十个额外特性。每250英里损坏一次，问题是损坏的时候谁都找不到问题在哪。</li>
+<li><strong>Eiffel </strong>一辆法国口音的内部包含驾驶指南的汽车。它会帮你快速找到自己的错误并且吸取教训，不过如果你胆敢和它争执,它会把你扔出车窗口。</li>
+<li><strong>Erlang </strong>一群能够合作把你送到目的地的汽车。你需要接受训练才能学会同时驾驶这些车。当你学会如何驾驶时就很难再学会其他的驾驶方式。另外，你有好多辆车，所以一两辆坏掉是无所谓的。</li>
+<li><strong>Forth </strong>一辆你自己用工具拼成的汽车，外观和行为都不像其它任何车。还有，Forth汽车只能倒着跑。</li>
+<li><strong>Fortran</strong> 一种相当原始的汽车。如果你只在非常非常笔直的公路上驾驶，Fortran可以跑得飞快。据信，学习驾驶 Fortran 之后你就没法学开其它汽车了。</li>
+<li><strong>Java</strong> 是一种家用旅行车。它易于驾驶，不过开不很快，你也不会出事故伤到自己。</li>
+<li><strong>Haskell </strong>是一种设计无比精致的漂亮的汽车。据说可以在任何极端地形上行驶。当你驾驶它的时候，它并不沿着道路行驶，而是把自己和道路都复制若干份，把将来要走的路也复制出来,其实可以以更方便的方式驾驶它，但是需要极高的数学水平。</li>
+<li>[Monadic版]</li>
+<li><strong>Haskell</strong> 并不是一辆汽车，它只是一个抽象的汽车，你需要把它放进另外一个真实的汽车中，然后才能驾驶。你不必知道真实的汽车是如何行驶的。你可以把若干个抽象汽车合成成一个抽象汽车，然后它就可以让真实汽车一个接一个地做好趟旅途。</li>
+<li><strong>Lisp</strong> 看起来像一辆汽车，通过足够的改装你可以把它变成成一个相当高效的飞行器或者潜水艇。</li>
+<li>[Paul Tanimoto版]</li>
+<li><strong>Lisp </strong>一开始看起来根本不像汽车，不过你总是能见到几个驾驶它的人。当你决定了解它的时候，你会发现它其实是一辆可以制造更多汽车的汽车。你把它告诉你的朋友，不过他们都嘲笑你，说这些车看起来太奇怪了。你仍然在你的车库里存着一辆，希望某一天这些车可以占据所有街道。</li>
+<li><strong>Mathematica</strong> 一种设计良好的汽车，参考了 Lisp 的设计，却对Lisp连句谢谢都没说。它可以帮你找到到达目的地的最快路径，不过还要看你的运气如何了</li>
+<li><strong>Matlab </strong>一般和 Mathematica 在相似的地形上行驶。在这种地形上驾驶 Matlab 是很舒服的，但是如果你驶离车道，哪怕只有一点点，这辆汽车就变得非常难开，这时一些势利的驾驶员甚至不把它当作一辆车。</li>
+<li><strong>Ocaml</strong> 一种非常性感的欧洲车。它并没有 C 那样快，但是从来不会半路抛锚，所以你最终花的时间或许更短。然而，正因为它来自法国，驾驶方法和一般汽车不一样。</li>
+<li><strong>Perl</strong> 是一辆漂亮的汽车，只是驾驶手册太难懂了。另外，及时你已经知道如何驾驶 Perl，你也不一定会开别人家的 Perl。</li>
+<li><strong>PHP </strong>是<a href="http://www.reedberry.com/wienermobile.html">Oscar Mayer Wienermobile</a>。尽管它是一种奇怪、难以驾驶的汽车，但是每个人都想驾驶它。</li>
+<li><strong>Prolog</strong> 全自动汽车：你只要告诉它你的目的地长什么样，它会自动驾驶过去。然而，描述大部分目的地的精力耗费都与亲自开过去相当。</li>
+<li><strong>Python</strong> 是一种非常适合初学者驾驶的好车。你可以不要驾驶证就开它上路。一般来说你不需要其它车，除非你想要开得飞快或者经过非常危险的地带。</li>
+<li><strong>Ruby </strong>是 Perl、Python 和 Smalltalk 3者的合体。一位日本工程师从碎片中拼成了 Ruby，并且很多车手认为它比另外三种语言都好。其它车手抱怨说 Ruby 的操作不稳定，有些完全一样的操作在不同环境中表现有些不一样，所以这种车不那么容易驾驶。据说 Ruby 的重新设计正在进行中。</li>
+<li><strong>Smalltalk</strong> 一种最初为学习驾驶的人设计的小型汽车，不过设计得非常好，所以有经验的驾驶员也喜欢开。它没法跑很快，但是你可以把它的任何一个区域取下来，换成其它部件，以适合自己的需求。它有一点奇怪之处：你不需要手动驾驶它。你告诉它你想去哪，它要么带你去，要么告诉你它不知道你在说什么。</li>
+<li><strong>Visual Basic</strong> 一辆驾驶你的汽车。</li>
+</ul>
+<p><strong>各位Linuxer,你喜欢哪辆车呢?或者觉得自己的车有更好更形象的比喻呢?</strong></p>
+<p>感谢:<a href="http://aenonsun.tumblr.com/">Aenon</a>的辛勤翻译和整理                   <span style="font-size:26px"> </span></p>
+<p> </p>
+<p> </p>
+# 本文采用<a href="http://creativecommons.org/licenses/by/2.5/cn/">CC协议</a>进行授权，转载本文请注明<a href="http://wowubuntu.com/if-programming-languages-were-cars.html" title="Permalink">本文链接<a>。/  20  条留言
+<hr>
+- <a href="http://twitter.com/ubuntu_tips">Twitter</a> 
+/ <a href="https://www.google.com/profiles/wowubuntucom">Buzz</a>
+/ <a href="http://t.sina.com.cn/utips">微博</a> 
+/ <a href="http://ask.wowubuntu.com">问答</a> 
+/ <a href="http://wowubuntu.com/submit">投稿</a>
+/ <a href="http://wowubuntu.com/join">加入我们</a> wow0slx6bcs721xo1udcc<br>- 高性价比 <a href="http://wowubuntu.com/vps.html">Ubuntu VPS</a> / 本站架设于<a href="http://www.photonvps.com/billing/aff.php?aff=129"> PhotonVPS </a> / 定制 <a href="http://tto.me/kfstee">Ubuntu T-Shirt</a><table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fliword.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fif-programming-languages-were-cars.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">语言岛：支持 Linux 的智能记单词软件</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Flangisle.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fif-programming-languages-were-cars.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">语言岛智能记单词v0.2.3.370</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fubuntu-tweak06.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fif-programming-languages-were-cars.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">展望 Ubuntu Tweak 0.6</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fupgrade2natty.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fif-programming-languages-were-cars.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">升级到 Ubuntu 11.04 Natty 的四种方法</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fshell-demo.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fif-programming-languages-were-cars.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">最新 Gnome Shell 演示视频</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></a></a>

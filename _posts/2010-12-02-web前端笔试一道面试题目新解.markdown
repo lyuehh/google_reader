@@ -1,0 +1,79 @@
+---
+layout: post
+title:  "web前端笔试一道面试题目新解"
+date:   2010-12-02 20:33:50
+author: 
+categories: program
+---
+
+## web前端笔试一道面试题目新解
+### by 
+### at 2010-12-02 20:33:50
+### original <http://www.javaeye.com/topic/831959>
+
+算出字符串中出现次数最多的字符是什么，出现了多少次
+<br>据说是百度的，个人认为百度公司的题目没有这么简单
+<br>这不知道是哪位网友给出的回答，答案是对的，但显然不要这么复杂！！
+<br><pre name="code">
+&lt;script type=”text/javascript”&gt;
+//&lt;![CDATA[var str =&quot;adadfdfseffserfefsefseeffffftsdg&quot;; //命名一个变量放置给出的字符串
+var maxLength = 0; //命名一个变量放置字母出现的最高次数并初始化为0
+var result = &#39;&#39;; //命名一个变量放置结果输入
+
+while( str != &#39;&#39; ){ //循环迭代开始，并判断字符串是否为空
+oldStr = str; //将原始的字符串变量赋值给新变量
+getStr = str.substr(0,1); //用字符串的substr的方法得到第一个字符（首字母）
+eval(&quot;str = str.replace(/&quot;+getStr+&quot;/g,&#39;&#39;)&quot;); //详细如补充
+
+if( oldStr.length-str.length &gt; maxLength )
+{ //判断原始的字符串的长度减去替代后字符串长度是否大于之前出现的最大的字符串长度
+maxLength = oldStr.length-str.length; //两字符串长度相减得到最大的字符串长度
+result = getStr + &quot;=&quot; + maxLength //返回最大的字符串结果（字母、出现次数）
+}
+}
+
+alert(result) //弹出结果
+//]]&gt;
+&lt;/script&gt;
+</pre>
+<br>
+<br>我的解答：
+<br><pre name="code">
+	&lt;script&gt;
+	var str = &quot;adadfdfseffserfefsefseeffffftsdg&quot;; //命名一个变量放置给出的字符串
+	var result = {};
+	for ( var i = 0; i &lt; str.length; i++) {
+		var c = str.charAt(i);
+		if (result[c]) {
+			result[c]++;
+		} else {
+			result[c] = 1;
+		}
+	}
+	console.log(result);
+	var max=0;
+	var maxChar=&#39;&#39;;
+	for ( var key in result) {
+		if(result[key]&gt;max){
+			max=result[key];
+			maxChar=key;
+		}
+	}
+	console.log(maxChar);
+	console.log(max);
+&lt;/script&gt;
+</pre>
+          
+          <br><br>
+          作者: <a href="http://aroundworld2008.javaeye.com">aroundworld2008</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/831959" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

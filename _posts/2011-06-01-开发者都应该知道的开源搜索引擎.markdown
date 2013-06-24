@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "开发者都应该知道的开源搜索引擎"
+date:   2011-06-01 00:16:20
+author: 
+categories: program
+---
+
+## 开发者都应该知道的开源搜索引擎
+### by 
+### at 2011-06-01 00:16:20
+### original <http://www.oschina.net/news/18424/opensource-search-engine>
+
+<table width="100%"><tr>
+						<td valign="top">本文介绍若干款开源搜索引擎，他们具有不同的特性，总之都很强大。对于开发者来说，应该了解。 1、企业搜索解决方案 Constellio Constellio 是一个开源的搜索解决方案，适合企业级的搜索。基于 Apache Solr 项目构建，使用 Lucene 做为搜索引擎，并提供基于 Web 的网页和文档的检索。可选择文档类型、文件夹以及文件名进行检索。 2、企业搜索解决方案SearchBlox SearchBlox 是一个企业搜索解决方案，基于 Lucene 构建。可进行快速发布、轻松管理以及支持云环境。这是与 Google Mini 最接近的一款搜索产品。 3、Solr logo 全文搜索服务器...，<a href="http://www.oschina.net/news/18424/opensource-search-engine?from=rss" style="font-weight:bold;color:#a00">阅读全文</a></td>
+			</tr></table>

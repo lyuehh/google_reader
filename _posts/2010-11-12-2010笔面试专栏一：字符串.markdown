@@ -1,0 +1,202 @@
+---
+layout: post
+title:  "2010笔面试专栏一：字符串"
+date:   2010-11-12 22:15:00
+author: 一直在成长
+categories: program
+---
+
+## 2010笔面试专栏一：字符串
+### by 一直在成长
+### at 2010-11-12 22:15:00
+### original <http://www.cnblogs.com/wangbin_ben/archive/2010/11/12/1876097.html>
+
+<p><p>计算机笔试和面试最常考察的就是字符串的各种操作。字符串处理是我们程序员日常工作最常遇到的问题，能够体现程序员的基本功。下面我就最近一个月以来的各种笔试和面试遇到的有关字符串处理的题目和大家分享一下： </p>
+<p>1、google笔试：编码实现求给定字符串(全为小写英文字母)的最小后继，如“abc”的最小后继为</p>
+<p>   “abd”,“dhz”的最小后继为“di”。</p>
+<p>思路：题目比较简单，对最后一个字符+1，如果大于’z’则对前一个字符+1，如果又是大于 ’z’</p>
+<p>        则重复之前步骤。所以写代码时，我们只要对字符串循环从后往前对每一个字符进行+1，直到</p>
+<p>        出现+1后不超过’z’为止。如果退出循环时第一个字符大于于’z’则提示不存在，否则</p>
+<p>        把退出循环的字符的后一位置为’\0’即可。</p>
+<p>代码:</p>
+<div>
+<pre><span style="font-size:8pt"><span>   1:  </span><span>int</span> MinNextStr(<span>const</span> <span>char</span>* src,<span>char</span>* &amp;minnext)</span></pre>
+<pre><span style="font-size:8pt"><span>   2:  </span>{</span></pre>
+<pre><span style="font-size:8pt"><span>   3:  </span>    <span>int</span> srclen=strlen(src);</span></pre>
+<pre><span style="font-size:8pt"><span>   4:  </span>    minnext=(<span>char</span>*)malloc((srclen+1)*<span>sizeof</span>(<span>char</span>));</span></pre>
+<pre><span style="font-size:8pt"><span>   5:  </span>    <span>if</span>(minnext==NULL)</span></pre>
+<pre><span style="font-size:8pt"><span>   6:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>   7:  </span>        <span>return</span> -1;</span></pre>
+<pre><span style="font-size:8pt"><span>   8:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>   9:  </span>    strcpy(minnext,src);</span></pre>
+<pre><span style="font-size:8pt"><span>  10:  </span>    <span>int</span> i=srclen-1;</span></pre>
+<pre><span style="font-size:8pt"><span>  11:  </span>    <span>while</span>(i&gt;=0)</span></pre>
+<pre><span style="font-size:8pt"><span>  12:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  13:  </span>        minnext[i]++;</span></pre>
+<pre><span style="font-size:8pt"><span>  14:  </span>        <span>if</span>(minnext[i]&lt;=<span>'z'</span>)</span></pre>
+<pre><span style="font-size:8pt"><span>  15:  </span>        {</span></pre>
+<pre><span style="font-size:8pt"><span>  16:  </span>            <span>break</span>;</span></pre>
+<pre><span style="font-size:8pt"><span>  17:  </span>        }</span></pre>
+<pre><span style="font-size:8pt"><span>  18:  </span>        i--;</span></pre>
+<pre><span style="font-size:8pt"><span>  19:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  20:  </span>    <span>if</span>(i&lt;0)</span></pre>
+<pre><span style="font-size:8pt"><span>  21:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  22:  </span>        <span>return</span> 0;</span></pre>
+<pre><span style="font-size:8pt"><span>  23:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  24:  </span>    <span>else</span></span></pre>
+<pre><span style="font-size:8pt"><span>  25:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  26:  </span>        minnext[++i]=<span>'\0'</span>;</span></pre>
+<pre><span style="font-size:8pt"><span>  27:  </span>        <span>return</span> 1;</span></pre>
+<pre><span style="font-size:8pt"><span>  28:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  29:  </span>}</span></pre>
+<pre> </pre>
+</div>
+<p>     如果把给定字符串全为小写英文字母改为大小写英文字母，则只要把</p>
+<p>       <span>14: </span><span>if</span>(minnext[i]&lt;=<span>'z'</span>) 改为 if(minnext[i]&lt;=&#39;z&#39;&amp;&amp;minnext[i]&gt;&#39;a&#39;||minnext[i]&lt;=&#39;Z&#39;)</p>
+<p>注意minnext[i]&lt;=&#39;z&#39;&amp;&amp;minnext[i]&gt;&#39;a&#39;是为了防止minnext[i]为大写的情况，因为大写英文字母(A:65)比小写(a:97)的ASCII 码小，如果不加minnext[i]&gt;&#39;a&#39;则minnext[i]为(’Z’+1,ASCII 码:91)也会跳<span style="font-size:8pt">出循环。</span></p>
+<p><span style="font-size:8pt"> </span> </p>
+<p><span style="font-size:8pt">2、中兴：编码实现字符串右移n位，如“diopHeg”右移2位为“egdiopH”</span></p>
+<p><span style="font-size:8pt">思路1：只要把需要移动的最后n个字符保存下来，把前面剩下的全部后移n个位置，最后把开</span></p>
+<p><span style="font-size:8pt">          始保存好的n </span><span style="font-size:8pt">个字符填充到前面n个位置。注意：n超过字符串长度的情况，所以</span><span style="font-size:8pt">事</span></p>
+<p><span style="font-size:8pt">          前先做n</span><span style="font-size:8pt"> mod 字符串的长度。</span></p>
+<p><span style="font-size:8pt">代码：</span></p>
+<div>
+<div>
+<pre><span style="font-size:8pt"><span>   1:  </span><span>int</span> RightMoveStr(<span>char</span>* src,<span>int</span> n)</span></pre>
+<pre><span style="font-size:8pt"><span>   2:  </span>{</span></pre>
+<pre><span style="font-size:8pt"><span>   3:  </span>    <span>int</span> len=strlen(src);</span></pre>
+<pre><span style="font-size:8pt"><span>   4:  </span>    <span>int</span> mov=n%len;</span></pre>
+<pre><span style="font-size:8pt"><span>   5:  </span>    <span>char</span>* rstr=(<span>char</span>*)malloc((mov+1)*<span>sizeof</span>(<span>char</span>));</span></pre>
+<pre><span style="font-size:8pt"><span>   6:  </span>    <span>if</span>(rstr==NULL)</span></pre>
+<pre><span style="font-size:8pt"><span>   7:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>   8:  </span>        <span>return</span> 0;</span></pre>
+<pre><span style="font-size:8pt"><span>   9:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  10:  </span>    <span>int</span> i=0;</span></pre>
+<pre><span style="font-size:8pt"><span>  11:  </span>    <span>while</span>(i&lt;mov)</span></pre>
+<pre><span style="font-size:8pt"><span>  12:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  13:  </span>        rstr[i]=src[len-mov+i];</span></pre>
+<pre><span style="font-size:8pt"><span>  14:  </span>        i++;</span></pre>
+<pre><span style="font-size:8pt"><span>  15:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  16:  </span>    rstr[i]=<span>'\0'</span>;</span></pre>
+<pre><span style="font-size:8pt"><span>  17:  </span>    i=len-mov-1;</span></pre>
+<pre><span style="font-size:8pt"><span>  18:  </span>    <span>while</span>(i&gt;=0)</span></pre>
+<pre><span style="font-size:8pt"><span>  19:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  20:  </span>        src[i+mov]=src[i];</span></pre>
+<pre><span style="font-size:8pt"><span>  21:  </span>        i--;</span></pre>
+<pre><span style="font-size:8pt"><span>  22:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  23:  </span>    i=0;</span></pre>
+<pre><span style="font-size:8pt"><span>  24:  </span>    <span>while</span>(i&lt;mov)</span></pre>
+<pre><span style="font-size:8pt"><span>  25:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  26:  </span>        src[i]=rstr[i];</span></pre>
+<pre><span style="font-size:8pt"><span>  27:  </span>        i++;</span></pre>
+<pre><span style="font-size:8pt"><span>  28:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  29:  </span>    free(rstr);</span></pre>
+<pre><span style="font-size:8pt"><span>  30:  </span>    <span>return</span> 1;</span></pre>
+<pre><span style="font-size:8pt"><span>  31:  </span>}</span></pre>
+</div>
+
+</div>
+<div><span style="font-size:8pt"> </span> </div>
+<div><span style="font-size:8pt;font-family:Verdana">思路2：使用字符串库函数简化编码工作，用一个新的字符串ss保存结果，先把源字符串</span></div>
+<div><span style="font-size:8pt;font-family:Verdana">         指针s移到需要右</span><span style="font-size:8pt;font-family:Verdana">移的子串的第一个字符的位置，如“diopHeg”右移2位就把s移动</span></div>
+<div><span style="font-size:8pt;font-family:Verdana">         到指向’e’，接着</span><span style="font-size:8pt;font-family:Verdana"> strcpy(ss,s)，把s所指位置赋值为’\0’，最后strcat(ss,s)。</span></div>
+<div><span style="font-size:8pt;font-family:Verdana">代码：</span></div>
+<div>
+<pre><span style="font-size:8pt"><span>   1:  </span><span>int</span> RightMove(<span>char</span>* src,<span>char</span>* &amp;ssrc,<span>int</span> n)</span></pre>
+<pre><span style="font-size:8pt"><span>   2:  </span>{</span></pre>
+<pre><span style="font-size:8pt"><span>   3:  </span>    <span>int</span> len=strlen(src);</span></pre>
+<pre><span style="font-size:8pt"><span>   4:  </span>    ssrc=(<span>char</span>*)malloc(<span>sizeof</span>(<span>char</span>)*(len+1));</span></pre>
+<pre><span style="font-size:8pt"><span>   5:  </span>    n=n%len;</span></pre>
+<pre><span style="font-size:8pt"><span>   6:  </span>    <span>if</span>(ssrc==NULL)</span></pre>
+<pre><span style="font-size:8pt"><span>   7:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>   8:  </span>        <span>return</span> 0;</span></pre>
+<pre><span style="font-size:8pt"><span>   9:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  10:  </span>    <span>int</span> i=0;</span></pre>
+<pre><span style="font-size:8pt"><span>  11:  </span>    <span>char</span>* s=src;</span></pre>
+<pre><span style="font-size:8pt"><span>  12:  </span>    <span>while</span>(i&lt;len-n)</span></pre>
+<pre><span style="font-size:8pt"><span>  13:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>  14:  </span>        s++;</span></pre>
+<pre><span style="font-size:8pt"><span>  15:  </span>        i++;</span></pre>
+<pre><span style="font-size:8pt"><span>  16:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  17:  </span> </span></pre>
+<pre><span style="font-size:8pt"><span>  18:  </span>    strcpy(ssrc,s);</span></pre>
+<pre><span style="font-size:8pt"><span>  19:  </span>    *s=<span>'\0'</span>;</span></pre>
+<pre><span style="font-size:8pt"><span>  20:  </span>    strcat(ssrc,src);</span></pre>
+<pre><span style="font-size:8pt"><span>  21:  </span>    <span>return</span> 1;<span>  </span>    </span></pre>
+<pre><span style="font-size:8pt"><span>  22:  </span>}</span></pre>
+</div>
+
+<p> </p>
+<p>3、新邮通：字符串反转：给定字符串“we;tonight;you;”，编码实现输出“ew;thginot;uoy;”</p>
+<p>思路：使用两个变量first和end分别记录当前需要反转的子串的头和尾字符的下标，每遇到’;’就把first</p>
+<p>        和end之间的子串进行前后反转。</p>
+<p>代码：</p>
+<div>
+<pre><span style="font-size:8pt"><span>   1:  </span><span>void</span> ReverseStr(<span>char</span> *src)</span></pre>
+<pre><span style="font-size:8pt"><span>   2:  </span>{</span></pre>
+<pre><span style="font-size:8pt"><span>   3:  </span>    <span>int</span> len=strlen(src);</span></pre>
+<pre><span style="font-size:8pt"><span>   4:  </span>    <span>int</span> i=0;</span></pre>
+<pre><span style="font-size:8pt"><span>   5:  </span>    <span>int</span> first=0;</span></pre>
+<pre><span style="font-size:8pt"><span>   6:  </span>    <span>int</span> end=0;</span></pre>
+<pre><span style="font-size:8pt"><span>   7:  </span>    <span>while</span>(i&lt;len)</span></pre>
+<pre><span style="font-size:8pt"><span>   8:  </span>    {</span></pre>
+<pre><span style="font-size:8pt"><span>   9:  </span>        <span>if</span>(src[i]==<span>';'</span>)</span></pre>
+<pre><span style="font-size:8pt"><span>  10:  </span>        {</span></pre>
+<pre><span style="font-size:8pt"><span>  11:  </span>            end=i-1;</span></pre>
+<pre><span style="font-size:8pt"><span>  12:  </span>            <span>while</span>(first&lt;end)</span></pre>
+<pre><span style="font-size:8pt"><span>  13:  </span>            {</span></pre>
+<pre><span style="font-size:8pt"><span>  14:  </span>                <span>char</span> temp=src[first];</span></pre>
+<pre><span style="font-size:8pt"><span>  15:  </span>                src[first]=src[end];</span></pre>
+<pre><span style="font-size:8pt"><span>  16:  </span>                src[end]=temp;</span></pre>
+<pre><span style="font-size:8pt"><span>  17:  </span>                first++;</span></pre>
+<pre><span style="font-size:8pt"><span>  18:  </span>                end--;</span></pre>
+<pre><span style="font-size:8pt"><span>  19:  </span>            }</span></pre>
+<pre><span style="font-size:8pt"><span>  20:  </span>            first=i+1;</span></pre>
+<pre><span style="font-size:8pt"><span>  21:  </span>        }</span></pre>
+<pre><span style="font-size:8pt"><span>  22:  </span>        i++;</span></pre>
+<pre><span style="font-size:8pt"><span>  23:  </span>    }</span></pre>
+<pre><span style="font-size:8pt"><span>  24:  </span>}</span></pre>
+</div>
+
+<p>如果给定字符串结尾没有’;’，如“we;tonight;you”，编码实现输出“ew;thginot;uoy”</p>
+<p>只需要修改一下代码9、10、11行：</p>
+<pre><span style="font-size:8pt">        <span>if</span>(src[i]==<span>';'</span>||i==len-1)
+        {
+            <span>if</span>(src[i]==<span>';'</span>)
+                end=i-1;
+            <span>else</span>
+                end=i;</span></pre>
+
+<p> </p>
+<p>4、西艾：X86结构下，下面代码输出结果是什么？</p>
+<p>代码：</p>
+<div>
+<pre><span style="font-size:8pt"><span>   1:  </span>    <span>char</span> str[20]=<span>"Good night"</span>;</span></pre>
+<pre><span style="font-size:8pt"><span>   2:  </span>    <span>int</span>* p=(<span>int</span>*)str;</span></pre>
+<pre><span style="font-size:8pt"><span>   3:  </span>    p[0]=0x61626364;</span></pre>
+<pre><span style="font-size:8pt"><span>   4:  </span>    p[1]=0x31323334;</span></pre>
+<pre><span style="font-size:8pt"><span>   5:  </span>    p[2]=0x41424344;</span></pre>
+<pre><span style="font-size:8pt"><span>   6:  </span>    cout&lt;&lt;str&lt;&lt;endl;</span></pre>
+</div>
+
+<p>解题：考察知识点：</p>
+<p>（1）int的内存大小：32bit=4byte；char的内存大小：4bit=1byte；</p>
+<p>（2）常用字符的ASCII 码，’a’:97;’A’=65;’0’=48；</p>
+<p>（3）十六进制转，0x61=97；</p>
+<p>（4）大小端模式： </p>
+<blockquote>
+<p>所谓的小端模式，是指数据的低位保存在内存的低地址中，而数据的高位保存在内存的高地址中，这种存储模式将地址的高低和数据位权有效地结合起来，高地址部分权值高，低地址部分权值低，和我们的逻辑方法一致。</p>
+<p>所谓的大端模式，是指数据的低位（就是权值较小的后面那几位）保存在内存的高地址中，而数据的高位，保存在内存的低地址中，这样的存储模式有点儿类似于把数据当作字符串顺序处理：地址由小向大增加，而数据从高位往低位放；</p>
+</blockquote>
+<p>       而X86结构为小端模式，所以</p>
+<p>            p[0]=0x61626364;//97,98,99,100对应a,b,c,d,小端存在字符串str则为dcba <br>            p[1]=0x31323334;//同理4321 <br>            p[2]=0x41424344;//同理DCBA </p>
+<p>  </p>
+<p>     代码输出：dcba4321DCBA </p>
+<p>
+
+</p>
+<p>
+
+</p>
+<pre> </pre>
+<pre>---待续</pre><img src="http://www.cnblogs.com/wangbin_ben/aggbug/1876097.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/wangbin_ben/">一直在成长</a> 发表于 2010-11-12 22:15 <a href="http://www.cnblogs.com/wangbin_ben/archive/2010/11/12/1876097.html">原文链接</a></p><p>评论: 17　<a href="http://www.cnblogs.com/wangbin_ben/archive/2010/11/12/1876097.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/wangbin_ben/archive/2010/11/12/1876097.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/80950/">Google和Facebook你更愿意选哪个？</a><span style="color:gray">(2010-11-13 22:17)</span><br>· <a href="http://news.cnblogs.com/n/80949/">新的 Sylvania 平板细节揭晓，带有 1Ghz 处理器</a><span style="color:gray">(2010-11-13 22:14)</span><br>· <a href="http://news.cnblogs.com/n/80947/">22位原创作家发联合声明声讨百度和淘宝侵权</a><span style="color:gray">(2010-11-13 22:09)</span><br>· <a href="http://news.cnblogs.com/n/80946/">飞信“语聊” 一接就扣费</a><span style="color:gray">(2010-11-13 22:05)</span><br>· <a href="http://news.cnblogs.com/n/80944/">Firefox 4 Beta 7 速度超越IE9，Chrome 8</a><span style="color:gray">(2010-11-13 22:01)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/80896/">风雨20年：我所积累的20条编程经验</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

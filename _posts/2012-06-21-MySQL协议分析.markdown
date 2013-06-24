@@ -1,0 +1,85 @@
+---
+layout: post
+title:  "MySQL协议分析"
+date:   2012-06-21 16:41:00
+author: hoterran
+categories: program
+---
+
+## MySQL协议分析
+### by hoterran
+### at 2012-06-21 16:41:00
+### original <http://item.feedsky.com/~feedsky/hoterran/~8589439/686055970/6694695/1/item.html>
+
+<p>MySQL协议分析,主要参考MySQL Forge上的<a href="http://forge.mysql.com/wiki/MySQL_Internals_ClientServer_Protocol">wiki</a>和源码.协议的全图见<a href="http://huaban.com/pins/8262295/zoom/">这里</a>, 给同事分享的ppt见<a href="https://docs.google.com/presentation/pub?id=1vGZkiZUDHVLye5_WdAT3dV2LHOoB2cLRl6g36x8nnHQ&amp;start=false&amp;loop=false&amp;delayms=3000">这里</a>,下载见<a href="http://vdisk.weibo.com/s/7lpaF">这里</a></p>
+<h3><span></span></h3>
+<div style="width:595px"><strong style="display:block;margin:12px 0 4px"><a title="MySQL协议分析" href="http://www.slideshare.net/hoterran/mysql-13400392">MySQL协议分析</a></strong> 
+<div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/hoterran">ruoyi ruan</a></div>
+</div>
+<h3>packet number</h3>
+<p>在做proxy的时候在这里迷糊过,翻了几遍代码才搞明白，细节如下：<br>
+客户端服务端的net-&gt;pkt_nr都从0开始.接受包时比较packet number 和net-&gt;pkt_nr是否相等,否则报packet number乱序,连接报错;相等则pkt_nr自增.发送包时把net-&gt;pkt_nr作为packet number发送,然后对net-&gt;pkt_nr进行自增保持和对端的同步.</p>
+<h4>接收包</h4>
+<p>sql/net_serv.c:my_real_read</p>
+<pre>898     if (net-&gt;buff[net-&gt;where_b + 3] != (uchar) net-&gt;pkt_nr)</pre>
+<h4>发送包</h4>
+<p>sql/net_serv.c:my_net_write</p>
+<pre>
+392   int3store(buff,len);
+393   buff[3]= (uchar) net-&gt;pkt_nr++;</pre>
+<p>我们来几个具体场景的packet number, net-&gt;pkt_nr的变化</p>
+<p><span style="font-weight:bold">连接</span></p>
+<p>0 c ———–&gt; s 0  connect</p>
+<p>0 c &lt;—-0——s 1  handshake</p>
+<p>2 c —–1—–&gt;s 1 auth</p>
+<p>2c &lt;—–2——s 0 ok</p>
+<p>开始两方都为0,服务端发送handshake packet(pkt=0)之后自增为1,然后等待对端发送过来pkt=1的包</p>
+<p> </p>
+<h4>查询</h4>
+<p>每次查询,服务客户端都会对net-&gt;pkt_nr进行清零</p>
+<pre>
+include/mysql_com.h
+388 #define net_new_transaction(net) ((net)-&gt;pkt_nr=0)</pre>
+<pre>
+sql/sql_parse.cc:do_command
+805   net_new_transaction(net);</pre>
+<p>sql/client.c:cli_advanced_command</p>
+<pre>800   net_clear(&amp;mysql-&gt;net, (command != COM_QUIT));</pre>
+<p>开始两方net-&gt;pkt_nr皆为0, 命令发送后客户端端为1,服务端开始发送分包,分包的pkt_nr的依次递增,客户端的net-&gt;pkt_nr也随之增加.</p>
+<p>1 c ——0—–&gt; s 0  query</p>
+<p>1 c &lt;—-1——s 2  resultset</p>
+<p>2 c &lt;—-2——s 3  resultset</p>
+<h3> 解包的细节</h3>
+<p>my_net_read负责解包，首先读取4个字节，判断packet number是否等于net-&gt;pkt_nr然后再次读取packet_number长度的包体。</p>
+<p>伪代码如下：</p>
+<pre>remain=4
+for(i = 0; i &lt; 2; i++) {
+    //数据是否读完
+    while (remain&gt;0)  {
+        length = read(fd, net-&gt;buff, remain)
+        remain = remain - length
+    }
+    //第一次
+    if (i=0) {
+        remain = uint3korr(net-&gt;buff+net-&gt;where_b);
+    }
+}</pre>
+<h3>网络层优化</h3>
+<p>从ppt里可以看到,一个resultset packet由多个包组成,如果每次读写包都导致系统调用那肯定是不合理,常规优化方法:写大包加预读</p>
+<h4>net-&gt;buff</h4>
+<p>每个包发送到网络或者从网络读包都会先把数据包保存在net-&gt;buff里,待到net-&gt;buff满了或者一次命令结束才会通过socket发出给对端.net-&gt;buff有个初始大小(net-&gt;max_packet),会随读取数据的增多而扩展.</p>
+<h4>vio-&gt;read_buffer</h4>
+<p>每次从网络读包,并不是按包的大小读取,而是会尽量读取2048个字节,这样一个resultset包的读取不会再引起多次的系统调用了.header packet读取完毕后, 接下来的field,eof, row apcket读取仅仅需要从vio-read_buffer拷贝指定字节的数据即可.</p>
+<h3>MySQL api说明</h3>
+<p>api和MySQL客户端都会使用sql/client.c这个文件,解包的过程都是使用sql/client.c:cli_read_query_result.</p>
+<p>mysql_store_result来解析row packet,并把数据存储到res-&gt;data里,此时所有数据都存内存里了.</p>
+<p>mysql_fetch_row仅仅是使用内部的游标,遍历result-&gt;data里的数据</p>
+<pre>3052     if (!res-&gt;data_cursor)
+3053     {
+3054       DBUG_PRINT(&quot;info&quot;,(&quot;end of data&quot;));
+3055       DBUG_RETURN(res-&gt;current_row=(MYSQL_ROW) NULL);
+3056     }
+3057     tmp = res-&gt;data_cursor-&gt;data;
+3058     res-&gt;data_cursor = res-&gt;data_cursor-&gt;next;
+3059     DBUG_RETURN(res-&gt;current_row=tmp);</pre>
+<p>mysql_free_result是把result-&gt;data指定的行数据释放掉.</p><img src="http://www1.feedsky.com/t1/686055970/hoterran/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/hoterran/~8589439/686055970/6694695/1/item.html" border="0" height="0" width="0">

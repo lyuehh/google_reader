@@ -1,0 +1,47 @@
+---
+layout: post
+title:  "编程珠玑番外篇 -K. 高级语言是怎么来的-7"
+date:   2011-09-28 05:49:28
+author: Eric
+categories: program
+---
+
+## 编程珠玑番外篇 -K. 高级语言是怎么来的-7
+### by Eric
+### at 2011-09-28 05:49:28
+### original <http://blog.youxu.info/2011/09/27/lisp-prehistory/>
+
+<div>
+<h2 dir="ltr">LISP 语言前传</h2>
+<p>Lisp 的主要设计者 John McCarthy 曾经就 Lisp 的发展史，专门写过一篇 <a href="http://www-formal.stanford.edu/jmc/history/lisp/lisp.html">History of Lisp</a> 的文章。这里介绍的历史，基本史实部分参照了 John McCarthy 的这篇文章，以及同时期 MIT 的关于 Lisp 的技术报告。</p>
+<p>Lisp 的历史要从 IBM 的神奇机器 704 说起。此时是 1954 年，尽管距离 1946 年第一台计算机 ENIAC 的出现已经八年了，商用计算机市场还仅仅起步。很早就进入计算机市场的 IBM 做出了一个影响深远的决定：发布一台可以进行浮点计算的，面向科学和工程的电子计算机。这台计算机，很朴素地跟着 IBM 之前发布的 701，702 后，被编号成 704（不知为什么 IBM 从来没公布过 703）。说 704 是神奇机器，是因为这台机器在计算机科学发展史上意义重大：世界上最早的语音合成程序就是由 Bell 实验室的科学家在 IBM 704 上完成的。 Fortran，Lisp 也是最早在 IBM 704 上实现的。</p>
+<p>和当年的所有计算机一样，IBM 704 是个百万美元级别的大玩具，不是一般人甚至一般大学能够买得起的。好在 IBM 和大学的关系一向很紧密，在 1957 年的时候，决定捐一台 704 给 MIT。当时在 Dartmouth 教书的 John McCarthy 和在 MIT 教书的 Marvin Minsky 关系很好，因此这台即将到达的 704，即将成为 McCarthy 的新玩具。</p>
+<p>当年部署一台计算机的周期很长，为了不让自己闲着，McCarthy 决定一边等机器部署，一边研究一下如果有了这台机器，可以做点什么。当时 Minsky 手里有一个 IBM 的项目，内容是使用计算机证明平面几何问题。既然计算机没来不能写程序，他们就只能从抽象的层面思考问题的解决方法。这个思考的结果，是开发一套支持符号计算的 Fortran 子系统。他们的基本想法是，用一系列的 FORTRAN 子程序，来做逻辑推理和符号演绎。</p>
+<p>回头看，这条路的确绕开了没有 704 就写不了程序的路障。因为我们只需要大致了解 Fortran 能够做什么，不能做什么，无需实际 Fortran 编程，就可以假想我们已经有了一系列未来可以实现的子程序，然后只要在数学上证明这些通过子程序的组合，加上自动逻辑推理，就可以证明平面几何定理。这就把一个计算机工程学问题，抽象成了一个数学问题（日后这个领域被正式划归到人工智能的学科中，但在当时这还是属于数学问题）</p>
+<p>这样，计算机没来之前，McCarthy 的最终结果，是一个用 Fortran 子程序做列表处理的简单系统。McCarthy 的这条路很现实的做法——如果不用 Fortran 而是自己写一个新的语言的编译器话，可能需要好几年的时间。而 McCarthy 当年还不是终身教授，投入到写作新语言这样旷日持久且不能保证成果的项目中去，不会对他的职业生涯有太大的正面作用。</p>
+<p>704 送到 MIT 后， McCarthy 带着两个研究生，将之前计划的 Fortran 列表处理子程序实现了，并命名为 Fortran 列表处理语言 (FLPL) 。然而，因为 Fortran 语言本身的限制，McCarthy 对 FLPL 并不满意。他在写作自动求函数导数的程序时[a]，发现 FLPL 的弱点集中体现在两个地方。</p>
+<p>第一个问题是递归。我们在 Fortran 语言怎么来的这一节已经提到，704 上的 Fortran 语言是不支持递归的。而 McCarthy 心中所设想的语言，很重要的一条就是递归：没有递归，很多列表处理的函数只能用循环来实现，而循环本身并不是 McCarthy 设想的语言的一部分。熟悉函数求导的链式法则的读者可以想像，没有递归的求导程序是何其难写，因为函数求导过程本身就是递归定义的。</p>
+<p>第二个问题是 Fortran 的 IF 语句。IF 家族的分支语句，在计算机程序设计中可以说必不可少。在 McCarthy 那里 IF 就更重要了，因为几乎所有有递归函数的地方就有 IF（因为递归函数需要 IF 判断结束条件）。相信读者都很熟悉这种 IF 结构</p>
+<pre style="padding-left:30px" dir="ltr">IF 条件 THEN</pre>
+<pre style="padding-left:30px" dir="ltr">    一些语句;</pre>
+<pre style="padding-left:30px" dir="ltr">ELSE</pre>
+<pre style="padding-left:30px" dir="ltr">    另一些语句;</pre>
+<pre style="padding-left:30px" dir="ltr">END IF</pre>
+<p>这是从 ALGOL 语言一脉相承下来的，很“自然”的 IF 写法。而早期的 FORTRAN 的 IF 写法却不这么直观，而是</p>
+<pre style="padding-left:30px" dir="ltr">IF (表达式) A B C</pre>
+<p>取决于表达式的值是小于零，等于零还是大于零，分别跳到（等价于 goto）标签 A， 标签B 或者标签 C。这个 IF 隐含了三个 Goto，可以说和结构化编程的实践截然相反，降低了程序的可读性。 Fortran 首创的这个三分支跳转的 IF 饱受诟病，Fortran 77 开始支持结构化的 IF，而 Fortran 90 标准进一步宣布三分支跳转的用法已经“过时”，不支持使用。</p>
+<p>在 McCarthy 那里，Fortran 的三分支跳转 IF 也不方便。为此，在 FLPL 中，他试图用一个叫 XIF 子程序完成类似于 IF 的分支功能，用法是：</p>
+<pre style="padding-left:30px" dir="ltr">XIF(条件, 表达式A, 表达式B)</pre>
+<p>取决于条件的满足与否，XIF 返回表达式A 或者表达式B 的值。很快，他发现，用子程序的方法实现 XIF，在语义上并不正确。我们知道，在 Fortran 和其他高级语言中，函数参数的值在进入函数之前必须全部确定。在 XIF 这里，不难看出，不管条件满足与否，我们都先要计算表达式A 和表达式B 的值。而 IF 是个分支逻辑，从语义上来说，应该只计算满足条件的分支的值。因此，用函数来实现 IF 是不正确的 [b]。</p>
+</div>
+<p style="padding-left:30px"><span style="color:#003366">作为一个旁注，尽管 John McCarthy 早在50多年前就发现了函数实现 IF 是语义错误的，现代的程序员还常常犯这个错误。一个值得一题的例子是 C++ 逻辑运算符重载和短路表达式的不等价性。我们都知道，在 C 语言中，逻辑与 (&amp;&amp;) 和逻辑或( || ) 都隶属于短路表达式，也就是说，对于 A &amp;&amp; B 这样的表达式，如果 A 已经确定为 false，就无需计算表达式 B 的值，即 B 的计算被”短路”。以 C 为蓝本的 C++ 一方便保留了这些短路表达式，另一方面在面向对象的特性中，引入了运算符重载。具体来说，只要一个对象定义了 operator&amp;&amp; 成员函数，就可以进行 &amp;&amp; 运算。乍一看，这是一个很酷的特性，可以让程序员用 A&amp;&amp;B 这样的数学表达式表达复杂的逻辑关系。然而，仔细想想，  A.operator&amp;&amp;(B) 在语义上并不等价于 C 所定义的 A&amp;&amp;B，原因在于 A.operator&amp;&amp;() 是个函数，在求值之前需要先计算 B 的值，而后者是个短路表达式，本质上相当于 </span></p>
+<pre style="padding-left:30px" dir="ltr"><span style="color:#003366">IF A:</span></pre>
+<pre style="padding-left:30px" dir="ltr"><span style="color:#003366"> return True</span></pre>
+<pre style="padding-left:30px" dir="ltr"><span style="color:#003366">ELSE:</span></pre>
+<pre style="padding-left:30px" dir="ltr"><span style="color:#003366"> return B</span></pre>
+<pre style="padding-left:30px" dir="ltr"><span style="color:#003366;font-family:Georgia,&#39;Times New Roman&#39;,&#39;Bitstream Charter&#39;,Times,serif;font-size:13px;line-height:19px;white-space:normal">因为短路表达式不一定会对 B 求值，这两者从语义上就是不等价的。如果 B 不是一个简单的对象，而是一个复杂表达式的时候，对 B 求值可能有副作用，而这个副作用，是写 A &amp;&amp; B 并把它当做短路表达式的程序员所没有预见的。按照 C++ Gotcha 的说法，这很容易造成潜在的程序 Bug。实际上，C++逻辑运算符重载是一个危险的特性，很多公司的编程标准都禁止使用逻辑运算符重载。</span></pre>
+<p>递归和 IF 两个问题，使得 Fortran 从本质上就不符合 McCarthy 期望，以 Fortran 为宿主的开发列表处理语言也不可能达到 McCarthy 想要的结果。因此，唯一的解，就是抛开 Fortran，从头开始，设计一个新的语言。值得注意的是，此时 McCarthy 正好跳槽到了 MIT 做助理教授，MIT 有足够多的编程强人，可以帮 McCarthy 完成这个编写新语言的任务。这个强人，就是 Steve Russell；这个语言，就是 Lisp。</p>
+<p>[a] 读过 SICP 的读者会发现这是一道习题<br>
+[b] 读过 SICP 的读者会发现这又是一道习题</p>
+<p> </p>
+<div></div>

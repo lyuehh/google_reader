@@ -1,0 +1,143 @@
+---
+layout: post
+title:  "jQuery必知必熟基础知识"
+date:   2010-12-31 17:26:07
+author: 
+categories: program
+---
+
+## jQuery必知必熟基础知识
+### by 
+### at 2010-12-31 17:26:07
+### original <http://www.javaeye.com/topic/857093>
+
+<br>jQuery
+<br>   1.特点:
+<br>   小巧
+<br>   功能强
+<br>   跨浏览器
+<br>   插件
+<br>
+<br>   2.使用
+<br>    实际是js文件
+<br>    a)  复制js到WebRoot
+<br>    b)  页面&lt;script src=&quot;jquery.js&quot; charset=&quot;&quot;&gt;&lt;/script&gt;
+<br>
+<br>   3.核心对象及常用方法和属性
+<br>     a)名称
+<br>     jQuery和$
+<br>     用$找出来的对象叫jQuery对象
+<br>     用document找出来的对象叫Dom对象
+<br>     
+<br>     b)dom和jquery对象转换
+<br>     jQuery对象.get(0) ---&gt;dom对象
+<br>     $(dom对象)---&gt;jQuery对象
+<br>    
+<br>     c)jQuery对象方法
+<br>      .show() 显示
+<br>      .hide() 隐藏
+<br>      .toggle() 显示或隐藏切换
+<br>      $(&quot;div&quot;).hide();
+<br>      $(&quot;#myid&quot;).show();
+<br>      $(&quot;.myclass&quot;).show(100);
+<br>
+<br>      .size() 找到多少个对象
+<br>      var n = $(&quot;div&quot;).size()
+<br>
+<br>      文本框赋值(value)
+<br>      $(&quot;#myid&quot;).val(123);
+<br>      .val()取值
+<br>
+<br>      层的内容.innerHTML/.innerText
+<br>      $(&quot;div&quot;).html() ; 
+<br>      $(&quot;div&quot;).html(123);
+<br>      $(&quot;div&quot;).html(&quot;&lt;input type=button&gt;&quot;);
+<br>      $(&quot;div&quot;).text(&quot;&lt;input type=button&gt;&quot;);
+<br>
+<br>      样式 document....style.color=&quot;red&quot;
+<br>      $(&quot;div&quot;).css(&quot;color&quot;,&quot;red&quot;).css(&quot;font-size&quot;,&quot;18&quot;);
+<br>      $(&quot;div&quot;).css({color:&quot;red&quot;,&quot;font-size&quot;:18});
+<br>
+<br>      删除
+<br>      $(&quot;div&quot;).remove(); 删除所有div
+<br>
+<br>      添加
+<br>      父加子: $(&quot;div&quot;).append(&quot;&lt;input button&gt;&quot;);
+<br>              $(&quot;div&quot;).append( $(&quot;#myid&quot;) );
+<br>      子加父
+<br>           $(&quot;input&quot;).appendTo(  $(&quot;div&quot;) );
+<br>
+<br>      对象属性
+<br>        $(&quot;input&quot;).attr(&quot;checked&quot;,true);
+<br>
+<br>      去首尾空格:
+<br>         $.trim(字符串)
+<br>	 $(&quot;div&quot;).each(  function(i,obj){}  );
+<br>	 $.post(url,function(x){});
+<br>	 $.post(url,{键:值},function(x){});
+<br>	 $.getJSON(url,function(x){//这里x已转成json了，不要用eval});
+<br>
+<br>      克隆
+<br>        $(&quot;div&quot;).clone();
+<br>
+<br> 4. 选择器
+<br>    a) 类选择器 
+<br>       &lt;input type=text class=&quot;myclass&quot;&gt;
+<br>       $(&quot;.myclass&quot;)     找多个
+<br>    b) id选择器   
+<br>       &lt;input type=text id=&quot;myid&quot;&gt;
+<br>       $(&quot;#myid&quot;) 找一个
+<br>       相当于:document.getElementById(&quot;myid&quot;)
+<br>    c) 标记选择器   找多个
+<br>       $(&quot;div,span&quot;)
+<br>       相当于document.getElementsByTagName()
+<br>    d) 表单选择器
+<br>       $(&quot;:text&quot;)   所有文本框
+<br>       $(&quot;input[type=text][value=&#39;&#39;]&quot;)
+<br>
+<br>       $(&quot;:radio&quot;)  所有单选框
+<br>       $(&quot;:checkbox&quot;) 所有复选框
+<br>    e) 表单属性选择器
+<br>       $(&quot;:checkbox:checked&quot;)或$(&quot;:checked:checkbox&quot;)
+<br>       $(&quot;:checked&quot;)  找所有选中（单选框和复选框)
+<br>       $(&quot;:selected&quot;) 找所有选中列表框
+<br>    f) 层级选择器
+<br>       父找子 d找c
+<br>       $(&quot;table&quot;).find(&quot;tr&quot;)  //找子孙都可以
+<br>       $(&quot;table&gt;tbody&gt;tr&quot;) 找所有tr
+<br>       $(&quot;table&gt;tbody&gt;tr:first&quot;) 找第一行
+<br>       $(&quot;table&gt;tbody&gt;tr&quot;).eq(0) 找第一行
+<br>       $(&quot;table&gt;tbody&gt;tr:odd&quot;)   所有奇数行
+<br>       $(&quot;table&gt;tbody&gt;tr:even&quot;)  所有偶数行
+<br>
+<br>       子找父
+<br>       $(&quot;tr&quot;).parent()
+<br>
+<br>       找兄弟
+<br>       $(a).next() 下一个
+<br>       $(b).prev() 上一个
+<br>
+<br>
+<br>
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/e4554346-a695-3afe-a37c-544a9149ae5b">jQuery实例-信息提示jQuery实现.zip</a> (28.5 KB)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://yzz9i.javaeye.com">yzz9i</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/857093" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

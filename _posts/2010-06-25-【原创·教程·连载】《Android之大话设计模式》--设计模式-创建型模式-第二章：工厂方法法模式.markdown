@@ -1,0 +1,266 @@
+---
+layout: post
+title:  "【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第二章：工厂方法法模式"
+date:   2010-06-25 00:04:00
+author: 国士工作室
+categories: program
+---
+
+## 【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第二章：工厂方法法模式
+### by 国士工作室
+### at 2010-06-25 00:04:00
+### original <http://www.cnblogs.com/guoshiandroid/archive/2010/06/25/1764813.html>
+
+<p><a href="http://www.cnblogs.com/guoshiandroid/"><img src="http://pic.cnblogs.com/face/u137019.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/guoshiandroid/">国士工作室</a> 发表于 2010-06-25 00:04 <a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/25/1764813.html">原文链接</a> 阅读: 395 评论: 1</p><h1 align="center" style="font-size:2em">&lt;大话设计模式&gt;</h1>
+<h2 align="center" style="font-size:1.5em">本教程说明及版权声明</h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋利。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 如果对该文档有任何疑问或者建议，请进入官方博客</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">   <a href="http://www.cnblogs.com/guoshiandroid/" style="color:#1a8bc8;text-decoration:none">http://www.cnblogs.com/guoshiandroid/</a>留言或者直接与国士工作室联系（后附联系方式），我们会慎重参考您的建议并根据需要对本文档进行修改，以造福更多开发者！</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 《大话设计模式》的最新及完整内容会在国士工作室官方博客定期更新，请访问国士工作室博客</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px"><a href="http://www.cnblogs.com/guoshiandroid/" style="color:#1a8bc8;text-decoration:none">http://www.cnblogs.com/guoshiandroid/</a>获取更多更新内容。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"> <strong style="font-weight:bold"> <span style="line-height:24px;font-size:12pt">查看其他部分：</span><a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/06/1752668.html" style="color:#1a8bc8;text-decoration:none"><span style="line-height:28px;color:#0000ff"><span style="line-height:24px;font-size:12pt">本教程整体说明及章节索引</span></span></a></strong></p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"><span style="font-size:14pt"><a href="http://files.cnblogs.com/guoshiandroid/%e5%b7%a5%e5%8e%82%e6%96%b9%e6%b3%95%e6%b3%95%e6%a8%a1%e5%bc%8f_%e8%ae%a9%e9%ba%a6%e5%bd%93%e5%8a%b3%e7%9a%84%e6%b1%89%e5%a0%a1%e9%80%82%e5%90%88%e4%b8%8d%e5%90%8cMM%e7%9a%84%e4%b8%8d%e5%90%8c%e5%8f%a3%e5%91%b3.pdf" style="color:#1a8bc8;text-decoration:none">本文PDF下载链接</a></span></p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"><b>让麦当劳的汉堡适合不同MM的不同口味</b></p>
+<p><b>工厂方法模式应用场景举例</b><b>：</b><b> </b></p>
+<p>       “你知不知道大学的规矩啊？”，MM有些不满的问道。“什么规矩？当然不知道了啊。”，GG傻傻的说道，很明显这个MM已经对GG的不懂事和不主动有些不满了。“在大学里，当两个人确定恋爱关系时，都是要请女朋友同寝室的人去吃饭的”，MM带着一些不满又有一些撒娇的口气说道。“啊？我不知道哎，请众美女吃饭我还求之不得呢，什么时候有时间啊，确定是时间和地点，我随叫随到！”GG很激动很爽快的答应道。MM笑着抬头看了一样这个傻GG,“那好，让我想想，我们…我们下周六下午有时间，要么这样，你带我们去麦当劳吧”，“一言为定”，“那我们在下周六下午五点在中心商业街南边的麦当劳分店见，听说那边的口味还不错:-O”，“好的，只要你开心就好，不见不散”GG回答道，“不见不散！”MM就这样嫣然一笑的欢天喜地的离开了。</p>
+<p>       想想前几天GG和MM因为非常偶然的因素相见的情景，GG再次涌起了一种无法言喻的幸福和激动。那一天，GG见到了MM，仿若晴天霹雳，整个地球在颤抖，她甜美而柔和的声音、她极具古典气息的是秀发、她超棒的身材、她恰到好处的着装、她极尽秀美而恬静的娇容、她似音乐般的举止顿时令他彻底的迷醉了，仿佛整个世界只有她一人，仿佛一切都是为她而生的，突然，两人目光交错，眼神相遇…就这么一见钟情！GG想，到麦当劳也好，反正我不会做饭，再说了，即使会做也不能去做啊，众口难调啊，更何况是一群美女，到麦当劳让她们自个儿去挑吧^_^不过我这一个月的生活费怕是要泡汤了，难怪别人说大学里最高的消费是花费的女朋友身上的消费~~~~(&gt;_&lt;)~~~~ </p>
+<p>       千呼万唤，终于到了周六下午。被感情冲昏大脑的GG突然间变的不再那么笨了，这次他提前预定了座位，是一个可以容纳8个人的座位。而且具体告诉了MM座位的位置，这样大家都清楚位置是比较好的，避免了到时候没有位置的尴尬。赶往麦当劳路上的GG心潮澎湃但是有些担心，毕竟要面对六个美女，而且女朋友也是刚认识几天。“亲爱的，现在到哪了？”手机中MM发过来了一条短信，GG一看时间，天啊，光顾着去傻想，还有几分钟就五点了，第一次如果都迟到那就太不好了，于是立即回复到，“宝贝儿，我就到了！”，因为麦当劳就在对面，抬头就可以看到的。GG跑上了麦当劳的二楼的用餐处，见到诸位美女，紧张的还没说不话来，“这是我男朋友”MM拽着GG的手臂说，“大家好，大家好”，GG紧张的说道。忙又补充到：“我们先点餐，大家自便，都不要客气啊”，“我要吃鸡翅”，“我要麦香鱼套餐”，我要“板烧鸡腿套餐”，我要“奶昔”，我要“薯条”，“我要汉堡”，“我也要汉堡”，“我和她们一眼都要要汉堡”，无语啊，GG当然不可能知道每个人的口味，无奈之下，只好把这三个美女带到服务台前，和服务员说，除了要订单上的东西外，在要三个汉堡，至于是什么味道的汉堡，就直接让这三个美女自己和服务员交流了</p>
+<p> </p>
+<p><b>工厂方法法模式模式解释：</b><b> </b></p>
+<p>         工厂方法模式（Factory Method Pattern）同样属于类的创建型模式又被称为多态工厂模式(Polymorphic) 。工厂方法模式的意义是定义一个创建产品对象的工厂接口，将实际创建工作推迟到子类当中。核心工厂类不再负责产品的创建，这样核心类成为一个抽象工厂角色，仅负责具体工厂子类必须实现的接口，这样进一步抽象化的好处是使得工厂方法模式可以使系统在不修改具体工厂角色的情况下引进新的产品。</p>
+<p>              英文定义为：Define an interface for creating an object, but let subclassesdecide which class to instantiate. Factory Method lets a class deferinstantiation to subclasses.</p>
+<p> </p>
+<p><b>工厂方法模式的</b><b>UML</b><b>图：</b><b> </b></p>
+<p>       工厂方法模式中包含的角色及其相应的职责如下：</p>
+<p>       抽象工厂（Creator）角色：工厂方法模式的核心，任何工厂类都必须实现这个接口。</p>
+<p>       具体工厂（ Concrete  Creator）角色: 具体工厂类是抽象工厂的一个实现，负责实例化产品对象。</p>
+<p>       抽象（Product）产品角色：简单工厂模式所创建的所有对象的父类，注意，这里的父类可以是接口也可以是抽象类，它负责描述所有实例所共有的公共接口。</p>
+<p>       具体产品（Concrete Product）角色：简单工厂所创建的具体实例对象，这些具体的产品往往都拥有共同的父类。</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062423561364.png"></p>
+<p> </p>
+<p> </p>
+<p><b>工厂方法法模式深入分析</b>：</p>
+<p>       简单工厂模式使用一个类负责所有产品的创建，虽然使得客服端和服务端相互分离，使得客服端不用关心产品的具体创建过程，客户端唯一所要做的就是调用简单工厂的静态方法获得想要的产品即可。但是，简单工厂模式违背了严格意义上的“开放封闭原则”，这就使得一旦有一个新的产品增加就必须修改工厂类的源代码，从而将新的产品的创建逻辑加入简单工厂中供客户端调用。工厂方法法模式正是在简单工厂模式的基础上进一步抽象而来的。由于工厂方法法模式的核心是抽象工厂角色，使用了面向对象的多态性，这就使得工厂方法法模式即保持了简单工厂模式的优点，又克服了简单工厂模式违背“开放封闭原则”的缺点。</p>
+<p>       工厂方法法模式中核心工厂类不再提供所有的产品的创建工作，而是将具体的产品创建工作交给了子类去做。这时候的核心工厂类做什么呢？做标准！核心工厂类只需要负责制定具体工厂需要实现的接口即可，至于具体的工作就留给了子类去创建了。</p>
+<p>       在实际的的使用中，抽闲产品和具体产品之间往往是多层次的产品结构，如下图所示：</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062423570978.png"></p>
+<p> </p>
+<p><b>工厂方法模式使用场景分析及代码实现：</b><b> </b></p>
+<p>       不同的美女同时要吃汉堡，但是不同的美女的有不同的口味，这是GG是不知道每个要吃汉堡美女的口味的，而且也没有必要知道，如果真的知道了，自己的女朋友肯定会很不高兴的~~~~(&gt;_&lt;)~~~~ 。这时候GG只需要带着这些美女到服务台那里，让这些美女直接和服务人员讲自己具体需要什么口味汉堡就OK了。但是，不管这些妹妹需要的具体是什么汉堡，结果一定还是一个汉堡。</p>
+<p>       UML模型图如下所示：</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062423580821.png"></p>
+<p> </p>
+<p>具体实现代码如下：</p>
+<p>       新建立一个食物的接口：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod;</p>
+<p align="left">/*</p>
+<p align="left"> * 食物的抽象接口</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>interface</b> Food {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取相应的食物</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>新建一个食物工厂的接口：</p>
+<p> </p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p>package  com.diermeng.designPattern.FatoryMethod;</p>
+<p> </p>
+<p>/*</p>
+<p> * 食物的生产工厂的抽象接口</p>
+<p> */</p>
+<p>public interface FoodFactory {</p>
+<p>       /*</p>
+<p>        * 生产工厂生产出相应的食物</p>
+<p>        */</p>
+<p>       public  Food getFood();</p>
+<p>}</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>接下来建立具体的产品：牛肉汉堡和鸡肉汉堡</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.Food;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 牛肉汉堡</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> BeefBurger <b>implements</b> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取牛肉汉堡</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get(){</p>
+<p align="left">        System.<i>out</i>.println("获得一份牛肉汉堡");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.Food;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 鸡肉汉堡</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> ChickenBurger <b>implements</b> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡肉汉堡</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get(){</p>
+<p align="left">        System.<i>out</i>.println("获取一份鸡肉汉堡");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>新建一个牛肉汉堡工厂：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.Food;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.FoodFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> *牛肉汉堡工厂</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> BeefBurgerFactory <b>implements</b> FoodFactory {</p>
+<p align="left">    /*</p>
+<p align="left">     * 生产出一份牛肉汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.FatoryMethod.FoodFactory#getFood()</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> Food getFood() {</p>
+<p align="left">        <b>return</b> <b>new</b> BeefBurger();</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p align="left"> </p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>       新建一个鸡肉汉堡工厂：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.Food;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.FoodFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 肌肉汉堡工厂</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> ChickenBurgerFactory <b>implements</b> FoodFactory {</p>
+<p align="left">    /*</p>
+<p align="left">     * 生产出一份肌肉汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.FatoryMethod.FoodFactory#getFood()</p>
+<p align="left">     */</p>
+<p align="left">    public Food getFood() {</p>
+<p align="left">        return  new ChickenBurger();</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>最后我们建立测试客户端：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.FatoryMethod.client;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.Food;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.FatoryMethod.FoodFactory;</p>
+<p align="left"><b>import</b>  com.diermeng.designPattern.FatoryMethod.impl.BeefBurgerFactory;</p>
+<p align="left"><b>import</b>  com.diermeng.designPattern.FatoryMethod.impl.ChickenBurgerFactory;</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 测试客户端</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> FactoryMethodTest {</p>
+<p align="left">    <b>public</b> <b>static</b> <b>void</b> main(String[] args) {</p>
+<p align="left">        //获得ChickenBurgerFactory</p>
+<p align="left">        FoodFactory  chickenBurgerFactory = <b>new</b> ChickenBurgerFactory();</p>
+<p align="left"> </p>
+<p align="left">        //通过ChickenBurgerFactory来获得ChickenBurger实例对象</p>
+<p align="left">        Food  ChickenBurger = chickenBurgerFactory.getFood();</p>
+<p align="left">        ChickenBurger.get();</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left">        //获得BeefBurgerFactory</p>
+<p align="left">        FoodFactory  beefBurgerFactory = <b>new</b> BeefBurgerFactory();</p>
+<p align="left"> </p>
+<p align="left">        //通过BeefBurgerFactory来获得BeefBurger实例对象</p>
+<p align="left">        Food  beefBurger = beefBurgerFactory.getFood();</p>
+<p align="left">        beefBurger.get();</p>
+<p align="left"> </p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>输出的结果如下：</p>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left">获取一份鸡肉汉堡</p>
+<p align="left">获得一份牛肉汉堡</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p> </p>
+<p><b>工厂方法模式的优缺点分析：</b><b></b></p>
+<p>       优点：工厂方法类的核心是一个抽象工厂类，所有具体的工厂类都必须实现这个接口。当系统扩展需要添加新的产品对象时，仅仅需要添加一个具体对象以及一个具体工厂对象，原有工厂对象不需要进行任何修改，也不需要修改客户端，这就很好的符合了“开放－封闭”原则。</p>
+<p>      缺点：使用工厂方法模式的时候，客户端需要决定实例化哪一个具体的工厂。也就是说工厂方法法模式把简单工厂模式的内部判断逻辑转移到了客户端代码。而且使用该模式需要增加额外的代码，这就导致工作量的增加。</p>
+<p> </p>
+<p><b>工厂方法模式的实际应用简介：</b><b></b></p>
+<p>工厂方法模式解决的是同一系列的产品的创建问题，而且很好的满足了“开放封闭原则”，这需要创建同一系列产品的时候，使用工厂方法模式往往比使用简单工厂模式更好，尤其是对大型复杂的系统而言。</p>
+<p> </p>
+<p> </p>
+<p><b>温馨提示：</b><b></b></p>
+<p>       工厂方法法模式解决了简单工厂模式的不足。在增加一个产品时，只需要一个具体的产品和创建产品的工厂类就可以，具有非常好的可维护性。但是也正因为如此，增加了代码量和工作量。不过瑕不掩瑜，因为增加的代码量不是很大的。</p>
+<p> </p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px"><span style="color:#ff0000">注意：该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋<span style="color:#ff0000">利</span></span><span style="color:#ff0000">。</span></p>
+<div><span style="color:#ff0000"><br></span></div><img src="http://www.cnblogs.com/guoshiandroid/aggbug/1764813.html?type=1" width="1" height="1" alt=""><p>评论: 1　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/25/1764813.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/25/1764813.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66975/">巴茨：雅虎不缺钱 长期营收源很重要</a><span style="color:gray">(2010-06-25 12:02)</span><br>· <a href="http://news.cnblogs.com/n/66974/">网游产品研发：差异化还是流水线</a><span style="color:gray">(2010-06-25 11:50)</span><br>· <a href="http://news.cnblogs.com/n/66973/">微软美女副总裁不慎漏嘴：WP7将在10月发布</a><span style="color:gray">(2010-06-25 11:25)</span><br>· <a href="http://news.cnblogs.com/n/66972/">金融时报：站在峭壁上的微软</a><span style="color:gray">(2010-06-25 11:21)</span><br>· <a href="http://news.cnblogs.com/n/66971/">白宫经济顾问出任Facebook全球公共政策主管</a><span style="color:gray">(2010-06-25 11:20)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/06/24/1764597.html">C#会重蹈覆辙吗？反射及元数据的性能问题</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

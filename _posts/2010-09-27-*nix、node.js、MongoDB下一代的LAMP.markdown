@@ -1,0 +1,19 @@
+---
+layout: post
+title:  "*nix、node.js、MongoDB下一代的LAMP"
+date:   2010-09-27 13:27:13
+author: 
+categories: program
+---
+
+## *nix、node.js、MongoDB下一代的LAMP
+### by 
+### at 2010-09-27 13:27:13
+### original <http://news.cnblogs.com/n/75650/>
+
+<p>LAMP（Linux+Apache+Mysql+Php）就像它的名字一样，是Web开发中的一盏明灯。而随着Web应用规模的扩大，LAMP架构遇到了很多挑战。比如越来越多的Nginx开始取代Apache，缓存层将MySQL的功能逐渐弱化，甚至越来越多的NoSQL产品以其简单灵活和高性能开始向MySQL的地位发起挑战，今天要说的是一个全新的组合：Unix系列系统，加<a href="http://nodejs.org/">node.js</a>，再加上MongoDB组成一个新的web开发框架。</p>
+<p>英文原文地址：<a href="http://www.travisglines.com/web-coding/node-js-unix-based-os-and-mongodb-num-are-the-new-lamp">http://www.travisglines.com/web-coding/node-js-unix-based-os-and-mongodb-num-are-the-new-lamp</a></p>
+<p><strong>关于node.js</strong></p>
+<p>node.js 是一个Web后端开发框架，其运行于Chrome 的V8引擎。以标准js进行后端开发。其回调函数机制，可以避免i/o的阻塞操作。这就避免了对多线程的依赖。当然也就减少了因为创建和维护多线程的开销。</p>
+<p><strong>all js</strong></p>
+<p>看到服务端的js解决方案，相信我们都有所感觉，这帮哥们好像打算一切皆js化了。没错！这就是目前有一部分技术领袖的想法，从服务端脚本，到数据层接口，如果全部是js，那是不是可以省来开发人员的很多开发成本，新人们不用再学习各个系统复杂的语法。只要会js，就能打遍天下。这个想法很nice，也很疯狂。</p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/68979/">LAMP仍然是Web开发最流行的选择吗？</a><span style="color:gray">(2010-07-22)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/75650/">http://news.cnblogs.com/n/75650/</a></p><p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=75650" width="1" height="1" alt="">

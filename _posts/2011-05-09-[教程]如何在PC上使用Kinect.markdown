@@ -1,0 +1,48 @@
+---
+layout: post
+title:  "[教程]如何在PC上使用Kinect"
+date:   2011-05-09 22:47:56
+author: 
+categories: program
+---
+
+## [教程]如何在PC上使用Kinect
+### by 
+### at 2011-05-09 22:47:56
+### original <http://www.cnbeta.com/articles/142323.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/39.htm"><img src="http://img.cnbeta.com/topics/game.png" alt="游戏" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.gadgetoflife.com/">活科技</a>的投递</b><br>
+自去年十一月Kinect首次推出后，除了销情十分理想外，亮点更是其令人难以置信技术潜力。很多人已破解并自家开发了很多令人深刻的Kinect应用程式。你也想试试在PC上使用Kinect吗？本文只是简单的入门，但都足够带你进入开发Kinect的世界！<br>
+如果你有一台 <a rel="nofollow" href="http://www.gadgetoflife.com/?tag=kinect&amp;amp;amp;variant=zh-hans">Kinect</a>，把Kinect连接到电脑不是那么难，看看下面的步骤：</p>
+		<p>1. 连接Kinect<a rel="nofollow" href="http://img.cnbeta.com/newsimg/110509/22475601345337823.jpg"><br>
+</a>连接 Kinect十分容易，只要你有盒装版本的Kinect，并有独立的电源。你只需插上电源，并连接到Kinect，然后连接 USB电缆到电脑。<br>
+不幸的是，如果你买的是 Xbox360 + Kinect版，是没有附带电源。如果你想在PC上用你Kinect，你必须购买<a rel="nofollow" href="http://www.microsoftstore.com/store/msstore/en_US/buy/pageType.product/externalRefID.9A4CFC08">独立的电源供应器</a>。<br>
+<a rel="nofollow" href="http://img.cnbeta.com/newsimg/110509/22475601345337823.jpg"><img src="http://img.cnbeta.com/newsimg/110509/22475601345337823.jpg" title="ajune11" style="border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-color:initial;display:block;margin-top:0px;margin-right:auto;margin-bottom:0px;margin-left:auto;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="307"></a>2. 安装 PrimeSense OpenNI
+要安装 OpenNI，只要进入下载页 <a rel="nofollow" href="http://www.gadgetoflife.com/bit.ly/fyjLFy">bit.ly/fyjLFy</a>并滚动，直到您看到的链接，下载最新的不稳定建立的Windows。下载并运行安装程序，不应该有任何惊喜在这里。<br>
+随着 OpenNI安装，你现在可以使用传感器 Kinect驱动程序。前往传感器 Kinect GitHub的网页上下载<a rel="nofollow" href="http://www.gadgetoflife.com/bit.ly/gqWMY9">bit.ly/gqWMY9</a>并点击按钮，然后点击下载。邮编按钮在下载来源。你不会有任何实际编译源代码，虽然，只提取的内容的zip文件，然后定位到bin /目录，其中包含一个二进制 Windows安装程序。通过快速运行安装程序。<br>
+在这一点上，你可以插入到计算机中的Kinect并执行一些快速的测试，以确保一切都步入正轨。首先，当你插上Kinect，您的电脑应该认识到它是什么。如果你去设备管理器，你会看到一个 PrimeSensor类别，其中包括一个 Kinect电机和Kinect照相设备。<br>
+<a rel="nofollow" href="http://img.cnbeta.com/newsimg/110509/22475811048414955.jpg"><img src="http://img.cnbeta.com/newsimg/110509/22475811048414955.jpg" title="bjune11" style="border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-color:initial;float:left;margin-top:0px;margin-right:1em;margin-bottom:1em;margin-left:0px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="56"></a>OpenNI需要配置才能正常运行，这是一组处理与 XML文件中的OpenNI / data目录。幸运的是，传感器 Kinect zip文件包含了一些预配置文件供您使用。返回到您解压缩的目录传感器 Kinect源代码，并找到OpenNI文件夹。复制此文件夹的内容到Program Files  OpenNI  Data文件夹。<br>
+最后，打开您刚刚复制过去的xml文件，因为我们要作一次改变。在开始的时候，有一个部分，上面写着：<br>
+<a rel="nofollow" href="http://www.gadgetoflife.com/wp-content/uploads/2011/05/screen_shot_2011-05-04_at_9.05.02_am.png"><img src="http://img.cnbeta.com/newsimg/110509/22480021984323098.png" title="screen_shot_2011-05-04_at_9.05.02_am" style="border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-color:initial;display:block;margin-top:0px;margin-right:auto;margin-bottom:0px;margin-left:auto;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="112"></a><br>
+不要担心，这是不是盗版，这个许可证是由PrimeSense发出。<br>
+<img src="http://img.cnbeta.com/newsimg/110509/22480231829660199.jpg" title="cjune11" style="float:left;margin-top:0px;margin-right:1em;margin-bottom:1em;margin-left:0px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="88"><br>
+最后，我们可以运行一个软件测试，以确保一切的工作。转到文件夹安装 OpenNI到，然后导航到SamplesBinRelease和查找文件niviewer.exe。当你运行这个程序，你应该看到一个视频流并排端与单一色深度图（如上）。如果你这样做，你成功了一半以上。<br>
+ <br>
+3. 安装NITE
+NITE是另外一个部件整体 PrimeSense包。这是更高层次的中间件，它解释传感器原始数据并将其转换成更有用的结构，孤立手势，并确定在您的身体。这些工具所使用的许多软件开发人员创造 Kinect。
+你可以下载最新版本的NITE：<a rel="nofollow" href="http://www.gadgetoflife.com/bit.ly/fsfFEg">bit.ly/fsfFEg</a>。安装几乎是一样的OpenNI，但中途通过，你会被要求提供一个许可密钥。你可以使用"0KOIk2JeIBYClPWVnMoRKn5cdY4="。<br>
+<img src="http://img.cnbeta.com/newsimg/110509/22480341951526495.jpg" title="djune11" style="float:left;margin-top:0px;margin-right:1em;margin-bottom:1em;margin-left:0px;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="169"><br>
+一旦你已经安装了NITE，你必须贯穿基本相同的配置过程主要以OpenNI。前往传感器 Kinect源目录，找到标有NITE目录，并复制其内容到Program FilesPrime SenseNITEData 目录中。打开每个 XML文件在记事本中，然后插入许可证密钥需要的地方。<br>
+你可以找到NITE中的示例程序NITESamplesBinRelease目录。一个好的开始的是采样 Players.exe，它只是显示您的视频输入什么样的摄像头看到，它与每个人的阴影中看到不同的颜色（下图）。<br>
+ <br>
+<a rel="nofollow" href="http://www.gadgetoflife.com/wp-content/uploads/2011/05/ejune11.jpg"><img src="http://img.cnbeta.com/newsimg/110509/2248065136234579.jpg" title="ejune11" style="border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-color:initial;display:block;margin-top:0px;margin-right:auto;margin-bottom:0px;margin-left:auto;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="210"></a><br>
+4. 安装软件
+恭喜！你已接上了Kinect！
+什么，你想要更多？那么，好吧。这里有几个方案，你可以尝试让自己开始：<br>
+<strong>FAAST</strong><br>
+短的灵活的行动和铰接式骨架工具包，FAAST能够让你控制鼠标和键盘与Kinect。随时准备接受你所有少数派报告幻想。<a rel="nofollow" href="http://www.gadgetoflife.com/bit.ly/exTk6O"> bit.ly/exTk6O</a><br>
+<strong>Brekel Kinect</strong><br>
+这个包打开 Kinect到一个临时动作捕捉device/3D扫描仪。它可以捕捉和出口骨骼动画，三维网格使用在您的3D建模程序的选择。 <a rel="nofollow" href="http://www.gadgetoflife.com/bit.ly/exTk6O">bit.ly/exTk6O</a><br>
+<a rel="nofollow" href="http://img.cnbeta.com/newsimg/110509/22480861059197259.jpg"><img src="http://img.cnbeta.com/newsimg/110509/22480861059197259.jpg" title="fjune11" style="border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-color:initial;display:block;margin-top:0px;margin-right:auto;margin-bottom:0px;margin-left:auto;border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-color:#dddddd;border-right-color:#dddddd;border-bottom-color:#dddddd;border-left-color:#dddddd;text-align:center;background-color:#f3f3f3;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px" height="468"></a><br>
+[via <a rel="nofollow" href="http://www.maximumpc.com/">Maximum PC</a>]<br></p></div>

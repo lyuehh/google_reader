@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "【jquery插件】搜索文本高亮"
+date:   2010-10-27 00:21:28
+author: 
+categories: program
+---
+
+## 【jquery插件】搜索文本高亮
+### by 
+### at 2010-10-27 00:21:28
+### original <http://www.css88.com/archives/2484>
+
+在页面上搜索某个关键字，使关键词高亮； 高亮样式自己可以重新定义： 例如：span.highlight { color:#F00; font-weight:700} 使用高亮： $(‘#fancy-text’).highLight();//清除高亮 $(‘#fancy-text’).highLight(“mode”);//显示高亮 查看demo：http://www.css88.com/demo/highlight/<img src="http://www1.feedsky.com/t1/428676974/feiwen8772/feedsky/s.gif?r=http://www.css88.com/archives/2484" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/feiwen8772/428676974/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/feiwen8772/428676974/art01.gif"></a></p>

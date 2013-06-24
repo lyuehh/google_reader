@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "海量数据处理专题（五）——堆"
+date:   2010-10-02 18:47:00
+author: pkuoliver@hotmail.com
+categories: program
+---
+
+## 海量数据处理专题（五）——堆
+### by pkuoliver@hotmail.com
+### at 2010-10-02 18:47:00
+### original <http://blog.redfox66.com/post.aspx?id=fb616dde-c4b0-4e75-9efb-f14630c0d314>
+
+<p><span style="font-family:微软雅黑"><span style="font-size:medium"><strong>【什么是堆】</strong></span> <br></span>概念：堆是一种特殊的二叉树，具备以下两种性质     <br>1）每个节点的值都大于（或者都小于，称为最小堆）其子节点的值     <br>2）树是完全平衡的，并且最后一层的树叶都在最左边     <br>这样就定义了一个最大堆。如下图用一个数组来表示堆：</p>
+<p><a href="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_array.png"><img style="display:block;float:none;margin-left:auto;margin-right:auto;border-width:0px" title="ds_binary_heap_array" src="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_array_thumb.png" border="0" alt="ds_binary_heap_array" width="417" height="479"></a></p>
+<p>那么下面介绍二叉堆：二叉堆是一种完全二叉树，其任意子树的左右节点（如果有的话）的键值一定比根节点大，上图其实就是一个二叉堆。</p>
+<p>你一定发觉了，最小的一个元素就是数组第一个元素，那么二叉堆这种有序队列如何入队呢？看图：</p>
+<p><a href="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_insert.png"><img style="display:block;float:none;margin-left:auto;margin-right:auto;border-width:0px" title="ds_binary_heap_insert" src="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_insert_thumb.png" border="0" alt="ds_binary_heap_insert" width="357" height="694"></a></p>
+<p>假设要在这个二叉堆里入队一个单元，键值为2，那只需在数组末尾加入这个元素，然后尽可能把这个元素往上挪，直到挪不动，经过了这种复杂度为Ο(logn)的操作，二叉堆还是二叉堆。</p>
+<p>那如何出队呢？也不难，看图：</p>
+<p><a href="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_dequeue.png"><img style="display:block;float:none;margin-left:auto;margin-right:auto;border-width:0px" title="ds_binary_heap_dequeue" src="http://blog.redfox66.com/image.axd?picture=ds_binary_heap_dequeue_thumb.png" border="0" alt="ds_binary_heap_dequeue" width="616" height="555"></a> 出队一定是出数组的第一个元素，这么来第一个元素以前的位置就成了空位，我们需要把这个空位挪至叶子节点，然后把数组最后一个元素插入这个空位，把这个“空位”尽量往上挪。这种操作的复杂度也是Ο(logn)。</p>
+<p><span style="font-family:微软雅黑"><span style="font-size:medium"><strong>【适用范围】</strong></span> <br>海量数据前n大，并且n比较小，堆可以放入内存 </span></p>
+<p><span style="font-family:微软雅黑"><span style="font-size:medium"><strong>【基本原理及要点】</strong></span> <br>最大堆求前n小，最小堆求前n大。方法，比如求前n小，我们比较当前元素与最大堆里的最大元素，如果它小于最大元素，则应该替换那个最大元 素。这样最后得到的n个元素就是最小的n个。适合大数据量，求前n小，n的大小比较小的情况，这样可以扫描一遍即可得到所有的前n元素，效率很高。 </span></p>
+<p><span style="font-family:微软雅黑"><span style="font-size:medium"><strong>【扩展】</strong></span> <br>双堆，一个最大堆与一个最小堆结合，可以用来维护中位数。 </span></p>
+<p><span style="font-family:微软雅黑"><span style="font-size:medium"><strong>【问题实例】</strong></span> <br>1)100w个数中找最大的前100个数。       <br>用一个100个元素大小的最小堆即可。 </span></p>

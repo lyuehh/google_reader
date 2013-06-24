@@ -1,0 +1,160 @@
+---
+layout: post
+title:  "面向对象几个名词"
+date:   2012-06-21 20:10:00
+author: 
+categories: program
+---
+
+## 面向对象几个名词
+### by 
+### at 2012-06-21 20:10:00
+### original <http://JuanitoFatas.github.com/blog/2012/06/21/oop-basic/>
+
+<h2>Paradigms 从范式说起</h2>
+
+<p>编程的范式呢，有 imperative style、procedural，再来是 functional programming 与 declarative language，接著是 object-oriented，也就是我们说的面向对象。</p>
+
+<p>首先 imperative 即告诉程序如何做，一步一步来，如 Assembly。但日子长了，人会变聪明的，人们开始从 imperative 中找到一些规律，发展出一些算法，仰赖 subroutine 的程序风格，于是有了 Procedural 风格的范式，如 FORTRAN, C, Pascal 以及有 <code>setf</code> 的 Lisp。但是 subroutine 仍然会参照到某些全局变量及状态，无法分割成独立的一块一块，每个程序间还是相互关联，这使得人们很难开发及维护。而函数式风格恰似可解决这个问题。函数式风格简单的说呢，即带入一样的参数至某个函数，会产生相同的结果。而函数式的程序与数学相似，可以写得很简洁，但问题又来了，某些程序不仅仅是返回几个值而已，需要做一些特定的动作，而函数式似乎不大适合这做特定动作的编程，函数式的例子有: Haskell, 没有 <code>setf</code> 的 Lisp。</p>
+
+<p>相对于 imperative 风格，有一种风格叫做 declarative，这种风格是什么呢？这种风格是让你表达“要干什么”，而不是表达“要怎么做”。一种 declarative 风格的编程是基于规则的编程，也就是给定一系列的规则，在满足规则的条件下将问题解决。古老 AI 的 Eliza 就是一个例子。而一种特别重要的 imperative 编程风格是逻辑编程 (logic programming)，我们有一系列的公理来描述 constriant，而问题通过证明一个目标 (GOAL)来解决。Prolog 就是这种编程风格的例子。</p>
+
+<p>面向对象编程又是另一种避免全局状态的编程风格。面向对象编程通过将这些全局状态封装成小的、可处理的个体，也就是对象，来解决问题。</p>
+
+<p>简单的说呢，对象是将某些数据与操作封装在数据之上的东西。信息隐藏就是这个概念。类别 (class)是由一群有著同样行为的相似对象所组成。而我们又说对象是类别的实例 (instance)。继承 (inheritance)代表我们可以定义出与之前定义过的类别所相似的新类别。新的类别可以继承所有已存在的行为，只要说明新类与哪不一样即可。</p>
+
+<h2>OO terms</h2>
+
+<ul>
+<li><p>class 类别: 一群具同样行为相似的对象。</p></li>
+<li><p>class variable 类别变量: 由所有类别成员共享的变量</p></li>
+<li><p>delegation: 从一个对象传递信息给其组成的成员。</p></li>
+<li><p>generic function 泛用函数: 一个可接受不同类型或类别参数的函数。</p></li>
+<li><p>inheritance 继承: 代表著可定义出已存在类别的变种。</p></li>
+<li><p>instance 实例: 一个类别的实例为对象</p></li>
+<li><p>instance variable 实例变量: 一个封装在对象内的变量。</p></li>
+<li><p>message 消息: 动作的名称。等同于 generic function。</p></li>
+<li><p>method 方法: 特定类别处理一个 message 的方法。</p></li>
+<li><p>multimethod 多方法: 一个依赖不止一个参数的 method</p></li>
+<li><p>multiple inheritance: 从多于一个父类别继承而来。</p></li>
+<li><p>object: 局部状态与行为的封装。</p></li>
+</ul>
+
+
+<h2>对象 Object</h2>
+
+<p>面向对象编程从定义上看呢，是一门围绕对象的编程。任何可以存在计算机内存的东东都可以想成是对象。像是 3 啦、x 阿、字串 “hello world” 等等这些都是对象。当然所有的程序语言都是围绕著对象在编程，但一般的跟面向对象不一样，一般的是我们写好对象及过程 (procedural)的定义，通过将过程应用至不同的对象上，来得到我们想要的结果，而面向对象将这两者合而为一，将这些封装在对象上。</p>
+
+<p>拿 Lisp 举个例子：</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+</pre></td><td><pre><code><span><span>(</span><span>defstruct </span><span>account</span>
+</span><span>  <span>(</span><span>name </span><span>&quot;&quot;</span><span>)</span> <span>(</span><span>balance</span> <span>0.0</span><span>)</span> <span>(</span><span>interest-rate</span> <span>.</span><span>05</span><span>))</span>
+</span><span>
+</span><span><span>(</span><span>defun</span> <span>account-withdraw</span> <span>(</span><span>account</span> <span>amt</span><span>)</span>
+</span><span>  <span>&quot;withdraw amt from account&quot;</span>
+</span><span>  <span>(</span><span>if </span><span>(</span><span>&lt;= </span><span>amt</span> <span>(</span><span>account-balance</span> <span>account</span><span>))</span>
+</span><span>      <span>(</span><span>decf</span> <span>(</span><span>account-balance</span> <span>account</span><span>)</span> <span>amt</span><span>)</span>
+</span><span>      <span>&quot;you don&#39;t have enough money&quot;</span><span>))</span>
+</span><span><span>(</span><span>defun</span> <span>account-deposit</span> <span>(</span><span>account</span> <span>amt</span><span>)</span>
+</span><span>  <span>&quot;deposit amt to account&quot;</span>
+</span><span>  <span>(</span><span>incf</span> <span>(</span><span>account-balance</span> <span>account</span><span>)</span> <span>amt</span><span>))</span>
+</span><span>
+</span><span><span>(</span><span>defun</span> <span>account-interest</span> <span>(</span><span>account</span><span>)</span>
+</span><span>  <span>&quot;add interest to account&quot;</span>
+</span><span>  <span>(</span><span>incf</span> <span>(</span><span>account-balance</span> <span>account</span><span>)</span>
+</span><span>        <span>(</span><span>* </span><span>(</span><span>account-interest-rate</span> <span>account</span><span>)</span>
+</span><span>           <span>(</span><span>account-balance</span> <span>account</span><span>))))</span>
+</span></code></pre></td></tr></table></div>
+
+
+<p>通过调用 <code>(make-account)</code> 我们可以创一个新帐户，并对这个帐户进行操作。</p>
+
+<p>然而一旦我们改变了问题的需求，这就不会工作了，因为我们是针对特定的需求而写成，比如我们想要有一个新的帐户，一次不能提超过 200 元。这样一来我们就得大幅改动代码，败了，那要是用面向对象风格写成的呢？</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+</pre></td><td><pre><code><span><span>(</span><span>defun</span> <span>new-account</span> <span>(</span><span>name </span><span>&amp;optional</span> <span>(</span><span>balance</span> <span>0.00</span><span>)</span>
+</span><span>                     <span>(</span><span>interest-rate</span> <span>.</span><span>05</span><span>))</span>
+</span><span>  <span>&quot;Create a new account that handles following messages:&quot;</span>
+</span><span>  <span>#&#39;</span><span>(</span><span>lambda</span> <span>(</span><span>message</span><span>)</span>
+</span><span>      <span>(</span><span>case</span> <span>message</span>
+</span><span>        <span>(</span><span>withdraw</span> <span>#&#39;</span><span>(</span><span>lambda</span> <span>(</span><span>amt</span><span>)</span>
+</span><span>                      <span>(</span><span>if </span><span>(</span><span>&lt;= </span><span>amt</span> <span>balance</span><span>)</span>
+</span><span>                          <span>(</span><span>decf</span> <span>balance</span> <span>amt</span><span>)</span>
+</span><span>                          <span>&#39;insufficient-funds</span><span>)))</span>
+</span><span>        <span>(</span><span>deposit</span>  <span>#&#39;</span><span>(</span><span>lambda</span> <span>(</span><span>amt</span><span>)</span> <span>(</span><span>incf</span> <span>balance</span> <span>amt</span><span>)))</span>
+</span><span>        <span>(</span><span>balance</span>  <span>#&#39;</span><span>(</span><span>lambda</span> <span>()</span> <span>balance</span><span>))</span>
+</span><span>        <span>(</span><span>name </span>    <span>#&#39;</span><span>(</span><span>lambda</span> <span>()</span> <span>name</span><span>))</span>
+</span><span>        <span>(</span><span>interest</span> <span>#&#39;</span><span>(</span><span>lambda</span> <span>()</span>
+</span><span>                      <span>(</span><span>incf</span> <span>balance</span>
+</span><span>                            <span>(</span><span>* </span><span>interest-rate</span> <span>balance</span><span>)))))))</span>
+</span></code></pre></td></tr></table></div>
+
+
+<p>这里调用 <code>(new-account &lt;name&gt; [balance] [interest-rate])</code> ，产生一个闭包对象。此闭包封装了三个变量及五个函数：名字、馀额以及利率；提款、存款、查询馀额、查询户名及利息。而这五个函数处理五种不同消息。这样子处理消息的函数我们叫做方法。这样的好处是我们完完全全把信息隐藏起来了，只有知道咱这 account 对象五个秘密消息的人才能调用它。</p>
+
+<p>怎么调用呢？</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+</pre></td><td><pre><code><span><span>(</span><span>defun</span> <span>get-method</span> <span>(</span><span>object</span> <span>message</span><span>)</span>
+</span><span>  <span>&quot;Return the method that implements message for this object.&quot;</span>
+</span><span>  <span>(</span><span>funcall</span> <span>object</span> <span>message</span><span>))</span>
+</span><span>
+</span><span><span>(</span><span>defun</span> <span>send</span> <span>(</span><span>object</span> <span>message</span> <span>&amp;rest</span> <span>args</span><span>)</span>
+</span><span>  <span>&quot;Get the function to implement the message,</span>
+</span><span><span>  and apply the function to the args.&quot;</span>
+</span><span>  <span>(</span><span>apply </span><span>(</span><span>get-method</span> <span>object</span> <span>message</span><span>)</span> <span>args</span><span>))</span>
+</span></code></pre></td></tr></table></div>
+
+
+<p>如此一来就可以这样子传递消息给这个对象，而达到调用的效果了：</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+</pre></td><td><pre><code><span><span>&gt;</span> <span>(</span><span>setf</span> <span>my-acc</span> <span>(</span><span>new-account</span> <span>&quot;juanito&quot;</span> <span>1000.0</span><span>))</span>
+</span><span><span>#</span><span>&lt;COMPILED-LEXICAL-CLOSURE</span> <span>(</span><span>:INTERNAL</span> <span>NEW-ACCOUNT</span><span>)</span> <span>#</span><span>x302000F9EC0F&gt;</span>
+</span><span><span>&gt;</span> <span>(</span><span>my-acc</span> <span>&#39;withdraw</span> <span>300.0</span><span>)</span>
+</span><span><span>300.0</span>
+</span></code></pre></td></tr></table></div>
+
+
+<p>呵呵，是不是很有 Smalltalk 的味道呢？</p>

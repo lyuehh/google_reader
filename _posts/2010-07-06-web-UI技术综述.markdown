@@ -1,0 +1,149 @@
+---
+layout: post
+title:  "web UI技术综述"
+date:   2010-07-06 23:24:29
+author: 
+categories: program
+---
+
+## web UI技术综述
+### by 
+### at 2010-07-06 23:24:29
+### original <http://www.javaeye.com/topic/707005>
+
+<div>
+<h1 style="text-align:center;margin:17pt 65.95pt 16.5pt 63.75pt">
+<span> </span><span lang="EN-US">web UI</span><span>技术综述</span> </h1>
+<p align="right"><strong><span lang="EN-US">Kimmking@163.com</span></strong></p>
+<p align="right"><strong><span lang="EN-US">2009</span></strong><strong><span>年</span><span lang="EN-US">3</span></strong><strong><span>月</span></strong></p>
+<p><span lang="EN-US"> </span></p>
+</div>
+<p><span lang="EN-US"><br></span></p>
+<div>
+<h2>
+<span lang="EN-US"><span>一、<span style="font-family:&#39;Times New Roman&#39;">      </span></span></span><span lang="EN-US">Web UI</span><span>技术发展历程</span> </h2>
+<h3>
+<span lang="EN-US"><span>1.1<span style="font-family:&#39;Times New Roman&#39;">          </span></span></span><span lang="EN-US">Web 1.0</span><span>的</span><span lang="EN-US">UI</span><span>技术</span> </h3>
+<p style="text-indent:21pt"><span>在</span><span lang="EN-US">HTML</span><span>规范发展的过程中，以</span><span lang="EN-US">HTML</span><span>标签为基础来构建的页面一直是</span><span lang="EN-US">Web UI</span><span>的主流技术。</span></p>
+<h4>
+<span lang="EN-US"><span>1.1.1<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span>纯文本网页</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">1989</span><span>年，英国人</span><span lang="EN-US">Tim Berners Lee</span><span>发明了</span><span lang="EN-US">www</span><span>（</span><span lang="EN-US">World Wide Web</span><span>），万维网诞生。通过</span><span lang="EN-US">www</span><span>，分散在网络上各处的资源可以相互访问。最开始的网页没有</span><span lang="EN-US">UI</span><span>的概念，只包含纯文本的数据和跳转的超链接。</span></p>
+<h4>
+<span lang="EN-US"><span>1.1.2<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span>静态</span><span lang="EN-US">HTML</span><span>页面</span> </h4>
+<p style="text-indent:21pt"><span>随着越来越多的数据被放置到了互联网上，纯文本的</span><span lang="EN-US">HTML</span><span>已经不能满足人们的期望。</span><span lang="EN-US">Marc Andreessen</span><span>在</span><span lang="EN-US">1993</span><span>年引入了图片。随后，字体、背景、框架和一些特效（</span><span lang="EN-US">marquee</span><span>、</span><span lang="EN-US">blink</span><span>）等元素相继被引入了</span><span lang="EN-US">HTML</span><span>中。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">1993</span><span>年</span><span lang="EN-US">6</span><span>月，互联网工程工作小组</span> <span>（</span><span lang="EN-US">IETF</span><span>，</span><span lang="EN-US">Internet Engineering Task Force</span><span>）发布了</span><span lang="EN-US">HTML</span><span>草案；</span><span lang="EN-US">1995</span><span>年</span><span lang="EN-US">11</span><span>月，提出了</span><span lang="EN-US">HTML2.0</span><span>规范。</span></p>
+<p><span lang="EN-US"><span>         </span></span><span>此时的</span><span lang="EN-US">web UI</span><span>已经具有较强的静态展示能力，丰富多彩的展示效果，被越来越多的人所接受。</span><span lang="EN-US">Web UI</span><span>技术逐渐形成。</span></p>
+<h4>
+<span lang="EN-US"><span>1.1.3<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Web UI</span><span>的成熟期</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">1996</span><span>年是</span><span lang="EN-US">HTML</span><span>发展的一个里程碑，</span><span lang="EN-US">JavaScript</span><span>和叠样式表（</span><span lang="EN-US">CSS</span><span>，</span><span lang="EN-US">Cascading Style Sheets</span><span>）相继诞生，</span><span lang="EN-US">W3c</span><span>（</span><span lang="EN-US">World Wide Web Consorium</span><span>）制定的</span><span lang="EN-US">HTML3.2</span><span>规范出炉。</span></p>
+<p style="text-indent:21pt"><span>此时的</span><span lang="EN-US">web UI</span><span>可以在展现后，与用户的操作交互，根据用户的行为方便地修改</span><span lang="EN-US">UI</span><span>元素和调整样式，从而实现动态的</span><span lang="EN-US">DHTML</span><span>页面。至此，传统的</span><span lang="EN-US">HTML Web UI</span><span>技术发展到成熟期。后来的发展中，</span><span lang="EN-US">HTML</span><span>标准没再有大的改动。</span></p>
+<p style="text-indent:21pt"><span>从这个时期开始，一般的</span><span lang="EN-US">web</span><span>站点或是</span><span lang="EN-US">web</span><span>应用系统的实现都是从界面设计人员使用</span><span lang="EN-US">Photoshop</span><span>或是</span><span lang="EN-US">Dreamweaver</span><span>等工具设计出效果图或是界面原型开始。此时的内容还都是所谓的静态页面，无法根据不同的外部条件展示不同的内容。</span></p>
+<p style="text-align:center;text-indent:7.1pt" align="center"> </p>
+<h4>
+<span lang="EN-US"><span>1.1.4<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span>服务器端技术</span> </h4>
+<p style="text-indent:20.25pt"><span>随后，</span><span lang="EN-US">CGI</span><span>、</span><span lang="EN-US">ASP(Active Server Page)</span><span>、</span><span lang="EN-US">JSP(Java Server Pages)</span><span>、</span><span lang="EN-US">PHP(Personal home page Hypertext Preprocessor)</span><span>等服务器端脚本技术相继涌现，真正的动态页面出现了。服务器端代码分析用户提交的请求参数，从数据库服务器获取相应的业务数据，动态地将网页和数据组合拼装出网页的</span><span lang="EN-US">HTML</span><span>文本输出到客户端浏览器。</span></p>
+<p style="text-indent:20.25pt"><span>此时的服务器端页面不再是一个单纯的</span><span lang="EN-US">UI</span><span>模型，而只是一个服务器端脚本引擎来处理生成客户端</span><span lang="EN-US">UI</span><span>模型的模板，其中包括</span><span lang="EN-US">HTML</span><span>片段、脚本块和标签等元素。比如</span><span lang="EN-US">Struts</span><span>、</span><span lang="EN-US">Tapestry</span><span>和</span><span lang="EN-US">WebWork</span><span>等基于</span><span lang="EN-US">JavaEE</span><span>技术的</span><span lang="EN-US">web</span><span>框架就是此类技术的集大成者。</span></p>
+<p style="text-indent:20.25pt"><span>随着</span><span lang="EN-US">web</span><span>开发技术的进一步发展，又出现服务器端</span><span lang="EN-US">UI</span><span>组件技术。例如</span><span lang="EN-US">asp.net</span><span>中的服务器端</span><span lang="EN-US">UI</span><span>组件和</span><span lang="EN-US">JSP</span><span>中的</span><span lang="EN-US">JSF</span><span>组件。其使用服务器端脚本技术，封装部分</span><span lang="EN-US">HTML</span><span>、</span><span lang="EN-US">JavaScript</span><span>和</span><span lang="EN-US">CSS</span><span>片段构建一个完整的</span><span lang="EN-US">UI</span><span>组件模型，在运行期间解释并与数据进行整合，最终输出为实际的</span><span lang="EN-US">HTML</span><span>代码。</span></p>
+<p style="text-align:center;text-indent:20.25pt"><span><span lang="EN-US"><img src="http://dl.javaeye.com/upload/picture/pic/66468/ccbfe3f5-a15c-3a77-94f1-35ef0a8eb656.png" alt="" width="543" height="173"></span></span></p>
+<p style="text-align:center" align="center"> </p>
+<h3>
+<span lang="EN-US"><span>1.2<span style="font-family:&#39;Times New Roman&#39;">          </span></span></span><span lang="EN-US">Web 2.0</span><span>的</span><span lang="EN-US">UI</span><span>技术</span> </h3>
+<p style="text-indent:21pt"><span lang="EN-US">Web2.0</span><span>是</span><span lang="EN-US">2003</span><span>年之后互联网的热门概念之一，不过目前对什么是</span><span lang="EN-US">Web2.0</span><span>并没有很严格的定义。一般来说</span><span lang="EN-US">Web2.0</span><span>是相对</span><span lang="EN-US">Web1.0</span><span>的新的一代互联网技术的统称。</span><span lang="EN-US">Web1.0</span><span>的主要特点在于用户通过浏览器获取信息，</span><span lang="EN-US">Web2.0</span><span>则更注重用户的交互作用，用户既是网站内容的浏览者，也是网站内容的制造者。</span></p>
+<p style="text-indent:21pt"><span>但业务系统与商业网站有着巨大的区别，业务系统主要使用</span><span lang="EN-US">web2.0</span><span>来改善用户体验，而极少关注博客（</span><span lang="EN-US">BLOG</span><span>）、百科全书</span><span lang="EN-US">(Wiki)</span><span>、社会网络（</span><span lang="EN-US">SNS</span><span>）等用户互动和参与技术。</span></p>
+<h4>
+<span lang="EN-US"><span>1.2.1<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Ajax</span> </h4>
+<p style="text-indent:21pt"><span>进入</span><span lang="EN-US">21</span><span>世纪后，</span><span lang="EN-US">Ajax</span><span>（</span><span lang="EN-US">Asynchronous JavaScript And Xml</span><span>）技术的崛起绝对是互联网应用的一个划时代的变革。简单地说，</span><span lang="EN-US">Ajax</span><span>就是为浏览器提供了在不提交整个页面的情况下动态的与服务器简单交互的能力。这样，就可以通过使用</span><span lang="EN-US">JavaScript</span><span>脚本来提交数据和刷新或是渲染页面中的某些部分，此后人们就不必在页面提交和显示之间的空白状态等待，</span><span lang="EN-US">web</span><span>应用的用户体验得到巨大增强。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">Ajax</span><span>技术通过在</span><span lang="EN-US">JavaScript</span><span>语言环境中使用</span><span lang="EN-US">XmlHttpRequest</span><span>对象与服务器端数据和业务交互，并从</span><span lang="EN-US">UI</span><span>界面获取用户输入和将服务器端处理结果通过</span><span lang="EN-US">UI</span><span>界面展现出来。</span></p>
+<p style="text-align:center" align="center"> </p>
+<p style="text-indent:21pt"><span>目前主流的客户端</span><span lang="EN-US">Ajax</span><span>框架有：</span><span lang="EN-US">Jquery</span><span>，</span><span lang="EN-US">Dojo</span><span>，</span><span lang="EN-US">MooTools</span><span>，</span><span lang="EN-US">Prototype</span><span>等等。服务器端的</span><span lang="EN-US">Ajax</span><span>框架有</span><span lang="EN-US">DWR</span><span>，</span><span lang="EN-US">Buffalo</span><span>，</span><span lang="EN-US">Ajax4jsf</span><span>等等。</span></p>
+<p style="text-align:center"><img src="http://dl.javaeye.com/upload/picture/pic/66466/cc5d4eda-1fbd-332a-a144-9d31dc400ab4.png" alt="" width="352" height="166"></p>
+<h4>
+<span lang="EN-US"><span>1.2.2<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span>基于</span><span lang="EN-US">JavaScript</span><span>的</span><span lang="EN-US">UI</span><span>技术</span> </h4>
+<p><span lang="EN-US"><span>   </span></span><span>基于</span><span lang="EN-US">JavaScript</span><span>的</span><span lang="EN-US">UI</span><span>技术的出现，将</span><span lang="EN-US">web UI</span><span>的控制权从界面设计人员递交给了程序员，即可以直接在</span><span lang="EN-US">web</span><span>的前端使用</span><span lang="EN-US">JavaScript</span><span>脚本来描述一个</span><span lang="EN-US">UI</span><span>组件模型，然后在运行时，由浏览器的脚本解释器调用核心的</span><span lang="EN-US">UI</span><span>技术框架来将其转换成</span><span lang="EN-US">HTML</span><span>的</span><span lang="EN-US">UI</span><span>界面。</span></p>
+<p style="text-indent:21pt"><span>此类</span><span lang="EN-US">UI</span><span>技术框架跟服务器端</span><span lang="EN-US">UI</span><span>技术的思路一致，只是在客户端浏览器中封装了一套</span><span lang="EN-US">UI</span><span>模型。这样界面设计不需要服务器端的支持，在开发期间能更好的展示和测试界面效果。同时由于</span><span lang="EN-US">UI</span><span>界面的构建和控制都在客户端，只需要和服务器端传递请求参数和数据，这样就能比服务器端</span><span lang="EN-US">UI</span><span>技术大大的降低服务器端的压力和网络数据的传递量。</span></p>
+<p style="text-indent:21pt"><span>此类技术有</span><span lang="EN-US">Ext JS</span><span>，</span><span lang="EN-US">Yahoo UI</span><span>，</span><span lang="EN-US">qooxdoo</span><span>等等。其中</span><span lang="EN-US">Ext JS</span><span>框架比较完善并且易用的。</span></p>
+<p><span lang="EN-US"><span> </span><span>       </span>Ext JS</span><span>最初是一个基于</span><span lang="EN-US">YUI(Yahoo</span><span>！</span><span lang="EN-US">UI)</span><span>的扩展，现在已经完全独立。</span><span lang="EN-US">Ext JS</span><span>是目前最好的纯</span><span lang="EN-US">JavaScript UI</span><span>展示框架，其提供了一整套的基于</span><span lang="EN-US">JavaScript</span><span>和</span><span lang="EN-US">CSS</span><span>的组件体系，以及整合了许多</span><span lang="EN-US">web UI</span><span>的其他功能。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">Ext JS</span><span>的特点如下：</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>1.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>支持各种主流浏览器</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>2.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>设计合理，基于中间层对象和插件机制，利于扩展</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>3.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>组件丰富，结构清晰，体系完善</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>4.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>纯</span><span lang="EN-US">JavaScript</span><span>，不依赖于浏览器插件</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>5.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>开源，文档资料全面</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>6.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>与组件相关的</span><span lang="EN-US">Ajax</span><span>封装</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>7.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>数据处理、储存和绑定</span></p>
+<p style="text-indent:0.3pt;margin-left:21pt"><span lang="EN-US"><span>8.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>实现了一些特效、事件机制，</span><span lang="EN-US">Dom</span><span>选择器</span></p>
+<p><span lang="EN-US"> </span></p>
+<p style="text-align:center"><span lang="EN-US"><span lang="EN-US"><img src="http://dl.javaeye.com/upload/picture/pic/66464/9bbf3b6b-416f-3fbe-a1e4-25bb71b243ad.png" alt="" width="311" height="221"></span></span></p>
+<p style="text-align:center" align="center"> </p>
+<h3>
+<span lang="EN-US"><span>1.3<span style="font-family:&#39;Times New Roman&#39;">          </span></span></span><span>桌面程序化的</span><span lang="EN-US">Web UI</span> </h3>
+<p style="text-indent:21pt"><span>随着</span><span lang="EN-US">web</span><span>技术和网络应用的发展、</span><span lang="EN-US">CPU</span><span>处理器和浏览器能力的提高，人们对于</span><span lang="EN-US">web</span><span>程序的期望值也越来越高，希望把越来越多的桌面程序的特性和能力移植到了</span><span lang="EN-US">web</span><span>系统来实现，（与客户端操作系统和软硬件交互，操作二进制数据，访问网络，渲染图形等等），纯文本的</span><span lang="EN-US">HTML</span><span>已经不能满足要求。于是各大厂商纷纷推出自己的解决方案，典型的技术有</span><span lang="EN-US">Microsoft</span><span>的</span><span lang="EN-US">ActiveX</span><span>技术、</span><span lang="EN-US">Sun</span><span>的</span><span lang="EN-US">Applet</span><span>技术和</span><span lang="EN-US">Macromedia</span><span>的</span><span lang="EN-US">Flash</span><span>技术等。</span> </p>
+<h4>
+<span lang="EN-US"><span>1.3.1<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span>插件技术和</span><span lang="EN-US">ActiveX</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">Microsoft</span><span>公司在</span><span lang="EN-US">1996</span><span>年提出</span><span lang="EN-US">ActiveX</span><span>技术。利用此技术，我们可以利用熟悉的开发工具比如</span><span lang="EN-US">vb/vc/delphi</span><span>等开发一个拥有传统桌面程序界面、可用于</span><span lang="EN-US">web</span><span>网页的组件，也可以将第<span style="color:black">三方发布的支持</span></span><span style="color:black">ActiveX</span><span>标准的程序嵌入到</span><span style="color:black">web</span><span>页面上去使用（当然不仅仅是</span><span style="color:black">web</span><span>页面，也可以放到任何支持</span><span style="color:black">ActiveX</span><span>的程序或容器中运行）。</span></p>
+<p style="text-indent:21pt"><span>相对与传统的</span><span style="color:black">HTML</span><span>界面，</span><span style="color:black">ActiveX</span><span>有如下的一些特点：</span></p>
+<p><span style="color:black"><span>1.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>代码的安全性</span></p>
+<p><span style="color:black"><span>2.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>组件的可重用性</span></p>
+<p><span style="color:black"><span>3.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>更强大的</span><span style="color:black">UI</span><span>界面和系统功能</span></p>
+<p><span style="color:black"><span>4.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>客户端系统的不安全性</span></p>
+<p><span style="color:black"><span>5.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>开发和维护的复杂性</span></p>
+<p style="text-indent:21pt"><span style="color:black">FireFox</span><span>使用基本</span><span style="color:black">XX</span><span>技术的插件，其它觉的浏览器也都有自己的插件技术。</span></p>
+<p style="text-indent:21pt"><span>插件技术是由浏览器支持的，本质上来说，</span><span style="color:black">Applet</span><span>和</span><span style="color:black">Flex</span><span>只是插件技术下的一种应用，它们和插件技术根本不能列在同一个层次上。但由于这两种技术应用太广泛，所以在讨论时常常忽略这种差别而直接放在一起进行讨论。</span></p>
+<p style="text-indent:21pt"><span style="color:black"> </span></p>
+<h4>
+<span lang="EN-US"><span>1.3.2<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Applet</span> </h4>
+<p style="text-indent:21pt"><span>相对于</span><span lang="EN-US">ActiveX</span><span>，</span><span lang="EN-US">Sun</span><span>公司</span><span lang="EN-US">Applet</span><span>是一个更安全的</span><span lang="EN-US">Web UI</span><span>技术。</span><span lang="EN-US">Applet</span><span>依赖于</span><span lang="EN-US">java</span><span>的</span><span lang="EN-US">jvm</span><span>，去掉危害系统安全性的功能，运行于一个有安全保障的沙箱之中。</span><span lang="EN-US">Applet</span><span>小程序作为</span><span lang="EN-US">java</span><span>源文件编译而成的二进制字节码，在网页运行时下载到客户端浏览器，并通过调用预先安装的</span><span lang="EN-US">jvm</span><span>来运行。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">Applet</span><span>的特点如下：</span></p>
+<p><span lang="EN-US"><span>1.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>基于</span><span lang="EN-US">java</span><span>，标准统一、开发简单</span></p>
+<p><span lang="EN-US"><span>2.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>客户端系统的安全性</span></p>
+<p><span lang="EN-US"><span>3.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>多浏览器支持</span></p>
+<p><span lang="EN-US"><span>4.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>单调的界面效果</span></p>
+<h4>
+<span lang="EN-US"><span>1.3.3<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Flash</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">Flash</span><span>是另一种</span><span lang="EN-US">web</span><span>上运行的、安全的、具有</span><span lang="EN-US">UI</span><span>界面的二进制小程序。同时，</span><span lang="EN-US">Macromedia</span><span>提供了给</span><span lang="EN-US">UI</span><span>设计人员和开发人员使用的强大开发工具。借助</span><span lang="EN-US">Flash</span><span>开发工具，使用者可以方便地在短时间内做出漂亮的用户界面、绚丽的动画效果。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">Flash</span><span>的一些特点：</span></p>
+<p><span lang="EN-US"><span>1.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>开发容易，入门简单上手快，甚至不需要编程知识。</span></p>
+<p><span lang="EN-US"><span>2.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>界面漂亮、动画效果、矢量图形、图像质量高。</span></p>
+<p><span lang="EN-US"><span>3.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>强大的开发工具支持。</span></p>
+<p><span lang="EN-US"><span>4.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>几乎所有浏览器支持。</span></p>
+<p><span lang="EN-US"><span>5.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>客户端系统的安全性。</span></p>
+<p><span>　　</span></p>
+<p><span>　　由于以上开发技术都很专业，需要较强的技术水平和人力投入，因此往往只用于解决特定技术问题（如文件断点续传、单据套打等），不可能将整个业务系统完全基于上述技术来实现。</span></p>
+<h3>
+<span lang="EN-US"><span>1.4<span style="font-family:&#39;Times New Roman&#39;">          </span></span></span><span lang="EN-US"><span> </span>RIA</span><span>技术</span> </h3>
+<p style="text-indent:21pt"><span>随着</span><span lang="EN-US">ActiveX</span><span>等桌面应用元素融入到</span><span lang="EN-US">web</span><span>系统中，</span><span lang="EN-US">web UI</span><span>的开发技术进入了多元化时代。但是</span><span lang="EN-US">ActiveX</span><span>的安全性和开发维护的技术门槛一直被人们所诟病。</span><span lang="EN-US">Flash</span><span>在相对长的一段时间内被作为美工们点缀网站和美化界面的技巧性工具。</span><span lang="EN-US">Applet</span><span>也因为种种原因也淡出人们的视野。然而伴随着</span><span lang="EN-US">Ajax</span><span>技术给</span><span lang="EN-US">web UI</span><span>带来的惊喜，越来越多内容丰富、效果绚丽的页面涌现出来，人们对于良好用户体验的</span><span lang="EN-US">UI</span><span>界面的期待越来越高。在这种背景下，</span><span lang="EN-US">RIA</span><span>（</span><span lang="EN-US">Rich Internet Applications</span><span>，富互联网应用）技术出现，它们在提供强大</span><span lang="EN-US">UI</span><span>构建和展现功能的同时，也提供了安全性保证、面向开发人员的模式和易用性、方便简单的一致性部署方式等等。</span><span lang="EN-US">RIA</span><span>概念深入人心。</span></p>
+<h4>
+<span lang="EN-US"><span>1.4.1<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Flex</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">Adobe Flex</span><span>是最初由</span><span lang="EN-US">Macromedia</span><span>公司在</span><span lang="EN-US">2004</span><span>年</span><span lang="EN-US">3</span><span>月发布的，基于其专有的</span><span lang="EN-US">Macromedia Flash</span><span>平台，它是涵盖了支持</span><span lang="EN-US">RIA</span><span>的开发和部署的一系列技术组合。</span><span lang="EN-US">Flex</span><span>的目标是让程序员更快更简单地开发</span><span lang="EN-US">RIA</span><span>应用。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">Flex SDK</span><span>使用基于</span><span lang="EN-US">XML</span><span>的</span><span lang="EN-US">MXML</span><span>语言，提供多种常用的组件，可实现</span><span lang="EN-US">Web Services</span><span>，远程对象，</span><span lang="EN-US">drag and drop</span><span>，列排序，图表等功能；</span><span lang="EN-US">FLEX</span><span>内建动画效果和其它简单互动界面等。</span></p>
+<h4>
+<span lang="EN-US"><span>1.4.2<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">Silverlight</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">2007</span><span>年</span><span lang="EN-US">9</span><span>月</span><span lang="EN-US">5</span><span>日，</span><span lang="EN-US">Microsoft Silverlight1.0</span><span>正式版发布。</span><span lang="EN-US">Microsoft Silverlight</span><span>是一个跨浏览器、跨客户平台的技术，能够设计、开发和发布有多媒体体验的</span><span lang="EN-US">RIA</span><span>程序。</span></p>
+<p><span>　　</span><span lang="EN-US">Silverlight</span><span>提供了强大的开发、运行平台和设计工具，能够开发出具有专业图形、音频和视频的</span><span lang="EN-US">Web</span><span>应用程序。</span></p>
+<p><span>　　</span><span lang="EN-US">Silverlight</span><span>具有以下的特点：</span></p>
+<p><span lang="EN-US"><span>1.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>跨浏览器、跨平台。</span></p>
+<p><span lang="EN-US"><span>2.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>一致的用户体验。</span></p>
+<p><span lang="EN-US"><span>3.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>基于</span><span lang="EN-US">.net</span><span>技术，功能强大，体系完善。</span></p>
+<p><span lang="EN-US"><span>4.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>强大的程序开发和界面设计工具。</span></p>
+<p><span lang="EN-US"><span>5.<span style="font-family:&#39;Times New Roman&#39;">         </span></span></span><span>可以方便地与现有的</span><span lang="EN-US">asp.net web</span><span>系统集成。</span></p>
+<h4>
+<span lang="EN-US"><span>1.4.3<span style="font-family:&#39;Times New Roman&#39;">    </span></span></span><span lang="EN-US">JavaFx</span> </h4>
+<p style="text-indent:21pt"><span lang="EN-US">2008</span><span>年底的</span><span lang="EN-US">SunOne</span><span>大会上，</span><span lang="EN-US">Sun</span><span>发布了</span><span lang="EN-US">JavaFx 1.0</span><span>正式版本，旨在基于</span><span lang="EN-US">jvm</span><span>环境和通过函数式编程的</span><span lang="EN-US">JavaFx</span><span>脚本来简化</span><span lang="EN-US">RIA</span><span>开发。</span></p>
+<p style="text-indent:21pt"><span lang="EN-US">JavaFx</span><span>技术具有可以直接调用</span><span lang="EN-US">Java API</span><span>的能力，可以调用目前的</span><span lang="EN-US">java</span><span>第三方类库，方便地与</span><span lang="EN-US">j2ee</span><span>系统集成和交互。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span lang="EN-US"> </span></p>
+</div>
+          
+          <br><br>
+          作者: <a href="http://setting.javaeye.com">kimmking</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/707005" style="color:red">已有 <strong>26</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

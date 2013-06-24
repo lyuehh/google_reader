@@ -1,0 +1,74 @@
+---
+layout: post
+title:  "Google 面试中的古怪问题"
+date:   2012-03-27 16:30:18
+author: 积木
+categories: program
+---
+
+## Google 面试中的古怪问题
+### by 积木
+### at 2012-03-27 16:30:18
+### original <http://www.ifanr.com/80272>
+
+<p style="text-align:center"><a href="http://www.ifanr.com/wp-content/uploads/2012/03/596x373_414381_gogle.jpeg"><img title="596x373_414381_gogle" src="http://www.ifanr.com/wp-content/uploads/2012/03/596x373_414381_gogle.jpeg" alt="" width="596" height="373"></a></p>
+<p>想必我们都听过科技公司面试的故事，为了测试面试者的智商和创造力，公司经常会给出一些刁钻古怪的问题。</p>
+<p>在 William Poundstone 的新书《去 Google 工作？你是否足够聪明》里，提到了 Google 面试中的逻辑谜题、陷阱问题和离奇古怪的难题。近日，在<a href="http://www.guardian.co.uk/technology/2012/mar/23/google-interviews-job-search-giant">卫报网站</a>上，William Poundstone 发布了书籍的节选部分，下面这些面试问题或许能够挑战你的智商。</p>
+<p><strong>问题 1</strong> ：不使用称量工具，你如何获知大象的体重？<span></span></p>
+<p>这是为了测试你思维的灵活性，甚至企业家潜能。当然，对于中国人来说，很可能已经知道问题的答案了，你只需要将其变成现代版。</p>
+<p>答案：把大象放到驳船上。大象的重量将使船体沉入水中数寸。在船体上做好标记。把大象牵上岸，然后往驳船上放特定重量的沙袋。</p>
+<p><strong>问题 2</strong>：面试官在黑板上写下了六个数字：10,9,60,90,70,66。下一个数字是什么？</p>
+<p>面试者试图找到这一串数字之间的联系，但它们毫无关联。许多人会最终放弃，只有少数人能够灵感涌现。这个问题需要你改变思考的角度。</p>
+<p>答案：将数字拼写成英文单词：ten,nine,sixty,ninety,seventy,sixty-six。看到了吗？排列规律是单词的长度，接下来的数字拼出来应该是 9 个字母，所以正确的答案是 96（ninety-six）。在 Google，这是一个被接受的答案。但是，更好的回答应该是 one googol。最好的回答是 ten googol。</p>
+<p>以上问题显然有它的弱点，因为正确的答案取决于你的灵感，而不是推导的过程，因此很难判断你究竟是否已经知道了答案，毫无疑问，面试者会在面试之前使用搜索引擎寻找公司常问的问题。因此，Google 鼓励面试官提出更加开放性的，没有确定答案的问题。</p>
+<p><strong>问题 3</strong>：你和邻居都在进行车库大甩卖。你们在同一天同一个地点销售同一件东西。你计划将东西标价 100 英镑，邻居则标价 40 英镑。两件物品的磨损程度相同。假设你和邻居的关系不是特别好？你会怎么办？</p>
+<p>答案：一个友好的解决方法是将邻居拉到一边说，“你把东西卖 40 英镑是在浪费钱‘。这并不是一个特别好的解决方法，当顾客看到两件物品都是同样的价钱，他很可能会选择任何一个，另一个则销售不出去。</p>
+<p>你需要把邻居的商品赶出市场。一个简单的方法是：买下邻居的东西。他会很乐意立刻将东西卖掉，而且不太可能加价，你甚至可以砍价。为什么要这么做？成功的销售中，你需要减少销售花费的时间，以及降低销售不出去的机率。任何减少你销售机会的事情实际上都在消耗那 100 英镑中的一部分。</p>
+<p>通过购买他的物品，你可以获取控制权，然后在你认为合适的时候，以更好的价格将其销售出去。最好的计划是把买到的物品放起来，先销售你的产品，然后根据推后的天数，将第二个物品以相对低的价格销售。</p>
+<p>有时候，Google 会有一些看起来很复杂的问题，但是他们真正期待的是更加简单、现实的答案。</p>
+<p><strong>问题 4</strong>：你想要确定 Bob 有你的电话号码。你不能直接问他，必须将问题写在卡片上交给 Eve。Eve 作为你们之间的信息传递人。你不想 Eve 知道你的电话号码，那么你会怎么问 Bob？</p>
+<p>这个问题通常会用来询问软件工程师。这会将他们直接带进 RSA 加密的思考中。因为在计算机教科书中，经常提到 Alice 给 Bob 发送密码信息（这比 “A 给 B 发送信息”的表述更加人性化），书中的坏蛋是一个爱好窥探隐私的人，Eve（eavesdropper）。</p>
+<p>Bob 和 Eve 的暗示会使工程师向着信息加密的方面思考，但是这个问题其实还有其它层面。对于 Bob 来说，为了确定一个电话号码而遵循复杂的密码破解，显然他会退缩。Google 的面试官们更希望获得简单、现实的回答。</p>
+<p>最简单的答案是：让 Bob 给你打电话（特定的时间更好）。如果电话响了，证明他有你的号码，如果没有响，证明他并没有你的号码（或者号码是错的）。</p>
+<p>问题测试的是你能够摆脱教育的影响，以及使用最高级的工具的诱惑。Google 不希望人们直觉上选择困难方法，他们需要哪些能够在工作中提出简单方案的人。</p>
+<p><strong>问题 5</strong>：你手中有一百万张纸，每张纸上是一个大学生的资料，你需要将他们按照年纪排序，你怎么做？</p>
+<p>谁更聪明，一个计算机科学博士还是你的母亲？在 Google 从事多年面试工作的 Paul Tyma 将这个问题交给他的母亲解答。从未学过计算机科学的 Tyma 夫人做的比受过高等教育的人还要出色。许多应试者会建议快速排序算法，而 Tyma 夫人的答案比他们的方法要快上 20 倍。有时候创造力只是常识。</p>
+<p>答案：将纸堆上的第一张拿下来，看看年龄，如果他是 21 岁，就放到 21 岁的纸堆里，如果下一个是 19 岁，就放到 19 岁的纸堆里。如此这般，任何记录你只需要看一次，当你完成后，将不同年龄的纸堆顺序排列即可。</p>
+<p><strong>问题 6</strong>：如果你有和帝国大厦一样高的一列硬币，你能否将它们放进一个房间？</p>
+<p>这可能会让你思考荒唐数量级别的数字问题。其实，这个问题并不复杂。首先，它并没有问你这需要多少硬币，只是问能否放在一个屋子，而且也没有指明屋子有多大。提问者只是需要你回答是或者否，以及相应的解释。</p>
+<p>答案：帝国大厦大概有 100 层，这比普通的屋子高上 100 倍。将帝国大厦一样高的一列硬币分成 100 列，每列都是普通屋子的高度，问题就变成了是否能将 100 列硬币摆放在屋子里。这很简单，只要屋子里地板的大小能够容纳 100 个硬币（10×10）就可以了。</p>
+<p>看到这里，不知道你对进入 Google 工作有多大信心？当接受 <a href="http://northwesternbusinessreview.org/qa-william-poundstone-author-of-are-you-smart-enough-to-work-at-google/">businessreview</a> 网站采访的时候，，Poundstone 对面试者提出了一些建议：这些面试很不好过，你不能有侥幸心理。首先，你需要放轻松，并且知道第一个进入你脑子里的答案很可能是错的。你可以向面试官解释明显的答案是什么，以及它为什么是错的。实际上，公司真正想要看到的是你的思考过程，而不是你最终的答案。另外，当面试时遇到一个遇到陷阱问题或困难的谜题的时候，许多人没有意识到这是一个互动的过程，因此不会要求面试官进一步理清问题，或问他们能做出什么猜想。这在面试过程中也非常重要。</p>
+<p>最后讲一个有趣的故事吧。或许最牛的面试者是能够难倒面试官。试想一下如果著名物理学家 Richard Feynman 应聘微软，会发生什么事情。</p>
+<p>面试人员的问题是：“好吧，Feynman 先生，即使是微软，我们也见不到许多诺贝尔获奖者。在我们雇用你之前，还有些手续。我们需要问你一个问题，以测试你的创造性推理能力。问题是，为什么沙井的盖子是圆的？”</p>
+<p>“这是一个荒唐的问题”，Feynman 说，“首先，不是所有的盖子都是圆的，有些是方的！”。</p>
+<p>“但是现在考虑一下圆形的盖子吧”面试官说，“为什么他们是圆的？”</p>
+<p>“为什么圆形的沙盖是圆的？！圆形的沙盖从定义上就是圆的！这是同义反复。”</p>
+<p>“哦，好吧。如果你能原谅我，Feynman 博士，我想和人力资源部咨询一下”。</p>
+<p>面试官离开了 10 分钟。当他回来之后，他说，“我很高兴的告诉你，我们已经推荐了你，你可以加入我们的营销部门”。</p>
+	<div style="border:1px solid #ccc;font-size:14px;margin:27px auto;font-family:Arial">
+		<div style="overflow:hidden"> <a href="http://www.ifanr.com/author/merlin" style="color:#000;text-decoration:none"><img src="http://www.ifanr.com/wp-content/uploads/avatar/427.jpg" width="50" height="50" style="display:block;float:left;padding:0;margin:15px"></a>
+			<div style="text-align:left;line-height:23px;margin-left:80px">
+				<div style="padding:10px 10px 10px 0">
+					<div style="margin:0;font-size:14px"><strong><a href="http://www.ifanr.com/author/merlin" style="color:#000;text-decoration:none">积木</a></strong></div>
+					<div style="font-size:13px;line-height:20px">Life would be so much easier if we only had the source code</div>
+				</div>
+			</div>
+		</div>
+		<div style="text-align:right;border-top:1px dotted #ccc;padding:2px 10px;font-size:12px">
+			<div>
+								<a href="mailto:jimmerlin@gmail.com" style="margin-right:14px;text-decoration:none">邮箱</a>				<a href="http://twitter.com/jimmerlin" style="margin-right:14px;text-decoration:none">Twitter</a>				<a href="http://facebook.com/jimmerlin" style="margin-right:14px;text-decoration:none">Facebook</a>				<a href="http://weibo.com/jimmerlin" style="margin-right:14px;text-decoration:none">新浪微博</a>				<a href="https://plus.google.com/112637572621202585213" style="margin-right:14px;text-decoration:none">Google+</a>			</div>
+		</div>
+	</div>
+<p><small><a href="http://www.ifanr.com">爱范儿 · Beats of Bits</a> |
+<a href="http://www.ifanr.com/80272">原文链接</a> ·
+<a href="http://www.ifanr.com/80272#comments">23 热评</a> ·
+<a href="http://www.weibo.com/ifanr">新浪微博</a> ·
+<a href="http://www.ifanr.com/feed">订阅全文</a> ·
+<a href="https://plus.google.com/114725869543399343504/">Google+</a> ·
+<a href="http://live.ifanr.com/">#ifanrlive</a> ·
+<a href="http://bbs.ifanr.com/">加入爱范社区！</a> 
+</small></p>
+
+<div style="text-align:right;border-top:1px dotted #ccc">
+</div> 
+<br>

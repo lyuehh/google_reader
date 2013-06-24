@@ -1,0 +1,97 @@
+---
+layout: post
+title:  "让网站访问速度飞起来（前端篇）"
+date:   2012-04-13 17:27:06
+author: 
+categories: program
+---
+
+## 让网站访问速度飞起来（前端篇）
+### by 
+### at 2012-04-13 17:27:06
+### original <http://www.iteye.com/topic/1122697>
+
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">       上周发帖子介绍了一下自己弄的网站后台架构，被隐藏了</span></span><img alt="" src="http://www.iteye.com/images/smiles/icon_cry.gif"><span style="font-size:medium">。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">    </span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">       帖子里很多坛友说到我的网站页面打开速度飞快，闪到了自己的眼睛</span></span></span><img alt="" src="http://www.iteye.com/images/smiles/icon_biggrin.gif"><span style="font-size:medium">，今天再发一帖说下自己的前端处理经验。</span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">       说到前端，就不得不提 YSLOW ，Page Speed这些个大牛级的插件，这两个东西都可以直接装在firebug上。</span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">Page Speed还提供了在线版。可以先用这些东西分析一下页面，把</span><strong><span style="color:#888888">
+<span style="font-size:13px;line-height:21px">High priority</span></span></strong><span style="font-size:small">的内容做到就差不多了。</span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">本人经验如下：</span></span></span></p>
+<p> </p>
+<p><span style="font-size:medium"><strong><span style="font-size:medium"><span style="font-size:medium">首先，<span style="font-size:small">最重要的是请求数。</span></span></span></strong></span></p>
+<p><span style="font-size:small"><span style="font-size:small">     尽可能的减少请求。如何减少，就是合并。这里有个合并图片的技巧有 css sprite，通过css定位，合并多个背景图。剩下的多个js能合并的就合并，css类似。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">    请求实在没法减少的时候肿么办？利用浏览器并发。也就是多域名资源分布。大致原理是因为浏览器对单一域名并发下载有限制（不同浏览器数字不同），所以为了让浏览器一次下载更多资源，把内容分布到多个二级域名。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">本人网站暂时用了三个 www img 和 img0。 www 就是下载文档，img是js、css和css背景图，img0就是电影图片。</span></span></p>
+<p> </p>
+<p> </p>
+<p><strong><span style="font-size:medium"><span style="font-size:small"><span style="font-size:medium">其次是缓存。</span></span></span></strong></p>
+<p><span style="font-size:small"><span style="font-size:small">     要充分利用浏览器本身的缓存策略。让用户打开过一次页面之后，访问其余页面更快，再次访问秒杀。具体HTTP协议的缓存策略这里就不展开，只说一下我的网站配置，Nginx版</span></span></p>
+<p> </p>
+<p> </p>
+<pre name="code">        location ~ .*\.(js|css|swf)$ {
+                expires      60d;
+        }
+        location ~ .*\.(gif|jpg|jpeg|png|bmp|ico)$ {
+                #valid_referers blocked *.fqxn.com;
+                #if ($invalid_referer) {
+                        #rewrite ^ http://www.fqxn.com/403.jpg last;
+                #}
+                expires      8d;
+        }</pre>
+ 
+<p> </p>
+<p><span style="font-size:small"><span style="font-size:small">加了过期时间之后，普通链接点击（在过期时间内）就不会再发起新的请求，直接使用本地缓存。关于F5 和 Ctrl + F5的情况，请求是都会发出。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">不过F5是这样的：请求头加入<span style="color:#888888">If-Modified-Since </span>和 <span style="color:#888888">Cache-Control: max-age=0</span>，意思是说，我不管浏览器缓存中的文件过期没有，都去询问一下有没有更新，相当于上次HTTP响应的Expires暂时失效。服务器的响应处理流程很简单，如果确实没有改动，直接返回一个304，并不发送真正的图片内容。意思是说没有过期，用你自己本地的吧。下面是F5的情况（本人已经打开过首页，然后chrome下按F5 查看网络面板截图）</span></span></p>
+<p><br><img alt="" src="http://dl.iteye.com/upload/attachment/0066/5425/09f31d0f-ca12-32f8-89a5-2c19cfea25ec.jpg"><br><span style="font-size:small"> </span></p>
+<p><span style="font-size:small"><span style="font-size:small">     而 Ctrl + F5的情况，请求头中会加入<span style="color:#888888">Cache-Control</span>换成了<span style="color:#888888">no-cache</span>，(<span style="color:#888888">Pragma:no-cache</span>行是为了兼容HTTP1.0)，而没有加入<span style="color:#888888"> If-Modified-Since</span> 。这次就和初次访问一样了，服务器老老实实的返回200状态码，同时响应头中多了个Content-Length 这次就真的产生了数据流量，服务器重新发送内容到浏览器。下面是Ctrl+F5</span></span></p>
+<p><br><img alt="" src="http://dl.iteye.com/upload/attachment/0066/5427/67ae1c64-bac1-3128-bc5c-ee0059c3aea1.jpg"></p>
+<p> </p>
+<p><span style="font-size:medium"><strong><span style="font-size:small"><span style="font-size:medium">最后是压缩。</span></span></strong></span></p>
+<p> </p>
+<p><span style="font-size:small"><span style="font-size:small">    这里主要是说GZIP，至于js 、css mini这个东西不做讨论。由于GZIP之后相差不大，所以</span><span style="font-size:medium">本人</span><span style="font-size:medium">没有进行js、css mini，另外：一是方便自己修改和阅读，二是没有混淆的必要，不怕别人看，三就是自己比较懒。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">现在主流浏览器都支持gzip压缩，压缩一下文本一般能节省原大小的 60%~80%，节省的带宽可不小，重要的是速度！</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">通过站长工具看下本站首页的压缩情况：</span></span></p>
+<p><br><img alt="" src="http://dl.iteye.com/upload/attachment/0066/5438/5f2123a2-8b9c-3d02-a775-29bea924bce5.jpg"></p>
+<p> </p>
+<p><span style="font-size:small"><span style="font-size:small">下面是Nginx配置压缩</span></span></p>
+<p> </p>
+<p> </p>
+<pre name="code">    gzip  on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/x-javascript application/xml;
+    </pre>
+ 
+<p><span style="font-size:small"><span style="font-size:small">以上就是本人网站在前端部分进行的优化经验总结~分享给大家，希望有帮忙！</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">最后，相关链接:</span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small"><br></span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">1.隐藏帖传送门 <a href="http://www.iteye.com/topic/1122481">http://www.iteye.com/topic/1122481</a></span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">2.在线版Page Speed  <a href="https://developers.google.com/pagespeed/">https://developers.google.com/pagespeed/</a></span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">3.Firebug Yslow <a href="https://addons.mozilla.org/zh-cn/firefox/addon/yslow/">https://addons.mozilla.org/zh-cn/firefox/addon/yslow/</a></span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small"><br></span></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><span style="font-size:small">最后，顺便用在线版PS又分析了下网站 <a href="http://www.fqxn.com">fqxn.com</a></span></span></span></p>
+<p> </p>
+<p><br><img alt="" src="http://dl.iteye.com/upload/attachment/0066/5458/5c565fd6-61ad-3be3-9b6f-aec4bbc057c2.jpg"></p>
+<p> </p>
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://cengjingdemimang.iteye.com">曾经de迷茫</a> 
+          <br>
+          声明: 本文系ITeye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.iteye.com/topic/1122697" style="color:red">已有 <strong>26</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

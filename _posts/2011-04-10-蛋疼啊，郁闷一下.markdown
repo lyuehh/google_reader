@@ -1,0 +1,40 @@
+---
+layout: post
+title:  "蛋疼啊，郁闷一下"
+date:   2011-04-10 15:18:15
+author: 
+categories: program
+---
+
+## 蛋疼啊，郁闷一下
+### by 
+### at 2011-04-10 15:18:15
+### original <http://www.iteye.com/topic/996101>
+
+好吧，周末加班，看以前的一个项目，下个星期要接手在上面再做一些开发，项目不大，架构不复杂，难度不大，可是才短短看了10多分钟，看得我郁闷啊：
+<br>
+<br>1.项目里到处散布着配置文件，内容还重复，web.config, user.config……几个配置文件里面还都有数据库连接字符串，我都不知道你到底准备用哪个，我还要测试一下你到底用的哪个配置文件，敢情当时你们组是各做各的？
+<br>
+<br>2.好吧，知道了你用的哪个配置文件，一运行，嘿，还有SQL语法错误，原来是子查询中IN后的括号里没数据。
+<br>
+<br>3.好吧，我看见了一个SQLHelper，啊，忽然发现，原来还有一个SQLHelpers，一个有注释，一个没有，这是什么情况？
+<br>
+<br>4.类名还有这样数字区分的，Class2之流。
+<br>
+<br>5.好吧，我承认这没什么大不了的，纯粹牢骚。可是我接到这个项目的时候，某人告诉我这是我们以前开发的一平台，现在我们要在上面再做一些定制。这就是平台啊……，就这个样子？
+<br>
+<br>这难道是本科毕业设计吗？看的蛋疼……
+          
+          <br><br>
+          作者: <a href="http://luoluo1130.iteye.com">luoluo1130</a> 
+          <br>
+          声明: 本文系ItEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.iteye.com/topic/996101" style="color:red">已有 <strong>6</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">ItEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

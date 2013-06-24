@@ -1,0 +1,26 @@
+---
+layout: post
+title:  "编程珠玑番外篇 -L. Plan 9 管道工的启发"
+date:   2011-11-25 10:50:01
+author: Eric
+categories: program
+---
+
+## 编程珠玑番外篇 -L. Plan 9 管道工的启发
+### by Eric
+### at 2011-11-25 10:50:01
+### original <http://blog.youxu.info/2011/11/24/plan-9-plumber/>
+
+<p>Smalltalk 作者 Alan Kay 曾说过，<a href="http://lists.squeakfoundation.org/pipermail/squeak-dev/1998-October/017019.html">对象不是 Smalltalk 的本质，对象间的消息传递才是</a>。对于操作系统中的基本对象–进程，类似的说法也是成立的：进程不是操作系统的本质，进程间的通信才是。像 <a href="http://en.wikipedia.org/wiki/Mach_(kernel)">Mach</a> 这样的微内核操作系统的全部，就是一个供进程传递消息的框架。</p>
+<p>进程间通信的技术细节繁杂，以Linux 系统为例，就有文件，管道，消息队列，信号量，RPC，UNIX Socket,　RPC　等等多种方式。Windows 系统还有邮件槽, COM 对象等等。Mac OS 则有 AppleEvent 等等。在这里我们介绍 Plan 9 系统中一个不太为人所知的 IPC 机制：<a href="http://swtch.com/plan9port/man/man4/plumber.html">Plumber</a>，或者叫做管道工。我在”<a title="Permanent Link to 开发人员为何应该使用 Mac OS X 兼 OS X 小史" href="http://blog.youxu.info/2010/02/28/why-mac-os-x-for-programmers/" rel="bookmark">开发人员为何应该使用 Mac OS X 兼 OS X 小史</a>“中曾赞扬过 Mac OS X 系统中的 AppleEvent 进程间通信机制对工作效率的提升。和AppleEvent 类似，管道工也是对图形界面下进程间通信的一个尝试，不过在通信的粒度上有所区别。</p>
+<p>我们从一个简单的例子入手。在如今网络普及的时代，几乎所有的软件都能自动识别链接。只要打入 http:// 开头的一串字符，就立即转化为一个可点击的链接，点击这个链接则自动召唤出浏览器。我们对此毫不感到新鲜，因为这功能再自然不过。其实这些功能在上世纪９０年代还是很少见的。 Plan 9 的管道工，在当时就前瞻地提出一套匹配字符串和自动投递给指定应用程序的机制。我们只需要告诉管道工，用户选中字符串匹配某类型的时候就交由某应用程序处理，管道工即负责具体的程序间的通信。这是对 UNIX　管道机制的一个革新。如我在Mac OS 一文中所说，纯粹的管道机制在图形界面程序中已经不再适用了。</p>
+<p>我们所熟悉的URI 处理仅限于浏览器，且只能处理由 RFC 2396 预先定义的 URI 模式。即便如此，我们也能体会到 URI 处理器的方便。像大家熟悉的电驴链接实际上是 ed2k:// 打头的 URI。在浏览器点击后就自动用电骡打开；苹果的 iTunes 的链接实际上是 itms: 打头的 URI；Android 商店的链接其实是 market:// 打头的 URI 等等，都是让用户更加方便的例子。有了这些机制后，我们难以想象没有这些机制而需要拷贝粘贴的日子是如何度过的。</p>
+<p>管道工是 URI 处理器的推广形式。在管道工里，不仅仅是 URI，一切的字符串都可能匹配。因为读者可能没有用过管道工，我们仍然以大家熟悉的例子来说明。安装了 Skype 浏览器的插件会自动把网页上的电话号码变成一个特殊的“用 Skype 拨打该电话”的按钮，在 Gmail 里开启一些插件后 FedEx 和 UPS 的包裹号码能自动变成链接直接转到包裹查询网站等等。管道工的功能，就是让我们可以很方便的自定义这些转发功能，而不依赖于应用程序的实现。在 Plan 9 系统中，即使你不装 Skype, 不用 Gmail, 用户依然能够通过制定正则表达式匹配规则，来决定如何处理电话号码和包裹追踪号码等等。</p>
+<p>管道工的原作者用编译器和编辑器的例子来说明管道工的作用。我们知道编译器报错语法错的时候，会以一定格式报出发生错误的文件和行号，如</p>
+<blockquote><p>Line 43: Hello.cc syntax error.</p></blockquote>
+<p>我们可以设定规则，在用户点击这些错误信息的时候，让管道工自动匹配和提取文件名，行号，并自动发给编辑器，就省却了我们人工打开编辑器跳到某行这个繁琐的步骤。尽管 IDE 已经通过集成编辑器和编译器的方式绕开了这种进程间通信，这种匹配/转发的通信方式仍然用在不少地方。比如 Vim 就引入了一个叫 errorformat (错误格式)的机制，让编辑器能够理解和匹配“错误格式”，并跳到指定的行。</p>
+<p>通过 Plan 9 from user space 这个开源实现，我们可以在 Mac 和 Linux 上使用管道工。不过我们已经有了很多现成的工具能够部分实现管道工的功能。因为我日常只用浏览器和shell，因此简略介绍一下我是如何在浏览器和shell中实现类似于管道工的功能的。</p>
+<p>用油猴子或者其他浏览器插件，我们可以将网页中某特定的字符串转变成一个定制的链接。然后，取决于所在平台，我们可以将这些链接和预定义的应用程序挂钩。Mac 下一个好用的工具是 <a href="http://www.rubicode.com/Software/RCDefaultApp/">RCDefaultApp</a> ，Linux/Gnome 下的 gconftool-2　也直接支持对 URL-handler 的修改。Windows 下的方法则是修改注册表。（当然这些方法都有安全隐患，所以只适合个人使用）。</p>
+<p>在终端里，对于 Linux 用户，urxvt 这个终端非常强大，可以使用 perl 扩展来匹配和执行命令，基本上可以完全实现管道工的这种匹配任意字符串且发送给其他程序的功能。在 Mac OS X 中，<a href="http://www.iterm2.com/#/section/home">iTerm 2</a> 是程序员应该用的终端。该终端目前还没有 urxvt 的强大扩展性，不过也能完成大部分匹配任务。比如说，iTerms 的最新版本支持一个叫做 Sementic History 的功能 (Preference -&gt; Profile -&gt; Advanced)。这个功能使得我们可以直接点击 Terminal 里面的文件名召唤出 Finder。用苹果的可能都知道 Mac 里有个 <a href="http://developer.apple.com/library/mac/#documentation/UserExperience/Conceptual/AppleHIGuidelines/Windows/Windows.html">Proxy Icon</a> （应用程序标题栏里面的小图标）的概念，我们可以直接把这个小图标当成文件的代表，拖来拖去，甚至可以直接拖到 Gmail 中当附件。我们其实可以把 iTerms 2 里面的文件名直接当成一个对象拖来拖去。</p>
+<p>因为我日常只使用浏览器和终端，Plan 9 的管道工给我的启发是，如果有一套好的进程间通信机制，拷贝粘贴是完全没有必要的。如果你和我一样基本不用鼠标，并且认为拷贝粘贴是一个降低工作效率的事情，那么我建议你尝试一下用管道工的思想去改善你的工作流，看看哪些拷贝粘贴是可以由计算机完成的。</p>
+<div></div>

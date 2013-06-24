@@ -1,0 +1,51 @@
+---
+layout: post
+title:  "按日期存储Rails日志"
+date:   2010-09-19 15:50:31
+author: 
+categories: program
+---
+
+## 按日期存储Rails日志
+### by 
+### at 2010-09-19 15:50:31
+### original <http://www.javaeye.com/topic/767333>
+
+<p>最简单的方法是</p>
+<p> </p>
+<pre name="code">RAILS_DEFAULT_LOGGER = Logger.new("#{RAILS_ROOT}/log/#{RAILS_ENV}.log", "daily") </pre>
+<p> </p>
+<p>实际上Rails做了一些优化，通过ActiveSupport::BufferedLogger来提高产品环境下的性能。所以比较好的做法是在config/environment.rb加入如下代码：</p>
+<p> </p>
+<pre name="code">	config.logger = begin
+		path = config.paths.log.to_a.first
+		logger = ActiveSupport::BufferedLogger.new(path, &quot;daily&quot;)
+		logger.level = ActiveSupport::BufferedLogger.const_get(config.log_level.to_s.upcase)
+		logger.auto_flushing = false if Rails.env.production?
+		logger
+	rescue StandardError =&gt; e
+		logger = ActiveSupport::BufferedLogger.new(STDERR)
+		logger.level = ActiveSupport::BufferedLogger::WARN
+		logger.warn(
+			&quot;Rails Error: Unable to access log file. Please ensure that #{path} exists and is chmod 0666. &quot; +
+			&quot;The log level has been raised to WARN and the output directed to STDERR until the problem is fixed.&quot;
+		)
+		logger
+	end</pre>
+ 
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://swordray.javaeye.com">swordray</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/767333" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">— 软件人才免T免G 赴美带薪读研！—</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li></ul>
+<br><br><br>

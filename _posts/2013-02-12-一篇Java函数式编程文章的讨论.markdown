@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "一篇Java函数式编程文章的讨论"
+date:   2013-02-12 07:20:00
+author: dreamhead
+categories: program
+---
+
+## 一篇Java函数式编程文章的讨论
+### by dreamhead
+### at 2013-02-12 07:20:00
+### original <http://dreamhead.blogbus.com/logs/228721904.html>
+
+网上有一篇文章讨论Java函数式编程：
+英文版中文版
+里面有一道很简单的题，计算前25个自然数的平方。用最简单的Java实现大概是这个样子：
+for (int i=1; i&lt;=25; i++)    System.out.println(i*i);}
+不过，这篇文章要用函数式风格实现，其总结的大意是说，Java不适合函数式编程。暂且不论Java究竟适不适合函数式编程，但以这篇文章里的例子来说，作者给出的实现却算不上一个好的实现，虽然，这可能是以传统Java编程思路写程序经常的做法。
+说白了，原文实现真正的问题在于没有实现“惰性”，就这个程序而言，这是一种极其糟糕的做法，把所有内容——尤其是根本用不到的部分全部实现出来，内存似乎是在正常不过的了。这一点在原文的评论里也有体现，有人就给出了基于Iterator的实现，很巧妙地用它引入了“惰性”。
+不过，那个实现是基于JDK来做的，略显笨拙。正如之前《你应该更新的Java知识之常用程序库（一）》中提到的，只要你做Java项目，就应该用Guava。有了Guava的基础设施，这个小程序也可以变得更简洁一些：
+import com.google.common.base.Function;import com.google.common.collect.AbstractIterator;
+import java.util.Iterator;
+import static com.google.common.collect.Iterables.limit;import static com.google.common.collect.Iterables.transform;
+public class Square {    public static void main(String[] args) {        for (Integer integer : limit(squreOf(integers()), 25)) {            System.out.println(integer);        }    }
+    private static Iterable integers() {        return new Iterable() {            @Override            public Iterator iterator() {                return new AbstractIterator() {
+                    private int i = 1;
+                    @Override                    protected Integer computeNext() {                        if (i == Integer.MAX_VALUE) {                            endOfData();                            return null;                        }
+                        return i++;                    }                };            }        };    }
+    private static Iterable squreOf(Iterable numbers) {        return transform(numbers, new Function() {            @Override            public Integer apply(Integer input) {                return input * input;            }        });    }}
+如果你对Guava不熟悉，这里有两个点需要稍微解释一下。
+首先是integers函数中用到的AbstractIterator，它让我们实现Iterator更简洁了，我们只要关注于下一个元素生成的逻辑即可，余下的交给它处理了。在这里，我们调用了endOfData表示迭代器结束，实际上，就这个应用而言，它没有起到实际的作用，因为没有取到那么多的元素，但这里提示我们一个做法，只要不调用endOfData，这个Iterator就不算结束，换句话说，用我们可以一直生成下一个元素，这也就成了传说中的无限序列，这可是很多函数式编程语言经常拿出来炫耀的点。
+另外一点要说的是，transform（在squareOf里）和limit（在main函数里），如果你稍微了解一点函数式编程，它俩分别对应map和take，只不过在Guava中给了它们不同的名字而已，它们给了我们一个机会操作序列。实际上，在Guava里，这样的函数还有很多，比如filter，find等等。事实上，它们大多是“高阶函数”，也就是可以接收函数或是返回函数。通过这些基本操作加上传入函数的组合，我们可以创造出更华丽的组合。
+Java函数式编程并非不可为，但这会是一个极大的思路转变。至于Guava，还是那句话，只要你做Java项目，就应该用Guava。

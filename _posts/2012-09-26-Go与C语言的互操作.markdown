@@ -1,0 +1,425 @@
+---
+layout: post
+title:  "Go与C语言的互操作"
+date:   2012-09-26 14:21:15
+author: bigwhite
+categories: program
+---
+
+## Go与C语言的互操作
+### by bigwhite
+### at 2012-09-26 14:21:15
+### original <http://tonybai.com/2012/09/26/interoperability-between-go-and-c/?utm_source=rss&utm_medium=rss&utm_campaign=interoperability-between-go-and-c>
+
+<p><a href="http://golang.org">Go</a>有强烈的<a href="http://tonybai.com/tag/c">C</a>背景，除了语法具有继承性外，其设计者以及其设计目标都与C语言有着千丝万缕的联系。在Go与C语言互操作(<a href="http://en.wikipedia.org/wiki/Language_interoperability">Interoperability</a>)方面，Go更是提供了强大的支持。尤其是在Go中使用C，你甚至可以直接在Go源文件中编写C代码，这是其他语言所无法望其项背的。</p>
+<div>
+<div> </div>
+<div>在如下一些场景中，可能会涉及到Go与C的互操作：</div>
+<div> </div>
+<div>1、提升局部代码性能时，用C替换一些Go代码。C之于Go，好比汇编之于C。</div>
+<div>2、嫌Go内存GC性能不足，自己手动管理应用内存。</div>
+<div>3、实现一些库的Go Wrapper。比如Oracle提供的C版本OCI，但Oracle并未提供Go版本的以及连接DB的协议细节，因此只能通过包装C  OCI版本的方式以提供Go开发者使用。</div>
+<div>4、Go导出函数供C开发者使用(目前这种需求应该很少见)。</div>
+<div>5、Maybe more…</div>
+<div> </div>
+<div><strong>一、Go调用C代码的原理</strong></div>
+<div> </div>
+<div>下面是一个短小的例子：</div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdio.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdlib.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">/*</span></div>
+<div><span style="font-family:courier new,courier,monospace">void print(char *str) {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    printf(&quot;%s\n&quot;, str);</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div><span style="font-family:courier new,courier,monospace">*/</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;unsafe&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    s := &quot;Hello Cgo&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">    cs := C.CString(s)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    C.print(cs)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    C.free(unsafe.Pointer(cs))</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>与&quot;正常&quot;Go代码相比，上述代码有几处&quot;特殊&quot;的地方：</div>
+<div>1) 在开头的注释中出现了C头文件的include字样</div>
+<div>2) 在注释中定义了C函数print</div>
+<div>3) import的一个名为C的&quot;包&quot;</div>
+<div>4) 在main函数中居然调用了上述的那个C函数-print</div>
+<div> </div>
+<div>没错，这就是在Go源码中调用C代码的步骤，可以看出我们可直接在Go源码文件中编写C代码。</div>
+<div> </div>
+<div>首先，Go源码文件中的C代码是需要用注释包裹的，就像上面的include 头文件以及print函数定义；</div>
+<div>其次，import &quot;C&quot;这个语句是必须的，而且其与上面的C代码之间不能用空行分隔，必须紧密相连。这里的&quot;C&quot;不是包名，而是一种类似名字空间的概念，或可以理解为伪包，C语言所有语法元素均在该伪包下面；</div>
+<div>最后，访问C语法元素时都要在其前面加上伪包前缀，比如C.uint和上面代码中的C.print、C.free等。</div>
+<div> </div>
+<div>我们如何来编译这个go源文件呢？其实与&quot;正常&quot;Go源文件没啥区别，依旧可以直接通过go build或go run来编译和执行。但实际编译过程中，go调用了名为cgo的工具，cgo会识别和读取Go源文件中的C元素，并将其提取后交给C编译器编译，最后与Go源码编译后的目标文件链接成一个可执行程序。这样我们就不难理解为何Go源文件中的C代码要用注释包裹了，这些特殊的语法都是可以被Cgo识别并使用的。</div>
+<div> </div>
+<div><strong>二、在Go中使用C语言的类型</strong></div>
+<div> </div>
+<div>1、原生类型</div>
+<div> </div>
+<div>* 数值类型</div>
+<div>在Go中可以用如下方式访问C原生的数值类型：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">C.char,</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.schar (signed char),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.uchar (unsigned char),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.short,</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.ushort (unsigned short),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.int, C.uint (unsigned int),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.long,</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.ulong (unsigned long),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.longlong (long long),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.ulonglong (unsigned long long),</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.float,</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.double</span></div>
+<div> </div>
+<div>Go的数值类型与C中的数值类型不是一一对应的。因此在使用对方类型变量时少不了显式转型操作，如Go doc中的这个例子：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func Random() int {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    return int(C.random())//C.long -&gt; Go的int</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func Seed(i int) {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    C.srandom(C.uint(i))//Go的uint -&gt; C的uint</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>* 指针类型</div>
+<div>原生数值类型的指针类型可按Go语法在类型前面加上*，比如var p *C.int。而void*比较特殊，用Go中的unsafe.Pointer表示。任何类型的指针值都可以转换为unsafe.Pointer类型，而unsafe.Pointer类型值也可以转换为任意类型的指针值。unsafe.Pointer还可以与uintptr这个类型做相互转换。由于unsafe.Pointer的指针类型无法做算术操作，转换为uintptr后可进行算术操作。</div>
+<div> </div>
+<div>* 字符串类型</div>
+<div>C语言中并不存在正规的字符串类型，在C中用带结尾&#39;\0&#39;的字符数组来表示字符串；而在Go中，string类型是原生类型，因此在两种语言互操作是势必要做字符串类型的转换。</div>
+<div> </div>
+<div>通过C.CString函数，我们可以将Go的string类型转换为C的&quot;字符串&quot;类型，再传给C函数使用。就如我们在本文开篇例子中使用的那样：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">s := &quot;Hello Cgo\n&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">cs := C.CString(s)</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.print(cs)</span></div>
+<div> </div>
+<div>不过这样转型后所得到的C字符串cs并不能由Go的gc所管理，我们必须手动释放cs所占用的内存，这就是为何例子中最后调用C.free释放掉cs的原因。在C内部分配的内存，Go中的GC是无法感知到的，因此要记着释放。</div>
+<div> </div>
+<div>通过C.GoString可将C的字符串(*C.char)转换为Go的string类型，例如：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdio.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdlib.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// char *foo = &quot;hellofoo&quot;;</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">… …</span></div>
+<div><span style="font-family:courier new,courier,monospace">    fmt.Printf(&quot;%s\n&quot;, C.GoString(C.foo))</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>* 数组类型</div>
+<div>C语言中的数组与Go语言中的数组差异较大，后者是值类型，而前者与C中的指针大部分场合都可以随意转换。目前似乎无法直接显式的在两者之间进行转型，官方文档也没有说明。但我们可以通过编写转换函数，将C的数组转换为Go的Slice(由于Go中数组是值类型，其大小是静态的，转换为Slice更为通用一些)，下面是一个整型数组转换的例子：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// int cArray[] = {1, 2, 3, 4, 5, 6, 7};</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func CArrayToGoArray(cArray unsafe.Pointer, size int) (goArray []int) {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    p := uintptr(cArray)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    for i :=0; i &lt; size; i++ {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        j := *(*int)(unsafe.Pointer(p))</span></div>
+<div><span style="font-family:courier new,courier,monospace">        goArray = append(goArray, j)</span></div>
+<div><span style="font-family:courier new,courier,monospace">        p += unsafe.Sizeof(j)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    }</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">    return</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    … …</span></div>
+<div><span style="font-family:courier new,courier,monospace">    goArray := CArrayToGoArray(unsafe.Pointer(&amp;C.cArray[0]), 7)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    fmt.Println(goArray)</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>执行结果输出：[1 2 3 4 5 6 7]</div>
+<div> </div>
+<div>这里要注意的是：Go编译器并不能将C的cArray自动转换为数组的地址，所以不能像在C中使用数组那样将数组变量直接传递给函数，而是将数组第一个元素的地址传递给函数。</div>
+<div> </div>
+<div>2、自定义类型</div>
+<div> </div>
+<div>除了原生类型外，我们还可以访问C中的自定义类型。</div>
+<div> </div>
+<div>* 枚举(enum)</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// enum color {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    RED,</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    BLUE,</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    YELLOW</span></div>
+<div><span style="font-family:courier new,courier,monospace">// };</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">var e, f, g C.enum_color = C.RED, C.BLUE, C.YELLOW</span></div>
+<div><span style="font-family:courier new,courier,monospace">fmt.Println(e, f, g)</span></div>
+<div> </div>
+<div>输出：0 1 2</div>
+<div> </div>
+<div>对于具名的C枚举类型，我们可以通过C.enum_xx来访问该类型。如果是匿名枚举，则似乎只能访问其字段了。</div>
+<div> </div>
+<div>* 结构体(struct)</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// struct employee {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//     char *id;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//     int  age;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// };</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">id := C.CString(&quot;1247&quot;)</span></div>
+<div><span style="font-family:courier new,courier,monospace">var employee C.struct_employee = C.struct_employee{id, 21}</span></div>
+<div><span style="font-family:courier new,courier,monospace">fmt.Println(C.GoString(employee.id))</span></div>
+<div><span style="font-family:courier new,courier,monospace">fmt.Println(employee.age)</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.free(unsafe.Pointer(id))</span></div>
+<div> </div>
+<div>输出：</div>
+<div>1247</div>
+<div>21</div>
+<div> </div>
+<div>和enum类似，我们可以通过C.struct_xx来访问C中定义的结构体类型。</div>
+<div> </div>
+<div>* 联合体(union)</div>
+<div> </div>
+<div>这里我试图用与访问struct相同的方法来访问一个C的union：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdio.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// union bar {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        char   c;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        int    i;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        double d;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// };</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    var b *C.union_bar = new(C.union_bar)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    b.c = 4</span></div>
+<div><span style="font-family:courier new,courier,monospace">    fmt.Println(b)</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>不过编译时，go却报错：b.c undefined (type *[8]byte has no field or method c)。从报错的信息来看，Go对待union与其他类型不同，似乎将union当成[N]byte来对待，其中N为union中最大字段的size(圆整后的)，因此我们可以按如下方式处理C.union_bar：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    var b *C.union_bar = new(C.union_bar)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    b[0] = 13</span></div>
+<div><span style="font-family:courier new,courier,monospace">    b[1] = 17</span></div>
+<div><span style="font-family:courier new,courier,monospace">    fmt.Println(b)</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>输出：&amp;[13 17 0 0 0 0 0 0]</div>
+<div> </div>
+<div>* typedef</div>
+<div>在Go中访问使用用typedef定义的别名类型时，其访问方式与原实际类型访问方式相同。如：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// typedef int myint;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">var a C.myint = 5</span></div>
+<div><span style="font-family:courier new,courier,monospace">fmt.Println(a)</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// typedef struct employee myemployee;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">var m C.struct_myemployee</span></div>
+<div> </div>
+<div>从例子中可以看出，对原生类型的别名，直接访问这个新类型名即可。而对于复合类型的别名，需要根据原复合类型的访问方式对新别名进行访问，比如myemployee实际类型为struct，那么使用myemployee时也要加上struct_前缀。</div>
+<div> </div>
+<div><strong>三、Go中访问C的变量和函数</strong></div>
+<div> </div>
+<div>实际上上面的例子中我们已经演示了在Go中是如何访问C的变量和函数的，一般方法就是加上C前缀即可，对于C标准库中的函数尤其是这样。不过虽然我们可以在Go源码文件中直接定义C变量和C函数，但从代码结构上来讲，大量的在Go源码中编写C代码似乎不是那么“专业”。那如何将C函数和变量定义从Go源码中分离出去单独定义呢？我们很容易想到将C的代码以共享库的形式提供给Go源码。</div>
+<div> </div>
+<div>Cgo提供了#cgo指示符可以指定Go源码在编译后与哪些<a href="http://tonybai.com/2010/12/13/also-talk-about-shared-library/">共享库</a>进行链接。我们来看一下例子：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// #cgo LDFLAGS: -L ./ -lfoo</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdio.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdlib.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &quot;foo.h&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt“</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    fmt.Println(C.count)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    C.foo()</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>我们看到上面例子中通过#cgo指示符告诉go编译器链接当前目录下的libfoo共享库。C.count变量和C.foo函数的定义都在libfoo共享库中。我们来创建这个共享库：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// foo.h</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">int count;</span></div>
+<div><span style="font-family:courier new,courier,monospace">void foo();</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">//foo.c</span></div>
+<div><span style="font-family:courier new,courier,monospace">#include &quot;foo.h&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">int count = 6;</span></div>
+<div><span style="font-family:courier new,courier,monospace">void foo() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    printf(&quot;I am foo!\n&quot;);</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; gcc -c foo.c</span></div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; ar rv libfoo.a foo.o</span></div>
+<div> </div>
+<div>我们首先创建一个静态共享库libfoo.a，不过在编译Go源文件时我们遇到了问题：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; go build foo.go</span></div>
+<div><span style="font-family:courier new,courier,monospace"># command-line-arguments</span></div>
+<div><span style="font-family:courier new,courier,monospace">/tmp/go-build565913544/command-line-arguments.a(foo.cgo2.)(.text): foo: not defined</span></div>
+<div><span style="font-family:courier new,courier,monospace">foo(0): not defined</span></div>
+<div> </div>
+<div>提示foo函数未定义。通过-x选项打印出具体的编译细节，也未找出问题所在。不过在Go的问题列表中我发现了一个issue(http://code.google.com/p/go/issues/detail?id=3755)，上面提到了目前Go的版本不支持链接静态共享库。</div>
+<div> </div>
+<div>那我们来创建一个动态共享库试试：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; gcc -c foo.c</span></div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; gcc -shared -Wl,-soname,libfoo.so -o libfoo.so  foo.o</span></div>
+<div> </div>
+<div>再编译foo.go，的确能够成功。执行foo。</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; go build foo.go &amp;&amp; go</span></div>
+<div><span style="font-family:courier new,courier,monospace">6</span></div>
+<div><span style="font-family:courier new,courier,monospace">I am foo!</span></div>
+<div> </div>
+<div>还有一点值得注意，那就是Go支持多返回值，而C中并没不支持。因此当将C函数用在多返回值的调用中时，C的errno将作为err返回值返回，下面是个例子：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdlib.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;stdio.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// #include &lt;errno.h&gt;</span></div>
+<div><span style="font-family:courier new,courier,monospace">// int foo(int i) {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    errno = 0;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    if (i &gt; 5) {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        errno = 8;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        return i – 5;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    } else {</span></div>
+<div><span style="font-family:courier new,courier,monospace">//        return i;</span></div>
+<div><span style="font-family:courier new,courier,monospace">//    }</span></div>
+<div><span style="font-family:courier new,courier,monospace">//}</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">    i, err := C.foo(C.int(8))</span></div>
+<div><span style="font-family:courier new,courier,monospace">    if err != nil {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        fmt.Println(err)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    } else {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        fmt.Println(i)</span></div>
+<div><span style="font-family:courier new,courier,monospace">    }</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; go run foo.go</span></div>
+<div><span style="font-family:courier new,courier,monospace">exec format error</span></div>
+<div> </div>
+<div>errno为8，其含义在errno.h中可以找到：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">#define ENOEXEC      8  /* Exec format error */</span></div>
+<div> </div>
+<div>的确是“exec format error”。</div>
+<div> </div>
+<div><strong>四、C中使用Go函数</strong></div>
+<div> </div>
+<div>与在Go中使用C源码相比，在C中使用Go函数的场合较少。在Go中，可以使用&quot;export + 函数名&quot;来导出Go函数为C所使用，看一个简单例子：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">/*</span></div>
+<div><span style="font-family:courier new,courier,monospace">#include &lt;stdio.h&gt;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">extern void GoExportedFunc();</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">void bar() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        printf(&quot;I am bar!\n&quot;);</span></div>
+<div><span style="font-family:courier new,courier,monospace">        GoExportedFunc();</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div><span style="font-family:courier new,courier,monospace">*/</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">//export GoExportedFunc</span></div>
+<div><span style="font-family:courier new,courier,monospace">func GoExportedFunc() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        fmt.Println(&quot;I am a GoExportedFunc!&quot;)</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        C.bar()</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>不过当我们编译该Go文件时，我们得到了如下错误信息：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace"># command-line-arguments</span></div>
+<div><span style="font-family:courier new,courier,monospace">/tmp/go-build163255970/command-line-arguments/_obj/bar.cgo2.o: In function `bar&#39;:</span></div>
+<div><span style="font-family:courier new,courier,monospace">./bar.go:7: multiple definition of `bar&#39;</span></div>
+<div><span style="font-family:courier new,courier,monospace">/tmp/go-build163255970/command-line-arguments/_obj/_cgo_export.o:/home/tonybai/test/go/bar.go:7: first defined here</span></div>
+<div><span style="font-family:courier new,courier,monospace">collect2: ld returned 1 exit status</span></div>
+<div> </div>
+<div>代码似乎没有任何问题，但就是无法通过编译，总是提示“多重定义”。翻看Cgo的文档，找到了些端倪。原来</div>
+<div> </div>
+<div><em>There is a limitation: if your program uses any //export directives, then the C code in the comment may only include declarations (extern int f();), not definitions (int f() { return 1; }).</em></div>
+<div> </div>
+<div>似乎是// extern int f()与//export f不能放在一个Go源文件中。我们把bar.go拆分成bar1.go和bar2.go两个文件：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// bar1.go</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">/*</span></div>
+<div><span style="font-family:courier new,courier,monospace">#include &lt;stdio.h&gt;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">extern void GoExportedFunc();</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">void bar() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        printf(&quot;I am bar!\n&quot;);</span></div>
+<div><span style="font-family:courier new,courier,monospace">        GoExportedFunc();</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div><span style="font-family:courier new,courier,monospace">*/</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        C.bar()</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">// bar2.go</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">package main</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;C&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt&quot;</span></div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">//export GoExportedFunc</span></div>
+<div><span style="font-family:courier new,courier,monospace">func GoExportedFunc() {</span></div>
+<div><span style="font-family:courier new,courier,monospace">        fmt.Println(&quot;I am a GoExportedFunc!&quot;)</span></div>
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+<div> </div>
+<div>编译执行：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; go build -o bar bar1.go bar2.go</span></div>
+<div><span style="font-family:courier new,courier,monospace">$&gt; bar</span></div>
+<div><span style="font-family:courier new,courier,monospace">I am bar!</span></div>
+<div><span style="font-family:courier new,courier,monospace">I am a GoExportedFunc!</span></div>
+<div> </div>
+<div>个人觉得目前Go对于导出函数供C使用的功能还十分有限，两种语言的调用约定不同，类型无法一一对应以及Go中类似Gc这样的高级功能让导出Go函数这一功能难于完美实现，导出的函数依旧无法完全脱离Go的环境，因此实用性似乎有折扣。</div>
+<div> </div>
+<div><strong>五、其他</strong></div>
+<div> </div>
+<div>虽然Go提供了强大的与C互操作的功能，但目前依旧不完善，比如不支持在Go中直接调用可变个数参数的函数(issue975)，如printf(因此，文档中多用fputs)。</div>
+<div> </div>
+<div>这里的建议是：尽量缩小Go与C间互操作范围。</div>
+<div> </div>
+<div>什么意思呢？如果你在Go中使用C代码时，那么尽量在C代码中调用C函数。Go只使用你封装好的一个C函数最好。不要像下面代码这样：</div>
+<div> </div>
+<div><span style="font-family:courier new,courier,monospace">C.fputs(…)</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.atoi(..)</span></div>
+<div><span style="font-family:courier new,courier,monospace">C.malloc(..)</span></div>
+<div> </div>
+<div>而是将这些C函数调用封装到一个C函数中，Go只知道这个C函数即可。</div>
+<div> </div>
+<div>C.foo(..)</div>
+<div> </div>
+<div>相反，在C中使用Go导出的函数也是一样。</div>
+</div>
+<p> </p>
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p><img src="http://www1.feedsky.com/t1/688958475/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/09/26/interoperability-between-go-and-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=interoperability-between-go-and-c" border="0" height="0" width="0">

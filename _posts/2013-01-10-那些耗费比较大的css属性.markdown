@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "那些耗费比较大的css属性"
+date:   2013-01-10 09:38:15
+author: marvin
+categories: program
+---
+
+## 那些耗费比较大的css属性
+### by marvin
+### at 2013-01-10 09:38:15
+### original <http://www.w3cplus.com/blog/605.html>
+
+<div><div><div><p>以下几个是耗费比较大的css属性，名列第一的居然是position：fixed（哈哈，其实以前一直以为是gradients的）：</p>
+<p>1、position:fixed</p>
+<p>2、background-position: fixed</p>
+<p>3、border-radius</p>
+<p>4、background-size</p>
+<p>5、box-shadow</p>
+<p>6、gradients</p>
+<p>所以使用的时候还是注意点，不要过分去追求css3特效，话说我们曾经有些demos就栽在背景的gradients和background-size上。</p>
+<p><span style="color:#ff0000">2013-01-14更新</span></p>
+<p>写出这个文章之后，下面有好几个留言要求是怎么得出这个结论的，表示压力比较大，因为我只是从国外网站看过来，记住这个结论然后就做了个简要的笔录吧。这不最近搜索了一些资料，下面更新一些关于这个性能方面的链接地址：</p>
+<p><a href="http://perfectionkills.com/profiling-css-for-fun-and-profit-optimization-notes/">http://perfectionkills.com/profiling-css-for-fun-and-profit-optimization-notes/</a></p>
+<p><a href="http://www.pubnub.com/blog/css3-performance-optimizations">http://www.pubnub.com/blog/css3-performance-optimizations</a></p>
+<p><a href="http://jacwright.com/476/runtime-performance-with-css3-vs-images/">http://jacwright.com/476/runtime-performance-with-css3-vs-images/</a></p>
+<p><a href="http://paulirish.com/2011/dom-html5-css3-performance/">http://paulirish.com/2011/dom-html5-css3-performance/</a></p>
+<p>如果你没有时间看那么多，那么第一个和第三个你有必要看下</p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/8.html">css</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/295.html">css3性能</a></li></ul></div><div><div><div><div>
+      <div>15</div>
+                  <a href="http://www.w3cplus.com/vote/node/605/1/vote/alternate/Dhr0I-CkkhpIZnmuclBwbqxsUFYmLMH9QGnRq_eaihs/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/707654678/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/blog/605.html" border="0" height="0" width="0">

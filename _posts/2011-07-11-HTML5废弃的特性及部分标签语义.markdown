@@ -1,0 +1,271 @@
+---
+layout: post
+title:  "HTML5废弃的特性及部分标签语义"
+date:   2011-07-11 16:44:09
+author: dh20156@126.com(dh20156)
+categories: program
+---
+
+## HTML5废弃的特性及部分标签语义
+### by dh20156@126.com(dh20156)
+### at 2011-07-11 16:44:09
+### original <http://www.v-ec.com/dh20156/default.asp?id=336>
+
+<h2>废弃，但符合规范的特性：</h2>
+<p><strong>如果页面中存在以下情况，在做规范检测时将遇到警告信息！</strong></p>
+<p style="margin-left:40px"><strong>&lt;img border=&quot;0&quot; src=&quot;...&quot; alt=&quot;&quot; /&gt;</strong><br>
+border属性不应该继续出现在img元素中；<br>
+border如果出现在img元素中，其值必须为0；<br>
+最好使用CSS方式替代；<br>
+<br>
+<br>
+<strong>&lt;script language=&quot;JavaScript&quot; type=&quot;text/javascript&quot;&gt;...&lt;/script&gt;</strong><br>
+language属性不应该继续出现在script元素中；<br>
+language如果出现在script元素中，其值必须为&quot;JavaScript&quot;；<br>
+language如果出现在script元素中，则应该忽略type属性，或者type属性值必须为&quot;text/javascript&quot;；<br>
+最好使用type=&quot;text/javascript&quot;替代language属性；<br>
+<br>
+<br>
+<strong>&lt;a name=&quot;content&quot; id=&quot;content&quot;&gt;&lt;/a&gt;</strong><br>
+name属性不应该继续出现在a元素中；<br>
+name属性如果出现在a元素中，其值不能为空，且<br>
+    不能与其他元素的id值相同（该元素本身的id值除外，它们俩必须相同）；<br>
+    不能与其他a元素的name值相同；<br>
+最好使用id属性来取代a元素的name用法；</p>
+<h2>废弃，且不合规范的特性：</h2>
+<p><strong>以下列出的元素全部都是完全过时废弃的，它们不应该被使用：</strong></p>
+<p style="margin-left:40px"><strong>applet</strong><br>
+<br>
+使用embed或object进行替代<br>
+<br>
+<br>
+<strong>acronym</strong><br>
+<br>
+使用abbr替代<br>
+<br>
+<br>
+<strong>bgsound</strong><br>
+<br>
+使用audio替代<br>
+<br>
+<br>
+<strong>dir</strong><br>
+<br>
+使用ul替代<br>
+<br>
+<br>
+<strong>frame</strong><br>
+<br>
+<strong>frameset</strong><br>
+<br>
+<strong>noframes</strong><br>
+<br>
+可以使用iframe和css进行替代，或者通过在服务端include的方式将那些固定不变的部分合并在一起生成完整的页面。<br>
+<br>
+<br>
+<strong>isindex</strong><br>
+<br>
+使用一个显式的form和text field组合进行替代<br>
+<br>
+<br>
+<strong>listing</strong><br>
+<br>
+使用pre和code进行替代<br>
+<br>
+<br>
+<strong>nextid</strong><br>
+<br>
+使用GUIDs进行替代<br>
+<br>
+<br>
+<strong>noembed</strong><br>
+<br>
+使用object替代embed当可靠性作为必须的时候<br>
+<br>
+<br>
+<strong>plaintext</strong><br>
+<br>
+使用&quot;text/plain&quot;的MIME type替代<br>
+<br>
+<br>
+<strong>rb</strong><br>
+<br>
+只需要将文本直接写在ruby元素中即可，rb元素完全可以丢掉<br>
+<br>
+<br>
+<strong>strike</strong><br>
+<br>
+如果该元素标记着一处编辑过的内容则使用del替代，否则，使用s替代<br>
+<br>
+<br>
+<strong>xmp</strong><br>
+<br>
+使用code替代，并且分别要将&quot;&lt;&quot;转码为&quot;&amp;lt;&quot;，将&quot;&amp;&quot;转码为&quot;&amp;amp;&quot;<br>
+<br>
+<br>
+<strong>basefont</strong><br>
+<br>
+<strong>big</strong><br>
+<br>
+<strong>blink</strong><br>
+<br>
+<strong>center</strong><br>
+<br>
+<strong>font</strong><br>
+<br>
+<strong>marquee</strong><br>
+<br>
+<strong>multicol</strong><br>
+<br>
+<strong>nobr</strong><br>
+<br>
+<strong>spacer</strong><br>
+<br>
+<strong>tt</strong><br>
+<br>
+用其他适当的元素和CSS进行替代<br>
+<br>
+在tt元素被用作标记键盘输入时，考虑使用kbd元素；如果是变量，考虑使用var元素；如果是计算机代码，考虑code元素；如果是计算输出，考虑samp元素。<br>
+<br>
+类似的，如果big元素被用作表示一个标题，请考虑使用h1元素；如果它被用作标注重要的部分，考虑使用strong元素；如果它以高亮文本的方式用于表明引用的需要，考虑使用mark元素。</p>
+<h2>还原元素的语义(FOR HTML5)</h2>
+<table border="1">
+    <tbody>
+        <tr>
+            <th>元素</th>
+            <th>意图</th>
+            <th>示例</th>
+        </tr>
+        <tr>
+            <td>a</td>
+            <td>超链接</td>
+            <td>访问我的&lt;a href=&quot;drinks.html&quot;&gt;饮料&lt;/a&gt;页面。</td>
+        </tr>
+        <tr>
+            <td>em</td>
+            <td>强调</td>
+            <td>我不得不说，我&lt;em&gt;超爱&lt;/em&gt;柠檬水。</td>
+        </tr>
+        <tr>
+            <td>strong</td>
+            <td>重要的事务</td>
+            <td>这茶&lt;strong&gt;很烫&lt;/strong&gt;。</td>
+        </tr>
+        <tr>
+            <td>small</td>
+            <td>侧记</td>
+            <td>这些葡萄会用来酿酒。&lt;small&gt;含酒精的饮料会使人上瘾&lt;/small&gt;</td>
+        </tr>
+        <tr>
+            <td>s</td>
+            <td>不准确的，错误的文本</td>
+            <td>报价：&lt;s&gt;¥4.50&lt;/s&gt; ¥2.00！</td>
+        </tr>
+        <tr>
+            <td>cite</td>
+            <td>作品的标题</td>
+            <td>&lt;cite&gt;Hugo v. Danielle&lt;/cite&gt;这个案例在这儿很切题。</td>
+        </tr>
+        <tr>
+            <td>q</td>
+            <td>引用，引述</td>
+            <td>法官说过，&lt;q&gt;你可以从鱼缸里喝水&lt;/q&gt;，不过建议你不要这么做。</td>
+        </tr>
+        <tr>
+            <td>dfn</td>
+            <td>定义实例</td>
+            <td>术语&lt;dfn&gt;有机食品&lt;/dfn&gt;适用于那些不是使用化学制品而生成的食物。</td>
+        </tr>
+        <tr>
+            <td>abbr</td>
+            <td>缩写体</td>
+            <td>在爱尔兰，有机食物是符合&lt;abbr title=&quot;Irish organic Farmers and Growers Association&quot;&gt;IOFGA&lt;/abbr&gt;公制标准的。</td>
+        </tr>
+        <tr>
+            <td>time</td>
+            <td>日期或时间</td>
+            <td>它发表于&lt;time&gt;2009-10-21&lt;/time&gt;。</td>
+        </tr>
+        <tr>
+            <td>code</td>
+            <td>计算机代码</td>
+            <td>&lt;code&gt;fruitdb&lt;/code&gt;程式能用于跟踪水果的出产。</td>
+        </tr>
+        <tr>
+            <td>var</td>
+            <td>变量</td>
+            <td>如果碗里有&lt;var&gt;n&lt;/var&gt;种水果，那么至少&lt;var&gt;n&lt;/var&gt;－2种会是熟的。</td>
+        </tr>
+        <tr>
+            <td>samp</td>
+            <td>计算机输出</td>
+            <td>计算机输出：&lt;samp&gt;Unknown error -3&lt;/samp&gt;。</td>
+        </tr>
+        <tr>
+            <td>kbd</td>
+            <td>用户输入</td>
+            <td>按&lt;kbd&gt;F1&lt;/kbd&gt;继续…</td>
+        </tr>
+        <tr>
+            <td>sub</td>
+            <td>下标</td>
+            <td>水的分子式是H&lt;sub&gt;2&lt;/sub&gt;O。</td>
+        </tr>
+        <tr>
+            <td>sup</td>
+            <td>上标</td>
+            <td>氢在重水中通常是&lt;sup&gt;2&lt;/sup&gt;H。</td>
+        </tr>
+        <tr>
+            <td>i</td>
+            <td>另类意见</td>
+            <td>柠檬水的主要成份是&lt;i&gt;柑橘属柠檬&lt;/i&gt;</td>
+        </tr>
+        <tr>
+            <td>b</td>
+            <td>关键词</td>
+            <td>拿个&lt;b&gt;柠檬&lt;/b&gt;，然后用&lt;b&gt;果汁机&lt;/b&gt;榨汁。</td>
+        </tr>
+        <tr>
+            <td>u</td>
+            <td>注解</td>
+            <td>苹果汁和&lt;u class=&quot;spelling&quot;&gt;接骨木花&lt;/u&gt;汁混在一起感觉很赞。</td>
+        </tr>
+        <tr>
+            <td>mark</td>
+            <td>高亮</td>
+            <td>接骨木花茶，由一&lt;mark&gt;份&lt;/mark&gt;汁，十&lt;mark&gt;份&lt;/mark&gt;水勾兑而成。</td>
+        </tr>
+        <tr>
+            <td>ruby, rt, rp</td>
+            <td>印刷标注</td>
+            <td>&lt;ruby&gt; 橙汁 &lt;rp&gt;(&lt;rt&gt;鲜橙果汁&lt;/rt&gt;)&lt;/rp&gt;&lt;/ruby&gt;</td>
+        </tr>
+        <tr>
+            <td>bdi</td>
+            <td>文本定向隔离</td>
+            <td>推荐这家餐厅&lt;bdi lang=&quot;&quot;&gt;My Juice Café (At The Beach)&lt;/bdi&gt;。</td>
+        </tr>
+        <tr>
+            <td>bdo</td>
+            <td>文本定向格式化</td>
+            <td>建议写英文，不过要按相反的顺序。比如，&quot;Juice&quot;要变成&quot;&lt;bdo dir=rtl&gt;Juice&lt;/bdo&gt;&quot;。</td>
+        </tr>
+        <tr>
+            <td>span</td>
+            <td>其他</td>
+            <td>在法国，我们称它为&lt;span lang=&quot;fr&quot;&gt;sirop de sureau&lt;/span&gt;。</td>
+        </tr>
+        <tr>
+            <td>br</td>
+            <td>换行</td>
+            <td>简单的橙汁公司&lt;br&gt;Apopka, FL 32703&lt;br&gt;U.S.A</td>
+        </tr>
+        <tr>
+            <td>wbr</td>
+            <td>换行良机</td>
+            <td>www.simply&lt;wbr&gt;orange&lt;wbr&gt;juice.com</td>
+        </tr>
+    </tbody>
+</table>
+<p> </p>

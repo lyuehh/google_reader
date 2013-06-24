@@ -1,0 +1,307 @@
+---
+layout: post
+title:  "重构 Rails 项目之最佳实践"
+date:   2013-03-06 13:57:42
+author: 童海波
+categories: program
+---
+
+## 重构 Rails 项目之最佳实践
+### by 童海波
+### at 2013-03-06 13:57:42
+### original <http://blog.jobbole.com/34890/?utm_source=rss&utm_medium=rss&utm_campaign=%25e9%2587%258d%25e6%259e%2584-rails-%25e9%25a1%25b9%25e7%259b%25ae%25e4%25b9%258b%25e6%259c%2580%25e4%25bd%25b3%25e5%25ae%259e%25e8%25b7%25b5>
+
+<p>来源：<a href="http://yedingding.com/2013/03/04/steps-to-refactor-controller-and-models-in-rails-projects.html">Yedingding</a></p>
+<p>春节前受 <a title="Terry Tai&#39;s Blog" href="http://terrytai.com/">Terry</a> 邀请帮助国内的一个公益项目 <a title="开放课堂, 设计和实践综合实践课的平台" href="https://newclass.org/">Re-education</a> 做代码<span><a href="http://www.amazon.cn/gp/product/B003BY6PLK/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=vastwork-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B003BY6PLK" title="重构:改善既有代码的设计" rel="nofollow">重构</a></span>。开放课堂项目是由<a title="教育大发现" href="http://sociallearnlab.org/">教育大发现社区</a>发起，成都 ThoughtWorks，成都彩程设计公司，成都超有爱教育科技有限公司等一起合作开发和运营的教育公益网站，是一个提供给小学3-6年级师生设计和开展综合实践课的教育开放平台。项目代码放在 <a href="https://github.com/twers/re-education">GitHub</a>，采用 Ruby on Rails 作为开发框架。</p>
+<p>很高兴我们 <a href="https://pragmatic.ly/">Pragmatic.ly</a> 团队能参与到这个公益项目的开发中，我相信这是个对社会很有价值的事情。征得发起方的同意，我把这次重构工作做成了一次在线秀，也正是因为这次这样的形式，和很多朋友直接在<a title="Free Screen Sharing and Online Meetings" href="https://join.me/">Join.me</a> 上交流了很多 Rails 项目重构方面的想法。通俗点说，重构就是对内要通过修改代码结构等方法让代码变得更美，提高可阅读性和可维护性，而<strong>对外不改变</strong>原来的行为，不做任何功能的修改。所以我们做重构要做好两点: 1) 一次只做一件事情，不能修改了多个地方后再做验证 2) 小步增量前进，路是一步一步走出来的。同时，为了保证重构的正确性，必须要测试保护，每一次小步修改都必须要保证集成测试仍然通过。之所以要保护集成测试而非单元测试，正是因为重构只改变内部结构，而不改变外部行为，所以，单元测试是可能失败的(其实概率也不高)，而集成测试是不允许失败的。基于 Re-education 的代码，这次重构主要涉及了 Controllers 和 Models 两个方面。有兴趣的朋友可以去 <a title="#036 Refactor openclass by Dingding Ye" href="http://railscasts-china.com/episodes/refactor-openclass-by-dingding">RailsCasts China</a> 观看视频。</p>
+<p>Rails 做为一个 Web 开发框架，几个哲学一直影响着它的发展，比如 <a title="Convention over Congiuration" href="http://en.wikipedia.org/wiki/Convention_over_Configuration">CoC</a>, <a title="Don&#39;t Repeat Yourself" href="http://en.wikipedia.org/wiki/Don%27t_Repeat_Yourself">DRY</a>。而代码组织方式，则是按照 <a title="Model–view–controller" href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">MVC</a> 模式，推崇 “Skinny Controller, Fat Model”，把应用逻辑尽可能的放在 Models 中。</p>
+<h5>Skinny Controller, Fat Model</h5>
+<p>让我们来看最实际的例子，来自 Re-education 的代码。</p>
+<div>
+<pre>class PublishersController &lt; ApplicationController
+  def create
+    @publisher = Publisher.new params[:publisher]
+
+    # trigger validation
+    @publisher.valid?
+
+    unless simple_captcha_valid? then
+      @publisher.errors.add :validation_code, &quot;验证码有误&quot;
+    end
+
+    if !(params[:password_copy].eql? @publisher.password) then
+      @publisher.errors.add :password, &quot;两次密码输入不一致&quot;
+    end
+
+    if @publisher.errors.empty? then
+
+      @publisher.password = Digest::MD5.hexdigest @publisher.password
+      @publisher.save!
+
+      session[:user_id] = @publisher.id
+      redirect_to publisher_path(@publisher)
+    else
+      p @publisher.errors
+      render &quot;new&quot;, :layout =&gt; true
+    end
+  end
+end</pre>
+</div>
+<p>按照 “Skinny Controller, Fat Model” 的标准，这段代码有这么几个问题:</p>
+<ol>
+<li><strong>action 代码量过长</strong></li>
+<li><strong>有很多 @publisher 相关的逻辑判断</strong>。</li>
+</ol>
+<p>从权责而言，Controller 负责的是接收 HTTP Request，并返回 HTTP Response。而具体如何处理和返回什么数据，则应该交由其他模块比如 Model/View 去完成，Controller 只需要当好控制器即可。所以，从这点上讲，如果一个 action 行数超过 10 行，那绝对已经构成了重构点。如果一个 action 对一个 model 变量引用了超过 3 次，也应该构成了重构点。下面是我重构后的代码。</p>
+<div>
+<pre>class PublishersController &lt; ApplicationController
+  def create
+    @publisher = Publisher.new params[:publisher]
+
+    if @publisher.save_with_captcha
+      self.current_user = @publisher
+      redirect_to publisher_path(@publisher)
+    else
+      render &quot;new&quot;
+    end
+  end
+end
+
+class Publisher &lt; ActiveRecord::Base
+  apply_simple_captcha :message =&gt; &quot;验证码有误&quot;
+
+  validates :password,
+    :presence =&gt; {
+      :message =&gt; &quot;密码为必填写项&quot;
+    },
+    :confirmation =&gt; {
+      :message =&gt; &quot;两次密码输入不一致&quot;
+    }
+
+  attr_reader :password
+  attr_accessor :password_confirmation
+
+  def password=(pass)
+    @password = pass
+    self.password_digest = encrypt_password(pass) unless pass.blank?
+  end
+
+  private
+
+  def encrypt_password(pass)
+    Digest::MD5.hexdigest(pass)
+  end
+end</pre>
+</div>
+<p>在上面的重构中，我主要遵循了两个方法。</p>
+<ol>
+<li>把应该属于 Model 的逻辑从 Controller 移除，放入了 Model。</li>
+<li>利用虚拟属性 password, password_confirmation 处理了本不属于 Publisher Schema 的逻辑。</li>
+</ol>
+<p>关于简化 Controller，多利用 Model 方面的重构方法，<a href="http://rails-bestpractices.com/">Rails Best Practices</a> 有不少不错的例子，也可以参考。</p>
+<ol>
+<li><a href="http://rails-bestpractices.com/posts/25-move-code-into-model">Move code into model</a></li>
+<li><a href="http://rails-bestpractices.com/posts/4-add-model-virtual-attribute">Add model virtual attribute</a></li>
+<li><a href="http://rails-bestpractices.com/posts/1-move-finder-to-named_scope">Move finder to scope</a></li>
+</ol>
+<h5>Beyond Fat Model</h5>
+<p>对于项目初期而言，做好这两个基本就够了。但是，随着逻辑的增多，代码量不断增加，我们会发现 Models 开始变得臃肿，整体维护性开始降低。如果一个 Model 对象有效代码行超过了 100 行，我个人认为因为引起警觉了，要思考一下有没有重构点。一般而言，我们有下面几种方法。</p>
+<h6><a href="http://en.wikipedia.org/wiki/Concern_(computer_science">Concern</a></h6>
+<p>Concern 其实也就是我们通常说的 Shared Mixin Module，也就是把 Controllers/Models 里面一些通用的应用逻辑抽象到一个 Module 里面做封装，我们约定叫它 Concern。而 Rails 4 已经内建支持 Concern, 也就是在创建新 Rails 项目的同时，会创建 app/models/concerns 和 app/controllers/concerns。大家可以看看 DHH 写的这篇博客 <a href="http://37signals.com/svn/posts/3372-put-chubby-models-on-a-diet-with-concerns">Put chubby models on a diet with concerns</a> 和 Rails 4 的相关 <a href="https://github.com/rails/rails/commit/f6bbc3f582bfc16da3acc152c702b04102fcab81">commit</a>。具体使用可以参照上面的博客和下面我们在 <a title="Lean Collaborative Project Management Tool" href="https://pragmatic.ly/">Pragmatic.ly</a> 里的实际例子。</p>
+<div>
+<pre>module Membershipable
+  extend ActiveSupport::Concern
+
+  included do
+    has_many :memberships, as: :membershipable, dependent: :destroy
+    has_many :users, through: :memberships
+    after_create :create_owner_membership
+  end
+
+  def add_user(user, admin = false)
+    Membership.create(membershipable: self, user: user, admin: admin)
+  end
+
+  def remove_user(user)
+    memberships.find_by_user_id(user.id).try(:destroy)
+  end
+
+  private
+
+  def create_owner_membership
+    self.add_user(owner, true)
+    after_create_owner_membership
+  end
+
+  def after_create_owner_membership
+  end
+end
+
+class Project &lt; ActiveRecord::Base
+  include Membershipable
+end
+
+class Account &lt; ActiveRecord::Base
+  include Membershipable
+end</pre>
+</div>
+<p>通过上面的例子，可以看到 Project 和 Account 都可以拥有很多个用户，所以 Membershipable 是公共逻辑，可以抽象成 Concern 并在需要的类里面 include，达到了 DRY 的目的。</p>
+<h6><a href="http://en.wikipedia.org/wiki/Delegation_pattern">Delegation Pattern</a></h6>
+<p>Delegation Pattern 是另外一种重构 Models 的利器。所谓委托模式，也就是我们把一些本跟 Model 数据结构浅耦合的东西抽象成一个对象，然后把相关方法委托给这个对象，同样看看具体例子。</p>
+<p>未重构前:</p>
+<div>
+<pre>class User &lt; ActiveRecord::Base
+  has_one :user_profile
+
+  def birthday
+    user_profile.try(:birthday)
+  end
+
+  def timezone
+    user_profile.try(:timezone) || 0
+  end
+
+  def hometown
+    user_profile.try(:hometown)
+  end
+end</pre>
+</div>
+<p>当我们需要调用的 user_profile 属性越来越多的时候，会发现方法会不断增加。这个时候，通过 delegate, 我们可以把代码变得更加的简单。</p>
+<div>
+<pre>class User &lt; ActiveRecord::Base
+  has_one :user_profile
+
+  delegate :birthday, :tomezone, :hometown, to: :profile
+
+  def profile
+    self.user_profile ||
+      UserProfile.new(birthday: nil, timezone: 0, hometown: nil)
+  end
+end</pre>
+</div>
+<p>关于更多的如何在 Rails 里使用 delegate 的方法，参考官方文档 <a href="http://apidock.com/rails/Module/delegate">delegate module</a></p>
+<h6>Acts As XXX</h6>
+<p>相信大家对 acts-as-list，acts-as-tree 这些插件都不陌生，acts-as-xxx 系列其实跟 Concern 差不多，只是它有时不单单是一个 Module，而是一个拥有更多丰富功能的插件。这个方式在重构 Models 时也是非常的有用。还是举个例子。</p>
+<div>
+<pre>module ActiveRecord
+  module Acts #:nodoc:
+    module Cache #:nodoc:
+      def self.included(base)
+        base.extend(ClassMethods)
+      end
+
+      module ClassMethods
+        def acts_as_cache(options = { })
+          klass = options[:class_name] || &quot;#{self.name}Cache&quot;.constantize
+          options[:delegate] ||= []
+
+          class_eval &lt;&lt;-EOV
+            def acts_as_cache_class
+              ::#{klass}
+            end
+
+            after_commit :create_cache, :if =&gt; :persisted?
+            after_commit :destroy_cache, on: :destroy
+
+            if #{options[:delegate]}.any?
+              delegate *#{options[:delegate]}, to: :cache
+            end
+
+            include ::ActiveRecord::Acts::Cache::InstanceMethods
+          EOV
+        end
+      end
+
+      module InstanceMethods
+        def create_cache
+          acts_as_cache_class.create(self)
+        end
+
+        def destroy_cache
+          acts_as_cache_class.destroy(self)
+        end
+
+        def cache
+          acts_as_cache_class.find_or_create_cache(self.id)
+        end
+      end
+    end
+  end
+end
+
+class User &lt; ActiveRecord::Base
+  acts_as_cache
+end
+
+class Project &lt; ActiveRecord::Base
+  acts_as_cache
+end</pre>
+</div>
+<h5>Beyond MVC</h5>
+<p>如果你在使用了这些方式重构后还是不喜欢代码结构，那么我觉得可能仅仅 MVC 三层就不能满足你需求了，我们需要更多的抽象，比如 Java 世界广而告之的 Service 层或者 Presenter 层。这个更多是个人习惯的问题，比如有些人认为应用逻辑(业务逻辑)不应该放在数据层(Model)，或者一个 Model 只应该管好他自己的事情，多个 Model 的融合需要另外的类来做代理。关于这些的争论已经属于意识形态的范畴，个人的观点是视需要而定，没必要一上来就进入 Service 或者 Presenter，保持代码的简单性，毕竟减少项目 Bugs 的永恒不变法就是没有代码。但是，一旦达到可适用范围，该引入时就引入。这里也给大家介绍一些我们在用的方法。</p>
+<h6>Service</h6>
+<p>之前已经提到 Controller 层应该只接受 HTTP Request，返回 HTTP Response，中间的处理部分应该交由其他部分。我们可以优先把这部分逻辑放在 Model 层处理。但是，Model 层本身从定义而言应该是只和数据打交道，而不应该过多涉及业务逻辑。这个时候我们就需要用到 Service 层。继续例子!</p>
+<div>
+<pre>class ProjectHookService
+  attr_reader :project, :data
+
+  def initialize(hook_params = {})
+    @project = Project.from_param(hook_params)
+    @data = JSON.parse(hook_params[&#39;payload&#39;])
+  end
+
+  def parse
+    Prly.hook_services.each do |service|
+      parser = service.new(@project, @data)
+      if parser.parseable?
+        parser.parse
+      end
+    end
+  end
+
+  def parseable?
+    @project.present? &amp;&amp; @data.present?
+  end
+end
+
+class HooksController &lt; ApplicationController
+  def create
+    service = ProjectHookService.new(params)
+    if service.parseable?
+      service.parse
+      render nothing: true, status: 200
+    else
+      render text: &#39;Faled to parse the payload&#39;, status: 403
+    end
+  end
+end</pre>
+</div>
+<p>如果大家仔细分析这段代码的话，会发现用 Service 是最好的方案，既不应该放在 Controller，又不适合放在 Model。如果你需要大量使用这种模式，可以考虑一下看看 <a href="https://github.com/karmajunkie/imperator">Imperator</a> 这个 Gem，算是 Rails 世界里对 Service Layer 实现比较好的库了。</p>
+<h6>Presenter</h6>
+<p>关于 Presenter，不得不提的是一个 Gem <a href="https://github.com/jamesgolick/active_presenter">ActivePresenter</a>，基本跟 ActiveRecord 的使用方法一样，如果项目到了一定规模比如有了非常多的 Models，那么可以关注一下 Presenter 模式，会是一个很不错的补充。</p>
+<div>
+<pre>class SignupPresenter &lt; ActivePresenter::Base
+  presents :user, :account
+end
+
+SignupPresenter.new(:user_login =&gt; &#39;dingding&#39;,
+                    :user_password =&gt; &#39;123456&#39;,
+                    :user_password_confirmation =&gt; &#39;123456&#39;,
+                    :account_subdomain =&gt; &#39;pragmaticly&#39;)</pre>
+</div>
+<h5>We’re good now</h5>
+<p>基本上上面是我在一个 Rails 项目里重构 Controller 和 Model 时会使用的几种方法，希望对你有用。Terry Tai 上周在他的博客里分享了<a href="http://terrytai.com/2013/02/15/refactor-session-for-re-education-in-thought-works.html">他在重构方面的一些想法</a>，也很有价值，推荐阅读。</p>
+<h4>相关文章</h4>
+<ul>
+<li><a href="http://blog.jobbole.com/1568/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/programming-languages.png" alt="多些时间能少写些代码"></a><a href="http://blog.jobbole.com/1568/">多些时间能少写些代码</a></li>
+<li><a href="http://blog.jobbole.com/30049/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/11/code-refactoring-150x150.gif" alt="code refactoring"></a><a href="http://blog.jobbole.com/30049/">如何避免重构带来的危险</a></li>
+<li><a href="http://blog.jobbole.com/19371/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/software-development-logo.jpg" alt="什么是重构，什么不是重构 "></a><a href="http://blog.jobbole.com/19371/">什么是重构，什么不是重构 </a></li>
+<li><a href="http://blog.jobbole.com/28779/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/09/20070310041641Crime-150x150.jpg" alt="“旁观者效应”是如何毁掉我们的代码"></a><a href="http://blog.jobbole.com/28779/">“旁观者效应”是如何毁掉我们的代码</a></li>
+<li><a href="http://blog.jobbole.com/1258/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/25.jpg" alt="重构代码的7个阶段"></a><a href="http://blog.jobbole.com/1258/">重构代码的7个阶段</a></li>
+<li><a href="http://blog.jobbole.com/1524/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/4.jpg" alt="品质在于构建过程吗？"></a><a href="http://blog.jobbole.com/1524/">品质在于构建过程吗？</a></li>
+<li><a href="http://blog.jobbole.com/1378/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/10.jpg" alt="代码修整"></a><a href="http://blog.jobbole.com/1378/">代码修整</a></li>
+<li><a href="http://blog.jobbole.com/1315/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/7.jpg" alt="你这不是测试驱动开发"></a><a href="http://blog.jobbole.com/1315/">你这不是测试驱动开发</a></li>
+<li><a href="http://blog.jobbole.com/34962/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/03/110-150x150.png" alt="漫谈重构"></a><a href="http://blog.jobbole.com/34962/">郭昂：漫谈重构</a></li>
+<li><a href="http://blog.jobbole.com/13087/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/software-development-logo.jpg" alt="重构时应避免过度思考"></a><a href="http://blog.jobbole.com/13087/">重构时应避免过度思考</a></li>
+</ul>
+<p><a href="http://blog.jobbole.com/34890/">重构 Rails 项目之最佳实践</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>

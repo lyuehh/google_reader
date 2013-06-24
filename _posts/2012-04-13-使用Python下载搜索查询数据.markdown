@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "使用Python下载搜索查询数据"
+date:   2012-04-13 11:54:54
+author: joydandan
+categories: program
+---
+
+## 使用Python下载搜索查询数据
+### by joydandan
+### at 2012-04-13 11:54:54
+### original <http://googlechinablog.blogspot.com/2012/04/python.html>
+
+发表者：<a href="https://profiles.google.com/jonathansimonweb/">Jonathan Simon</a>,网站管理员趋势分析师<br>原文：<a href="http://googlewebmastercentral.blogspot.com/2011/12/download-search-queries-data-using.html">Download search queries data using Python</a><br><br>对所有想从网站站长工具中编程式访问自己网站的搜索查询数据的开发人员来说，我们给您带来了好消息。现在您可以从<a href="http://code.google.com/p/webmaster-tools-downloads/">网站站长工具下载</a>中使用一个开源的Python脚本，以<a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV格式</a>获取您的搜索查询数据。虽然这些搜索查询数据目前还不能通过网站管理员工具API获取，但是我们将在下次API升级时考虑这一点，毕竟这是许多API用户的普遍请求。如果您现在就需要获取这些搜索查询数据，我们来举例说明如何使用搜索查询下载器下载Python脚本，并将其上传至Google Docs里的表格中。<br><br>使用Python脚本下载搜索查询用法示例<br>1) 如果你的计算机尚未安装Python，请下载并安装<a href="http://python.org/download/">Python</a>。<br>2) 下载并安装<a href="http://code.google.com/apis/gdata/articles/python_client_lib.html">Google Data APIs Python Client Library</a>。<br>3) 创建一个文件夹，然后将<a href="http://code.google.com/p/webmaster-tools-downloads/source/browse/downloader.py">downloader.py</a>脚本添加到新创建的文件夹中。<br>4) 将<a href="http://code.google.com/p/webmaster-tools-downloads/source/browse/example-create-spreadsheet.py">example-create-spreadsheet.py</a>脚本复制到downloader.py所在的文件夹中，然后编辑该脚本，用您的网站管理员工具验证站点的有效值替换“网站（website）”、“邮件(email)”和“密码(password)”的示例值。<br>5) 打开一个终端窗口，在终端窗口命令行输入：“python example-create-spreadsheet.py”运行example-create-spreadsheet.py脚本，如：<br><br>python example-create-spreadsheet.py<br><br>6) 查看Google Docs，您将看到一个电子表格，包含您的网站的搜索查询数据。<br><br><a href="https://lh3.googleusercontent.com/-wrW6Qa8Hepo/T4eiPuR1JgI/AAAAAAAAC9M/zbz6NJuLnj0/s755/search-queries-spreadsheet.png"><img style="display:block;margin:0px auto 10px;text-align:center;width:455px;height:229px" src="https://lh3.googleusercontent.com/-wrW6Qa8Hepo/T4eiPuR1JgI/AAAAAAAAC9M/zbz6NJuLnj0/s755/search-queries-spreadsheet.png" border="0" alt=""></a><br>如果你只想以.csv文件下载你的搜索查询数据，而不上传至Google电子表格中，用<a href="http://code.google.com/p/webmaster-tools-downloads/source/browse/example-simple-download.py">example-simple-download.py</a>替代上例中的example-create-spreadsheet.py即可。<br><br>你可以通过创建“定时任务”或使用“Windows任务计划列表”很容易地配置这些每天或每月都要运行的脚本，使其长时间存档便于你查看搜索查询数据。当前，在网站管理员工具上只有一个月的数据存档期。<br><br>值得注意的是，这个脚本示例在自身脚本里包含用户名和密码凭证。如果你打算在一个production环境中运行该脚本，你应当采用最佳安全措施，比如使用从一个安全数据存储源获取的加密用户凭证。该脚本本身使用HTTPS与API通信从而可以保护这些凭证。<br><br>快来体验搜索查询下载器脚本，在你自己的脚本或工具里开始使用搜索查询数据。如有问题或反馈，请通过<a href="http://groups.google.com/a/googleproductforums.com/forum/#%21forum/webmaster-zh-cn">网站管理员帮助论坛</a>与我们取得联系。<div><img width="1" height="1" src="https://blogger.googleusercontent.com/tracker/7374490211118734611-4785667402902058204?l=googlechinablog.blogspot.com" alt=""></div>

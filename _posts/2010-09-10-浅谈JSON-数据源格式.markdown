@@ -1,0 +1,132 @@
+---
+layout: post
+title:  "浅谈JSON 数据源格式"
+date:   2010-09-10 16:28:00
+author: 钢钢
+categories: program
+---
+
+## 浅谈JSON 数据源格式
+### by 钢钢
+### at 2010-09-10 16:28:00
+### original <http://www.cnblogs.com/xugang/archive/2010/09/10/1823422.html>
+
+<p><a href="http://www.cnblogs.com/xugang/"><img src="http://pic.cnblogs.com/face/u24048.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/xugang/">钢钢</a> 发表于 2010-09-10 16:28 <a href="http://www.cnblogs.com/xugang/archive/2010/09/10/1823422.html">原文链接</a> 阅读: 978 评论: 4</p><p style="line-height:20px">  </p>
+<p><font size="4"><strong><font color="#ff0000">JSON</font></strong> [ JavaScript Object Notation ]：<strong>JavaScript 对象表示法。</strong></font> </p>
+<p><font size="4"><strong><font color="#ff0000">它是一种轻量级的数据交换格式。</font></strong></font> </p>
+<p style="line-height:20px">  </p>
+<p> </p>
+<p><font size="4">JSON 在很多场合下作为数据格式比XML 要更加方便。 </font> </p>
+<p><font size="4">JSON 的数据由对象、数组和元素等格式组成。每种格式都可以包含合法的JavaScript 数据类型。 </font> </p>
+<p><font size="4">在JavaScript 中，可以通过eval( ) 方法将字符串直接转化为JSON 格式。</font> </p>
+<p style="line-height:20px">  </p>
+<p> </p>
+<p><font size="4">JSON 数据源格式如下：</font> </p>
+<p>示例一： </p>
+<div style="border:1px solid #999999;padding-left:18px;font-size:12px;width:700px;line-height:14px;font-family:courier new;background-color:#eeeeee">
+<table style="border:0px none;padding:0px;width:100%" cellspacing="0">
+     <tbody>
+         <tr>
+             <td><span style="color:#000000">{</span><span style="color:#000000"> </span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#4682b4">"</span><span style="color:#4682b4">tablename</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#4682b4">"</span><span style="color:#4682b4">表名</span><span style="color:#4682b4">"</span><span style="color:#ff0000">,</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#4682b4">"</span><span style="color:#4682b4">rows</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#ff0000">[</span><span style="color:#000000">{</span><span style="color:#4682b4">"</span><span style="color:#4682b4">列1</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#4682b4">"</span><span style="color:#4682b4">值1</span><span style="color:#4682b4">"</span><span style="color:#000000">}</span><span style="color:#ff0000">,</span><span style="color:#000000">{</span><span style="color:#4682b4">"</span><span style="color:#4682b4">列2</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#4682b4">"</span><span style="color:#4682b4">值2</span><span style="color:#4682b4">"</span><span style="color:#000000">}</span><span style="color:#ff0000">.</span><span style="color:#ff0000">.</span><span style="color:#ff0000">.</span><span style="color:#ff0000">.</span><span style="color:#ff0000">.</span><span style="color:#000000">{</span><span style="color:#4682b4">"</span><span style="color:#4682b4">列n</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#4682b4">"</span><span style="color:#4682b4">值n</span><span style="color:#4682b4">"</span><span style="color:#000000">}</span><span style="color:#ff0000">]</span><span style="color:#000000"> </span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">}</span><span style="color:#000000"> </span></td>
+         </tr>
+     </tbody>
+</table>
+</div>
+<p>  </p>
+<p>示例二： </p>
+<div style="border:1px solid #999999;padding-left:18px;font-size:12px;width:700px;line-height:14px;font-family:courier new;background-color:#eeeeee">
+<table style="border:0px none;padding:0px;width:100%" cellspacing="0">
+     <tbody>
+         <tr>
+             <td><strong><span style="color:#0000ff">var</span></strong><span style="color:#000000"> </span><span style="color:#000000">person</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><span style="color:#000000">{</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#4682b4">"</span><span style="color:#4682b4">createPerson</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#000000"> </span><strong><span style="color:#0000ff">function</span></strong><span style="color:#ff0000">(</span><span style="color:#000000">_name</span><span style="color:#ff0000">,</span><span style="color:#000000">_age</span><span style="color:#ff0000">)</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000">{</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><strong><span style="color:#0000ff">this</span></strong><span style="color:#ff0000">.</span><span style="color:#ff00ff">name</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><span style="color:#000000">_name</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><strong><span style="color:#0000ff">this</span></strong><span style="color:#ff0000">.</span><span style="color:#000000">age</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><span style="color:#000000">_age</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000">}</span><span style="color:#ff0000">,</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#4682b4">"</span><span style="color:#4682b4">getAge</span><span style="color:#4682b4">"</span><span style="color:#ff0000">:</span><span style="color:#000000"> </span><strong><span style="color:#0000ff">return</span></strong><span style="color:#000000"> </span><strong><span style="color:#0000ff">this</span></strong><span style="color:#ff0000">.</span><span style="color:#000000">age</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000">}</span><span style="color:#ff0000">;</span></td>
+         </tr>
+     </tbody>
+</table>
+</div>
+<p> </p>
+<p>示例三：通过eval( ) 方法将字符串直接转化为JSON 并获得元素的值。</p>
+<div style="border:1px solid #999999;padding-left:18px;font-size:12px;width:700px;line-height:14px;font-family:courier new;background-color:#eeeeee">
+<table style="border:0px none;padding:0px;width:100%" cellspacing="0">
+     <tbody>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#ff0000">&lt;</span><span style="color:#000000">script</span><span style="color:#000000"> </span><span style="color:#ff00ff">type</span><span style="color:#ff0000">=</span><span style="color:#4682b4">"</span><span style="color:#4682b4">text/javascript</span><span style="color:#4682b4">"</span><span style="color:#ff0000">&gt;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#ff0000">&lt;</span><span style="color:#ff0000">!</span><span style="color:#ff0000">-</span><span style="color:#ff0000">-</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#ff00ff">window</span><span style="color:#ff0000">.</span><span style="color:#ff00ff">onload</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><strong><span style="color:#0000ff">function</span></strong><span style="color:#ff0000">(</span><span style="color:#ff0000">)</span><span style="color:#000000">{</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><strong><span style="color:#0000ff">var</span></strong><span style="color:#000000"> </span><span style="color:#000000">json_text</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><span style="color:#4682b4">"</span><span style="color:#4682b4">{</span><span style="color:#4682b4"> </span><span style="color:#4682b4">'book':{'name':'JAVA编程','author':['Liu','Xu']},'num':222}</span><span style="color:#4682b4">"</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#008000">//</span><span style="color:#008000">使用eval()将字符串转换为对象</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><strong><span style="color:#0000ff">var</span></strong><span style="color:#000000"> </span><span style="color:#000000">json_obj</span><span style="color:#000000"> </span><span style="color:#ff0000">=</span><span style="color:#000000"> </span><span style="color:#ff00ff">eval</span><span style="color:#ff0000">(</span><span style="color:#4682b4">"</span><span style="color:#4682b4">(</span><span style="color:#4682b4">"</span><span style="color:#ff0000">+</span><span style="color:#000000"> </span><span style="color:#000000">json_text</span><span style="color:#000000"> </span><span style="color:#ff0000">+</span><span style="color:#4682b4">"</span><span style="color:#4682b4">)</span><span style="color:#4682b4">"</span><span style="color:#ff0000">)</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#008000">//</span><span style="color:#008000">访问</span><span style="color:#008000"> </span><span style="color:#008000">book-name</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#ff00ff">document</span><span style="color:#ff0000">.</span><span style="color:#ff00ff">write</span><span style="color:#ff0000">(</span><span style="color:#000000">json_obj</span><span style="color:#ff0000">.</span><span style="color:#000000">book</span><span style="color:#ff0000">.</span><span style="color:#ff00ff">name</span><span style="color:#ff0000">)</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#008000">//</span><span style="color:#008000">访问</span><span style="color:#008000"> </span><span style="color:#008000">book-author-Xu</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#ff00ff">document</span><span style="color:#ff0000">.</span><span style="color:#ff00ff">write</span><span style="color:#ff0000">(</span><span style="color:#000000">json_obj</span><span style="color:#ff0000">.</span><span style="color:#000000">book</span><span style="color:#ff0000">.</span><span style="color:#000000">author</span><span style="color:#ff0000">[</span><strong><span style="color:#008080">1</span></strong><span style="color:#ff0000">]</span><span style="color:#ff0000">)</span><span style="color:#ff0000">;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000">    </span><span style="color:#000000">}</span><span style="color:#000000"> </span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#008000">//</span><span style="color:#008000">--&gt;</span></td>
+         </tr>
+         <tr>
+             <td><span style="color:#000000"> </span><span style="color:#000000"> </span><span style="color:#ff0000">&lt;</span><span style="color:#ff0000">/</span><span style="color:#000000">script</span><span style="color:#ff0000">&gt;</span></td>
+         </tr>
+     </tbody>
+</table>
+</div>
+<p style="line-height:20px">  </p>
+<p><font size="3">附：<font color="#ff0000">在JQuery 中提供了 $.getJSON( ) 方法，可以很快捷地访问到服务器端返回的JSON 数据。</font></font></p>
+<p style="line-height:2px">  </p>
+<img src="http://www.cnblogs.com/xugang/aggbug/1823422.html?type=1" width="1" height="1" alt=""><p>评论: 4　<a href="http://www.cnblogs.com/xugang/archive/2010/09/10/1823422.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/xugang/archive/2010/09/10/1823422.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73897/">Chrome to Phone 将推出官方 iPhone 版本？</a><span style="color:gray">(2010-09-11 07:16)</span><br>· <a href="http://news.cnblogs.com/n/73896/">分析称谷歌对Facebook仍具压倒性优势</a><span style="color:gray">(2010-09-11 07:14)</span><br>· <a href="http://news.cnblogs.com/n/73895/">Evernote为站长推出“Site Memory”收藏按钮</a><span style="color:gray">(2010-09-11 07:12)</span><br>· <a href="http://news.cnblogs.com/n/73894/">NoSQL有了Android版本</a><span style="color:gray">(2010-09-11 07:11)</span><br>· <a href="http://news.cnblogs.com/n/73893/">互联网下一个十年：“光与云”的世界</a><span style="color:gray">(2010-09-11 07:09)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/winter_wine/archive/2010/09/09/1822090.html">外包行业 一点感慨</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

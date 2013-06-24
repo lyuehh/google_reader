@@ -1,0 +1,44 @@
+---
+layout: post
+title:  "FB第二周——连载"
+date:   2012-09-12 13:59:00
+author: 杨靖
+categories: program
+---
+
+## FB第二周——连载
+### by 杨靖
+### at 2012-09-12 13:59:00
+### original <http://www.udpwork.com/item/8102.html>
+
+<p>写文章的时候才发现今天是个特殊的日子。入乡随俗，为不幸的人们哀悼吧。</p>
+<p>好吧这个连载真的很无聊。这次就不要一天一天的写了，来点意识流的。</p>
+<p>鉴于众神都把mentor叫做馒头，我就跟风一把。大馒头居然上周就去旅行了，还要十月份才能回来。于是我的老师就只有一个小馒头了。小馒头本科清华，拿到了斯坦福的offer但是没有去，去了全奖的密歇根。Orz一个先。小馒头非常和蔼，又非常认真。我的第一份python脚本被他挑出来20余处问题，于是我上周二三四就只在忙这一个脚本了。FB明明有lint可以在commit的时候检查代码的，不知道为什么python没有这个检查，导致我犯了很多无聊的（缩进）错误。欣慰的是我学到了不少python的姿势，也算不白写了。小馒头非常照顾我，跟我讨论的时候能用中文就用中文了，泪牛满面呀。以后不能太怂了，要敢跟人说话才行。</p>
+<p>周五终于有点空闲时间了。脚本完成的差不多了，坐等馒头们accept。鉴于我接下来的工作是写个网页，我决定先去看看手册。FB的各种模块做的非常好，从架构到UI提供全方位支持，这就不提了。作为一个构建在PHP上的帝国，FB在PHP上果然还是有一手的。FB有自己的PHP编译器hphp（叫做Hip-Hop，把PHP编译成C++代码），调试器hphpd，解释器hphpi。hphp用来跑真正的网站，hphpi和hphpd用来测试调试。除了提升代码本身的执行性能之外，FB还对数据访问做了优化，思路很简单但是据说效果很不错。伟大的网站还需要伟大的技术作后盾啊。</p>
+<p>周六放假啦，决定骑车去斯坦福转一圈。上午宅在家里做饭玩儿，下午两点多才出发。骑车二十分钟就到了，看到地图上写着Standford，周围却找不到任何斯坦福的标志。这就是传说中没有围墙的大学吧。我在校园里不辨方向，信马由缰的乱跑，跑了一个小时也没有看到重复的景色。四处可见大片大片的草坪、树荫；楼宇稀稀落落的，很安静，粗糙的砖墙给人一种厚重的感觉。大概是因为周末吧，学校里人不多，有很多跟我一样的游客。也看到不少妹子在跑步——还看到一个自己霸占了整块草坪趴着看书的妹子。在这样的学校里，跑步看书总相怡呀。我就不吐槽我大哈工大了。</p>
+<p>周日在家宅。没有别的可以写的了。周一继续读代码，想要瞬间搞清楚FB是怎么工作的还真是很困难。</p>
+<p>周二也就是今天，我终于下定决心去申请SSN了。路线依旧是先Caltrain再bike。没有费什么力气就找到了Social Security Administration。本来以为里面会是空无一人的寂寞场面，谁知道里面竟然有一二十人在排队。碰到了两个在米国工作要申请SSN的美女，于是乎感叹大美利坚是不是要被中国人占领了。等了半个小时，轮到我了。办的过程没有费什么周折，把文件交给工作人员，过了一会儿她就递出一张纸要我核对信息。核对完了又递出一张收据，这就算结束了。完全没有想象中的难度，话都没有多说两句。</p>
+<p>Happy的办完手续，就是苦逼的回家之路了。太穷买不起车票，只好骑车回公司。半个小时的跋涉，背上都湿透了。最近几天我的累计骑行历程应该已经超过了30公里。去斯坦福的时候还专门把车调到了最费劲的那档，享受一下自虐的乐趣。</p>
+<p>到了公司之后依旧是看代码写代码。下午跟小馒头商量了一下我本周的工作计划，貌似我的进度超过了馒头的期望，或者是我低估了工程的难度，总之形势一片大好啊。回去继续扣吧。</p>
+<p>这周还在等Google那边的消息，不知道结果出来了没有。我的签证赞助商也没有给我回信，告诉我到底用不用回国两年。SSN也要两周后才能拿到。我能做的就只有等待而已了，安心工作，不要想其他了。最近看到大家在G+上讨论自己的生活，遇到的题目，碰到的大神，还有自称loser，觉得有一种莫名的温馨。希望好基友都能一辈子吧。</p>
+<p>PS:意识流完结。什么？居然还是按时间顺序！这是程序写多了干什么都要一行一行来么？</p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8102.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8102.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8102.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

@@ -1,0 +1,71 @@
+---
+layout: post
+title:  "关于RSS系统"
+date:   2012-02-21 15:36:18
+author: Luke Fan
+categories: program
+---
+
+## 关于RSS系统
+### by Luke Fan
+### at 2012-02-21 15:36:18
+### original <http://www.udpwork.com/item/6873.html>
+
+<p>RSS阅读，对于我们这些人来说肯定是一天都离不开的，但其实这也是一个小众应用。
+<br>
+我个人对于RSS阅读的需求是这样的：</p>
+<ul><li>多平台的书签同步，标记那些读过，哪些未读。</li>
+<li>不论源提供的是什么样的，所有的内容都分为标题、简介和全文三种状态，也就是说对于那些不提供简介的，要自动生成简介，对于那些不提供全文的要自动提供全文。</li>
+<li>移动端的图片，进行预先的处理，下载的内容预先压缩，比如生成类似于epub的格式。</li>
+<li>自动去重，如果我订阅的各个源之间，都报道了同一事件，那么就要去除重复的内容。</li>
+<li>智能内容推荐，推荐那些热门的内容，推荐那些我好友关注的内容，推荐那些有趣的，新的源。</li>
+<li>智能过滤，当我的时间比较紧张的时候，按照优先级和重要度，筛选比较重要的内容发给我。</li>
+<li>提醒，当某些特殊事件发生时，主动的提醒我。</li>
+<li>归纳总结，定期，比如一天、一周、一个月，出一份总结性的杂志。可以离线阅读。</li>
+<li>分享和关注，分享我的阅读体验，关注我好友的阅读过程</li>
+<li>将所有源的所有内容，按照类别进行分类、去重，然后按照类别进行阅读</li>
+</ul>
+<p>我目前主要在使用Google Reader，IOS端使用的是Reeder。主要的功能是可以满足的。但是Google Reader是按照时间和源为基础来管理内容的。我希望能够安装状态和优先级、类型来进行组织和排列。</p>
+<p>希望能够有跨平台的RSS离线阅读工具。
+<br>
+较为重度的RSS阅读者，对RSS阅读提出的想法。</p>
+<h2>相关内容</h2>
+<ul><li>2012年01月2日 --<a href="http://lukefan.com/?p=423" title="帮助人们规划人生、实现梦想的系统结构设想">帮助人们规划人生、实现梦想的系统结构设想</a>
+<br>
+帮助人们实现梦想的系统
+
+前文已经写了很多内容，那里面其实已经将系统的结构和工作方式都讲过一些了，但是这里还是想再将这两个部分分拆开来，分别讲述一下。
+
+本文主要是想要讲解帮助人们实现梦想的系统，可能会拥有哪些模块，哪些参与者，以及这些模块和参与者之间是如何在系统中进行互动的。
+
+本文包含的内容，应该会比use case稍微丰富一些吧。
+
+以后应该还会找时间再写一写这个系统的开发、...</li>
+<li>2011年11月12日 --<a href="http://lukefan.com/?p=409" title="帮助人们规划人生、实现梦想的系统">帮助人们规划人生、实现梦想的系统</a>
+<br>
+这个标题看起来好像太大了，也太痴人说梦了。其实这里要讲述得是一种基于任务管理系统的扩展方式。前面已经有很多文章讨论过任务管理系统了，这应该算是一个延续吧。
+这里要讨论得并不完全是传统意义上的任务管理系统，可以说是一种帮助人们实现其人生梦想得系统。人们并不一定希望受到计算机或软件系统太多得约束，但他们确实有很多想要实现的人生梦想。
+
+记得小时候总是被教育说：君子立长志，小人常立志。也就是说那些...</li>
+<li>2011年09月18日 --<a href="http://lukefan.com/?p=406" title="关于任务管理系统">关于任务管理系统</a>
+<br>
+书接上文。任务管理系统中的很多特性都是从复杂的工程管理软件中借鉴来的。那么在探寻任务管理系统的设计时，最好能够先来看看工程管理软件都有哪些常见的特性；然后再看看对于个人使用的任务系统来说，对于这些特性的需求会有什么样的变化；最后，阐述一下我个人对任务管理系统的一些看法。     工程管理软件分析    工程管理软件中的任务，是有相互的依赖关系的。有些是由于后续任务需要使用前置任务的成果，有些则是由...</li>
+</ul>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/6873.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/6873.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/6873.html#reviews">评论: 0</a>
+				</p>
+			</div>

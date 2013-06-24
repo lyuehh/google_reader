@@ -1,0 +1,31 @@
+---
+layout: post
+title:  "哈工大语言技术平台（LTP）源代码正式对外共享"
+date:   2011-06-06 09:43:44
+author: 52nlp
+categories: program
+---
+
+## 哈工大语言技术平台（LTP）源代码正式对外共享
+### by 52nlp
+### at 2011-06-06 09:43:44
+### original <http://feedproxy.google.com/~r/52nlp/~3/wBB7j99jqrg/%e5%93%88%e5%b7%a5%e5%a4%a7%e8%af%ad%e8%a8%80%e6%8a%80%e6%9c%af%e5%b9%b3%e5%8f%b0ltp%e6%ba%90%e4%bb%a3%e7%a0%81%e6%ad%a3%e5%bc%8f%e5%af%b9%e5%a4%96%e5%85%b1%e4%ba%ab>
+
+<p>哈工大语言技术平台（LTP）源代码已经于6月1号正式对外共享，这对于广大致力于中文信息处理的NLPer来说，无疑是一个好消息。以下转载自“哈工大社会计算与信息检索研究中心”的<a href="http://ir.hit.edu.cn/phpwebsite/index.php?module=announce&amp;ANN_user_op=view&amp;ANN_id=361">官方主页</a>，有需要的读者可以关注一下： </p>
+<p><strong>语言技术平台（Language Technology Platform，LTP）是哈工大社会计算与信息检索研究中心历时十年开发的一整套中文语言处理系统。LTP制定了基于XML的语言处理结果表示，并在此基础上提供了一整套自底向上的丰富而且高效的中文语言处理模块（包括词法、句法、语义等6项中文处理核心技术），以及基于动态链接库（Dynamic Link Library, DLL）的应用程序接口，可视化工具，依存树库等语料资源，并且能够以网络服务（Web Service）的形式进行使用。</strong></p>
+<p>从2006年9月5日开始该平台对外免费共享目标代码，截止目前，已经有国内外400多家研究单位共享了LTP，也有国内外多家商业公司购买了LTP，用于实际的商业项目中。2010年12月获得中国中文信息学会颁发的行业最高奖项：”钱伟长中文信息处理科学技术奖”一等奖。</p>
+<p>2011年6月1日，为了与业界同行共同研究和开发中文信息处理核心技术，我中心正式将LTP的源代码对外共享，LTP由C++语言开发，可运行于Windows和Linux操作系统。详见：http://ir.hit.edu.cn/ltp/</p>
+<p>欢迎各界朋友共享！</p>
+
+
+<p>相关文章:<ol><li><a href="http://www.52nlp.cn/matrix67-%e6%bc%ab%e8%af%9d%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8d%e7%ae%97%e6%b3%95" rel="bookmark" title="Matrix67：漫话中文分词算法">Matrix67：漫话中文分词算法</a></li>
+<li><a href="http://www.52nlp.cn/%e7%ac%ac%e5%8d%81%e4%ba%8c%e5%b1%8a%e6%9c%ba%e5%99%a8%e7%bf%bb%e8%af%91%e5%b3%b0%e4%bc%9a%e5%92%8cnist2009%e6%9c%ba%e5%99%a8%e7%bf%bb%e8%af%91%e8%af%84%e6%b5%8b%e7%ae%80%e4%bb%8b1" rel="bookmark" title="第十二届机器翻译峰会和NIST2009机器翻译评测研讨会简介1">第十二届机器翻译峰会和NIST2009机器翻译评测研讨会简介1</a></li>
+<li><a href="http://www.52nlp.cn/the-magic-of-johns-hopkins-summer-workshop" rel="bookmark" title="神奇的约翰霍普金斯夏季研讨会">神奇的约翰霍普金斯夏季研讨会</a></li>
+<li><a href="http://www.52nlp.cn/%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8d%e5%85%a5%e9%97%a8%e4%b9%8b%e8%b5%84%e6%ba%90" rel="bookmark" title="中文分词入门之资源">中文分词入门之资源</a></li>
+<li><a href="http://www.52nlp.cn/%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8d%e5%85%a5%e9%97%a8%e4%b9%8b%e6%96%87%e7%8c%ae" rel="bookmark" title="中文分词入门之文献">中文分词入门之文献</a></li>
+<li><a href="http://www.52nlp.cn/the-character-based-tagging-method-of-chinese-word-segmentation" rel="bookmark" title="基于字标注的中文分词方法">基于字标注的中文分词方法</a></li>
+<li><a href="http://www.52nlp.cn/%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8d%e5%85%a5%e9%97%a8%e4%b9%8b%e7%af%87%e5%a4%96" rel="bookmark" title="中文分词入门之篇外">中文分词入门之篇外</a></li>
+<li><a href="http://www.52nlp.cn/%e7%a0%96%e7%9f%b3-%e8%bf%98%e6%98%af%e9%9c%b2%e6%b0%b4" rel="bookmark" title="砖石，还是露水">砖石，还是露水</a></li>
+<li><a href="http://www.52nlp.cn/host2ez-helpless-out" rel="bookmark" title="host2ez, 无奈的出局">host2ez, 无奈的出局</a></li>
+<li><a href="http://www.52nlp.cn/%e4%b8%ad%e6%96%87%e5%88%86%e8%af%8d%e5%85%a5%e9%97%a8%e4%b9%8b%e6%9c%80%e5%a4%a7%e5%8c%b9%e9%85%8d%e6%b3%95%e6%89%a9%e5%b1%951" rel="bookmark" title="中文分词入门之最大匹配法扩展1">中文分词入门之最大匹配法扩展1</a></li>
+</ol></p><img src="http://feeds.feedburner.com/~r/52nlp/~4/wBB7j99jqrg" height="1" width="1">

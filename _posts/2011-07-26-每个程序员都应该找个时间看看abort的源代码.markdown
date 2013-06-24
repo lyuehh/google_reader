@@ -1,0 +1,75 @@
+---
+layout: post
+title:  "每个程序员都应该找个时间看看abort的源代码"
+date:   2011-07-26 01:36:46
+author: yuanyi
+categories: program
+---
+
+## 每个程序员都应该找个时间看看abort的源代码
+### by yuanyi
+### at 2011-07-26 01:36:46
+### original <http://item.feedsky.com/~feedsky/heikezhi/~8608072/543233151/6713895/1/item.html>
+
+<p>你有没想过abort()函数是怎么工作的呢？我是指，这件事其实比你想的要复杂，它属于那种你没办法用一个数学公式就完全概括的的事情。</p>
+<p>并且事实证明大多数的实现都非常复杂，下面这个是我最喜欢的：</p>
+<p><a href="http://cristi.indefero.net/p/uClibc-cristi/source/tree/0_9_14/libc/stdlib/abort.c">http://cristi.indefero.net/p/uClibc-cristi/source/tree/0_9_14/libc/stdlib/abort.c</a></p>
+<p>这篇帖子的其它部分都是些个人理解，如果你是牛人，请直接跳过，这些东西你肯定可以自己找到，如果你已经读完了abort()的代码，那就请直接跳到最后一段。</p>
+<p>为什么abort()如此困难？因为它需要在一个“敌对”的环境中做“正确的事情”，并且需要极度可靠，同时还要尽可能的减少依赖（毕竟，它是标准库的一部分）</p>
+<ul>
+<li>让我们从73行开始，这是我们的函数开始的地方，首先我们需要得到一个互斥锁（除非这个平台不支持互斥锁，这种情况下，我们只能自己手动进行处理了——参见第56-64行）。</li>
+<li>终止一个程序的最礼貌的方式就是向它发送一个SIGABRT信号了，在程序自行终止时，这也依然是有效的，所以这是我们首先尝试的方式，但有可能这个程序的某个模块屏蔽了SIGABRT信号，这是有可能的，因为程序可能不想其它外部程序终止它，但是当程序自己想要退出时，对SIGABRT信号的屏蔽必须被清除，所以在76行，我们移除了对于SIGABRT信号的屏蔽</li>
+<li>到目前为止，我们都还是个讲礼貌的函数，所以在85行我们只是关闭了标准输入，并尝试着刷新标准输出。</li>
+<li>到了这里，我们终止程序的暴力程度就开始逐步升级了，这也就意味着我们需要一个状态变量来保存我们当先执行到了那一步，但是记住，由于不能确定我们是否拿到了互斥锁，如果我们不够小心，在多线程程序中，这个变量就有可能被破坏。为了避免这种情况，我们初始化了一个全局的int参数（53行），并且我们只会对这个整数执行递增和读取操作，这样，最坏的情况下，我们也就是越过一个步骤，使用下一步更暴力的步骤来终止程序而已，这可比我们在两个步骤中间来回跳来跳去要好的多。</li>
+<li>好了，在92行我们向我们自己发送之前提到的SIGABRT信号，你将注意到这这段代码后面，我们释放了全局锁，这是因为程序有可能注册了自己的信号处理函数，来执行一些清理操作，但是这个清理函数可能会有问题，长话短说，在这种情况下，abort()有可能会被再次调用，我们可不想死锁，所以在这里我们先释放了锁。</li>
+<li>但是SIGABRT的处理函数有可能不会像我们期望的那样终止程序，如果是这样，这有可能是恶意程序，我们必须终止它，这就是97行的代码做得事情，我觉得在105行之后应该还要再触发一个SIGABRT信号，但是事实上没有，这肯定是有原因的，有人可以给个解释吗？</li>
+<li>不管怎么说，如果一个程序在收到SIGABRT信号后依然存活，下一步就是比较底层的操作了，大多数平台都有一个底层的汇编指令用于终止一个程序，在32-49行的代码就定义了一个ABORT_INSTRUCTION宏来指代底层的汇编指令，这个宏会在111行被调用。</li>
+<li>如果有程序在收到底层的汇编指令后依然能够存活，这多少有点滑稽，但这种可能还是存在的（并且我们需要认真考虑这一点），这有可能是我们的机器的底层架构在halt操作中做了些自作聪明的事情，作为最后一招杀手锏，我们将调用_exit()函数，这和toexit()很像，但是后者会首先调用所有通过atexit注册的钩子函数，而前者则会立即执行，这可以算是远程打击，或许它知道一些我们不知道的</li>
+<li>到这里，我们已经用尽了我们弹药箱的所有武器，但是如果发生了奇迹，这个程序在这些手段下依然存活了下来，那么abort()就只有祭出它的终极杀器，同归于尽了，在这种情况下abort()将会进入一个死循环，尽管我们不能杀死当前程序，但我们至少可以保证这个线程再也不会去破坏其它无辜的数据。</li>
+</ul>
+<p>是的，就是这样（对吧？或者你还发现了其它让这个函数更完整的步骤？）</p>
+<p>不过有件事我不是特别理解，那就是最外层的那个87行的while（1）循环，因为在121行已经有了一个while（1）循环，这就显得不是很有必要了。</p>
+<p>—————————–<br>
+本文来自”<a href="http://www.reddit.com/r/raldi/comments/iu0f7/every_programmer_should_read_the_source_code_t/">Every programmer should read the source code to abort() at some point in their life. </a>“，作者：<a href="http://www.reddit.com/user/raldi">raldi</a></p>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="轻松为任意程序代码添加语法高亮" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F01%2Fquick-tip-how-to-add-syntax-highlighting-to-any-project%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F25%2Fevery-programmer-should-read-the-source-code-of-abort%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/08/01/20424846.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">轻松为任意程序代码添加语法高亮</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="GitHub:改变开发者的工作方式，让代码分享更简单" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F21%2Fgithub-simplifies-sharing-code-to-change-how-developers-work%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F25%2Fevery-programmer-should-read-the-source-code-of-abort%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/07/21/18364162.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">GitHub:改变开发者的工作方式，让代码分享更简单</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="代码中最重要的并不是代码" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F09%2Fthe-most-important-code-isnt-code%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F25%2Fevery-programmer-should-read-the-source-code-of-abort%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/10/11657980.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">代码中最重要的并不是代码</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="TermKit: 下一代的Mac命令行/终端程序" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F18%2Ftermkit-next-gen-terminal-command-line-app-for-mac%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F25%2Fevery-programmer-should-read-the-source-code-of-abort%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/05/18/8913429.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">TermKit: 下一代的Mac命令行/终端程序</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/543233151/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/543233151/6713895/1/item.html" border="0" height="0" width="0">

@@ -1,0 +1,121 @@
+---
+layout: post
+title:  "HTML5实战之本地存储(1) - 兼容性与存储监听"
+date:   2011-08-04 18:18:48
+author: admin
+categories: program
+---
+
+## HTML5实战之本地存储(1) - 兼容性与存储监听
+### by admin
+### at 2011-08-04 18:18:48
+### original <http://varnow.org/?p=333>
+
+<p>很早之前调研过HTML5的本地存储-<a href="http://varnow.org/?p=288">《DOM Storage全解析》</a>，大致上对localStorage、sessionStorage等API做了下了解，但是一直没有机会真正的在项目中使用。终于这次借重构Web IM的机会，对本地存储做了更深入的使用，除了基本的API使用之外还在次基础上封装了一些应用层的库，例如Tab之间的操作同步、Tab之间的请求同步等。本文主要做一个阶段性的经验总结。</p>
+<p>  <span></span><br>
+<h4>一、localStorge onstorage事件的兼容性</h4>
+<p>1. 触发情况</p>
+<p>IE8/IE9/Firefox3.6: 在页面A中注册onstorage事件，修改localStorage时，A页面和其他页面都能收到onstorage事件。因此，对于这些浏览器监听onstorage时需要自己判断是否是本页面触发的，并且忽略本页面触发的行为。</p>
+<p>Chrome12/Firefox4/Opera11/Safari5中只有收到由其他页面触发的onstorage事件。</p>
+<p>此外，Chrome14 DEV版本中测试发现，在页面设置了document.domain之后，onstorage事件无论如何都不会触发，此Bug导致在Chrome下无法使用onstorage事件。</p>
+<p>2. 事件注册</p>
+<p>IE需要注册在document上，其他均注册在window上。</p>
+<pre name="code">//IE注册在document上
+if( document.attachEvent &amp;&amp; !K.Browser.opera ) {
+    document.attachEvent(&quot;onstorage&quot;, _onstorage(key,callback));
+}
+//其他注册在window上
+else{
+    window.addEventListener(&quot;storage&quot;, _onstorage(key,callback), false);
+};</pre>
+<p>3. 事件对象</p>
+<p>IE中的storageEvent对象不包含key/newValue/oldValue等属性，因此如果想知道是哪个Key的数据发生了变化需要自己处理，其他浏览器则可以直接获得数据。</p>
+<p>4. 数据的获取</p>
+<p>IE9下在事件触发时尽然无法立即获取到对应key的值，需要使用setTimeout做异步处理。其他浏览器状况良好。</p>
+<h4>二、监听某个Key的变化</h4>
+<p>监听某个key也就是在onstorage的基础上更精细一些，这是之后各种应用的基础。以下为实现方案：</p>
+<p>1. onstorage可用时，监听事件并在事件触发时判断是否指定的key</p>
+<p>2. onstorage不可用(IE8以下、Chrome因domain问题)时使用Timer来检查</p>
+<pre name="code">var LocalStorage = (function(){
+        var ls = window.localStorage;
+
+        function _onstorage( key, callback ){
+            var oldValue = ls[key];
+            /*
+                IE下即使是当前页面触发的数据变更，当前页面也能收到onstorage事件，其他浏览器则只会在其他页面收到
+             */
+            return function( e ){
+                //IE下不使用setTimeout尽然获取不到改变后的值?!
+		setTimeout( function(){
+			e = e || window.storageEvent;
+
+			var tKey = e.key,
+				newValue = e.newValue;
+			//IE下不支持key属性,因此需要根据storage中的数据判断key中的数据是否变化
+			if( !tKey ){
+				var nv = ls[key];
+				if( nv != oldValue ){
+					tKey = key;
+					newValue = nv;
+				}
+
+			}
+
+			if( tKey == key ){
+				callback &amp;&amp; callback(newValue);
+
+				oldValue = newValue;
+			}
+		}, 0 );
+            }
+        }
+    return {
+        getItem: function( key ){
+            return ls.getItem( key );
+        },
+        setItem: function( key, val ){
+            return ls.setItem( key, val );
+        },
+        removeItem: function( key, val ){
+            return ls.removeItem( key );
+        },
+        clear: function(){
+            return ls.clear();
+        },
+        onstorage: function( key, callback ){
+            //IE6/IE7/Chrome使用Timer检查更新，其他使用onstorage事件
+            /*
+                Chrome下(14.0.794.0)重写了document.domain之后会导致onstorage不触发
+                鉴于onstorage的兼容性问题暂时不使用onstorage事件，改用传统的轮询方式检查数据变化
+            */
+            var b = K.Browser;
+
+            if( !this.useTimer ){
+                //IE注册在document上
+                if( document.attachEvent &amp;&amp; !K.Browser.opera ) {
+                    document.attachEvent(&quot;onstorage&quot;, _onstorage(key,callback));
+                }
+                //其他注册在window上
+                else{
+                    window.addEventListener(&quot;storage&quot;, _onstorage(key,callback), false);
+                };
+            }
+            else{
+                /*
+                    Timer检查方式
+                 */
+                var listener = _onstorage( key, callback );
+                setInterval(function(){
+                    listener({});
+                }, this.interval);
+            }
+        },
+        //是否使用Timer来check
+        useTimer: ( K.Browser.ie &amp;&amp; K.Browser.ie &lt; 8 ) || ( K.Browser.chrome ),
+        //检查storage是否发生变化的时间间隔
+        interval: 1000
+    };
+})();</pre>
+<p>以上是LocalStorage接口的完整封装，在localStorage不可用时使用UserData等其他替代方案来实现以上的接口即可。</p>
+<p>下篇将会介绍在此基础上实现的Tab之间的操作同步。</p>
+<p>前往 <a href="http://varnow.org/?p=340">HTML5实战之本地存储(2)-操作同步</a></p></p>

@@ -1,0 +1,402 @@
+---
+layout: post
+title:  "【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第三章：抽象工厂模式"
+date:   2010-06-27 00:27:00
+author: 国士工作室
+categories: program
+---
+
+## 【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第三章：抽象工厂模式
+### by 国士工作室
+### at 2010-06-27 00:27:00
+### original <http://www.cnblogs.com/guoshiandroid/archive/2010/06/27/1765979.html>
+
+<p><a href="http://www.cnblogs.com/guoshiandroid/"><img src="http://pic.cnblogs.com/face/u137019.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/guoshiandroid/">国士工作室</a> 发表于 2010-06-27 00:27 <a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/27/1765979.html">原文链接</a> 阅读: 496 评论: 0</p><h1 style="font-size:2em" align="center">&lt;大话设计模式&gt;</h1>
+<h2 style="font-size:1.5em" align="center">本教程说明及版权声明</h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋利。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 如果对该文档有任何疑问或者建议，请进入官方博客</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">   <a style="color:#1a8bc8;text-decoration:none" href="http://www.cnblogs.com/guoshiandroid/">http://www.cnblogs.com/guoshiandroid/</a>留言或者直接与国士工作室联系（后附联系方式），我们会慎重参考您的建议并根据需要对本文档进行修改，以造福更多开发者！</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 《大话设计模式》的最新及完整内容会在国士工作室官方博客定期更新，请访问国士工作室博客</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px"><a style="color:#1a8bc8;text-decoration:none" href="http://www.cnblogs.com/guoshiandroid/">http://www.cnblogs.com/guoshiandroid/</a>获取更多更新内容。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"> <strong> <span style="line-height:24px;font-size:12pt">查看其他部分：</span><a style="color:#1a8bc8;text-decoration:none" href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/06/1752668.html"><span style="line-height:28px;color:#0000ff"><span style="line-height:24px;font-size:12pt">本教程整体说明及章节索引</span></span></a></strong></p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"><span style="font-size:14pt"><a style="color:#1a8bc8;text-decoration:none" href="http://files.cnblogs.com/guoshiandroid/%e6%8a%bd%e8%b1%a1%e5%b7%a5%e5%8e%82%e6%a8%a1%e5%bc%8f_MM%e7%9a%84%e7%94%9f%e6%97%a5.pdf">本文PDF下载链接</a></span></p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"><strong>MM的生日</strong></p>
+<p><strong>抽象工厂模式应用场景举例</strong><strong>：</strong><strong> </strong></p>
+<p>        时光甜蜜的飞逝，GG和MM过着童话般的王子和公主的浪漫的生活。眼看MM生日就要到了，GG着急了。毕竟，这是自己的第一个女朋友的第一个生日啊。想了千万种方法，问了身边很多朋友，这个傻GG最终还是没有确定最终该如何去做~~~~(&gt;_&lt;)~~~~ </p>
+<p>       哎！爱，总是想到太多做的太少^_^</p>
+<p>       都快夜里十二点了，GG还在Google和百度上面查询如何给自己的Sweatheart过生日。此时，突然手机短信铃声响了，打开一看，上面写道：“亲爱的，我知道这些天你一直在想我们如何一切过生日，其实，一切都很简单的。简单就好。”，看完短信，GG顿时全身暖流涌动，感觉好幸福^_^，有如此体贴理解人的MM，夫复何求( ⊙ o ⊙ )啊！刚要回复短信，手机铃声又响了，上面写道：“我们还去麦当劳吧，不过这次使我们俩，要换一个地方，到华联那边的麦当劳吧^_^”，GG读着短信，感动的无语了。短信回复道：“一切惟老婆大人之命是从:-O”。GG和MM都沉浸在甜蜜和幸福中^_^</p>
+<p> </p>
+<p><strong>抽象工厂模式解释：</strong><strong> </strong></p>
+<p>        抽象工厂模式（Abstact Factory Pattern）是所有形态的工厂模式中最为抽象和最其一般性的。抽象工厂模式可以向客户端提供一个接口，使得客户端在不必指定产品的具体类型的情况下，能够创建多个产品族的产品对象。</p>
+<p>        抽象工厂中方法对应产品结构，具体工厂对应产品族</p>
+<p>       英文定义为：Provide an interface forcreating families of related or dependent objects without specifying theirconcrete classes.</p>
+<p> </p>
+<p><strong>抽象工厂模式的</strong><strong>UML</strong><strong>图：</strong><strong> </strong></p>
+<p>       抽象工厂模式模式中包含的角色及其相应的职责如下：</p>
+<p>       抽象工厂（Creator）角色：抽象工厂模式的核心，包含对多个产品结构的声明，任何工厂类都必须实现这个接口。       </p>
+<p>具体工厂（Concrete  Creator）角色: 具体工厂类是抽象工厂的一个实现，负责实例化某个产品族中的产品对象。</p>
+<p>抽象（Product）产品角色：抽象模式所创建的所有对象的父类，它负责描述所有实例所共有的公共接口。</p>
+<p>       具体产品（Concrete Product）角色：抽象模式所创建的具体实例对象。</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062700175612.png"></p>
+<p> </p>
+<p> </p>
+<p><strong>抽象工厂模式深入分析</strong>：</p>
+<p>       抽象工厂模式是在当产品有多个 抽象角色的时候使用的一种创建型设计模式。</p>
+<p>       按照里氏代换原则，凡是父类适用的地方，子类也必然适用。而在实际系统中，我们需要的是和父类类型相同的子类的实例对象，而不是父类本身，也就是这些抽象产品的具体子类的实例。具体工厂类就是来负责创建抽象产品的具体子类的实例的。</p>
+<p align="left">　　当每个抽象产品都有多于一个的具体子类的时候，工厂角色是如何确定实例化哪一个子类呢？例如说有两个抽象产品角色，而每个抽象产品角色都有两个具体产品。抽象工厂模式提供两个具体工厂角色，分别对应于这两个具体产品角色，每一个具体工厂角色只负责某一个产品角色的实例化。每一个具体工厂类只负责创建抽象产品的某一个具体子类的实例。</p>
+<p align="left">　　每一个模式都是针对一定问题的解决方案，工厂方法模式针对的是一个产品等级结构；而抽象工厂模式针对的是多个产品等级结构。</p>
+<p align="left">何谓产品族？产品族是指位于不同产品等级结构中，功能相关联的产品组成的家族。一般是位于不同的等级结构中的相同位置上。显然，每一个产品族中含有产品的数目，与产品等级结构的数目是相等的，形成一个二维的坐标系，水平坐标是产品等级结构，纵坐标是产品族。</p>
+<p align="left" style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062700182660.png"></p>
+<p align="left"> </p>
+<p align="left">　　对于每一个产品族，都有一个具体工厂。而每一个具体工厂创建属于同一个产品族，但是分属于不同等级结构的产品。</p>
+<p align="left">　　通过引进抽象工厂模式，可以处理具有相同（或者相似）等级结构的多个产品族中的产品对象的创建问题。</p>
+<p>由于每个具体工厂角色都需要负责不同等级结构的产品对象的创建，因此每个工厂角色都需要提供相应数目的工厂方法，分别用于创建相应数目的等级结构的产品。</p>
+<p> </p>
+<p>       如下图所示：</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062700192969.png"></p>
+<p> </p>
+<p><strong>抽象工厂模式使用场景分析及代码实现：</strong><strong> </strong></p>
+<p>       MM过生日的时候还是要到麦当劳，但是这次要求是到华联那边的麦当劳去，就是地方不同了，要换换口味和心情。这就是抽象工厂模式的一个很好的体现。首先对不同的麦当劳分店而言，每一种产品，例如说汉堡，都是汉堡，但是每个地方的汉堡在遵循统一标准的前提下又会尽力突出自己的特色，这样这样才能更好的吸引和留住顾客，因为不同的地方，随着环境等的不同，人们的喜好和口味等都会有所不同，但是无论怎么不同，始终还是汉堡，具有汉堡的基本功能。同时，每一个分店都有一系列的产品，例如汉堡、鸡翅等等，这就构成了产品的等级结构。</p>
+<p>       总之：麦当劳总部相当于抽象工厂，每个分店相当于具体工厂，而每种产品又有所不同。这样在既保持了统一性的前提下，又使得各分店的特色有所不同，适合于吸引和留住不同环境下的客户。</p>
+<p>       UML模型图如下所示：</p>
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062700201552.png"></p>
+<p> </p>
+<p>具体实现代码如下：</p>
+<p>       新建立一个食物的接口：</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory;</p>
+<p align="left">/*</p>
+<p align="left"> * 所有食物的接口</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>interface</strong> Food {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取食物的方法</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>void</strong> get();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>新建一个麦当劳总店的接口：</p>
+<p> </p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 麦当劳总店</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>interface</strong> FoodFactory {</p>
+<p align="left">    //实例化汉堡</p>
+<p align="left">    <strong>public</strong> Food getHamburg();</p>
+<p align="left">    //实例化鸡翅</p>
+<p align="left">    <strong>public</strong> Food getChickenWing();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立汉堡的抽象基类</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 汉堡的抽象父类</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>abstract</strong> <strong>class</strong> Hamburg <strong>implements</strong> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取汉堡的方法</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>abstract</strong> <strong>void</strong> get();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立鸡翅的抽象基类</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 鸡翅的抽象类</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>abstract</strong> <strong>class</strong> ChickenWing <strong>implements</strong> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡翅的方法</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>abstract</strong> <strong>void</strong> get();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>建立中心商业街南部的麦当劳分店</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.Food;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.FoodFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 中心商业街南边的麦当劳分店</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> SouthMacDonald <strong>implements</strong> FoodFactory {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.FoodFactory#getHamburg()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> Food getHamburg() {</p>
+<p align="left">        <strong>return</strong> <strong>new</strong>  SouthMacDonaldHamburg();</p>
+<p align="left">    }</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡翅</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.FoodFactory#getChickenWing()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> Food getChickenWing() {</p>
+<p align="left">        <strong>return</strong> <strong>new</strong>  SouthMacDonaldChickenWing();</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立华联那边麦当劳分店</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.Food;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.FoodFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 麦当劳的华联分店</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> HualianMacDonald <strong>implements</strong> FoodFactory {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.FoodFactory#getHamburg()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> Food getHamburg() {</p>
+<p align="left">        <strong>return</strong> <strong>new</strong> HualianMacDonaldHamburg();</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡翅</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.FoodFactory#getChickenWing()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> Food getChickenWing() {</p>
+<p align="left">        <strong>return</strong> <strong>new</strong>  HualianMacDonaldChickenWing();</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>建立中心商业街南边的麦当劳的汉堡：</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.Hamburg;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 中心商业街南边的的麦当劳分店的汉堡</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> SouthMacDonaldHamburg <strong>extends</strong> Hamburg {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.Hamburg#get()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>void</strong> get() {</p>
+<p align="left">        System.<i>out</i>.println("获取中心商业街南边的的麦当劳分店的汉堡");</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立华联那边的麦当劳的汉堡：</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.Hamburg;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 华联那边的麦当劳分店的汉堡</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> HualianMacDonaldHamburg <strong>extends</strong> Hamburg {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取汉堡</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.Hamburg#get()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>void</strong> get() {</p>
+<p align="left">        System.<i>out</i>.println("获取华联那边的麦当劳分店的汉堡");</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立中心商业街南边的麦当劳鸡翅</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.ChickenWing;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 中心商业街南边的的麦当劳分店的鸡翅</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> SouthMacDonaldChickenWing <strong>extends</strong> ChickenWing {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡翅</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.ChickenWing#get()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>void</strong> get() {</p>
+<p align="left">        System.<i>out</i>.println("获取中心商业街南边的的麦当劳分店的鸡翅");</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>建立华联那边的麦当劳的鸡翅</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.impl;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.ChickenWing;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 华联那边的麦当劳分店的鸡翅</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> HualianMacDonaldChickenWing <strong>extends</strong>  ChickenWing {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取鸡翅</p>
+<p align="left">     *  @see com.diermeng.designPattern.AbstractFactory.ChickenWing#get()</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong> <strong>void</strong> get() {</p>
+<p align="left">        System.<i>out</i>.println("获取华联那边的麦当劳分店的鸡翅");</p>
+<p align="left">    }</p>
+<p align="left"> </p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p> </p>
+<p>最后我们建立测试客户端：</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left"><strong>package</strong> com.diermeng.designPattern.AbstractFactory.client;</p>
+<p align="left"> </p>
+<p align="left"><strong>import</strong> com.diermeng.designPattern.AbstractFactory.Food;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.FoodFactory;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.impl.HualianMacDonald;</p>
+<p align="left"><strong>import</strong>  com.diermeng.designPattern.AbstractFactory.impl.SouthMacDonald;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 测试客户端</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong> <strong>class</strong> AbstractFactoryTest {</p>
+<p align="left">    <strong>public</strong> <strong>static</strong> <strong>void</strong> main(String[] args) {</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left">        //声明并实例化中心商业街南边的的麦当劳分店</p>
+<p align="left">        FoodFactory  southMacDonald= <strong>new</strong> SouthMacDonald();</p>
+<p align="left">        //获取中心商业街南边的的麦当劳分店的汉堡</p>
+<p align="left">        Food  southMacDonaldHamburg = southMacDonald.getHamburg();</p>
+<p align="left">        southMacDonaldHamburg.get();</p>
+<p align="left">        //获取中心商业街南边的的麦当劳分店的鸡翅</p>
+<p align="left">        Food  southMacDonaldChickenWing = southMacDonald.getChickenWing();</p>
+<p align="left">        southMacDonaldChickenWing.get();</p>
+<p align="left"> </p>
+<p align="left">        //声明并实例化华联那边的麦当劳分店</p>
+<p align="left">        FoodFactory  hualianMacDonald = <strong>new</strong> HualianMacDonald();</p>
+<p align="left">        //获取华联那边的麦当劳分店的汉堡</p>
+<p align="left">        Food  hualianMacDonaldHamburg =hualianMacDonald.getHamburg();</p>
+<p align="left">        hualianMacDonaldHamburg.get();</p>
+<p align="left">        //获取华联那边的麦当劳分店的鸡翅</p>
+<p align="left">        Food  hualianMacDonaldChickenWing  = hualianMacDonald.getChickenWing();</p>
+<p align="left">        hualianMacDonaldChickenWing.get();</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p>输出的结果如下：</p>
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td valign="top" width="568">
+<p align="left">获取中心商业街南边的的麦当劳分店的汉堡</p>
+<p align="left">获取中心商业街南边的的麦当劳分店的鸡翅</p>
+<p align="left">获取华联那边的麦当劳分店的汉堡</p>
+<p align="left">获取华联那边的麦当劳分店的鸡翅</p>
+<p align="left"> </p>
+</td>
+</tr>
+</tbody>
+</table>
+<p> </p>
+<p> </p>
+<p><strong>抽象工厂模式的优缺点分析：</strong><strong> </strong></p>
+<p>       优点：客户端不再负责对象的具体创建，而是把这个责任交给了具体的工厂类，客户端之负责对对象的调用。当具有产品家族性质的产品被涉及到一个工厂类中后，对客户端而言是非常友好的，更重要的是如果想要更换为另外一产品家族，所要做的只是需要增加相应的产品家族成员和增加一个具体的产品工厂而已。</p>
+<p>      缺点：当有新的产品加入的时候，也就是当产品的结构发生改变时，修要修改抽象工厂类的设计，这就导致了必须修改所有的具体工厂类，导致很客观的工作量的增加。</p>
+<p> </p>
+<p><strong>抽象工厂模式的实际应用简介：</strong><strong> </strong></p>
+<p>抽象工厂模式是针对多个产品系列的创建的问题，这在持久化层的设计很实现中有很大的指导意义。由于Java的跨平台性，一般而言，持久化层都要考虑到都肿数据库的问题，例如MySQL、Oracle等，每一个数据库就相当于一个产品系列，持久化层必须设计好好不同产品系列的共同接口，这样才便于使用者操作数据库，同时也有利于数据库的移植。大名鼎鼎的Hibernate就很好的借鉴了抽象工厂模式的设计方法。</p>
+<p> </p>
+<p> </p>
+<p><strong>温馨提示：</strong><strong> </strong></p>
+<p>       抽象工厂模式考虑的是不同产品系列的创建的问题，并非能到处使用。另外在新增加产品的时候，需要改变抽象工厂的设计，这会导致很大的工作量，所以在规划之初必须考虑好产品的结构，力求降低参加产品的可能性，是抽象工厂比较稳定。</p>
+<p> </p>
+<p><span style="color:#ff0000">注意：该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋<span style="color:#ff0000">利</span></span><span style="color:#ff0000">。</span></p><img src="http://www.cnblogs.com/guoshiandroid/aggbug/1765979.html?type=1" width="1" height="1" alt=""><p>评论: 0　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/27/1765979.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/27/1765979.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67046/">程序员必看电影：Java 4-ever</a><span style="color:gray">(2010-06-27 16:08)</span><br>· <a href="http://news.cnblogs.com/n/67045/">微软高管用数据来说话：即时通讯全球第一</a><span style="color:gray">(2010-06-27 16:02)</span><br>· <a href="http://news.cnblogs.com/n/67044/">图说iPhone历史</a><span style="color:gray">(2010-06-27 15:56)</span><br>· <a href="http://news.cnblogs.com/n/67043/">iPhone4 3G网络上传速度大幅提升</a><span style="color:gray">(2010-06-27 15:51)</span><br>· <a href="http://news.cnblogs.com/n/67042/">《星际争霸2：自由之翼》在韩国“起飞”</a><span style="color:gray">(2010-06-27 15:49)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/67046/">程序员必看电影：Java 4-ever</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

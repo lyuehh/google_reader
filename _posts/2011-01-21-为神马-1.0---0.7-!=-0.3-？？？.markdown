@@ -1,0 +1,152 @@
+---
+layout: post
+title:  "为神马 1.0 - 0.7 != 0.3 ？？？"
+date:   2011-01-21 23:54:18
+author: 
+categories: program
+---
+
+## 为神马 1.0 - 0.7 != 0.3 ？？？
+### by 
+### at 2011-01-21 23:54:18
+### original <http://www.javaeye.com/topic/891256>
+
+直接上代码
+<br>
+<br><pre name="code">
+    public static void main(String[] args) {
+        System.out.println(1.0 - 0.1);
+        System.out.println(1.0 - 0.2);
+        System.out.println(1.0 - 0.3);
+        System.out.println(1.0 - 0.4);
+        System.out.println(1.0 - 0.5);
+        System.out.println(1.0 - 0.6);
+        System.out.println(1.0 - 0.7);
+        System.out.println(1.0 - 0.8);
+        System.out.println(1.0 - 0.9);
+        System.out.println(1.0 - 1.0);
+    }
+</pre>
+<br>
+<br>最后输出的结果为神马是
+<br>
+<br><pre name="code">0.9
+0.8
+0.7
+0.6
+0.5
+0.4
+0.30000000000000004
+0.19999999999999996
+0.09999999999999998
+0.0</pre>
+<br>
+<br>为什么呢？
+<br>
+<br>简单的说，问题处在"<span style="color:red"><strong>IEEE 754 floating-point arithmetic</strong></span>"，虽然在java是遵循这个规则的，但是java语言的实现，并不是使用小数点或者十进制来表示数字，相反，它是采用分数和指数来表示，而且是<div>引用</div><div>uses binary fractions and exponents to represent</div>使用二进制的，我们可以举个例子：
+<br>
+<br><pre name="code">
+0.5 = 1/2
+0.75 = 1/2 + 1/(2^2)
+0.85 = 1/2 + 1/(2^2) + 1/(2^3)
+0.1 = 1/(2^4) + 1/(2^5) + 1/(2^8) + ...
+</pre>
+<br>
+<br>注意，0.1只能是无限循环下去的，这就意味着0.1在java里面不能够准确的用浮点数来表示，也就造成了浮点数运算上面的误差。
+<br>
+<br>举个例子：
+<br>
+<br><pre name="code">
+        if (0.1 + 0.1 + 0.1 != 0.3)
+            System.out.println("0.1 + 0.1 + 0.1 is not equal with 0.3");
+        else
+            System.out.println("0.1 + 0.1 + 0.1 is equal to 0.3");
+</pre>
+<br>
+<br>每个人都知道，0.1 + 0.1 + 0.1 == 0.3，但是在java的实际结果却不是这样。
+<br>
+<br><span style="font-size:large"><strong>更深入的话</strong></span>
+<br>
+<br>有人会问，为什么
+<br><pre name="code">System.out.println(0.1f);</pre>
+<br>输出的还是0.1呢？
+<br>因为在源代码里面println调用的是Float#toString(float)，最终的实现是在
+<br><pre name="code">
+    public static String toString(float f) {
+        return new FloatingDecimal(f).toJavaFormatString();
+    }
+</pre>
+<br>有兴趣的童鞋可以去阅读源代码，FloatingDecimal帮你做了很多事情。
+<br>
+<br>这也牵涉出另外一个话题，如何避免上面出现的问题，
+<br>
+<br>对的，就是<a href="http://download.oracle.com/javase/6/docs/api/java/math/BigDecimal.html">BigDecimal</a>，关于BigDecimal，我相信你们在api上面会找到更多的答案。
+<br>
+<br><span style="font-size:large"><strong>题外话</strong></span>
+<br>
+<br>用
+<br>BigDecimal(java.lang.String)
+<br>不要用
+<br>BigDecimal(double) or BigDecimal(float)
+<br>
+<br>为什么呢？API上面写的很清楚了
+<br><div>引用</div><div>The results of this constructor can be somewhat unpredictable. One might assume that writing new BigDecimal(0.1) in Java creates a BigDecimal which is exactly equal to 0.1 (an unscaled value of 1, with a scale of 1), but it is actually equal to 0.1000000000000000055511151231257827021181583404541015625. This is because 0.1 cannot be represented exactly as a double (or, for that matter, as a binary fraction of any finite length). Thus, the value that is being passed in to the constructor is not exactly equal to 0.1, appearances notwithstanding. 
+<br></div>
+<br>所以
+<br><pre name="code">        System.out.println(new BigDecimal(0.1f));
+        System.out.println(new BigDecimal("0.1"));
+        System.out.println(0.1f);
+</pre>
+<br>结果是不一样的
+<br>
+<br><span style="font-size:large"><strong>更加更加更加深入的话</strong></span>
+<br><pre name="code">
+        if (0.1f + 0.1f + 0.1f != 0.3f)
+            System.out.println("0.1 + 0.1 + 0.1 is not equal to 0.3");
+        else
+            System.out.println("0.1 + 0.1 + 0.1 is equal to 0.3");
+
+        if (0.1 + 0.1 != 0.2)
+            System.out.println("0.1 + 0.1 is not equal to 0.2");
+        else
+            System.out.println("0.1 + 0.1 is equal to 0.2");
+</pre>
+<br>
+<br>为何上面两串代码输出不一样？<strong>为何0.3d就不能用3个0.1d相加，而0.2d就可以用2个0.1d相加呢</strong>？
+<br>
+<br>原因的话，自己看下面的输出了
+<br><pre name="code">
+        System.out.println(new BigDecimal(0.2d));
+        System.out.println(new BigDecimal(0.1d).add(new BigDecimal(0.1d)));
+
+        System.out.println(new BigDecimal(0.2f));
+        System.out.println(new BigDecimal(0.1f).add(new BigDecimal(0.1f)));
+
+        System.out.println(new BigDecimal(0.3d));
+        System.out.println(new BigDecimal(0.1d).add(new BigDecimal(0.1d)).add(new BigDecimal(0.1d)));
+
+        System.out.println(new BigDecimal(0.3f));
+        System.out.println(new BigDecimal(0.1f).add(new BigDecimal(0.1f)).add(new BigDecimal(0.1f)));
+
+</pre>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+          
+          <br><br>
+          作者: <a href="http://beneo.javaeye.com">beneo</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/891256" style="color:red">已有 <strong>25</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

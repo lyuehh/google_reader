@@ -1,0 +1,211 @@
+---
+layout: post
+title:  "异步编程：When.js快速上手"
+date:   2013-06-23 02:33:28
+author: JerryQu
+categories: program
+---
+
+## 异步编程：When.js快速上手
+### by JerryQu
+### at 2013-06-23 02:33:28
+### original <http://www.udpwork.com/item/10077.html>
+
+<p>前些天我在团内做了一个关于<a href="http://www.angularjs.org/">AngularJS</a>的分享。由于AngularJS大量使用Promise，所以我把基于Promise的异步编程也一并介绍了下。很多东西都是一带而过，这里再记录下。</p>
+<p>AngularJS内置的是Kris Kowal的<a href="https://github.com/kriskowal/q">Q</a>框架，我介绍的是自己用得更多的cujoJS的<a href="https://github.com/cujojs/when">when.js</a>，两者都是<a href="http://wiki.commonjs.org/wiki/Promises/A">Promises/A规范</a>的实现。when.js很小，压缩后只有数kb，gzip后的大小几乎可以忽略。在Node和浏览器环境里都可以使用when.js，唯一需要注意的是：在浏览器使用时，要先加<a href="https://github.com/cujojs/when#legacy-environments">几行代码</a>，再引入js文件。</p>
+<p>首先，我们看一小段代码（<a href="http://qgy18.imququ.com/file/when/callback.html">在浏览器中预览</a>）：</p>
+<pre>var getData = function(callback) {
+	$.getJSON(api, function(data){
+		callback(data[0]);
+	});
+}
+
+var getImg = function(src, callback) {
+	var img = new Image();
+
+	img.onload = function() {
+		callback(img);
+	};
+
+	img.src = src;
+}
+
+var showImg = function(img) {
+	$(img).appendTo($('#container'));
+}
+
+getData(function(data) {
+	getImg(data, function(img) {
+		showImg(img);
+	});
+});</pre><p>这段代码完成了三个任务：1)获取数据；2)加载图片；3)显示图片，其中，任务1和2是异步，3是同步，使用的是最常见的callback机制来处理异步逻辑，好处是浅显易懂，缺点是强耦合、不直观、处理异常麻烦等等。</p>
+<p>另外一种常见的实现异步编程的方案是事件监听器，例如使用QWrap的CustEvent，让任务成功时fireEvent，那么注册了这个Event的监听器就可以收到这个事件，并收到事件传递过来的数据，Dom标准事件也是采用的这种形式。这种方案也很好理解，代码从略。事件监听可以解耦，可以绑定任意多个监听器，但是依然不直观，而且事件发生之后再绑定的监听器也得不到触发。</p>
+<p>我们尝试用when.js改写下这段代码（<a href="http://qgy18.imququ.com/file/when/when.html">在浏览器中预览</a>）：</p>
+<pre>var getData = function() {
+	var deferred = when.defer();
+
+	$.getJSON(api, function(data){
+		deferred.resolve(data[0]);
+	});
+
+	return deferred.promise;
+}
+
+var getImg = function(src) {
+	var deferred = when.defer();
+
+	var img = new Image();
+
+	img.onload = function() {
+		deferred.resolve(img);
+	};
+
+	img.src = src;
+
+	return deferred.promise;
+}
+
+var showImg = function(img) {
+	$(img).appendTo($('#container'));
+}
+
+getData()
+.then(getImg)
+.then(showImg);</pre><p>看最后三行代码，是不是一目了然，非常的语义化？来看下改写后的任务1、2多了些什么：</p>
+<pre>var deferred = when.defer();</pre><p>定义了一个deferred对象。</p>
+<pre>deferred.resolve(data);</pre><p>在异步获取数据完成时，把数据作为参数，调用deferred对象的resolve方法。</p>
+<pre>return deferred.promise;</pre><p>返回了deferred对象的promise属性。</p>
+<p>在Promises/A规范中，每个任务都有三种状态：默认(pending)、完成(fulfilled)、失败(rejected)。</p>
+<ul><li>默认状态可以单向转移到完成状态，这个过程叫resolve，对应的方法是deferred.resolve(promiseOrValue)；</li>
+<li>默认状态还可以单向转移到失败状态，这个过程叫reject，对应的方法是deferred.reject(reason)；</li>
+<li>默认状态时，还可以通过deferred.notify(update)来宣告任务执行信息，如执行进度；</li>
+<li>状态的转移是一次性的，一旦任务由初始的pending转为其他状态，就会进入到下一个任务的执行过程中。</li>
+</ul>
+<p>有人可能会觉得奇怪：改变任务状态的resolve和reject方法是定义在deferred对象上，但最后返回的却是deferred的promise属性。这么做一是因为规范就是这么定的，二是可以防止任务状态被外部改变。</p>
+<p>then有三个参数，分别是onFulfilled、onRejected、onProgress，通过这三个参数，就可以指定上一个任务在resolve、reject和notify时该如何处理。例如上一个任务被resolve(data)，onFulfilled函数就会被触发，data作为它的参数；被reject(reason)，那么onRejected就会被触发，收到reason。任何时候，onFulfilled和onRejected都只有其一可以被触发，并且只触发一次；onProgress顾名思义，每次notify时都会被调用。下面是reject和notify的用法（<a href="http://qgy18.imququ.com/file/when/notify.html">在浏览器中预览</a>）：</p>
+<pre>function run() {
+	var deferred = when.defer();
+	var start = 1, end = 100;
+
+	(function() {
+		if(start &lt;= end) {
+			deferred.notify(start++);
+			setTimeout(arguments.callee, 50);
+		} else {
+			deferred.reject(&#39;time out!&#39;);
+		}
+	})();
+
+	return deferred.promise;
+}
+
+run().then(undefined,
+	function(reason) {
+		alert(reason);
+	}, function(s) {
+		document.getElementById(&#39;output&#39;).innerHTML = s + &#39;%&#39;;
+	}
+);</pre><p>then会传递错误，也就是说有多个任务串行执行时，我们可以只在最后一个then定义onRejected。只定义了onRejected的then等同于otherwise，也就是说 otherwise(onRejected) 是 then(undefined, onRejected) 的简便写法。</p>
+<p>then会在try..catch..的包裹之下执行任务，所以任务的异常都会被when.js捕获，当做失败状态处理，类似这样：</p>
+<pre>try {
+	...
+} catch (e) {
+	deferred.reject(e);
+}
+</pre><p>在任务状态改变之后再then，依然可以正常工作，后续任务会立刻执行。如果要在多个任务最后做cleanup工作，而不管之前的任务成功与否，可以用ensure方法。它只接受一个参数onFulfilledOrRejected，始终会执行。另外when.js还有一个always方法，即将废弃，建议大家不要使用。</p>
+<p>回到上面加载图片的场景，如果把任务2变为：加载多张图片，全部完成后再执行任务3。这时候需要用到when.all，when.all接受一个promise数组，返回promise，这个promise会在promise数组中每一个promise都resolve之后再resolve。说起来拗口，看代码就明白了（<a href="http://qgy18.imququ.com/file/when/all.html">在浏览器中预览</a>）：</p>
+<pre>var getData = function() {
+	var deferred = when.defer();
+
+	$.getJSON(api, function(data){
+	    var data = data.slice(0, 3);
+	    deferred.resolve(data);
+	});
+
+	return deferred.promise;
+}
+
+var getImg = function(src) {
+	var deferred = when.defer();
+
+	var img = new Image();
+
+	img.onload = function() {
+		deferred.resolve(img);
+	};
+
+	img.src = src;
+
+	return deferred.promise;
+}
+
+var showImgs = function(imgs) {
+	$(imgs).appendTo($(&#39;#container&#39;));
+}
+
+var getImgs = function(data) {
+	var deferreds = [];
+	for(var i = 0; i &lt; data.length; i++) {
+		deferreds.push(getImg(data[i]));
+	}
+	return deferreds;
+}
+
+when.all(getData().then(getImgs)).then(showImgs);
+</pre><p>如果我们只是想把一个promise数组挨个执行一遍，可以用when.settle：</p>
+<pre>var promise1 = function() {
+	var deferred = when.defer();
+	setTimeout(function() {
+			deferred.reject(&#39;A&#39;);
+		}, 2000);
+	return deferred.promise;
+};
+
+var promise2 = function() {
+	var deferred = when.defer();
+	setTimeout(function() {
+			deferred.resolve(&#39;B&#39;);
+		}, 2000);
+	return deferred.promise;
+};
+
+when.settle([promise1(), promise2()]).then(function(result) {
+	console.log(result); /*
+	[{&quot;state&quot;:&quot;rejected&quot;,&quot;reason&quot;:&quot;A&quot;},
+	//{&quot;state&quot;:&quot;fulfilled&quot;,&quot;value&quot;:&quot;B&quot;}] */ 
+});
+</pre><p>有时候，我们需要引入任务竞争机制，例如从一批cdn中找到最快的那个，when.any就派上用场了，when.any接受promise数组，在其中任何一个resolve后就接着执行后续任务了。如果要在一批promise中某几个resolve后执行后续任务，可以用when.some，它比when.any多一个howMany的参数。</p>
+<p>Promise给异步编程代码带来了巨大的方便，从此我们可以更专注单个任务的实现，promise会很好的替我们解决任务调度问题。when.js提供的功能远远不止本文提到的这些，有兴趣的同学可以前往官方<a href="https://github.com/cujojs/when/blob/master/docs/api.md">api文档</a>了解更多。</p>
+<p>本文链接：<a href="http://www.imququ.com/post/promises-when-js.html" title="Permalink to 异步编程：When.js快速上手">http://www.imququ.com/post/promises-when-js.html</a></p>
+<p>--EOF--</p>
+<div><h3>相关文章推荐</h3>
+<ul><li><a href="http://www.imququ.com/post/chrome-extensions-and-user-privacy.html">Chrome扩展与用户隐私</a></li>
+<li><a href="http://www.imququ.com/post/security-problem-in-flash-uploader.html">第三方Flash组件带来的安全问题</a></li>
+<li><a href="http://www.imququ.com/post/js-animation.html">JavaScript动画漫谈</a></li>
+<li><a href="http://www.imququ.com/post/change-hash-in-frameset-cause-reload.html">[小Tip]Webkit下设置hash的一个坑</a></li>
+<li><a href="http://www.imququ.com/post/event-order-in-ie9.html">[小Tip]IE9中focus执行顺序差异</a></li>
+<li><a href="http://www.imququ.com/post/how-to-use-cookie-better.html">如何更好的使用Cookie</a></li>
+<li><a href="http://www.imququ.com/post/browser-mode-and-document-mode-in-ie.html">关于浏览器模式和文本模式的困惑</a></li>
+<li><a href="http://www.imququ.com/post/document-domain-bug-in-webkit.html">Webkit下最无敌的跨大域方案</a></li>
+</ul>
+</div>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/10077.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/10077.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/10077.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

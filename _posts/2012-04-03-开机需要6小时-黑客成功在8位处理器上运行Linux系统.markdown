@@ -1,0 +1,23 @@
+---
+layout: post
+title:  "开机需要6小时 黑客成功在8位处理器上运行Linux系统"
+date:   2012-04-03 22:24:25
+author: 乐淘小编
+categories: program
+---
+
+## 开机需要6小时 黑客成功在8位处理器上运行Linux系统
+### by 乐淘小编
+### at 2012-04-03 22:24:25
+### original <http://letaoba.info/3808>
+
+<p>如果你经常抱怨自己的电脑配置差速度慢，我们强烈建议你看完下面这段视频。一台有史以来速度最慢的电脑已经步履蹒跚的完成了它的开机过程。黑客Dmitry Grinberg一直在思考一个问题：Linux系统对硬件的要求到底可以低到一个什么程度？于是，他从旧计算器上拆下来一个微型的老古董CPU，用它打造了一台全世界最慢的计算机，安装了Ubuntu系统，并成功开机运行。</p>
+<p align="center"><img src="http://ww3.sinaimg.cn/large/46f0c9c5jw1drmt98b4fej.jpg" alt="开机需要6小时 黑客成功在8位处理器上运行Linux系统,乐淘,letao" width="500" height="275" title="开机需要6小时 黑客成功在8位处理器上运行Linux系统|来自乐淘"><br>
+嗯，这些图片让小编想起了自己的小霸王学习机</p>
+<p>这台计算机拥有一个8位的处理器，运行频率是65KHz，它没有内存，只有16KB的SRAM（片上静态存储器），以及128KB，用来放置精简版 Ubuntu系统的闪存。如果你对这些数字没有概念，我们可以打一个不太恰当的比方——跟这台“PC”相比，现在市面上大多数手机都是超级计算机。</p>
+<p>由于Linux不允许系统在任何少于32位的处理器上运行，所以Dmitry Grinberg专门给这台PC写了一个32位的模拟器——用8位CPU来模拟32位环境运行。最终，Dmitry Grinberg成功了，这台小家伙运行了起来，它花了两个小时加载命令提示符，然后用了四个小时进入系统。这可不是什么愚人节笑话，下面是Dmitry Grinberg上传的视频：</p>
+<p><iframe src="http://reader.googleusercontent.com/reader/embediframe?src=http://player.youku.com/player.php/sid/XMzc1MTkyOTc2/v.swf&amp;width=480&amp;height=400" width="480" height="400"></iframe></p>
+<p><a href="http://letaoba.info/3808">开机需要6小时 黑客成功在8位处理器上运行Linux系统</a> 发布在: <a href="http://letaoba.info">乐淘</a>| <a href="http://letaoba.info/feed">欢迎订阅本站</a>|
+<br>
+<a href="http://www.taobao.com/go/chn/tbk_channel/jkwt.php?pid=mm_14340546_2405588_9605426&amp;eventid=102405"><img src="http://letaoba.info/wp-content/uploads/2012/02/QQ%E6%88%AA%E5%9B%BE20120209103325.png" alt="开机需要6小时 黑客成功在8位处理器上运行Linux系统,乐淘,letao" title="开机需要6小时 黑客成功在8位处理器上运行Linux系统|来自乐淘" height="60px"></a></p>
+<img src="http://feeds.feedburner.com/~r/blogspot/CRBRG/~4/hjjV1Kd1wak" height="1" width="1">

@@ -1,0 +1,19 @@
+---
+layout: post
+title:  "前端性能优化的方向"
+date:   2010-09-24 23:43:27
+author: lifesinger
+categories: program
+---
+
+## 前端性能优化的方向
+### by lifesinger
+### at 2010-09-24 23:43:27
+### original <http://lifesinger.org/blog/2010/09/performance-direction/>
+
+<p>首先，我们一定不能忘记：对性能优化最重要的是内容优化。不过这不是我们前端能说了算的，我们只能努力从前端的角度给产品经理和运营人员提建议，因此内容优化不纳入性能优化范畴。</p>
+<p>从去年开始，到 Velocity 2010 大会中 Fast By Default 口号的提出，YSlow / PageSpeed / Msfast /  dynaTrace / WebPageTest 等工具各领风骚，YSlow 几乎成了每个前端的标配。 YAHOO 的 <a href="http://developer.yahoo.com/performance/">34 条军规</a>，光芒四射，无论后台开发还是运营人员，或多或少都能跟你谈上一两条。不得不说是件大好事，但听得耳朵起茧了，烦哪。</p>
+<p>终于有点新鲜玩意：Facebook 运用了 BigPipe 技术，将网站提速了两倍。疯狂的玩意，大家开始使命研究起来。其核心是充分并行化，尽量减少串行。可叹的是这玩意得 Web 服务从架构上支持，否则玩下去就成了一堆 ajax loading 的 mashup, 不过能玩起来也得有真本事。BigBipe 优化的背后，挑战了很多传统优化军规，比如 script 要放在页脚的规则等等。</p>
+<p>除了 Facebook, 还得提一下 YAHOO 首页的改版，详情见：<a href="http://dl.javaeye.com/topics/download/63309176-b506-39bf-9e92-0a40993723ce">Building Performance Into the New Yahoo</a>.  核心理念：让页面尽早的可交互、可用。</p>
+<p>前些天，The Web Industry Conference 里，NCZ 又给出一个非常赞的 ppt: <a href="http://www.slideshare.net/nzakas/high-performance-javascript-webdirections-usa-2010">High Performance JavaScript</a>. 进一步提出了前端优化的方向：提高界面的可响应性，无 unresponsible.</p>
+<p>在 NCZ 的大旗挥舞下，但愿以 YSlow 为标杆的第一代性能优化快点 By Default. 期待第二代性能优化的暴风骤雨迅速来临，<strong>让功能尽可能早的可用 + 让界面任何时候都能迅速响应</strong>。这两个方向，极富挑战，激荡人心。 </p>

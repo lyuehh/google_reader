@@ -1,0 +1,246 @@
+---
+layout: post
+title:  "[转][转]史上最快消息内核——ZeroMQ"
+date:   2011-08-02 18:16:06
+author: heiyeshuwu
+categories: program
+---
+
+## [转][转]史上最快消息内核——ZeroMQ
+### by heiyeshuwu
+### at 2011-08-02 18:16:06
+### original <http://blog.csdn.net/heiyeshuwu/article/details/6652410>
+
+<p><br>
+</p>
+<p>作者：dccmx<br>
+来源：http://blog.dccmx.com/2011/02/zeromq/ </p>
+<p><br>
+</p>
+<p></p>
+<div></div>
+<div>
+<p><a href="http://www.zeromq.org/">ZeroMQ</a>是一个很有个性的项目，它原来是定位为“史上最快消息队列”，所以名字里面有“MQ”两个字母，但是后来逐渐演变发展，慢慢淡化了消息队列的身影，改称为消息内核，或者消息层了。从网络通信的角度看，它处于会话层之上，应用层之下，有了它，你甚至不需要自己写一行的socket函数调用就能完成复杂的网络通信工作。</p>
+<p>借用官方的例子：</p>
+<p>客户端（发送N个“Hello”消息到服务端，接受回应）：</p>
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+<div>18</div>
+<div>19</div>
+<div>20</div>
+<div>21</div>
+<div>22</div>
+<div>23</div>
+<div>24</div>
+<div>25</div>
+<div>26</div>
+<div>27</div>
+<div>28</div>
+<div>29</div>
+<div>30</div>
+<div>31</div>
+<div>32</div>
+<div>33</div>
+<div>34</div>
+<div>35</div>
+<div>36</div>
+<div>37</div>
+</td>
+<td>
+<div>
+<div><code>// </code></div>
+<div><code>//  Hello World client</code></div>
+<div><code>//  Connects REQ socket to tcp://localhost:5555</code></div>
+<div><code>//  Sends &quot;Hello&quot; to server, expects &quot;World&quot; back</code></div>
+<div><code>// </code></div>
+<div><code>#include &lt;zmq.h&gt;</code></div>
+<div><code>#include &lt;string.h&gt;</code></div>
+<div><code>#include &lt;stdio.h&gt;</code></div>
+<div><code>#include &lt;unistd.h&gt;</code></div>
+<div><code> </code> </div>
+<div><code>int</code> <code>
+main () { </code></div>
+<div><code>    </code><code>void</code><code>*context = zmq_init (1);</code></div>
+<div><code> </code> </div>
+<div><code>    </code><code>//  Socket to talk to server</code></div>
+<div><code>    </code><code>printf</code><code>(</code><code>&quot;Connecting to hello world server...\n&quot;</code><code>);</code></div>
+<div><code>    </code><code>void</code><code>*requester = zmq_socket (context, ZMQ_REQ);</code></div>
+<div><code>    </code><code>zmq_connect (requester,</code><code>&quot;tcp://localhost:5555&quot;</code><code>);</code></div>
+<div><code> </code> </div>
+<div><code>    </code><code>int</code><code>request_nbr;</code></div>
+<div><code>    </code><code>for</code><code>(request_nbr = 0; request_nbr != 10; request_nbr++) {</code></div>
+<div><code>        </code><code>zmq_msg_t request;</code></div>
+<div><code>        </code><code>zmq_msg_init_data (&amp;request,</code><code>&quot;Hello&quot;</code><code>, 6, NULL, NULL);</code></div>
+<div><code>        </code><code>printf</code><code>(</code><code>&quot;Sending request %d...\n&quot;</code><code>, request_nbr);</code></div>
+<div><code>        </code><code>zmq_send (requester, &amp;request, 0);</code></div>
+<div><code>        </code><code>zmq_msg_close (&amp;request);</code></div>
+<div><code> </code> </div>
+<div><code>        </code><code>zmq_msg_t reply;</code></div>
+<div><code>        </code><code>zmq_msg_init (&amp;reply);</code></div>
+<div><code>        </code><code>zmq_recv (requester, &amp;reply, 0);</code></div>
+<div><code>        </code><code>printf</code><code>(</code><code>&quot;Received reply %d: [%s]\n&quot;</code><code>, request_nbr,</code></div>
+<div><code>            </code><code>(</code><code>char</code><code>*) zmq_msg_data (&amp;reply));</code></div>
+<div><code>        </code><code>zmq_msg_close (&amp;reply);</code></div>
+<div><code>    </code><code>}</code></div>
+<div><code>    </code><code>zmq_close (requester);</code></div>
+<div><code>    </code><code>zmq_term (context);</code></div>
+<div><code>    </code><code>return</code><code>0;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><br>
+服务端（接收客户端的消息，返回“World”给客户端）：</p>
+<p></p>
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+<div>17</div>
+<div>18</div>
+<div>19</div>
+<div>20</div>
+<div>21</div>
+<div>22</div>
+<div>23</div>
+<div>24</div>
+<div>25</div>
+<div>26</div>
+<div>27</div>
+<div>28</div>
+<div>29</div>
+<div>30</div>
+<div>31</div>
+<div>32</div>
+<div>33</div>
+<div>34</div>
+</td>
+<td>
+<div>
+<div><code>// </code></div>
+<div><code>//  Hello World server in C++</code></div>
+<div><code>//  Binds REP socket to tcp://*:5555</code></div>
+<div><code>//  Expects &quot;Hello&quot; from client, replies with &quot;World&quot;</code></div>
+<div><code>// </code></div>
+<div><code>#include &lt;zmq.hpp&gt;</code></div>
+<div><code>#include &lt;unistd.h&gt;</code></div>
+<div><code>#include &lt;stdio.h&gt;</code></div>
+<div><code>#include &lt;string.h&gt;</code></div>
+<div><code> </code> </div>
+<div><code>int</code> <code>
+main () { </code></div>
+<div><code>    </code><code>//  Prepare our context and socket</code></div>
+<div><code>    </code><code>zmq::context_t context (1);</code></div>
+<div><code>    </code><code>zmq::socket_t socket (context, ZMQ_REP);</code></div>
+<div><code>    </code><code>socket.bind (</code><code>&quot;tcp://*:5555&quot;</code><code>);</code></div>
+<div><code> </code> </div>
+<div><code>    </code><code>while</code><code>(</code><code>true</code><code>) {</code></div>
+<div><code>        </code><code>zmq::message_t request;</code></div>
+<div><code> </code> </div>
+<div><code>        </code><code>//  Wait for next request from client</code></div>
+<div><code>        </code><code>socket.recv (&amp;request);</code></div>
+<div><code>        </code><code>printf</code><code>(</code><code>&quot;Received request: [%s]\n&quot;</code><code>,</code></div>
+<div><code>            </code><code>(</code><code>char</code><code>*) request.data ());</code></div>
+<div><code> </code> </div>
+<div><code>        </code><code>//  Do some &#39;work&#39;</code></div>
+<div><code>        </code><code>sleep (1);</code></div>
+<div><code> </code> </div>
+<div><code>        </code><code>//  Send reply back to client</code></div>
+<div><code>        </code><code>zmq::message_t reply (6);</code></div>
+<div><code>        </code><code>memcpy</code><code>((</code><code>void</code><code>*) reply.data (),
+</code><code>&quot;World&quot;</code><code>, 6);</code></div>
+<div><code>        </code><code>socket.send (reply);</code></div>
+<div><code>    </code><code>}</code></div>
+<div><code>    </code><code>return</code><code>0;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>一个套接字相关的调用都没有，一个网络程序就写好了，生活真美好啊。</p>
+<p>与其他的消息队列相比，ZeroMQ有以下一些特点</p>
+<h4>1.点对点无中间节点。</h4>
+<p>传统的消息队列都需要一个消息服务器来存储转发消息。而ZeroMQ则放弃了这个模式，把侧重点放在了点对点的消息传输上，并且（试图）做到极致。以为消息服务器最终还是转化为服务器对其他节点的点对点消息传输上。ZeroMQ能缓存消息，但是是在发送端缓存。ZeroMQ里有水位设置的相关接口来控制缓存量。当然，ZeroMQ也支持传统的消息队列（通过zmq_device来实现）。</p>
+<h4>2.强调消息收发模式。</h4>
+<p>在点对点的消息传输上ZeroMQ将通信的模式做了归纳，比如常见的订阅模式（一个消息发多个客户），分发模式（N个消息平均分给X个客户）等等。下面是目前支持的消息模式配对，任何一方都可以做为服务端。</p>
+<ul>
+<li>PUB and SUB </li><li>REQ and REP </li><li>REQ and XREP </li><li>XREQ and REP </li><li>XREQ and XREP </li><li>XREQ and XREQ </li><li>XREP and XREP </li><li>PUSH and PULL </li><li>PAIR and PAIR </li></ul>
+<h4>3.以统一接口支持多种底层通信方式（线程间通信，进程间通信，跨主机通信）。</h4>
+<p>如果你想把本机多进程的软件放到跨主机的环境里去执行，通常要将IPC接口用套接字重写一遍。非常麻烦。而有了ZeroMQ就方便多了，只要把通信协议从<code>&quot;ipc:///xxx&quot;改为</code><code>&quot;tcp://*.*.*.*:****&quot;就可以了，其他代码通通不需要改，如果这个是从配置文件里读的话，那么程序就完全不要动了，直接复制到其他机器上就可以了。以为ZeroMQ为我们做了很多。</code></p>
+<h4>4.异步，强调性能。</h4>
+<p>ZeroMQ设计之初就是为了高性能的消息发送而服务的，所以其设计追求简洁高效。它发送消息是异步模式，通过单独出一个IO线程来实现，所以消息发送调用之后不要立刻释放相关资源哦，会出错的（以为还没发送完），要把资源释放函数交给ZeroMQ让ZeroMQ发完消息自己释放。</p>
+<p>目前ZeroMQ还不是非常成熟（本文写作时最新版是2.0.10版），设计上还有一点点小缺陷。不过，开发很活跃，很有潜力。另外，ZeroMQ配合Protocol buffer使用真是绝了。</p>
+<p>官方的教程写的非常详细：<a title="http://zguide.zeromq.org/chapter:all" href="http://zguide.zeromq.org/chapter:all">http://zguide.zeromq.org/chapter:all</a>大家可以去看看。</p>
+</div>
+<br>
+<p></p>
+<p><br>
+</p>
+<p><br>
+</p>
+<p>相关其他参考文档：</p>
+<p>http://blog.codingnow.com/2011/02/zeromq_message_patterns.html<br>
+</p>
+<p>http://zsp.iteye.com/blog/377588<br>
+</p>
+<p>http://www.cppblog.com/woaidongmao/archive/2011/04/04/143409.aspx<br>
+</p>
+<p>http://www.infoq.com/cn/news/2010/09/introduction-zero-mq<br>
+</p>
+<p><br>
+</p>
+<p><br>
+</p>
+
+            <div>
+                作者：heiyeshuwu 发表于2011-8-2 3:16:06 <a href="http://blog.csdn.net/heiyeshuwu/article/details/6652410">原文链接</a>
+            </div>
+            <div>
+            阅读：2393 评论：1 <a href="http://blog.csdn.net/heiyeshuwu/article/details/6652410#comments">查看评论</a>
+            </div>

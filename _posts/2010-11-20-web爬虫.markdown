@@ -1,0 +1,73 @@
+---
+layout: post
+title:  "web爬虫"
+date:   2010-11-20 02:18:08
+author: 
+categories: program
+---
+
+## web爬虫
+### by 
+### at 2010-11-20 02:18:08
+### original <http://www.javaeye.com/topic/816742>
+
+<p>这篇文章主要是对web爬虫有个大概的认知。</p>
+<p> </p>
+<h2>概览web爬虫</h2>
+<p>web爬虫主要功能是从web中发现，下载以及存储内容。广泛应用于各种搜索引擎中。</p>
+<p>一个典型的web爬虫主要由以下的部分组成：</p>
+<p> </p>
+<ul>
+<li>能被爬虫识别的URL库。</li>
+<li>文档下载模块，主要用于从web中下载内容。</li>
+<li>文档解析模块，用于解析下载文档中的内容，如解析HTML,PDF,Word等等。这个模块还要提取网页中的URL和一些对于索引有用的数据。</li>
+<li>存储文档的元数据以及内容的库。</li>
+<li>规范化URL模块，把URL转成标准的格式。</li>
+<li>URL过滤器，爬虫可以过滤掉不需要的URL。</li>
+</ul>
+<div>设计与实现上述模块，主要取决于你的爬虫到底要爬取什么以及要抓取的范围。最简单的例子是从一个已知的站点抓取一些网页，这个爬虫代码用一页纸就可以写完。互联网应用中，可能会碰到这种十分简单的需求，但是如果要实现一个爬取大量文档的爬虫，就不是那么简单了。一般来说这个爬虫就是N个应用组成，并且难点是基于分布式的。</div>
+<div><br></div>
+<h2><strong>爬虫的两个阶段</strong></h2>
+<p>一个典型的爬虫主要有如下两个阶段</p>
+<p> </p>
+<ol>
+<li>URL库初始化然后开始爬取。</li>
+<li>爬虫读取没有访问过的URL，来确定它的工作范围。</li>
+</ol>
+<div><br></div>
+<div>对于要抓取的URL，要进行如下的不重</div>
+<div><ol>
+<li>获取URL的内容</li>
+<li>解析内容，获取URL以及所需的数据。</li>
+<li>存储有价值的数据。</li>
+<li>规范化新抓取的URL。</li>
+<li>过滤掉不需要爬去的URL。</li>
+<li>把要抓取的URL更新到URL库中。</li>
+<li>重复步骤2，直到抓取的网页深度完毕为止。</li>
+</ol></div>
+<div>从广度进行分类的话，爬虫有两类。通用型和集中型。通用型是采集所有能解析的文档。它们主要通过URL过滤技术来实现这一过程。而集中型爬虫主要爬取特定内容的文档，如爬取sina博客，格式为固定内容也是我们感兴趣的。</div>
+<div><br></div>
+<h2>幸运的是，有开源的爬虫可以使用</h2>
+<p>在java中，nutch和heritrix都提供了爬虫的实现。Nutch是apache lucene的子项目，地址是<a href="http://lucene.apache.org/nutch/">http://lucene.apache.org/nutch/</a>。这个项目非常稳定，并且文档丰富。Nutch把多个网页存储在一个文件中。对于大的爬虫来说，这么降低I/O读写，性能更加优秀。</p>
+<p>Heritrix是互联网存档的web爬虫。项目地址为<a href="http://crawler.archive.org/">http://crawler.archive.org/</a>。Heritrix专注于大型爬虫的实现。许可证为LGPL。</p>
+<p>另外提一下，还有一个项目值得关注，那就是apache tika。项目地址为<a href="http://tika.apache.org/">http://tika.apache.org/</a>。tika使用解析器从文档中发现以及提取元数据和文本内容。</p>
+<div><br></div>
+<div><br></div>
+<div><br></div>
+<div><br></div>
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://xiayuanfeng.javaeye.com">风雪涟漪</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/816742" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

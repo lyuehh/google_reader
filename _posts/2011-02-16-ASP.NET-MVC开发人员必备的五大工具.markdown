@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "ASP.NET MVC开发人员必备的五大工具"
+date:   2011-02-16 15:46:42
+author: 
+categories: program
+---
+
+## ASP.NET MVC开发人员必备的五大工具
+### by 
+### at 2011-02-16 15:46:42
+### original <http://news.cnblogs.com/n/91190/>
+
+<p>　　过去，在将JavaScript脚本和CSS文件部署到Web<span>服务器</span>之前，我习惯使用压缩工具进行压缩再部署，安装Chirpy后，你的脚本和CSS文件将会基于其名字自动压缩，例如，假设你有一个名叫myscript.js的脚步文件想要压缩，只要你将其重命名为myscript.yui.js，它就会调用YUI压缩程序自动压缩，压缩后的文件在解决方案资源管理器中显示为一个子项目，你可以继续查看和调试未经压缩的脚本。</p>
+<p>　　Chirpy Zippy安装步骤：</p>
+<p>　　1.将源文件解包，并添加到相应的文件夹</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://image20.it168.com/201010_0x0/303/aef2da1b2cf39734.png" border="1" alt="1"> </p>
+<p>　　2.在Visual Studio里打开一个新的实例，点击工具&gt;添加新的管理</p>
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://image20.it168.com/201010_0x0/303/2920317bba70d0ed.png" border="1" alt="1" width="513" height="100"> </p>
+<p>　　3.看到下图表示安装完成。</p>
+<p>　　<strong>2.T4MVC</strong>：我曾经写过许多关于T4MVC的博文，但这里仍然值得一提，它是ASP.NET MVC应用程序的一个T4模板，简化了创建控制器、行为和视图的操作，使MVC代码的可维护性更好。</p>
+<p><strong>　　3.MVC Contrib</strong>：T4MVC是MVC Contrib库的一小部分，MVC Contrib库包含了ASP.NET MVC开发领域的各种工具，我在最近的一个私人项目中就使用了Grid HTML Helper，但MVC Contrib包含的功能和库很多，需要你在日常开发中逐一去发现。</p>
+<p><strong>　　2.ASP.NET精灵和图像优化框架</strong>(ASP.NET Sprite and Image Optimization Framework)：提高网站性能最好的办法就是减少渲染一个页面需要的HTTP请求数量，减少请求数的一个方法是使用CSS精灵或内嵌图像。例如，假设你的网站有一个工具条，包含12个32x32像素的图标，加载页面时至少会产生12个HTTP请求，即每个小图标都会产生一个HTTP请求，CSS精灵将所有图标编结在一起，然后使用CSS定义每个图像的边界，这样可以将请求数减少到1个。</p>
+<p>　　遗憾的是，创建精灵的过程非常耗时和繁琐，基本上需要合并所有图像，然后在样式表中声明每个图像的X和Y坐标，如果合并图像和生成CSS的过程能够自动化就好了，有需求就有对应的产品，ASP.NET精灵和图像优化框架于是就应运而生了。</p>
+<p>　　<strong>5.ELMAH</strong>：ELMAH是一款优秀的MVC应用程序日志记录工具，如果你还没有用过它，强烈建议你试一试，虽然需要一翻设置，但其功能的确很强大，这里列一个快速清单以供参考：</p>
+<ul>
+<li>记录几乎所有未处理的异常;</li>
+<li>通过网页远程查看全部日志;</li>
+<li>通过网页远程查看任何单条日志的详细信息;</li>
+<li>即使customErrors模式关闭，大多数时候，你可以查看ASP.NET因异常产生的原始黄色死机屏幕;</li>
+<li>发生错误时会自动发送一封电子邮件通知;</li>
+<li>RSS种子提供最后15个错误日志的信息;</li>
+</ul><p><br>　　本文链接：<a href="http://news.cnblogs.com/n/91190/">http://news.cnblogs.com/n/91190/</a></p><p>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/45346/">ASP.NET MVC 1.0 发布了</a><span style="color:gray">(2009-03-19)</span><br>　　· <a href="http://news.cnblogs.com/n/48413/">ASP.NET MVC 2 Preview1 发布</a><span style="color:gray">(2009-08-04)</span><br>　　· <a href="http://news.cnblogs.com/n/49385/">ASP.NET MVC 2 Preview 2 发布</a><span style="color:gray">(2009-10-02)</span><br>　　· <a href="http://news.cnblogs.com/n/80392/">ASP.NET MVC 3 Release Candidate发布</a><span style="color:gray">(2010-11-09)</span><br>　　· <a href="http://news.cnblogs.com/n/45811/">ASP.NET MVC正式开源,官方教材随即发布</a><span style="color:gray">(2009-04-03)</span><br></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=91190" width="1" height="1" alt="">

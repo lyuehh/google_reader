@@ -1,0 +1,102 @@
+---
+layout: post
+title:  "我常用的 Mac 软件"
+date:   2010-05-09 23:22:13
+author: 明城
+categories: program
+---
+
+## 我常用的 Mac 软件
+### by 明城
+### at 2010-05-09 23:22:13
+### original <http://www.gracecode.com/archives/3024/>
+
+<p>Fenng 搞了台 mbp，<a href="http://dbanotes.net/windows_software_list.html" title="http://dbanotes.net/windows_software_list.html">正在折腾 Mac 常用的软件</a>，我这里也总结下日常我经常使用的 Mac 软件。PS，如果你机子比较老，<a href="http://www.gracecode.com/archives/1956/" title="http://www.gracecode.com/archives/1956/">可以看下我几年前的列表</a>。</p>
+
+<p>偷懒一下，下面的软件就不逐个做连接了，相信搜索他们的名字就能得到想要的结果。</p>
+
+<h2>我选择软件的原则</h2><ol>
+    <li>尽可能的自动化，并占用资源少</li>
+    <li>界面和功能过于复杂的不用。因为通常一个巨型牛逼的软件都会被两三个“简单”软件打倒</li>
+    <li>不追求版本号，够用就行，哪怕是几年前的“火星”软件</li>
+</ol>
+
+<h2>浏览器</h2><p>我最常用的浏览器是 Chrome，其实系统自带的 Safari 已经足够好用（支付宝控件什么时候能在 Chrome 下使用呀）。使用 Chrome 的原因是有</p>
+
+<ol>
+    <li>书签能够和其他机子同步 </li>
+    <li>速度快 </li>
+    <li>真的是习惯了</li>
+</ol>
+
+<p>Firefox 已经被我沦落为开发工具，除了开发平时不会开启这个“巨无霸”。</p>
+
+<h2>编辑器</h2><p>很开心 Mac 下有对应的 Vim 版本：MacVim，这是我用过的最舒服的 Vim 版本，甚至我觉得比 Windows 下的 gVim 还要舒服。</p>
+
+<p>顺便说一下，MacVim 还在开发中，如果下载官方正式版碰到很多诡异的问题，<a href="http://gracecode.googlecode.com/files/MacVim_%28x86_64%29.zip" title="http://gracecode.googlecode.com/files/MacVim_%28x86_64%29.zip">可以尝试下我的编译版本</a>。</p>
+
+<p>其他的如 Coda 、BBEdit 等都尝试过，但是我的真的是太过于“依赖”Vim 了，所以请不要再向我“推销”其他编辑器了。</p>
+
+<p>还有个就是其实系统自带的“文本编辑”也足够我使用，类似 Windows 下的“记事本”一样。</p>
+
+<p>PS，用 Emacs 的达人，可以 Aquamacs Emacs ，据说这玩意也很靠谱。</p>
+
+<h2>看图</h2><p>因为我用的是 10.6.3 的系统，所以一般看图片仅仅是简单的敲下空格，使用 QuickLook 就可以。</p>
+
+<p>在 Mac 还没有我喜欢的 Windows 下的类似 IrfanView 的软件，不过如果单纯是看图片的话，其实 Xee 其实也凑合。</p>
+
+<p>如果需要批量处理图片，那么我会用 ImageMagick，虽然这是控制台下的工具，但学习掌握它绝对不会浪费你的时间。</p>
+
+<h2>下载</h2><p>电驴在 Mac 下有对应的版本，如果想用类似迅雷的工具，那么还是用 Windows 吧。iGetter 以及 SpeedDownload 都是好的下载工具。两者都是收费软件，但 Google 下还是会有惊喜的。</p>
+
+<p>如果是 FTP 软件，那么 Cyberduck 是第一选择，如果觉得“免费的不靠谱”那么推荐使用 Transmit。需要 BT 下载的，推荐使用 Transmission 。</p>
+
+<h2>聊天</h2><p>QQ 有 Mac 下的版本。其他常用的 IM 可以考虑使用 Adium，支持 Gtalk、MSN 等等。不过个人用了一段时间，还是用回 iChat 了，无他就是因为双方的 Gtalk 用户都用 iChat 能够语音聊天。</p>
+
+<p>如果想用旺旺的话，暂时会悲剧下。如果非用 Mac 不可，那么可以考虑暂时使用 iWangWang 顶下。相信 Mac 版本的阿里旺旺会很快就能出来。</p>
+
+<h2>UML &amp; 脑图</h2><p>我的眼里只有一个软件：OmniGraffle，甚至据说很多人因为这个软件而买 Mac 。它能完成的事情实在是太多了，你要亲自尝试下在能了解它的功能。PS，Omni 公司出品的系列软件都可以尝试下，非常的经典。</p>
+
+<p>还有个选择就是 NovaMind ，不过不知道是不是我人品的问题，当节点一多反映就会很慢。</p>
+
+<h2>幻灯片 &amp; 文档编辑</h2><p>这个没话说，Keynote 就能完成我所有的应用了。Office 套件在 Mac 下的选择太多了，但基本上分成三大类：Apple iWork、Microsoft Office for Mac、NeoOffice/OpenOffice。</p>
+
+<h2>开发环境</h2><p>如果要在 Mac 下开发，那么 XCode 是必须安装的。下载个 iPhone 的 SDK 基本上 gcc、make 等工具都全给你安装好了 -- 谁让 Mac OS X 和 BSD 的渊源那么深呢？</p>
+
+<p>说到 BSD ，相信你很希望能使用类似 ports 的软件包更新、安装环境。MacPorts 是个好的选择，但是它实在是太老了。</p>
+
+<p>如果你想尝鲜，那么 <a href="http://github.com/mxcl/homebrew" title="http://github.com/mxcl/homebrew">Brew 是个非常好的选择</a>，我个人用 Brew 废弃了 MacPorts。</p>
+
+<p>还有比如 Windows 类似 SecureCRT 等的软件功能，通常使用 <tt>expect + 终端</tt> 就能够搞定。</p>
+
+<h2>备份&amp;系统维护</h2><p>备份通常我用 rsync 和 TimeMachine 组合，其实 Mac 下如果你用 TimeMachine 并记得定时备份的话，数据这快就可以高枕无忧了。</p>
+
+<p>系统维护的软件有一大堆，个人经常使用的是 Onyx、CleanMyMac，其实我并不怎么清理什么“系统垃圾”。</p>
+
+<p>如果悲剧得误删除了数据，那么还可以尝试下 Data Rescue II，它曾经为我挽回了很重要的数据，顺便感谢下。</p>
+
+<h2>视频相关</h2><p>Mac 下的播放器其实是个悲剧，不是因为没有，而因为是像是“全真七子”-- 加起来都打不过 Windows 下的 kmplayer。</p>
+
+<p>目前用着比较舒服的是 MPlayerX、Movist 和 VLC。如果要看高清的话，推荐使用 Plex，用最新的编译版本支持显卡硬解码，温度会降下不少。</p>
+
+<p>如果需要转换视频和音频，那么推荐使用 Any Video Converter Pro、All2MP3、Audio Hijack Pro 等等。</p>
+
+<h2>其他工具类</h2><ol>
+    <li>输入法我现在用 SunPinyin，尝试过 FIT 和 QIM。但因为 FIT 首次启动比较慢，QIM 是收费软件而且和 Chrome 有小的问题</li>
+    <li>解压缩软件我用的是 Rucksack，因为它是我在它活动的时候免费得到的</li>
+    <li>Acorn 和 Pixelmator 都是个非常好的 Photoshop 替代工具，话说 Adobe 的软件在 Mac 都是悲剧</li>
+    <li>CopyPaste Pro 是 Mac 下的多重剪贴板增强工具，推荐必装</li>
+    <li>Dropbox 在 Mac 下也有对应的客户端</li>
+    <li>想要理财的话，推荐安装 iCompta</li>
+    <li>KeyCue 能帮你显示当前软件的所有快捷键</li>
+    <li>对鼠标的加速度不习惯的话，使用 SteerMouse 调整下看看</li>
+    <li>Flux 能改变显示器的色温，从而达到保护眼睛的目的，但并不是所有人都喜欢它</li>
+</ol>
+
+<p>最后，Show 下我的 Mac 桌面</p>
+
+<p><img src="http://pic.yupoo.com/feelinglucky/5027594a3971/medium.png" alt="http://pic.yupoo.com/feelinglucky/5027594a3971/medium.png" title="http://pic.yupoo.com/feelinglucky/5027594a3971/medium.png"></p>
+
+<p>各位有什么其他的好软件推荐，欢迎不吝提供。</p>
+
+<p><tt>-- EOF --</tt></p>

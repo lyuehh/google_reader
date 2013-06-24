@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "动态创建script在IE中缓存js文件时导致编码不正确bug"
+date:   2013-04-11 14:09:00
+author: snandy
+categories: program
+---
+
+## 动态创建script在IE中缓存js文件时导致编码不正确bug
+### by snandy
+### at 2013-04-11 14:09:00
+### original <http://www.cnblogs.com/snandy/archive/2013/04/11/3014375.html>
+
+<p>先看下重现代码</p><br><p>1， <strong>gb2312.html</strong> 该文件编码为gb2312</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br> &lt;head&gt;<br>&lt;title&gt;&lt;/title&gt;<br>&lt;meta charset=&quot;gb2312&quot;/&gt;<br>&lt;style&gt;<br>p {<br>color: red;<br>}<br>&lt;/style&gt;<br> &lt;/head&gt;<br> &lt;body&gt;<br>&lt;button onclick=&quot;loadJS(&#39;utf8.js&#39;, &#39;utf-8&#39;)&quot;&gt;测试&lt;/button&gt;<br>&lt;script&gt;<br>function loadJS(src, charset) {<br>var script = document.createElement('script');<br>script.src = src;<br>script.charset = charset;<br>var head = document.getElementsByTagName('head')[0];<br>head.appendChild(script);<br>}<br>&lt;/script&gt;<br> &lt;/body&gt;<br>&lt;/html&gt;<br></pre><br></div><br><p>　　</p><br><p> </p><br><p>2， <strong>utf8.js</strong> 该文件编码是utf-8</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>var p = document.createElement('p');<br>p.innerHTML = 'IE缓存导致乱码';<br>document.body.appendChild(p);<br></pre><br></div><br><p> </p><br><p>loadJS函数动态创建一个script，设置src，charset后添加到head中。这里每次点击按钮会将utf8.js引入到该页面中，utf.js内代码会创建一个p元素设置一段文本，然后添加到body上。</p><br><p> </p><br><p>第一次点击按钮，文字显示正常。</p><br><p>第二次后，文字编码不正确了。</p><br><p> </p><br><p>如图</p><br><p><img src="http://images.cnitblog.com/blog/114013/201304/11140342-144c46db956b48b9bec2f00a5b0702df.png" alt=""></p><br><p> </p><br><p>如果不是动态创建的script tag，直接写在html页面上，则没有此问题。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>&lt;script type=&quot;text/javascript&quot; src=&quot;utf8.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;<br></pre><br></div><br><p> </p><br><p>如果采用document.write方式载入js资源也不会出现该bug</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>&lt;script&gt;<br>function loadByWrite(url, charset) {<br>var str = &#39;&lt;script type=&quot;text/javascript&quot;&#39; + &#39; src=&quot;&#39; + url + &#39;&quot; charset=&quot;&#39; + charset + &#39;&quot;&gt;&lt;&#39; + &#39;/script&gt;&#39;;<br>document.write(str);<br>}<br>&lt;/script&gt;<br>&lt;script&gt;<br>loadByWrite('utf8.js', 'utf-8')<br>&lt;/script&gt;<br></pre><br></div><br><p> </p><br><p>解决方式是换下src和charset属性的赋值顺序。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>script.charset = charset;<br>script.src = src;<br></pre><br></div><br><p>即先给charset赋值。</p><br><p> </p><br><p> </p><img src="http://www.cnblogs.com/snandy/aggbug/3014375.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2013/04/11/3014375.html">本文链接</a></p>

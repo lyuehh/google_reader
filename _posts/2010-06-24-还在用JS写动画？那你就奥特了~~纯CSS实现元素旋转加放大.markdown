@@ -1,0 +1,81 @@
+---
+layout: post
+title:  "还在用JS写动画？那你就奥特了~~纯CSS实现元素旋转加放大"
+date:   2010-06-24 17:33:06
+author: 
+categories: program
+---
+
+## 还在用JS写动画？那你就奥特了~~纯CSS实现元素旋转加放大
+### by 
+### at 2010-06-24 17:33:06
+### original <http://www.javaeye.com/topic/698583>
+
+<br><strong>本文目前仅适用于 Chrome、Opera、Safari。</strong>
+<br>
+<br><strong>原文与demo: <a href="http://www.jsmix.com/css/approach-to-css3-animation.html">http://www.jsmix.com/css/approach-to-css3-animation.html</a></strong>
+<br>
+<br><strong>效果： 鼠标移动到一个元素上，元素在2秒内旋转720度，并以原尺寸的1.5倍进行放大</strong>
+<br>
+<br>要实现这个效果只需要非常简单的3个步骤，首先就是创建你需要旋转的元素。
+<br>
+<br><pre name="code">&lt;div id=&quot;css_animation&quot;&gt;CSS 3&lt;/div&gt;</pre>
+<br>
+<br>接下来我们需要告诉浏览器刚才添加的元素需要运用它的一个属性去执行某种动画，设置动画执行的时间以及运动的函数。这里会用到 CSS 3 的新属性：transition。不用担心下面的代码会让你一头雾水，紧接着会有对 transition 属性详细的讲解。
+<br>
+<br><pre name="code">
+#css_animation{
+    width: 100px;
+    height: 100px;
+    background: purple;
+    -webkit-transition: all 2s ease-in-out;
+    -moz-transition: all 2s ease-in-out;
+    -o-transition: all 2s ease-in-out;
+    transition: all 2s ease-in-out;
+}
+</pre>
+<br>
+<br>width、height、background 不用再做任何介绍了，transition 的各种前缀是为了兼容不同浏览器的私有属性这一点相信对 CSS 3 稍有了解的人都也应该知道了。这里值得注意的是，到目前为止，Firefox 的最新版本 (3.6) 依然没有提供对 transition 的支持，但 Mozilla 声称将会在 Gecko 1.9.3 (firefox 4) 中引入这一属性，所以为了增强代码的延续性，我们依然添加了 -moz 的私有属性。
+<br>
+<br>上面的 transition 是一个简写，第一个属性值 all 实际上是 transition-property 的属性值，他表示你讲告诉浏览器你会对哪个属性进行动画的操作。比如 transition-property : left , transition-property : opacity,width ，前者表示将要对属性 left 执行动画，后者表示会同时对 opacity 和 width 属性执行动画，是的，多个属性之间用半角逗号隔开。而这里设置的 all 则表示可能会对任何一个属性进行操作，这又是一个偷懒的方式。
+<br>
+<br>第二个属性值 2s 就很简单了，它表示动画执行的时间，即元素从旧的属性转换到新的属性消耗的秒数。如果这个值为 0 则表示动画在执行时立即结束。该属性值的单位可以为 s (秒)，也可以为 ms (毫秒)。当然，上面的代码同样对其使用了简写，完整的写法是 transition-duration : 2s; 默认值为0。
+<br>
+<br>第三个属性值 ease-in-out，可以简单地理解为在动画执行中使用" ease-in-out "这种效果，这实际上将决定元素在动画过程中运用的何种函数来进行运动的计算，这通常被称作缓动函数。大致上有 "ease | linear | ease-in | ease-out | ease-in-out" 这么几种预定值。默认值为 "ease "。这个属性的完整写法是 transition-timing-function : ease-in-out;
+<br>
+<br>在我们的 demo 中就是用了这3个属性，事实上，transition 还有一个属性值：transition-delay ，它的属性值跟 transition-duration 完全一样，唯一不同的是，它表示动画的延时时间，这很好理解，根据指定时间延迟动画的执行。
+<br>
+<br>在进行最后一个步骤之前，有必要重申一下的是，transition 属性只是对上面提到的四个 transition-X 属性的简写，它的简写规则是： [&lt;‘transition-property’&gt; || &lt;‘transition-duration’&gt; || &lt;‘transition-timing-function’&gt; || &lt;‘transition-delay’&gt;] 。这一点千万不要搞混淆。另外，如果你想了解更多关于 transition 的内容 W3C 提供了非常详尽的文档。
+<br>
+<br>正如你所看到 demo 中的那样，最后一个步骤我们需要给元素加上 hover 样式。这里用到的是 transform 属性。
+<br>
+<br><pre name="code">
+#css_animation:hover {
+    -webkit-transform: rotate(720deg) scale(1.5);
+    -moz-transform: rotate(720deg) scale(1.5);
+    -o-transform: rotate(720deg) scale(1.5);
+    transform: rotate(720deg) scale(1.5);
+}
+</pre>
+<br>
+<br>相比 transition 属性，transform 要容易理解一些，他表示对元素进行变形。rotate(720deg)表示对元素进行720度的旋转变形，括号里的数字为旋转的角度值，单位 deg ，scale 是一个对元素进行缩放的功能，括号里的参数表示缩放的倍数，无需单位。事实上 transform 远比这里讲到的要强大得多，可以实现各种不同的变形，在W3C的文档中有非常详细的介绍。
+<br>
+<br>到目前为止，你应该已经实现了如同上面 demo 中的效果。其实整个过程可以暂时这样理解：通过 transition ，我们对元素进行了 mouseover 事件监听，并记录下了它最初的所有(all)属性的值，当元素的 mouseover 事件被触发的时候，找到元素的目标属性的值，然后执行动画。就是这么简单。另外值得一提的是，当元素处于动画状态时，如果元素中包含文字，此时文字依然是可选的，这是 SVG 和 Canvas 所无法达到的效果。
+<br><strong>真的很希望像国外网站一样，通过局部差异化的开发，逐步过渡到css3，也让用户过渡到firefox、chrome等先进的浏览器。</strong>
+<br>
+<br>
+<br>
+          
+          <br><br>
+          作者: <a href="http://li-pzh-hotmail-com.javaeye.com">云端有天堂</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/698583" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+<br><br><br>

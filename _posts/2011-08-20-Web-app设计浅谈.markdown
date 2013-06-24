@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "Web app设计浅谈"
+date:   2011-08-20 20:57:22
+author: 一叶苦雨
+categories: program
+---
+
+## Web app设计浅谈
+### by 一叶苦雨
+### at 2011-08-20 20:57:22
+### original <http://ucdchina.com/snap/10523>
+
+<p><span style="color:#555555;font-size:14px;line-height:25px;background-color:#f5f5f5">
+<p>HTML5技术的强势发展，为互联网带来的最大改变就是： web从“已死”的预言中回过头来给Native app一记沉重的回马枪，web app成为举世瞩目的明星开始走在各大公司研发的时刻表中。Google 、微软、苹果三大巨头紧锣密鼓地在web app的研发产品领域圈地设岗，并试图建立以自己为中心的”云“服务平台，企图在web app时代到来的时候充当霸主。<br><span></span>本文将围绕web app的设计，与大家讨论几点设计技巧。</p>
+<h2>什么是web app?</h2>
+<p>Web app是一种通过网络（如互联网或内联网）访问的应用程序；也可以指计算机软件承载在浏览器支持环境下或使用浏览器支持语言（如JavaScript）并依赖于web 浏览器来渲染的应用程序。Web app的流行归功于网页浏览器的普及，以及使用这一轻薄客户端方便的用户体验。不必下载安装就可以实现更新和维护，具有支持跨平台的内在属性，是web app开始流行的关键原因。典型的web app产品包括web邮箱、web商店、wikis等等。</p>
+<h3><span style="color:#ff6600">Web app的优点</span></h3>
+<p>◆通过兼容性浏览器实现配置而不需要任何复杂的“转出”步骤；</p>
+<p>◆浏览器应用程序几乎不需要客户端上的磁盘空间；</p>
+<p>◆新功能从服务器自动传递给用户，用户自己不必升级程序；</p>
+<p>◆可以轻松整合进入其他服务类web程序；</p>
+<p>◆跨平台的兼容性</p>
+<h2>现阶段web app还很难有一个设计原则</h2>
+<p>HTML5技术仍在发展中且发展尚不完善， web app作为该技术的产物自然也是在不断试验中进步；此外，web app还要依赖兼容性浏览器更强大的渲染能力，俗话说“皮之不存毛将焉附”，在大家都期待的强大浏览器出现之前谁也难以预言web app需要做成什么样才算是一个合格的产品。在这种行业背景下，web app还难以有一个所谓的设计原则，起码现在还不构成总结一个合理设计原则的条件。</p>
+<p>其实，所谓的设计原则本就是从已有的、典型的设计作品中倒推得出的。比如，解构主义设计风格的提出不是之前就有的，是理论家在分析总结了建筑设计师盖里、埃森曼、特斯楚米等大师的典型设计作品，结合这几位大师的设计理念后定义的一个流派名称。所谓的解构主义设计原则也是从权威大师典型作品中归纳总结的； 设计原则出现后继而可以对之后的设计起一定的指导作用。</p>
+<p>因此本文不谈所谓的web app设计原则，现从已经上线的优秀产品中选择典型设计元素与大家讨论分享，寻找可以借鉴的地方，并借此增进对web app产品设计的认识。</p>
+<h2>Web app界面设计的8个实用技巧<span style="text-decoration:underline"></span></h2>
+<p>Web app用户界面设计，核心是web设计；不过与一般意义上的web设计相比较，web app更加注重功能。为了在与桌面应用程序的竞争中展现其优势，web app需要提供简洁、直观、快速响应的用户界面，以便于用户在任务操作中节省精力和时间。</p>
+<h3>1.<span style="color:#ff6600">界面元素随需而变</span></h3>
+<p>力求简洁明了是用户界面设计的重要原则。在同一时间给用户展示的功能越多，用户需要寻找和思考的时间也就越多。同样，界面中存在的选项越少，可用功能就越明显、越容易浏览。不过简化界面并非轻而易举，尤其是你不想减少应用程序功能的情况下。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7070" href="http://uedc.163.com/7068.html/1-kontain_search"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/1-kontain_search.png" alt="" width="480" height="490"></a></p>
+<p>以Kontain搜索模块为例，在搜索框中有一个下拉菜单，帮助用户细化搜索范围。用户可以通过菜单选择自己想要寻找的内容。该网站通过这些选项简化了搜索框。</p>
+<p>将高级功能隐藏起来是一种有效的简化方法。搞清楚在界面中用户最经常用的是哪些功能，然后把其他功能隐藏处理。这些可由下拉式菜单和控件完成。例如，搜索栏中的高级过滤器可以做成尾部的特殊下拉菜单样式。当用户需要这些过滤器的时候只需要几次点击就可以使用。决定哪些功能保留展示哪些需要隐藏起来，并不是一个简单的工作，需要取决于功能控件的重要程度和被使用的频繁程度。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7071" href="http://uedc.163.com/7068.html/1-1-collabfinder_search"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/1.1-collabfinder_search.png" alt="" width="480" height="366"></a></p>
+<p>擅长如此处理的还有CollabFinder， 如上图。用户点击搜索链接后并没有被马上带到其他页面；搜索框控件下拉下来，允许用户在当前页面内直接进行搜索操作。这样的设计方式，既保持了用户视觉焦点的稳定，又使得整个页面在不使用某个特定功能的情况下简洁清爽。</p>
+<h3>2.<span style="color:#ff6600">为模态窗口增加边缘阴影</span></h3>
+<p>弹出式菜单和窗口周边的阴影不仅仅是为了视觉美观。阴影一方面增大了菜单或窗口的尺寸，有助于将菜单或窗口从背景中区别开来；另一方面通过灰度化的边缘阴影可以屏蔽背景内容的噪音干扰。</p>
+<p>这个技巧根植于传统桌面程序，帮助用户将注意力集中在弹出的窗口。由于很多模态窗口不容易从桌面程序内容页面中凸显出来，阴影可以使它们看起来具有立体效果、仿佛悬浮于其他内容之上，于是拉近了模态窗口与用户的距离。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7073" href="http://uedc.163.com/7068.html/2-digg_shadow-2"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/2-digg_shadow1.png" alt="" width="480" height="245"></a></p>
+<p>如上图，Digg的登录窗口边缘拥有厚厚的阴影，对下面内容的视觉噪音起到了有效的屏蔽作用。</p>
+<p>为实现这样的效果，设计师往往将透明的PNG背景图片作为容器，再把内容填充到容器中，同时等距离填充弹出框各边缘。或者使用具有透明边框的背景图片，并将内容框绝对定位在其中。另外，也可以使用基于JavaScript的lightboxes命令或者CSS3中的 drop shadows命令，但需要注意浏览器是否支持。</p>
+<h3>3.<span style="color:#ff6600">空白状态时告诉用户可以做什么</span></h3>
+<p>当设计web app的时候，不仅需要关心一般情况下的信息展示，还要确保界面在空白状态时表现良好、具有指引作用。页面中还没有产生任何信息的时候，可以在空白区域放置一条帮助信息告诉用户如何开始。例如，一个项目管理的应用程序主页会列出用户的项目，假如还没有什么项目信息，可以为用户提供一个项目创建页面的链接。即使这个页面上已经存在了这样一个功能按钮，一个额外的帮助并不会有什么妨碍。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7074" href="http://uedc.163.com/7068.html/3-monitor"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/3-monitor.gif" alt="" width="571" height="234"></a></p>
+<p>如上图，Campaign Monitor在右边方向提供了一个建立新信息的快速入口。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7075" href="http://uedc.163.com/7068.html/3-1-wufoo_empty_state"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/3.1-wufoo_empty_state.png" alt="" width="480" height="168"></a></p>
+<p>Wufoo的表单页面有醒目的、友好的信息鼓励用户去创建新的表单。</p>
+<p>这个技巧可以有效地鼓励用户试用该服务，并在注册后立即进行使用。通过应用程序的单一操作步骤可以帮助用户理解这个应用的优势以及对他们是否有用。</p>
+<p>此外，只为用户展示最重要的功能选项也很关键。一股脑的将众多功能倾泻给用户并没有什么实际意义。需要牢记的是，用户通常想从应用中获得或多或少的信息，但却不想跳进细节中，用户没有时间也没有兴趣。</p>
+<p>在空白状态中激励用户，可以显著地降低用户的流失率，并帮助潜在的用户更好的理解程序系统是如何工作的。</p>
+<h3>4.<span style="color:#ff6600">Button状态积极反馈</span></h3>
+<p>许多web app拥有自定义样式的按钮。默认的输入按钮可能不适合某些情景，文字链接有时候看起来又太含蓄。需要注意的是，把链接做成Button样式的时候，它们就应该有button的表现形式。比如，在点击button的时候它们应该会出现被“压”过的样子。这不仅仅是纯粹的视觉变化。及时反馈给用户，可以使web app感觉起来更灵敏，与桌面应用程序的用户体验更接近。</p>
+<p>可以使用CSS添加按钮的“pressed”等状态，实现在不同状态下显示不同背景图片的功能。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7076" href="http://uedc.163.com/7068.html/4-highrise_button_pushed"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/4-highrise_button_pushed.png" alt="" width="410" height="142"></a></p>
+<p>例如Highrise中的按钮，在鼠标指针点击的时候会呈现 “pressed”状态效果，为用户提供了灵敏的反馈感受。</p>
+<h3>5.<span style="color:#ff6600">使用上下文情境导航</span></h3>
+<p>在既定的情境下考虑用户希望看什么、需要什么是非常重要的。不需要在每一个地方都放置相同的导航控件，因为用户不是在任何情况下都需要它们。</p>
+<p>上下文情境导航最好的一个例子就是Office 2007中，原先默认的工具栏集合被换成了带状控件形式。每一项tab控制着一组相关联的功能，如编辑图形、校对或者简单书写。</p>
+<p>Web app可以从这种上下文情境导航中获益，仅展示用户需要的、而不是所有可用的功能，从而保持用户界面的整洁清爽。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7077" href="http://uedc.163.com/7068.html/5-lighthouse_sub_nav"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/5-lighthouse_sub_nav.png" alt="" width="480" height="89"></a></p>
+<p>例如上图中，Lighthouse 有非常典型的tab导航菜单；然而，在tab导航栏的下方它还有二级导航，在这个二级导航中只显示网站活跃部分的相关条目。</p>
+<h3>6.<span style="color:#ff6600">更加重视关键功能</span></h3>
+<p>并不是所有的控件都拥有相同的重要性。例如创建一个新的条目，页面中会有“创建”“取消”两个button. 这里的“创建”就要更加重要些，因为这是大多数情况下用户即将要做的事情。极少的情况下用户才会去点击取消。虽然这两个控件并排放置，但是不要给予相同的重视程度。</p>
+<p>为了将注意力引导到“创建”上，我们可以尝试使用不用的风格或样式。一种方式是将“创建”设计成button样式，“取消”设计成文字链接样式。另一种方式是在视觉上使用使用不同的颜色，并使button略有凸起的效果。这样便于抓住用户的目光。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7078" href="http://uedc.163.com/7068.html/g-%e5%88%9b%e5%bb%ba"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/G+-%E5%88%9B%E5%BB%BA.png" alt="" width="480" height="234"></a></p>
+<p>例如在Google+创建新圈子的弹窗中，创建按钮在视觉上具备了更加醒目的效果，拥有该页面中更高的重视等级。</p>
+<h3>7.<span style="color:#ff6600">嵌入视频</span></h3>
+<p>虽然图片和文字是向用户介绍应用程序功能的很好的方式，但如果资源允许的话，视频将是一个更优方案。近年来视频在网络上的使用越来越频繁。Web app的截屏视频经常被使用在营销网站中来展示产品的功能；然而这并不是视频使用的唯一方式。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7079" href="http://uedc.163.com/7068.html/7-goodbarry_video"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/7-goodbarry_video.png" alt="" width="480" height="323"></a></p>
+<p>GoodBarry 在其首页中使用截屏视频来展示产品。同时它还在应用中嵌入了视频来指导用户如何去开始。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7080" href="http://uedc.163.com/7068.html/7-1-mailchimp_videos"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/7.1-mailchimp_videos.png" alt="" width="480" height="401"></a></p>
+<p>MailChimp在管理面板中使用教程视频以帮助新用户。</p>
+<p>一些web app使用内部嵌入的视频帮助用户了解产品的特定功能。视频是快速演示产品如何使用的绝佳方法，因为与文字相比视频更容易被用户所接受，而且视频可以使用户准确地看到需要做什么，更加清晰。</p>
+<h3>8.<span style="color:#ff6600">让升级或降级的提示简洁、不扰民</span></h3>
+<p>在很多互联网产品中都会有不同权限的用户账户存在，比如邮箱、空间、网盘存储、SNS产品等。在用户拥有了一个账户后，他们可以对账户进行升级或降级。如何设计界面来提示用户他们可以升级而不去干扰用户的工作流程呢？设计师肯定不愿意在应用程序之外完成这件事情，这样的提示应该是和app是无缝连接的，而且最好是让用户感觉方便。因此升级账户的提示最好放在app内完成。</p>
+<p>通过几个例子我们了解一下升级账户的处理方式。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7081" href="http://uedc.163.com/7068.html/8-0136-12_freshbooks_reminder"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/8-0136-12_freshbooks_reminder.jpg" alt="" width="550" height="509"></a></p>
+<p>FreshBooks 的升级提示是一直存在的，被放置在了web app的底部。如上图。由于提示是在界面的工作区以外的位置，并不会对用户的工作流程造成影响。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7082" href="http://uedc.163.com/7068.html/8-1-0136-13_basecamp_in_app"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/8.1-0136-13_basecamp_in_app.png" alt="" width="550" height="405"></a></p>
+<p>在Basecamp的升级提示中，用户可以很清晰地得知升级后将会有哪些变化。请看上图。</p>
+<p><a style="text-decoration:none;color:#555555" rel="attachment wp-att-7083" href="http://uedc.163.com/7068.html/8-2-0136-15_compversions_inapp_upgrade"><img style="border-style:initial;border-color:initial" src="http://uedc.163.com/wp-content/uploads/2011/08/8.2-0136-15_compversions_inapp_upgrade.png" alt="" width="550" height="424"></a></p>
+<p>在CompVersions中,各种升级后的变化情况很直观 ，整个页面简洁清晰。请见上图。</p>
+<h2>总结</h2>
+<p>Web app的设计细节远不止上文中提到的这些，本文只算作抱砖引玉，希望大家可以在已有的优秀产品中发现更多思考的触发点。当我们习惯了走马观花地浏览其他公司产品的时候，我们已经对太多的东西习以为常；当我们开始设计用户界面，开始处理细节的时候，却时常会有拿捏不准的感觉。如果平时多总结一下其他产品（不一定拘泥于自己的产品圈子）的细节亮点，相信很多东西在实际工作中可以为我所用。</p>
+</span></p><p>源地址：<a href="http://uedc.163.com/7068.html">http://uedc.163.com/7068.html</a></p>

@@ -1,0 +1,415 @@
+---
+layout: post
+title:  "newlisp你也行 --- 基础知识"
+date:   2012-04-05 16:18:40
+author: address-withheld@my.opera.com.invalid (F0)
+categories: program
+---
+
+## newlisp你也行 --- 基础知识
+### by address-withheld@my.opera.com.invalid (F0)
+### at 2012-04-05 16:18:40
+### original <http://my.opera.com/freewinger/blog/show.dml/44440222>
+
+<span>  <span>#############################################################################</span><br>
+  <span># </span><span>Name:newLISP你也行</span><span> </span><span>---</span><span> </span><span>newLISP简介</span><br>
+  <span># </span><span>Author:黄登</span><span>(</span><span>winger</span><span>)</span><br>
+  <span># </span><span>Project:http://code.google.com/p/newlisp-you-can-do</span><br>
+  <span># </span><span>Gtalk:free.winger@gmail.com</span><br>
+  <span># </span><span>Gtalk-Group:zen0code@appspot.com</span><br>
+  <span># </span><span>Blog:http://my.opera.com/freewinger/blog/</span><br>
+  <span># </span><span>QQ-Group:31138659</span><br>
+  <span># 大道至简 </span><span>--</span><span> </span><span>newLISP</span><br>
+  <span>#</span><br>
+  <span># </span><span>Copyright</span><span> </span><span>2012</span><span> 黄登</span><span>(</span><span>winger</span><span>)</span><span> </span><span>All</span><span> </span><span>rights</span><span> </span><span>reserved.</span><br>
+  <span># </span><span>Permission</span><span> </span><span>is</span><span> </span><span>granted</span><span> </span><span>to</span><span> </span><span>copy,</span><span> </span><span>distribute</span><span> </span><span>and/or</span><br>
+  <span># </span><span>modify</span><span> </span><span>this</span><span> </span><span>document</span><span> </span><span>under</span><span> </span><span>the</span><span> </span><span>terms</span><span> </span><span>of</span><span> </span><span>the</span><span> </span><span>GNU</span><span> </span><span>Free</span><span> </span><span>Documentation</span><span> </span><span>License,</span><br>
+  <span># </span><span>Version</span><span> </span><span>1.2</span><span> </span><span>or</span><span> </span><span>any</span><span> </span><span>later</span><span> </span><span>version</span><span> </span><span>published</span><span> </span><span>by</span><span> </span><span>the</span><span> </span><span>Free</span><span> </span><span>Software</span><span> </span><span>Foundation</span><span>;</span><br>
+  <span># </span><span>with</span><span> </span><span>no</span><span> </span><span>Invariant</span><span> </span><span>Sections,</span><span> </span><span>no</span><span> </span><span>Front-Cover</span><span> </span><span>Texts,and</span><span> </span><span>no</span><span> </span><span>Back-Cover</span><span> </span><span>Texts.</span><br>
+  <span>#############################################################################</span><br>
+  <br>
+  <br>
+  <span>一</span><span>.</span><span> 启动</span><span>newLISP</span><br>
+  <br>
+  <br>
+  <span>    如果你要启动一个交互式的</span><span>newLISP</span><span>(</span><span>以下简称</span><span>nl</span><span>)</span><span>程序</span><span>,只要在任何一个终端内敲入</span><br>
+  <span>newlisp命令就行了.</span><br>
+  <br>
+  <span>C:&gt;newlisp</span><br>
+  <span>newLISP</span><span> </span><span>v.10.4.0</span><span> </span><span>on</span><span> </span><span>Win32</span><span> </span><span>IPv4/6</span><span> </span><span>UTF-8,</span><span> </span><span>execute</span><span> </span><span>&#39;</span><span>newlisp</span><span> </span><span>-h</span><span>&#39;</span><span> </span><span>for</span><span> </span><span>more</span><span> </span><span>inf</span><br>
+  <br>
+  <span>&gt;</span><br>
+  <br>
+  <span>这是后你就可以方便的测试单条语句了</span><span>,如果需要测试多条语句.可以用两种方法:</span><br>
+  <br>
+  <br>
+  <span>1:</span><span> </span><span>[</span><span>cmd</span><span>]</span><span>和</span><span>[</span><span>/cmd</span><span>]</span><span>必须单独占一行</span><span>.</span><br>
+  <span>&gt;</span><span>[</span><span>cmd</span><span>]</span><br>
+<span><span>- </span><span>(</span><span>define</span><span> </span><span>(</span><span>fibonacci</span><span> </span><span>n</span><span>)</span></span><br>
+<span><span><span>- </span><span>    </span><span>(</span><span>if</span><span> </span><span>(</span><span>&lt;</span><span> </span><span>n</span><span> </span><span>2</span><span>)</span></span><br>
+<span>  <span>        </span><span>1</span><br>
+<span><span>- </span><span>        </span><span>(</span><span>+</span><span> </span><span>(</span><span>fibonacci</span><span> </span><span>(</span><span>-</span><span> </span><span>n</span><span> </span><span>1</span><span>))</span></span><br>
+<span>  <span>           </span><span>(</span><span>fibonacci</span><span> </span><span>(</span><span>-</span><span> </span><span>n</span><span> </span><span>2</span><span>)))))</span><br></span>
+  <span>[</span><span>/cmd</span><span>]</span><br>
+  <span>&gt;</span><br>
+  <br>
+  <span>2:</span><span> 第一行单独输入一个回车</span><span>.</span><br>
+  <span>&gt;</span><br>
+<span><span>- </span><span>(</span><span>define</span><span> </span><span>(</span><span>fibonacci</span><span> </span><span>n</span><span>)</span></span><br>
+<span><span><span>- </span><span>    </span><span>(</span><span>if</span><span> </span><span>(</span><span>&lt;</span><span> </span><span>n</span><span> </span><span>2</span><span>)</span></span><br>
+<span>  <span>        </span><span>1</span><br>
+<span><span>- </span><span>        </span><span>(</span><span>+</span><span> </span><span>(</span><span>fibonacci</span><span> </span><span>(</span><span>-</span><span> </span><span>n</span><span> </span><span>1</span><span>))</span></span><br>
+<span>  <span>           </span><span>(</span><span>fibonacci</span><span> </span><span>(</span><span>-</span><span> </span><span>n</span><span> </span><span>2</span><span>)))))</span><br></span>
+  <br>
+  <span>&gt;</span><span>(</span><span>fibonacci</span><span> </span><span>10</span><span>)</span><br>
+  <span>89</span><br>
+  <br>
+  <br>
+  <span>    除了命令行的</span><span>nl还可以启动图形界面的newLISP-GS</span><span> </span><span>editor,GS是newLISP提供的一个</span><br>
+  <span>图形化工具包</span><span>.WIN32的启动方法在上一节有讲解,详细资料请查阅guiserver.lsp.html.</span><br>
+  <span><a href="http://newlisp.org/index.cgi?Code_Contributions">http://newlisp.org/index.cgi?Code_Contributions</a>.同时提供了各种编辑器的配置本</span><br>
+  <span>.</span><br>
+  <br>
+  <span>二</span><span>.</span><span> 三大基本法则</span><br>
+  <br>
+  <br>
+  <span>法则 </span><span>1:</span><span> 列表是元素的序列</span><span>:</span><br>
+  <span>(</span><span>Rule</span><span> </span><span>1:</span><span> </span><span>a</span><span> </span><span>list</span><span> </span><span>is</span><span> </span><span>a</span><span> </span><span>sequence</span><span> </span><span>of</span><span> </span><span>elements</span><span>)</span><br>
+  <br>
+  <br>
+  <span>(</span><span>1</span><span> </span><span>2</span><span> </span><span>3</span><span> </span><span>4</span><span> </span><span>5</span><span>)</span><span>         </span><span>; 包含数字的列表</span><br>
+  <span>(</span><span>&quot;the&quot;</span><span> </span><span>&quot;cat&quot;</span><span> </span><span>&quot;sat&quot;</span><span>)</span><span> </span><span>; 包含字符串的列表</span><br>
+  <span>(</span><span>x</span><span> </span><span>y</span><span> </span><span>z</span><span> </span><span>foo</span><span> </span><span>bar</span><span>)</span><span>     </span><span>; 包含symbol的列表</span><br>
+  <span>(</span><span>sin</span><span> </span><span>cos</span><span> </span><span>tan</span><span> </span><span>atan</span><span>)</span><span>  </span><span>; 包含newLISP函数的列表</span><br>
+  <span>(</span><span>1</span><span> </span><span>2</span><span> </span><span>&quot;stitch&quot;</span><span> </span><span>x</span><span> </span><span>sin</span><span>)</span><span>; 混合列表</span><br>
+  <span>(</span><span>1</span><span> </span><span>2</span><span> </span><span>(</span><span>1</span><span> </span><span>2</span><span> </span><span>3</span><span>)</span><span> </span><span>3</span><span> </span><span>4</span><span> </span><span>)</span><span>  </span><span>; 一个列表内包含另一个列表</span><br>
+  <span>((</span><span>1</span><span> </span><span>2</span><span>)</span><span> </span><span>(</span><span>3</span><span> </span><span>4</span><span>)</span><span> </span><span>(</span><span>5</span><span> </span><span>6</span><span>))</span><span> </span><span>; 列表的列表</span><br>
+  <br>
+  <br>
+  <span>    列表是</span><span>newLISP的基础结构,同时也是我们编写代码的方式.不过现在先别急着把上面</span><br>
+  <span>的数据输入命令行测试</span><span>,让我们先把剩下的2个法则看完.</span><br>
+  <br>
+  <br>
+  <span>法则 </span><span>2:</span><span> 列表的第一个元素是特殊的</span><span>:</span><br>
+  <span>(</span><span>Rule</span><span> </span><span>2:</span><span> </span><span>the</span><span> </span><span>first</span><span> </span><span>element</span><span> </span><span>in</span><span> </span><span>a</span><span> </span><span>list</span><span> </span><span>is</span><span> </span><span>special</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    </span><span>newLISP会把列表中的第一个元素作为函数,剩下的元素作为这个函数的参数.</span><br>
+  <span>    法则</span><span>2中的例子都可以输入命令行测试.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    这个列表中友</span><span>3个元素,函数</span><span> </span><span>+</span><span> 和紧接其后的 </span><span>2</span><span> 个数字</span><span>.nl在处理完这个列表后返回</span><br>
+  <span>4</span><span> </span><span>(</span><span>of</span><span> </span><span>course</span><span>)</span><span>.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>+</span><span> </span><span>1</span><span> </span><span>2</span><span> </span><span>3</span><span> </span><span>4</span><span> </span><span>5</span><span> </span><span>6</span><span> </span><span>7</span><span> </span><span>8</span><span> </span><span>9</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    返回</span><span>45,函数</span><span> </span><span>+</span><span> 把列表中所有的数字都加了起来</span><span>.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>max</span><span> </span><span>1</span><span> </span><span>1.2</span><span> </span><span>12.1</span><span> </span><span>12.2</span><span> </span><span>1.3</span><span> </span><span>1.2</span><span> </span><span>12.3</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    返回</span><span>12.3,列表中最大的数字</span><span> </span><span>(</span><span>理论上列表无长度限制</span><span>)</span><span>.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>print</span><span> </span><span>&quot;the sun has put his hat on&quot;</span><span>)</span><br>
+  <span>&quot;the sun has put his hat on&quot;</span><br>
+  <br>
+  <br>
+  <span>    </span><span>print打印字符串</span><span> </span><span>&quot;the sun has put his hat on&quot;</span><span> </span><span>,同时他的返回值也是他打印的</span><br>
+  <span>字符串</span><span>.这样你在控制台console上就会看到重复的2行字符串.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span> </span><span>(</span><span>println</span><span> </span><span>&quot;九黎&quot;</span><span>)</span><br>
+  <span>九黎</span><br>
+  <span>&quot;\190\197\192\232&quot;</span><br>
+  <br>
+  <br>
+  <span>    上面是在非</span><span>utf8版本上的输出,</span><span> </span><span>println</span><span> 在打印完字符串后还会打印一个换行符</span><span>.</span><br>
+  <br>
+  <span>&gt;</span><span> </span><span>(</span><span>println</span><span> </span><span>&quot;轩辕&quot;</span><span>)</span><br>
+  <span>轩辕</span><br>
+  <span>&quot;轩辕&quot;</span><br>
+  <br>
+  <br>
+  <span>    这个是在</span><span>utf8版本上的输出,utf8版本的好处就是能够正常显示非ascii的多位字节</span><br>
+  <span>文字</span><span>.</span><br>
+  <span>    </span><span>print函数可以将一系列的数据打印成一条字符串:</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span> </span><span>(</span><span>print</span><span> </span><span>1</span><span> </span><span>2</span><span> </span><span>&quot;buckle&quot;</span><span> </span><span>&quot;my&quot;</span><span> </span><span>&quot;shoe&quot;</span><span>)</span><br>
+  <span>12bucklemyshoe</span><span>&quot;</span><span>shoe</span><span>&quot;</span><br>
+  <br>
+  <br>
+  <span>    上面的代码打印了</span><span>2个数字元素和3个字符串元素.</span><span>(</span><span>可以使用 </span><span>format</span><span> 让输出更清晰</span><span>)</span><br>
+  <span>    函数 </span><span>directory</span><span> 可以列出指定目录下的文件</span><span>.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>directory</span><span> </span><span>&quot;/&quot;</span><span>)</span><span>;unix</span><br>
+  <span>(</span><span>directory</span><span> </span><span>&quot;c:/&quot;</span><span>)</span><span>;win32</span><br>
+  <br>
+  <br>
+  <span>    上面的命令可以打印出系统根目录下的文件列表</span><span>.如果不指定任何参数,则列出当前</span><br>
+  <span>目录下的所有文件</span><span>.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span>(</span><span>real-path</span><span>)</span><span>;获取当前目录的绝对路径</span><br>
+  <span>&quot;C:\\Program Files\\newlisp&quot;</span><br>
+  <span>&gt;</span><span> </span><span>(</span><span>real-path</span><span> </span><span>&quot;newlisp_manual.html&quot;</span><span>)</span><span>;获取指定文件的绝对路径</span><br>
+  <span>&quot;C:\\Program Files\\newlisp\\newlisp_manual.html&quot;</span><br>
+  <span>&gt;</span><span>(</span><span>real-path</span><span> </span><span>&quot;.&quot;</span><span>)</span><span>;</span><br>
+  <span>&quot;C:\\Program Files\\newlisp&quot;</span><br>
+  <br>
+  <br>
+  <span>    </span><span>read-file</span><span> 函数用来读取文本文件</span><span>:</span><br>
+  <br>
+  <span>(</span><span>read-file</span><span> </span><span>&quot;/usr/share/newlisp/modules/stat.lsp&quot;</span><span>)</span><span>;unix</span><br>
+  <span>(</span><span>read-file</span><span> </span><span>&quot;C:\\Program Files\\newlisp\\util\\link.lsp&quot;</span><span>)</span><span>;win32</span><br>
+  <br>
+  <span>    在某些情况为了让输出更美观也可以用 </span><span>println</span><span> 打印出结果</span><span>.</span><br>
+  <br>
+  <span>(</span><span>println</span><span> </span><span>(</span><span>read-file</span><span> </span><span>&quot;/usr/share/newlisp/modules/stat.lsp&quot;</span><span>))</span><br>
+  <br>
+  <br>
+  <span>    在我们看第三个法则前</span><span>,让我们看一个更有用的东西.</span><br>
+  <br>
+  <br>
+  <span>嵌套列表</span><br>
+  <br>
+  <br>
+  <span>    前面我们已经看到了不少</span><span>,一个列表中出现另一个列表的情况.你是不是有点疑惑呢?</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span> </span><span>(</span><span>*</span><span> </span><span>(</span><span>+</span><span> </span><span>1</span><span> </span><span>2</span><span>)</span><span> </span><span>(</span><span>+</span><span> </span><span>3</span><span> </span><span>4</span><span>))</span><br>
+  <span>21</span><br>
+  <br>
+  <br>
+  <span>当</span><span>newLISP遇到这个列表的时候,他的处理顺序是这样的:</span><br>
+  <br>
+  <span>    首先他看到了第一个元素 </span><span>*</span><span> </span><span>,把他作为一个函数,接着他要收集剩下的元素作为参数</span><br>
+  <span>.可是他遇到了另一个列表:</span><br>
+  <br>
+  <span>(</span><span>+</span><span> </span><span>1</span><span> </span><span>2</span><span>)</span><br>
+  <br>
+  <span>    </span><span>nl果断暂停了之前的工作,进入这个列表里,开始处理这个列表,这个列表的结果就是</span><br>
+  <span>3.很简单</span><span>(</span><span>不懂得同学找个地方画圈圈去</span><span>--!</span><span>)</span><span>.</span><br>
+  <span>    好了又回到刚才第一层列表</span><span>,继续为函数</span><span> </span><span>*</span><span> 收集参数</span><span>,这时候又遇到了一个列表:</span><br>
+  <br>
+  <span>(</span><span>+</span><span> </span><span>3</span><span> </span><span>4</span><span>)</span><br>
+  <br>
+  <span>    </span><span>nl同样非常果断的处理完了这个列表,又得到一个结果7.</span><br>
+  <span>    这时候两个内部的列表都计算出了结果</span><span>,他们变成了下面的样子:</span><br>
+  <br>
+  <span>(</span><span>*</span><span> </span><span>3</span><span> </span><span>7</span><span>)</span><br>
+  <br>
+  <span>    这下</span><span>nl非常满意,再也没有嵌套列表了,一切都</span><span> </span><span>&quot;和谐&quot;</span><span> 了</span><span>,多清晰啊.</span><br>
+  <span>    </span><span>nl计算出了最后结果21,并将他们返回给我们.</span><br>
+  <span>    这个过程如下</span><span>:</span><br>
+  <br>
+  <br>
+  <span>(</span><span>*</span><span> </span><span>(</span><span>+</span><span> </span><span>1</span><span> </span><span>2</span><span>)</span><span> </span><span>(</span><span>+</span><span> </span><span>3</span><span> </span><span>4</span><span>))</span><br>
+  <span>(</span><span>*</span><span> </span><span>(</span><span>+</span><span> </span><span>1</span><span> </span><span>2</span><span>)</span><span> </span><span>7</span><span>)</span><br>
+  <span>(</span><span>*</span><span> </span><span>3</span><span> </span><span>7</span><span>)</span><br>
+  <span>21</span><br>
+  <br>
+  <span>    从第一行的</span><span>6个括号,到第四行的0个括号,nl有条不紊的完成了所有的工作.</span><br>
+  <br>
+  <span>    很多同学也许开始迷惑了</span><span>,这怎么和我们平时用的语言和计算的方法不对啊,嘿嘿.其</span><br>
+  <span>实最真实的编译器原型就是这样滴</span><span>,而别的语言做的就是把大家平时写的表达式分解成上</span><br>
+  <span>面的这种形式</span><span>,再做进一步的计算.当然如果你实在不习惯这样,nl也提供了内部函数,让</span><br>
+  <span>你改变语法</span><span>,这样你可以把nl伪装成任何你喜欢的program</span><span> </span><span>language.</span><br>
+  <br>
+  <span>    当让如果你入门以后</span><span>,你会发现这才是最正常的一种方式,那些说括号bt的人,10个有</span><br>
+  <span>10个是没有真正学习lisp的.</span><br>
+  <br>
+  <span>    不管是从语法还是编码来说</span><span>,括号都不是什么问题.</span><br>
+  <br>
+  <span>    也许你会担心如果写了好几层括号会不会迷糊了</span><span>?对于这个问题我的建议是:</span><br>
+  <br>
+  <span>&lt;1&gt;</span><span> 括号层不能太多</span><span>,很多人是三层以后不再加,把多余的功能分散到别的函数去.</span><br>
+  <br>
+  <span>&lt;2&gt;</span><span> 用个好点的编辑器</span><span>.win的笔记本肯定是不行,太掉价了,会严重影响形象.Emacs这样</span><br>
+  <span>的大家伙我就不说了</span><span>,基本上N多语言都有model,很强大很和谐.VIM嘛,这个既快又小.还</span><br>
+  <span>有</span><span>notepad++,这个很多人说好啊,不过那个语法文件我整不出来,无视我吧.scite我只用</span><br>
+  <span>这个</span><span>,没啥说的,夸平台,小巧,界面简单.除了我需要的功能,其他的都不加,需要强大的能</span><br>
+  <span>只要编写下</span><span>lua脚本就行了.现在只要正常点得编辑器,都具有括号自动匹配.在好点得还</span><br>
+  <span>有自动完成</span><span>,指定提示.在scite里你按Ctrl+E就会跳到前括号对应的后括号,Ctrl+Shift+</span><br>
+  <span>E可以选取括号内的内容.同时配上代码折叠和context.一切都会很轻松,基本不会出现,</span><br>
+  <span>混乱</span><span>.而大家只是需要先熟悉下这种函数前置的编码习惯就好了.</span><br>
+  <span>    记住</span><span>,故事永远不会只有一个版本.</span><br>
+  <span>    括号就像一个思想容器</span><span>,你可以加入任何东西,而你需要提取思想的时候,只要给他加</span><br>
+  <span>如另一个括号</span><span>.</span><span>(</span><span>当然你也可以看成宇宙</span><span>,太极,阴阳,天地......</span><span>)</span><br>
+  <br>
+  <br>
+  <br>
+  <span>法则 </span><span>3:引号阻止计算:</span><br>
+  <span>(</span><span>Quoting</span><span> </span><span>prevents</span><span> </span><span>evaluation</span><span>)</span><br>
+  <br>
+  <span>    要阻止</span><span>nl计算就用单引号括起来.</span><br>
+  <span>    比较下面两行</span><span>:</span><br>
+  <br>
+  <br>
+  <span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <span>&#39;(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    第二个列表前面多了个单引号</span><span>.让我们测试看看.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span> </span><span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <span>4</span><br>
+  <span>&gt;</span><span>&#39;(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <span>&gt;</span><br>
+  <br>
+  <br>
+  <span>    第一个例子</span><span>,和前面一样,nl像平常一样,把第一个参数</span><span> </span><span>+</span><span> 作为函数</span><span>,将后面两个参数</span><br>
+  <span>加起来</span><span>,返回数字4.</span><br>
+  <span>    第二个例子</span><span>,nl看到了单引号</span><span> </span><span>&#39;</span><span> </span><span>,直接就讲后面的列表作为数据返回了,根本就不计</span><br>
+  <span>算了</span><span>.</span><br>
+  <br>
+  <span>    如果说第一个例子就像一个静止的宇宙</span><span>,那单引号能做得就是copy整个宇宙,并把他</span><br>
+  <span>作为数据返回给你</span><span>,这样你就拥有了一个不会动的宇宙.当然你宇宙还可以转动起来.</span><br>
+  <br>
+  <span>    在什么情况下我们需要阻止列表的 </span><span>&quot;内部&quot;</span><span> 计算呢</span><span>?</span><br>
+  <span>    当你存储数据到列表中的时候</span><span>.</span><br>
+  <br>
+  <br>
+  <span>(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>)</span><span> </span><span>;  今天的年/月/日</span><br>
+  <span>(</span><span>&quot;winger&quot;</span><span> </span><span>&quot;黄登&quot;</span><span>)</span><span> </span><span>; 某人的名字</span><br>
+  <br>
+  <br>
+  <br>
+  <span>    我们不希望 </span><span>2012</span><span> 或者</span><span>&quot;winger&quot;</span><span> 被当做函数</span><span>.因为他们都不是真的函数,也不可能是</span><br>
+  <span>真的函数</span><span>,函数不能用数字或者双引号开头,否则nl会提示错误.所以我们需要用到单引号</span><br>
+  <span>.</span><br>
+  <br>
+  <br>
+  <span>&#39;(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>)</span><span> </span><span>; 计算成 (2012 6 1)</span><br>
+  <span>&#39;(</span><span>&quot;winger&quot;</span><span> </span><span>&quot;黄登&quot;</span><span>)</span><span> </span><span>; 计算成 (&quot;winger&quot; &quot;黄登&quot;)</span><br>
+  <br>
+  <br>
+  <span>    其实单引号是函数</span><span>quote的缩写形式:</span><br>
+  <br>
+  <span>&gt;</span><span> </span><span>&#39;(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>)</span><br>
+  <span>(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>)</span><br>
+  <span>&gt;</span><span> </span><span>(</span><span>quote</span><span> </span><span>(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>))</span><br>
+  <span>(</span><span>2012</span><span> </span><span>4</span><span> </span><span>1</span><span>)</span><br>
+  <span>&gt;</span><span> </span><span>(</span><span>=</span><span> </span><span>&#39;</span><span> </span><span>quote</span><span>)</span><br>
+  <span>true</span><br>
+  <br>
+  <span>    记住他可以阻止后面列表的 </span><span>&quot;内部&quot;</span><span> 计算</span><span>.</span><br>
+  <br>
+  <br>
+  <br>
+  <span>Symbols</span><span> 和 引号</span><br>
+  <span>(</span><span>Symbols</span><span> </span><span>and</span><span> </span><span>quotes</span><span>)</span><br>
+  <br>
+  <br>
+  <span>    什么是</span><span>Symbol?</span><br>
+  <span>    灵魂</span><span>,符文...</span><br>
+  <br>
+  <span>    这个东西不翻译</span><span>,不好翻译,记住就好了,毕竟没几个关键字.翻译过来还别扭.</span><br>
+  <span>    </span><span>Symbol就像一个个灵魂,一个灵魂一个装下一个宇宙,一个宇宙内又有千千万万个宇</span><br>
+  <span>宙</span><span>.灵魂的力量是强大的,世界所有的东西都能装下,而Symbol也是强大的,任何数据都能</span><br>
+  <span>装下</span><span>,他就像个容器.又像个标志.如果实在要类比,他和别的语言中变量很相像.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span>(</span><span>define</span><span> </span><span>alphabet</span><span> </span><span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><span>)</span><br>
+  <span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><br>
+  <span>&gt;</span><span>(</span><span>set</span><span>   </span><span>&#39;</span><span>alphabet</span><span> </span><span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><span>)</span><span>;这只是set的语法要求</span><br>
+  <span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><br>
+  <span>&gt;</span><span>(</span><span>setf</span><span>   </span><span>alphabet</span><span> </span><span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><span>)</span><br>
+  <span>&quot;abcdefghijklmnopqrstuvwxyz&quot;</span><br>
+  <br>
+  <br>
+  <span>    上面三条语句干的活是一样的</span><span>,创建一个symbol,并把英文字母表赋值给他.</span><br>
+  <span>    现在只要有语句调用</span><span>,</span><span> </span><span>alphabet</span><span> 就被自动计算成</span><span>26个字母的字符串.当让你不能在</span><br>
+  <span>他前面加上单引号</span><span>.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span>(</span><span>upper-case</span><span> </span><span>alphabet</span><span>)</span><br>
+  <span>&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</span><br>
+  <br>
+  <br>
+  <span>    因为我们需要用到</span><span>alphabet的值,所以我们没有给他加上单引号,否则传递给</span><br>
+  <span>upper-case</span><span> 的就是一个</span><span>symbol名了,我们要得是symbol值.欧了没?</span><br>
+  <br>
+  <span>    </span><span>newLISP并不像别的语言那样频繁的使用symbol来保存值.因为nl的哲学就是,代码即</span><br>
+  <span>数据</span><span>,数据即代码.这样的结果就是代码更短,写的更爽.</span><br>
+  <br>
+  <br>
+  <span>&gt;</span><span>(</span><span>println</span><span> </span><span>(</span><span>first</span><span> </span><span>(</span><span>upper-case</span><span> </span><span>alphabet</span><span>)))</span><br>
+  <span>&quot;A&quot;</span><br>
+  <br>
+  <br>
+  <span>    </span><span>upper-case</span><span> 将返回值传递给 </span><span>first</span><span> 函数</span><span>,</span><span> </span><span>first</span><span> 函数再将返回值传递给</span><span>println</span><span> </span><span>,</span><br>
+  <span>打印出来</span><span>.</span><br>
+  <br>
+  <span>    当然还是有很多地方要用到</span><span>symbol的:</span><br>
+  <span>(</span><span>define</span><span> </span><span>x</span><span> </span><span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span> </span><span>))</span><br>
+  <span>(</span><span>define</span><span> </span><span>y</span><span> ’</span><span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>))</span><br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <span>&gt;</span><span>(</span><span>define</span><span> </span><span>x</span><span> </span><span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span> </span><span>))</span><br>
+  <span>4</span><br>
+  <br>
+  <span>    第一行我们没有使用单引号</span><span>,nl想平常一样计算</span><span>(</span><span>+</span><span> </span><span>2</span><span>  </span><span>2</span><span>)</span><span> </span><span>,然后把返回值4赋值给x.</span><br>
+  <br>
+  <span>&gt;</span><span>(</span><span>define</span><span> </span><span>y</span><span> </span><span>&#39;(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>))</span><br>
+  <span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <br>
+  <span>    第二行我们使用了单引号</span><span>,这样nl就把这个list</span><span> </span><span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><span> 赋值给了</span><span>y</span><span>(</span><span>并不计算</span><span>)</span><span>.</span><br>
+  <br>
+  <span>&gt;x</span><br>
+  <span>4</span><br>
+  <br>
+  <span>&gt;y</span><br>
+  <span>(</span><span>+</span><span> </span><span>2</span><span> </span><span>2</span><span>)</span><br>
+  <br>
+  <span>&gt;</span><span>&#39;</span><span>y</span><br>
+  <span>y</span><br>
+  <br>
+  <span>    最后这个</span><span>&#39;</span><span>y</span><span> 就是</span><span>symbol名.</span><span> 而上面那个则是</span><span>symbol值.</span><br>
+  <br>
+  <span>三</span><span>.</span><span> 破坏性函数</span><br>
+  <span>(</span><span>Destructive</span><span> </span><span>functions</span><span>)</span><br>
+  <br>
+  <span>    在</span><span>nl内部,有的函数会改变操作的symbol,这样的函数就就叫做破坏性函数,比如</span><br>
+  <span>push</span><span> 和 </span><span>replace</span><span> </span><span>.</span><br>
+  <br>
+  <span>&gt;</span><span>(</span><span>setf</span><span> </span><span>m</span><span> </span><span>25</span><span>)</span><br>
+  <span>25</span><br>
+  <br>
+  <span>&gt;</span><span>(</span><span>+</span><span> </span><span>m</span><span> </span><span>1</span><span>)</span><br>
+  <span>26</span><br>
+  <br>
+  <span>&gt;m</span><br>
+  <span>25</span><span> </span><span>;m没有改变仍然是25</span><br>
+  <br>
+  <span>&gt;</span><span>(</span><span>inc</span><span> </span><span>m</span><span>)</span><br>
+  <span>26</span><br>
+  <br>
+  <span>&gt;m</span><br>
+  <span>26</span><span> </span><span>;m被改变了,inc就被称为破坏性函数,如果要用这样的函数又不想改变原来的symbol</span><br>
+  <span>   </span><span>;你就要这样写:(inc (copy m))</span><br>
+  <br>
+  <br>
+  <span>o了吃饭去.</span><br>
+  <br>
+  <span>2012-04-02</span><span> </span><span>21:33:27</span><br>
+  <br>
+  <span>html</span><span> 彩色版本请看 </span><span><a href="http://code.google.com/p/newlisp-you-can-do">http://code.google.com/p/newlisp-you-can-do</a></span><br>
+  <br>
+
+强烈建议下载scite4newlisp
+然后解压到newlisp可执行文件的目录下
+这样就可以使用(help) 宏
+  <span></span></span></span></span></span></span>

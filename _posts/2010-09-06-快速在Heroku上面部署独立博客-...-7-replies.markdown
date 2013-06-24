@@ -1,0 +1,23 @@
+---
+layout: post
+title:  "快速在Heroku上面部署独立博客 ... 7 replies"
+date:   2010-09-06 12:28:21
+author: huacnlee
+categories: program
+---
+
+## 快速在Heroku上面部署独立博客 ... 7 replies
+### by huacnlee
+### at 2010-09-06 12:28:21
+### original <http://chinaonrails.com/topic/view/4402.html>
+
+<a href="http://huacnlee.com" rel="nofollow external">我这个博客程序</a> <a href="http://github.com/huacnlee/personlab" rel="nofollow external">PersonLab</a>: ，现在可以很容易的安装在 Heroku 上面了<br>
+Heroku有提供免费服务，虽然是免费的，但速度还很不错的，而且可以绑定域名（这个需要现绑定信用卡，会花费$1，域名绑定是免费的，空间也是）。 <br>
+但是Heroku上面是有限制的，无法存放图片之类的东西，我现在博客是将图片存放在更加稳定的 Yupoo或Flickr上面，贴代码放到 Github Gist 上面。<br>
+<br>
+项目地址: <a href="http://github.com/huacnlee/personlab">http://github.com/huacnlee/personlab </a><br>
+<br>
+安装步骤(Ubuntu环境):<br>
+<a href="http://gist.github.com/566602" rel="nofollow external">http://gist.github.com/566602</a>
+<p><a href="http://feedads.g.doubleclick.net/~a/e1g4i1LEbAzSDUpe2ZmDsK-kuqM/0/da"><img src="http://feedads.g.doubleclick.net/~a/e1g4i1LEbAzSDUpe2ZmDsK-kuqM/0/di" border="0" ismap></a><br>
+<a href="http://feedads.g.doubleclick.net/~a/e1g4i1LEbAzSDUpe2ZmDsK-kuqM/1/da"><img src="http://feedads.g.doubleclick.net/~a/e1g4i1LEbAzSDUpe2ZmDsK-kuqM/1/di" border="0" ismap></a></p>

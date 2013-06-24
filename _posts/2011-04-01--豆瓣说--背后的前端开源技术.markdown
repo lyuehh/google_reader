@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "“豆瓣说” 背后的前端开源技术"
+date:   2011-04-01 01:42:27
+author: sofish
+categories: program
+---
+
+## “豆瓣说” 背后的前端开源技术
+### by sofish
+### at 2011-04-01 01:42:27
+### original <http://sofish.de/1776>
+
+<p><span style="color:rgb(153,153,153)">提及网站: http://shuo.douban.com/</span></p>
+<p>这是一篇毫无技术含量而又不得不说的文章。一、我不能深度评论这些技术，因为本身并不熟悉，所以可能看起来真的“毫无技术含量”，但要介绍的这些又都是含金量很高的开源技术。二、豆瓣说太简单了，简单的都不知道从哪个地方谈这个产品，但又答应了 <a href="http://twitter.com/gaowhen">@gaowhen</a> 同学说要写某个产品的时候第一篇应该写豆瓣说；另外一个不得不说的原因是这些开源技术都是值得前端去研究的。</p>
+<p><img src="http://farm6.static.flickr.com/5310/5577574530_1ee38163c5_z.jpg" alt="豆瓣说"></p>
+<ul>
+<li><a href="http://documentcloud.github.com/backbone/">Javascript MVC: backbone</a>
+<p>为大型 JS 程序提供的一套 MVC 框架。文档非常完善，像大名鼎鼎的 37signals 都在用。例如这个 <a href="http://documentcloud.github.com/backbone/#examples-basecamp">Basecamp Mobile</a> 就是 37signals 的产品。这个很让人喜欢的 To-Do List 工具 <a href="http://documentcloud.github.com/backbone/#examples-flow">Flow</a> 也是用这个来实现 MVC 的。还有像  <a href="http://documentcloud.github.com/backbone/#examples-soundcloud">Mobile SoundCloud</a>、<a href="http://documentcloud.github.com/backbone/#examples-instagreat">Insta-great!</a>、<a href="http://documentcloud.github.com/backbone/#examples-quietwrite">QuietWrite </a>等都在用。</p>
+</li>
+<li><a href="http://mustache.github.com/">模板语言：mustache</a>
+<p>这个模板语言，上次 <a href="http://twitter.com/fenng">@Fenng</a> 在推上推荐的时候，原话是 “A client-rendering framework for Facebook by Changhao Jiang <a rel="nofollow" title="http://mustache.github.com/" href="http://t.co/NIo6vCd">http://t.co/NIo6vCd</a>” 嗯。据说很牛A。当然，支持各种语言，其实包括 javascript 和 豆瓣服务端用的 python。</p>
+</li>
+<li><a href="http://socket.io/">实时程序实现： Socket.io</a>
+<p>看到 Socket + 前端，是不是想到 HTML5 的 Web Sockets 了。是的。Socket.io 支持 HTML5 的 Web Socket，同时也支持使用 flash （豆瓣使用的应该是 flash）等兼容其他不支持 Web Sockets 的浏览器。对移动设备的兼容性也非常好。再时后端运行支持 python ，这多适合豆瓣啊。</p>
+</li>
+</ul>
+<p>另外，从 URL 和对话的 侧滑 slide-panel 都是仿 twitter 的。至于 URL 为什么为这样做，可以参照<a href="http://www.google.com/support/webmasters/bin/answer.py?hl=cn&amp;answer=174992"> Google 的文章</a>。至于侧滑这种这么好的体验方法拿来用，也没有什么可说的，只能说还有比这个更好的吗！</p>
+<p>对于为什么公司会让他们使用这些技术，我只能说他们很酷，这在某些公司是很难做到的。再想想豆瓣的 HTML5 应用都做得…，其实也挺佩服这帮人的。还有 @kejunz 去年写的这篇文章：<a href="http://hikejun.com/blog/?p=590" rel="bookmark" title="Permanent Link to 新版twitter背后的技术">新版twitter背后的技术</a>。这些技术在豆瓣上有多少已经用上了呢？哈，大部分呢。这是多好的事，如果是你，你会如何做？</p>
+<p>不过，话说回来。这些都只是我个人看得到的。或许有更多关于前端的开源技术运用在里面，而我没看出来。是应该好好想想自己应该怎么去做了。团队可以怎么去做了。</p>
+<p>至于页面的 HTML 什么的嘛，不是坑爹么。全都是 div，加上这么多嵌套。不知道是是谁写的，偷笑一下。我不是有意冒犯，您快修改回来吧。然后，哈哈哈哈哈，加油吧同学。</p>
+<p>好吧，至此，这篇没技术含量的文章到此结束。总结就是，去用吧，去告诉别人为何要用吧。在新技术的应用上，某些公司应该向豆瓣说前端团队学习学习。</p>
+<div style="color:#888;margin-top:30px"><p><hr>© 2011 <a href="http://sofish.de" title="幸福收藏夹">幸福收藏夹</a>。 版权所有，转载务必注明。域名已经更新为：<a href="http://sofish.de" title="幸福收藏夹">sofish.de</a>。<br><strong>注意：</strong>当你觉得某篇文章有用，请直接看原文，因为通常我都会在写了文章后更新、去错别字、升级观点之类的。</p></div><img src="http://www1.feedsky.com/t1/544957348/sofish/feedsky/s.gif?r=http://sofish.de/1776" border="0" height="0" width="0">

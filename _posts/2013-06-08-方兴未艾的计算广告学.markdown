@@ -1,0 +1,184 @@
+---
+layout: post
+title:  "方兴未艾的计算广告学"
+date:   2013-06-08 14:10:00
+author: 微软亚洲研究院
+categories: program
+---
+
+## 方兴未艾的计算广告学
+### by 微软亚洲研究院
+### at 2013-06-08 14:10:00
+### original <http://blog.sina.com.cn/s/blog_4caedc7a0102eshz.html>
+
+<p style="MArGin:0in 0in 8pt;Line-HeiGHT:normal">
+<a name="OLE_LINK4"></a></p>
+<a href="http://blog.photo.sina.com.cn/showpic.html#url=http://s3.sinaimg.cn/orignal/4caedc7agde9f9d863422"></a>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p align="center"><img style="TexT-ALiGn:center;DispLAY:block" src="http://s3.sinaimg.cn/mw690/4caedc7agde9f9d863422&amp;690" width="690" height="453"><font style="FonT-siZe:12px">图片来源于网络<br></font></p>
+<p> </p>
+<p><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;\006977\004f53&#39;,&#39;serif&#39;">
+编者按：近年来，随着计算机的普及，互联网广告蓬勃发展。如何使互联网广告更加有效，宣传力度更大，已成为学术界研究的一大热点，一个崭新的学科——计算广告学也因此出现。微软亚洲研究院高级研究员刘铁岩近期撰文与大家分享了他在显示广告和搜索广告领域的研究心得以及对未来研究方向的前瞻。</span> </p>
+<p> </p>
+<p align="right">作者:微软亚洲研究院高级研究员 刘铁岩</p>
+<p align="right"> </p>
+<p>
+广告是用于说服消费者采取某种行动（购买、注册或关注等）的传媒手段，它的历史可以追溯到三千多年以前。如今从街头巷尾、报刊杂志，再到电视、电影，广告无处不在。广告的宣传推广作用非常大，尤其对推动整个商品零售业的发展，直到了至关重要的作用。</p>
+<p> </p>
+<p><font style="FonT-siZe:20px" color="#00B7EF"><strong>互联网广告</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia">20
+世纪末，随着互联网的迅速发展和普及，广告也走到了线上。例如网站上以图片或动画形式出现的显示广告，搜索引擎查询页面上以文字和超级链接形式出现的搜索广告等。
+2012 年，中国在线广告的总营业额高达 750
+亿人民币成为绝大部分网站的主要经济来源。那么，是谁第一个吃了“互联网广告”这只螃蟹的呢？众多的广告主为何又会争相进入互联网广告市场的呢？</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia">1994 年 10 月，在 HotWired
+网站上出现了人类历史上第一条互联网广告。用户点击了该广告以后，就会被引导到 AT&amp;T 的网站上。约
+40%
+的用户点击了该广告，创造了传奇性的点击率，是如今绝大部分广告点击率的几十倍。为什么第一条互联网广告会产生如此卓越的效果呢？其实原因很简单：一是之前人们从来没想到互联网上会有广告；二是该广告从表面上看不像广告（如图
+1 所示），以今天的标准衡量，这条广告多少有些欺骗用户的嫌疑。</font></p>
+<p> </p>
+<p align="center"><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://s16.sinaimg.cn/orignal/4caedc7agde9fb06db25f"><img style="TexT-ALiGn:center;DispLAY:block" src="http://s16.sinaimg.cn/mw690/4caedc7agde9fb06db25f&amp;690" width="468" height="60"></a><font style="FonT-siZe:12px">图1
+第一条互联网广告</font></p>
+<p align="center"> </p>
+<p><font style="FonT-FAMiLY:Georgia">如今互联网广告已经蓬勃发展。其部分原因是：由于可以与用户进行交互（如点击、下载等），互联网广告比传统广告更易于衡量其有效性；由于网络用户会留下很多行为数据，因此互联网广告商可以实现更加精准、有针对性的广告投放；由于网站页面数量巨大，互联网广告与传统广告相比有着更大的展示空间，可以实现更加低廉的单次展示。2011
+年，全球的互联网广告已超越平面媒体广告，一跃成为世界第二广告传媒，而且逐步缩小了与位居第一的电视广告的差距。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia">在互联网广告的生态环境中，网页出版商、广告主、广告平台和互联网用户之间是既竞争又合作的关系（如图
+2
+所示）。网页出版商吸引互联网用户，并提供广告展示空间；广告主提供广告内容，并付费；广告平台依据某种规则把广告位分配给广告主，并收取费用，与网页出版商分成；互联网用户浏览并点击自己感兴趣的广告。这个四位一体的生态环境，每天都在为互联网公司创造巨大的价值，也因此使得大部分网站对用户免费开放。</font></p>
+<p> </p>
+<p align="center"><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://s6.sinaimg.cn/orignal/4caedc7agde9fb83a9755"><img style="TexT-ALiGn:center;DispLAY:block" src="http://s6.sinaimg.cn/mw690/4caedc7agde9fb83a9755&amp;690"></a><font style="FonT-siZe:12px">图2
+互联网广告的生态环境</font></p>
+<p align="center"><font style="FonT-siZe:12px"><br></font> </p>
+<p><font style="FonT-FAMiLY:Georgia">在上述的生态环境中，互联网广告扮演着重要角色。如何使互联网广告更加有效，宣传力度更大，已成为学术界研究的一大热点。近年来，有关互联网广告的研究工作蓬勃发展，催生出一个崭新的学科——计算广告学。计算广告学已经成为互联网领域和经济学领域众多学术会议（如
+WWW、ACM
+SIGKDD、EC（电子商务）等）的“常客”，同时学术界经常组织专题研讨会对计算广告学进行深入探讨。囿于篇幅，本文仅选取显示广告和搜索广告等进行讨论。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:20px;FonT-FAMiLY:Georgia" color="#4D6DF3"><strong>显示广告</strong></font></p>
+<p style="MArGin:0in 0in 12.95pt"><font style="FonT-FAMiLY:Georgia"><font size="3"><font style="FonT-siZe:14px"><span lang="ZH-CN" style="FonT-FAMiLY:simsun">
+显示广告是指用户在浏览网页时看到的以图片或视频形式出现的互联网广告。它的主要作用是品牌推广而不是直接促成交易。因为浏览网页的用户通常没有特别明确的购买意图，不太容易激发他们的即时购买行为；显示广告通常色彩亮丽、画面生动活泼，很容易吸引用户的注意力，并给人们留下一定的印象。按照现在主流的工业标准，只要广告平台对某个广告进行了一定次数的展示，就会向广告主收取相应的费用，此模型通常被称为展示收费模型</span>
+<span style="FonT-FAMiLY:&#39;Times new roman&#39;,&#39;serif&#39;">
+(cost per mille, CPM)</span><span lang="ZH-CN" style="FonT-FAMiLY:simsun">。为了使显示广告达到预期的效果，以下几个技术环节非常重要。</span></font></font></font></p>
+<p style="MArGin:0in 0in 12.95pt"><font style="FonT-FAMiLY:Georgia"><font size="3"><font style="FonT-siZe:14px"><span lang="ZH-CN" style="FonT-FAMiLY:simsun">
+<font color="#6F3198"><strong>1.
+用户行为为建模和针对用户行为的广告投放</strong></font></span></font></font></font></p>
+<p style="MArGin:0in 0in 12.95pt"><font style="FonT-FAMiLY:Georgia">虽然浏览网页的用户通常没有明确的购买意图，但也不是随便给他们看什么广告都会起到品牌推广的作用。例如，如果给一个未婚男青年展示母婴用品的广告，或者给一个刚走上工作岗位、薪资不高的人展示奢侈品牌的广告，就不会获得好的效果。只有针对特定的人群、特定的年龄层次和收入水平、特定的兴趣爱好，才能获得更好的广告效果因此，需要对用户进行分类和建模。有些网站要求用户注册，因此有比较详细的用户信息（如性别、年龄、行业和收入水平等）可以利用。然而，更多的网站并不要求用户注册，因为即便注册了，他们的信息也未必都是真实可信的。因此，需要通过技术手段从用户的行为数据中分析出他们的年龄、性别和喜好等信息，进而利用这些信息提高广告投放的精度。在此过程中，用户浏览过的网页、搜索过的关键词等都会成为依据，使用机器学习和数据挖掘技术，通过有监督和无监督相结合的方式来进行分析，为广告的精准投放提供数据支持。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia"><font style="FonT-siZe:14px"><font color="#6F3198"><strong>2.
+担保式广告投放</strong></font></font></font></p>
+<p><font style="FonT-FAMiLY:Georgia">很多公司的品牌推广是一个有计划的市场行为：有预算，需要达到既定的推广效果。对于显示广告而言，推广效果通常按照展示给用户的数量和用户的点击量等指标来衡量。因此很多广告主会和广告平台签署合同：如果在指定期限内达到了预期的广告投放效果，则付给广告平台合同款；如未达到预期效果，则进行一定程度的资费减免作为违约惩罚。这种模式对于广告平台来说是把双刃剑：一方面担保式广告投放是创收的有效保障；另一方面也是技术上的难题。如果不能准确地实现预期的广告投放就可能“丢了夫人又折兵”。为了解决此问题，广告平台通常会进行两个阶段的优化。首先是基于对用户未来访问量的预测，进行离线优化。离线优化的输出是在哪些网页上将哪个广告投放多少次。该问题是一个典型的整数规划问题，通常没有低于多项式复杂度的解法（很多研究人员对此问题进行连续化，做近似算法以期得到次优解）<sup>[2]</sup>。然而即使在离线阶段实现了完美的优化，对用户访问量的预测也可能和实际情况存在偏差。因此，需要对广告的投放进行实时的在线优化，对那些离预定目标还有很大差距、可能会带来重大收益损失的广告优先投放；对已经给予充分投放、或者对收益影响甚微的广告则降低投放优先级。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#6F3198"><strong>3. 广告交易</strong></font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia">当广告平台在其内部无法实现有效的广告分配时，需要跨平台进行广告需求和供给的交易。这种交易通常由广告交易所
+(ad exchange)
+来运营。例如，一个网页出版商可以出售广告位，而多个广告主或广告平台可以竞买此广告位。广告交易所通过一定的机制来实现有效的供需匹配。广告交易所与证券交易所非常类似，交易的复杂程度也在伯仲之间。这种交易通常需要在毫秒量级内完成，以确保能够实时显示广告。在交易过程中交易各方都有复杂的策略可以使用，因此系统的稳态和有效性分析也很复杂：网页出版商决定广告位的最低售价，广告主提交可承受的最高费用，广告平台则需要在几种</font><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia">决策之间做取舍——在本平台内实现供需匹配，到广告交易所购买广告位转卖给平台内部的广告主，或者把平台内部的广告位放到广告交易所上出售。如何在这种复杂的情况下设计有效的交易机制是十分重要的研究课题。</font></p>
+<p> </p>
+<p><font style="FonT-siZe:18px" color="#FF7E00"><strong>【广告主通常事先提交想要竞买的关键词，并愿意付出最高费用。当搜索广告展示给用户后，只有当用户点击了这个广告时，广告平台才会向广告主收取费用。】</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:20px;FonT-FAMiLY:Georgia" color="#00B7EF"><strong>搜索广告</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia">搜索广告是指用户在使用搜索引擎进行搜索时，在结果页面上看到的广告。搜索广告通常以和搜索结果类似的格式进行展示，包含抬头、描述和超级链接等部分。随着搜索结果的多媒体化，搜索广告的形式也逐渐丰富，有更多的图片和视频等。与显示广告的应用场景不同，用户在搜索时通常具有相当明确的意图，而这些意图通常是通过查询词的形式传达出来的。为了精准匹配用户的搜索意图，广告主通常事先提交想要竞买的关键词，以及愿意付出的最高费用。按照工业界的惯例，当搜索广告展示给用户后，只有当用户点击了某个广告时，广告平台才会向广告主收取一定的费用，这种收费模式称为点击收费模型
+(cost per click, CPC)。</font><font style="FonT-FAMiLY:Georgia">为了使搜索广告达到预期的效果，以下几个技术环节非常重要。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#6F3198"><strong>1. 广告筛选</strong></font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia">广告主竞买的是关键词，用户搜索的是查询词，二者之间其实有所区别。广告平台通常使用一幅静态或者动态的二部图来描述查询词和关键词之间的匹配规则。该匹配过程看似和网络搜索中的查询词推荐
+(query suggestion) 或查询词修改 (query alteration)
+很接近，其实却有差别。因为只有用户点击和竞价拍卖才会为广告平台带来利润，所以这种匹配也必定为点击和竞价拍卖服务。在选择关键词以匹配给定的查询词时需要考虑竞买这些关键词的广告本身是否有足够的吸引力引起用户的点击、广告的竞价情况以及如果将广告展示出来，按照系统内部的拍卖机制是否会为广告平台创造效益等。这个匹配过程可以描述成一个整数规划问题，目标是期望收益，而优化对象是表达查询词和关键词匹配关系的
+0-1 变量。通常这样的优化问题是非确定性多项式困难的问题
+(NPHard)，所以实际中通常会对目标函数和优化变量做连续化处理，从而得到可解算法。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#6F3198"><strong>2. 广告点击率预测</strong></font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia">搜索广告中主流的收费模型是点击收费模型，因此做精准的点击预测对提高广告平台的营业收入起着至关重要的作用。点击预测通常被建模成一个分类问题模型：给定用户查询词、广告、用户信息以及其它上下文信息，来预测是否会发生一次点击。这个问题看似简单，但实际上很复杂。用户的点击数据非常稀疏，即使是高质量的广告，其点击率也只有百分之几。对于这样的数据而言，如果训练集采样不合理，会丢失很多重要信息，从而使分类模型失效。目前公认点击预测的有效特征是其历史上的点击行为。然而，这虽然是个有效的特征，却给点击率预测带来了很多挑战。如果太依赖于历史上的点击行为，那些历史上没有展示过的广告（即使它们本身是高质量的广告，也可能由于太新或者由于先前使用的点击模型的失误而未被展示）就很少有机会在未来展示给用户，从而形成恶性循环，使得点击预测模型固步自封，逐渐把预测结果集中到一小撮“老面孔”上。为了解决这个问题，需要借助在线学习的思想，实现探索和利用的平衡
+<sup>[6]</sup>。这方面已经有很多有益的工作，但是还有很大的发展空间。例如，在做在线学习时，通常会把用户行为当作“随机环境”，通过探索方式了解用户点击的特征。但这种方法忽略了点击预测模型的变化也会导致广告排序的变化，从而影响到广告主的收益、促使广告主改变关键词及其竞价，甚至改变广告的写法。这些变化反过来也会影响到点击预测模型本身，从而影响到广告平台的收益。因此一种理想的在线学习方法应该同时对用户点击行为和广告主的行为进行探测。</font></p>
+<p><font style="FonT-siZe:14px" color="#6F3198"> </font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#6F3198"><strong>3. 广告拍卖</strong></font></p>
+<p><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia">搜索广告的核心技术是“拍卖机制”。当多个广告主对有限的广告位进行竞拍的时候，拍卖机制决定如何把这些广告位分配给广告主，并且在用户点击之后收取相应的费用。拍卖机制设计是算法博弈论领域较为成熟的研究课题。在该领域的研究中，假设广告位对每个广告主而言都有一个真实的价值，并且广告主会根据这个价值给出竞价。如果机制设计合理，会促使广告主的竞价反映广告位的真实价值，这种机制称为激励兼容机制。算法博弈论领域很多研究都是围绕着在激励兼容的约束条件下，设计出使社会财富（所有广告主所能实现的价值的总和）或者广告平台收益最大化的拍卖机制而展开的。然而有趣的是，在工业界中被广泛使用的广义二价拍卖机(generalized
+second price, GSP) 却不是一个激励兼容的机制。广义二价拍卖机制按照点击率和竞价的乘积来对广告进行排序，如果排在第 k
+个位置的广告被点击，它将向该广告商收取排在第 k+1 位广告的竞价（更准确地讲，还要乘以第 k+1 位广告的点击率，再除以第 k
+位广告的点击率）。广义二价拍卖机制被广泛采纳的原因是：广义二价拍卖机制非常直观易懂，容易被广告主接受。但此机制的发明人却犯了个技术错误，误以为它是激励兼容的。后来虽然真相逐渐明朗，但由于广义二价拍卖机制已经成为事实上的工业标准，也就只好将错就错了。近年来，有不少研究工作分析广义二价拍卖机制的纳什均衡
+<sup>2</sup> 及其对应的社会财富和利润，取得了很多研究成果。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-siZe:20px;FonT-FAMiLY:Georgia" color="#22B14C"><strong>未来的研究方向</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia">互联网广告发展到今天，已经取得了很大的成功，但前面的路还很长，仍然需要学术界和工业界的共同努力。</font></p>
+<p><font style="FonT-FAMiLY:Georgia">“拍卖机制”在显示广告和搜索广告中都是核心技术。拍卖机制的技术进步必将对计算广告学产生重大影响。算法博弈论在研究拍卖机制设计时通常会加入一些理想的假设，比如假设拍卖系统的信息是完全的、透明的，假设广告主是自私和高度理性的等。但这些假设仅对简单的博弈过程适用，而互联网广告则是一个节奏快、复杂和规模大的博弈过程，在此过程中广告系统的信息是不透明的。拍卖机制的细节、每个广告主的竞价和真实价值等都是其他广告主不知晓的。很多广告主没有意愿、能力或条件做出理性的决策。现实中存在大量
+“懒惰”的广告主，他们几乎不</font><font style="FonT-FAMiLY:Georgia">会根据自己广告的表现来调整竞价的策略。在这种情况下，很多关于拍卖机制理论上的结论是不成立的，需要重新考量。这种考量要结合数据驱动以及对广告主行为的合理建模来进行。</font></p>
+<p> </p>
+<p><font style="FonT-siZe:18px" color="#FF7E00"><strong>【广告主更乐于见到点击并真正转化成用户的实际购买行为以后才收取费用的模式，但并未取得积极的效果，原因是广告平台无法直接检测到转化的发生。】</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia">广告的“点击预测”是一个非常重要的技术模块。很多搜索引擎把搜索上的相关技术应用到点击预测中，利用相关性和历史点击信息来预测未来的点击行为。然而，他们忽略了一个重要的问题，就是网络搜索和广告存在本质差别。在网络搜索时，用户主动提交请求，以找到相关信息为目的。因此，只要搜索引擎提供的信息与请求相关，用户就有意愿查看和点击。然而，很少有用户在搜索引擎上主动“搜”广告，他们更多的是被动地接受推荐。在这种情况下，相关性不再是用户点击的主导因素，而广告能否吸引用户的眼球，并最终激发他们的购买欲望才是关键。这就涉及到广告心理学的范畴，只有了解并很好地满足了用户的心理需求，才能有效地激发他们的点击和购买意愿。例如，有的用户对卖家提供的各种优惠特别钟爱，有的希望商品有质量和退换货的保证，有的希望有好的售后服务，有的要求高质量、高品质。针对不同的用户，同一种广告策略（如广告词和呈现方式）显然不适用。更好的方式是针对每个用户做心理学建模，然后投其所好，投放最能满足用户心理需求的广告及其呈现方式。然而对用户的心理进行建模要比对用户的年龄、收入和兴趣爱好建模更具挑战性，需要深入的研究做支撑。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia">现在工业界主流的收费模型是展示收费和点击收费。其实从广告主的角度来讲，展示收费和点击收费并非最优选择。用户看到广告并不意味着想真正了解产品，点击广告也未必会发生实际的购买行为，因此广告主承担着很大风险。广告主更乐于见到的是只有在展示和点击真正转化成用户的实际购买行为以后才收取广告费用的模式，称为转化收费模型。工业界曾经对这种收费模型进行过尝试，但并未取得非常积极的效果
+<sup>[11]</sup>。其主要原因是广告平台无法直接检测到转化的发生，通常需要在广告主的网站上安装跟踪代码来实现对用户购买行为的追踪。这样做的代价是广告主的商业信息容易被广告平台获得，因此很多广告主心存疑虑，并不积极参与。设计一种具有隐私保护功能的转化收费模型，将会带来互联网广告界的变革。</font></p>
+<p><font style="FonT-FAMiLY:Georgia"> </font></p>
+<p><font style="FonT-FAMiLY:Georgia">在计算广告学中，无论是对用户行为建模还是对点击进行预测，都大量使用了机器学习技术。其实在计算广告学中使用机器学习技术需要非常谨慎。传统机器学习是建立在“静态”的数据假设下的：样本从未知的确定性分布中抽样得到（可做有限的放松），模型的学习过程不会影响样本的分布。然而，在互联网广告中，数据是由广告主和用户动态、策略性地生成的，当广告平台更新其算法和机制时，广告主的投标数据也会发生相应的变化。而当某些广告主改变了投标数据，其他广告主也会做出相应的调整，以获得更大的收益。广告主策略的变化会带来所谓的
+“二阶效应”，并对各种算法的最优性产生影响。这在大数据时代是个普遍存在的问题。在很多重要应用中（如社交网络），数据是由人的行为产生的。可以对这种数据进行建模和分析，但是把分析结果应用到系统中，又会影响人们的行为，从而影响数据的产生过程。这将导致“鸡生蛋还是蛋生鸡”的问题，降低了数据分析的可靠性和可用性。如何在这种特殊的情况下开展有效的机器学习和数据挖掘，将是一个巨大的挑战！</font></p>
+<p> </p>
+<p><span style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;Georgia&#39;,&#39;serif&#39;">
+<strong><font face="宋体"><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:宋体"><font style="FonT-FAMiLY:楷体_GB2312,楷体">申明：《方兴未艾的计算广告学》一文在微软研究院博客上转载经由《中国计算机学会通讯》同意，版权归《中国计算机学会通讯》所有。原文刊登于《中国计算机学会通讯》</font></span></font><font style="FonT-FAMiLY:Georgia"><span style="FonT-siZe:10.5pt;FonT-FAMiLY:宋体"><font style="FonT-FAMiLY:Georgia"><font style="FonT-FAMiLY:楷体_GB2312,楷体"><font style="FonT-FAMiLY:Georgia">2013</font><font style="FonT-FAMiLY:Georgia"><span lang="ZH-CN">年<font style="FonT-FAMiLY:Georgia">3</font></span><span lang="ZH-CN"><font style="FonT-FAMiLY:楷体_GB2312,楷体">月 第<font style="FonT-FAMiLY:Georgia">85</font>期</font></span></font></font></font></span></font></strong></span></p>
+<p> </p>
+<p> </p>
+<p><font style="FonT-siZe:20px" color="#4D6DF3" size="5"><strong>作者介绍</strong></font></p>
+<p><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://s6.sinaimg.cn/orignal/4caedc7agde9fdcd0faf5"><img align="left" src="http://s6.sinaimg.cn/small/4caedc7agde9fdcd0faf5&amp;690"></a></p>
+<p> </p>
+<p> </p>
+<p><font style="FonT-FAMiLY:Georgia">刘铁岩</font></p>
+<p><font style="FonT-FAMiLY:Georgia">微软亚洲研究院高级研究员/主任研究员。中国科学技术大学和南开大学兼职教授。主要研究方向为互联网经济学、计算广告学、算法博弈论、机器学习和信息检索。</font></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p><font style="FonT-siZe:20px;FonT-FAMiLY:Georgia" color="#4D6DF3"><strong>参考文献</strong></font></p>
+<p><font style="FonT-FAMiLY:Georgia">[1] Jun Yan, Ning Liu, Gang
+Wang, Wen Zhang, Yun Jiang, Zheng Chen. How much can Behavioral
+Targeting Help Online Advertising, WWW 2009</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[2] R. Preston McAfee,
+Kishore P a p i n e n i, a n d S e r g e i Vassilvitskii. Maximally
+representative allocations for guaranteed delivery advertising
+campaigns. Yahoo. Research Working Paper, 2010</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[3] Saeed Alaei, Esteban
+Arcaute, Samir Khuller, Wenjing Ma, Azarakhsh Malekian, and John
+Tomlin. Online allocation of display advertisements subject to
+advanced sales contracts. ADKDD 2009</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[4] S. Muthukrishnan. AdX: a
+model for ad exchanges. SIGecom Exch. 8, 2, Article 9, December
+2009</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[5] Yejin Choi, Marcus
+Fontoura, Evgeniy Gabrilovich, Vanja Josifovski, Mauricio Mediano,
+and Bo Pang. Using landing pages for sponsored search ad selection.
+WWW 2010</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[6] Sham M. Kakade, Shai
+Shalev- Shwartz, and Ambuj Tewari. Efficient bandit algorithms for
+online multiclass prediction. ICML 2008</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[7] Lahaie, S., Pennock, D.
+M., Saberi, A., &amp; Vohra, R. V. (2007). Sponsored
+search auctions. Algorithmic Game Theory, 699~716</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[8] Haifeng Xu, Diyi Yang,
+Bin Gao and Tie-Yan Liu, Predicting Advertiser Bidding Behaviors in
+Sponsored Search by Rationality Modeling, WWW 2013</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[9] Lei Yao, Wei Chen and
+Tie-Yan Liu, Convergence Analysis for Weighted Joint Strategy
+Fictitious Play in Generalized Second Price Auction, WINE
+2012</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[10] Sungchul Kim, Tao Qin,
+Hwanjo Yu and Tie-Yan Liu, An Advertiser-Centric Approach to
+Understand User Click Behavior in Sponsored Search, CIKM
+2011</font></p>
+<p><font style="FonT-FAMiLY:Georgia">[11] Hamid Nazerzadeh, Amin
+Saberi, and Rakesh Vohra. Dynamic cost-per-action mechanisms and
+applications to online advertising. WWW 2008</font></p>
+<p> </p>
+<p><span style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;Georgia&#39;,&#39;serif&#39;">
+<font face="宋体"><strong><span style="FonT-siZe:10.5pt;FonT-FAMiLY:宋体"><strong><span style="FonT-siZe:10.5pt;FonT-FAMiLY:宋体">____________________________________________________________________________________ </span></strong></span></strong></font></span></p>
+<p style="MArGin:0in 0in 3.75pt;Line-HeiGHT:15.75pt">
+<strong><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#2f3699"><font style="FonT-siZe:18px;FonT-FAMiLY:Georgia">相关阅读</font></span></strong></p>
+<p><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#2f3699"><font style="FonT-siZe:16px"><a href="http://blog.sina.com.cn/s/blog_4caedc7a0102eq8m.html"></a><a href="http://blog.sina.com.cn/s/blog_4caedc7a0102eq8m.html"><font style="FonT-siZe:14px" color="#2F3699"><font style="FonT-FAMiLY:Georgia"><font style="FonT-FAMiLY:Georgia">TextFlow</font>：把握信息脉博</font></font></a></font></span></p>
+<p><a href="http://blog.sina.com.cn/s/blog_4caedc7a0102epmu.html"><font color="#2F3699"><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#2F3699">MetrEyes：指尖上的数据</font></font></a></p>
+<p><a href="http://blog.sina.com.cn/s/blog_4caedc7a0102eot8.html"><font color="#2F3699"><font style="FonT-siZe:14px;FonT-FAMiLY:Georgia" color="#2F3699">洞察力的“黄金时代”：大数据的美好未来</font></font></a></p>
+<p style="MArGin:0in 0in 3.75pt;Line-HeiGHT:15.75pt">
+<font style="FonT-FAMiLY:Georgia"> </font></p>
+<p style="MArGin:0in 0in 3.75pt;Line-HeiGHT:15.75pt">
+<strong><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#2f3699"><font style="FonT-siZe:18px;FonT-FAMiLY:Georgia">欢迎关注</font></span></strong></p>
+<p style="MArGin:0in 0in 3.75pt;Line-HeiGHT:15.75pt"><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#2f3699"><strong><font style="FonT-siZe:16px;FonT-FAMiLY:Georgia">微软亚洲研究院人人网主页：</font></strong></span><a href="http://page.renren.com/600674137"><span style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#990030"><font style="FonT-FAMiLY:Georgia"><strong><font size="+0"><font style="FonT-siZe:16px"><font style="FonT-FAMiLY:Georgia">http<font style="FonT-FAMiLY:Georgia" color="#990030">://page.</font></font></font></font></strong></font></span></a><a href="http://page.renren.com/600674137"><font style="FonT-siZe:16px;FonT-FAMiLY:Georgia" color="#990030"><strong>renren.com/600674137</strong></font></a></p>
+<p style="MArGin:0in 0in 3.75pt;Line-HeiGHT:15.75pt">
+<strong><span lang="ZH-CN" style="FonT-siZe:10.5pt;FonT-FAMiLY:楷体;CoLor:#2f3699"><font style="FonT-siZe:16px;FonT-FAMiLY:Georgia"><font style="FonT-FAMiLY:宋体">微软亚洲研究院微博</font>：</font></span></strong><a href="http://t.sina.com.cn/msra"><strong><span style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;Georgia&#39;,&#39;serif&#39;;CoLor:#990030"><font style="FonT-siZe:16px;FonT-FAMiLY:Georgia">http://t.sina.com.cn/</font></span></strong></a><strong><span style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;Georgia&#39;,&#39;serif&#39;;CoLor:#990030"><a href="http://t.sina.com.cn/msra"><font style="FonT-FAMiLY:Georgia"><strong><span style="FonT-siZe:10.5pt;FonT-FAMiLY:&#39;Georgia&#39;,&#39;serif&#39;;CoLor:#990030"><font style="FonT-siZe:16px;FonT-FAMiLY:Georgia">msra</font></span></strong></font></a></span></strong></p>
+<p> </p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=2">

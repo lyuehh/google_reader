@@ -1,0 +1,109 @@
+---
+layout: post
+title:  "Blend操作入门: 别站在门外偷看，快进来吧！"
+date:   2010-10-21 13:29:00
+author: hievis
+categories: program
+---
+
+## Blend操作入门: 别站在门外偷看，快进来吧！
+### by hievis
+### at 2010-10-21 13:29:00
+### original <http://www.cnblogs.com/hielvis/archive/2010/10/21/1857415.html>
+
+<p><p>    有的人认为，Blend主要是用来修改一下颜色，调整一下布局之类的，大部分的SL开发还是用VS搞定；这样的结果我们可以预测，他的UI一定是很普通的，也许布局颜色搭配之类算不上难看，符合一般审美，但是绝不是高水平的UI，也不会是销售人员满意的设计；</p>
+<p>    有的人认为，Blend太难学了，总是搞不懂应该怎么去操作，感觉跟其他设计工具都有点不一样，所以，很多人对它很感兴趣，希望用它来实现自己心中如诗如画的构思；于是站在门口，不断的徘徊，却始终不得其门；</p>
+<p>    我其实不是UI设计人员，我连Photoshop都不会，也从没有设计过像样的东西；并且对于Silverlight，我也不是很有经验；我想告诉你的是，它没有那么复杂，因为像我这样的人都能捣弄一下，除非你在后面留言说：“楼主，我比你想象的要笨！ <img style="border-style:none" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/wlEmoticon-cryingface_2.png" alt="哭泣的脸">”    </p>
+<p><strong><span style="color:#00ff00;font-size:18pt">示例说明：</span></strong></p>
+<p>    作为Blend操作的入门篇，我对Blend操作几个阶段的的定义是：</p>
+<p>    1.  入门阶段-能得心应手的修改任何控件的样式；</p>
+<p>    2.  中级阶段-能得心应手的设计动画，设计自定义控件的模板，状态，状态过渡，各种Behavior的运用和开发</p>
+<p>    3.  高级阶段-只要你想得到的场景，你都知道怎么去设计</p>
+<p>    这篇是针对第一阶段的朋友写的，因为我也只是刚过了第一阶段，其实开始不知道要做什么样的示例比较合适。昨天群里有一MM问怎么做一个好看一点的Tabcontrol控件，于是就想以修改Tabcontrol模板为示例，顺便也可以给她的帮助。以下是示例截图，先看一下效果，我不是设计人员，不要对我要求太高，我就做这个简单的修改，你会比我设计的好看得多：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/tab1_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="tab1" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/tab1_thumb.jpg" border="0" alt="tab1" width="304" height="235"></a>     <a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/tab_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="tab" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/tab_thumb.jpg" border="0" alt="tab" width="495" height="320"></a></p>
+<p><strong><span style="color:#f79646;font-size:18pt">小话设计模式：</span></strong></p>
+<p>     有一个坏毛病，总是喜欢在文章中插一些不相关的东西，这里也来一个小话设计模式。</p>
+<p>     记得，以前写Behavior的时候也是提到了设计模式，那么这里又提到设计模式。有的人说，既然对设计模式这么感兴趣，这个人为什么没有写过一篇设计模式的文章呢，也来讲一下比如单例模式的UML图是什么样子，实现代码是什么样子。</p>
+<p>     等等，这时候你会说，那些设计模式书上不是已经这样写了么！</p>
+<p>     是的，个人觉得，对于那些经典设计模式的描述，已经有很多书了，而且我认为没有必要再出那些设计模式的书了，除非你自己总结出新的设计模式实践，或者真正实用的应用。大部分的关于设计模式的书，都是去构造一个不同的故事，不同的场景，最后写出相同的标准的类，接口的定义，一个简单的差不多都相同代码的示例。</p>
+<p>     我建议再也不要写这样的书了，很多人看了很多本这样的书，还是不会应用（我就是其中一个）。</p>
+<p>     我建议的下一本关于设计模式的书是，<span style="color:#0000ff">用真实的经典的开发者比较熟悉的<strong><span style="color:#ff0000">案例</span></strong>来分析设计模式</span>。那么我们来看一下模板方法。</p>
+<p>     不知道你现在对模板方法有一个什么样的概念，如果你现在还不是很清楚，那么我相信这一次你应该可以清楚了，不清楚的请在后面留言“我很笨！”</p>
+<p>     可能在你的开发中很少用到模板方法，但是我告诉你你天天在运用模板方法，你相不相信呢？</p>
+<p>     模板方法的概念是，定义一个框架，但是将具体的算法延迟到子类中，使得子类可以定义自己的算法实现。这样的定义像很多设计模式书描述的一样，你会很迷糊，下面举个例子：</p>
+<p>     ASP.NET的核心机制就是模板方法，每一个Page是一个实现IHttpHandler的实现类，Page定义了一些框架，比如page_Load这些方法，这样当ASP.NET在执行页面请求的时候，首先找到对应的Page（也就是子类），然后依次调用框架中定义的方法，比如Init，Pre_Render等等。ASP.NET框架本身来控制对子类方法的调用，通过这样的方式来处理不同的请求，你可以定义不同的Page做不同的事情，用不同的算法，后台逻辑。</p>
+<p>     所以，模板方法是非常重要的设计模式，它通常用于框架设计，你定义一个框架，不同的子类遵循这个框架实现规定的方法，然后框架主体来调用子类的方法，到达可扩展性，因为子类只要遵循这个框架定义，它可以有不同的实现。</p>
+<p>     所以，模板方法不仅仅只是一种设计模式，它基本上可以算作一个架构风格了，你可以站在架构师的层面，去运用模板方法。</p>
+<p>     那我们这里为什么讲模板方法呢？因为Silverlight实现控件模板自定义的样式的机制也是模板方法：控件定义一个ControlTemplate属性，这个对象你可以自己定义，如果你不定义，Silverlight去取默认的Xaml样式，实例化然后赋值给控件，如果你定义了自己的ControlTemplate对象，Silverlight就用你自定义的对象来初始化控件，这样控件就能使用你的样式。</p>
+<p>     Silverlight中的ControlTemplate就相当于Page，其本身相当于定义了一个框架，具体的样式定义在ControlTemplate中。控件本身不知道样式，就像ASP.NET不知道怎么去处理每个页面。</p>
+<p>     这，就是模板方法，有了这个提醒之后，相信你会发现更多模板方法的样子，相信现在你应该在对模板方法的概念感到模糊了。</p>
+<p>     我相信，用我们熟悉的东西来讲设计模式，这样效果好得多，这样的例子很多很多，因为经典设计模式其实也应用在很多经典的软件设计中，而不仅仅只是一个概念。</p>
+<p>     很希望，下一本设计模式的书是这样的。</p>
+<p><span style="color:#ffc000;font-size:18pt"><strong>Blend入门很简单：</strong></span></p>
+<p>     除了修改颜色等基本属性，下面列举几点必须掌握的东西：</p>
+<p><strong><span style="color:#ff0000;font-size:14pt">     1. 示例数据</span></strong></p>
+<p>         示例数据的管理位于Data面板，如下图：</p>
+<p>         <a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/data_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="data" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/data_thumb.jpg" border="0" alt="data" width="286" height="170"></a></p>
+<p>        为什么它是很重要的，设计Silverlight UI很痛苦的是，数据都是从Service上获取的，这样在设计的时候一般看不到控件的外观。那么这个时候我们就要采用本地示例数据，它能够帮助我们在设计时很完整的看到运行时的效果，这样才能更好的设计。它的原理是，Blend或者VS的设计器在呈现Xaml的时候，其实和真实的运行时差不多，在运行时，Silverlight插件初始化SL控件，获取每个元素的布局信息，然后将其绘制到屏幕上正确的位置。那设计器想要呈现设计时的外观，也是要家里这样的过程，想要初始化控件树，绘制到屏幕，不同的是设计时只会初始化Xaml中定义的元素。如果这个时候示例数据是本地资源，并且示例数据的集合对象是放在Xaml中初始化的，那么设计器就能找到对应数据，将它作为控件的Context，而到该控件实例化的时候，它发现已经有了数据，自然不会放过，会将其绘制出来，所以我们在设计时能看到效果。尤其是某些复杂的集合控件，这非常重要。Blend中示例数据实际上是一个Xml文件，可以定义不同类型的数据，比如Image,String，你告诉它想要多少条数据，它就会生成随机的示例数据，达到以假乱真：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/111_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="111" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/111_thumb.jpg" border="0" alt="111" width="688" height="468"></a></p>
+<p>     示例数据的使用非常简单，拖动collection那一行，至一个控件比如ListBox即可：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/112_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="112" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/112_thumb.jpg" border="0" alt="112" width="373" height="275"></a></p>
+<p>     然后就会生成预览图：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/113_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="113" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/113_thumb.jpg" border="0" alt="113" width="369" height="475"></a></p>
+<p>     这个时候再来修改模板是不是方便多了，一般建议是建立和真实的数据结构一样的属性，在真实运行的时候，将数据源改为真实的数据源，这样绑定属性不用改。这是Blend入门最基本的东西。</p>
+<p> </p>
+<p>    <strong><span style="color:#ff0000;font-size:14pt">2. 怎样调出控件模板ControlTemplate</span></strong></p>
+<p>         在Silverlight中修改模板得首先把原来的模板样式取出来，然后在其基础之上去修改，Blend为我们提供了一种很方便的方式把这段模板取出来，如我们想调出ListBox的ControlTemplate，如下：</p>
+<p>     <a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp1_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="temp1" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp1_thumb.jpg" border="0" alt="temp1" width="513" height="452"></a></p>
+<p>     右键选择Edit Template-&gt;Edit a Copy，Blend就会把控件的默认模板xaml定义片段复制到Xaml中，你可以在此基础之上修改，你也可以选中ListBox，在视图面板中进行该操作，效果是一样的，建议采用后一种方式，后面会看到为什么：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp2_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="temp2" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp2_thumb.jpg" border="0" alt="temp2" width="499" height="158"></a></p>
+<p>     这个时候你就可以看到该模板的定义，状态，可以进行修改。这里有一个细节就是，怎样退出控件模板，即怎样在页面也控件模板之间切换，如下我们看到的是ListBox的ControlTemplate视图，我们可以点击视图面板上端的控件名称切换为页面视图。Blend所有的模板之间的切换都是在这里，如果想进入模板视图，可以再选择:ListBox-&gt;Edit Template-&gt;Edit Current进入：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp3_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="temp3" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp3_thumb.jpg" border="0" alt="temp3" width="495" height="411"></a></p>
+<p> </p>
+<p>     <span style="color:#ff0000;font-size:14pt"><strong>3. 怎样调出集合控件中子元素的ControlTemplate，即集合控件的ItemTemplate</strong></span></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp4_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="temp4" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/temp4_thumb.jpg" border="0" alt="temp4" width="685" height="206"></a></p>
+<p>     按如上的操作就可以进入ItemTemplate视图，这个时候就可以编辑每个子项的模板。不过这里我们将看到，这里的只包含每个子项的组成元素，每个子项包含哪些元素。但是不能编辑不同的状态，比如ListBox在MouseOver的时候是什么样式，在Selected的时候是另外一种样式，这个时候需要选择下面的Edit Generated Item Container(ItemContainerStyle)，就可以编辑控件的状态。</p>
+<p> </p>
+<p>     <span style="color:#ff0000;font-size:14pt"><strong>4. 怎样编辑控件的不同状态下的外观</strong></span></p>
+<p>         我们看到，经典的Button控件，它不是只有一个样子的。它有很多状态，比如鼠标经过是一种样子，鼠标离开，点击都会呈现不同的样子，这都是通过定义不同的状态来实现的。</p>
+<p>         一个控件可以定义多个状态，在每个状态下可以设定不同的外观，比如ComboBox控件，在点击下拉框的时候就显示下面的选项，鼠标离开就隐藏选项。当进入不同的状态，状态管理器就将改变控件外观至该状态定义的样子。关于状态可以参考我之前的文章。我们看下ListBoxItem的状态：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/state_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="state" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/state_thumb.jpg" border="0" alt="state" width="859" height="691"></a></p>
+<p>     状态位于States面板，我们看到ListBoxItem模板定义了很多状态，状态可以分成不同的状态组，每个状态组之间的状态是互斥的，选择其中一个状态，就可以设置该状态下控件的外观，比如如图我点击最后一个Selected状态，这个时候视图面板就会多出一个红色的框，表示开始录制动画，在运行时的如果切换至该状态，状态管理器就会触发动画使外观呈现定义的样子。比如我们将每个项的宽度拉长，这样在运行时选择的时候，被选中的项就会拉长。</p>
+<p> </p>
+<p><strong><span style="color:#00ff00;font-size:18pt">示例操作：</span></strong></p>
+<p>     上面介绍的几点是我觉得Blend入门应该知道的最基本的东西，当然不能写的太详细，需要你去操作体会实践，我也不可能写出所有细节，每一个操作都还有一些更细的东西和功能，可以自己去摸索，我们下面就来从头实现本文提到的示例：</p>
+<p>     1. 打开Blend 4，新建MyTabcontrol项目，项目类型Silverlight Application + WebSite</p>
+<p>     2. 添加一个TabControl到MainPage控件中，并设置MainPage背景为黑色</p>
+<p>     3. 选中TabControl控件，在Properties面板设置如下，并这个时候TabControl呈现如图所示外观：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/a100_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="a100" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/a100_thumb.jpg" border="0" alt="a100" width="930" height="480"></a></p>
+<p>     4. 右键选择TabControl—》Edit Template—》Edit a Copy，这个时候会看到如下图，删掉其中的后面三项，只留下TemplateTop（后面三项是说Tab分别在下面，左边和右边的情形，我们这里Tabs在上边，其他三个用不着，你也可以选择其他的布局）：</p>
+<p>     <a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/007_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="007" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/007_thumb.jpg" border="0" alt="007" width="290" height="226"></a></p>
+<p>     5. 选择TemplateTop，可以看到其是一个Grid控件，共有2行，第一行是Tabs，第二行就是下面的现实面板。修改Properties面板中RowDefinitions ，将Grid的第一行高度为50px；</p>
+<p>     6.  展开TemplateTop，选中TabPanelTop，这就是定义TabControl控件上面Tabs部分的背景的。在Properties面板中设置Background为：#FFBBD7FA <br>     7. 选中下面的Border，将Background Reset: #FFB1CBEB；BorderBrush：#FFE4E4E4；BorderThickness：0,0,1,0；并加上圆角CornerRadius：0,0,10,10；</p>
+<p>     8,. 选中ContentTop，加上Margin：10。这个时候看起来是这个样子：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/1qa_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="1qa" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/1qa_thumb.jpg" border="0" alt="1qa" width="651" height="477"></a></p>
+<p>     9. 下面我们来编辑TabItem的模板。</p>
+<p>          回到MainPage的视图，展开TabControl，选择第一个TabItem，调出其面板（右键选择TabItem—&gt;Edit Template—&gt;Edit a Copy）。进入TabItem面板之后看到有许多部件，删掉其他的只留下三个：TemplateTopSelected，TemplTopUnSelected，FocusVisualElement，原因和前面的一样，我们的Tab只会在顶端，你可以自己去修改其他样式。</p>
+<p>           接下来的，TemplateTopSelected就是定义选择状态的外观，TemplateTopUnSelected就是定义没有选择的外观。</p>
+<p>     10. 在States面板，选中base，在Objects and TimeLine面板选中Root元素，在属性面板修改高度为50px；</p>
+<p>     11. 选中Selected状态，开始录制</p>
+<p>     12. 展开TemplateTopSelected，将b元素order的Margin，BorderThickness，CornerRadius都设置为0，Background设置为：#FFBBD7FA</p>
+<p>     13. 选择border1元素，设置参数，BorderThickness：1,1,1,0；CornerRadius：10,10,10,0；Margin：2,2,5,0；Background和BorderBrush都设置为纯白色。</p>
+<p>     14. 选择HeaderTopSelected元素：修改字体大小样式至以下的样子：这个时候看起来是这样：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/900_4.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="900" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/900_thumb_1.jpg" border="0" alt="900" width="752" height="459"></a></p>
+<p>     15. 接下来我们修改TemplateTopUnSelected的样子，它是处于UnSelected的状态，所以我们在States面板选中UnSelected状态，开始录制。注意这个时候找到TabControl控件中的两个TabItem控件，将第一个TabItem的Style=&quot;{StaticResource TabItemStyle1}&quot;样式复制给第二个。</p>
+<p>     16. 对着前面的步骤，修改TemplateTopUnSelected下面的各个元素，使之呈现如下样式：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/200_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="200" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/200_thumb.jpg" border="0" alt="200" width="394" height="300"></a></p>
+<p>    17. 大功告成，就是还有一点小小的瑕疵，就是在选中的时候有个讨厌的边框，这个时候将FocusVisualTop的BorderBrush设置为无色就可以了，看一下我们的成果：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/300_2.jpg"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="300" src="http://images.cnblogs.com/cnblogs_com/hielvis/Windows-Live-Writer/Blend-_C4F/300_thumb.jpg" border="0" alt="300" width="602" height="533"></a></p>
+<p> </p>
+<p><strong><span style="color:#0000ff;font-size:14pt">总结：</span></strong></p>
+<p>     本篇先总结了一点Blend入门的注意事项和要领，接着展示了一个示例。</p>
+<p>     开始使用Blend，绝大部分是修改控件模板，本文抛砖引玉，演示了一般的修改控件模板的方法，包括ControlTemplate以及集合控件的ItemTemplate。掌握了这些方法，修改Silverlight控件外观就不难了，相信，杀掉Silverlight默认的丑陋的外观，你自己设计的外观一定如诗如画。你们公司的销售也该请你吃饭了，哈哈。</p>
+<p>     当然，Blend还有很多东西，本文讲得很简单，还希望大家多多实践，多看看老外的文章，示例。</p>
+<p>     后期有时间在写一篇高级一点的，包括动画和自定义状态，以及状态之间的转换动画等等。</p>
+<p>     总之，Blend还是比较有趣的，只要你想得出来的，它基本上都可以做出来，希望大家多多实践。</p>
+<p>     如有兴趣，可以加入QQ群讨论，本群热烈欢迎有志于高水平UI设计的朋友，当然我们也讨论Silverlight，Windows Azure，Ajax，WCF等等微软技术，欢迎你。</p>
+<p>     QQ群：6183299</p>
+<p> </p>
+<p><span style="color:#ff0000;font-size:14pt"><strong>源代码下载</strong></span>：<a href="http://files.cnblogs.com/hielvis/MyTabControl.rar">http://files.cnblogs.com/hielvis/MyTabControl.rar</a></p><img src="http://www.cnblogs.com/hielvis/aggbug/1857415.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/hielvis/">hievis</a> 发表于 2010-10-21 13:29 <a href="http://www.cnblogs.com/hielvis/archive/2010/10/21/1857415.html">原文链接</a></p><p>评论: 19　<a href="http://www.cnblogs.com/hielvis/archive/2010/10/21/1857415.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/hielvis/archive/2010/10/21/1857415.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/78233/">2010年中国国际网络文化博览会（网博会）开幕</a><span style="color:gray">(2010-10-22 11:54)</span><br>· <a href="http://news.cnblogs.com/n/78232/">移动互联网新军的平台梦</a><span style="color:gray">(2010-10-22 11:54)</span><br>· <a href="http://news.cnblogs.com/n/78231/">火狐称苹果应用商店令人担忧 企图绕开互联网</a><span style="color:gray">(2010-10-22 11:45)</span><br>· <a href="http://news.cnblogs.com/n/78230/">WP7为何杀不死Zune HD</a><span style="color:gray">(2010-10-22 11:43)</span><br>· <a href="http://news.cnblogs.com/n/78228/">联通uPhone开发社区及下载平台将于下月底发布</a><span style="color:gray">(2010-10-22 11:40)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/78217/">两个日本的角力</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

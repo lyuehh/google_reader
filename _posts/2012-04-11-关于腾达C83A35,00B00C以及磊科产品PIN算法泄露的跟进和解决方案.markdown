@@ -1,0 +1,31 @@
+---
+layout: post
+title:  "关于腾达C83A35,00B00C以及磊科产品PIN算法泄露的跟进和解决方案"
+date:   2012-04-11 12:40:01
+author: 
+categories: program
+---
+
+## 关于腾达C83A35,00B00C以及磊科产品PIN算法泄露的跟进和解决方案
+### by 
+### at 2012-04-11 12:40:01
+### original <http://www.cnbeta.com/articles/181936.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/92.htm"><img src="http://img.cnbeta.com/topics/wifi.gif" alt="WiFi" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://wifibeta.com/2012-04/thread-712-1-1.html">匿名人士</a>的投递</b><br>
+近日，腾达部分以MAC为“C83A35”，“00B00C”打头的，包含腾达W150M在内的，产品以及磊科NW705P，磊科NW705S，磊科NW705+，磊科NW714，磊科NW702，磊科NW712，磊科NW709等产品相继泄露出PIN算法。</p>
+		<p><p>其PIN算法十分简陋，只需要将相应前6位MAC开头的产品的后6位16进制MAC转化成10进制数，即可得到一个7位数字。众所周知的是，PIN
+由8位构成，其前7位为随机，而第八位为校验位，可通过前七位计算得来。从而直接由MAC获取出PIN，由PIN可直接获得WPA密钥（PSK），从而快
+速破解路由。</p>
+<p>WiFiBETA预测，磊科官方全线产品均采用这种简单的，不安全的，非随机的PIN生成方案。其官方网站<a rel="nofollow" href="http://www.netcoretec.com/news_detail/newsId=cf5fe058-f7c0-496c-9f4c-2e50f97d076d&amp;comp_stats=comp-FrontNews_list01-1313730896958.html">声明</a>提到，受影响的产品为本文文初所罗列，其相关升级软件（初步估计为固件或PIN重烧录工具）正在开发中。而腾达中有部分产品，其OUI为C83A35,00B00C,081075等的路由均亦采用此类算法。值得一提的是，腾达官方并未做出任何证明回应。</p>
+<p><a rel="nofollow" href="http://wifibeta.com/wp-content/uploads/2012/04/image2.png"><img style="background-image:none;border-right-width:0px;padding-left:0px;padding-right:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="image" alt="image" src="http://img.cnbeta.com/newsimg/120411/0627040846503067.png" border="0" height="603" width="473"></a></p>
+<br>
+<span style="font-weight:bold">关于解决方案</span> <p>本次算法的暴露，虽然影响范围极广，但是仍然限制于WPS功能之中。也就是说，只要把WPS/QSS功能关闭，相关路由器采用WPA/WPA2加密方式并使用强密码，还是可以保持相当高的安全性的。</p>
+<p>思科路由解决方案：</p>
+<p><a rel="nofollow" href="http://wifibeta.com/wp-content/uploads/2012/04/6d11b2a1gw1drueh86bqfj.jpg"><img style="background-image:none;border-right-width:0px;padding-left:0px;padding-right:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="6d11b2a1gw1drueh86bqfj" alt="6d11b2a1gw1drueh86bqfj" src="http://img.cnbeta.com/newsimg/120411/06270611093795186.jpg" border="0" height="474" width="426"></a></p>
+<p>Dlink路由解决方案：</p>
+<p>反选Enable项。</p>
+<p><a rel="nofollow" href="http://wifibeta.com/wp-content/uploads/2012/04/8610a412jw1drue49a2ouj.jpg"><img style="background-image:none;border-right-width:0px;padding-left:0px;padding-right:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="8610a412jw1drue49a2ouj" alt="8610a412jw1drue49a2ouj" src="http://img.cnbeta.com/newsimg/120411/06270721501437852.jpg" border="0" height="346" width="567"></a></p>
+<p>腾达路由解决方案：</p>
+<p><a rel="nofollow" href="http://wifibeta.com/wp-content/uploads/2012/04/8610a412jw1drue0ibl7cj.jpg"><img style="background-image:none;border-right-width:0px;padding-left:0px;padding-right:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="8610a412jw1drue0ibl7cj" alt="8610a412jw1drue0ibl7cj" src="http://img.cnbeta.com/newsimg/120411/0627083970737956.jpg" border="0" height="231" width="583"></a></p>
+<p><span style="background-color:#ffff00">WiFiBETA建议相关无线路由用户尽快关闭该功能，以保证最大的无线安全性。</span></p></p></div>

@@ -1,0 +1,17 @@
+---
+layout: post
+title:  "Ruby框架 Runo"
+date:   2010-07-21 00:24:31
+author: 
+categories: program
+---
+
+## Ruby框架 Runo
+### by 
+### at 2010-07-21 00:24:31
+### original <http://www.oschina.net/p/runo>
+
+<table width="100%"><tr></tr>
+				<td valign="top">Runo 是一个 Ruby 的 Web 框架，默认无需数据库配置，只需要编写html文件即可，Runo 使用 Rack 框架做为前端，使用 Sequel 做为后端。
+在线演示：http://runo.heroku.com/</td>
+		</table>

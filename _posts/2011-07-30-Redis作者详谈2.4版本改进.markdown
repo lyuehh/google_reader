@@ -1,0 +1,110 @@
+---
+layout: post
+title:  "Redis作者详谈2.4版本改进"
+date:   2011-07-30 23:33:54
+author: nosqlfan
+categories: program
+---
+
+## Redis作者详谈2.4版本改进
+### by nosqlfan
+### at 2011-07-30 23:33:54
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/543387934/6253001/1/item.html>
+
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/07/redis1.png"><img title="redis" src="http://blog.nosqlfan.com/wp-content/uploads/2011/07/redis1.png" alt="" width="300" height="225"></a>本文内容来源于<span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>作者@<a href="http://twitter.com/antirez">antirez</a> 的博文，由NoSQLFan进行翻译。在文中他首先解释了由于Redis集群可能在较长一段时间内还处理开发阶段，为了避免稳定版本由于这一原因被无限延后，于是从2.2版本fork出了一个2.4分支，这一分支目前进行了一些新的优化改进及bug修复，如果没有严重bug将会在近几个星期内发布稳定版本。</p>
+<p>随后作者列出了2.4版本中的一大堆<span><a href="http://blog.nosqlfan.com/tags/%e4%bc%98%e5%8c%96" title="查看 优化 的全部文章">优化</a></span>改进及Bug修复，主要有下面一些：</p>
+<ul>
+<li>对小数据量的<span><a href="http://blog.nosqlfan.com/tags/sorted-sets" title="查看 sorted sets 的全部文章">sorted sets</a></span>结构的内存使用做很大的优化</li>
+<li>RDB文件的持久化速度也将会大大提高</li>
+<li>对目前的一些写操作命令进行了改进，支持批量写入功能</li>
+<li>启用新的内存分配模式 <em><span><a href="http://blog.nosqlfan.com/tags/jemalloc" title="查看 jemalloc 的全部文章">jemalloc</a></span></em>.</li>
+<li>通过对copy on write机制使用的优化，数据持久化保存的子进程的内存占用将大大减少</li>
+<li><span><a href="http://blog.nosqlfan.com/tags/info" title="查看 INFO 的全部文章">INFO</a></span>内容更加丰富</li>
+<li>新的<span><a href="http://blog.nosqlfan.com/tags/object" title="查看 OBJECT 的全部文章">OBJECT</a></span>命令，提供对Redis存储value结构描述</li>
+<li>新的<span><a href="http://blog.nosqlfan.com/tags/client" title="查看 CLIENT 的全部文章">CLIENT</a></span>命令，提供对Redis客户端连接的信息描述</li>
+<li>彻底将Slave对Master的连接改成非阻塞，之前connect(2)系统调用是会阻塞的</li>
+<li>Redis-benchmark、Redis-cli 都进行了几个方面的改进</li>
+<li>Make 改为彩色输出，更易读</li>
+<li>VM机制彻底废弃</li>
+<li>总的来说2.4版本会在各方面有性能上的提升</li>
+<li>Redis测试框架也有非常大的提升</li>
+</ul>
+<p>后面又详细对其中的一些方面做了深入讲解</p>
+<h3>1.对Sorted Sets的内存优化</h3>
+<p>实际上在2.2版本中，Redis就对小数据量Value的情况做了性能优化，主要优化方式是将小数据量的Value值不再按具体的数据结构存储，而是存在一块二进制的整块数据。而这一改进一直没能应用于Sorted Sets数据结构上来，而在2.4版本中，作者终于想到合适的办法把Sorted Sets在小数据量下也进行了此种优化。</p>
+<h3>2.RDB文件持久化提速</h3>
+<p>这块很大程度上依赖于上面第1点，由于小量数据被存为一个大的二进制数据块，所以在持久化的时候，就不需要再遍历数据了，只需要一个key进行一次持久化写入。</p>
+<h3>3.提供批量写入功能</h3>
+<p>下面是所有提供批量写入功能的命令</p>
+<ul>
+<li><strong>SADD set val1 val2 val3 …</strong> — 返回添加的元素个数</li>
+<li><strong>HDEL hash field2 field3 field3 …</strong> — 返回删除的元素个数</li>
+<li><strong>SREM set val1 val2 val3 … </strong>– 返回删除的元素个数</li>
+<li><strong>ZREM zset val1 val2 val3 … </strong>– 返回删除的元素个数</li>
+<li><strong>ZADD zset score1 val1 score2 val2 … </strong>– 返回添加的元素个数</li>
+<li><strong>LPUSH/RLPUSH list val1 val2 val3 … </strong>– 返回操作后的LIST的长度</li>
+</ul>
+<p>提供批量命令的效果是显而易见的，网络往返的时间被大大节约了，在最理想的网络情况下，作者的测试结果是<strong><span style="color:#ff0000">一次性写入200w个元素，仅仅花费了1.28秒</span></strong>，每秒超过100w元素的写入！</p>
+<p>为何不为所有写入命令都加上批量功能呢？作者解释说，由于很多命令在返回值上需要携带信息，如果改成批量的，无法批量返回信息内容。不过相信上面的改进已经可以让很多应用场景得到大大改进了。</p>
+<h3>4.改用jemalloc的内存分配模式</h3>
+<p>Redis长期以来的思想就是尽量不产生外部依赖，比如网络事件库没有用传统的libevent库，而是自己单独抽离出几个文件组成的更简单且性能更高的网络事件启动库，这一库目前在很多开源项目中也被采用。而此次引入jemalloc实在是由于作者认为Linux下的glibc的内存分配器实在是太烂了，无法有效地防止碎片的产生。</p>
+<p>虽然jemalloc是外部引入，你也不需要在安装Redis时先安装一堆东西，因为它已经包含在Redis源码里了，你还是像往常一样直接Make编译即可，还是那么方便贴心。</p>
+<h3>5.减少 copy-on-write 使用</h3>
+<p>Redis的RDB文件持久化和<span><a href="http://blog.nosqlfan.com/tags/aof" title="查看 AOF 的全部文章">AOF</a></span>日志写入，都是通过调用fork()方法产生子进程来做的。由于主进程还是继续处理请求，当有数据写操作导致数据内容发生变化时，原来的内存段会被复制一份，这就是我们熟知的copy-on-write机制。而采用这一机制的问题就是，在最坏的情况下，进行一次RDB文件写入，可能导致使用内存加倍。所以在2.4版本中，作者对这一机制的使用进行了优化，大大减少了对copy-on-write的使用。</p>
+<p>作者还坦言，自己在2.2版本中在这方面的一些修改是有问题的，这导致了2.2版本中的许多Bug。</p>
+<h3>6.INFO输出内容增强</h3>
+<p>2.4版本的INFO内容会有较大改变，其中比较重要的有下面两个</p>
+<pre>used_memory_peak:185680824
+used_memory_peak_human:177.08M</pre>
+<p>你的实际物理内存使用（RSS）和内存碎片情况通常都与最高峰内存使用相关，而这参数就是用来描述这些情况。一个是以byte为单位（185680824），一个是自动智能单位（177.08M）。</p>
+<h3>7.测试框架的优化和提速</h3>
+<p>这一点在NoSQLFan之前的文章《<a href="http://blog.nosqlfan.com/html/2383.html">Redis 测试引擎将升级提速</a>》中有比较详细的描述。有兴趣的朋友可以查看之前的文章。</p>
+<p>来源：<a href="http://antirez.com/post/everything-about-redis-24.html">antirez.com</a>
+<p style="font-weight:bold"><span style="padding-top:5px;float:left">技术传播，需要你我共同努力！</span><a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html&amp;text=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVKEJk/custom.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html" title="新浪微博" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVKrzm/custom.png"></a><a href="http://v.t.qq.com/share/share.php?title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html" title="腾讯微博" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJX6o/custom.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html" title="QQ空间" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJSKI/custom.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html&amp;title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJrri/custom.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html&amp;title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJ4v4/custom.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html" title="人人网" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVI86k/custom.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html&amp;title=Redis%E4%BD%9C%E8%80%85%E8%AF%A6%E8%B0%882.4%E7%89%88%E6%9C%AC%E6%94%B9%E8%BF%9B%20@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVHr67/custom.png"></a>    </p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Redis运维之道" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2692.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/08/03/20737794.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis运维之道</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Reds：一个Redis加Node.js的全文搜索引擎" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2676.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/08/02/20527286.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Reds：一个Redis加Node.js的全文搜索引擎</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="非同一般的Redis介绍" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2364.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/square.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">非同一般的Redis介绍</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="phpRedisAdmin:Redis的WEB界面管理工具" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2584.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/square.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">phpRedisAdmin:Redis的WEB界面管理工具</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Bump的Redis应用经验" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2460.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2620.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/07/17/17864990.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Bump的Redis应用经验</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/543387934/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/543387934/6253001/1/item.html" border="0" height="0" width="0"></p>

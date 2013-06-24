@@ -1,0 +1,96 @@
+---
+layout: post
+title:  "读书笔记：整数位表示"
+date:   2011-03-06 22:55:47
+author: 
+categories: program
+---
+
+## 读书笔记：整数位表示
+### by 
+### at 2011-03-06 22:55:47
+### original <http://yiminghe.javaeye.com/blog/943550>
+
+<p>From : Computer System ( A Programmer's Perspective)</p>
+<p> </p>
+<p>整数分为正整数，0，负整数, 当今负整数使用补码表示，方便机器运算。</p>
+<p> </p>
+<h1>正整数</h1>
+<p> </p>
+<p>二进制表示为 </p>
+<p> </p>
+<p>0Xw-1Xw-2..X0  =Xw-1* 2^(w-1) + Xw-2 * 2^(w-2)....+X0*1</p>
+<p> </p>
+<p>正整数进行扩展时，增加的位用0填充</p>
+<p> </p>
+<h1>负整数</h1>
+<p> </p>
+<p>二进制表示为</p>
+<p> </p>
+<p>1Xw-1Xw-2..X0  =-1*2^(w) + Xw-1* 2^(w-1) + Xw-2 * 2^(w-2)....+X0*1</p>
+<p> </p>
+<p>假设负整数为 F，相同的二进制表示的正数为 P，则 P-F = 2^(w+1)</p>
+<p> </p>
+<h2>扩展</h2>
+<p> </p>
+<p>负整数进行扩展时,增加的位用1填充</p>
+<p> </p>
+<p>11Xw-1Xw-2..X0  =-1*2^(w+1) +  2^(w) + Xw-1 * 2^(w-1)....+X0*1</p>
+<p>                          =-1*2^(w) + Xw-1* 2^(w-1) + Xw-2 * 2^(w-2)....+X0*1</p>
+<p>                          = 1Xw-1Xw-2..X0</p>
+<p> </p>
+<h2>从正整数得到负整数</h2>
+<p> </p>
+<p>从一个正整数快速得到其负整数的二进制表示的快捷方法有：</p>
+<p> </p>
+<p> </p>
+<p>1.正整数二进制去反加一</p>
+<p> </p>
+<p>2.假设正整数二进制为 Xw...Xw-x1000..0 ,则Xw 到 Xw-x 所在位取反，其它位保持不变即可。</p>
+<p> </p>
+<h2>负整数除法问题</h2>
+<p> </p>
+<p>-7/2 = -4 而不是常见舍入零的表示 -3 ，扩展到任意 -y/x (x,y&gt;0)，要想得到舍入零的表示需要预先进行偏置</p>
+<p> </p>
+<p>(-y+x-1) / x</p>
+<p> </p>
+<p> </p>
+<h1>0 </h1>
+<p> </p>
+<p>永远用 00000..0 表示</p>
+<p> </p>
+<h1>乘法操作</h1>
+<p> </p>
+<p>可转为更加快速的移位操作</p>
+<p> </p>
+<p>n*K</p>
+<p> </p>
+<p>K=00000Xw....Xz000</p>
+<p> </p>
+<p>其中  Xw 到 Xz 为 1</p>
+<p> </p>
+<p>则 n*K = n&lt;&lt;w + n&lt;&lt;(w-1)+...+n&lt;&lt;z = n&lt;&lt;(w+1)-n&lt;&lt;z</p>
+<p> </p>
+<p> </p>
+<h1>溢出问题</h1>
+<p> </p>
+<p>补码运算注意溢出问题，包括负溢出（两个负整数相加得到一个正数），正溢出（两个正整数相加得到负数)</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+              
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://yiminghe.javaeye.com/blog/943550#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

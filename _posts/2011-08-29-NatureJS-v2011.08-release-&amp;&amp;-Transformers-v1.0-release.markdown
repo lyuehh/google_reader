@@ -1,0 +1,87 @@
+---
+layout: post
+title:  "NatureJS v2011.08 release &amp;&amp; Transformers v1.0 release"
+date:   2011-08-29 08:11:23
+author: 南芝
+categories: program
+---
+
+## NatureJS v2011.08 release &amp;&amp; Transformers v1.0 release
+### by 南芝
+### at 2011-08-29 08:11:23
+### original <http://www.12sui.cn/develop/naturejs-v2011-08-release-transformers-v1-0-release/>
+
+<p>我有必要先讲一下 NatureJS 的诞生历程.</p>
+
+<p>2009 年, 我第一次接触到 JavaScript 框架, 它就是 <a href="http://developer.yahoo.com/yui/">YUI</a>, <a href="http://developer.yahoo.com/yui/">YUI</a> 给了我很大的震撼, 我也第一次知道了原来代码可以那么来写. 由于 JavaScript 的薄弱, 入门还是比较的困难, 幸亏有一大批高手在身边, 可以不断的问不断的学习, 感谢当初小马, 玉伯, 圆心, 明城, 沉鱼…等人的指导帮助. 每次阅读 <a href="http://developer.yahoo.com/yui/">YUI</a> 的源码都感觉是一种享受, 一个团队可以将规范, 代码统一到如此程度, 实在令人佩服.</p>
+
+<p>09 年底, 接触到了 <a href="http://jquery.com/">jQuery</a>, 跟 <a href="http://developer.yahoo.com/yui/">YUI</a> 完全不一样的感受, 被 它优美的 api 所吸引, 当时就萌发了自己写框架的念头, 虽然技术还很烂, 但是也想试试了, 想基于 <a href="http://jquery.com/">jQuery</a> 来做一个组件库, 名字当时起的叫 KidJS. 不过由于种种原因, 最终也没有完成.</p>
+
+<p>2010 年, 开始接触 <a href="http://dojotoolkit.org/">dojo</a>, <a href="http://dojotoolkit.org/">dojo</a> 给人的第一印象并不好, 凌乱的代码, 晦涩的文档, 并不给人带来多大的欲望. 我也说不清当初是什么原因, 竟然读了下去. 随着一步步的深入了解, 开始欣赏 <a href="http://dojotoolkit.org/">dojo</a> 那放荡不羁的代码, 严密的组织方式以及大而全的浏览器兼容性, 平台兼容性, 区域兼容性的处理, 完整的 MVC 模型, 有始有终的组件生命周期… 来自不同的地方, 有着各自喜好的一群人, 能够在统一的约定下去维护这么一个巨型的框架, 不能不让人惊叹. 在爱上 <a href="http://dojotoolkit.org/">dojo</a> 的那一刻, 我决定翻译 <a href="http://dojotoolkit.org/">dojo</a> 文档, 因此也在 github 上有一个 <a href="http://github.com/nanzhi/cndojo">cndojo</a> 的分支, 可惜的是, 翻译了一年多了, 还没把核心部分翻译完, 经历了 1.5, 1.6, 还可能经历即将到来的 1.7, 不过, 接下来还是会继续努力完成这个工作, 如果有喜欢 <a href="http://dojotoolkit.org/">dojo</a> 的童鞋, 欢迎一起来完成.</p>
+
+<p>10 年底, 接触到了 <a href="http://commonjs.org/">CommonJS</a>, 观念再次发生了改变…</p>
+
+<p>项目越做越多, 代码越写越多, 代码的重用性以及可维护性越来越成为主要问题. 类库的混乱, 版本的冲突, 让编码越来越困难. 随着这几年的积累越来越多, 形成类库的时机也趋于成熟, 所以在今年年初, 我决定去完成这个类库.</p>
+
+<p>一开始起的名字叫 OmegaJS, 但是后来改名叫了 NatureJS, 原因其实之前也说过了, 是和女友的组合, 我也希望能和她一起分享成果.</p>
+
+<p>NatureJS 一开始的定位是为了解决三个问题: 一是面向对象解决方案 (当然现在也没有完整实现, 尚需努力), 一是增强模块的重用性以及健壮性 (Write once, Run anywhere), 还有就是让每一个人可以通过 NatureJS 轻松搭建适合自己的类库.</p>
+
+<p>NatureJS 从一开始做, 就没有核心, 一是我没想好核心怎么来做, 一是我没想好要不要做核心, 但是不管怎么样, 我一定要选中一个适中的方案来定义模块. 最终选择了 <a href="http://requirejs.org/">RequireJS</a>, 更多的还是源自对 <a href="http://dojotoolkit.org/">dojo</a> 的热爱.</p>
+
+<p>如今的加载器很多, 也会越来越多, 只有最大程度的兼容这些加载器, NatureJS 的模块才能够得到普及, 那么更好的去适配这些加载器呢?</p>
+
+<p>抛开各种模块定义规范, 从各种加载器中筛选出的最终解决方案是只是用最基本的模块定义方式:</p>
+
+<pre><code>define(function(require) {
+    //...
+});
+</code></pre>
+
+<p>这样子, 基本可以保证模块可以在加载器下运行(有些加载器函数不为 define, 但是可以很方便的进行切换), 其实已经足够了. 希望有一天, JavaScript 可以拥有一个可以媲美 pypi(Python), gem(Ruby) 那样的库, 我也希望我能为这个梦想贡献一点力量.</p>
+
+<p>其实, 最终, NatureJS 的梦想就是希望能够聚集成这么一个巨型的类库, 供开发者轻松组合, 使用, 或者从中构建适合自己的框架, 类库.</p>
+
+<p>思科网讯某一个后端: JS 文件的依赖, 最终都是函数之间的依赖.</p>
+
+<p>NatureJS 做了函数的细分, 基本每个函数为一个文件, 以方便你的调用, 组合.</p>
+
+<p><strong>再来说说 Transformers:</strong></p>
+
+<p>这是一个微型的模块编译工具, 目前的功能比较简单, 仅提供了合并和依赖处理功能, 那么它跟 <a href="http://requirejs.org/">RequireJS</a> 的 r.js 有什么区别呢?</p>
+
+<p>首先, 我的观点是, 在开发调试时, 以模块载入的形式进行, 在上线时, 使用编译后的版本.</p>
+
+<p>没有哪种方式更好, 只有适不适合. 虽然目前浏览器的引擎都已经很健壮, 但是我认为还是应该进行预编译, 而不是扔给浏览器去编译解析, 性能本身就会大大的受到影响.</p>
+
+<p>Transformers 提供的编译工具, 会将所有依赖模块加载进来, 同时去除对加载器的依赖, 直接生成可独立运行的代码, “我的命我来操盘”, 这样子更适用于线上环境以及别人的引用.</p>
+
+<p>另外, Transformers 允许你将任意多的文件合并为一个文件, 并通过编译将所有依赖引入文件内, 生成独立的不依赖任何 js 文件的独立模块, 可以轻松的构建自己的 js 库.</p>
+
+<p>目前 Transformers 在 NatureJS 上运行良好, 并在淘宝的一个日常项目中实践, 目前还没有大的问题, 但是过多的闭包, 可能会导致 ie6 下的一些问题, 这个会在下一个版本中进行优化调整.</p>
+
+<p><strong>下载地址:</strong></p>
+
+<p>NatureJS: <a href="http://github.com/nanzhi/NatureJS">http://github.com/nanzhi/NatureJS</a> (cell 目录为最小粒度函数, nature 目录为打包后的独立文件, 每个文件均可独立使用, release 下为压缩版本)</p>
+
+<p>Transformers: <a href="http://github.com/nanzhi/transformers">http://github.com/nanzhi/transformers</a></p>
+
+<p><a href="https://github.com/nanzhi/NatureJS/wiki/Change-log">NatureJS v2011.08 更新日志</a>:</p>
+
+<p><strong>Bug Fix:</strong></p>
+
+<ul>
+<li>Fix screen.scroll 获取 scroll 时的 bug;</li>
+</ul>
+
+<p><strong>New Feature:</strong></p>
+
+<ul>
+<li>分离 dom, bom, type 模块, 细分函数, 方便调用, 拼接;</li>
+<li>添加 object.values 方法;</li>
+<li>添加 string.toUpperCase 方法;</li>
+<li>添加 string.toLowerCase 方法;</li>
+<li>添加 function.bind 方法(功能与 lang.hitch 方法相同, 参数顺序略有不同);</li>
+<li>添加 array.reduce 方法;</li>
+<li>添加 array.reduceRight 方法;</li>
+</ul>

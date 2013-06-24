@@ -1,0 +1,58 @@
+---
+layout: post
+title:  "Ext传值"
+date:   2010-07-07 21:37:00
+author: 
+categories: program
+---
+
+## Ext传值
+### by 
+### at 2010-07-07 21:37:00
+### original <http://www.javaeye.com/topic/707818>
+
+<p>最近一直在做负载均衡的项目 可能是我刚刚接触Ext吧     项目中用Ext传值的问题  头疼了很久</p>
+<p> </p>
+<p>本人常用的传值  有一下几种  </p>
+<p> </p>
+<p>1 首先 是超链接传值  这个大家都熟的不能在熟了吧  哈哈</p>
+<p> </p>
+<p>2 Ext  里Grid 涉及到的有 </p>
+<p>     1. 在store加载的时候把分页参数传过去</p>
+<pre name="code">store.load({params:{start:0,limit:10}});</pre>
+<p> </p>
+<p>     2.beforeload 这个可是基本上最常用的了  本人写东西的时候这个函数基本用的最多了 </p>
+<pre name="code">store.on('beforeload', function() {
+        Ext.apply(
+        this.baseParams,
+        {
+            region: Ext.getCmp('region').getValue(),
+            modeIds:modeIds.toString()  //选中的数据***********
+        }
+
+        )
+    })</pre>
+<p>  3.就是在表单提交的时候 单独传的一些值</p>
+<p>  </p>
+<pre name="code">       form.form.submit({
+          params:{
+                                modifyIds:modifyIds.toString()  ,
+                                modifyValues:modifyValues.toString() ,
+                                p1:parames.toString() ,
+                                modeIds:modeIds.toString() //选中的id
+                        }</pre>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://zhangxl1984.javaeye.com">zhangxl1984</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/707818" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

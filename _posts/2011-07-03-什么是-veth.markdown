@@ -1,0 +1,46 @@
+---
+layout: post
+title:  "什么是 veth"
+date:   2011-07-03 13:32:52
+author: 王 聪
+categories: program
+---
+
+## 什么是 veth
+### by 王 聪
+### at 2011-07-03 13:32:52
+### original <http://wangcong.org/blog/archives/1704>
+
+<p>Linux container 中用到一个叫做veth的东西，这是一种新的设备，专门为 container 所建。</p>
+<p>veth 从名字上来看是 Virtual ETHernet 的缩写，它的作用很简单，就是要把从一个 network namespace 发出的数据包转发到另一个 namespace。veth 设备是成对的，一个是 container 之中，另一个在 container 之外，即在真实机器上能看到的。</p>
+<p>建立 veth 类型的设备可以用下面的命令：</p>
+<p>ip link add name n1.0.1 type veth peer name n1.0</p>
+<p>这里建立了一对veth设备，名字分别是 n1.0.1 和 n1.0。注意，这两个设备是完全对称的，也就是说，除了名字不一样，它们的作用是完全相同的，从其中一个发出就会从另一个收到。从代码（drivers/net/veth.c::veth_newlink()）我们也可以看得出来：</p>
+<div><span><a href="http://wangcong.org/blog#">PLAIN TEXT</a></span></div>
+<div><span>C:</span>
+<div>
+<div style="font-family:monospace">
+<ol>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">priv <span style="color:#339933">=</span> netdev_priv<span style="color:#009900">(</span>dev<span style="color:#009900">)</span>;</div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">        priv<span style="color:#339933">-</span>&gt;peer <span style="color:#339933">=</span> peer;</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal"> </div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">        priv <span style="color:#339933">=</span> netdev_priv<span style="color:#009900">(</span>peer<span style="color:#009900">)</span>;</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">        priv<span style="color:#339933">-</span>&gt;peer <span style="color:#339933">=</span> dev;</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p></p>
+<p>然后我们可以用下面的命令设置它们的 namespace：</p>
+<p>ip link set n1.0 netns `pidof lxc`</p>
+<p>通常 veth 会和 bridge 搭配使用（我们在lxc的配置文件中也可以看出），这样一来，从外面进来的包（比如 eth0）就可以转发到 container 之中了。</p>

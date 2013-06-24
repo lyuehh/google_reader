@@ -1,0 +1,66 @@
+---
+layout: post
+title:  "函数式编程的杂七杂八（非常乱）"
+date:   2010-07-02 19:55:00
+author: winter-cn
+categories: program
+---
+
+## 函数式编程的杂七杂八（非常乱）
+### by winter-cn
+### at 2010-07-02 19:55:00
+### original <http://www.cnblogs.com/winter-cn/archive/2010/07/02/1770205.html>
+
+<p>作者: <a href="http://www.cnblogs.com/winter-cn/">winter-cn</a> 发表于 2010-07-02 19:55 <a href="http://www.cnblogs.com/winter-cn/archive/2010/07/02/1770205.html">原文链接</a> 阅读: 959 评论: 24</p><h3>1.把大象关进冰箱里问题</h3>
+<p>面向过程：</p>
+<p>把大象关进冰箱里：<br>    把冰箱门打开=&gt;<br>    大象放冰箱里=&gt;<br>    冰箱门关上</p>
+<p>面向对象：</p>
+<p>冰箱.开门()<br>冰箱.放入(大象)<br>冰箱.关门()</p>
+<p>函数式：</p>
+<p>关进（冰箱，大象）:<br>  关门(放入(开门(冰箱)，大象))<br>——————————————————————————</p>
+<h3>2.</h3>
+<p>C#引入FP的特性被某些人称作语法糖，我一直有意把这种观点拖出来痛打一顿（注意不是把持有这种观点的人拖出来痛打），至于持有这种观点的人，我禁止你们写a+b*c，以后给我统统去写汇编<br>MOV  EAX, [b]<br>MUL  EAX, [c]<br>ADD  EAX, [a]</p>
+<p>当然前提是我能禁止得了。</p>
+<p>——————————————————————————</p>
+<h3>3.语言特性和编程范式完全是两码事</h3>
+<p>从某种程度上来说，C语言既能进行函数式编程，又能进行</p>
+<p>在支持面向对象的语言里，我完全可以设计一个类似下面的类</p>
+<p>class Search {<br> virtual List Extend(Node node)<br> virtual bool Beam(Node node)<br> virtual bool CheckFinish(Node node)<br> Node Search()<br> {<br>  OrderedCollection openlist=new OrderedCollection();<br>  openlist.put(node);<br>  while(!openlist.empty()){<br>   Node current=openlist.get();<br>   if(!Beam(current)){<br>    List extended=Extend(current);<br>    for(var i=0;i&lt;extended.length;i++)    {<br>     if(Finish(extended[i]))<br>      return extended[i];<br>     openlist.put(extended[i]);<br>    }<br>   }<br>  }<br>  return null;<br> }<br>}</p>
+<p>我甚至用到了一个设计模式：模板方法。</p>
+<p>不过这个代码跟面向对象没有半点关系，我只是在利用某些语言特性而已。</p>
+<p>对于任何一门编程语言而言 把class当成&quot;类&quot;这个意思都是程序员一厢情愿的想法——编译器才不在乎这个关键字是class还是glass，只是个关键字而已。</p>
+<p>父亲们在这几这些语言的时候，当然是有意识地提醒你这个特性将被用于面向对象，但人家没有强迫你这样做。</p>
+<p>于是某些不安分的同学（比如我），就喜欢拿面向对象特性来干一些不是面向对象的事，或者拿一些不是面向对象的特性来干面向对象的事情。</p>
+<p><br>所以对于C而言 closure无非是比函数指针多了一个void*而已，多传一个参数又不会少块肉——你敢说这不是语法糖？</p>
+<p>不过拿这样的方式来做FP确实闻所未闻，这从一个侧面说明了语言特性对于人的思维影响还是很大的。</p>
+<p>所以尽量不要做那些扭着来语言特性来的事情，比如，用人家叫Exception的东西表达正常逻辑。</p>
+<p>——————————————————————————</p>
+<h3>4.给10个按钮改变颜色</h3>
+<p>for(var i = 0 ; i &lt; 10 ; i++ )<br>    button[i].background = XXXX;</p>
+<p>这段简单的代码丢失了一个重要信息，那就是"给10个按钮改变颜色的顺序是不要求的"。</p>
+<p>所以想这段代码翻译回去变成原来的语义是不能的。</p>
+<p>但是函数式可以。</p>
+<p>任何一个函数都不介意自己的参数被求值的顺序。</p>
+<p>但是任何一个函数不会在自己参数被求值之前执行。</p>
+<p>所以 放入(开门(冰箱)，大象) 一定会在 开门(冰箱) 之后执行。</p>
+<p>这些被丢掉的信息，在多核处理器中尤其重要。</p>
+<p>你写</p>
+<p>dotA();<br>dotB();</p>
+<p>的时候，我肯定不知道doA和doB是否能并行执行。</p>
+<p>但是</p>
+<p>do(dotA(),dotB())</p>
+<p>这时候，我肯定知道doA和doB可以同时做。</p>
+<p>神啊 原谅我用dota做SEO吧......</p>
+<p>——————————————————————————</p>
+<h3>5.范式是认识世界的方法论</h3>
+<p>使持续工作12小时（皮鞭抽（程序员），工作用计算机） ，</p>
+<p>对于完成一个项目，有些老板是这样理解的；</p>
+<p>皮鞭抽程序员=&gt;勒令程序员用计算机工作=&gt;等待完成</p>
+<p>也有些老板是这样理解的。</p>
+<p>当老板思考"如何完成工作"的时候，他们也许会使用完全不同的方法得到相同的结论。</p>
+<p>这其实与编程无关，当你开始思考这世界的时候，一定会选择其一来理解世界。</p>
+<p>函数式不算阳春白雪，其实你一直在用了。</p>
+<p>世界上的是，无论你想做什么，无非是把一些东西变成另一些东西，这就是函数式编程的世界观。</p>
+<p>只是你不习惯把这种思维用到程序中而已。</p>
+<p>你总是想告诉计算机，先这样，再这样，然后那样。</p>
+<p>所以如果你真正希望理解函数式，关键是观念的转变——你必须完全抛弃先后的想法。<br></p><img src="http://www.cnblogs.com/winter-cn/aggbug/1770205.html?type=1" width="1" height="1" alt=""><p>评论: 24　<a href="http://www.cnblogs.com/winter-cn/archive/2010/07/02/1770205.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/winter-cn/archive/2010/07/02/1770205.html#commentform">发表评论</a></p><p><a href="http://mpd.cnblogs.com/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67516/">微软KIN手机的生与死：高层勾心斗角</a><span style="color:gray">(2010-07-03 16:07)</span><br>· <a href="http://news.cnblogs.com/n/67512/">腾讯投资韩国7家网游公司</a><span style="color:gray">(2010-07-03 15:15)</span><br>· <a href="http://news.cnblogs.com/n/67511/">Apache 2010亚洲巡演将于八月中旬在上海召开</a><span style="color:gray">(2010-07-03 15:09)</span><br>· <a href="http://news.cnblogs.com/n/67510/">涂雅速涂：三网融合融什么融，团购网站团什么团</a><span style="color:gray">(2010-07-03 15:04)</span><br>· <a href="http://news.cnblogs.com/n/67508/">Firefox插件下载量超过20亿</a><span style="color:gray">(2010-07-03 14:16)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/noremorse/archive/2010/07/02/1769819.html">现在是Flash的,未来是HTML5的,那么Silverlight呢</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

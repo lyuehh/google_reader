@@ -1,0 +1,187 @@
+---
+layout: post
+title:  "CSS基线之道"
+date:   2013-01-06 10:51:24
+author: 
+categories: program
+---
+
+## CSS基线之道
+### by 
+### at 2013-01-06 10:51:24
+### original <http://blog.jobbole.com/31926/?utm_source=rss&utm_medium=rss&utm_campaign=css%25e5%259f%25ba%25e7%25ba%25bf%25e4%25b9%258b%25e9%2581%2593>
+
+<p>英文原文：<a href="http://coding.smashingmagazine.com/2012/12/17/css-baseline-the-good-the-bad-and-the-ugly/" rel="nofollow">CSS Baseline</a>，编译：<a href="http://share.9ikblog.com/archives/css-baseline.html" rel="nofollow">飞鸟分享</a></p>
+<p>译者注：网页设计布局中一直比较流行网格对齐，但只是针对水平的对齐，很少或者没有涉及垂直对齐，<a href="http://coding.smashingmagazine.com/2012/12/17/css-baseline-the-good-the-bad-and-the-ugly/">这篇文章</a>很详细的讲解了垂直网格，乃至基线对其的相关，而css3中的<a href="http://share.9ikblog.com/archives/css3-columns.html">多列布局</a>的也使其显得更为重要，因此还是很有必要去了解学习，至少也是一种思路。</p>
+<p>——————————译文———————————<span></span></p>
+<p>这或许是因为缺少基线网格的理解和欣赏，更或者是因为基线网格是出了名的难以实现， 迄今为止还没有人拿着蓝图让它成功实现。 有些人甚至认为基线在网络上是多余的，基线作为一种排版术语和网络上的行为，在网络上遵循的规则有别于用于印刷的，line-height和真正的行距之间令人沮丧的差异就是最明显的例子。 目前，无论怎样，让我们先假设基线至少在某种程度上对于来说网页设计师是一种有用的工具。但是它到底是什么样的一种工具，在我们手上有什么可以自由使用的工具来实现它，并且最重要的是，这到底值不值得。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-01.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-01.jpg" alt="CSS基线之道" width="500" height="266"></a></p>
+<p><strong>垂直网格和模式识别</strong>在数学计算和为实现基线对齐而进行将在的轻移之前，不妨来了解其根本的本质：垂直网格。在了解为什么的同时，也就有了很好的准备和更大的动力来着手解决怎样去实现基线对齐，这个有时让人沉闷而又着迷的问题。 垂直网格，可以简单的理解为涉及到结构高度和垂直排列元素之间的间距，或许更为普遍点来说是内边距（padding），外边距（margin）和行高（line-height）。正如水平网格通过一个预设的单元尺寸约束布局而达到整齐和谐的效果一样，垂直网格也在用户下滚的时候通过一致的，可预测的措施提供固定结构的内容。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-02.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-02.jpg" alt="CSS基线之道" width="500" height="266"></a></p>
+<p>网格不仅在水平方向有用，在垂直方向同样有用</p>
+<p>为什么垂直网格重要？是因为<strong>垂直网格与我们大脑如何工作相关</strong>，也与我们如何通过模式识别来解析周围世界相关。即使不再深入这个话题（<a href="http://edwdebono.com/">其他比我聪明的人</a>更适合这个任务），也可以说模式识别容许人类大脑在模式库中储存相似或者相同的印象（譬如基本的形状和颜色），并在遇到新的刺激的情况下通过模式库检索来快速分析。这也是为什么我们的阅读的时候<strong>不去注意当个独立的字母</strong>，反而在一瞬间即可认出整个单词（从我们大脑记忆当中拿出以前相同模式的实例），这同样也是为什么我们能够很快认出当个的字母（”A”  ”B” “C” …），即使字体、尺寸和颜色发生变化——其基本的形状已经存储在我们大脑的模式库。</p>
+<p>一旦任何类型的刺激都不能匹配到你之前存储的模式，这就会促使大脑在新的记忆中存入新的模式，这反过来需要更多的脑力消耗——而这就是结构和网格（无论是水平还是垂直）设计的重要之处，接下来，想象一个有一致段落间距为X的简单布局。在第一处分析过之后，作为同样的模式，你的大脑会立即认出其他所有的相同段落。但如果相反，同样的布局中元素之间有着不同的间距，读者的大脑要分析所有独立的元素才能理解他们的意思。用另一句话来说：大脑需要分析的形状越多，它所需时间便越长。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-03.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-03.jpg" alt="CSS基线之道" width="500" height="266"></a></p>
+<p>不规则的左边比右边需要更多的脑力消耗</p>
+<p>任何不规则的形状都会打断先流水般涌出的模式识别（因此会浪费一部分本应该用于欣赏优秀内容的脑力活动），而一种规则的，一致的并且可以预期的结构将会使你的设计更易读也能理解认知你的设计。建立一种固定的基线网格便是实现它的一种很好的方法。</p>
+<p>此外，通过基本一个每个垂直（和水平）间距都一致，每一个元素有着预设单元尺寸的系统不仅消除了上述随意的不统一性，也使得设计师的工作更加容易，设计师只需在总框架总决定基本的结构。建立一个标准，比如，头部下面总有两个基线的白色间距，每个盒子都有三个基线空间的内边距，在我们的布局中增加逻辑，这不仅易于设计，易于实现，更重要的是易于理解。</p>
+<p>现在，如果垂直网格还像一个抽象概念，基线的另一个优点——<strong>多列水平对齐</strong>——就显得更容易理解。这在印刷设计中更加常见，特别是杂志和报纸，经常使用多列布局，相邻段落（或者头部）若基线对齐的很好会令阅读沉浸而欢快，一旦对齐的不好或者根本没有对齐阅读便被烦人的打断。这种来源于基线对齐的安静的排版展现了一种视觉自信，一个看不见支架支撑着页内所有的元素，让读者潜意识的安心下来。一本左手页每一行都对齐相对右手页的书让人很容易感觉到信任，而相反若是根本对齐的书籍，这种信任则相对少的多。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-04.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-04.jpg" alt="CSS基线之道" width="500" height="236"></a></p>
+<p>多列水平对齐</p>
+<p><strong>line-height的问题</strong></p>
+<p>传统意义上，基线是指大部分字母所“坐落”其上的一条看不见的线，每条基线之间形成基本的基线网格，正如之前所讨论的，基线不但形成垂直网格，而且会使相邻列之间水平对齐。一旦定义好了基线网格，接下来要做的便是强制所有的元素对齐，以此来使得成行的文本，边框，图片或者盒子元素总是匹配对齐到相同的垂直结构。</p>
+<p>问题是，像在InDesign中能够让你点击按钮（准确的开启和关闭网格）便能轻松调整形状来对齐网格的工具，对应到css中只能通过控制调整行高（line-height），内边距（padding），外边距（margin），大小（size）——其中任何的变动都可能会引起元素总高度的变化。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-05.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-05.jpg" alt="CSS基线之道" width="500" height="246"></a></p>
+<p>传统的基线是大部分字母所“坐落”其上线，并且基线之间的高度便是元素的总高度。</p>
+<p>更糟糕的是，css中的line-height属性并没有严格意义上基线的概念，并且每个成行的文本都大致处于元素总高度的中间。这就意味着基于不同样式和字体的文本精确对齐（基线对齐）需要进一步手动，费时的调整和像素级的轻移。</p>
+<p>因此，我们如何着手开始实施css的基线？因为缺少原生的基线语法，快速到位或者<span><a href="http://blog.jobbole.com/12749/" title="浏览器">浏览器</a></span>功能性的强迫垂直对齐，我们留给以后的实验。我们先开始最基本的css方法。</p>
+<p><strong>好的方法：基本的css基线</strong></p>
+<p>迄今为止，尚无形成统一的正确的方法来实现css基线，有的人只要使行高和间距遵循一套规范便已满足，其他人则更为制作和细致——无论怎样——只有每个成行的文本都漂亮的“坐落”在基线上，图片，边框，盒子和其他元素都完美的对齐相同的网格才能满足。对所有人来说的好消息是：基本的css基线真的一点都不难。通过一些预先的设计决策（和坚持），它们只需要一点点的基础数学。</p>
+<p>定义你的基线，最好是从你所使用的最小文本开始，大多数是你的body文本，基于此再往上计算。在我下面的例子中，我使用14px的font-size配以22px的line-height，也就是22px是我的基线之间的高度。这样定义的结果是所有的line-height和所有元素的总高（包括边框、内边距和外边距）必须是22px的倍数，如下：</p>
+<pre>h1 {
+    font-size: 40px;
+    line-height: 44px;
+    margin-bottom: 22px;
+}
+p {
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 22px;
+}</pre>
+<p> </p>
+<p>现在定义的line-height和font-size并不是最优的，因此为了可伸缩性，将其转换为em。如此一来，会使得代码有点难以阅读，但是所用的数学相当的简单——只需要记住在更改font-size的使用重新计算line-height。</p>
+<pre>h1 {
+    font-size: 2.5em; /* = 40px/16px */
+    line-height: 1.1em; /* = 44px/40px */
+    margin-bottom: 22px;
+}
+p {
+    font-size: 0.875em; /* 16px is the default em size */
+    line-height: 1.5714285714285714em; /* = 22px/14px */
+    margin-bottom: 22px;
+}</pre>
+<p>注意，在通篇我都会以px为单位提及font-size和line-height，这样能更加清楚的表明其“物理”大小和所给例子中的比例。然而，所有的代码，我们都会转换成em。</p>
+<p>利用可见的网格（很多人使用png或者gif的背景图，其他人使用诸如<a href="https://github.com/jkeyes/baseline">Baseliner</a>的工具），我们可以检测所有样式的对齐。在此我们发现成行的文本并没有“坐落”在基线上，相反漂浮在基线之间。在此阶段这并没什么要当心的——我们可以简单的便宜我们的背景图片，或者在body上放增加内边距（padding）来修复。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-06.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-06.jpg" alt="CSS基线之道" width="500" height="266"></a></p>
+<p>一个可视的网格将对设计过程很有帮助</p>
+<p>到目前为止一切顺利，但我们的代码仍然相当的基础。但我们包含更多的属性——比如上边框——给所有的元素，将会发生什么？自然地，属性值需要调整，使之合并边框高度之后的总高度仍然是基线之间高度的倍数。</p>
+<pre>h1 {
+    border-top: 3px;
+    padding-top: 22px;
+    margin-bottom: 19px; /* 22px-3px */
+}</pre>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-07.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-07.jpg" alt="CSS基线之道" width="500" height="306"></a></p>
+<p>注意，怎样使得3px的border-top和19px的margin-bottom之和等于基线之间高度22px</p>
+<p><strong>使用SASS或者REM</strong></p>
+<p>尽管这的确不是什么高科技，但在复杂的网站中，特别是使用相对单位的时候上述的数字相加将会是个不小的挑战。如果你愿意牺牲em的可伸缩性，坚持使用px为单位，像SASS之类的预编译语言可以解决一部分麻烦。使用SASS我们可以将基线之间高度定义为一个变量（在我的事例中为$baseline），并使用一次方程去定义它的倍数。以此来使得整个过程变得非常简单，也使得css更容易阅读。在一般的过程中若你想重新dinginess你的基线之间高度，你只需改动一个地方。尽管下面我的示例中使用Sass，当使用rems也是一样的道理——只在一处定义你的基线间高度，然后再整个代码中生效。</p>
+<pre>$baseline: 22px;
+.box {
+    padding-top: 3px;
+    height: $baseline*15;
+}
+h1 {
+    font-size: 40px;
+    line-height: $baseline*2;
+    margin-bottom: $baseline;
+}
+p {
+    font-size: 16px;
+    line-height: $baseline;
+    margin-bottom: $baseline;
+}</pre>
+<p><strong>在图片和复杂的布局上使用JavaScript</strong></p>
+<p><strong></strong>在简单的文字排版布局上使用基线网格要相对简单点，但我们必须保证其他的元素相图片也要对齐网格。对于容器，按钮，和网页分界线来说，通过css让任何的单元都是基线间高度的倍数，这是一个很重要的约定。但从另一个方面来说，图片很少遵守这一约定，其一般为一系列任意的高度，因此在这样的例子中，少量的JavaScript便可以帮我们的大忙。我不会在此深究，但是jQuery的插件<a href="http://daneden.me/baseline/">Baseline.js</a>和Matthew Wilcox关于垂直网格的<a href="http://www.netmagazine.com/tutorials/preserving-vertical-rhythm-css-and-jquery">文章</a>倒是值得一看。如果你正在进行一个复杂的布局，无妨看看<a href="https://github.com/ftlabs/ftcolumnflow">FtColumnflow</a>——一段“修复css多列布局缺陷”的代码，它广泛使用在音乐《金融时报》的web app上，并且如果你想找一个更为健壮的方案，它或许更加合适。</p>
+<p>上述基础的方案。通过保证我们的行高，内边距，外边距，高度——任何的属性——相加和总是等于基线间高度的倍数，就可以保证我们整个垂直网格不受影响，这很简单，对吧？</p>
+<p>当然，如果接下来不继续深入，你也不会看这篇文章了。</p>
+<p>很烂的方案：任意可变式</p>
+<p>坏消息是，大多数的设计师在受限的条件下工作，有时一个22px的基线间的高度对他们来说更像是一个令人烦恼的阻碍，而不是有用的约束。例如，遵循黄分割的规则，一个16px的段落主体部分可以推导出26px的段头（尽管下部段落主题可能适用高于20px的任何值，这取决于字体）。保持我们的基线间高度为22px，你或许会发现一个简单的22px的基线间高度的行距太窄了以至于不能舒适的阅读，然而一个双倍的基线间高度又显得太宽了，只有在h2呈两行显示的情况下才会有这样的争论，当然理论上可以假设列的宽度足够的长，这样折行就永远都不会发生，嗯哼，这只是理论上。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-08.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-08.jpg" alt="CSS基线之道" width="500" height="276"></a></p>
+<p>h2要么小的尴尬要么行高太大</p>
+<p>如果在此有一种快速到位的方法，就不会发生上述的问题，就像我们可以简单的将h2不应用基线网格，看看紧随它的短多是不会魔术般的落到正确的位置。遗憾的，并不存在这样可行的魔法，我们只能实事求是的去思考找出一种解决方案。</p>
+<p>在文章的开始我曾推荐从你有着最小文本的line-height开始定义你的基线间的高度，就像body的文本。正如我们所看到的，一个固定的，22px（或者你body line-height的任意值）的最小单元会使得固定字体的line-height值变得很不合适。但如果让我们的原始的基线间高度减半会怎样？技术上来讲我们的body的文本就会有两个基线间高度的line-height，但这只是纸上谈兵。在大多数的示例中，这样带来的可变性和排版自由的结果是值得的，我们使用黄金分割的比例来快速的定义一些h元素的大小（四舍五入，保持em值整洁），我们可以很容易的看到每次值得增加都会有一个合适的line-height值，例如：16px/22px ，28px/33px，40px/44px等。</p>
+<pre>h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin-bottom: 22px;
+}
+h2 {
+    font-size: 1.625em; /* 26px/16px */
+    line-height: 1.2692307692307692em; /* 33px/26px */
+    margin-bottom: 11px;
+}</pre>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-09.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-09.jpg" alt="CSS基线之道" width="500" height="356"></a></p>
+<p>h1, h2, 和 p都对齐了基线网格</p>
+<p>丑陋的方案：偏移的方式</p>
+<p>在我继续之前，我必须承认的是，下述的内容完全是实验性的甚至你们其中一部分人甚至会认为它实践起来也很糟糕。但如果你准备继续迁就我，即使它变得丑陋也继续阅读。好吧，我说的丑陋是源于“代码整洁”的观点。或许从设计的角度来说，它可能确实很漂亮。</p>
+<p>基于上述的基本的方案和带一点实用性（可选）的随意可变得方案，现在我们有知识和工具去改善大多数布局的基线网格，但是对于真正基线却没有实现。正如前面所提到的，css中line-height计算的方式意味着字符大约处于行距的垂直中点，而不是字符的下边紧挨着基线（先InDesign和Quark）。许多人理所应当的认为这就这是应该的。这就是css中iine-height工作的方式，我们没法改变。没错，但是我们的眼睛并不知道css的概念。我们的眼睛并不习惯去按照x轴中心去扫描成行的文字——它们习惯于跟随字符的地步，基线来阅读，并且当相邻行错位的时候可读性就会变差。</p>
+<p>来看一下下面的额例子：</p>
+<pre>h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    margin-bottom: 22px;
+}
+h2 {
+    font-size: 1.625em; /* 26px/16px */
+    line-height: 1.2692307692307692em; /* 33px/26px */
+    margin-bottom: 11px;
+}
+p {
+    font-size: 0.875em;
+    line-height: 1.5714285714285714em;
+    margin-bottom: 11px;
+}
+p.intro {
+    font-size: 1.125em; /* 18px/16px */
+    line-height: 1.22222222em; /* 22px/16px */
+    margin-bottom: 22px;
+}</pre>
+<p>在相邻两列的情况且，尽管基线已经正确的贯穿介绍段落，但介绍段落的字母的底部（下图红线）并没有对齐和主段落对其，这正是因为字体计算之后的line-height所导致。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-10.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-10.jpg" alt="CSS基线之道" width="500" height="333"></a></p>
+<p>css中line-height倒是夸列并没有对其</p>
+<p>现在到了它变丑陋的地方。为了能够在所有列中的成行文本都对齐（当然是最重要的一点是从基线网格开始），我们必须手动偏移样式。一个简单的方法是增加padding-top的值直到字符紧挨到基线，并且相应调整margin-bottom来弥补增加的值。</p>
+<pre>h1 {
+    font-size: 2.5em;
+    line-height: 1.1em;
+    padding-top: Xpx; /* This requires trial and error, as X depends on your font and line-height */
+    margin-bottom: 22px-Xpx;
+}
+h2 {
+    font-size: 1.625em; /* 26px/16px */
+    line-height: 1.2692307692307692em; /* 33px/26px */
+    padding-top: Xpx;
+    margin-bottom: 11px-Xpx;
+}
+p {
+    font-size: 0.875em;
+    line-height: 1.5714285714285714em;
+    padding-top: Xpx;
+    margin-bottom: 11px-Xpx;
+}
+p.intro {
+    font-size: 1.125em; /* 18px */
+    line-height: 1.22222222em; /* 22px */
+    padding-top: Xpx;
+    margin-bottom: 11px-Xpx;
+}</pre>
+<p>混乱？也许是的。确实乏味。但同时也没有什么能像施了魔法般的让基线完美的对齐复杂布局一样令人欣喜而愉悦了。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-11.jpg" rel="lightbox[31926]" title="CSS基线之道"><img title="CSS基线之道" src="http://blog.jobbole.com/wp-content/uploads/2013/01/baseline-11.jpg" alt="CSS基线之道" width="500" height="333"></a></p>
+<p>所有的元素多列对齐。</p>
+<p>嘘。如果你仍然还在阅读，或许你要么是受虐狂，要么是对细节有着病态的迷恋，而对于后者，恭喜你，毫无疑问你的基线就像外墙的砖一样牢固。</p>
+<p>这值得吗？</p>
+<p>下面是我们所有的。基础css的基线，相当的简单，只需要不多的数学和组织即可改进你的布局。而在天平的另一端，我们可以手动的调整padding和margin值来模拟像打印设计中精确的基线，这种概念无疑会让纯css主义者面带愁容。更实在的问题当然是，手动的偏移样式对视觉效果带来好处是否值得。在某种情况下，比如设计驱动的项目和微型站点中，这确实值得。</p>
+<p>其他情况，大部分的情况是，对于更为复杂的站点（你的项目经理会绞尽脑汁想知道你为什么需要花那么长的时间来构建初始模版）或者由数个开发者维持同样的代码的协作性项目，这样确实不值得。我们需要面对的是——我们所谈论的在某些极端的例子中不仅会增加体力劳动，而且会<strong>让代码变得更为负责和难以维护</strong>。在一个足够的大的项目中甚至会影响你站点的加载时间。</p>
+<p>但是想想看，仅仅是几年前，从行业领袖到黑客很少有人提倡并不讨巧的“sliding doors”技术，但现在css3已经让它变得司空见惯。使用两个div而不是一个来实现圆角这是否值得？很显然，对一些人来说是值得的——但其他人认为就是浪费时间，导致了实施的困难和语义上有缺陷的代码。但是关键的一点是：如果没有人尝试如此劳力和代码密集的技术，我们可能不会有成熟语法的技术时代了。</p>
+<p>实验性的，糟糕的体验，hacks，丑陋的代码——无论我们怎样称呼它——它已经推出了，并且将会继续推出，我们的语法会改善，我们将使用新的工具来创建和发布下一代的在线内容。为了回应<a href="http://www.markboulton.co.uk/journal/rethinking-css-grids">Mark Boulton</a>的“<strong>若css能够无痛的创建基线网格这将会有多酷</strong>”无论你的执念有多强——无论你的字符是紧挨着基线或者悬浮在基线之间——垂直网格都会是一个重要的思路，使用任意本文所列的方法都会给你一个满意的基线网格。</p>
+<p>当然，会有一些例子比较难以实施网格的约束，像一些元素如，题注，导航或者列表项目好像不能正确的对齐到预先定义的结构中。在这些例子中，需要注意的是一些妥协并不是世界末日。一些设计时，像杰出的设计时Khoi Vinh，认为基线在你内容主体的上下文才最为重要，一些次要的元素可以在不破坏布局的情况下不遵守基线对齐。</p>
+<p>希望能够理解的是在此并没有正确或者错误的实现基线的方法，这也会激励你在将来能够后在你的项目中尝试，在此我也鼓励任何一个喜欢排版的人贡献这个正在进行的项目，能在未来的的网页设计中让垂直网格和水平网格同等重要。</p>
+<p>好运！</p>
+<p><strong>资源</strong></p>
+<p><a href="http://grids.subtraction.com/">Ordering disorder</a>, Khoi Vinh</p>
+<p><a href="http://www.alistapart.com/articles/settingtypeontheweb/">Setting Type on the Web to a Baseline Grid</a>, Wilson Miner</p>
+<p><a href="http://elliotjaystocks.com/blog/the-relevance-of-the-baseline-grid/">The relevance of the baseline grid</a>, Elliot Jay Stocks</p>
+<p><a href="http://baselinecss.com/">Baseline Formework</a></p>
+<p><a href="http://coding.smashingmagazine.com/2011/03/14/technical-web-typography-guidelines-and-techniques/#tt-rhythm">Technical Web Typography: Guidelines and Techniques</a>, Harry Roberts</p>
+<p><a href="http://vimeo.com/17079380">More Perfect Typography</a>, Tim Brown</p>
+<p> </p>
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/31147/">CSS架构</a></li><li><a href="http://blog.jobbole.com/19714/">Zen Coding: 一种快速编写HTML/CSS代码的方法</a></li><li><a href="http://blog.jobbole.com/10408/">如何将页脚固定在页面底部</a></li><li><a href="http://blog.jobbole.com/32053/">CSS团队精神：CSS最佳实践团队开发</a></li><li><a href="http://blog.jobbole.com/28088/">爱上朴实的CSS细节</a></li><li><a href="http://blog.jobbole.com/22186/">SASS用法指南</a></li><li><a href="http://blog.jobbole.com/20264/">响应式设计的5个CSS实用技巧</a></li><li><a href="http://blog.jobbole.com/21431/">CSS 入门</a></li><li><a href="http://blog.jobbole.com/16375/">10个便利的CSS代码在线生成器</a></li><li><a href="http://blog.jobbole.com/23223/">简讯：W3C 发布 CSS 选择器 API 规范</a></li></ul>

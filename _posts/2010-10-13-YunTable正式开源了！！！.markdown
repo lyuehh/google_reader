@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "YunTable正式开源了！！！"
+date:   2010-10-13 17:26:32
+author: 吴朱华
+categories: program
+---
+
+## YunTable正式开源了！！！
+### by 吴朱华
+### at 2010-10-13 17:26:32
+### original <http://peopleyun.com/?p=958>
+
+  经过近半年的努力，YunTable终于走完了从无到有的整个历程，并已完成其0.8版的既定目标，今天正式在http://code.google.com/p/yuntable/开源。我也已经发邀请信给所有曾经申请过这个项目的朋友，希望你们能接受我的邀请。如果你之前申请过，但没有收到信，请发信到ikewu83@gmail.com来提醒我一下。下面是和开源相关的资料，请查看:) 文档 可以查看博客上的《YunTable开发日记》这个系列。 代码 大家可以通过命令”svn checkout http://yuntable.googlecode.com/svn/trunk/ yuntable-read-only“来获取源代码。 使用方式 具体请看下面： Shell Part(under the project root): sh build.sh ./startMaster ./startRegion (Run in another console) ./yuncli (Run in another console) YunTable Cli Part(Type and Run at the yuncli): add master:127.0.0.1:8301 add region:127.0.0.1:8302 add table:people add table:people column_family:address put table:people row:me name:&quot;ike&quot; sex:&quot;male&quot; address.homeaddress:&quot;sh&quot; get table:people row:me<a href="http://peopleyun.com/?p=958"> <br><br> (More)…</a>

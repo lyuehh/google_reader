@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "用Unix的设计思想来应对多变的需求"
+date:   2012-05-03 08:14:20
+author: 陈皓
+categories: program
+---
+
+## 用Unix的设计思想来应对多变的需求
+### by 陈皓
+### at 2012-05-03 08:14:20
+### original <http://coolshell.cn/articles/7236.html>
+
+<p>之前，@<a title="风枫峰" href="http://weibo.com/hfcc?source=webim">风枫峰</a> 在“<a title="这到底是谁之错？" href="http://coolshell.cn/articles/7126.html">这是谁的错？</a>”中说过开发团队对需求来者不拒，而@<a title="weidagang" href="http://weibo.com/weidagang">weidagang</a> 也在“<a title="需求变化与IoC" href="http://coolshell.cn/articles/6950.html">需求变更和IoC</a>”中说过用IoC来最大程度地解决需求变更。今天我也想从Unix设计思想的角度来说说什么是好的软件设计，什么样的设计可以把需求变更对开发的影响降低。（<strong>注意</strong>：这并不能解决用户或是PM的无理需求，面对无理需求，需要仔细分析需求，而用技术的手段无法搞定这个事，但是可以减轻需求变更带来的痛苦） 我曾经在<a href="http://coolshell.cn/articles/2324.html">《Unix传奇》的下篇</a>中写过一些Unix的设计哲学和思想（这里重点推荐大家看一下《<em><a href="http://product.china-pub.com/197413">The Art of Unix Programming</a></em>》，我推荐过多次了），以前也发过一篇《<a title="一些软件设计的原则" href="http://coolshell.cn/articles/4535.html">一些软件设计的原则</a>》，不过，这些东西都太多了，记不住。其实，这么多年来，我的经验告诉我，<strong>无论是Unix设计，还是面向对象设计，还是别的什么如SOA，ECB，消息，事件，MVC，网络七层模型，数据库设计，等等，他们都在干三件事——<span style="color:#cc0000">解耦，解耦，还是解耦</span>！</strong>所谓解耦，就是让软件的模块和模块间尽量少地依赖起来。</p>
+<p style="text-align:center"><img title="Unix" src="http://coolshell.cn/wp-content/uploads/2012/05/Banni%C3%A8re-Unix-linux.jpg" alt="" width="448" height="173"></p>
+<h4>现实当中的例子</h4>
+<p>让我先举几个现实生活中的例子：</p>
+<p style="padding-left:30px">1、现实社会中，制造灯具的工厂完全不关心制造灯泡的工厂，制造灯泡的工厂完全不关心制造灯具的工厂，但是，灯泡和灯饰可以很完美地组合成用户所喜欢的样子（这和@<a title="weidagang" href="http://weibo.com/weidagang">weidagang</a> 在“<a title="需求变化与IoC" href="http://coolshell.cn/articles/6950.html">需求变更和IoC</a>”说到的那个PC的例子相仿）。他们是怎么做到的？</p>
+<p style="padding-left:30px">2、互联网上，做网站的人完全不用关心用户在用什么样的操作系统，什么样的客户端浏览器（当然事实上，浏览器的不标准让网站那边很头痛，这里只是举个例），反过来，上网的人也不关心做网站的人在用什么的技术开发网站。但是大家在完全不关心对方的情况下，可以很正常地协同工作在一起。为什么？</p>
+<p><span></span> 这样的例子太多了。为什么可以做成这样呢？因为大家依赖的是一个接口，灯具和灯泡并不互相依赖，他们依赖的是一个接口，做网站的人和浏览网站的人依赖的还是接口——HTTP协议。这就是面向对象的核心思想——依赖于接口而不是实现，这就是解耦。<strong>当你看过这两个例子以后，我希望你以后设计的软件至少不能比我们现实社会中的这些方法要差</strong>。不然，你就是在让社会倒退了，呵呵。 你会说，这和Unix，和应对需求变化有什么关系？好让我们再来看一下Unix的设计。</p>
+<h4>Unix设计的例子</h4>
+<p>下面是几个Unix下的例子：</p>
+<p style="padding-left:30px">1、Unix下，所有的硬件都可以通过文件的方式存取。其统统在/dev下。于是，软件和硬件的耦合被解开了，操作系统只需要把硬件统统变成文件，而程序只需要使用三个东西，一个是fd，一个是read()，一个是write()，就可以来操作任意的硬件了，这就是抽象，简单到不行。</p>
+<p style="padding-left:30px">2、Unix下，所有的命令都可以用管道串起来（管道绝对是个伟大的发明），这样，所有的命令间的交互全部解耦到只依赖于STD_IN, STD_OUT设备上。最酷的是，用户可以使用管道任意地拼装那些命令，以完成各式各样的功能。管道这个设计思想可以映射为今天的Web Service，你可以任意地拼装各种Web Service。</p>
+<p>看到这里，你会发现，这还是解耦，本质上来说，也是一种依赖倒置——OOD的精髓。但是，Unix还不仅仅是这些。我们再来看几个例子：</p>
+<p style="padding-left:30px">1、Unix下，软件都是绿色地安装。在iOS上更明显——各个程序间基本上互不干扰，这个程序产生的垃圾文件不会影响到另一个程序。你删掉一个程序不会让另一个程序不举，各是各的空间。你可以删除这些程序，只要把内核心留着，系统照样可以启动。</p>
+<p style="padding-left:30px">2、Unix下，你可以通过设置一些环境变量，让多种环境同时存在，比如：某个LAMP用的是Apache 2.0, Mysql 4.0, PHP 4.0，某个LAMP用的是Apache 2.2, Mysql 5.0，PHP5.3，你不但可以方便地在系统中切换这两个环境，你甚至还可以同时启动他们。</p>
+<p style="padding-left:30px">3、Unix下，你可以随意地替换你想要的程序。比如，你不喜欢bash，你可以替换成ksh/csh等，你不喜欢awk ，你可以替换成 gawk ，所有的东西都像零件一样，你不喜欢什么，你就可以替换什么。</p>
+<p>这三个例子告诉了我们——<strong>当你把你的软件设计地耦合度非常地低时，你可以随意地组合，随意地安排你的系统</strong>。相当的灵活，灵活到Windows到今天都学不会。</p>
+<h4>应对需求变化</h4>
+<p>看到这里，你可能明白我想说的是什么了，你可能开始觉得怎么样的系统设计会更有效了。如果你还记得《<a title="SteveY对Amazon和Google平台的长篇大论" href="http://coolshell.cn/articles/5701.html">Steve Y 对平台的长篇大论</a>》，你就会知道我想说什么了。是的，我想说的就是，<strong>当你真正了解了Unix的设计思想后，你会觉得今天的很多东西都是对Unix设计思想的一种传承或是变种</strong>。这种东西就是：</p>
+<p style="padding-left:30px">1）<strong>解耦，解耦，解耦</strong>。尽量地让你的模块不要在实现上耦合，而是耦合某个规范，某个标准。</p>
+<p style="padding-left:30px">2）<strong>KISS，KISS，KISS</strong>。要做到高度解耦，你的模块就一定要很简单，当然不是说简单到只有几行代码，而是简单到只干一件事，并把这件事干到极致。然后通过某个标准拼装起来。</p>
+<p style="padding-left:30px">3）<strong>拼装，拼装，拼装。</strong>我想不起来是谁说的了，这句话是这样的，当我想用一个模块的时候，我直接调用就好了，没有必要像C或Java一样，还要编译。是的，拼装需要一个框架，需要一种标准协议，然后让所有的系统都耦合在这种规范上，各自独立运行，就像一个机器上的各个部件一样，当我觉得这个部件不爽，换了就是了。（例如，当我们在尝试不同的算法的时候）</p>
+<p>想想建材和家俱市场，无论用户过来想装修什么，我都可以满足用户的不同需求，只要你是和家装相关，我基本上都能满足你，不是吗？无论你怎么变，只要不变态，我基本上都可以满足你。这就是解耦，拼装带来的好处。 你可能会说我说得太简单了，另一方面，你可能觉得有一些系统这样做没必要，我承认，不过，你可以有选择的或多或少地试试。（其实，我相信你已经在不自觉得或多或少地使用这种方式开发软件了） （全文完）</p>
+<div></div>
+<div style="margin-top:15px;font-style:italic">
+<p><strong>（转载本站文章请注明作者和出处 <a href="http://coolshell.cn/">酷壳 – CoolShell.cn</a> ，请勿用于任何商业用途）</strong></p></div>
+<div style="background-color:#efefef;text-align:center;padding:0px;font-size:11px;border:solid 1px #ccc"><b>感谢<a href="http://42qu.com/">42qu.com</a>为本站提供<a href="http://vps.42qu.com/">VPS</a></b></div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="28个Unix/Linux的命令行神器" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7829.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7236.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/07/11/34898000.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">28个Unix/Linux的命令行神器</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Unix Pipes 管道原稿" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1351.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7236.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/11/08/10437748.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Unix Pipes 管道原稿</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Unix 40年：Unix年鉴" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1032.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7236.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/04/23/6281985.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Unix 40年：Unix年鉴</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Unix 40年：昨天，今天和明天 " style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1023.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7236.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/11/08/10437733.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Unix 40年：昨天，今天和明天 </font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="“另类” 设计模式" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F4844.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7236.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">“另类” 设计模式</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><h3>相关文章</h3><ul><li>2012年03月26日 -- <a href="http://coolshell.cn/articles/6950.html" title="需求变化与IoC">需求变化与IoC</a></li><li>2011年04月25日 -- <a href="http://coolshell.cn/articles/4535.html" title="一些软件设计的原则">一些软件设计的原则</a></li><li>2012年07月11日 -- <a href="http://coolshell.cn/articles/7829.html" title="28个Unix/Linux的命令行神器">28个Unix/Linux的命令行神器</a></li><li>2012年07月05日 -- <a href="http://coolshell.cn/articles/7771.html" title="少即是极多">少即是极多</a></li><li>2012年03月13日 -- <a href="http://coolshell.cn/articles/6790.html" title="多版本并发控制(MVCC)在分布式系统中的应用">多版本并发控制(MVCC)在分布式系统中的应用</a></li><li>2012年03月09日 -- <a href="http://coolshell.cn/articles/6775.html" title="Bret Victor – Inventing on Principle">Bret Victor – Inventing on Principle</a></li><li>2012年01月16日 -- <a href="http://coolshell.cn/articles/6470.html" title="由12306.cn谈谈网站性能技术 ">由12306.cn谈谈网站性能技术 </a></li></ul>

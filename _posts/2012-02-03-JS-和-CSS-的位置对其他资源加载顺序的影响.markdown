@@ -1,0 +1,74 @@
+---
+layout: post
+title:  "JS 和 CSS 的位置对其他资源加载顺序的影响"
+date:   2012-02-03 11:34:50
+author: lifesinger
+categories: program
+---
+
+## JS 和 CSS 的位置对其他资源加载顺序的影响
+### by lifesinger
+### at 2012-02-03 11:34:50
+### original <http://lifesinger.wordpress.com/2012/02/03/performance-impact-of-js-css-loading-order/>
+
+<p>克军做了一系列测试：<a href="http://hikejun.com/blog/2012/02/02/js%E5%92%8Ccss%E7%9A%84%E9%A1%BA%E5%BA%8F%E5%85%B3%E7%B3%BB/">js和css的顺序关系</a>，给出了现象和结论，但未给出原因。</p>
+<p>JS 和 CSS 在页面中的位置，会影响其他资源（指 img 等非 js 和 css 资源）的加载顺序，究其原因，有三个值得注意的点：</p>
+<ol>
+<li><strong>JS 有可能会修改 DOM. </strong>典型的，可能会有 <code>document.write</code>. 这意味着，在当前 JS 加载和执行完成前，后续所有资源的下载有可能是没必要的。这是 JS 阻塞后续资源下载的根本原因。</li>
+<li><strong>JS 的执行有可能依赖最新样式。</strong>比如，可能会有 <code>var width = $('#id').width()</code>. 这意味着，JS 代码在执行前，浏览器必须保证在此 JS 之前的所有 css（无论外链还是内嵌）都已下载和解析完成。这是 CSS 阻塞后续 JS 执行的根本原因。</li>
+<li><strong>现代浏览器很聪明，会进行 prefetch 优化。</strong>性能是如此重要，现代浏览器在竞争中，在 UI update 线程之外，还会开启另一个线程，对后续 JS 和 CSS 提前下载（注意，仅提前下载，并不执行）。有了 prefetch 优化，这意味着，在不存在任何阻塞的情况下，理论上 JS 和 CSS 的下载时机都非常优先，和位置无关。</li>
+</ol>
+<p>以上三点可简述为三条基本定律：</p>
+<ul>
+<li><strong>定律一：资源是否下载依赖 JS 执行结果。</strong></li>
+<li><strong>定律二：JS 执行依赖 CSS 最新渲染。</strong></li>
+<li><strong>定律三：现代浏览器存在 prefetch 优化。</strong></li>
+</ul>
+<p>有了这三条定律，再来看克军的测试，就很清晰了：</p>
+<blockquote><p>
+a,b – head里出现外联js，无论如何放，css文件都不能和body里的请求并行
+</p></blockquote>
+<p>根据定律一和定律三，可以知道上面的结论不够正确。比如：</p>
+<pre>
+&lt;head&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css1&amp;sleep=2&quot;&gt;
+&lt;script src=&quot;mock.php?js&amp;sleep=3&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css2&amp;sleep=4&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css3&amp;sleep=5&quot;&gt;
+&lt;img src=&quot;test.gif&quot;&gt;
+&lt;/body&gt;
+</pre>
+<p>在 Chrome 下的瀑布图是：<br>
+<img src="http://lifesinger.files.wordpress.com/2012/02/screen-shot-2012-02-03-at-11-01-20-am.png?w=700" alt=""></p>
+<p>黄色条是 js 的，可以看出 img 的延时下载是由定律一决定的。</p>
+<p>定律三则决定了所有 js/css 都是并行开始下载的。在 Firefox 10 下，prefetch 非常强悍，对 img 也会预加载，瀑布图如下：<br>
+<img src="http://lifesinger.files.wordpress.com/2012/02/screen-shot-2012-02-03-at-11-08-14-am.png?w=700" alt="" title=""></p>
+<p>调整一下 sleep 时间，还可以观察到定律二的威力：</p>
+<pre>
+&lt;head&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css1&amp;sleep=3&quot;&gt; &lt;!-- 修改 sleep 值，使其大于 js 的 --&gt;
+&lt;script src=&quot;mock.php?js&amp;sleep=2&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css2&amp;sleep=4&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;mock.php?css3&amp;sleep=5&quot;&gt;
+&lt;img src=&quot;test.gif&quot;&gt;
+&lt;/body&gt;
+</pre>
+<p>瀑布图立刻发生了变化：<br>
+<img src="http://lifesinger.files.wordpress.com/2012/02/screen-shot-2012-02-03-at-11-14-28-am.png?w=700" alt="" title=""></p>
+<p>因为定律一，决定 img 的下载在 js 执行后。又因为定律二，决定 js 的执行在第一个 css 后。于是最后在瀑布图上体现出来，就是 img 的下载在第一个 css 后。</p>
+<p>再来看克军的第二个结论：</p>
+<blockquote><p>
+c – head里的内联js只要在所有外联css前面，css文件可以和body里的请求并行（图2）<br>
+d – head里的内联js只要在任一外联css后面，css文件就不能和body里的请求并行（图1）
+</p></blockquote>
+<p>这个是定律二的威力。结论 c 是正确的，因为没有 css 会影响 js 的执行。结论 d 则不够正确。img 等其他资源，会在 js 前面的 css 下载完成后，以及 js 执行后，立刻开始下载。与头部中，js 位置之后的 css 没关系。</p>
+<p>克军的其他结论都是对的，不多说。</p>
+<p>注意1：Firefox 10 的 prefetch 有点奇怪，有时会对 img 进行 prefetch，有时则不会。有兴趣的可以进一步寻找规律。<br>
+注意2：上面的三个定律，是黑盒猜测，有兴趣的可以去阅读浏览器的源码，应该能找到更深层次的原因。<br>
+注意3：本文没有考虑 defer, async 属性的影响，这是另一个故事。</p>
+<p>浏览器在迅速发展，很多总结，特别是书籍上的，很难与时俱进。大家应该像克军学习，多测试，多发现，这样得来的知识，才不会过时。这篇博客的总结，也肯定在未来甚至就在现在，已经存在错误。这些都无所谓，关键是<strong>要懂得测试的方法和分析的思路，有了“渔”，才能更好地探求和拥有“鱼”</strong>。</p>
+<br>  <img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=lifesinger.wordpress.com&amp;blog=38365&amp;post=688&amp;subd=lifesinger&amp;ref=&amp;feed=1" width="1" height="1">

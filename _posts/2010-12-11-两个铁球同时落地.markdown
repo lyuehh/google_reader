@@ -1,0 +1,230 @@
+---
+layout: post
+title:  "两个铁球同时落地"
+date:   2010-12-11 15:22:49
+author: 
+categories: program
+---
+
+## 两个铁球同时落地
+### by 
+### at 2010-12-11 15:22:49
+### original <http://www.javaeye.com/topic/839598>
+
+  这是一篇&quot;在比萨斜塔上模拟两个铁球同时落地&quot;,如下:
+<br>
+<br><img src="http://dl.javaeye.com/upload/attachment/365533/9e7dd723-2b14-3dba-b2eb-e0ddb1c8fa00.png">
+<br>
+<br>
+<br>代码如下:
+<br>
+<br>
+<br><pre name="code">
+package com.chaoqun;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.Bitmap.Config;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.PorterDuff.Mode;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+
+public class TwoBalls extends Activity {
+    /** Called when the activity is first created. */
+	protected WindowManager.LayoutParams _windowParams;
+	protected WindowManager _windowManager;
+	protected static Display _display;
+	protected ImageView  _icon01;
+	protected ImageView  _icon02;
+	private Handler _messageHandler;
+	private Button _go;
+
+
+
+	
+    @Override
+	protected void onDestroy() {
+		//清除手工添加的View
+		if(_icon01 != null &amp;&amp; _windowManager != null) {
+    		_windowManager.removeViewImmediate(_icon01);
+    		_icon01 = null;
+    	}
+		
+		if(_icon02 != null &amp;&amp; _windowManager != null) {
+    		_windowManager.removeViewImmediate(_icon02);
+    		_icon02 = null;
+    	}
+		super.onDestroy();
+	}
+
+
+
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        _go =(Button)findViewById(R.id.options_btn);
+        _display = ((WindowManager)this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay(); //获取屏幕介质信息
+        _messageHandler = new Handler();
+        _go.setOnClickListener( new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startAnim(genBitMapforAnim(&quot;02&quot;, 40), _display.getWidth()-100 , 2, (30-40)/2);
+				startAnim(genBitMapforAnim(&quot;01&quot;, 30), _display.getWidth()-150, 1, 0);
+				//这里先后有时间差，忽略了,另外UI Thread在消息处理也有时间差，忽略了。
+				//要精确模拟，只有自定义View,单独绘制了。
+			}
+        	
+        });
+        
+    }
+    
+    
+    
+    
+    protected Bitmap genBitMapforAnim(String itemCode, int size) {
+    	 String text = itemCode.length() &gt;= 5 ? itemCode.substring(0, 5) : itemCode;
+    	 Bitmap result = Bitmap.createBitmap(size*2,size*2, Config.ARGB_8888);
+    	 Canvas canvas =  new   Canvas(result);
+    	 canvas.drawARGB(0, 0xff, 0, 0);
+    	 Paint paint = new Paint();
+    	 paint.setAntiAlias(true); //抗锯齿
+    	 paint.setFilterBitmap(true);  //透明设置
+    	 paint.setColor(Color.RED);
+    	 paint.setAlpha(200);
+    	 canvas.drawCircle(size/2, size/2, size/2, paint);//绘制半径为size/2的圆
+    	 paint.setAlpha(255);
+    	 paint.setTextSize(9);
+    	 paint.setColor(Color.WHITE);
+    	 float textWidth = paint.measureText(text);  //取得字体宽度
+    	 FontMetrics fm = paint.getFontMetrics();  
+    	 float textHeight = (float)(fm.descent +  fm.ascent) / 2; //取得字体高度
+    	 
+    	 canvas.drawText(text, (size-textWidth) /2.0f,(size-textHeight)/2.0f, paint); //编号
+    	 
+    	
+    	 final Rect rect = new Rect(0, 0,size, size);
+    	 paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+    	 canvas.drawBitmap(result, rect, rect, paint); //生成透明位图
+    	 return result;
+    }
+
+    protected  void startAnim(final Bitmap bitmap, final int startXLocation, int id, final int offset) {
+    	final int startY = 160;
+    	
+    	final ImageView imageView = new ImageView(this);
+    	imageView.setImageBitmap(bitmap);
+    	if(_windowParams == null)
+    	_windowParams = new WindowManager.LayoutParams();
+    	_windowParams.gravity = Gravity.TOP | Gravity.LEFT;  //标示要关注上下，左右位置
+    	_windowParams.x =  startXLocation; //起点坐标x
+    	_windowParams.y = startY + offset; //起点坐标y, 设置offset是为了保证起始位置在同一高度
+
+    	_windowParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+    	_windowParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+    	_windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+    					| WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+    					| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+    					| WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+    	_windowParams.format = PixelFormat.TRANSLUCENT;
+    	_windowParams.windowAnimations = 0;
+        
+    	if(_windowManager == null)
+    	_windowManager = (WindowManager)TwoBalls.this.getSystemService(&quot;window&quot;); //获取全局实例WindowManager
+    	
+    	
+    	ImageView icon = id == 1 ? _icon01 : _icon02; 
+    	if(icon != null) {
+    		_windowManager.removeViewImmediate(icon);  //移除先前的View
+    		icon = null;
+    	}
+    	else {
+    		icon = imageView;
+    	}
+    	
+    	_windowManager.addView(icon, _windowParams); //添加View到当前界面 	
+
+        
+    	  final Runnable runnable = new Runnable() {
+    		 double t = 0.0d;
+     		 final double g = 2.0d; 
+    		  public void run() {
+    			t++;
+    			_windowParams.x =  startXLocation;  //由于WindowManager是单实例,所以这里要记录每个的x坐标
+    			_windowParams.y  = startY + offset + (int)(0.5 * g * t * t); //匀加速运动位置计算
+    			_windowManager.updateViewLayout(imageView, _windowParams); //更新坐标
+    		  }
+    	  };
+    	
+    	 new Thread() {
+    		 long lastUpdate = System.currentTimeMillis();
+    		 public void run() {
+    			 //设置大家都经过同一高度(这里依旧考虑到球的半径不同)
+    			 while (_windowParams.y + offset  &lt; _display.getHeight() - 60  &amp;&amp; !Thread.interrupted() &amp;&amp; !TwoBalls.this.isFinishing()) {
+    				  if(System.currentTimeMillis() - lastUpdate &gt;= 100) { //每隔100ms动一下,移动一侦
+    					  lastUpdate = System.currentTimeMillis();
+    					  _messageHandler.post(runnable);
+    				  }
+    				  
+    				 	
+    			 }
+    			 
+    			 if(!bitmap.isRecycled()) 
+    				 bitmap.recycle();    
+    			 
+    		 }
+    	 }.start();
+    	
+
+    }  
+    
+    
+    
+    
+    
+    
+    
+    
+}</pre>
+<br>
+<br>
+<br>已打包，有兴趣的看看.
+<br>
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/7d859098-4cbe-388b-b324-e2e9080d7254">TwoBalls.zip</a> (180.2 KB)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://ihavegotyou.javaeye.com">Ihavegotyou</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/839598" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

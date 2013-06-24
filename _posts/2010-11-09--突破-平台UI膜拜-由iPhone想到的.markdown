@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "“突破”平台UI膜拜-由iPhone想到的"
+date:   2010-11-09 21:42:39
+author: hdzwzmj
+categories: program
+---
+
+## “突破”平台UI膜拜-由iPhone想到的
+### by hdzwzmj
+### at 2010-11-09 21:42:39
+### original <http://ucdchina.com/snap/8380>
+
+<p><img title="1" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/12.png" alt="" width="635" height="260"></p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">之前看到一篇文章，讨论iPhone 交互设计和Android交互设计的一致与不同，它强调平台本身的特性，不要照搬其他平台的UI设计，让用户感觉是在真正的使用一个android软件。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">I think everything here is very relevant, and let’s keep them in mind.</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">我想到了我们的设计创新，设计师的设计意识形态来源，遵循平台的一些UI特性，但“突破”更在平台之外…</p>
+ 
+<div style="float:left;margin:0px 8px 20px 0px"><img title="IMG_0207" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0209.png" alt="" width="309" height="434"></div>
+ 
+<div style="float:left;margin:0px 0px 20px 8px"><img title="IMG_0209" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0207.png" alt="" width="289" height="434"></div>
+ 
+<p> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt"> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">以上两图显示的是进行TAB排序的不同方法，虽然YouTube这种设计方式很优秀，但YELP也不错，这两种不同的具体设计方式（我想可以称之为设计等价式）同样达到了功能需求，而YELP这种设计方式更在平台UI之外，即使我们在web页面，甚至在android平台看到这样的方式也不足为奇，更谈不上谁抄袭谁，谁照搬谁，只要是好的设计方式和设计特性，我们都可以去粗取精，合理应用。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">（当然YELP这种TAB调整方法也存在一定的问题，在Usability of iPad Apps and Websites http://www.nngroup.com/reports/mobile/ipad/ 49页有详细的解释）</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">使用过大量的iphone平台客户端，再回头看看iphone官方出的 iPhone Human Interface Guidelines关于iphone设计组件的介绍，似乎这个百来页的文档更容易让设计师缩手缩脚，以为这样就是iPhone，遵循这样的诸如picker，slidebar，web view 等设计方式才是真正的iphone…</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">在具体的设计过程中，每当提出一些设计方案，来自其他设计师或开发人员的质疑竟然都是：有没有这样的设计，我想iphone这样做不太符合固有的一些规范…</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">我想完全错了，它只是一个基本的不能再基本的规范，数以十万级的iphone客户端各出奇招，将iphone本来的基本设计规范演绎的精彩纷呈就是最好的证明（虽然这些客户端中有些设计的不怎么样，还有相当多的客户端将UI演绎到了极致）。</p>
+ 
+<div style="float:left;margin:0px 8px 20px 0px"><img title="IMG_0211" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0210.png" alt="" width="310" height="467"></div>
+ 
+<div style="float:left;margin:0px 0px 20px 8px"><img title="IMG_0213" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0214.png" alt="" width="311" height="469"></div>
+ 
+<p> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">        Central是一个非典型的单窗口应用程序（alian cooper about face 一书中有关于单窗口，多窗口应用程序的分析，虽然是针对web应用，但对手机是同样的道理），几乎所有的操作都围绕地图进行，在展示地图层级的方式上，central没有使用Picker（实际上也不合适使用，具体可参看iPhone Human Interface Guidelines中的介绍）或者Table views，而是独辟蹊径弹出一列行为（图标）进行选择，不同的行为（图标）产成不同的结果在地图页面展示，几乎不需要任何的用户短时记忆便可顺利完成。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">Central搜索功能，Location功能更是让人眼前一亮，如果我们死扣所谓的“UI Guideline”，恐怕我们根本没有办法将如此丰富的功能恰当的安排在320*480的舞台上，这些功能松紧有度而又先后有序，谁能说这种优良设计是iphone平台的专利？</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">直到现在从事iphone或android 设计，更多的人（甚至包括一些设计师）更愿意看到已经存在的“设计样本”才会结束原本“创意设计”的争论，真是设计“突破”的大敌。</p>
+ 
+<div style="float:left;margin:0px 8px 20px 0px"><img title="IMG_0207" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0235.png" alt="" width="307" height="457"></div>
+ 
+<div style="float:left;margin:0px 0px 20px 8px"><img title="IMG_0209" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0238.png" alt="" width="299" height="456"></div>
+ 
+<p>  </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt"> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">点击头像显示的更多操作，MSN的处理方式相当的巧妙，操作的前后承接给用户的引导恰到好处，whrrl的notification机制并没有使用传统的badge，而是在首页以弧形截面标识出来，当有信息进来的时候，弧形截面就显示为橘黄色以来提醒。</p>
+ 
+<div style="float:left;margin:0px 8px 20px 0px"><img title="IMG_0207" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0249.png" alt="" width="313" height="468"></div>
+ 
+<div style="float:left;margin:0px 0px 20px 8px"><img title="IMG_0209" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0256.png" alt="" width="301" height="469"></div>
+ 
+<p> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt"> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">基于SNS的网站以及最近成为潮儿的微博，都有一个很重要的模块：好友或关注的人的动态表单，因为这个动态的更新速度非常的快，不可能保存在本地让用户逐一阅读（实际上这些动态不见得都是用户需要的），有一个非常好的设计策略就是显示最新的几十条，如果查看旧的动态（相对新的而言），就点击更多，当然可能当前查看的过程中，又有许多新的动态，但是没有加载到当前列表中，就需要刷新，上图呈现的微博（新浪，腾讯）根据 iphone固有的UI特性（滑动到列表的底部开始缓冲，这个和一些显示的物理现象非常贴切）以及从上到下的自然顺序（习惯性的认为上面是最新的，下面是最旧的，这是习惯用户，可参考Do not make me think一书 关于习惯用法章节），产生的聪明设计“下拉刷新”，对于寸土寸金的iphone屏幕，合理显示且平易近人。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">这种聪明设计并不是iphone的设计专利，在具有同样使用习惯的android平台上也一样可以使用，只是使用方式有所差异（android平台并没有滑动列表到底部缓冲的习惯，所以刷新按钮和显示更多按钮需要显性的出现在列表的起点和终点而不是像iphone通过下拉操作完成刷新，所以可以藏起来）</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">Page indicator是多个页面进行滑动切换的标识，是iphone平台的一个聪明设计组件。</p>
+ 
+<div style="float:left;margin:0px 8px 20px 0px"><img title="IMG_0207" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0258.png" alt="" width="315" height="462"></div>
+ 
+<div style="float:left;margin:0px 0px 20px 8px"><img title="IMG_0209" src="http://www.ucd-grow01.com/wp-content/uploads/2010/09/IMG_0259.png" alt="" width="305" height="464"></div>
+ 
+<p> </p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">      上图显示的appstore对某个产品进行介绍，产品图片的浏览模式，恰当的使用page indicator，一方面防止过多的图片累加导致页面过长，另一方面在初期获取数据的时候也适当的缓解了服务器的压力。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">右图是手机QQ浏览器1.2的首页面，将快速链接以page indicator的形式来组织，恰当利用了iphone用户的使用习惯，应用非常的巧妙。</p>
+ 
+<p style="text-indent:.3in;line-height:20.0pt">而whrrl将page indicator干脆放在了导航栏作为标题的一部分，我不假思索就非常清楚左右滑动可以轻松切换至其他页面。</p><p>源地址：<a href="http://www.ucd-grow01.com/?p=207">http://www.ucd-grow01.com/?p=207</a></p>

@@ -1,0 +1,73 @@
+---
+layout: post
+title:  "QQ安全我做主—手机令牌2.0设计分享"
+date:   2010-12-24 10:31:46
+author: CDCer
+categories: program
+---
+
+## QQ安全我做主—手机令牌2.0设计分享
+### by CDCer
+### at 2010-12-24 10:31:46
+### original <http://cdc.tencent.com/?p=3409>
+
+<p><a rel="attachment wp-att-3418" href="http://cdc.tencent.com/?attachment_id=3418"></a><a rel="attachment wp-att-3423" href="http://cdc.tencent.com/?attachment_id=3423"></a>　　一款小小的工具软件，如何赢得  iPhone app store4星级+评价；Android 电子市场4.5星评价，让我与您一起分享手机令牌的设计过程。<span></span></p>
+<p><strong>什么是手机令牌？</strong></p>
+<p>　　手机令牌是通过6位动态密码保护QQ帐号、Q币和游戏装备等虚拟财产安全的手机软件。手机令牌每30S更换一次动态密码，用户在敏感操作的时候验证动态密码，以此保障自己的帐号安全。简单的说：手机令牌是一个动态密码的生成软件。是我们专为保护用户QQ帐号安全设计的手机APP。</p>
+<p>　　设计工作主要包括：手机令牌风格设定、新手绑定、更换及设置流程，以及AQ网站宣传三部分。</p>
+<p>　　下载地址：<a href="http://aq.qq.com/cn/manage/token/download">http://aq.qq.com/cn/manage/token/download</a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/12.png" alt="" width="720" height="697"></p>
+<p><a rel="attachment wp-att-3413" href="http://cdc.tencent.com/?attachment_id=3413"></a></p>
+<p><a rel="attachment wp-att-3411" href="http://cdc.tencent.com/?attachment_id=3411"></a></p>
+<p>　　如何把一个简单的工具型软件做好，我们做了以下设计思考：</p>
+<p><strong>一、确定清晰的框架和结构</strong></p>
+<p>　　手机令牌2.0是一款工具类型的APP，在做框架设计的时候，应展现的是此APP的主要界面（动态密码），其次才是“设置”操作。</p>
+<p>　　我们利用iPhone平台的特性，将放在了正面与背面进行展示，使得此软件结构清晰明了。而在Android平台，我们则利用了本身的menu菜单键呼出option菜单的方式进行设置操作。 </p>
+<p>iPhone平台：</p>
+<p><a rel="attachment wp-att-3414" href="http://cdc.tencent.com/?attachment_id=3414"></a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/21.png" alt="" width="720" height="360">　</p>
+<p>Android平台：</p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/31.png" alt="" width="320" height="480"></p>
+<p>　　</p>
+<p><a rel="attachment wp-att-3417" href="http://cdc.tencent.com/?attachment_id=3417"></a></p>
+<p><a rel="attachment wp-att-3418" href="http://cdc.tencent.com/?attachment_id=3418"></a></p>
+<p><strong>二、激活和使用的操作流程便捷性，细节决定成败</strong></p>
+<p>　　为了让用户能快速了解如何使用令牌，每一部操作都在考虑用户预期如何，用户操作后所得到的反馈如何，是否准确，令牌在产品的规划和设计的细节上都充分考虑了这些。</p>
+<p>　　用户在第一次打开产品时，需要app自动发送一条短信确认身份后才能激活，在使用过程中，我们需要充分的提醒用户每一步操作的原因，下一步会怎样，还有操作后的反馈是怎样。而令牌自发布后，没有接到一例关于使用上的投诉或疑问，而令牌本身，在使用上，也没有提供任何一个FAQ，我们将教育结合在了操作和使用当中。</p>
+<p>　　令牌在初期规划时，设计师利用了草图设计软件mockups，设计了低保真交互原型初稿，快速搭建使用流程并与产品讨论修改，流程界面如下图：</p>
+<p><a rel="attachment wp-att-3415" href="http://cdc.tencent.com/?attachment_id=3415"></a></p>
+<p><a rel="attachment wp-att-3419" href="http://cdc.tencent.com/?attachment_id=3419"></a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/4.png" alt="" width="720" height="302">　</p>
+<p>　　</p>
+<p><strong>三、遵循平台软件设计规范</strong></p>
+<p>　　我们的产品设计团队虽然只有3人，但是对于细节和精品的追求，让我们决定针对不同平台，完全重新设计产品交互/UI，每一个细节都按照系统特色重新设计。</p>
+<p>　　iPhone令牌的“设置”按键一目了然，即按即点，点击后界面翻转至背面进行设置，对于Android令牌，则必须充分利用“menu”和“返回”的物理按键，这样也使得Android的页面更加简洁：</p>
+<p><a rel="attachment wp-att-3420" href="http://cdc.tencent.com/?attachment_id=3420"></a></p>
+<p><a rel="attachment wp-att-3427" href="http://cdc.tencent.com/?attachment_id=3427"></a><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/5.png" alt="" width="642" height="480"> </p>
+<p>　　</p>
+<p><strong>四、</strong><strong>拟物化风格，移动设计的灵魂</strong></p>
+<p>　　经过总结和分析各类手持设备中的项目，尤其是在触摸屏手持设备中，发现了UI拟物化风格有其必然性和合理性，虚拟的体验来源于真实生活的实际体验的积累，让指尖在与设备互动中感受正式的场景。结合手机令牌的用户需要，以及各个平台上手机特色需要，大胆进行设计畅想。</p>
+<p>　　因此手机令牌选择了盾牌作为拟物的核心要素，盾牌是自然的保护与安全的代言，直接让用户感觉到手机令牌对QQ安全的呵护。</p>
+<p>　　当然单纯的盾牌并不能引发视觉冲击，也不能解决令牌中一堆数字展现的单调乏味。所以我们创造性的引入了类似心电图的概念，表达了数字更新的同时增添了科技感，而数字的快速翻动和变化的效果，让数字更换的情景表现的更加淋漓尽致。尤其是有很多用户反馈，会一直盯着手机屏幕中，动态密码每隔30秒跳跃的动画看，也许这就是设计中的细节吸引了用户，打动了用户。</p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/6.png" alt="" width="720" height="573"></p>
+<p><a rel="attachment wp-att-3421" href="http://cdc.tencent.com/?attachment_id=3421"></a></p>
+<p><a rel="attachment wp-att-3423" href="http://cdc.tencent.com/?attachment_id=3423"></a></p>
+<p><a rel="attachment wp-att-3424" href="http://cdc.tencent.com/?attachment_id=3424"></a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/7.png" alt="" width="720" height="573">　</p>
+<p>　　</p>
+<p><strong>五、让用户感到惊喜，引入手势操作（高级功能）</strong></p>
+<p>　　令牌是一款非常单纯的工具软件，如何在这样的简单软件中引入手势，给用户惊喜，让用户在使用时也能挖掘出一些高级功能，从而提高用户体验，是一个值得考虑的问题。最后，我们考虑到了令牌时间校准这样一个功能，虽然用户使用的时间不多，但是对于使用此功能的用户，将会非常得意于此功能，因为我们引入了晃动校准时间，晃动本身就有将无序变为有序之意。在增加用户体验的同时，符合用户操作预期。</p>
+<p><strong>六、屏幕适配</strong></p>
+<p>　　这个难题在Android系统上格外突出，如何适配android手机不同像素的分辨率，320×240，480×320，800×480，854×480？</p>
+<p>　　出多个版本？我们只有一位视觉设计师和一位开发同学，必须在资源有限的情况下用一个版本解决这些适配问题。在闪屏画面，如何做到一张图片适配这么多屏幕？而保证不出现字迹模糊或者图片变形？</p>
+<p>　　我们采用了一个非常简单的方法，闪屏画面中间采用了过渡色，下方采用纯白色处理。对于闪屏界面，直接默认先画出纯白色的背景，然后将闪屏图片置顶。形成如下图：</p>
+<p><a rel="attachment wp-att-3425" href="http://cdc.tencent.com/?attachment_id=3425"></a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/8.png" alt="" width="720" height="395">　</p>
+<p>　　对于令牌主页面的全拟物风格，如何适应这些不同的分辨率，我们也做了统一适配处理：我们先采用了木材背景填充页面所有位置,针对不同的分辨率，程序先检测手机分辨率，然后针对不同的分辨率，将盾牌摆放在不同的高度。当然，高度还要充分考虑到menu键呼出option菜单后的效果，大家可以留意下不同手机看到的盾牌距离状态栏的距离，如下图所示： </p>
+<p><a rel="attachment wp-att-3426" href="http://cdc.tencent.com/?attachment_id=3426"></a></p>
+<p><img src="http://cdc.tencent.com/wp-content/uploads/2010/12/9.png" alt="" width="800" height="637">　</p>
+<p>　　其他场景也采用了类似方法处理屏幕适配性。</p>
+<p>　　在进行了充分的思考后，我们使用了一个670k的安装包，适配了Android的所有机型，并且在电子市场获得了4.5星级的高分。</p>
+<p><strong>七、项目组全员参与产品体验与设计</strong></p>
+<p>　　手机令牌的整个项目过程中，不少细节的优化，是来自于产品和开发同学的创意。</p>
+<p>　　在此，特别感谢为手机令牌项目付出努力的产品和开发同学，没有你们的努力与建议，手机令牌不会取得现在的成绩！</p>

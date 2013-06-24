@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "Safari 6的重要更新"
+date:   2012-08-02 11:11:17
+author: 神飞
+categories: program
+---
+
+## Safari 6的重要更新
+### by 神飞
+### at 2012-08-02 11:11:17
+### original <http://www.qianduan.net/safari-6-critical-updates.html>
+
+<p>苹果在7月25日发布了新的OSX mountain lion系统，Safari 6.0也随之发布，这次更新有比较大的功能和性能改进，我们来了解下：</p>
+<ul>
+<li>
+<strong>不支持Windows</strong>——至少到现在为止尚未发布Windows版本，之前safari对Windows的版本基本是同时发布的。好吧，这未必是坏事~~
+</li>
+<li><strong>audio api</strong>——终于支持了</li>
+<li>
+<strong><a href="http://www.qianduan.net/what-is-webkit-filter.html" title="-webkit-filter是神马？">css3 filter</a></strong>——这个很赞，虽然在webkit nightly和chrome中早已提供了支持</li>
+<li>
+<strong>HTML5 notification</strong>——支持notification api，并整合到mountain lion系统的通知中心中</li>
+<li>
+<strong>HTML5 timed text track</strong>——定时文本轨道，用于为媒体元素指定定时文本，比如，视频的字母，音频的歌词等，用法实例：
+
+<div><table><tr><td><pre style="font-family:monospace"><span style="color:#009900">&lt;video <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sample.ogv&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;captions&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleCaptions.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;descriptions&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleDesciptions.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;chapters&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleChapters.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;subtitles&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleSubtitles_de.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;de&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;subtitles&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleSubtitles_en.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;subtitles&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleSubtitles_ja.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;ja&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;subtitles&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;sampleSubtitles_oz.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;oz&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;metadata&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;keyStage1.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span> <span style="color:#000066">label</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;Key Stage 1&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;metadata&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;keyStage2.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span> <span style="color:#000066">label</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;Key Stage 2&quot;</span>&gt;</span>  
+   <span style="color:#009900">&lt;track kind<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;metadata&quot;</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;keyStage3.srt&quot;</span> srclang<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;en&quot;</span> <span style="color:#000066">label</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;Key Stage 3&quot;</span>&gt;</span>  
+<span style="color:#009900">&lt;<span style="color:#66cc66">/</span>video&gt;</span></pre></td></tr></table></div>
+
+</li>
+<li>
+<strong>HTML5 media synchronization</strong>——媒体同步，可以精确控制多个媒体文件之间的同步，比如，你可以为一首歌曲提供两个音频文件，一个是伴奏，一个是人声原唱，可以用本方法提供类似KTV的功能了。详细了解请<a href="http://www.whatwg.org/specs/web-apps/current-work/multipage/the-video-element.html#synchronising-multiple-media-elements" title="HTML5 synchronising multiple media elements">查看规范</a>。
+</li>
+<li>
+<strong>Javascript增强</strong>——支持最新的ECMA 262 version 5.1标准。
+</li>
+<ul>
+<h4>顺便吐下槽：</h4>
+<p>前端开发者大都喜新厌旧，但是从另一个角度讲是拥抱变化，所以对于chrome、safari、firefox、opera等“上进”的浏览器都比较喜欢，它们也都能得到开发者的支持和拥护，倒是最近有人说不要再指责IE浏览器了之类的说法，实在不敢苟同，IE9确实让人感觉微软发力了，但看到IE10你会又想到噩梦。。。</p>
+<p>参考资料：</p>
+<ul>
+<li>
+<a href="https://developer.apple.com/technologies/safari/whats-new.html">https://developer.apple.com/technologies/safari/whats-new.html</a></li>
+<li>
+<a href="https://developer.mozilla.org/en/HTML/Element/track">https://developer.mozilla.org/en/HTML/Element/track</a></li>
+</ul></ul></ul>

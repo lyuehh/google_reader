@@ -1,0 +1,112 @@
+---
+layout: post
+title:  "84个纯CSS GUI图标"
+date:   2011-07-12 20:44:02
+author: yuanyi
+categories: program
+---
+
+## 84个纯CSS GUI图标
+### by yuanyi
+### at 2011-07-12 20:44:02
+### original <http://heikezhi.com/2011/07/12/pure-css-gui-icons/>
+
+<p><a href="http://nicolasgallagher.com/">Nicolas Gallagher</a>使用<a href="http://nicolasgallagher.com/pure-css-gui-icons/">纯CSS及HTML制作了84个实验性质的GUI图标</a>，这些图标只是他尝试通过创造性的方法解决问题的习作，目前还不建议在产品环境使用它们。</p>
+<p>你可以在<a href="http://nicolasgallagher.com/pure-css-gui-icons/demo/">这里看到所有图标的DEMO</a>，目前支持Firefox 3.5+，Safari 5+，Chrome 5+以及Opera 10.6+。</p>
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/07/Screen-shot-2011-07-12-at-8.31.09-PM.png" alt="" title="Screen shot 2011-07-12 at 8.31.09 PM" width="528" height="394"></p>
+<p>这些图表使用了html的ul和li标签：</p>
+<pre name="code">
+&lt;ul&gt;
+   &lt;li class=&quot;power&quot;&gt;&lt;a href=&quot;#non&quot;&gt;Power&lt;/a&gt;&lt;/li&gt;
+   &lt;li class=&quot;play&quot;&gt;&lt;a href=&quot;#non&quot;&gt;Play&lt;/a&gt;&lt;/li&gt;
+   &lt;li class=&quot;stop&quot;&gt;&lt;a href=&quot;#non&quot;&gt;Stop&lt;/a&gt;&lt;/li&gt;
+   &lt;li class=&quot;pause&quot;&gt;&lt;a href=&quot;#non&quot;&gt;Pause&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<p>没个图标都使用独立的样式，以展开（expand）图标为例：</p>
+<pre name="code">
+.expand a:before {
+   content:"";
+   position:absolute;
+   top:50%;
+   left:1px;
+   width:5px;
+   height:0;
+   border-width:7px 7px 0;
+   border-style:solid;
+   border-color:transparent #c55500;
+   margin-top:-4px;
+   /* css3 */
+   -webkit-transform:rotate(-45deg);
+   -moz-transform:rotate(-45deg);
+   -o-transform:rotate(-45deg);
+   transform:rotate(-45deg);
+}
+
+.expand a:after {
+   content:"";
+   position:absolute;
+   top:50%;
+   left:5px;
+   width:8px;
+   height:8px;
+   border-width:3px 0 0 3px;
+   border-style:solid;
+   border-color:#c55500;
+   margin-top:-6px;
+}
+
+.expand a:hover:before,
+.expand a:focus:before,
+.expand a:active:before {
+   border-color:transparent #730800;
+}
+
+.expand a:hover:after,
+.expand a:focus:after,
+.expand a:active:after {
+   border-color:#730800;
+}
+</pre>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="CSS Reset的历史（二）" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F15%2Fthe-history-of-css-resets-part-2%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F12%2Fpure-css-gui-icons%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/15/12462513.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">CSS Reset的历史（二）</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="CSS Reset的历史(一）" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F14%2Fthe-history-of-css-resets-part-1%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F12%2Fpure-css-gui-icons%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/15/12279200.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">CSS Reset的历史(一）</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="我们的最佳实践正在害死我们" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F13%2Four-best-practices-are-killing-us%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F12%2Fpure-css-gui-icons%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">我们的最佳实践正在害死我们</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="“生意人”的挑战" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F16%2Fthe-challenges-of-the-business-guy%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F12%2Fpure-css-gui-icons%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">“生意人”的挑战</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/539707804/heikezhi/feedsky/s.gif?r=http://heikezhi.com/2011/07/12/pure-css-gui-icons/" border="0" height="0" width="0">

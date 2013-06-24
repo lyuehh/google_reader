@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "REST 及其版本控制"
+date:   2010-06-17 17:48:00
+author: Mark Little
+categories: program
+---
+
+## REST 及其版本控制
+### by Mark Little
+### at 2010-06-17 17:48:00
+### original <http://www.infoq.com/cn/news/2010/06/rest-versioning>
+
+REST环境中的服务版本控制问题被人们一次又一次地提及，这次Ganesh Prasad提出了一个方案，它不再更改服务的URL，而是首要考虑将版本控制背后的根本原因。 <i>By Mark Little</i>

@@ -1,0 +1,59 @@
+---
+layout: post
+title:  "Red5总结"
+date:   2010-10-19 18:52:00
+author: 青青豆
+categories: program
+---
+
+## Red5总结
+### by 青青豆
+### at 2010-10-19 18:52:00
+### original <http://www.cnblogs.com/QQingdou/archive/2010/10/19/1855766.html>
+
+<p><p>      做网站开发已经几年有余了，最近终于忙完了自己的<a href="http://www.qqingdou.com/">青青豆</a>,以前始终没有抽出时间自己写点什么，偶尔拿起偶尔放下，终究是空，希望自己多多坚持，也希望博友的多多支持，分享自己一些积累的经验！</p>
+<p>      前一段时间公司鉴于首页不错的流量，希望增加一些格外的收入或者做些视频推广，需要增加一个FLASH流媒体服务器播放视频，本来对于做C#.NET我来说，这个项目应该不是我来接的，最后可能是各位博友想的那样，&quot;梦里花落知多少&quot; 落到了我的怀里，‘杯具’还是这样发生了。</p>
+<p>     <a href="http://osflash.org/red5"> Red5</a>的主要功能和Macromedia公司的FMS类似，提供基于Flash的流媒体服务的一款基于Java的开源流媒体服务器。它由Java语言编写，使用RTMP作为流媒体传输协议，这与FMS完全兼容。它具有流化FLV、MP3文件，实时录制客户端流为FLV文件，共享对象，实时视频播放、Remoting等功能。用Red5替换FMS后,客户端不用更改可正常运行。 </p>
+<p>      Red5竟然是用JAVA编写，我.NET，  无语了，那么用FMS吧，对于一个试用型项目，几千元的RMB似乎不可能，只能硬着头皮继续研究Red5。</p>
+<p>     <strong> 准备工作：</strong></p>
+<p><strong>       </strong>一、JAVA环境配置：</p>
+<p><strong>           </strong>下载的JDK安装包，我选择的是<a href="http://www.java.net/download/jdk6/6u10/promoted/b32/binaries/jdk-6u10-rc2-bin-b32-windows-i586-p-12_sep_2008.exe">jdk-6u10-rc2-bin-b32-windows-i586-p-12_sep_2008.exe</a>，参考地址<a href="http://aben328.javaeye.com/blog/341499">http://aben328.javaeye.com/blog/341499</a>。</p>
+<p>       二、确认你的安装环境并选择RED5安装包：</p>
+<p>            如果是Windows操作系统，可以下载对应的安装文件<a href="http://www.red5.org/downloads/0_9/setup-Red5-0.9.0.exe"><strong>Red5 0.9.0 Final</strong> (27 January 2010) </a>，不是最新的（不一定是最好的），也可以下载对应的源代码自己进行研究<a href="http://www.red5.org/downloads/0_9/red5-src-0.9.0.zip">Source</a>，其他的操作可以参考该页面<a href="http://code.google.com/p/red5/">http://code.google.com/p/red5/</a>。</p>
+<p>      准备工作完成，一切就绪。</p>
+<p>      <strong>安装工作：</strong></p>
+<p><strong>         </strong>步骤一：首先安装上面下载的JDK安装包（<span style="color:#ff6600;background-color:#ffffff">备注：如果你先安装RED5，会提示找不到JDK，你必须先完成步骤一在继续以下操作</span>），安装时首先会安装JDK，必须记住安装路径，保持默认即可，默认是C:\Program Files\Java\jdk1.6.0_10，然后安装JRE,保持默认即可，默认是C:\Program Files\Java\jre6，安装完成后，必须配置环境变量，我的电脑--&gt;属性--&gt;高级 选项卡--&gt;环境变量(N)--&gt;找到 系统变量(S) 下 新建（W），然后输入 变量名（N）：JAVA_HOME，变量值（V）：上面JDK安装路径C:\Program Files\Java\jdk1.6.0_10，确定即可，JDK准备就绪。</p>
+<p>         步骤二：安装RED5，安装RED5时，会要求输入外网可访问的IP,比如101.23.45.67,然后输入可访问的端口（Port），一般是5080,最后安装完成即可。</p>
+<p>     <strong>测试工作：</strong></p>
+<p>          a) 一切安装就绪，现在应该体验一下RED5的真实面目了，首先启动RED5服务：重启电脑然后 我的电脑--&gt;系统服务--&gt;启动 RED5服务 或者 直接在安装目录下找到Red5.bat启动即可，接着在IE输入<a href="http://101.23.45.67:5080/">http://101.23.45.67:5080/</a>,（你刚刚输入的IP地址和Port),没有忘吧，回车进行测试，</p>
+<p>     会出现RED5欢迎页面，如果出现以下页面，说明RED5安装成功，如果不成功，请确认IP是否正确和可访问，Port是否正确且没有被占用。</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/170680/2010101917544719.jpg" alt=""></p>
+<p>         b)安装 DEMO</p>
+<p>        点击 <span style="color:#ff0000">Install</span>,进入安装页面，连接成功出现一下页面:</p>
+<p>        <img src="http://pic002.cnblogs.com/images/2010/170680/2010101918070075.jpg" alt=""></p>
+<p> </p>
+<p>       选中要安装的 DEMO，然后点击 Install即可，比如说 SOSample。</p>
+<p>       返回上个页面，点击 DEMO连接进行测试，然后点击上一步安装的DEMO，比如<strong>Shares Ball </strong>的<span style="color:#ff0000"> View demo</span>,进行测试，<span style="color:#ff6600">注意必须把rtmp://localhost/SOSample 改为 rtmp://101.23.45.67/SOSample,<span style="color:#000000">点击Connect TO Red5按钮，右边会变成绿色，否则请检查是否连接成功。在不同页面进行同样操作，如果拉动其中一个的页面的red5图标， 另外一个页面的RED5图标也按照相同轨迹移动，说明安装RED5成功。</span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000"> </span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000"><strong>       配置站点：</strong></span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000">       打开RED5的安装目录下的webapps目录，新建自己需要的目录，如MyStream,r然后复制SOSample下的全部文件到</span></span><span style="color:#ff6600"><span style="color:#000000">MyStream,修改两个文件：</span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000">      一、</span></span>red5-web.properties </p>
+<p>              webapp.contextPath=/<span style="color:#ff6600"><span style="color:#000000">MyStream</span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000">      二、</span></span>web.xml</p>
+<p><span style="color:#ff6600"><span style="color:#000000">             </span></span>&lt;param-value&gt;/FlvStream&lt;/param-value&gt;</p>
+<p>      保存即可。</p>
+<p>     <span style="color:#ff6600"><span style="color:#000000">下一步在MyStream目录下放置.FLV文件的即可。<strong><span style="color:#ff0000">重启服务</span></strong></span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000"><strong><span style="color:#ff0000">      <br></span></strong></span></span></p>
+<p>      <strong>  RTMP服务测试：</strong></p>
+<p>        下载 RTMP播放器测试 <a href="http://www.longtailvideo.com/players/jw-flv-player/">http://www.longtailvideo.com/players/jw-flv-player/</a>，配置playlist.xml，将</p>
+<p>      &lt;location&gt;rtmp://<span style="color:#ff6600">101.23.45.67</span>/<span style="color:#ff6600"><span style="color:#000000">MyStream</span></span>&lt;/location&gt;<br>      &lt;identifier&gt;FileName&lt;/identifier&gt;//你FLV文件名称，不需要扩展名<span style="color:#ff6600"><span style="color:#000000"> </span></span></p>
+<p><span style="color:#ff6600"><span style="color:#000000">      OK,IE浏览</span></span>mediaplayer.html 文件，出现视频播放，恭喜你，一切成功！更多介绍，请详见参考资料。</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>      <strong>参考资料</strong>：<a href="http://osflash.org/red5">http://osflash.org/red5</a></p>
+<p>                    <a href="http://code.google.com/p/red5/">http://code.google.com/p/red5/</a></p>
+<p>                    <a href="http://labs.influxis.com/?p=47">http://labs.influxis.com/?p=47</a></p>
+<p>                    <a href="http://developer.longtailvideo.com/trac/wiki/Player5FlashVars">http://developer.longtailvideo.com/trac/wiki/Player5FlashVars</a></p>
+<p> </p>
+<p>      转载请注明 来自于 <a href="http://www.cnblogs.com/QQingdou/">青青豆（QQingDou）</a> http://www.cnblogs.com/QQingdou/</p><img src="http://www.cnblogs.com/QQingdou/aggbug/1855766.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/QQingdou/">青青豆</a> 发表于 2010-10-19 18:52 <a href="http://www.cnblogs.com/QQingdou/archive/2010/10/19/1855766.html">原文链接</a></p><p>评论: 8　<a href="http://www.cnblogs.com/QQingdou/archive/2010/10/19/1855766.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/QQingdou/archive/2010/10/19/1855766.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77953/">假如苹果收购Facebook</a><span style="color:gray">(2010-10-20 13:19)</span><br>· <a href="http://news.cnblogs.com/n/77952/">优视科技声明：UC没有扫描或上传用户通讯录</a><span style="color:gray">(2010-10-20 13:16)</span><br>· <a href="http://news.cnblogs.com/n/77951/">前端之王能否续写辉煌 JavaScript服务器端开发现状</a><span style="color:gray">(2010-10-20 13:12)</span><br>· <a href="http://news.cnblogs.com/n/77950/">支付宝：5年内无线支付将占半数以上交易总额</a><span style="color:gray">(2010-10-20 13:05)</span><br>· <a href="http://news.cnblogs.com/n/77949/">美团CEO王兴：门户团购做不大也死不了</a><span style="color:gray">(2010-10-20 13:03)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77936/">Java：不用就卸载吧！</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

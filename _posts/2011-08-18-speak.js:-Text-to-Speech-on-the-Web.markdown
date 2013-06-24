@@ -1,0 +1,27 @@
+---
+layout: post
+title:  "speak.js: Text-to-Speech on the Web"
+date:   2011-08-18 02:36:56
+author: azakai
+categories: program
+---
+
+## speak.js: Text-to-Speech on the Web
+### by azakai
+### at 2011-08-18 02:36:56
+### original <http://hacks.mozilla.org/2011/08/speak-js-text-to-speech-on-the-web/>
+
+<p>Text-to-Speech (TTS) can make content more accessible, but there is so far no simple and universal way to do that on the web. One possible approach is shown in <strong><a href="http://syntensity.com/static/espeak.html">this demo</a></strong>, which is powered by <a href="https://github.com/kripken/speak.js">speak.js</a>, a new 100% pure JavaScript/HTML5 TTS implementation. speak.js is a port of <a href="http://espeak.sourceforge.net/">eSpeak</a>, an open source speech synthesizer, from C++ to JavaScript using <a href="http://emscripten.org">Emscripten</a>.</p>
+<p>Compiling an existing speech synthesis engine to JavaScript is a good way to avoid writing a complicated project like eSpeak from scratch. Once compiled, the eSpeak code in speak.js doesn’t know it’s running on the web: speak.js uses the <a href="https://github.com/kripken/emscripten/wiki/Filesystem-Guide"> Emscripten emulated filesystem</a> to ‘fake’ the normal file reading and writing calls that the eSpeak C++ code has (fopen, fread, etc.). This allows the normal eSpeak datafiles to be used (either through an xhr, or by converting them to JSON and bundling them with the script file). The result of running the compiled eSpeak code is that it ‘writes’ a .wav file with the generated audio to the emulated filesystem. speak.js then takes that data, encodes it using base64, and creates a data URL. That URL is then loaded in an HTML5 audio element, letting the browser handle playback. (Note that while that is a very simple way to do things, it isn’t the most efficient. speak.js has not yet focused on speed, but with some additional work it could be much faster, if that turns out to be an issue.)</p>
+<p>Why would you want TTS in JavaScript? Well, with speak.js you can bundle a single .js file in your website, and then generating speech is about as simple as writing</p>
+<blockquote>
+<pre>speak("hello world")</pre>
+</blockquote>
+<p>(see the <a href="https://github.com/kripken/speak.js">speak.js website</a> for instructions). The generated speech will be exactly the same on all platforms, unlike if your users each did TTS in their own way (using an OS capability, or a separate program). speak.js can also be used to build browser addons in a straightforward way, since it’s pure JavaScript – no need for platform dependent binaries, and the addon will work the same on all OSes.</p>
+<p>A few more comments:</p>
+<ul>
+<li>JavaScript is getting more and more capable all the time. The development versions of the top JavaScript engines today can run code compiled from C++ only 3-5X slower than a fast C++ compiler, and getting even better. As a consequence, expanding the capabilities of the web platform can in many cases be done in JavaScript or by compiling to JavaScript, instead of adding new code to the browsers themselves, which inevitably takes longer – especially if you wait for all browsers to implement a particular feature.</li>
+<li>While speak.js uses only standards-based APIs, due to browser limitations it can’t work everywhere yet. It won’t work in IE, Safari or Opera since they don’t support typed arrays, nor in Chrome since it doesn’t support WAV data URLs. So currently speak.js only works properly in Firefox. However, the missing features just mentioned are not huge and hopefully those browser makers will implement them soon. It is also possible to implement workarounds in speak.js for these issues (see next comment).</li>
+<li>Help with improving speak.js is very welcome! One important thing we need is to implement workarounds for the issues that prevent speak.js from running on the browsers it currently can’t run on. Another goal is to build browser addons using speak.js. Please get in touch <a href="https://github.com/kripken/speak.js">on github</a> if you want to help out.</li>
+<li>eSpeak supports multiple languages so speak.js can too. You do need to include the additional language files though. <a href="http://syntensity.com/static/espeak_fr.html">Here</a> is an experimental build where you can switch between English and French support (note that it is an unoptimized build, so it will run slower).</li>
+</ul>

@@ -1,0 +1,273 @@
+---
+layout: post
+title:  "[原]Android玩乐系列：修改汇编代码支持原生高清来电大头贴（二）"
+date:   2012-09-04 09:08:21
+author: aimingoo
+categories: program
+---
+
+## [原]Android玩乐系列：修改汇编代码支持原生高清来电大头贴（二）
+### by aimingoo
+### at 2012-09-04 09:08:21
+### original <http://blog.csdn.net/aimingoo/article/details/7939116>
+
+<p>【</p>
+<p>本文分三篇。本篇提供一个最小的修改案例。更详细的修改请参考篇三：</p>
+<p><span style="white-space:pre"><a href="http://blog.csdn.net/aimingoo/article/details/7939132">http://blog.csdn.net/aimingoo/article/details/7939132</a></span></p>
+<p>】</p>
+<p><br>
+</p>
+<p>（前三节有关背景介绍请至：<a href="http://blog.csdn.net/aimingoo/article/details/7939093">http://blog.csdn.net/aimingoo/article/details/7939093</a>）</p>
+<p><br>
+</p>
+<p>4、修改前的准备工作<br>
+=======<br>
+这里介绍一些Android上的逆向工程的基础。首先，我们要操作Phone.apk，它其实也就是一个.zip文件，其中包括四个主要信息：<br>
+  - 资源文件：res\*.*和resources.arsc<br>
+  - 代码文件：classes.dex<br>
+  - 应用描述：AndroidManifest.xml<br>
+  - 签名信息：META-INF\*.*<br>
+apktool这个工具可以处理前三种数据，而签名信息则必须使用一个signapk.jar（有些工具包称为AutoSign）。<br>
+<br>
+<br>
+1）解包（缺省至Phone目录）<br>
+<span style="white-space:pre"></span>apktool d -f Phone.apk<br>
+<br>
+<br>
+注意我们接下来的修改都不会动到资源，所以事实上也可以不解开其中的资源文件。可以这样使用命令行：<br>
+<span style="white-space:pre"></span>apktool d -f -r Phone.apk<br>
+<br>
+<br>
+这样在编译回去的时候会快一点，而且也可以避免一些错误。——但很多时候的修改需要对照着资源文件来看，所以你也可以解一份有资源文件的版本放在旁边作参照。<br>
+<br>
+<br>
+<br>
+<br>
+2) 编译回.apk（指定从Phone目录）<br>
+<span style="white-space:pre"></span>apktool b -f Phone Phone2.apk<br>
+<br>
+<br>
+<br>
+<br>
+3) 对Phone2.apk加签名<br>
+<span style="white-space:pre"></span>java -jar signapk.jar platform.x509.pem platform.pk8 Phone2.apk Phone2_signed.apk<br>
+<br>
+<br>
+注意这时使用的签名文件为platform.x509.pem和platform.pk8，而不是我们平常用的testkey*.*。这是很关键的一处：Phone.apk必须使用platform.*来签名。<br>
+<br>
+<br>
+<br>
+<br>
+5、修改：初步<br>
+=======<br>
+我们将Phone.apk解到Phone目录之后。可以找到如下子目录：<br>
+<span style="white-space:pre"></span>Phone\smali\com\android\phone\<br>
+<br>
+<br>
+我们接下来主要修改两个文件：<br>
+<span style="white-space:pre"></span>CallCard.smali<br>
+<span style="white-space:pre"></span>InCallScreen.smali<br>
+注意这里的*.smali是另一种格式的源代码，它反编译自Dalvik虚拟机中执行码（opcode）。基本上，你可以认为这*.smali就是汇编代码（基于寄存器的虚拟机引擎）。好吧，但我们既然要“原生的”，那么就只好来改改这些汇编代码了。:(<br>
+<br>
+<br>
+1）对InCallScreen.smali只需要做一处修改<br>
+---------<br>
+找到：<br>
+<span style="white-space:pre"></span></p>
+<pre name="code">	.field private mMainFrame:Landroid/view/ViewGroup;</pre><br>
+改成：<br>
+<pre name="code">	.field public mMainFrame:Landroid/view/ViewGroup;</pre><br>
+我们需要在CallCard.smali中访问这个成员，所以它必须是公开的(public)。<br>
+<br>
+<br>
+2) 修改CallCard.smali，针对updateDisplayForPerson()方法<br>
+---------<br>
+找到：<br>
+<pre name="code">	.method private updateDisplayForPerson(Lcom/android/internal/telephony/CallerInfo; ...</pre><br>
+在该方法中，找到唯一一处showCachedImage()调用：<br>
+<pre name="code">	invoke-static {v0, v1}, Lcom/android/phone/CallCard;-&gt;showCachedImage(Landroid/widget/ImageView;Lcom/android/internal/telephony/CallerInfo;)Z
+	move-result v4
+	if-nez v4, :cond_2
+</pre><br>
+注意两点，一是我们要修改这个：<br>
+<pre name="code">	if-nez v4, :cond_2
+</pre><br>
+所以要先记下这个cond_2。第二点，上面的v0, v1, v4可能在具体的代码中有所不同，这也要留意，查找时不能依据这些寄存器。而修改时，也要注意寄存器的冲突和使用，有修改经验的就不多言了；没有经验的，则要仔细回顾一下汇编语言的知识。<br>
+<br>
+<br>
+接下来，我们改动上述一行，使之变成为：<br>
+<pre name="code">## ===》》》
+    if-eqz v4, :cond_20
+    move-object/from16 v0, p0
+    move-object/from16 v5, p4
+    invoke-virtual {v0, v1, v5}, Lcom/android/phone/CallCard;-&gt;showCachedBackground(Lcom/android/internal/telephony/CallerInfo;Lcom/android/internal/telephony/Call;)Z
+    move-result v4
+    goto :cond_2
+    :cond_20
+## end fix.</pre><br>
+这里，if-nez变成了if-eqz，而:cond_20这一标签用于插入一段代码，当这些代码执行完成时，仍然会到：<br>
+<pre name="code">	goto :cond_2
+</pre><br>
+这就是上面要记住cond_2的原因。至于:cond_20是可以随意取的，编译程序是按16进制自动升序来编号这些标签，而0x20号标签一般已经比较大了，不会与现有的标签冲突。当然，写成cond_30或cond_50也行的。<br>
+<br>
+<br>
+此外，这里还必须要注意v0, v5, v1和v4这四个寄存器的使用，必须参考这里的代码上下文为决定使用哪些个空闲的寄存器。其中v1是继承使用了前面的寄存器值，如果此前v1中不是放着CallerInfo的话，则要根据上下文再调整。反正，如果寄存器用错了的话……哈哈……Crash~~<br>
+<br>
+<br>
+【注：有一个简单的法子可以避免用错寄存器的问题，就是在将方法开始处的.locals nnn这里的nnn值改大几个，需要用几个寄存器，就加上几个。然后在我们插入的代码中，只使用最后的这几个寄存器号，也就不会冲突了。例如原来是.locals 4，改成.locals 8，则v4,v5,v6,v7这新添加的4个寄存器号，就总是安全的。】<br>
+<br>
+<br>
+<br>
+<br>
+3) 修改CallCard.smali，针对updatePhotoForCallState()方法<br>
+---------<br>
+这里的修改与上一例是相似的，只不过是针对updatePhotoForCallState()方法而已。找到：<br>
+<pre name="code">    invoke-static {v9, v3}, Lcom/android/phone/CallCard;-&gt;showCachedImage(Landroid/widget/ImageView;Lcom/android/internal/telephony/CallerInfo;)Z
+    move-result v9
+    if-nez v9, :cond_2  ## 《《《《===修改此处</pre><br>
+改动上面最后一行。变成：<br>
+<pre name="code">## ===》》》
+    if-eqz v9, :cond_20
+    move-object/from16 v5, p1
+    invoke-virtual {p0, v3, v5}, Lcom/android/phone/CallCard;-&gt;showCachedBackground(Lcom/android/internal/telephony/CallerInfo;Lcom/android/internal/telephony/Call;)Z
+    move-result v9
+    goto :cond_2
+    :cond_20
+## end fix.</pre><br>
+4) 添加新上面代码所需要的方法：showCachedBackground()<br>
+---------<br>
+上面两段函数都调用了一个方法，这个showCachedBackground()是我们这里“来电全屏大头贴”的主要功能实现代码。其它的修改，其实只是插个桩而已。代码如下，把它直接插到CallCard.smali这个文件的某个方法前/后面就可以了（我一般将它放在showCachedImage()函数声明的后面）：<br>
+<pre name="code">##
+## 【主函数：更新全屏大头贴】
+##
+.method public showCachedBackground(Lcom/android/internal/telephony/CallerInfo;Lcom/android/internal/telephony/Call;)Z
+    .locals 6
+    .parameter &quot;ci&quot;
+    .parameter &quot;call&quot;
+
+
+    .prologue
+    invoke-virtual {p2}, Lcom/android/internal/telephony/Call;-&gt;getState()Lcom/android/internal/telephony/Call$State;
+    move-result-object v0
+    invoke-virtual {v0}, Lcom/android/internal/telephony/Call$State;-&gt;isAlive()Z
+    move-result v0
+    if-nez v0, :cond_0
+
+
+    :goto_0
+    return v0
+
+
+    :cond_0
+    if-nez p1, :cond_1
+
+
+    :goto_1
+    const/4 v0, 0x0
+    goto :goto_0
+
+
+    :cond_1
+    iget-boolean v2, p1, Lcom/android/internal/telephony/CallerInfo;-&gt;isCachedPhotoCurrent:Z
+    if-eqz v2, :goto_1
+
+
+    iget-object v2, p1, Lcom/android/internal/telephony/CallerInfo;-&gt;cachedPhoto:Landroid/graphics/drawable/Drawable;
+    if-eqz v2, :goto_1
+
+
+    iget-object v3, p0, Lcom/android/phone/CallCard;-&gt;mInCallScreen:Lcom/android/phone/InCallScreen;
+    const/16 v4, 0xF0
+    invoke-virtual {v2}, Landroid/graphics/drawable/Drawable;-&gt;getIntrinsicWidth()I
+    move-result v5
+    if-lt v5, v4, :goto_1
+
+
+    const/16 v4, 0xF0
+    invoke-virtual {v2}, Landroid/graphics/drawable/Drawable;-&gt;getIntrinsicHeight()I
+    move-result v5
+    if-lt v5, v4, :goto_1
+
+
+    iget-object v3, v3, Lcom/android/phone/InCallScreen;-&gt;mMainFrame:Landroid/view/ViewGroup;
+    if-eqz v3, :goto_1
+
+
+    invoke-virtual {v3, v2}, Landroid/view/ViewGroup;-&gt;setBackgroundDrawable(Landroid/graphics/drawable/Drawable;)V
+
+
+    const/16 v2, 0x8
+    iget-object v3, p0, Lcom/android/phone/CallCard;-&gt;mPhoto:Landroid/widget/ImageView;
+    invoke-virtual {v3, v2}, Landroid/widget/ImageView;-&gt;setVisibility(I)V
+
+
+##    const/16 v2, 0x0
+##    invoke-virtual {p0, v2}, Lcom/android/phone/CallCard;-&gt;setPersonInfoStyle(Z)V
+
+
+    goto :goto_0
+.end method
+</pre><br>
+<br>
+6、对初步修改的说明<br>
+=======<br>
+除了2、3步中的插桩代码之外，整个功能其实就依赖一个完全手写汇编的showCachedBackground()。它需要操作到当前类CallCard的<br>
+<pre name="code">	CallCard.InCallScreen.mMainFrame</pre>成员。而该成员在InCallScreen类中被声明为private，所以需要在第1步中把InCallScreen中的该声明改成public。<br>
+<br>
+<br>
+showCachedBackground()的思路很简单。由于CallCard.smali总是要从“联系人”中装载头像，而此前我们已经用“HD Contact Photos”把这个头像存成了“高清、全屏大头贴（图片）”，那么就只要将这个取出来的头像贴在背景上就可以了。<br>
+<br>
+<br>
+高清全屏来电大头贴，不就是把大头贴在背景上嘛。^^.<br>
+<br>
+<br>
+所以在分析整个Phone.apk时，我发现它原本取到一个mPhoto之后，为了便于显示就将它存在CallerInfo.cachedPhoto里了。既如此，那么在原有流程的updatePhotoForCallState()与updateDisplayForPerson()方法中，当它调用showCachedImage()来显示了图片之后，我们也就只需要把这个图片在背景上“贴”一下就可以了。<br>
+<br>
+<br>
+而这个背景，就是：CallCard.InCallScreen.mMainFrame<br>
+<br>
+<br>
+很简单嘛。<br>
+<br>
+<br>
+上面的showCachedBackground()汇编代码翻译成java代码就是：<br>
+<pre name="code">public boolean showCachedBackground(CallerInfo paramCallerInfo, Call paramCall)
+{
+  // 电话是在用状态（来电或呼出或接通）
+  boolean bool = paramCall.getState().isAlive();
+
+
+  // paramCallerInfo.isCachedPhotoCurrent有效
+  bool = bool &amp;&amp; (paramCallerInfo != null) &amp;&amp; paramCallerInfo.isCachedPhotoCurrent;
+
+
+  if (bool) {
+    Drawable localDrawable = paramCallerInfo.cachedPhoto;
+
+
+    if ((localDrawable.getIntrinsicWidth() &lt; 240) || (localDrawable.getIntrinsicHeight() &lt; 240)) {
+      bool = false
+    }
+    else {
+      // 置mMainFrame的背景
+      this.mInCallScreen.mMainFrame.setBackgroundDrawable(localDrawable);
+    
+      // 使mPhoto不显示（原来的头像就不必显示了嘛）
+      this.mPhoto.setVisibility(8);
+
+
+      // 修改作个人信息的显示风格（备用，后文解释）
+      // setPersonInfoStyle(false);
+    }
+  }
+  return bool;
+}</pre><br>
+<br>
+<p></p>
+
+            <div>
+                作者：aimingoo 发表于2012-9-3 18:08:21 <a href="http://blog.csdn.net/aimingoo/article/details/7939116">原文链接</a>
+            </div>
+            <div>
+            阅读：6957 评论：9 <a href="http://blog.csdn.net/aimingoo/article/details/7939116#comments">查看评论</a>
+            </div>

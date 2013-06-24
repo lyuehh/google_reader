@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "在函数外存取局部变量的一个比喻"
+date:   2011-06-28 11:35:52
+author: 陈皓
+categories: program
+---
+
+## 在函数外存取局部变量的一个比喻
+### by 陈皓
+### at 2011-06-28 11:35:52
+### original <http://coolshell.cn/articles/4907.html>
+
+<p>在StackOverflow上一这样一个<a href="http://stackoverflow.com/questions/6441218/can-a-local-variables-memory-be-accessed-outside-its-scope/6445794#6445794">关于C/C++的问题</a>，问问题的人给了一个代码如下：</p>
+<pre>int * foo()
+{
+    int a = 5;
+    return &amp;a;
+}
+
+int main()
+{
+    int* p = foo();
+    cout &lt;&lt; *p;
+    *p = 8;
+    cout &lt;&lt; *p;
+}</pre>
+<p>你可以编译并运行这个代码（编译时会有一个Warning），结果是：5 8。看上去你可以存取一个函数内的局部变量。但这和我们理解的不一样——函数内的变量在函数退出时就被释放了，不应该在外部还可以被引用。当然，对于C/C++熟悉的人都知道其实并不是真正的释放，你依然还可以通过内存地址去进行操作，这是C/C++的内存管理的不安全性——指针可以用来乱指。</p>
+<p>这个问题的解答是比较简单的，但是这个问题有一个答案中的<a href="http://stackoverflow.com/questions/6441218/local-variables-memory-can-be-accessed-outside-its-scope/6445794#6445794">比喻非常精彩</a>。这个比喻是这样的——</p>
+<p><span></span>你在某个酒店订了一个房，你入住的时候，你放了一本书在这个酒店的抽屉里，但是你走的时候，你忘了这本书。而且，你还没有把这个房间的钥匙还回去。于是，你在未来某个时候，偷偷地回来，打开这个房间的门，你看到了你的书还在里间。当然，还还可以放回别的书。因为，这个酒店管理不会在你走的时候把你留下的书清走，而且，这个酒店的管理的安保措施不是那么严格，因为他信任每一个客人都会遵守管理条例。</p>
+<p>在这种情况下，如果你幸运的话，书还会在那里，也可能你的书已经没了。也有可能当你回去的时候，有一个人在那里正在撕你的书，或者酒店把那个抽屉都挪走并变成衣柜，或是整个酒店正在被拆除以改成了一个足球场，而你偷偷摸摸进到施工现场的时候被炸死。</p>
+<p>真是很精彩的比喻。这就是C/C++的不安全的地方，也正是Linus说的，<a href="http://coolshell.cn/articles/1724.html">C++是一门恐怖的语言是因为有很多不合格的程序员在使用它</a>。就像你看到小孩子玩火一样的恐怖。</p>
+<p>关于这个事，还有一个比较经典的示例如下—— 函数a的初始化会影响函数b的数组。注意函数a中的 <span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre"><code>volatile </code><span style="font-family:Georgia,&#39;Times New Roman&#39;,&#39;Bitstream Charter&#39;,Times,serif;font-size:13px;line-height:19px;white-space:normal">关键字。</span></span></p>
+<pre>#include &lt;iostream&gt;
+using namespace std; 
+void a()
+{
+    volatile int array[10];
+    for (int i = 0; i &lt; 10; i++)
+        array[i] = i;
+}
+
+void b()
+{
+    int array[10];
+    for (int i = 0; i &lt; 10; i++)
+        cout &lt;&lt; array[i];
+}
+
+int main()
+{
+    a();
+    b();
+}</pre>
+<p>真是可爱的C/C++。</p>
+<h3>相关文章</h3><ul><li>2011年07月18日 -- <a href="http://coolshell.cn/articles/4990.html" title="程序员技术练级攻略">程序员技术练级攻略</a></li><li>2011年06月29日 -- <a href="http://coolshell.cn/articles/4905.html" title="语言的数据亲和力">语言的数据亲和力</a></li><li>2011年06月03日 -- <a href="http://coolshell.cn/articles/4758.html" title="如何写出无法维护的代码">如何写出无法维护的代码</a></li><li>2011年04月06日 -- <a href="http://coolshell.cn/articles/4220.html" title="一些有意思的文章和资源">一些有意思的文章和资源</a></li><li>2011年04月02日 -- <a href="http://coolshell.cn/articles/4170.html" title="我有一个Hello World的C++程序编译不过">我有一个Hello World的C++程序编译不过</a></li><li>2011年04月02日 -- <a href="http://coolshell.cn/articles/4162.html" title="又一个有趣的面试题">又一个有趣的面试题</a></li><li>2011年03月30日 -- <a href="http://coolshell.cn/articles/4119.html" title="如何学好C++语言">如何学好C++语言</a></li></ul>

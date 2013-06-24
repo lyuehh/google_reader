@@ -1,0 +1,34 @@
+---
+layout: post
+title:  "max-width最大宽度"
+date:   2012-07-13 12:53:24
+author: Airen
+categories: program
+---
+
+## max-width最大宽度
+### by Airen
+### at 2012-07-13 12:53:24
+### original <http://www.w3cplus.com/code/332.html>
+
+<div><div><div><p>最大宽度同样不被ie6支持，js解决方案如下：</p>
+<pre>//直接操作需要的元素
+var container = document.getElementById(elementId);
+container.style.width = (container.clientWidth &gt; (width - 1)) ? width + &quot;px&quot; : &quot;auto&quot;;
+
+//定义函数，多次调用
+function setMaxWidth(elementId, width){
+var container = document.getElementById(elementId);
+container.style.width = (container.clientWidth &gt; (width - 1)) ? width + &quot;px&quot; : &quot;auto&quot;;
+}
+//调用函数
+setMaxWidth(&#39;container1&#39;, 200);
+setMaxWidth(&#39;container2&#39;, 500);</pre><p> </p>
+</div></div></div><div><div><div><div>
+      <div>6</div>
+                  <a href="http://www.w3cplus.com/vote/node/332/1/vote/alternate/2-KVnXxsFDx1csYbb9h1zkLBPpRh7YCm1wOeCrk3G08/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/158.html">js代码</a></li><li><a href="http://www.w3cplus.com/blog/tags/159.html">ie6</a></li><li><a href="http://www.w3cplus.com/blog/tags/162.html">max-width</a></li></ul></div><img src="http://www1.feedsky.com/t1/659938796/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/code/332.html" border="0" height="0" width="0">

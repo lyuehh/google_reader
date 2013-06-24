@@ -1,0 +1,135 @@
+---
+layout: post
+title:  "ios代码片段收集 欢迎在评论里投稿"
+date:   2013-01-30 17:05:44
+author: admin
+categories: program
+---
+
+## ios代码片段收集 欢迎在评论里投稿
+### by admin
+### at 2013-01-30 17:05:44
+### original <http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/724967167/6618683/1/item.html>
+
+<p></p>
+<div>
+<h3><a name="给button设置渐变背景">给button设置渐变背景</a></h3>
+<div>
+<pre>CAGradientLayer <span>*</span>gradient = <span>[</span>CAGradientLayer layer<span>]</span><span>;</span>
+gradient.<span>frame</span> = button.<span>bounds</span><span>;</span>
+gradient.<span>colors</span> = <span>[</span>NSArray arrayWithObjects:
+<span>(</span>id<span>)</span><span>[</span>UIColor colorWithRed:<span>255</span>/<span>255</span>.0f green:<span>254</span>/<span>255</span>.0f blue:<span>249</span>/<span>255</span>.0f alpha:<span>1</span>.0f<span>]</span>.<span>CGColor</span>,
+<span>(</span>id<span>)</span><span>[</span>UIColor colorWithRed:<span>250</span>/<span>255</span>.0f green:<span>240</span>/<span>255</span>.0f blue:<span>203</span>/<span>255</span>.0f alpha:<span>1</span>.0f<span>]</span>.<span>CGColor</span>,
+nil<span>]</span><span>;</span>
+<span>[</span>button.<span>layer</span> insertSublayer:gradient atIndex:<span>0</span><span>]</span><span>;</span></pre>
+</div>
+<h3><a name="scrollview_contentsize_自适应">scrollview contentSize 自适应</a></h3>
+<div>
+<p>{<a href="http://www.html-js.com/docs/ios-lib/AutoFitScrollView.zip" title="http://www.html-js.com/docs/ios-lib/AutoFitScrollView.zip" rel="nofollow">http://www.html-js.com/docs/ios-lib/AutoFitScrollView.zip</a>}
+</p>
+</div>
+<h3><a name="afjsonrequestoperation_请求网络json数据">AFJSONRequestOperation 请求网络json数据</a></h3>
+<div>
+<pre>    NSString <span>*</span>urlString = <span>[</span>NSString stringWithFormat:@<span>&quot;http://****?page=%d&quot;</span>,page<span>]</span><span>;</span>
+    NSURL <span>*</span>url = <span>[</span>NSURL URLWithString:urlString<span>]</span><span>;</span>
+    NSURLRequest <span>*</span>request = <span>[</span>NSURLRequest requestWithURL:url<span>]</span><span>;</span>
+    <span>[</span><span>[</span>UIApplication sharedApplication<span>]</span> setNetworkActivityIndicatorVisible:YES<span>]</span><span>;</span>
+    AFJSONRequestOperation <span>*</span>operation = <span>[</span>AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^<span>(</span>NSURLRequest <span>*</span>request, NSHTTPURLResponse <span>*</span>response, id JSON<span>)</span> <span>{</span>
+        <span>if</span><span>(</span><span>[</span>JSON objectForKey:@<span>&quot;success&quot;</span><span>]</span><span>)</span><span>{</span>
+            <span>// books = [NSMutableArray arrayWithCapacity:20];</span>
+            <span>for</span> <span>(</span>id key in <span>[</span>JSON objectForKey:@<span>&quot;data&quot;</span><span>]</span><span>)</span><span>{</span>
+            <span>}</span>
+            <span>//状态栏的菊花</span>
+            <span>[</span><span>[</span>UIApplication sharedApplication<span>]</span> setNetworkActivityIndicatorVisible:NO<span>]</span><span>;</span>
+            <span>[</span>self.<span>tableView</span> reloadData<span>]</span><span>;</span>
+        <span>}</span><span>else</span><span>{</span>
+            NSLog<span>(</span>@<span>&quot;load  error: %@&quot;</span>, <span>[</span>JSON objectForKey:@<span>&quot;info&quot;</span><span>]</span><span>)</span><span>;</span>
+        <span>}</span>
+    <span>}</span> failure:^<span>(</span>NSURLRequest <span>*</span>request , NSURLResponse <span>*</span>response , NSError <span>*</span>error , id JSON<span>)</span><span>{</span>
+        <span>[</span><span>[</span>UIApplication sharedApplication<span>]</span> setNetworkActivityIndicatorVisible:NO<span>]</span><span>;</span>
+    <span>}</span><span>]</span><span>;</span>
+    <span>[</span>operation start<span>]</span><span>;</span></pre>
+</div>
+</div>
+<p><span></span></p>
+<div>
+<h3><a name="storyboard用id寻找某个controller_然后push切换到它">storyboard用id寻找某个controller，然后push切换到它</a></h3>
+<div>
+<pre>UIStoryboard <span>*</span> storyboard = self.<span>storyboard</span><span>;</span>
+BookDetailViewController <span>*</span>detailViewController = <span>[</span>storyboard instantiateViewControllerWithIdentifier:@<span>&quot;bookdetail&quot;</span><span>]</span> <span>;</span>    <span>// ...</span>
+<span>// Pass the selected object to the new view controller.</span>
+<a href="http://www.google.com/search?hl=en&amp;q=allinurl%3ABook+java.sun.com&amp;btnI=I%27m%20Feeling%20Lucky"><span>Book</span></a> <span>*</span>book=<span>[</span>self.<span>books</span> objectAtIndex:indexPath.<span>row</span><span>]</span><span>;</span>
+detailViewController.<span>book</span>=book<span>;</span>
+<span>[</span>self.<span>navigationController</span> pushViewController:detailViewController animated:YES<span>]</span><span>;</span>
+detailViewController=nil<span>;</span></pre>
+</div>
+<h3><a name="动画隐藏tabbar">动画隐藏tabbar</a></h3>
+<div>
+<pre> 
+- <span>(</span><span>void</span><span>)</span> hideTabBar:<span>(</span>BOOL<span>)</span> hidden<span>{</span>
+ 
+    <span>[</span>UIView beginAnimations:nil context:<span>NULL</span><span>]</span><span>;</span>
+    <span>[</span>UIView setAnimationDuration:<span>0.5</span><span>]</span><span>;</span>
+ 
+    <span>for</span><span>(</span>UIView <span>*</span>view in self.<span>tabBarController</span>.<span>view</span>.<span>subviews</span><span>)</span>
+    <span>{</span>
+        <span>if</span><span>(</span><span>[</span>view isKindOfClass:<span>[</span>UITabBar <span>class</span><span>]</span><span>]</span><span>)</span>
+        <span>{</span>
+            <span>if</span> <span>(</span>hidden<span>)</span> <span>{</span>
+                <span>[</span>view setFrame:CGRectMake<span>(</span>view.<span>frame</span>.<span>origin</span>.<span>x</span>, <span>480</span>, view.<span>frame</span>.<span>size</span>.<span>width</span>, view.<span>frame</span>.<span>size</span>.<span>height</span><span>)</span><span>]</span><span>;</span>
+            <span>}</span> <span>else</span> <span>{</span>
+                <span>[</span>view setFrame:CGRectMake<span>(</span>view.<span>frame</span>.<span>origin</span>.<span>x</span>, <span>480</span><span>-49</span>, view.<span>frame</span>.<span>size</span>.<span>width</span>, view.<span>frame</span>.<span>size</span>.<span>height</span><span>)</span><span>]</span><span>;</span>
+            <span>}</span>
+        <span>}</span>
+        <span>else</span>
+        <span>{</span>
+            <span>if</span> <span>(</span>hidden<span>)</span> <span>{</span>
+                <span>[</span>view setFrame:CGRectMake<span>(</span>view.<span>frame</span>.<span>origin</span>.<span>x</span>, view.<span>frame</span>.<span>origin</span>.<span>y</span>, view.<span>frame</span>.<span>size</span>.<span>width</span>, <span>480</span><span>)</span><span>]</span><span>;</span>
+            <span>}</span> <span>else</span> <span>{</span>
+                <span>[</span>view setFrame:CGRectMake<span>(</span>view.<span>frame</span>.<span>origin</span>.<span>x</span>, view.<span>frame</span>.<span>origin</span>.<span>y</span>, view.<span>frame</span>.<span>size</span>.<span>width</span>,  <span>480</span><span>-49</span><span>)</span><span>]</span><span>;</span>
+            <span>}</span>
+        <span>}</span>
+    <span>}</span>
+ 
+    <span>[</span>UIView commitAnimations<span>]</span><span>;</span>
+<span>}</span></pre>
+</div>
+<h3><a name="在页面push切换的同时动画隐藏tabbar_二者不能同时进行_需要一个延时执行">在页面push切换的同时动画隐藏tabbar，二者不能同时进行，需要一个延时执行</a></h3>
+<div>
+<pre>-<span>(</span><span>void</span><span>)</span>hideTabbarTimeSelector
+<span>{</span>
+    <span>[</span>self hideTabBar:YES<span>]</span><span>;</span>
+<span>}</span>
+<span>[</span>self.<span>navigationController</span> pushViewController:detailViewController animated:YES<span>]</span><span>;</span>
+<span>[</span>self performSelector:@selector<span>(</span>hideTabbarTimeSelector<span>)</span> withObject:nil afterDelay:<span>0.3</span><span>]</span><span>;</span></pre>
+</div>
+<h3><a name="向nsuserdefaults写入信息">向NSUserDefaults写入信息</a></h3>
+<div>
+<pre>    NSUserDefaults  <span>*</span> userDefault = <span>[</span>NSUserDefaults standardUserDefaults<span>]</span><span>;</span>
+    <span>[</span>userDefault setObject:username forKey:@<span>&quot;username&quot;</span><span>]</span><span>;</span>
+    <span>[</span>userDefault setObject:password forKey:@<span>&quot;password&quot;</span><span>]</span><span>;</span>
+    <span>[</span><span>[</span>NSUserDefaults standardUserDefaults<span>]</span> synchronize<span>]</span><span>;</span>
+    NSLog<span>(</span>@<span>&quot;写入用户信息：%@&quot;</span>, userDefault<span>)</span><span>;</span></pre>
+</div>
+<h3><a name="关于block">关于block</a></h3>
+<div>
+<p>
+<a href="http://developer.apple.com/library/ios/#documentation/cocoa/Conceptual/Blocks/Articles/bxGettingStarted.html" title="http://developer.apple.com/library/ios/#documentation/cocoa/Conceptual/Blocks/Articles/bxGettingStarted.html#//apple_ref/doc/uid/TP40007502-CH7-SW1" rel="nofollow">http://developer.apple.com/library/ios/#documentation/cocoa/Conceptual/Blocks/Articles/bxGettingStarted.html#//apple_ref/doc/uid/TP40007502-CH7-SW1</a></p>
+<pre><span>//不带参数的回调</span>
++<span>(</span><span>void</span><span>)</span> loginWithSuccess:<span>(</span><span>void</span> <span>(</span>^<span>)</span><span>(</span><span>)</span><span>)</span>success failure:<span>(</span><span>void</span> <span>(</span>^<span>)</span><span>(</span><span>)</span><span>)</span>failure
+<span>{</span>success<span>(</span><span>)</span><span>;</span><span>}</span></pre>
+<pre><span>//带参数的回调</span>
++ <span>(</span>instancetype<span>)</span>JSONRequestOperationWithRequest:<span>(</span>NSURLRequest <span>*</span><span>)</span>urlRequest
+		success:<span>(</span><span>void</span> <span>(</span>^<span>)</span><span>(</span>NSURLRequest <span>*</span>request, NSHTTPURLResponse <span>*</span>response, id JSON<span>)</span><span>)</span>success
+		failure:<span>(</span><span>void</span> <span>(</span>^<span>)</span><span>(</span>NSURLRequest <span>*</span>request, NSHTTPURLResponse <span>*</span>response, NSError <span>*</span>error, id JSON<span>)</span><span>)</span>failure
+<span>{</span>
+  success<span>(</span><span>**</span>.<span>request</span>, <span>**</span>.<span>response</span>, responseObject<span>)</span><span>;</span>
+<span>}</span></pre>
+</div>
+<h3><a name="iphone使用keychain来存取用户名和密码">iphone使用keychain来存取用户名和密码</a></h3>
+<div>
+<p><a href="http://blog.csdn.net/bl1988530/article/details/6887946" title="http://blog.csdn.net/bl1988530/article/details/6887946" rel="nofollow">http://blog.csdn.net/bl1988530/article/details/6887946</a>
+</p>
+</div>
+</div>
+<p></p><img src="http://www1.feedsky.com/t1/724967167/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/724967167/6618683/1/item.html" border="0" height="0" width="0">

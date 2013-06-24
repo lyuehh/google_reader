@@ -1,0 +1,177 @@
+---
+layout: post
+title:  "【翻译】YUI CSS框架使用"
+date:   2010-11-11 10:14:03
+author: 
+categories: program
+---
+
+## 【翻译】YUI CSS框架使用
+### by 
+### at 2010-11-11 10:14:03
+### original <http://www.javaeye.com/topic/808345>
+
+<p>      这篇文章很早之前就看了，不过没翻译，为了详细记录工作学习，翻译下，以便下次翻阅。(ps，看完以后，觉得使用YUI css框架来进行页面布局这种n简单。似乎下次翻阅就是深入css源处了)。</p>
+<p>      YUI推出的css框架很不错，reset.css消除各个浏览器对元素的默认值的处理， fonts.css是统一浏览器的字体属性，最最有意思的grids.css，符合yui模板开发就可以达到布局的效果，减轻工作。如果深入学习的话，也有很多宝藏可以挖掘，比如浏览器的兼容性问题。</p>
+<p>      原文：</p>
+<p>         <a href="http://www.thewebsqueeze.com/web-design-tutorials/yui-css-framework-tutorial.html">http://www.thewebsqueeze.com/web-design-tutorials/yui-css-framework-tutorial.html</a>
+</p>
+<p>      其实和YUI 提供的doc没什么差别，推荐还是YUI官方文档，YUI提供的文档还是很详细的。</p>
+<p>      (ps,翻译的可能不是很完整，大概意思到了。有错误欢迎大家指正)</p>
+<p><strong><br></strong>
+</p>
+<p><strong> What is YUI？</strong>
+<br>
+  Yahoo User Interface 库是由一系列javascript特性和控件组成，用来帮助前端开发者开发丰富的用户界面。<br>
+  YUI同样提供了一个很不错的CSS框架来帮组用户开发。这个CSS框架是很轻量的(当缩小了以后仅6KB),使用简单。<br>
+  更加重要的是，它能有效运行在所有的A-grade级别的浏览器。<br><br><strong>Why use it？</strong>
+<br>
+  每一个好的UED都会告诉你制作一个好的网站的关键在于使用的是一致性。你的目标就是让用户尽可能少的用脑然后能<br>
+  得知每一处的使用方法。人们看到网站按照一种特定的方式浏览，而YUICSS则覆盖这些常规的设计模式并且当使用的时候需要很少的学习时间。这种方式双赢。<br>
+  <br>
+  但是，这个不是说Yahoo在试图让所有人按照他们的方式来设计网站。他们提供足够的空间来进行个性化的设置。<br>
+  <strong><br></strong>
+<br><strong>  <br>
+Reset</strong>
+<br>
+  如果准备使用reset css 文件。非常推荐你深入的看看reset css 即使不使用YUI。每一个浏览器都有自己默认的设置。<br>
+  当浏览器在元素的margins,line-heights,padding这些赋值的时候。如果时刻都写入布局中，网站会显得很粗糙。<br>
+  这个reset方式很简单，并且极其的好用。它覆盖了所有浏览器的默认值，并且使各个浏览器都使用同样的数值。大量的使用  *{margin:0;padding:0}的时代已经过去了。使用reset可以更加的深入程序逻辑中。<br>
+  <br><strong>Font</strong>
+<br>
+  font这个部分让浏览器中的所有的元素的单位为em。font所作也是一样，覆盖掉浏览器中无关紧要的默认的font设置。这个 意味着YAHOO 提供了推荐的方式方便定义你的font数值大小。<br>
+ <br><strong>Grids</strong>
+<br>
+  YUI提供了一个很简单的方法来布局所有的元素，而且不是用笨重的table<br>
+  <br><br>
+  YUI在页面分割的方面提供了常用的模式提供给设计者。当获取wrapper div的时候，就可以定义网站的宽度。且这些同样可以<br>
+  定义其头部、body以及footer，很简单是吧？ 下面就是详细的看看<br>
+  &lt;!DOCTYPE html&gt;<br>
+&lt;html&gt;<br>
+    &lt;head&gt;<br>
+        &lt;title&gt;My first YUI Layout&lt;/title&gt;<br>
+        &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;css/<strong>reset-fonts-grids.css</strong>
+&quot; /&gt;<br>
+    &lt;/head&gt;<br>
+    &lt;body&gt;<br>
+        <strong>&lt;div id=&quot;doc2&quot;&gt;&lt;!--Wrapper div -&gt; doc, doc2, doc3, doc4, or doc-custom--&gt;<br>
+            &lt;!--当定义好wrapper div 以后 header body foot的宽度也已经定义好了。--&gt;<br>
+            &lt;div id=&quot;hd&quot;&gt;&lt;/div&gt;<br>
+            &lt;div id=&quot;bd&quot;&gt;&lt;/div&gt;<br>
+            &lt;div id=&quot;ft&quot;&gt;&lt;/div&gt;<br>
+        &lt;/div&gt;</strong>
+<br>
+    &lt;/body&gt;<br>
+&lt;/html&gt;<br>
+   <br>
+   现在仔细的看看wrapper 的div。YUI所提供的四种不同的宽度<br>
+  <strong> doc-750px; doc2=950px; doc3=100% doc4=974px</strong>
+<br>
+   当然也同样可以自定义自己的所设置的宽度。<br>
+   <br>
+Templates<br>
+   现在已经有页面的基本的布局了，增加的是YUI提供的模板页面了。关于模板的观念是非常的简单的。可以在body(bd)<br>
+   中设置两个主要的模块的内容。且将内容放在这两个模块之中任意一个。可以通过设置div的class为"yui-b"来设置<br>
+   块结构。一旦这样设置后，你就需要告知YUI这个块重要的一块。通过设置其div的id为"yui-main"。为何这样设置，是<br>
+   因为有些的浏览器不支持":first-child"这样的伪类。<br>
+    ...<br><strong>&lt;div id=&quot;bd&quot;&gt;<br>
+    &lt;div id=&quot;yui-main&quot;&gt;<br>
+        &lt;div class=&quot;yui-b&quot;&gt;<br>
+            ...some content here...<br>
+        &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+    &lt;div class=&quot;yui-b&quot;&gt;<br>
+        ...some content here...<br>
+    &lt;/div&gt;<br>
+&lt;/div&gt;</strong>
+<br>
+...<br><br>
+   这个就告知YUI哪一块的内容是网站中重点。不管这块内容是在左边还是右边。(最好是将重要的数据放在不重要的数据<br>
+   的前头，这个就保证了页面的数据在顶部，这个同样帮助SEO)<br>
+   <br>
+   现在已经定义内容块。但是需要告知YUI如何进行展示。仅仅只需要在wrapper div上面添加class声明。YUI提供了6种<br>
+   class值，说明如下：<br>
+   <br>
+   <strong>.yui-t1 两列，窄的在左边，160px<br>
+   .yui-t2 两列，窄的在左边，180px<br>
+   .yui-t3 两列，窄的在左边，300px<br>
+   .yui-t4 两列，窄的在右边，180px<br>
+   .yui-t5 两列，窄的在右边，240px<br>
+   .yui-t6 两列，窄的在右边，300px</strong>
+<br>
+   <br>
+   <br>
+   在wrapper 的div上面添加设置class为yui-t6为常见的布局<br>
+  <strong> &lt;div id=&quot;doc2&quot; class=&quot;yui-t6&quot;&gt;</strong>
+<br>
+    <br>
+    Special Grids<br>
+    如果不想使用之前那种定制的模板，想使用3列这样取代两列。或者想添加其他的东西到区域块中。没有问题，<br>
+    YUI有个很不错的布局机制，包含了各种个性化定制的布局。而不用使用table来布局。<br>
+    <br>
+    Grids.css在这个方面的工作方式和上面的模板也类似。对于grid有一个外包含的div(grid)，和单元cell div (yui-u)工作的方式，和yui-b很相似。参考代码：<br>
+    &lt;div class=&quot;yui-g&quot;&gt;<br>
+        &lt;div class=&quot;yui-u<strong> first"</strong>
+&gt;<br>
+            ...some content here...<br>
+        &lt;/div&gt;<br>
+        &lt;div class=&quot;yui-u&quot;&gt;<br>
+            ...some content here...<br>
+        &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+    上面的代码会创建布局有两个块平均分配占用容器。而这里真正需要注意的是想让哪一个div在左边出现。只需要<br>
+在那个div的class属性里面添加 first<br>
+    和yui-g的平均分配两列相似，有下面6种布局方式可以使用：<br><strong>    yui-g   标准布局  1/2-1/2<br>
+    yui-gb  特殊布局  1/3-1/3-1/3<br>
+    yui-gc  特殊布局  2/3-1/3<br>
+    yui-gd  特殊布局  1/3-2/3<br>
+    yui-ge  特殊布局  3/4-1/4<br>
+    yui-gf  特殊布局  1/4-3/4</strong>
+<br><br>
+  现在来看看关于布局的内嵌的方式。如果想要一个gird展现为4列。则代码如下：<br>
+    &lt;div class=&quot;yui-g&quot;&gt;<br>
+        <span style="color:#ff0000">&lt;div class=&quot;yui-g first&quot;&gt;<br>
+            &lt;div class=&quot;yui-u first&quot;&gt;<br>
+                ...some content here...<br>
+            &lt;/div&gt;<br>
+            &lt;div class=&quot;yui-u&quot;&gt;<br>
+                ...some content here...<br>
+            &lt;/div&gt;<br>
+        &lt;/div&gt;</span>
+<br>
+        &lt;div class=&quot;yui-g&quot;&gt;<br>
+            &lt;div class=&quot;yui-u first&quot;&gt;<br>
+                ...some content here...<br>
+            &lt;/div&gt;<br>
+            &lt;div class=&quot;yui-u&quot;&gt;<br>
+                ...some content here...<br>
+            &lt;/div&gt;<br>
+        &lt;/div&gt;<br>
+    &lt;/div&gt;<br>
+   需要注意的是：当<span style="color:#000000">yui-g</span>
+被嵌套到父<span style="color:#000000">yui-g</span>
+中的时候，这个<span style="color:#000000">yui-g</span>
+就如同unit一样。就没有必要再添加一个yui-u来包裹<br>
+   <br>
+   关于在线进行YUI CSS排版<br><strong>   <a href="http://developer.yahoo.com/yui/grids/builder/%20%20"> http://developer.yahoo.com/yui/grids/builder/  </a>
+ </strong>
+   </p>
+<p>   这个很不错哦~</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://every-best.javaeye.com">every_best</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/808345" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

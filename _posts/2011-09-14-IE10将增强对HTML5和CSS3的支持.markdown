@@ -1,0 +1,55 @@
+---
+layout: post
+title:  "IE10将增强对HTML5和CSS3的支持"
+date:   2011-09-14 12:33:00
+author: 神飞
+categories: program
+---
+
+## IE10将增强对HTML5和CSS3的支持
+### by 神飞
+### at 2011-09-14 12:33:00
+### original <http://www.qianduan.net/ie10-will-enhance-support-for-html5-and-css3.html>
+
+<p>Windows 8 终于发布了，虽然现在可用的只是开发者预览版，好消息是，IE 10 也随着发了，虽然现在还只有Windows 8可用。我们来看下IE10都有哪些新特性吧。<span></span></p>
+<p>IE开发者中心给到了一份<a href="http://msdn.microsoft.com/en-us/ie/gg192966">详细的针对前端开发者的文档，列出了IE10支持的HTML5和CSS3新特性</a>。嗯，它终于跟上了：</p>
+<h3>CSS3</h3>
+<ul>
+<li>css region</li>
+<li>css3多列</li>
+<li>Flexbox</li>
+<li>grid</li>
+<li>定位浮动(positioned float)</li>
+<li>3D变换(3D transfrom)</li>
+<li>动画(animation)</li>
+<li>渐变(gradient)</li>
+<li>text-shadow</li>
+<li>去掉样式表限制——在IE9之前的版本中，每个页面最多只能加载31个样式表文件，@import也只能最多嵌套4层，IE10中去掉了这些限制。</li>
+</ul>
+<h3>HTML5</h3>
+<div>
+<ul>
+<li>脚本同步——script标签的async属性，用来定义脚本是否异步执行</li>
+<li>File API</li>
+<li>History</li>
+<li>Parsing</li>
+<li>表单验证(form validation)</li>
+<li>progress和range控制——其实也可以看作HTML5表单中的功能</li>
+<li>web workers</li>
+<li>web sockets</li>
+<li>拖拽(drag and drop)</li>
+<li>应用缓存——application cache，也就是离线存储，不过需要注意的是W3C更新了离线存储配置文件的扩展名，之前是ooxx.manifest，以后要用appcache扩展。</li>
+<li>spellcheck</li>
+<li>频道通信(channel messaging)</li>
+</ul>
+</div>
+<h3>其它</h3>
+<div>
+<ul>
+<li>Indexed Database</li>
+<li>Web performance API</li>
+<li>SVG 滤镜效果</li>
+</ul>
+</div>
+<p>嗯，新东西很多，看起来还是很给力的。</p>
+<p>需要注意的是，IE10对CSS3新特性的支持，大部分还是需要-ms-前缀的。</p>

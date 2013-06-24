@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "Ruby世界：元编程函数一例"
+date:   2011-03-21 06:15:00
+author: gudao.luo@gmail.com (Gudao Luo)
+categories: program
+---
+
+## Ruby世界：元编程函数一例
+### by gudao.luo@gmail.com (Gudao Luo)
+### at 2011-03-21 06:15:00
+### original <http://www.lycom.de/past/2011/3/20/2011-03-09-2202-meta-ruby/>
+
+<ul><li>说明<br>	<ul><li>所有函数的不同内容都写入到变量legos中</li><li>函数本身参数写入do之后的两竖之中</li></ul></li></ul><ul><li>参考资料<br>	<ul><li><a href="http://rubylearning.com/blog/2010/11/23/dont-know-metaprogramming-in-ruby/">http://tinyurl.com/3yqrvxb</a></li><li><a href="http://weare.buildingsky.net/2009/08/25/rubys-metaprogramming-toolbox">http://tinyurl.com/lmzl9g</a></li></ul></li></ul>

@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "RESTEasy 2.1.0 GA 发布"
+date:   2010-12-29 11:05:41
+author: 
+categories: program
+---
+
+## RESTEasy 2.1.0 GA 发布
+### by 
+### at 2010-12-29 11:05:41
+### original <http://www.oschina.net/news/14170/resteasy-2-1-0-ga>
+
+<table width="100%"><tr>
+						<td valign="top">JBoss RESTEasy 是一个用来使用Java语言开发 RESTFul Web服务的框架。 RESTEasy 项目是 JAX-RS 的一个实现，集成的一些亮点： 不需要配置文件，只要把JARs文件放到类路径里面，添加 @Path 注解就可以了。 完全的把 RESTEeasy 配置作为Seam 组件来看待。 HTTP 请求由Seam来提供，不需要一个额外的Servlet。 Resources 和providers可以作为 Seam components (JavaBean or EJB)，具有全面的Seam injection,lifecycle, interception, 等功能支持。 下载 RESTEasy 2.1.0 GA...，<a href="http://www.oschina.net/news/14170/resteasy-2-1-0-ga?from=rss" style="font-weight:bold;color:#a00">阅读全文</a></td>
+			</tr></table>

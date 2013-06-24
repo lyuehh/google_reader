@@ -1,0 +1,179 @@
+---
+layout: post
+title:  "[造轮光荣] 吹牛：我写的xml解析器，可能是这个世界上最快的了。。。"
+date:   2011-03-01 14:44:47
+author: 
+categories: program
+---
+
+## [造轮光荣] 吹牛：我写的xml解析器，可能是这个世界上最快的了。。。
+### by 
+### at 2011-03-01 14:44:47
+### original <http://www.javaeye.com/topic/935613>
+
+<span style="color:blue"><span style="font-size:large">解析超级简单。  XmlTree tree=XmlParser.parse(String xml); 
+<br>返回一个树对象， 是一个树形数据结构，使用就是比ArrayList复杂那么一点点..
+<br>（XmlTree对象的使用方式 ：http://www.javaeye.com/topic/935876）
+<br>可能对下面的代码有点疑惑 ，有个Xml.parserXml(xml); 还有个XmlParser.parse(xml), 
+<br>前一个使用的是jdk官方解析包， 后一个是自己写的。 两个解析后返回对象完全相同。
+<br>对比速度，经过多次测试，几乎任何xml解析速度都快 4-5倍， 下的xml重复解析1万此，
+<br>耗时400毫秒（我的机器，cpu 1.6G,intel）。</span></span>
+<br>
+<br>
+<br>
+<br><pre name="code">import java.util.List;
+
+import org.open4j.io.Reader;
+import org.open4j.nxml.XmlParser;
+import org.open4j.xml.Xml;
+import org.open4j.xml.XmlNode;
+import org.open4j.xml.XmlTree;
+
+public class TestXml 
+{
+
+	
+	public static void main(String[] args) 
+	{
+		String xml=Reader.loadFileUtf(&quot;d://test.xml&quot;);
+		
+		Xml.parseXml(xml);
+		XmlParser.parse(xml);
+		
+		XmlTree tree=null;
+		
+		
+		long d=System.currentTimeMillis();
+		
+		/****
+		 * 这个解析器，使用jdk官方解析器，解析完毕，返回XmlTree（自定义数据结构） 对象
+		 */
+		for(int i=0;i&lt;10000;++i){
+			tree=Xml.parseXml(xml);
+		}
+		
+		System.out.println(System.currentTimeMillis()-d);
+		
+		
+		
+		/****
+		 * 这个使用的自己写的解析器， 解析结果和上一个完全相同。
+		 */
+		long d2=System.currentTimeMillis();
+		for(int i=0;i&lt;10000;++i){
+			tree=XmlParser.parse(xml);
+		}
+		System.out.println(System.currentTimeMillis()-d2);
+		
+		/****
+		 * 这里使用 tree对象示例
+		 * 获得 节点name的子节点，文本对象 &quot;张三&quot;
+		 */
+		
+		
+		tree=XmlParser.parse(&quot;&lt;root&gt;&lt;user id=&#39;w1&#39;&gt;&lt;/user&gt;&lt;user id=&#39;w2&#39;&gt;&lt;name&gt;张三&lt;/name&gt;&lt;/user&gt;&lt;/root&gt;&quot;);
+		XmlNode root=tree.getRoot();// 获得根节点
+		
+		List&lt;XmlNode&gt; list=root.getChildrenByTagName(&quot;user&quot;);
+		
+		XmlNode user2=list.get(1);// 第2个user节点
+		
+		System.out.println(user2.getAttributes().get(&quot;id&quot;));
+		
+		String zhang3=user2.
+		getChildrenByTagName(&quot;name&quot;).get(0) // 这里是获得user2 的tagName 为 name的子节点， 只有一个，当然是 get(0)
+		.getChildren().get(0).toString();// user2的子节点是String类的对象  &quot;张三&quot;
+		
+		System.out.println(zhang3);
+		
+		
+	}
+
+}</pre>
+<br>
+<br>
+<br>
+<br>解析的xml 为：
+<br>
+<br><pre name="code">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE node[]&gt;
+ 
+&lt;root&gt;
+
+	&lt;![CDATA[ooooooo]]&gt;
+	&lt;!-- apple orange对对对&amp;&amp;&amp; --&gt;
+	&lt;国家 name=&quot;中国&quot;/&gt;
+	
+	
+	&lt;node id=&quot;皇帝&quot;&gt;
+		&lt;node name=&quot;刘备&quot;&gt;
+			&lt;node name=&#39;张\\飞&#39;&gt;
+				&lt;node name=&quot;兵1&quot; &gt;
+				&lt;!-- 卡机爱就爱看 --&gt;
+				&lt;/node&gt;
+				&lt;node name=&quot;兵2&quot; /&gt;
+				&lt;node name=&quot;兵3&quot; /&gt;
+			&lt;/node&gt;
+			&lt;node name=&#39;关羽&#39;&gt;
+				&lt;node name=&quot;1兵1&quot; /&gt;
+				&lt;node name=&quot;1兵2&quot; /&gt;
+				&lt;node name=&quot;1兵3&quot; /&gt;
+			&lt;/node&gt;
+		&lt;/node&gt;
+		&lt;node name=&quot;曹操&quot;&gt;
+			&lt;node name=&#39;李典&#39;&gt;
+				&lt;node name=&quot;2兵11&quot; /&gt;
+				&lt;node name=&quot;2兵2&quot; /&gt;
+				&lt;node name=&quot;2兵3&quot; /&gt;
+			&lt;/node&gt;
+		&lt;/node&gt;
+	&lt;/node&gt;
+	&lt;apple&gt;22&lt;/apple&gt;
+	
+&lt;/root&gt;
+
+&lt;!--apple--&gt;
+</pre>
+<br>
+<br>
+<br><span style="color:blue">
+<br><span style="font-size:large">运行结果：
+<br>2141
+<br>406
+<br>w2
+<br>张三
+<br>
+<br>》》》可以看出快了大概5倍</span></span>
+<br>
+<br>
+<br><span style="font-size:large">
+<br>
+<br>ps; 代码发表在google code 上了，项目名为open4j, 无需密码。
+<br>org.open4j.nxml包里面为解析代码， 下面有jar包，加入您的路径就能用</span>[color=red][/color]
+<br>
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/286ba08f-bfac-3880-b1a6-ebb5c813d5e0">open4j.0.05.jar</a> (309.7 KB)</li>
+    
+      <li><a href="http://dl.javaeye.com/topics/download/cccee3a3-ce7e-38fc-8385-83245dc50df4">op.location.jar</a> (540 Bytes)</li>
+    
+      <li><a href="http://dl.javaeye.com/topics/download/4a3bb841-adfd-3b82-847c-3a800601a493">test.xml.zip</a> (469 Bytes)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://fyf-008.javaeye.com">fyf_008</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/935613" style="color:red">已有 <strong>16</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

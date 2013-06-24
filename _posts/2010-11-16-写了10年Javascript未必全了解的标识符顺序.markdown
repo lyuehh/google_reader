@@ -1,0 +1,104 @@
+---
+layout: post
+title:  "写了10年Javascript未必全了解的标识符顺序"
+date:   2010-11-16 12:59:57
+author: 
+categories: program
+---
+
+## 写了10年Javascript未必全了解的标识符顺序
+### by 
+### at 2010-11-16 12:59:57
+### original <http://www.javaeye.com/topic/812668>
+
+<h3><br></h3>
+<h3>一，局部变量先使用后声明，不影响外部同名变量</h3>
+<pre name="code">var x = 1; // --&gt; 外部变量x
+function fn(){
+	alert(x);  // --&gt; undefined 局部变量x先使用
+	var x = 2; // 后声明且赋值
+}
+fn();
+alert(x); // --&gt; 1</pre>
+<p> </p>
+<p>第一点，函数fn内第一句输出x，x是在第二句才定义的。这在js中是允许的，这里的允许是指不会出现语法错误程序可以运行。<br>
+但在其它语言如C，Java中却是不允许的。变量必选先声明后使用，如：</p>
+<pre name="code">public class Test {
+	public static void main(String[] args) {
+		System.out.println(x); // 先使用
+		int x = 10; // 后声明
+	}
+}</pre>
+<p> </p>
+<p>Java中编译器会提示错误，程序无法运行。<br><br>
+第二点，函数fn内的局部变量x不会影响到外部的变量x。即fn内alert输出不是1，而是undefined。<br><br>
+顺便提下，这段代码经常出现在前端面试题中。</p>
+<p> </p>
+<p> </p>
+<h3>二，形参优先级高于函数名</h3>
+<pre name="code">function fn(fn){
+	alert(fn);
+}
+fn(&#39;hello&#39;); // --&gt; &quot;hello&quot;</pre>
+<p> </p>
+<p>可以看到函数名和形参同名都是fn，输出的是字符串"hello"，却不是函数fn的函数体(fn.toString())。</p>
+<p> </p>
+<p> </p>
+<h3>三，形参优先级高于arguments</h3>
+<pre name="code">function fn(arguments){
+	alert(arguments);
+}
+fn(&#39;hello&#39;); // --&gt; &quot;hello&quot;</pre>
+<p> </p>
+<p>arguments对象可以直接在函数内使用，是语言本身提供的标识符。<br>
+这里刚好将形参声明成与其同名。输出可以看到是"hello"而非"[object Object]"，即形参arguments覆盖了语言本身提供的真正的arguments。</p>
+<p> </p>
+<p> </p>
+<h3>四，形参优先级高于只声明却未赋值的局部变量</h3>
+<pre name="code">function fn(a){
+	var a;
+	alert(a);
+}
+fn(&#39;hello&#39;); // --&gt; &quot;hello&quot;</pre>
+<p> </p>
+<p>函数fn形参为a，函数内第一句仅声明局部变量a，却并未赋值。从输出结果是"hello"而非undefined可以看出形参a优先级高于仅声明却未赋值的局部变量a。</p>
+<p> </p>
+<p> </p>
+<h3>五，声明且赋值的局部变量优先级高于形参</h3>
+<pre name="code">function fn(a){
+	var a = 1;
+	alert(a);
+}
+fn(&#39;hello&#39;); // --&gt; &quot;1&quot;</pre>
+<p> </p>
+<p>函数fn形参为a，函数内第一句仅声明局部变量a，赋值为1。从输出结果是"1"而非"hello"可以看出声明且赋值的局部变量a优先级高于形参a。</p>
+<p> </p>
+<p> </p>
+<h3>六，了解了以上几点，再看一个有趣的代码</h3>
+<pre name="code">function fn(a){
+	var a = a;
+	alert(a);
+}
+fn('hello');</pre>
+<p> </p>
+<p>暂不运行，猜测下结果。如果按照第五点：声明且赋值的局部变量优先级高于形参。那么a将是undefined。但实际上a是"hello"，即右a是形参a，左a才是局部变量a。</p>
+<p> </p>
+<p><img style="border:1px solid black" src="http://dl.javaeye.com/upload/attachment/349154/b30bc3af-2845-39bb-8fec-3728536d4dbc.png" alt="" width="454" height="96"></p>
+<p> </p>
+<p> </p>
+<p>这里的两个a互不干扰，谁也没覆盖谁。这与刚刚说的赋值的局部变量优先级高于形参又矛盾了。但引擎这样做的确是我们想要的，因为并不希望var a = a后a是undefined。</p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://snandy.javaeye.com">zhouyrt</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/812668" style="color:red">已有 <strong>2</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,54 @@
+---
+layout: post
+title:  "淘宝的秒杀我感觉并不复杂，用二次事务模式可以很容易的实现"
+date:   2010-11-15 10:39:30
+author: 
+categories: program
+---
+
+## 淘宝的秒杀我感觉并不复杂，用二次事务模式可以很容易的实现
+### by 
+### at 2010-11-15 10:39:30
+### original <http://www.javaeye.com/topic/811500>
+
+<p>有个帖子说了，太长了另起一楼。大部分的观点都是“<span style="color:#ff0000">硬碰硬</span>”，其实没有必要，如果仅仅是秒杀，我觉得没有那么复杂。</p>
+<p> </p>
+<p><strong>系统架构：</strong></p>
+<p> </p>
+<p><img src="http://dl.javaeye.com/upload/attachment/348367/1b338036-f591-39e4-8734-4995dbe2db1d.png" alt=""></p>
+<p><strong>秒杀程序实现：</strong></p>
+<p> </p>
+<p><br><img src="http://dl.javaeye.com/upload/attachment/348369/e52c39e4-90d3-3e35-9158-640a4ef7db79.png" alt=""></p>
+<p><strong>关键点：</strong></p>
+<p> </p>
+<p>将事务分开，在应用层的事务并不严格，可以快速的处理大量并发，不需要db，也需要网络cache，唯一的操作就是本机内存操作，效率肯定非常高。</p>
+<p> </p>
+<p>应用成功后，在将事务发到DB，这个时候可能由于并发会出现多拍的用户，再由DB过滤一遍，确保不会多拍。</p>
+<p> </p>
+<p>唯一的缺点是事务到DB的同步过程有延迟，这是很快的，毫秒级。所以让（可能拍成功的）用户等两秒，用户应该可以接受。</p>
+<p> </p>
+<p><strong>性能分析：</strong></p>
+<p> </p>
+<p>应用层：基本没有代价，就看服务器处理连接的效率了，程序上只是一个计数器。如果觉得计数器是同步的会慢，就换成普通的int变量，多放几个“可能成功”的买家到 DB层过滤。假设1台机器1秒钟处理2000个请求应该问题不大吧。再假设网友会在60秒内提交完请求（由于时间不一致，很多网友的时钟不一定非常准确），一个服务器也能抗下12万用户。就算1千万网友参加，100台机器也足够了。</p>
+<p> </p>
+<p>如果像taobao的博客所言的在处理100k并发技术，1台机器1秒钟处理10万用户，60秒就能处理600万。1千万并发也不过2台机器的事情。</p>
+<p> </p>
+<p>数据库：数据库的并发来自有多少台应用服务器，应用服务器允许多少“可能买家”通过， 而不是有多少买家来秒杀。如果按照有些网友已经提到的，在机器中提前分配好，比如5台ipad，1台机器1台，其他机器直接报没有。那么DB的压力也就5台机器，可能传入的50个可能买家？计算时间上，也只需要2秒内算完就行了。</p>
+<p> </p>
+<p>欢迎讨论。</p>
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://guzz.javaeye.com">myreligion</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/811500" style="color:red">已有 <strong>11</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

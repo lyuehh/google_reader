@@ -1,0 +1,72 @@
+---
+layout: post
+title:  "基于多继承的树设计"
+date:   2011-09-18 03:42:26
+author: 
+categories: program
+---
+
+## 基于多继承的树设计
+### by 
+### at 2011-09-18 03:42:26
+### original <http://yiminghe.iteye.com/blog/1174320>
+
+<h1>分类</h1>
+<p> </p>
+<p>树是一种常见的 ui 组件，在桌面以及 web 中都经常看到，常见的表现形式有</p>
+<p> </p>
+<h2>简单树：</h2>
+<p> </p>
+<p><img src="http://dl.iteye.com/upload/attachment/555960/b57984de-9322-3226-b772-09cd738c9fb0.gif" alt=""></p>
+<p><img src="http://dl.iteye.com/upload/attachment/555960/b57984de-9322-3226-b772-09cd738c9fb0.gif" alt="" width="145" height="194"></p>
+<p> </p>
+<h2>多选树：</h2>
+<p> </p>
+<p><img src="http://dl.iteye.com/upload/attachment/555968/a8e91084-2861-31df-b7c2-f5b9080128b1.png" alt=""></p>
+<p> </p>
+<h1>如何设计？</h1>
+<p> </p>
+<p>针对树的两种主要分类，这次主要讨论 DRY ，怎么能把重复的功能拆成独立的单元而最终又能完美的整合？我的答案是多继承:</p>
+<p> </p>
+<p><img src="http://dl.iteye.com/upload/attachment/555966/7e62587e-1b7d-34f3-bb6e-65206599a337.jpg" alt=""></p>
+<p> </p>
+<p> </p>
+<h2>组成部分</h2>
+<p> </p>
+<p><strong>BaseNode </strong>: 最基本的树节点，类似 dom 树节点，记录该节点的子节点和父节点，可以添加删除子节点以及特有的选中操作，展开和收缩操作。具体通过onClick来响应用户点击。</p>
+<p> </p>
+<p> </p>
+<p><strong>CheckNode</strong>: 继承自 BaseNode，但是可以记录更多的选中状态和展现形式：子节点和自身都选中（fullCheck），子节点没有全部选中（partCheck），子节点和自身都没选中（none）。具体通过覆盖 BaseNode 的 onClick 响应用户点击来设置状态.</p>
+<p> </p>
+<p><strong>TreeEvtDelegate</strong>: 功能类，用于事件代理，可代理树根节点下的所有子节点的事件并在合适的子节点上执行对应的事件处理器</p>
+<p> </p>
+<p><strong>TreeStateMgr </strong>: 功能类，缓存树根节点的所有子节点，便于快速获取，以及记录树级别的状态：树的当前选择元素集合，树是否显示根节点，...</p>
+<p> </p>
+<p><strong>Tree</strong>: 简单树，实际上用继承于普通节点的根节点来表示一棵树，只不过它可以代理子节点的事件（具体参考事件代理的好处）以及具备树节点的一些全局状态.</p>
+<p> </p>
+<p><strong>CheckTree</strong>：同 Tree 类似，只不过它通过继承 CheckTree 可以具备更多的状态。</p>
+<p> </p>
+<p> </p>
+<p>最后通过多继承， Tree 以及 CheckTree 的功能完全分散到抽象父类上并可以完全互相共享，树本身只是一个空壳（命名） 而已。</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<h1>对多继承的想法</h1>
+<p> </p>
+<p><a href="http://docs.kissyui.com/docs/html/demo/component/tree/index.html">Tree </a>包括<a href="http://yiminghe.iteye.com/blog/808763">基础框架</a>以及其他一些组件已经完成不少时间了，但也在一直犹豫，多继承是否合适，是否会加剧复杂化，能否在未来多变的需求下易于维护，但感谢《<a href="http://item.taobao.com/item.htm?id=13146220993">松本行弘的程序世界</a>》，书中 ruby 发明人详细讨论了多继承，解释了为何动态语言中的 mixin 是一种可控，切实的多继承方式，那么如果再进一步增强对功能类初始化过程的控制，也就具备了更强的表达能力，这很可能就是未来的趋势.</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://yiminghe.iteye.com/blog/1174320#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

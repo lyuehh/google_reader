@@ -1,0 +1,81 @@
+---
+layout: post
+title:  "TCP三次握手及四次挥手详细图解"
+date:   2013-02-02 12:54:11
+author: xsky
+categories: program
+---
+
+## TCP三次握手及四次挥手详细图解
+### by xsky
+### at 2013-02-02 12:54:11
+### original <http://www.udpwork.com/item/9204.html>
+
+<p>相对于SOCKET开发者,TCP创建过程和链接折除过程是由TCP/IP协议栈自动创建的.因此开发者并不需要控制这个过程.但是对于理解TCP底层运作机制,相当有帮助.</p>
+<div></div>
+<div><strong>TCP三次握手</strong>
+</div>
+<div></div>
+<div>所谓三次握手(Three-way Handshake)，是指建立一个TCP连接时，需要客户端和服务器总共发送3个包。</div>
+<div></div>
+<div>三次握手的目的是连接服务器指定端口，建立TCP连接,并同步连接双方的序列号和确认号并交换 TCP 窗口大小信息.在socket编程中，客户端执行connect()时。将触发三次握手。</div>
+<div></div>
+<div><div></div>
+<div></div>
+<div></div>
+<div><img src="http://blogimg.chinaunix.net/blog/upfile2/100327002629.png"></div>
+</div>
+<ul><li>第一次握手:
+<br>
+客户端发送一个TCP的SYN标志位置1的包指明客户打算连接的服务器的端口，以及初始序号X,保存在包头的序列号(Sequence Number)字段里。</li>
+</ul>
+<div><img src="http://blogimg.chinaunix.net/blog/upfile2/100327002911.png"></div>
+<ul><li>第二次握手:
+<br>
+服务器发回确认包(ACK)应答。即SYN标志位和ACK标志位均为1同时，将确认序号(Acknowledgement Number)设置为客户的I S N加1以.即X+1。</li>
+</ul>
+<p> </p>
+<p><img src="http://blogimg.chinaunix.net/blog/upfile2/100327003054.png"></p>
+<ul><li>第三次握手.
+<br>
+客户端再次发送确认包(ACK) SYN标志位为0,ACK标志位为1.并且把服务器发来ACK的序号字段+1,放在确定字段中发送给对方.并且在数据段放写ISN的+1</li>
+</ul>
+<div><img src="http://blogimg.chinaunix.net/blog/upfile2/100327003214.png"></div>
+<p><strong>SYN攻击</strong>
+</p>
+<p>在三次握手过程中，服务器发送SYN-ACK之后，收到客户端的ACK之前的TCP连接称为半连接(half-open connect).此时服务器处于Syn_RECV状态.当收到ACK后，服务器转入ESTABLISHED状态.</p>
+<p>Syn攻击就是 攻击客户端 在短时间内伪造大量不存在的IP地址，向服务器不断地发送syn包，服务器回复确认包，并等待客户的确认，由于源地址是不存在的，服务器需要不断的重发直 至超时，这些伪造的SYN包将长时间占用未连接队列，正常的SYN请求被丢弃，目标系统运行缓慢，严重者引起网络堵塞甚至系统瘫痪。</p>
+<p>Syn攻击是一个典型的DDOS攻击。检测SYN攻击非常的方便，当你在服务器上看到大量的半连接状态时，特别是源IP地址是随机的，基本上可以断定这是一次SYN攻击.在Linux下可以如下命令检测是否被Syn攻击</p>
+<p><strong>netstat -n -p TCP | grep SYN_RECV</strong>
+</p>
+<p>一般较新的TCP/IP协议栈都对这一过程进行修正来防范Syn攻击，修改tcp协议实现。主要方法有SynAttackProtect保护机制、SYN cookies技术、增加最大半连接和缩短超时时间等.</p>
+<p>但是不能完全防范syn攻击。</p>
+<p><strong>TCP 四次挥手</strong>
+</p>
+<p>TCP的连接的拆除需要发送四个包，因此称为四次挥手(four-way handshake)。客户端或服务器均可主动发起挥手动作，在socket编程中，任何一方执行close()操作即可产生挥手操作。</p>
+<div><img src="http://blogimg.chinaunix.net/blog/upfile2/100327022731.jpg"></div>
+<p> </p>
+<div></div>
+<p> </p>
+<p>参见wireshark抓包，实测的抓包结果并没有严格按挥手时序。我估计是时间间隔太短造成。</p>
+<div><img src="http://blogimg.chinaunix.net/blog/upfile2/100327023334.png"></div>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/9204.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/9204.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/9204.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

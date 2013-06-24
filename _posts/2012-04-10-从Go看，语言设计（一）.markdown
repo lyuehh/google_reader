@@ -1,0 +1,39 @@
+---
+layout: post
+title:  "从Go看，语言设计（一）"
+date:   2012-04-10 12:23:00
+author: dreamhead
+categories: program
+---
+
+## 从Go看，语言设计（一）
+### by dreamhead
+### at 2012-04-10 12:23:00
+### original <http://dreamhead.blogbus.com/logs/204670245.html>
+
+<p><a href="http://golang.org/">Go语言</a>发了正式版，终于像一个正经的东西了，不再需要每次从版本控制里面拿代码编译了。拿来把玩一番，看到了一些有趣的东西，记录一下。</p>
+<p>作为一门现代程序设计语言，Go语言从语言设计上反应出现代程序设计语言一些重要变化。</p>
+<p><strong>函数成为第一类对象</strong></p>
+<p>函数式编程已经无可阻挡地成为程序设计语言发展的重要趋势，只要是还在演进之中的程序设计语言，函数式编程都已经成为其重要的一部分，即便是Java这个笨重的大象，也会在Java 8中引入lambda。函数式编程的第一步，就是让函数成为第一类对象，也就是可以把函数作为参数和返回值传递。然后，才会有高阶函数，以及后面的一系列变化。</p>
+<p>下面是一个简单的Map实现：</p>
+<p><span style="white-space:pre">	</span>func Map(elements []int, f func(int)(int)) (results []int) {<br><span style="white-space:pre">		</span>results = make([]int, len(elements))<br><span style="white-space:pre">		</span>for i, element := range elements {<br><span style="white-space:pre">			</span>results[i] = f(element)<br><span style="white-space:pre">		</span>}<br><span style="white-space:pre">		</span>return<br><span style="white-space:pre">	</span>}</p>
+<p>调用起来也很简单：</p>
+<p><span style="white-space:pre">	</span>result := Map(elements, func(element int) int {<br><span style="white-space:pre">		</span>return element + 1<br><span style="white-space:pre">	</span>})</p>
+<p>稍微多说几句，在<a href="http://www.thoughtworks.com/articles/technology-radar-march-2012">新一期的ThoughtWorks技术雷达</a>上，函数式Java跃然纸上。我对这个问题的理解是，并不仅仅是要有函数式的语言构造，更应该是将函数式编程的一些理念引入到日常的开发中，比如引用透明性，无状态函数等等，这是个有趣的话题。</p>
+<p><strong>简化代码编写</strong></p>
+<p>程序员每天要写很多代码，设计一门程序设计语言，除了要考虑各种各样的语言特性之外，很重要的一点就是，就是让写代码更容易。类型推演和内置数据结构就是在这个方向上的努力，Go语言就提供了这两方面的支持。看看下面这段代码，典型的Java啰嗦代码：</p>
+<p><span style="white-space:pre">	</span>List lists = new ArrayList();<br><span style="white-space:pre">	</span>lists.add(0);<br><span style="white-space:pre">	</span>lists.add(1);<br><span style="white-space:pre">	</span>lists.add(2);</p>
+<ul>
+<li>类型推演</li>
+</ul>
+<p>动态类型语言很令人羡慕的一点就是，他们的变量不用反反复复地写类型。它们也有让人鄙视的地方，没有类型的变量无法做静态检查，许多错误只能在运行阶段暴露。类型推演给予我们一个鱼与熊掌兼得的机会：既能从繁琐的类型声明中解脱出来，又能拜静态类型所赐，在编译期就可以做很多检查，减小犯错的几率。</p>
+<p>例子：</p>
+<p>    car := new(Car)</p>
+<ul>
+<li>基本数据结构已不可或缺</li>
+</ul>
+<p>从语言设计的角度来讲，基本数据结构并不是语言的一部分。但从程序员的角度来说，基本数据结构的缺失会让代码显得无比啰嗦，这是对追求整洁代码之人的折磨。所以，有了人写了<a href="http://code.google.com/p/guava-libraries/">Guava</a>这样的库，解救水深火热的Java人，下面是前面那段代码的Guava版本：</p>
+<p><span style="white-space:pre">	</span>List lists = newArrayList(0, 1, 2);</p>
+<p>Go语言内置了一些数据类型的支持，让代码编写稍微简化了一些，不过，相比于很多语言，它还不够简洁。</p>
+<p>有了类型推演和基本数据结构，前面那段啰嗦的代码在Go中就是这个样子了：</p>
+<p>    elements := []int{1, 2, 3}</p>

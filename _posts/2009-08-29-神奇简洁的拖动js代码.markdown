@@ -1,0 +1,83 @@
+---
+layout: post
+title:  "神奇简洁的拖动js代码"
+date:   2009-08-29 11:22:16
+author: joe
+categories: program
+---
+
+## 神奇简洁的拖动js代码
+### by joe
+### at 2009-08-29 11:22:16
+### original <http://xiebiji.com/2009/08/%e7%a5%9e%e5%a5%87%e7%ae%80%e6%b4%81%e7%9a%84%e6%8b%96%e5%8a%a8js%e4%bb%a3%e7%a0%81/>
+
+<p>在蓝色论坛发现这个，有点看不懂，研究一下先。<br>
+测试地址：<a href="http://xiebiji.com/wp-content/uploads/2009/08/code.htm">code</a></p>
+
+<div><div><pre style="font-family:monospace">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=gb2312&quot; /&gt;
+&lt;title&gt;Drag&lt;/title&gt;
+&lt;style&gt;
+* { font-size:12px; font-family:Verdana,宋体; }
+html { margin:0px; padding:0px; overflow:auto; }
+body { margin:0px; padding:15px; background-color:buttonface; }
+#w { position:absolute; width:480px; height:270px; overflow:hidden; border:2px groove #281; cursor:default; -moz-user-select:none; }
+#t { line-height:20px; height:20px; width:480px; overflow:hidden; background-color:#27C; color:white; font-weight:bold; border-bottom:1px outset blue; text-align:center; }
+#winBody { height:248px; width:480px; overflow-x:hidden; overflow-y:auto; border-top:1px inset blue; padding:10px; text-indent:10px; background-color:white; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;w&quot;&gt;
+	&lt;div id=&quot;t&quot;&gt;Demo Win - Drag me&lt;/div&gt;
+	&lt;div id=&quot;winBody&quot;&gt;Hello world&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;script&gt;
+(function(o,s,x,y,d){
+	s = o.style;
+	d = document;
+	o.onselectstart = function(){ return false; }; //阻止选择
+	o.onmousedown = function(e){
+		e = e||event;
+		x = e.clientX-o.offsetLeft;
+		y = e.clientY-o.offsetTop;
+		d.onmousemove = function(e){
+			e = e||event;
+			s.left = e.clientX - x + &quot;px&quot;;
+			s.top = e.clientY - y + &quot;px&quot;;
+		}
+		d.onmouseup = function(){ d.onmouseup = d.onmousemove = &quot;&quot;; }
+	}
+})(document.getElementById(&quot;w&quot;))
+&lt;/script&gt;
+&lt;/html&gt;</pre></div></div>
+
+<p>把js代码单独拿出来，认真看一下就会发现原理很简单，用”()”把函数括起来然后在后面直接加”(参数)”运行函数。</p>
+
+<div><div><pre style="font-family:monospace"><span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span>o<span style="color:#339933">,</span>s<span style="color:#339933">,</span>x<span style="color:#339933">,</span>y<span style="color:#339933">,</span>d<span style="color:#009900">)</span><span style="color:#009900">{</span>
+	s <span style="color:#339933">=</span> o.<span style="color:#660066">style</span>;<span style="color:#006600;font-style:italic">//id为w的元素直接充当这里的o了</span>
+	d <span style="color:#339933">=</span> document;<span style="color:#006600;font-style:italic">//</span>
+	o.<span style="color:#660066">onselectstart</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#009900">{</span> <span style="color:#000066;font-weight:bold">return</span> <span style="color:#003366;font-weight:bold">false</span>; <span style="color:#009900">}</span>; <span style="color:#006600;font-style:italic">//阻止选择</span>
+	o.<span style="color:#660066">onmousedown</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span>e<span style="color:#009900">)</span><span style="color:#009900">{</span>
+		e <span style="color:#339933">=</span> e||event;
+		x <span style="color:#339933">=</span> e.<span style="color:#660066">clientX</span><span style="color:#339933">-</span>o.<span style="color:#660066">offsetLeft</span>;
+		y <span style="color:#339933">=</span> e.<span style="color:#660066">clientY</span><span style="color:#339933">-</span>o.<span style="color:#660066">offsetTop</span>;
+		d.<span style="color:#660066">onmousemove</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span>e<span style="color:#009900">)</span><span style="color:#009900">{</span>
+			e <span style="color:#339933">=</span> e||event;
+			s.<span style="color:#660066">left</span> <span style="color:#339933">=</span> e.<span style="color:#660066">clientX</span> <span style="color:#339933">-</span> x <span style="color:#339933">+</span> <span style="color:#3366cc">&quot;px&quot;</span>;
+			s.<span style="color:#660066">top</span> <span style="color:#339933">=</span> e.<span style="color:#660066">clientY</span> <span style="color:#339933">-</span> y <span style="color:#339933">+</span> <span style="color:#3366cc">&quot;px&quot;</span>;
+		<span style="color:#009900">}</span>
+		d.<span style="color:#660066">onmouseup</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#009900">{</span> d.<span style="color:#660066">onmouseup</span> <span style="color:#339933">=</span> d.<span style="color:#660066">onmousemove</span> <span style="color:#339933">=</span> <span style="color:#3366cc">&quot;&quot;</span>; <span style="color:#009900">}</span>
+	<span style="color:#009900">}</span>
+<span style="color:#009900">}</span><span style="color:#009900">)</span><span style="color:#009900">(</span>document.<span style="color:#660066">getElementById</span><span style="color:#009900">(</span><span style="color:#3366cc">&quot;w&quot;</span><span style="color:#009900">)</span><span style="color:#009900">)</span></pre></div></div>
+
+<h3>RELATED POSTS</h3>
+<ul>
+<li><a href="http://xiebiji.com/2009/03/jsv/" title="推荐一个js表单验证类，很实用">推荐一个js表单验证类，很实用</a></li>
+<li><a href="http://xiebiji.com/2009/02/handbook/" title="各类电脑文档手册">各类电脑文档手册</a></li>
+<li><a href="http://xiebiji.com/2009/02/tips/" title="教你用mootools1.2写个简单提示特效！">教你用mootools1.2写个简单提示特效！</a></li>
+<li><a href="http://xiebiji.com/2009/02/array/" title="教你在javascript中定义二维数组！">教你在javascript中定义二维数组！</a></li>
+<li><a href="http://xiebiji.com/2009/01/js/" title="JS特郁闷兼容问题，我今天才发现！">JS特郁闷兼容问题，我今天才发现！</a></li>
+</ul>

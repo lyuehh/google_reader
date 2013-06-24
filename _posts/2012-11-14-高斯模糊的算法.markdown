@@ -1,0 +1,128 @@
+---
+layout: post
+title:  "高斯模糊的算法"
+date:   2012-11-14 17:39:02
+author: 
+categories: program
+---
+
+## 高斯模糊的算法
+### by 
+### at 2012-11-14 17:39:02
+### original <http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html>
+
+<p>通常，图像处理软件会提供"模糊"（blur）滤镜，使图片产生模糊的效果。</p><p><img src="http://image.beekka.com/blog/201211/bg2012111401.jpg"></p>
+
+<p>"模糊"的算法有很多种，其中有一种叫做<a href="http://en.wikipedia.org/wiki/Gaussian_blur">"高斯模糊"</a>（Gaussian Blur）。它将<a href="http://zh.wikipedia.org/wiki/%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83">正态分布</a>（又名"高斯分布"）用于图像处理。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111402.png"></p>
+
+<p>本文介绍"高斯模糊"的算法，你会看到这是一个非常简单易懂的算法。本质上，它是一种<a href="http://en.wikipedia.org/wiki/Smoothing">数据平滑技术</a>（data smoothing），适用于多个场合，图像处理恰好提供了一个直观的应用实例。</p>
+
+<p><strong>一、高斯模糊的原理</strong></p>
+
+<p>所谓"模糊"，可以理解成每一个像素都取周边像素的平均值。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111403.png"></p>
+
+<p>上图中，2是中间点，周边点都是1。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111404.png"></p>
+
+<p>"中间点"取"周围点"的平均值，就会变成1。在数值上，这是一种"平滑化"。在图形上，就相当于产生"模糊"效果，"中间点"失去细节。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111405.jpg"></p>
+
+<p>显然，计算平均值时，取值范围越大，"模糊效果"越强烈。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111406.jpg"></p>
+
+<p>上面分别是原图、模糊半径3像素、模糊半径10像素的效果。模糊半径越大，图像就越模糊。从数值角度看，就是数值越平滑。</p>
+
+<p>接下来的问题就是，既然每个点都要取周边像素的平均值，那么应该如何分配权重呢？</p>
+
+<p>如果使用简单平均，显然不是很合理，因为图像都是连续的，越靠近的点关系越密切，越远离的点关系越疏远。因此，加权平均更合理，距离越近的点权重越大，距离越远的点权重越小。</p>
+
+<p><strong>二、正态分布的权重</strong></p>
+
+<p>正态分布显然是一种可取的权重分配模式。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111407.png"></p>
+
+<p>在图形上，正态分布是一种钟形曲线，越接近中心，取值越大，越远离中心，取值越小。</p>
+
+<p>计算平均值的时候，我们只需要将"中心点"作为原点，其他点按照其在正态曲线上的位置，分配权重，就可以得到一个加权平均值。</p>
+
+<p><strong>三、高斯函数</strong></p>
+
+<p>上面的正态分布是一维的，图像都是二维的，所以我们需要二维的正态分布。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012110708.png"></p>
+
+<p>正态分布的密度函数叫做<a href="http://en.wikipedia.org/wiki/Gaussian_function">"高斯函数"</a>（Gaussian function）。它的一维形式是：</p>
+
+<p><img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=f(x)%3D%5Cfrac%7B1%7D%7B%5Csigma%5Csqrt%7B2%5Cpi%20%7D%20%7D%7De%5E%7B-(x-%5Cmu%20)%5E%7B2%7D%2F2%5Csigma%5E%7B2%7D%7D&amp;chs=120" style="border:none"></p>
+
+<p>其中，μ是x的均值，σ是x的方差。因为计算平均值的时候，中心点就是原点，所以μ等于0。</p>
+
+<p><img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=f(x)%3D%5Cfrac%7B1%7D%7B%5Csigma%5Csqrt%7B2%5Cpi%20%7D%20%7D%7De%5E%7B-x%5E%7B2%7D%2F2%5Csigma%5E%7B2%7D%7D&amp;chs=120" style="border:none"></p>
+
+<p>根据一维高斯函数，可以推导得到二维高斯函数：</p>
+
+<p><img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=G(x%2Cy)%3D%5Cfrac%7B1%7D%7B2%5Cpi%20%5Csigma%20%5E%7B2%7D%7De%5E%7B-(x%5E2%2By%5E2)%2F2%5Csigma%5E2%7D&amp;chs=80" style="border:none"></p>
+
+<p>有了这个函数 ，就可以计算每个点的权重了。</p>
+
+<p><strong>四、权重矩阵</strong></p>
+
+<p>假定中心点的坐标是（0,0），那么距离它最近的8个点的坐标如下：</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111410.png"></p>
+
+<p>更远的点以此类推。</p>
+
+<p>为了计算权重矩阵，需要设定σ的值。假定σ=1.5，则模糊半径为1的权重矩阵如下：</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111411.png"></p>
+
+<p>这9个点的权重总和等于0.4787147，如果只计算这9个点的加权平均，还必须让它们的权重之和等于1，因此上面9个值还要分别除以0.4787147，得到最终的权重矩阵。</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111412.png"></p>
+
+<p><strong>五、计算高斯模糊</strong></p>
+
+<p>有了权重矩阵，就可以计算高斯模糊的值了。</p>
+
+<p>假设现有9个像素点，灰度值（0-255）如下：</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111413.png"></p>
+
+<p>每个点乘以自己的权重值：</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111414.png"></p>
+
+<p>得到</p>
+
+<p><img src="http://image.beekka.com/blog/201211/bg2012111416.png"></p>
+
+<p>将这9个值加起来，就是中心点的高斯模糊的值。</p>
+
+<p>对所有点重复这个过程，就得到了高斯模糊后的图像。如果原图是彩色图片，可以对RGB三个通道分别做高斯模糊。</p>
+
+<p><strong>六、边界点的处理</strong></p>
+
+<p>如果一个点处于边界，周边没有足够的点，怎么办？</p>
+
+<p>一个变通方法，就是把已有的点拷贝到另一面的对应位置，模拟出完整的矩阵。</p>
+
+<p><strong>七、参考文献</strong></p>
+
+<p>* <a href="http://www.swageroo.com/wordpress/how-to-program-a-gaussian-blur-without-using-3rd-party-libraries/">How to program a Gaussian Blur without using 3rd party libraries</a></p>
+
+<p>（完）</p><div style="color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#aad2f0;border-radius:10px"><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html">http://www.ruanyifeng.com/blog/2012/11/gaussian_blur.html</a></li>
+<li>最后修改时间：2012年12月12日 11:05</li>
+<li>付费支持：<a href="https://me.alipay.com/ruanyf"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" title="人民币" alt="人民币 - 支付宝" style="border:none;vertical-align:middle"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.99&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="美元 - paypal" title="美元" style="border:none;vertical-align:middle"></a> </li>
+</ul></div><div style="color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;border-radius:10px"></div>

@@ -1,0 +1,197 @@
+---
+layout: post
+title:  "关于 document.referrer"
+date:   2012-08-04 23:18:24
+author: oldj
+categories: program
+---
+
+## 关于 document.referrer
+### by oldj
+### at 2012-08-04 23:18:24
+### original <http://item.feedsky.com/~feedsky/oldj/~8217290/688913601/6320477/1/item.html>
+
+<p>　　前段时间需要通过 JavaScript 获取页面的来源，这个操作很简单，使用 document.referrer 就可以获取到了。不过，实际应用中还是有很多意外情况，这儿简单整理一下。</p>
+
+<p>　　首先遇到的问题，是从 HTTPS 页面转到 HTTP 页面后，document.referrer 的值为空。出于安全性考虑，很多网站的一些重要页面（比如淘宝的登录页面）都会使用 HTTPS 协议。如果某个未登录用户在页面 A（HTTP 页面）点击了页面 B（HTTP 页面）的链接，但页面 B 需要用户登录，于是先跳到登录页面 （HTTPS 页面），登录完成之后再跳回 B（HTTP 页面），这时你会发现 B 页面上取不到 document.referrer 了。也就是说，如果想根据 referrer 来还原用户访问路径的话，如果路径中有 HTTP 页面也有 HTTPS 页面，那么这个路径就会在从 HTTPS 到 HTTP 的地方断掉。</p>
+
+<p>　　这个问题的根源是浏览器的安全策略，只靠 JavaScript 似乎没有特别好的解决办法。一个迂回的思路是使用 window.name，在 HTTPS 页面将当前页面的 url 写到 window.name 中，再在下一个页面（HTTP 页面）读取。</p>
+
+<p>　　除了这种情况，其它页面跳转是否都能正常取到 document.referrer 呢？我搜索了一番，发现 <a href="http://driftcloudy.iteye.com/blog/986265">这儿</a> 有人整理了一个列表，不过不是很全，例如没有包括垂而不死的 IE6 的情况。于是便自己动手，在虚拟机里装了 N 个浏览器，把各种情况都测试了一下（这真是一个体力活），结果见下表：</p>
+
+
+<table>
+	<thead>
+		<tr>
+			<td>操作</td>
+			<td>IE6</td>
+			<td>IE7</td>
+			<td>IE8</td>
+			<td>IE9</td>
+			<td>Firefox</td>
+			<td>Chrome</td>
+			<td>Opera</td>
+			<td>Safari</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>直接在地址栏输入URL</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>从书签访问URL</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>从页面A点击超链接，跳转到页面B（target="_self"）</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+		</tr>
+		<tr>
+			<td>从页面A点击超链接，跳转到页面B（target="_blank"）</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+		</tr>
+		<tr>
+			<td>从页面A右键单击超链接，在新标签页中打开页面B</td>
+			<td>-</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>从页面A右键单击超链接，在新窗口中打开页面B</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>拖动链接到地址栏</td>
+			<td>""</td>
+			<td>无法拖动</td>
+			<td>无法拖动</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>拖动链接到标签栏</td>
+			<td>-</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+		</tr>
+		<tr>
+			<td>使用浏览器的前进、后退按钮</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+		</tr>
+		<tr>
+			<td>JS 修改 location.href</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+		</tr>
+		<tr>
+			<td>JS 使用 window.open</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+			<td>√</td>
+		</tr>
+		<tr>
+			<td>服务器重定向</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+			<td>定向之前的页面</td>
+		</tr>
+		<tr>
+			<td>页面 Meta Refresh</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>""</td>
+			<td>转向页</td>
+			<td>转向页</td>
+			<td>转向页</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>　　上表中的“√”表示能正常取到 referrer，"" 表示 referrer 为空。</p>
+
+<p>　　除了 IE 外，其它浏览器都是目前官网上能下载到的最新版本，其中 Safari 同时测试了 Windows 版和 Mac 版，结论一样。</p>
+
+<p>　　另外还有一些情况未做测试，例如点击 Flash 跳转时各浏览器下能否保持 referrer 等。</p>
+
+<p>　　上表中大部分情况是符合预期的，不过似乎也有几处需要注意的：</p>
+
+<p>　　1、在 Safari 中，右键打开链接会丢失 referrer；<br>
+　　2、在 IE 中，修改 location.href 或使用 window.open 打开页面会丢失 referrer（IE 9 有一点例外，使用 location.href 跳转不会丢失 referrer）；<br>
+　　3、使用 meta 跳转时，IE / Firefox 下会丢失 referrer。
+</p>
+
+<p>　　最后，一个简单的结论是：如果你需要通过 document.referrer 采集页面访问来源，最好不要使用 JS 跳转或打开新窗口，也不要使用 meta 跳转。</p><img src="http://www1.feedsky.com/t1/688913601/oldj/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/oldj/~8217290/688913601/6320477/1/item.html" border="0" height="0" width="0">

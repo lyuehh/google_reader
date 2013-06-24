@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "渐进增强：纯CSS聊天泡泡"
+date:   2010-08-17 07:22:54
+author: 
+categories: program
+---
+
+## 渐进增强：纯CSS聊天泡泡
+### by 
+### at 2010-08-17 07:22:54
+### original <http://news.cnblogs.com/n/70968/>
+
+<p>　　聊天泡泡做为一种UI表现形式是广大网民群众所喜闻乐见，但许多教程实现它却总是需要上使用非语义的HTML或者JavaScript。而本教程中的各种聊天泡泡只需要使用到CSS2.1来构建，并用CSS3来增强效果。不使用图片，也不使用JavaScript和更加不使用当前语义没用到的 HTML哦。<br>　　在<span>CSS</span>文件中有大量对代码的注释，可以让你方便的看懂这些代码。（译者：在翻译时作者要求DEMO页面要用原先的网址，所以这些注释没有翻译，当然当你看完本文，了解清楚实现方式，哪么不看注释也是可以看懂代码。）</p>
+<p>　　查看DEMO：<a href="http://nicolasgallagher.com/demo/pure-css-speech-bubbles/bubbles.html">纯 CSS聊天泡泡</a></p>
+<p>　　纯<span>CSS</span>聊天泡泡<br>　　只需要简单的HTML代码： &lt;div&gt;Content&lt;/div&gt; 或 &lt;p&gt;Content&lt;/p&gt; 就可以做出以下的聊天泡泡效果：<br><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic002.cnblogs.com/img/%e4%b8%95%e5%ad%90/201008/2010081707242594.jpg" alt=""><br><br>　　如果再添加一个子元素，例如 &lt;blockquote&gt;Quote&lt;/blockquote&gt; 再可以做出这样的聊天泡泡效果：<br><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic002.cnblogs.com/img/%e4%b8%95%e5%ad%90/201008/2010081707243937.png" alt=""></p>
+<p>　　<strong>我建议您使用伪类 :before 和（或者） :after 来创建HTML文档中没有写入的DOM并且用CSS来控制他们的表现。</strong>（译者：这里就是本文最为关键的一句话了，伪类在非IE的浏览器中竞然可以在HTML中创建一个DOM元素，并且可以用CSS来控制哦~哪么为什么伪类会表形成一个DOM元素呢，可能浏览器为了实现伪类的效果而产生的，这里则被作者发现并利用了。）<br>　　<strong>再使用CSS3中的 border-radius 和 transform 就可以来表现更为复杂的图形</strong>，更详情的说明请看《<a href="http://nicolasgallagher.com/css-typography-experiment-and-browser-inconsistencies/">CSS  typography experiment</a>》（译者：本文未翻译）</p>
+<p>　　示例代码<br>　　以下代码主要是创建一个有几个最基本的渐进增强型聊天泡泡的DEMO。更多的DEMO请看 纯 CSS聊天泡泡 及在 相关CSS文件 使用。</p>
+<blockquote>
+<pre>　　/*泡泡及小三角<br>　　------------------------------------------*/<p>　　.triangle-isosceles {<br>　　position:relative;<br>　　padding:15px;<br>　　margin:1em 0 3em;<br>　　color:#000;<br>　　background:#f3961c;</p><p>　　/*这里是用CSS3来控制圆角和渐变效果*/<br>　　-moz-border-radius:10px;<br>　　-webkit-border-radius:10px;<br>　　border-radius:10px;<br>　　background:-moz-linear-gradient(top,#f9d835,#f3961c);<br>　　background:linear-gradient(top,#f9d835,#f3961c);<br>　　}</p><p style="padding-left:30px">/*创建三角形（译者：请注意这里，这里就是在控制伪类所创建的DOM元素）*/<br>.triangle-isosceles:after {<br>content:"0a0";<br>display:block; /*针对 FF3.0 */<br>position:absolute;<br>z-index:-1;<br>bottom:-30px;<br>left:50px;<br>width:0;<br>height:0;<br>border-width:15px 15px;<br>border-style:solid;<br>border-color:#f3961c transparent transparent;<br>}</p><p> </p></pre>
+</blockquote>
+<p>　　关于Firefox3.0的提示：<br>　　FF3.0支持的CSS2.1的伪类生成的DOM，但不支持对生成的元素的定位。DEMO中的一些例子我认为在FF3.0中是不能接受的，即FF3.0不能处理最基本的聊天泡泡。根据NetApplications公司2010年3月的统计，FF3.0浏览器目前约有2％~4％的市场份额。所以应用本技术之前，应该考虑FF3.0在你的访问者中的重要性。不过，最终它将成为一种罕见的浏览器。但对于FF3.0本文中的技术没有更好的支持方案。</p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/41360/">Web 字体的未来</a><span style="color:gray">(2008-07-30)</span><br>　　· <a href="http://news.cnblogs.com/n/43445/">CSS中的黄金分割率</a><span style="color:gray">(2008-11-07)</span><br>　　· <a href="http://news.cnblogs.com/n/44303/">2008年国外最佳Web设计/开发技巧、脚本及资源总结</a><span style="color:gray">(2008-12-31)</span><br>　　· <a href="http://news.cnblogs.com/n/41975/">20个优秀网站助你征服CSS</a><span style="color:gray">(2008-08-31)</span><br>　　· <a href="http://news.cnblogs.com/n/70361/">21个超赞的CSS实现技术应用实例</a><span style="color:gray">(2010-08-09)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/70968/">http://news.cnblogs.com/n/70968/</a></p><p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=70968" width="1" height="1" alt="">

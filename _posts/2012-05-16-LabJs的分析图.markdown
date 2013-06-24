@@ -1,0 +1,53 @@
+---
+layout: post
+title:  "LabJs的分析图"
+date:   2012-05-16 15:24:55
+author: 小灰灰
+categories: program
+---
+
+## LabJs的分析图
+### by 小灰灰
+### at 2012-05-16 15:24:55
+### original <http://ued.ctrip.com/blog/?p=3305>
+
+<p>最近看了LabJS，LabJS是由Kyle Simpson编写，用来管理JS下载执行的一个开源模块。，</p>
+<p>关于它的使用方法等，在<a href="http://labjs.com/">labjs的官网</a>上说的非常详细，有兴趣的同学可以去试试。</p>
+<p>我这里主要整理了一份关于LabJs API的内部分析图。</p>
+<p>从三个方面分析了一下LABJS</p>
+<ol>
+<li>APIS
+<ul>
+<li><a href="http://labjs.com/documentation.php#setglobaldefaults">$LAB.setGlobalDefaults()</a></li>
+<li><a href="http://labjs.com/documentation.php#setoptions">$LAB.setOptions()</a></li>
+<li><a href="http://labjs.com/documentation.php#script">$LAB.script()</a></li>
+<li><a href="http://labjs.com/documentation.php#wait">$LAB.wait()</a></li>
+<li><a href="http://labjs.com/documentation.php#queuescript">$LAB.queueScript()</a></li>
+<li><a href="http://labjs.com/documentation.php#queuewait">$LAB.queueWait()</a></li>
+<li><a href="http://labjs.com/documentation.php#runqueue">$LAB.runQueue()</a></li>
+<li><a href="http://labjs.com/documentation.php#noconflict">$LAB.noConflict()</a></li>
+<li><a href="http://labjs.com/documentation.php#sandbox">$LAB.sandbox()</a></li>
+</ul>
+</li>
+<li>Variables
+<ul>
+<li>opera_or_gecko</li>
+<li>explicit_preloading</li>
+<li>real_preloading</li>
+<li>script_ordered_async</li>
+<li>xhr_or_cache_preloading</li>
+</ul>
+</li>
+<li>Functions
+<ul>
+<li>create_sandbox</li>
+<li>request_script</li>
+<li>check_chain_group_scripts_ready</li>
+<li>create_script_load_listener</li>
+<li>script_executed</li>
+</ul>
+</li>
+</ol>
+<p>具体的分析和内容请看上面的分析图<br>
+<a href="http://ued.ctrip.com/blog/wp-content/uploads/2012/05/LabJs.png"><img title="LabJs" src="http://ued.ctrip.com/blog/wp-content/uploads/2012/05/LabJs.png" alt="" width="680" height="680"></a></p>
+<p>可以通过这个地址下载xmind的源文件和图片： <a href="http://ued.ctrip.com/blog/wp-content/uploads/2012/05/LabJs1.rar">http://ued.ctrip.com/blog/wp-content/uploads/2012/05/LabJs1.rar</a></p>

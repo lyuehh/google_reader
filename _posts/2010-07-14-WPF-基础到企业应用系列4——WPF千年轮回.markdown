@@ -1,0 +1,414 @@
+---
+layout: post
+title:  "WPF 基础到企业应用系列4——WPF千年轮回"
+date:   2010-07-14 03:46:00
+author: 圣殿骑士
+categories: program
+---
+
+## WPF 基础到企业应用系列4——WPF千年轮回
+### by 圣殿骑士
+### at 2010-07-14 03:46:00
+### original <http://www.cnblogs.com/zenghongliang/archive/2010/07/14/1776916.html>
+
+<p><a href="http://www.cnblogs.com/zenghongliang/"><img src="http://pic.cnblogs.com/face/u47784.gif" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/zenghongliang/">圣殿骑士</a> 发表于 2010-07-14 03:46 <a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/14/1776916.html">原文链接</a> 阅读: 1730 评论: 78</p><h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">1.开篇前言</h1>
+<blockquote>
+<p>     首先很高兴这个系列能得到大家的关注和支持，基于对大家负责和对自己负责的态度，我会不断努力写好这个系列，分享自己的微薄技术和经验，希望在帮助别人的同时也不断提升自己。由于这篇文章很多（现已拆分成2篇，今天这篇只是其中之一），一共花了几个个晚上的休息时间才完成，所以读者花的时间长了一些，也希望大家能够见谅，这个系列以后会每周发三到四篇左右（主要是写一篇差不多要花几晚上，感觉思维比较发散），除了讲WPF技术本身之外，也会讲一些项目具体开发，所以敬请关注。</p>
+<p>    本篇文章取名为WPF千年轮回只因为两个原因：</p>
+<ol>
+<li>WPF和当年Win32、WinForm等的到来颇为相似，只是在功能和体验上上进行了提高，所以这是微软产品上的一个轮回；</li>
+<li>WPF的学习过程和其他技术一样，譬如ASP.NET，我们在学习的时候会先要了解Asp.Net构架(Http请求处理流程)、Pipeline、HttpHandler 和 HttpModule 等内容，这和WPF的Application生命周期相对应，再如WPF的Window生命周期可以和ASP.NET的页面生命周期相对应等。当然你也可以拿WinForm或者其他技术来举例，这里这是阐述观点。</li>
+</ol>
+<p>在前三篇文章中我们对WPF有了一个比较全面的认识，并且也通过一个基本的例子对比了WPF和之前的WinForm程序的区别和联系。那么在本篇文章当中，除了讲一些理论知识外，更多的是用实际的代码来验证这些理论。</p>
+</blockquote>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">2.本文提纲</h1>
+<blockquote>
+<p>· 1.开篇前言</p>
+<p>· 2.本文提纲</p>
+<p>· 3.Application </p>
+<p>· 4.Window </p>
+<p>· 5.Dispatcher及多线程</p>
+<p>· 6.类继承结构</p>
+<p>· 7.WPF的逻辑树和视觉树</p>
+<p>· 8.本文总结</p>
+<p>. 9.系列进度</p>
+</blockquote>
+<h6></h6>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">3.Application </h1>
+<blockquote>
+<h3><b>一.介绍</b></h3>
+<h6>WPF和 传统的WinForm 类似， WPF 同样需要一个 Application 来统领一些全局的行为和操作，并且每个 Domain （应用程序域）中只能有一个 Application 实例存在。和 WinForm 不同的是 WPF Application 默认由两部分组成 : App.xaml 和 App.xaml.cs，这有点类似于 Delphi Form（我对此只是了解，并没有接触过Delphi ），将定义和行为代码相分离。当然，这个和WebForm 也比较类似。XAML 从严格意义上说并不是一个纯粹的 XML 格式文件，它更像是一种 DSL(Domain Specific Language，领域特定语言)，它的所有定义都直接映射成某些代码，只是具体的翻译工作交给了编译器完成而已。WPF应用程序由System.Windows.Application类来进行管理。</h6>
+<h3><b>二.创建WPF应用程序</b></h3>
+<p>创建WPF应用程序有两种方式：</p>
+<p>1、Visual Studio和Expression Blend默认的方式，使用App.xaml文件定义启动应用程序</p>
+<p>    App.xaml文件的内容大致如下所示：</p>
+<pre><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%204-00-27%20PM_2.png"><img title="7-4-2010 4-00-27 PM" alt="7-4-2010 4-00-27 PM" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%204-00-27%20PM_thumb.png" border="0" width="670" height="372"></a></pre>
+<p>2、可以自已定义类，定义Main方法实现对WPF应用程序的启动</p>
+<p>    在项目中添加一个类，类的代码如下，在项目选项中，设定此类为启动项。</p>
+<pre><span style="color:blue">using </span>System;<br><span style="color:blue">using </span>System.Collections.Generic;<br><span style="color:blue">using </span>System.Configuration;<br><span style="color:blue">using </span>System.Data;<br><span style="color:blue">using </span>System.Linq;<br><span style="color:blue">using </span>System.Windows;<br><br><span style="color:blue">namespace </span>WPFApplications<br>{<br>    <span style="color:gray">/// &lt;summary&gt;<br>    /// </span><span style="color:green">Interaction logic for App.xaml<br>    </span><span style="color:gray">/// &lt;/summary&gt;<br>    </span><span style="color:blue">public partial class </span><span style="color:#2b91af">App </span>: <span style="color:#2b91af">Application<br>    </span>{<br>        [<span style="color:#2b91af">STAThread</span>]<br>        <span style="color:blue">static void </span>Main()<br>        {<br>            <span style="color:green">// 定义Application对象作为整个应用程序入口  <br>            </span><span style="color:#2b91af">Application </span>app = <span style="color:blue">new </span><span style="color:#2b91af">Application</span>();<br>            <span style="color:green">// 方法一：调用Run方法，参数为启动的窗体对象 ，也是最常用的方法 <br>            </span><span style="color:#2b91af">Window2 </span>win = <span style="color:blue">new </span><span style="color:#2b91af">Window2</span>();<br>            app.Run(win);<br><br>            <span style="color:green">// 方法二：指定Application对象的MainWindow属性为启动窗体，然后调用无参数的Run方法  <br>            //Window2 win = new Window2();  <br>            //app.MainWindow = win; <br>            //win.Show();       <br>            // win.Show()是必须的，否则无法显示窗体<br>            //app.Run();  <br><br>            // 方法三：通过Url的方式启动<br>            //app.StartupUri = new Uri("Window2.xaml", UriKind.Relative); <br>            //app.Run();<br>        </span>}<br>    }<br>}</pre>
+<h3><b>三、Application应用程序关闭</b></h3>
+<table style="width:676px;height:97px" border="0" cellpadding="2" cellspacing="0">
+<tbody>
+<tr>
+<td valign="top" width="200"> </td>
+<td valign="top" width="568"> </td>
+</tr>
+<tr>
+<td valign="top" width="200">OnLastWindowClose（默认值）：</td>
+<td valign="top" width="568">最后一个窗体关闭或调用Application对象的Shutdown() 方法时，应用程序关闭。</td>
+</tr>
+<tr>
+<td valign="top" width="200">OnMainWindowClose</td>
+<td valign="top" width="568">启动窗体关闭或调用Application对象的Shutdown()方法时，应用程序关闭。（和C#的Windows应用程序的关闭模式比较类似） </td>
+</tr>
+<tr>
+<td valign="top" width="200">OnExplicitShutdown</td>
+<td valign="top" width="568">只有在调用Application对象的Shutdown()方法时，应用程序才会关闭。 </td>
+</tr>
+</tbody>
+</table>
+<p>  对关闭选项更改的时候，可以直接在App.xaml中更改：</p>
+<pre><span style="color:blue">&lt;</span><span style="color:#a31515">Application </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Class</span><span style="color:blue">="WPFApplications.App"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">:</span><span style="color:red">x</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml"<br>    </span><span style="color:red">StartupUri</span><span style="color:blue">="Window2.xaml"<br>    </span><span style="color:red">ShutdownMode</span><span style="color:blue">=&quot;OnExplicitShutdown&quot;&gt;<br>    &lt;</span><span style="color:#a31515">Application.Resources</span><span style="color:blue">&gt;<br>    &lt;/</span><span style="color:#a31515">Application.Resources</span><span style="color:blue">&gt;<br>&lt;/</span><span style="color:#a31515">Application</span><span style="color:blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<p>   同样你也可以在代码文件（App.xaml.cs）中进行更改，但必须注意这个设置写在app.Run()方法之前 ，如下代码：<span style="color:green"><br></span>app.ShutdownMode = <span style="color:#2b91af">ShutdownMode</span>.OnExplicitShutdown;<br>app.Run(win);</p>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<h3><b>四、Application对象的事件</b></h3>
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td valign="top" width="253">
+<p>名称</p>
+</td>
+<td valign="top" width="431">
+<p>描述</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Activated</p>
+</td>
+<td valign="top" width="431">
+<p>当应用程序成为前台应用程序时发生，即获取焦点。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Deactivated</p>
+</td>
+<td valign="top" width="431">
+<p>当应用程序停止作为前台应用程序时发生，即失去焦点。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>DispatcherUnhandledException</p>
+</td>
+<td valign="top" width="431">
+<p>在异常由应用程序引发但未进行处理时发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Exit</p>
+</td>
+<td valign="top" width="431">
+<p>正好在应用程序关闭之前发生，且无法取消。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>FragmentNavigation</p>
+</td>
+<td valign="top" width="431">
+<p>当应用程序中的导航器开始导航至某个内容片断时发生，如果所需片段位于当前内容中，则导航会立即发生；或者，如果所需片段位于不同 内容中，则导航会在加载了源 XAML 内容之后发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>LoadCompleted</p>
+</td>
+<td valign="top" width="431">
+<p>在已经加载、分析并开始呈现应用程序中的导航器导航到的内容时发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Navigated</p>
+</td>
+<td valign="top" width="431">
+<p>在已经找到应用程序中的导航器要导航到的内容时发生，尽管此时该内容可能尚未完成加载。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Navigating</p>
+</td>
+<td valign="top" width="431">
+<p>在应用程序中的导航器请求新导航时发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>NavigationFailed</p>
+</td>
+<td valign="top" width="431">
+<p>在应用程序中的导航器在导航到所请求内容时出现错误的情况下发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>NavigationProgress</p>
+</td>
+<td valign="top" width="431">
+<p>在由应用程序中的导航器管理的下载过程中定期发生，以提供导航进度信息。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>NavigationStopped</p>
+</td>
+<td valign="top" width="431">
+<p>在调用应用程序中的导航器的 StopLoading 方法时发生，或者当导航器在当前导航正在进行期间请求了一个新导航时发生（没大用到）。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>SessionEnding</p>
+</td>
+<td valign="top" width="431">
+<p>在用户通过注销或关闭操作系统而结束 Windows 会话时发生。</p>
+</td>
+</tr>
+<tr>
+<td valign="top" width="253">
+<p>Startup</p>
+</td>
+<td valign="top" width="431">
+<p>在调用 Application 对象的 Run 方法时发生。</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>应用程序的事件处理可以：</p>
+<p>1、在App.xaml中做事件的绑定，在App.xaml.cs文件中添加事件的处理方法</p>
+<p>    在App.xaml文件中：</p>
+<pre><span style="color:blue">&lt;</span><span style="color:#a31515">Application </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Class</span><span style="color:blue">="WPFApplications.App"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">:</span><span style="color:red">x</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml"<br>    </span><span style="color:red">StartupUri</span><span style="color:blue">="Window1.xaml"<br>    </span><span style="color:red">Startup</span><span style="color:blue">="Application_Startup"<br>    </span><span style="color:red">Exit</span><span style="color:blue">="Application_Exit"<br>    </span><span style="color:red">DispatcherUnhandledException</span><span style="color:blue">=&quot;Application_DispatcherUnhandledException&quot;&gt;<br>    &lt;</span><span style="color:#a31515">Application.Resources</span><span style="color:blue">&gt;<br>         <br>    &lt;/</span><span style="color:#a31515">Application.Resources</span><span style="color:blue">&gt;<br>&lt;/</span><span style="color:#a31515">Application</span><span style="color:blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<p>    在App.xaml.cs文件中：</p>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">App </span>: <span style="color:#2b91af">Application<br></span>{<br>    [<span style="color:#2b91af">STAThread</span>]<br>    <span style="color:blue">static void </span>Main()<br>    {<br>        <span style="color:green">// 定义Application对象作为整个应用程序入口  <br>          </span><span style="color:#2b91af">Application </span>app = <span style="color:blue">new </span><span style="color:#2b91af">Application</span>();<br>        <span style="color:green">// 方法一：调用Run方法，参数为启动的窗体对象 ，也是最常用的方法 <br>          </span><span style="color:#2b91af">Window2 </span>win = <span style="color:blue">new </span><span style="color:#2b91af">Window2</span>();<br>        app.Run(win);<br>    }<br><br>    <span style="color:blue">private void </span>Application_DispatcherUnhandledException(<span style="color:blue">object </span>sender, System.Windows.Threading.<span style="color:#2b91af"><br>DispatcherUnhandledExceptionEventArgs </span>e)<br>    {</pre>
+<pre>    }<br><br>    <span style="color:blue">private void </span>Application_Exit(<span style="color:blue">object </span>sender, <span style="color:#2b91af">ExitEventArgs </span>e)<br>    {<br>    }<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<p>2、在自定义的类中可以做正常的C#的事件绑定：</p>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">App </span>: <span style="color:#2b91af">Application<br></span>{<br>    [<span style="color:#2b91af">STAThread</span>]<br>    <span style="color:blue">static void </span>Main()<br>    {<br>        <span style="color:green">// 定义Application对象作为整个应用程序入口  <br>          </span><span style="color:#2b91af">Application </span>app = <span style="color:blue">new </span><span style="color:#2b91af">Application</span>();<br>        <span style="color:green">// 调用Run方法，参数为启动的窗体对象 ，也是最常用的方法 <br>          </span><span style="color:#2b91af">Window2 </span>win = <span style="color:blue">new </span><span style="color:#2b91af">Window2</span>();<br>        app.Startup += <span style="color:blue">new </span><span style="color:#2b91af">StartupEventHandler</span>(app_Startup);<br>        app.DispatcherUnhandledException += <span style="color:blue">new </span>System.Windows.Threading.<span style="color:#2b91af"><br>DispatcherUnhandledExceptionEventHandler</span>(app_DispatcherUnhandledException);<br>        app.Run(win);  <br>    }<br><br>    <span style="color:blue">static void </span>app_DispatcherUnhandledException(<span style="color:blue">object </span>sender, System.Windows.Threading.<span style="color:#2b91af"><br>           DispatcherUnhandledExceptionEventArgs </span>e)<br>    {<br>        <span style="color:blue">throw new </span><span style="color:#2b91af">NotImplementedException</span>();<br>    }<br><br>    <span style="color:blue">static void </span>app_Startup(<span style="color:blue">object </span>sender, <span style="color:#2b91af">StartupEventArgs </span>e)<br>    {<br>        <span style="color:blue">throw new </span><span style="color:#2b91af">NotImplementedException</span>();<br>    }<br>}</pre>
+<pre>如果通过XAML启动窗体的话，也会编译成为为如下的程序，默认路径为Debug文件夹得App.g.cs文件：</pre>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">App </span>: System.Windows.<span style="color:#2b91af">Application </span>{<br>    <br>    <span style="color:gray">/// &lt;summary&gt;<br>    /// </span><span style="color:green">InitializeComponent<br>    </span><span style="color:gray">/// &lt;/summary&gt;<br>    </span>[System.Diagnostics.<span style="color:#2b91af">DebuggerNonUserCodeAttribute</span>()]<br>    <span style="color:blue">public void </span>InitializeComponent() {<br>        <br>        <span style="color:blue">#line </span>4 "..\..\App.xaml"<br>        <span style="color:blue">this</span>.StartupUri = <span style="color:blue">new </span>System.<span style="color:#2b91af">Uri</span>(<span style="color:#a31515">"Window5.xaml"</span>, System.<span style="color:#2b91af">UriKind</span>.Relative);<br>        <br>        <span style="color:blue">#line </span>default<br>        <span style="color:blue">#line </span>hidden<br>    }<br>    <br>    <span style="color:gray">/// &lt;summary&gt;<br>    /// </span><span style="color:green">Application Entry Point.<br>    </span><span style="color:gray">/// &lt;/summary&gt;<br>    </span>[System.<span style="color:#2b91af">STAThreadAttribute</span>()]<br>    [System.Diagnostics.<span style="color:#2b91af">DebuggerNonUserCodeAttribute</span>()]<br>    <span style="color:blue">public static void </span>Main() {<br>        WPFApplications.<span style="color:#2b91af">App </span>app = <span style="color:blue">new </span>WPFApplications.<span style="color:#2b91af">App</span>();<br>        app.InitializeComponent();<br>        app.Run();<br>    }<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<h6></h6>
+<h3><b>五、WPF应用程序生存周期</b></h3>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_20.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_9.png" border="0" width="556" height="435"></a> </p>
+<p>当然这幅图也只是简单的概括了WPF的执行顺序和生命周期，具体还要细致研究才是。</p>
+</blockquote>
+<pre> </pre>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">4.Window </h1>
+<blockquote>
+<h3><b>一、窗体类基本概念</b></h3>
+<p>对于WPF应用程序,在Visual Studio和Expression Blend中，自定义的窗体均继承System.Windows.Window类.大家都可能听说过或者看过Applications = Code + Markup: A Guide to the Microsoft Windows Presentation Foundation这本书，它里面就是用XAML和后台代码两种形式来实现同一个功能，那么我们这里定义的窗体也由两部分组成：</p>
+<p>1、 XAML文件，在这里面通常全部写UI的东西（希望大家还记得这两幅图）</p>
+<pre>   <a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%202-54-11%20PM_2.png"><img title="7-4-2010 2-54-11 PM" alt="7-4-2010 2-54-11 PM" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%202-54-11%20PM_thumb.png" border="0" width="600" height="377"></a></pre>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%203-08-26%20PM_2.png"><img title="7-4-2010 3-08-26 PM" alt="7-4-2010 3-08-26 PM" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/3cfdd94adeea_E606/7-4-2010%203-08-26%20PM_thumb.png" border="0" width="623" height="390"></a></p>
+<pre> </pre>
+<pre>2、后台代码文件</pre>
+<pre><span style="color:blue">namespace </span>WPFApplications<br>{<br>    <span style="color:gray">/// &lt;summary&gt;<br>    /// </span><span style="color:green">Interaction logic for Window5.xaml<br>    </span><span style="color:gray">/// &lt;/summary&gt;<br>    </span><span style="color:blue">public partial class </span><span style="color:#2b91af">Window5 </span>: <span style="color:#2b91af">Window<br>    </span>{<br>        <span style="color:blue">public </span>Window5()<br>        {<br>            InitializeComponent();<br>        }<br><br>        <span style="color:blue">private void </span>btnOK_Click(<span style="color:blue">object </span>sender, <span style="color:#2b91af">RoutedEventArgs </span>e)<br>        {<br>            lblHello.Content = <span style="color:#a31515">"Hello World Changed"</span>;<br>        }<br>    }<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<p>也可以将后台代码放在XAML文件中，上面的例子可以改写为：</p>
+<pre><span style="color:blue">&lt;</span><span style="color:#a31515">Window </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Class</span><span style="color:blue">="WPFApplications.Window5"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">:</span><span style="color:red">x</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml"<br>    </span><span style="color:red">Title</span><span style="color:blue">="Window5" </span><span style="color:red">Height</span><span style="color:blue">="300" </span><span style="color:red">Width</span><span style="color:blue">=&quot;300&quot;&gt;<br>    &lt;</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>        &lt;</span><span style="color:#a31515">Label </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Name</span><span style="color:blue">=&quot;lblHello&quot;&gt;</span><span style="color:#a31515">Hello,World!</span><span style="color:blue">&lt;/</span><span style="color:#a31515">Label</span><span style="color:blue">&gt;<br>        &lt;</span><span style="color:#a31515">Button </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Name</span><span style="color:blue">="btnOK" </span><span style="color:red">Width</span><span style="color:blue">="88" </span><span style="color:red">Height</span><span style="color:blue">="22" </span><span style="color:red">Content</span><span style="color:blue">="Click"   <br>               </span><span style="color:red">Click</span><span style="color:blue">=&quot;btnOK_Click&quot;/&gt;<br>        &lt;</span><span style="color:#a31515">x</span><span style="color:blue">:</span><span style="color:#a31515">Code</span><span style="color:blue">&gt;<br>            </span><span style="color:gray">&lt;![CDATA[ <br>            void btnOK_Click(object sender, System.Windows.RoutedEventArgs e) <br>            {  <br>            lblHello.Content = "Hello World Changed";  <br>            }  <br>            ]]&gt;  <br>        </span><span style="color:blue">&lt;/</span><span style="color:#a31515">x</span><span style="color:blue">:</span><span style="color:#a31515">Code</span><span style="color:blue">&gt;<br>    &lt;/</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>&lt;/</span><span style="color:#a31515">Window</span><span style="color:blue">&gt;</span></pre>
+<a href="http://11011.net/software/vspaste"></a>
+<pre></pre>
+<h3><b>二、窗体的生命周期</b></h3>
+<p>1、显示窗体</p>
+<ul>
+<li>构造函数 
+</li>
+<li>Show()、ShowDialog()方法：Show()方法显示非模态窗口，ShowDialog()方法显示模态窗口，这个基本和WinForm类似 
+</li>
+<li>Loaded事件：窗体第一次Show()或ShowDialog()时引发的事件，通常在此事件中加载窗体的初始化数据，但如果用了MVVM模式，基本就不在这里面写。</li>
+</ul>
+<p>2、关闭窗体</p>
+<ul>
+<li>Close()方法：关闭窗体，并释放窗体的资源 
+</li>
+<li>Closing事件、Closed事件：关闭时、关闭后引发的事件，通常在Closing事件中提示用户是否退出等信息。 </li>
+</ul>
+<p>3、窗体的激活</p>
+<ul>
+<li>Activate()方法：激活窗体 
+</li>
+<li>Activated、Deactivated事件：当窗体激动、失去焦点时引发的事件 </li>
+</ul>
+<p>4、窗体的生命周期</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/DragonInSea/WindowsLiveWriter/WPFandSilverlightWPF_94E9/WindowLifeCycle_2.png"><img title="WindowLifeCycle" alt="WindowLifeCycle" src="http://images.cnblogs.com/cnblogs_com/DragonInSea/WindowsLiveWriter/WPFandSilverlightWPF_94E9/WindowLifeCycle_thumb.png" border="0" width="535" height="412"></a></p>
+<p> </p>
+<p>为了证实上面的结论，我们用下面的代码进行测试：</p>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">Window3 </span>: <span style="color:#2b91af">Window<br>  </span>{<br>      <span style="color:blue">public </span>Window3()<br>      {<br>          <span style="color:blue">this</span>.Activated += <span style="color:blue">new </span><span style="color:#2b91af">EventHandler</span>(Window1_Activated);<br>          <span style="color:blue">this</span>.Closing += <span style="color:blue">new </span>System.ComponentModel.<span style="color:#2b91af">CancelEventHandler</span>(Window1_Closing);<br>          <span style="color:blue">this</span>.ContentRendered += <span style="color:blue">new </span><span style="color:#2b91af">EventHandler</span>(Window1_ContentRendered);<br>          <span style="color:blue">this</span>.Deactivated += <span style="color:blue">new </span><span style="color:#2b91af">EventHandler</span>(Window1_Deactivated);<br>          <span style="color:blue">this</span>.Loaded += <span style="color:blue">new </span><span style="color:#2b91af">RoutedEventHandler</span>(Window1_Loaded);<br>          <span style="color:blue">this</span>.Closed += <span style="color:blue">new </span><span style="color:#2b91af">EventHandler</span>(Window1_Closed);<br>          <span style="color:blue">this</span>.Unloaded += <span style="color:blue">new </span><span style="color:#2b91af">RoutedEventHandler</span>(Window1_Unloaded);<br>          <span style="color:blue">this</span>.SourceInitialized += <span style="color:blue">new </span><span style="color:#2b91af">EventHandler</span>(Window1_SourceInitialized);<br><br>          InitializeComponent();<br>      }<br><br><br>      <span style="color:blue">void </span>Window1_Unloaded(<span style="color:blue">object </span>sender, <span style="color:#2b91af">RoutedEventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Unloaded"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_SourceInitialized(<span style="color:blue">object </span>sender, <span style="color:#2b91af">EventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"SourceInitialized"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_Loaded(<span style="color:blue">object </span>sender, <span style="color:#2b91af">RoutedEventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Loaded"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_Deactivated(<span style="color:blue">object </span>sender, <span style="color:#2b91af">EventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Deactivated"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_ContentRendered(<span style="color:blue">object </span>sender, <span style="color:#2b91af">EventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"ContentRendered"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_Closing(<span style="color:blue">object </span>sender, System.ComponentModel.<span style="color:#2b91af">CancelEventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Closing"</span>);<br>          <span style="color:#2b91af">MessageBoxResult </span>dr = <span style="color:#2b91af">MessageBox</span>.Show(<span style="color:#a31515">"Cancel the window?"</span>,<br> <span style="color:#a31515">"Answer"</span>, <span style="color:#2b91af">MessageBoxButton</span>.YesNo, <span style="color:#2b91af">MessageBoxImage</span>.Question);<br>          <span style="color:blue">if </span>(dr == <span style="color:#2b91af">MessageBoxResult</span>.No)<br>          {<br>              e.Cancel = <span style="color:blue">true</span>;<br>          }<br>      }<br><br>      <span style="color:blue">void </span>Window1_Closed(<span style="color:blue">object </span>sender, <span style="color:#2b91af">EventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Closed"</span>);<br>      }<br><br>      <span style="color:blue">void </span>Window1_Activated(<span style="color:blue">object </span>sender, <span style="color:#2b91af">EventArgs </span>e)<br>      {<br>          <span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:#a31515">"Activated"</span>);<br>      }<br><br>  }</pre>
+<pre>执行结果为：</pre>
+<pre><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_12.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_5.png" border="0" width="659" height="291"></a> </pre>
+<p>WPF窗体的详细的属性、方法、事件请参考MSDN，有很多的属性、方法、事件与Windows应用程序中 System.Windows.Forms.Form类颇为相似，其中常用的一些属性、方法、事件有：</p>
+<ol>
+<li>窗体边框模式（WindowStyle属性）和是否允许更改窗体大小（ResizeMode属性） 。 
+</li>
+<li>窗体启动位置（WindowStartupLocation属性）和启动状态（WindowState属性） 等。 
+</li>
+<li>窗体标题（Title属性）及图标 。 
+</li>
+<li>是否显示在任务栏（ShowInTaskbar） 
+</li>
+<li>始终在最前（TopMost属性） </li>
+</ol>
+<p> </p>
+</blockquote>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">5.Dispatcher及多线程</h1>
+<blockquote>
+<p>提到这个UI和后台线程交互这个问题，大家都可能在WinForm中遇到过，记得几年前我参加一个外资企业的面试，公司的其中一道题就是说在WinForm 中如何使用后台线程来操作UI，所以对这个问题比较记忆犹新。</p>
+<p>WPF线程分配系统提供一个Dispatcher属性、VerifyAccess  和 CheckAccess 方法来操作线程。线程分配系统位于所有 WPF 类中基类，大部分WPF 元素都派生于此类，如下图的Dispatcher类： 
+</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_18.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_8.png" border="0" width="672" height="436"></a> 
+</p>
+<p>WPF 应用程序启动后，会有两个线程： 
+</p>
+<ol>
+<li>一个是用来处理UI呈现（处理UI的请求，比如输入和展现等操作）。 
+</li>
+<li>一个用来管理 UI的 （对UI元素及整个UI进行管理）。</li>
+</ol>
+<pre></pre>
+<p>与 Dispatcher 调度对象想对应的就是 <b>DispatcherObject</b>，在 WPF 中绝大部分控件都继承自 DispatcherObject，甚至包括 Application。这些继承自 DispatcherObject 的对象具有线程关联特征，也就意味着只有创建这些对象实例，且包含了 Dispatcher 的线程(通常指默认 UI 线程)才能直接对其进行更新操作。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_16.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_7.png" border="0" width="483" height="196"></a> <br>当我们尝试从一个非 UI 线程更新一个UI元素，会看到如下的异常错误。</p>
+<p>  <b>XAML代码</b>：</p>
+<pre><span style="color:blue">&lt;</span><span style="color:#a31515">Window </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Class</span><span style="color:blue">="WPFApplications.Window2"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">:</span><span style="color:red">x</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml"<br>    </span><span style="color:red">Title</span><span style="color:blue">="Window2" </span><span style="color:red">Height</span><span style="color:blue">="300" </span><span style="color:red">Width</span><span style="color:blue">=&quot;300&quot;&gt;<br>    &lt;</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>        &lt;</span><span style="color:#a31515">Label </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Name</span><span style="color:blue">=&quot;lblHello&quot;&gt;</span><span style="color:#a31515">Hello,World!</span><span style="color:blue">&lt;/</span><span style="color:#a31515">Label</span><span style="color:blue">&gt;<br>    &lt;/</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>&lt;/</span><span style="color:#a31515">Window</span><span style="color:blue">&gt;</span></pre>
+<pre><span style="color:#000000"><b>后台代码：</b></span></pre>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">Window2 </span>: <span style="color:#2b91af">Window<br></span>{<br>    <span style="color:blue">public </span>Window2()<br>    {<br>        InitializeComponent();<br>        <span style="color:#2b91af">Thread </span>thread = <span style="color:blue">new </span><span style="color:#2b91af">Thread</span>(ModifyUI);<br>        thread.Start();<br>    }<br><br>    <span style="color:blue">private void </span>ModifyUI()<br>    {<br>        <span style="color:green">// 模拟一些工作正在进行<br>        </span><span style="color:#2b91af">Thread</span>.Sleep(<span style="color:#2b91af">TimeSpan</span>.FromSeconds(5));<br>        lblHello.Content = <span style="color:#a31515">"Hello,Dispatcher"</span>;<br>    }<br>}<br><br><b>错误截图：</b><br></pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_14.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_6.png" border="0" width="666" height="336"></a> 
+</p>
+<p>按照 DispatcherObject 的限制原则，我们改用 Window.Dispatcher.Invoke() 即可顺利完成这个更新操作。</p>
+<pre><span style="color:blue">private void </span>ModifyUINew()<br>{<br>    <span style="color:green">// 模拟一些工作正在进行<br>    </span><span style="color:#2b91af">Thread</span>.Sleep(<span style="color:#2b91af">TimeSpan</span>.FromSeconds(5));<br>    <span style="color:blue">this</span>.Dispatcher.BeginInvoke(<span style="color:#2b91af">DispatcherPriority</span>.Normal,(<span style="color:#2b91af">ThreadStart</span>)<span style="color:blue">delegate</span>()<br>    {<br>        lblHello.Content = <span style="color:#a31515">"Hello,Dispatcher"</span>;<br>    });<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a>
+<p><br>如果在其他工程或者类中，我们可以用 Application.Current.Dispatcher.Invoke方法来完成同样的操作，它们都指向 UI Thread Dispatcher这个唯一的对象。</p>
+<p>Dispatcher 同时还支持 BeginInvoke 异步调用，如下代码：</p>
+<pre><span style="color:blue">private void </span>btnHello_Click(<span style="color:blue">object </span>sender, <span style="color:#2b91af">RoutedEventArgs </span>e)<br>{<br>    <span style="color:blue">new </span><span style="color:#2b91af">Thread</span>(() =&gt;<br>    {<br>        <span style="color:#2b91af">Application</span>.Current.Dispatcher.BeginInvoke(<span style="color:#2b91af">DispatcherPriority</span>.Normal,<br>            <span style="color:blue">new </span><span style="color:#2b91af">Action</span>(() =&gt;<br>            {<br>                <span style="color:#2b91af">Thread</span>.Sleep(<span style="color:#2b91af">TimeSpan</span>.FromSeconds(5));<br>                <span style="color:blue">this</span>.lblHello.Content = <span style="color:#2b91af">DateTime</span>.Now.ToString();<br>            }));<br>    }).Start();<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a><br>关于Dispatcher和WPF多线程，还有很多要讲，由于篇幅有限且精力有限，我这里只讲一些我们最常见的应用，同时包括Freezable 的处理等问题，大家可以查阅MSDN或者查阅国外相关的专题。</blockquote>
+<pre><span style="color:blue"> </span> </pre>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">6.类继承结构</h1>
+<blockquote>
+<p>在WPF中常用的的控件类继承结构如下图所示（图中圆圈的表示抽象类，方框的表示实体类）：</p>
+<p><img src="http://pic002.cnblogs.com/img/zenghongliang/201007/2010071411191627.png" width="647" height="586"></p>
+<ul>
+<li>System.Object 类：大家都知道在.Net中所有类型的根类型,在图中没有画出来，DispatcherObject 就继承于它，所以它是整个应用系统的基类。 
+</li>
+<li>System.Windows.Threading.DispatcherObject 类：WPF 中的绝大多数对象是从 DispatcherObject 派生的，它提供了用于处理并发和线程的基本构造。WPF 是基于调度程序实现的消息系统。 
+</li>
+<li>System.Windows.DependencyObject类：WPF基本所有的控件都实现了依赖属性，它表示一个参与依赖项属性系统的对象。 
+</li>
+<li>System.Windows.Media.Visual类：为 WPF 中的呈现提供支持，其中包括命中测试、坐标转换和边界框计算等。 
+</li>
+<li>System.Windows.UIElement 类：UIElement 是 WPF 核心级实现的基类，该类建立在 Windows Presentation Foundation (WPF) 元素和基本表示特征基础上。 
+</li>
+<li>System.Windows.FrameworkElement类：为 Windows Presentation Foundation (WPF) 元素提供 WPF 框架级属性集、事件集和方法集。此类表示附带的 WPF 框架级实现，它是基于由UIElement定义的 WPF 核心级 API 构建的。 
+<ul>
+<li>System.Windows.Controls.Control 类：表示 用户界面 (UI) 元素的基类，这些元素使用 ControlTemplate 来定义其外观。 
+<ul>
+<li>System.Windows.Controls.ContentControl类：表示包含单项内容的控件。 
+</li>
+<li>System.Windows.Controls.ItemsControl 类：表示一个可用于呈现项的集合的控件。 </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p> </p>
+<ul>
+<li> 
+<ul>
+<li>System.Windows.Controls.Panel类：为所有 Panel 元素（布局）提供基类。使用 Panel 元素在 Windows Presentation Foundation (WPF) 应用程序中放置和排列子对象。 
+</li>
+<li>System.Windows.Sharps.Sharp类：为 Ellipse、Polygon 和 Rectangle 之类的形状元素提供基类。 </li>
+</ul>
+</li>
+</ul>
+<p>除了上面的图以外，还有几个命名空间也很重要，如下：</p>
+<ul>
+<li> 
+<ul>
+<li>System.Windows.Controls.Decorator 类：提供在单个子元素（如 Border 或 Viewbox）上或周围应用效果的元素的基类。 
+</li>
+<li>System.Windows.Controls.Image 类：表示显示图像的控件。 
+</li>
+<li>System.Windows.Controls.MediaElement类：表示包含音频和 /或视频的控件。 </li>
+</ul>
+</li>
+</ul>
+<p> </p>
+</blockquote>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">7.WPF的逻辑树和视觉树</h1>
+<blockquote>
+<p>关于这部分的内容讲起来就比较多了，正如上次大家的留言里说的一样，这个内容如果拉开来讲肯定就要开几个篇幅，所以我们今天主要以讲清楚概念为重点，先看下面的一个XAML代码的例子： </p>
+<pre><span style="color:blue">&lt;</span><span style="color:#a31515">Window </span><span style="color:red">x</span><span style="color:blue">:</span><span style="color:red">Class</span><span style="color:blue">="WPFApplications.Window1"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>    </span><span style="color:red">xmlns</span><span style="color:blue">:</span><span style="color:red">x</span><span style="color:blue">="http://schemas.microsoft.com/winfx/2006/xaml"<br>    </span><span style="color:red">Title</span><span style="color:blue">="Window1" </span><span style="color:red">Height</span><span style="color:blue">="300" </span><span style="color:red">Width</span><span style="color:blue">=&quot;300&quot;&gt;<br>    &lt;</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>        &lt;</span><span style="color:#a31515">Label</span><span style="color:blue">&gt;</span><span style="color:#a31515">Hello,World!</span><span style="color:blue">&lt;/</span><span style="color:#a31515">Label</span><span style="color:blue">&gt;<br>    &lt;/</span><span style="color:#a31515">StackPanel</span><span style="color:blue">&gt;<br>&lt;/</span><span style="color:#a31515">Window</span><span style="color:blue">&gt;</span></pre>
+<p>上面这个UI非常的简单，Window是一个根结点，它有一个子结点StackPanel，StackPanel有一个子结点Label。注意Label下还有一个子结点string（LabelText），它同时也是一个叶子结点。这就构成了窗口的一个逻辑树。逻辑树始终存在于WPF的UI中，不管UI是用XAML编写还是用代码编写。WPF的每个方面（属性、事件、资源等等）都是依赖于逻辑树的。 
+</p>
+<p>视觉树基本上是逻辑树的一种扩展。逻辑树的每个结点都被分解为它们的核心视觉组件。逻辑树的结点对我们来说是不可见的。而视觉树不同，它暴露了视觉的实现细节。下面是Visual Tree结构就表示了上面四行XAML代码的视觉树结构（下面这幅图片来源于WPF揭秘）：</p>
+<pre><span style="color:blue"> </span><br> <img src="http://images.cnblogs.com/cnblogs_com/yilinglai/Visual_Tree.jpg" border="0" width="329" height="370"><br></pre>
+<p>当然并不是所有的逻辑树结点都可以扩展为视觉树结点。只有从 System.Windows.Media.Visual或者System.Windows.Media.Visual3D继承的元素才能被视觉树所包含。其他的元素不能包含是因为它们本身没有自己的提交（Rendering）行为。在Windows Vista SDK Tools当中的XamlPad提供查看Visual Tree的功能。需要注意的是XamlPad目前只能查看以Page为根元素，并且去掉了SizeToContent属性的XAML文档。如下图所示： 
+</p>
+<p>在visual studio的命令行中输入xamlpad就可以进入如下的界面： 
+</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/7-13-2010%209-57-27%20PM_2.png"><img title="7-13-2010 9-57-27 PM" style="display:inline;border-width:0px" alt="7-13-2010 9-57-27 PM" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/7-13-2010%209-57-27%20PM_thumb.png" border="0" width="573" height="291"></a> </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/SNAGHTML2cb4a61.png"><img title="SNAGHTML2cb4a61" style="display:inline;border-width:0px" alt="SNAGHTML2cb4a61" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/SNAGHTML2cb4a61_thumb.png" border="0" width="679" height="441"></a> <br>通过上图我们可以看到Visual Tree确实比较复杂，其中还包含有很多的不可见元素，比如ContentPresenter等。Visual Tree虽然复杂，但是在一般情况下，我们不需要过多地关注它。我们在从根本上改变控件的风格、外观时，需要注意Visual Tree的使用，因为在这种情况下我们通常会改变控件的视觉逻辑。 比如我们在自己写一些控件的时候，再比如我们对某些外观进行特别订制的时候。<br>WPF 中还提供了遍历逻辑树和视觉树的辅助类：System.Windows.LogicalTreeHelper和 System.Windows.Media.VisualTreeHelper。注意遍历的位置，逻辑树可以在类的构造函数中遍历。但是，视觉树必须在经过至少一次的布局后才能形成。所以它不能在构造函数遍历。通常是在OnContentRendered进行，这个函数为在布局发生后被调用。 <br>其实每个Tree结点元素本身也包含了遍历的方法。比如，Visual类包含了三个保护成员方法VisualParent、 VisualChildrenCount、GetVisualChild。通过它们可以访问Visual的父元素和子元素。而对于 FrameworkElement，它通常定义了一个公共的Parent属性表示其逻辑父元素。特定的FrameworkElement子类用不同的方式暴露了它的逻辑子元素。比如部分子元素是Children Collection，有是有时Content属性，Content属性强制元素只能有一个逻辑子元素。 </p>
+<p>为了弄清楚这些概念，我们就通过如下代码作为演示：</p>
+<pre><span style="color:blue">public partial class </span><span style="color:#2b91af">Window1 </span>: <span style="color:#2b91af">Window<br></span>{<br>    <span style="color:blue">public </span>Window1()<br>    {<br>        InitializeComponent();<br>        PrintLogicalTree(0, <span style="color:blue">this</span>);<br>    }<br><br>    <span style="color:blue">protected override void </span>OnContentRendered(<span style="color:#2b91af">EventArgs </span>e)<br>    {<br>        <span style="color:blue">base</span>.OnContentRendered(e);<br>        PrintVisualTree(0, <span style="color:blue">this</span>);<br>    }<br><br>    <span style="color:blue">void </span>PrintLogicalTree(<span style="color:blue">int </span>depth, <span style="color:blue">object </span>obj)<br>    {<br>        <span style="color:green">// 打印空格，方便查看<br>        </span><span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:blue">new string</span>(<span style="color:#a31515">' '</span>, depth) + obj);<br><br>        <span style="color:green">//  如果不是DependencyObject，如string等类型<br>        </span><span style="color:blue">if </span>(!(obj <span style="color:blue">is </span><span style="color:#2b91af">DependencyObject</span>)) <span style="color:blue">return</span>;<br><br>        <span style="color:green">//  递归打印逻辑树<br>        </span><span style="color:blue">foreach </span>(<span style="color:blue">object </span>child <span style="color:blue">in </span><span style="color:#2b91af">LogicalTreeHelper</span>.GetChildren(<br>            obj <span style="color:blue">as </span><span style="color:#2b91af">DependencyObject</span>))<br>        {<br>            PrintLogicalTree(depth + 1, child);<br>        }<br>    }<br><br>    <span style="color:blue">void </span>PrintVisualTree(<span style="color:blue">int </span>depth, <span style="color:#2b91af">DependencyObject </span>obj)<br>    {<br>        <span style="color:green">//打印空格，方便查看<br>        </span><span style="color:#2b91af">Debug</span>.WriteLine(<span style="color:blue">new string</span>(<span style="color:#a31515">' '</span>, depth) + obj);<br><br>        <span style="color:green">//  递归打印视觉树<br>        </span><span style="color:blue">for </span>(<span style="color:blue">int </span>i = 0; i &lt; <span style="color:#2b91af">VisualTreeHelper</span>.GetChildrenCount(obj); i++)<br>        {<br>            PrintVisualTree(depth + 1, <span style="color:#2b91af">VisualTreeHelper</span>.GetChild(obj, i));<br>        }<br>    }<br>}</pre>
+<a href="http://11011.net/software/vspaste"></a>
+<p>结果为：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_10.png"><img title="image" style="display:inline;border-width:0px" alt="image" src="http://images.cnblogs.com/cnblogs_com/zenghongliang/WindowsLiveWriter/WPF4WPF_133B7/image_thumb_4.png" border="0" width="667" height="242"></a> </p>
+</blockquote>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">8.本文总结</h1>
+<blockquote>
+<p>本篇主要对Application、window、多线程、类继承结构、逻辑树与可视树等的理论和实际Demo进行了探讨，通过这一篇文章，我们可以大概了解WPF在这些元素上的处理，同时也给我后面的内容奠定了基础，后面会逐渐牵涉到实际的一些案例和新的概念，所以如果有不熟悉且对这个专题感兴趣的朋友可以仔细看一下这篇文章，在文章后面也会把本文用到的代码附加上去，大家可以下载下来进行测试。</p>
+<p>       最后<a href="http://www.cnblogs.com/zenghongliang/">圣殿骑士</a><b> </b>会尽心尽力写好这个系列，同时由于是自己对这些技术的使用总结和心得体会，错误之处在所难免，怀着技术交流的心态，在<a href="http://www.cnblogs.com/zenghongliang/">博客园</a>和<a href="http://knightswarrior.blog.51cto.com/">51CTO</a>发表出来，所以希望大家能够多多指点，这样在使一部分人受益的同时也能纠正我的错误观点，以便和各位共同提高，后续文章敬请关注！</p>
+</blockquote>
+<h1 style="margin-top:24px;font-weight:normal;font-size:26px;margin-bottom:12px;color:white;background-color:gray;padding:5px">9.系列进度（红色标示已发布）</h1>
+<blockquote>
+<p>· <a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/05/1771101.html">1. WPF 基础到企业应用系列1——开篇有益</a></p>
+<p><a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/06/1771831.html">· 2. WPF 基础到企业应用系列2——WPF前世今生</a></p>
+<p><a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/09/1774059.html">· 3. WPF 基础到企业应用系列3——WPF开发漫谈</a></p>
+<p><a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/14/1776916.html">· 4. WPF 基础到企业应用系列4——WPF千年轮回</a></p>
+<p>· 5. 使用面板做布局（几种布局控件的XAML及CS代码，综合布局等）</p>
+<p>· 6. 依赖属性、附加属性（基本、继承、元数据）</p>
+<p>· 7. 路由事件、附加事件</p>
+<p>· 8. 命令</p>
+<p>· 9. WPF控件分类介绍与使用技巧（ContentControl、HeaderedContentControl…… Decorator）</p>
+<p>· 10. 尺寸缩放、定位与变换元素</p>
+<p>· 11. 资源</p>
+<p>· 12. 数据绑定（基本、值转换、验证、集合的筛选、排序、分组、主从、数据提供者）</p>
+<p>· 13. 样式</p>
+<p>· 14. 模板</p>
+<p>· 15. 多语言、皮肤和主题</p>
+<p>· 16. 2D图形</p>
+<p>· 17. 3D图形</p>
+<p>· 18. 动画（几种动画的应用）</p>
+<p>· 19. 音频、视频、语音</p>
+<p>· 20. 文档、打印、报表</p>
+<p>· 21. 用户控件和自定义控件</p>
+<p>· 22. Win32、Windows Form以及ActiveX之间的互用性</p>
+<p>· 23. 构建并部署应用程序（ClickOnce部署、微软setup /InstallShield+自动更新组件）</p>
+<p>· 24. WPF的模式讲解及实例（MVC Demo）</p>
+<p>· 25. WPF的模式讲解及实例（MVP Demo）</p>
+<p>· 26. WPF的模式讲解及实例（MVVM Demo）</p>
+<p>· 27. 性能优化（WPF项目的瓶颈）</p>
+<p>· 28.一个完整WPF项目（普通架构版）</p>
+<p>· 39. 一个完整WPF项目（MVVM架构版）</p>
+<p>· 30. WPF 4.0新功能</p>
+</blockquote><img src="http://www.cnblogs.com/zenghongliang/aggbug/1776916.html?type=1" width="1" height="1" alt=""><p>评论: 78　<a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/14/1776916.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/zenghongliang/archive/2010/07/14/1776916.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/68311/">各大微博纷纷进入“测试版” 网易微博维护中 搜狐微博禁外链</a><span style="color:gray">(2010-07-14 16:24)</span><br>· <a href="http://news.cnblogs.com/n/68310/">金山可牛收购案或告吹 资本层面合作继续</a><span style="color:gray">(2010-07-14 16:19)</span><br>· <a href="http://news.cnblogs.com/n/68309/">十大应该消失的科技</a><span style="color:gray">(2010-07-14 16:17)</span><br>· <a href="http://news.cnblogs.com/n/68308/">必应(Bing)将推Android客户端</a><span style="color:gray">(2010-07-14 16:05)</span><br>· <a href="http://news.cnblogs.com/n/68307/">OpenSolaris 管理委员会面临解散</a><span style="color:gray">(2010-07-14 16:04)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/68230/">WPF 那些事</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

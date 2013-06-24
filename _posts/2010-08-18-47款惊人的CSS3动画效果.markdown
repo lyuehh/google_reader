@@ -1,0 +1,112 @@
+---
+layout: post
+title:  "47款惊人的CSS3动画效果"
+date:   2010-08-18 10:06:33
+author: 疯狂小强
+categories: program
+---
+
+## 47款惊人的CSS3动画效果
+### by 疯狂小强
+### at 2010-08-18 10:06:33
+### original <http://www.woiweb.net/47-amazing-css3-animation-demos.html>
+
+<p>这里再次收集了47个惊人的CSS动画演示。他们展示了CSS3强大的图形变换能力。大部分动画看起来十分简单又很酷。你只有安装上webkit浏览器（如Safari、Chrome）来观看他们（暂不支持IE浏览器）。<br>
+<span></span></p>
+<h3>1.使用<span><a href="http://www.woiweb.net/category/jquery">jquery</a></span>的CSS3时钟</h3>
+<p><a href="http://css-tricks.com/examples/CSS3Clock/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/csstricks-clock.jpg" alt="css3 clock"></a></p>
+<h3>2.模拟时钟</h3>
+<p><a href="http://www.fofronline.com/experiments/clock/#clock"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/analogue-clock.jpg" alt="analogue clock"></a></p>
+<h3>3.使用方向键旋转的3D盒子</h3>
+<p><a href="http://www.fofronline.com/experiments/cube-3d/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/3d-cube.jpg" alt="3d cube"></a></p>
+<h3>4.多个3D盒子(滑入/滑出)</h3>
+<p><a href="http://www.fofronline.com/experiments/cube/multiCubes.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/multi-3d-cube.jpg" alt="multiple 3d cubes"></a></p>
+<h3>5. CSS3折叠</h3>
+<p><a href="http://www.fofronline.com/experiments/accordion/#two"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/css3-accordion.jpg" alt="css3 clock"></a></p>
+<h3>6. 自动滚动的视差</h3>
+<p><a href="http://www.fofronline.com/experiments/parallax/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/auto-scrolling-parallax.jpg" alt="auto scrolling parallax"></a></p>
+<h3>7. Isocube</h3>
+<p><a href="http://www.zachstronaut.com/lab/isocube.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/isocube.jpg" alt="isocube"></a></p>
+<h3>8. 图片画廊</h3>
+<p><a href="http://devfiles.myopera.com/articles/1041/image-gallery.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/image-gallery.jpg" alt="image gallery"></a></p>
+<h3>9. 矩阵</h3>
+<p><a href="http://girliemac.com/sandbox/matrix.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/matrix.jpg" alt="matrix"></a></p>
+<h3>10. 7个使用CSS3的Javascript效果替代</h3>
+<p><a href="http://webdeveloperjuice.com/demos/css/css3effects.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/javascript-effect-alternatives.jpg" alt="javascript effect alternatives"></a></p>
+<h3>11. 图片滑过效果</h3>
+<p><a href="http://dinolatoga.com/demo/webkit-image-hover-effects/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/image-hover-effects.jpg" alt="css3 clock"></a></p>
+<h3>12. 转动的可乐罐 (通过滚动条控制)</h3>
+<p><a href="http://www.romancortes.com/blog/pure-css-coke-can/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/coke-can.jpg" alt="coke can"></a></p>
+<p>PS:这个例子和下面这个严格来说都不是用的CSS3技术，而是复杂的图片和css的background-position属性的应用。</p>
+<h3>13. 3D 房间</h3>
+<p><a href="http://www.romancortes.com/blog/css-3d-meninas/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/3d-meninas.jpg" alt="3d meninas"></a></p>
+<h3>14. 宝利来画廊</h3>
+<p><a href="http://media.24ways.org/2009/14/5/index.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/polaroid-gallery.jpg" alt="polaroid gallery"></a></p>
+<h3>15. 太空</h3>
+<p><em>注意:</em> 这个演示依赖图形，需要一些时间来加载，但是结果非常疯狂!</p>
+<p><a href="http://media.24ways.org/2009/15/space.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/space.jpg" alt="space"></a></p>
+<h3>16. Mac Dock</h3>
+<p><a href="http://www.zurb.com/playground/osx-dock"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/mac-dock.jpg" alt="css3 clock"></a></p>
+<h3>17. 滑入的模态窗口</h3>
+<p><a href="http://www.zurb.com/playground/drop-in-modals"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/drop-in-modals.jpg" alt="drop in modals"></a></p>
+<h3>18. 滑动的唱片</h3>
+<p><a href="http://www.zurb.com/playground/sliding-vinyl"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/sliding-vinyl.jpg" alt="sliding vinyl"></a></p>
+<h3>19. 放大的宝利来画廊</h3>
+<p><a href="http://www.zurb.com/playground/css3-polaroids"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/zooming-polaroids.jpg" alt="zooming polaroids"></a></p>
+<h3>20. 动画的火箭</h3>
+<p><a href="http://www.the-art-of-web.com/css/css-animation/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/animated-rocket.jpg" alt="animated rocket"></a></p>
+<h3>21. Poster Circle</h3>
+<p>这个需要支持3D动画的浏览器才能看到全部效果，比如Mac版Safari4浏览器<br>
+<a href="http://webkit.org/blog-files/3d-transforms/poster-circle.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/poster-circle.jpg" alt="poster circle"></a></p>
+<h3>22. 变形的盒子</h3>
+<p><a href="http://webkit.org/blog-files/3d-transforms/morphing-cubes.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/morphing-cubes.jpg" alt="morphing cubes"></a></p>
+<h3>23. 落叶</h3>
+<p><a href="http://webkit.org/blog-files/leaves/index.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/falling-leaves.jpg" alt="falling leaves"></a></p>
+<h3>24. 动画效果宝利来画廊</h3>
+<p><a href="http://www.3site.eu/examples/gallery/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/another-polaroid-gallery.jpg" alt="polaroid gallery"></a></p>
+<h3>25. 聚光灯投影</h3>
+<p><a href="http://www.zachstronaut.com/lab/text-shadow-box/text-shadow-box.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/spotlight-cast-shadow.jpg" alt="spotlight cast shadow"></a></p>
+<h3>26. 彩色时钟</h3>
+<p><a href="http://demo.tutorialzine.com/2009/12/colorful-clock-jquery-css/demo.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/colorful-clock.jpg" alt="colorful clock"></a></p>
+<h3>27. Lightbox 画廊(可拖拽)</h3>
+<p><a href="http://demo.tutorialzine.com/2009/11/hovering-gallery-css3-jquery/demo.php"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/lightbox-gallery.jpg" alt="css3 clock"></a></p>
+<h3>28. 弹性所略图菜单</h3>
+<p><a href="http://buildinternet.com/live/elasticthumbs/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/elastic-thumb-menu.jpg" alt="elastic thumbnail menu"></a></p>
+<h3>29. Coverflow</h3>
+<p><a href="http://paulbakaus.com/lab/js/coverflow/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/coverflow.jpg" alt="coverflow"></a></p>
+<h3>30. 雪花</h3>
+<p><a href="http://natbat.net/code/clientside/css/snowflakes/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/snowflakes.jpg" alt="snow"></a></p>
+<h3>31. <span><a href="http://www.woiweb.net/category/jquery">jquery</a></span> DJ Hero</h3>
+<p><a href="http://demo.marcofolio.net/jquery_dj/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/dj-hero.jpg" alt="dj hero"></a></p>
+<h3>32. 动态的堆叠卡</h3>
+<p><a href="http://designlovr.com/examples/dynamic_stack_of_index_cards/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/stacking-cards.jpg" alt="stacking cards"></a></p>
+<h3>33. 另一个图片画廊</h3>
+<p><a href="http://www.alexandtheweb.com/demos/transitions-test.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/another-image-gallery.jpg" alt="image gallery"></a></p>
+<h3>34. 雪栈 (用方向键控制)</h3>
+<p><a href="http://www.satine.org/research/webkit/snowleopard/snowstack.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/snow-stack.jpg" alt="snow stack"></a></p>
+<h3>35. 动画的定价分组</h3>
+<p><a href="http://stuffandnonsense.co.uk/content/demo/cannybill/21-10-2009/pricing.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/animated-pricing.jpg" alt="animated pricing column"></a></p>
+<h3>36. 光滑的<span><a href="http://www.woiweb.net/category/jquery">jquery</a></span>菜单</h3>
+<p><a href="http://demo.marcofolio.net/slick_jquery_css3_menu/default.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/slick-jquery-menu.jpg" alt="slick jquery menu"></a></p>
+<h3>37. CSS3</h3>
+<p><a href="http://webkit.org/demos/sticky-notes/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/sticky-notes.jpg" alt="sticky notes"></a></p>
+<h3>38. 不用Javascript的CSS Tabs</h3>
+<p><a href="http://www.kamikazemusic.com/demo/csstabs.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/css-tabs.jpg" alt="css tabs"></a></p>
+<h3>39. 无JavaScript的Tab菜单</h3>
+<p><a href="http://development.tobypitman.com/css/menu.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/tab-menus.jpg" alt="tab menus"></a></p>
+<h3>40. SVG Fisheye菜单</h3>
+<p><a href="http://o.sitepen.com/labs/code/cssDock/"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/fisheye-menu.jpg" alt="fisheye menu"></a></p>
+<h3>41. 无Flash的动态演示</h3>
+<p><a href="http://files.myopera.com/FataL/pres/pres.xml#name"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/dynamic-presentation.jpg" alt="dynamic presentation"></a></p>
+<h3>42. 旋转的画廊</h3>
+<p><a href="http://samples.webmatze.de/rotating_image_gallery.htm"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/rotating-gallery.jpg" alt="rotating gallery"></a></p>
+<h3>43. 下拉菜单</h3>
+<p><a href="http://www.newmediacampaigns.com/files/http://www.webdesignerwall.com/wp-content/uploads/2010/02/nicer-navigation-with-css-transitions/demo.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/dropdown-menu.jpg" alt="dropdown menu"></a></p>
+<h3>44. 另一个Fisheye效果</h3>
+<p><a href="http://www.niquelao.net/wp-content/uploads/2009/12/example1.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/another-fisheye.jpg" alt="fisheye"></a></p>
+<h3>45. 逐帧动画(鼠标经过时演示)</h3>
+<p><a href="http://www.cssplay.co.uk/menu/css3-animation.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/css3-animation.jpg" alt="css3 animation"></a></p>
+<h3>46. 另一个CSS3折叠</h3>
+<p><a href="http://www.thecssninja.com/demo/css_accordion/#Section2"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/another-accordion.jpg" alt="another accordion"></a></p>
+<h3>47. AT-AT Walker (没有用Flash或JavaScript)</h3>
+<p><a href="http://anthonycalzadilla.com/css3-ATAT/index-bones.html"><img src="http://www.webdesignerwall.com/wp-content/uploads/2010/02/css3-animation-at-walker.jpg" alt="css3 animation walker"></a></p>

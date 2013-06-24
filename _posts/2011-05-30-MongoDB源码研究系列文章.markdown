@@ -1,0 +1,47 @@
+---
+layout: post
+title:  "MongoDB源码研究系列文章"
+date:   2011-05-30 00:01:54
+author: nosqlfan
+categories: program
+---
+
+## MongoDB源码研究系列文章
+### by nosqlfan
+### at 2011-05-30 00:01:54
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/518432682/6253001/1/item.html>
+
+<p>本文推荐给大家的是<a href="http://www.cnblogs.com/daizhj/">代震军</a>博客中的一系列MongoDB源码研究文章。文章对MongoDB各个部分的源码做了研究并进行了流程机制方面的描述，其中不乏对源码的直接注释与说明。对 MongoDB感兴趣的同学，可以通过这一系列文章对感兴趣的机制进行深入的了解。下面是文章列表：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/03/17/1987311.html">Mongodb源码分析–主程序入口main()</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/03/18/1988288.html">mongodb源码分析–查询</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/03/21/1990344.html">Mongodb源码分析–日志及持久化</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/03/30/1999699.html">Mongodb源码分析–插入记录及索引B树构建</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/04/02/2003335.html">Mongodb源码分析–消息(message)</a><a href="http://www.cnblogs.com/daizhj/archive/2011/04/06/mongodb_delete_recode_source_code.html">Mongodb源码分析–删除记录</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/04/11/mongodb_update_recode_source_code.html">Mongodb源码分析–更新记录</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/04/15/mongodb_cursor_source_code.html">Mongodb源码分析–游标Cursor</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/04/25/mongos_mmap_source_code.html">Mongodb源码分析–内存文件映射(MMAP)</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/04/29/mongos_command_source_code.html">Mongodb源码分析–Command体系架构</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/05/05/2037717.html">Mongodb源码分析–查询结果集封装</a><a href="http://www.cnblogs.com/daizhj/archive/2011/05/16/2022041.html">Mongodb源码分析–Mongos</a></li>
+<li><a href="http://www.cnblogs.com/daizhj/archive/2011/05/23/mongos_balancer_source_code.html">Mongodb源码分析–Mongos之balancer(均衡)</a></li>
+</ul>
+<p><a href="http://www.cnblogs.com/daizhj/archive/2011/03/17/1987311.html"></a></p>
+
+<br>
+<a href="http://blog.nosqlfan.com/#">facebook</a>
+<a href="http://blog.nosqlfan.com/#">twitter</a>
+<a href="http://blog.nosqlfan.com/#">新浪微博</a>
+<a href="http://blog.nosqlfan.com/#">腾讯微博</a>
+<a href="http://blog.nosqlfan.com/#">豆瓣</a>
+<a href="http://blog.nosqlfan.com/#">QQ空间</a>
+<a href="http://blog.nosqlfan.com/#">人人网</a>
+<div style="clear:both"></div>
+
+	<br><br><h4>Related posts</h4>
+	<ul>
+	<li><a href="http://blog.nosqlfan.com/html/1588.html" title="说出你认为最好的MongoDB应用，赢取ipad2 (2011年04月8日)">说出你认为最好的MongoDB应用，赢取ipad2</a> </li>
+	<li><a href="http://blog.nosqlfan.com/html/1155.html" title="视觉中国的NoSQL之路：从MySQL到MongoDB (2011年02月17日)">视觉中国的NoSQL之路：从MySQL到MongoDB</a> </li>
+	<li><a href="http://blog.nosqlfan.com/html/219.html" title="简单的MongoDB (2010年05月20日)">简单的MongoDB</a> </li>
+	<li><a href="http://blog.nosqlfan.com/html/1022.html" title="监控你的MongoDB（MongoSV 精华摘录） (2010年12月30日)">监控你的MongoDB（MongoSV 精华摘录）</a> </li>
+	<li><a href="http://blog.nosqlfan.com/html/1671.html" title="白话MongoDB系列文章 (2011年05月3日)">白话MongoDB系列文章</a> </li>
+</ul><img src="http://www1.feedsky.com/t1/518432682/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/518432682/6253001/1/item.html" border="0" height="0" width="0">

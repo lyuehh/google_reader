@@ -1,0 +1,139 @@
+---
+layout: post
+title:  "libiconv库链接问题一则"
+date:   2013-04-25 18:04:34
+author: bigwhite
+categories: program
+---
+
+## libiconv库链接问题一则
+### by bigwhite
+### at 2013-04-25 18:04:34
+### original <http://tonybai.com/2013/04/25/a-libiconv-linkage-problem/?utm_source=rss&utm_medium=rss&utm_campaign=a-libiconv-linkage-problem>
+
+<p>与在<a href="http://tonybai.com/2009/11/05/a-64bit-compiling-problem-on-x86-solaris/">Solaris</a>系统上不同，<a href="http://tonybai.com/2012/12/04/upgrade-ubuntu-to-1204-lts/">Linux</a>的libc库中包含了<a href="http://tonybai.com/2009/10/31/internal-code-transform-by-iconv/">libiconv</a>库中函数的定义，因此在Linux上使用libiconv库相关函数，编译时是不需要显式-liconv的。但最近我的一位同事在某redhat enterprise server 5.6机器上编译程序时却遇到了找不到iconv库函数符号的<a href="http://tonybai.com/2007/12/08/those-things-about-symbol-linkage/">链接问题</a>，到底是怎样一回事呢？这里分享一下问题查找过程。</p>
+<p>	<b>一、现场重现</b></p>
+<p>	这里借用一下这位同事的测试程序以及那台机器，重现一下问题过程：<br>
+	/*test.c */</p>
+<p>	…<br>
+	<font face="Courier New">#include &lt;iconv.h&gt;</font></p>
+<p>	int main(void)<br>
+	{<br>
+	    int r;<br>
+	    char *sin, *sout;<br>
+	    size_t lenin, lenout;<br>
+	    char *src = &quot;你好!&quot;;<br>
+	    char dst[256] = {0};<br>
+	    iconv_t c_pt;  </p>
+<p>	    sin = src;<br>
+	    lenin = strlen(src)+1;</p>
+<p>	    sout = dst;<br>
+	    lenout = 256;</p>
+<p>	    if ((c_pt = iconv_open(&quot;UTF-8&quot;, &quot;GB2312&quot;)) == (iconv_t)(-1)){<br>
+	        printf(&quot;iconv_open error!. errno[%d].\n&quot;, errno);<br>
+	        return -1;<br>
+	    }</p>
+<p>	    if ((r = iconv(c_pt, (char **)&amp;sin, &amp;lenin, &amp;sout, &amp;lenout)) != 0){<br>
+	        printf(&quot;iconv error!. errno[%d].\n&quot;, r);<br>
+	        return -1;<br>
+	    }  </p>
+<p>	    iconv_close(c_pt);</p>
+<p>	    printf(&quot;SRC[%s], DST[%s].\n&quot;, src, dst);</p>
+<p>	    return 0;<br>
+	}</p>
+<p>	根据之前的经验，我们按如下命令编译该程序：</p>
+<p>	<font face="Courier New">$&gt; gcc -g -o test test.c</font></p>
+<p>	<font face="Courier New">/tmp/ccyQ5blC.o: In function `main&#39;:<br>
+	/home/tonybai/tmp/test.c:28: undefined reference to `libiconv_open&#39;<br>
+	/home/tonybai/tmp/test.c:33: undefined reference to `libiconv&#39;<br>
+	/home/tonybai/tmp/test.c:38: undefined reference to `libiconv_close&#39;</font></p>
+<p>	咦，这是咋搞的呢？怎么找不到iconv库的符号！！！显式加上iconv的链接指示再试试。</p>
+<p>	<font face="Courier New">$&gt; gcc -g -o test test.c -liconv</font></p>
+<p>	这回编译OK了。的确如那位同事所说出现了怪异的情况。</p>
+<p>	<b>二、现场取证</b></p>
+<p>	惯性思维让我<b>首先</b>提出疑问：难道是这台机器上的<a href="http://www.gnu.org/s/libc/">libc</a>版本有差异，检查一下<a href="http://tonybai.com/2009/04/11/glibc-strlen-source-analysis/">libc</a>中是否定义了iconv相关符号。</p>
+<p>	<font face="Courier New">$ nm /lib64/libc.so.6 |grep iconv<br>
+	000000397141e040 T iconv<br>
+	000000397141e1e0 T iconv_close<br>
+	000000397141ddc0 T iconv_open</font></p>
+<p>	iconv的函数都定义了呀！怎么会链接不到？</p>
+<p>	我们<b>再来</b>看看已经编译成功的那个test到底连接到哪个iconv库了。</p>
+<p>	<font face="Courier New">$ ldd test<br>
+	    linux-vdso.so.1 =&gt;  (0x00007fff77d6b000)<br>
+	    libiconv.so.2 =&gt; /usr/local/lib/libiconv.so.2 (0x00002abbeb09e000)<br>
+	    libc.so.6 =&gt; /lib64/libc.so.6 (0×0000003971400000)<br>
+	    /lib64/ld-linux-x86-64.so.2 (0×0000003971000000)</font></p>
+<p>	哦，系统里居然在/usr/local/lib下面单独安装了一份libiconv。gcc显然是链接到这里的libiconv了，但gcc怎么会链接到这里了呢？</p>
+<p>	<b>三、</b><b>大侦探的分析^_^</b></p>
+<p>	<a href="http://tonybai.com/2006/03/14/explain-gcc-warning-options-by-examples/">Gcc</a>到底做了什么呢？我们看看其verbose的输出结果。</p>
+<p>	<font face="Courier New">$ gcc -g -o test test.c -liconv -v<br>
+	使用内建 specs。<br>
+	目标：x86_64-redhat-linux<br>
+	配置为：../configure –prefix=/usr –mandir=/usr/share/man –infodir=/usr/share/info –enable-shared –enable-threads=posix –enable-          checking=release –with-system-zlib –enable-__cxa_atexit –disable-libunwind-exceptions –enable-libgcj-multifile –enable-languages=c,c++,   objc,obj-c++,java,fortran,ada –enable-java-awt=gtk –disable-dssi –disable-plugin –with-java-home=/usr/lib/jvm/java-1.4.2-gcj-1.4.2.0/jre –with-cpu=generic –host=x86_64-redhat-linux<br>
+	线程模型：posix<br>
+	gcc 版本 4.1.2 20080704 (Red Hat 4.1.2-50)<br>
+	 /usr/libexec/gcc/x86_64-redhat-linux/4.1.2/cc1 -quiet -v test.c -quiet -dumpbase test.c -mtune=generic -auxbase test -g -version -o /tmp/     ccypZm0v.s<br>
+	忽略不存在的目录“/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../x86_64-redhat-linux/include”<br>
+	#include &quot;…&quot; 搜索从这里开始：<br>
+	#include &lt;…&gt; 搜索从这里开始：<br>
+	 /usr/local/include<br>
+	 /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include<br>
+	 /usr/include<br>
+	搜索列表结束。<br>
+	GNU C 版本 4.1.2 20080704 (Red Hat 4.1.2-50) (x86_64-redhat-linux)<br>
+	    由 GNU C 版本 4.1.2 20080704 (Red Hat 4.1.2-50) 编译。<br>
+	GGC 准则：–param ggc-min-expand=100 –param ggc-min-heapsize=131072<br>
+	Compiler executable checksum: ef754737661c9c384f73674bd4e06594<br>
+	 as -V -Qy -o /tmp/ccaqvDgX.o /tmp/ccypZm0v.s<br>
+	GNU assembler version 2.17.50.0.6-14.el5 (x86_64-redhat-linux) using BFD version 2.17.50.0.6-14.el5 20061020<br>
+	 /usr/libexec/gcc/x86_64-redhat-linux/4.1.2/collect2 –eh-frame-hdr -m elf_x86_64 –hash-style=gnu -dynamic-linker /lib64/ld-linux-x86-64.so.  2 -o test /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crt1.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crti.o /usr/   lib/gcc/x86_64-redhat-linux/4.1.2/crtbegin.o -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/x86_64-redhat-linux/4.1.2 -L/usr/lib/gcc/ x86_64-redhat-linux/4.1.2/../../../../lib64 -L/lib/../lib64<br>
+	-L/usr/lib/../lib64 /tmp/ccaqvDgX.o -liconv -lgcc –as-needed -lgcc_s –no-as-needed -lc -lgcc –as-needed -lgcc_s –no-as-needed /usr/lib/gcc/x86_64-redhat-linux/4.1.2/crtend.o /usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../lib64/crtn.o</font></p>
+<p>	从这个结果来看，gcc在search iconv.h这个头文件时，首先找到的是/usr/local/include/iconv.h，而不是/usr/include/iconv.h。这两个文件有啥不同么？</p>
+<p>	在/usr/local/include/iconv.h中，我找到如下代码：</p>
+<p>	<font face="Courier New">…</font><br>
+	<font face="Courier New">#ifndef LIBICONV_PLUG<br>
+	#define iconv_open libiconv_open<br>
+	#endif<br>
+	extern iconv_t iconv_open (const char* tocode, const char* fromcode);<br>
+	…</font></p>
+<p>	libiconv_open vs iconv_open，卧槽！！！再对比一下前面编译时输出的错误信息：</p>
+<p>	<font face="Courier New">/tmp/ccyQ5blC.o: In function `main&#39;:<br>
+	/home/tonybai/tmp/test.c:28: undefined reference to `libiconv_open&#39;<br>
+	/home/tonybai/tmp/test.c:33: undefined reference to `libiconv&#39;<br>
+	/home/tonybai/tmp/test.c:38: undefined reference to `libiconv_close&#39;</font></p>
+<p>	大侦探醒悟了！大侦探带你还原一下真实情况。</p>
+<p>	我们在执行<font face="Courier New">gcc -g -o test test.c</font>时， 根据gcc -v中include search dir的顺序，gcc首先search到的是/usr/local/include/iconv.h，而这里iconv_open等函数被预编译器替换成 了libiconv_open等加上了lib前缀的函数，而这些函数符号显然在libc中是无法找到的，libc中只有不带lib前缀的 iconv_open等函数的定义。大侦探也是一时眼拙了，没有细致查看gcc的编译错误信息中的内容，这就是问题所在！</p>
+<p>	而<font face="Courier New">gcc -g -o test test.c -liconv</font>为何可以顺利编译通过呢？gcc是如何找到/usr/local/lib下的libiconv的呢？大侦探再次为大家还原一下真相。</p>
+<p>	我们在执行<font face="Courier New">gcc -g -o test test.c -liconv</font>时，gcc同 样首先search到的是/usr/local/include/iconv.h，然后编译test.c源码，ok；接下来启动ld程序进行链接；ld找 到了libiconv，ld是怎么找到iconv的呢，libiconv在/usr/local/lib下，ld显然是到这个目录下search了。我们 通过执行下面命令可以知晓ld的默认搜索路径：</p>
+<p>	<font face="Courier New">$&gt; ld -verbose|grep SEARCH<br>
+	SEARCH_DIR(&quot;/usr/x86_64-redhat-linux/lib64&quot;); SEARCH_DIR(&quot;/usr/local/lib64&quot;); SEARCH_DIR(&quot;/lib64&quot;); SEARCH_DIR(&quot;/usr/lib64&quot;); SEARCH_DIR(&quot;/usr/x86_64-redhat-linux/lib&quot;); SEARCH_DIR(&quot;/usr/lib64&quot;); SEARCH_DIR(&quot;/usr/local/lib&quot;); SEARCH_DIR(&quot;/lib&quot;); SEARCH_DIR(&quot;/usr/lib&quot;);</font></p>
+<p>	ld的默认search路径中有/usr/local/lib(我之前一直是以为/usr/local/lib不是gcc/ld的默认搜索路径的)，因此找到libiconv就不足为奇了。</p>
+<p>	<b>四、问题解决</b></p>
+<p>	我们不想显式的加上-liconv，那如何解决这个问题呢？我们是否可以强制gcc先找到/usr/include/iconv.h呢？我们先来做个试验。</p>
+<p>	<font face="Courier New">$ gcc -g -o test test.c -liconv -I ~/include -v<br>
+	…<br>
+	忽略不存在的目录“/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../x86_64-redhat-linux/include”<br>
+	#include &quot;…&quot; 搜索从这里开始：<br>
+	#include &lt;…&gt; 搜索从这里开始：<br>
+	 <b>/home/</b><b>tonybai</b><b>/include</b><br>
+	 /usr/local/include<br>
+	 /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include<br>
+	 /usr/include<br>
+	搜索列表结束。</font></p>
+<p>	…</p>
+<p>	试验结果似乎让我们觉得可行，我们通过-I指定的路径被放在了第一的位置进行search。我们来尝试一下强制gcc先search /usr/include。</p>
+<p>	<font face="Courier New">$ gcc -g -o test test.c -I ~/include -v<br>
+	…<br>
+	忽略不存在的目录“/usr/lib/gcc/x86_64-redhat-linux/4.1.2/../../../../x86_64-redhat-linux/include”<br>
+	忽略重复的目录“/usr/include”<br>
+	  因为它是一个重复了系统目录的非系统目录<br>
+	#include &quot;…&quot; 搜索从这里开始：<br>
+	#include &lt;…&gt; 搜索从这里开始：<br>
+	 /usr/local/include<br>
+	 /usr/lib/gcc/x86_64-redhat-linux/4.1.2/include<br>
+	 /usr/include<br>
+	搜索列表结束。<br>
+	…</font></p>
+<p>	糟糕！/usr/include被忽略了！还是从/usr/local/include开始，方案失败。</p>
+<p>	似乎剩下的唯一方案就是将/usr/local/lib下的那份libiconv卸载掉！那就这么做吧^_^！</p>
+<p style="text-align:left">© 2013, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p><img src="http://www1.feedsky.com/t1/730350411/bigwhite/feedsky/s.gif?r=http://tonybai.com/2013/04/25/a-libiconv-linkage-problem/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=a-libiconv-linkage-problem" border="0" height="0" width="0">

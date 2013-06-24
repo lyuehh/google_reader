@@ -1,0 +1,94 @@
+---
+layout: post
+title:  "Youtube视频推荐算法：从10页论文到4页论文的变迁"
+date:   2011-03-01 09:54:06
+author: wentrue
+categories: program
+---
+
+## Youtube视频推荐算法：从10页论文到4页论文的变迁
+### by wentrue
+### at 2011-03-01 09:54:06
+### original <http://www.wentrue.net/blog/?p=1181>
+
+<p>所以说豆瓣广播是个好东西，长久以来已经怠于主动关注paper的我，每次都能通过我那些专业敬业的友邻们发现有意思的文章或话题，知识因分享而伟大！而这一次，这篇来自youtube的4页论文[1]，最初是通过Chen_1st同学的<a href="http://www.resyschina.com/2011/02/youtube_uses_amazon_algorithm.html">博客介绍</a>知道的。追溯过去，又找到了Greg Linden的<a href="http://glinden.blogspot.com/2011/02/youtube-uses-amazons-recommendation.html">评荐博客</a>。这篇文章很新，以至于我根本找不到免费的全文下载，于是很感谢zibuyu博士帮了一忙，还把youtube在08年发的那篇10页论文[2]一并给我发了过来，于是就有这个有点标题党的题目。</p>
+<p>实话说，那篇10页论文我没仔细看，但还是先来回顾一下。08年的论文主要思想是把推荐问题建立在一个user-video的图上，试图在该图上给user u找到合适的video v。作者认为对某个u，他感兴趣的v应该是符合如下三个条件的。<br>
+1、	u与v之间的路径应该是短的；<br>
+2、	u与v之间应该有多条路径可达；<br>
+3、	u与v之间的路径应该排除掉那些度很高的节点。</p>
+<p>为了在图上搜索符合这三个条件的解，作者提出了多种方法来解决这个被命名为Adsorption的算法，如Averaging、Random Walk、Linear System。给出了不少的概念定义与算法描述，并附赠一系列美好的实验结果。</p>
+<p>但在那篇4页的论文里，之前的那些工作似乎都成了浮云，除了是来自于同一个公司的人，做的是同一个推荐产品之外，你几乎很难从这篇文章里再找到从前系统的影子，不单作者换了，行文风格从研究人员变成了工程师，甚至连最后的REFERENCES都没有对之前的文章加以引用。于是Greg不无戏谑地说：尽管我们做了上十年的工作，中间还穿插了对netflix竞赛的孜孜探讨，但好像一切又回到了原点，古老的item-based思想仍然发挥着其独有的魅力。</p>
+<p>下面看看在遥远的墙外，那个叫youtube的视频网站始祖做了些什么复古式的工作。</p>
+<p>首先无需求不产品，推荐产品也是要面向用户的特定需求的。Youtube用户的需求主要有三个方面：明确知道自己要看哪个视频；通过搜索来获取某些主题的视频；也不知道看什么，纯粹逛逛，找找乐子。Youtube的推荐产品面向的就是第三种需求，需要达成的目标是：视频推荐的时效性、精确性与多样性，可解释性是一个plus。</p>
+<p>接下来几个工程师开始进行系统设计，搬出了诸如解耦、降低系统复杂性等等工程概念之后，介绍了他们本质上就是简单的item-based的推荐算法（但他们说这是关联规则）。最重要的公式就是以下的video相似性计算公式：</p>
+<p><a rel="attachment wp-att-1183" href="http://www.wentrue.net/blog/?attachment_id=1183"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/03/blog1.png" alt="" width="219" height="74"></a></p>
+<p>其中分子是video i与video j在用户session数据库中共同出现的次数，分母是一个规范化函数。当函数取值为ci时，这其实就是关联规则的置信度的计算公式，而当函数取值为vi与vj的模的乘积时，这个就是余弦相似度计算公式（因为在向量取值为1与0时，cij等于vi与vj的内积）。所以可以说这是关联规则与余弦相似度的通式。但youtube对这个函数的取值是ci * cj，如果把i作为种子，要找i的相似video的话，ci是不会影响到相似video的排序的，所以只有cj在起作用，而cj的作用则起到了打压热门视频的效果（因为播放得越多，cj越大，相似度越小），从另一个侧面可以提升推荐的多样性。当然这只是一种最简单的相似性描述，youtube实际系统当中还会考虑一些别的因素，如播放时间戳、视频的元信息等等。</p>
+<p>理论上可以为每一个video pair计算出一个相似度rij，但实际中通常要对这个值进行截断，而以video作为节点，以有效的rij为边的权值就构成了一个有向的video graph。接下来就是根据这个图来为某个用户u生成候选推荐了。假设我们拥有用户u的一个视频种子集S，它可能来自于用户的收藏、评星或者简单的收看记录，一般意义上的item-based方法这时就会对S中的每一个视频，寻找它在video graph上的最近邻居，并以此作为推荐的候选。如下面的公式所示。</p>
+<p><a rel="attachment wp-att-1184" href="http://www.wentrue.net/blog/?attachment_id=1184"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/03/blog2.png" alt="" width="212" height="82"></a></p>
+<p>而这篇文章的方法稍有不同，但也很简单。作者们认为一般的item-based方法通常会压缩推荐候选的范围，即这种方法得到的结果通常多样性比较差。于是他们在第一步搜索最近邻居的基础上加以扩展：搜索多阶的最近邻居，如下面的两个公式所示。</p>
+<p><a rel="attachment wp-att-1185" href="http://www.wentrue.net/blog/?attachment_id=1185"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/03/blog3.png" alt="" width="244" height="94"></a><a rel="attachment wp-att-1186" href="http://www.wentrue.net/blog/?attachment_id=1186"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/03/blog4.png" alt="" width="222" height="94"></a></p>
+<p>这样就完成了推荐池的扩容。但这个推荐池通常比较庞大，而推荐系统只能从中选择几个或几十个推送到用户面前，这样就必须知道其中哪些视频的权重更大，哪些更小，所以就需要一个赋权的过程。Youtube对视频的赋权方式主要考虑了三方面的因素：1）视频的质量；2）跟用户的切合程度；3）多样性。第一个因素取决于视频上传时间、播放、评星、收藏、分享、评论等等视频本身的数据。第二个因素取决于用户对种子集中视频的喜好程度，以及推荐池中的视频跟种子集视频的相似程度。第三个因素可以通过多种方法来评判。然后把这三方面的因素作一个线性加权，就得到了推荐池中每个视频的权重，接下来的推荐就顺理成章了。</p>
+<p>如此三步：构造video graph；在图上生成扩展的候选推荐池；为推荐池的video赋权。就是一个大致的框架，简单明了，非常工程化实用化的实现，一贯的google范。</p>
+<p>为了说明这种推荐方法的有效性，作者以最多收看、最多收藏、最多评星的视频作为baseline，用以与推荐视频作比较，实验是在线进行的A/B Test，实验框架我以前也有过<a href="http://www.wentrue.net/blog/?p=1108">简要介绍</a>。实验时间是21天，评判标准是点击率。结果发现，在这段时间里，推荐视频的点击率都稳定地比那三个baseline高出两倍，这已经足够说明问题了。</p>
+<p style="text-align:center"><a rel="attachment wp-att-1187" href="http://www.wentrue.net/blog/?attachment_id=1187"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/03/blog5.png" alt="" width="493" height="343"></a></p>
+<p>最后提一个数据，在youtube首页的推荐模块中的视频点击，占了首页视频点击的60%，虽然有模块位置的因素在里面，这也是个相当可观的数字。</p>
+<p>Greg那篇博客下面还有一些饶有趣味的讨论话题，比如Greg说这篇文章应该引用早期amazon的那篇关于item-based的文章，因为从推荐算法本质上它们是同一套东西。当然同时Greg也坚称amazon是item-based推荐应用的始祖，而有人则指出，其实这样的思想在90年代的paper就已经有人提出过，但Greg认为这并不影响amazon是第一个把这项技术成功地应用于商业、特别是大规模数据应用领域的始作俑者，就如pagerank的想法在google诞生之前就已经存在，但没有人怀疑google是使用这项技术的成功的先行者。我认同Greg的说法，要是从paper或纯粹想法的角度不断回溯，估计某位古希腊哲人或古中国的科学家都可以跳出来说：哥当初就已经是这么想的！</p>
+<p>参考文献：<br>
+[1] Davidson, J. and Liebald, B. and Liu, J. The YouTube video recommendation system. Proceedings of the fourth ACM conference on Recommender systems. 2010<br>
+[2] Baluja, S. and Seth, R. and Sivakumar, D. and Jing, Y. Video suggestion and discovery for youtube: taking random walks through the view graph. Proceeding of the 17th international conference on World Wide Web. 2008</p>
+<div style="border:1px solid #ccc;font-size:14px;margin:27px auto">
+<div style="padding:7px 10px;border-bottom:1px dotted #ccc">关于作者</div>
+<div style="height:129px;overflow:hidden"><a href="http://42qu.com/-10000217" style="color:#000;text-decoration:none;float:right"><img src="http://i.42qu.net/pic_show/219/b0/b6/187.jpg" style="padding:3px;width:219px;height:123px;margin:0;background:transparent;border:0;border-left:1px dotted #ccc"></a>
+<div style="text-align:left;line-height:23px;margin-right:226px">
+<div style="padding:5px 10px">
+<div style="overflow:hidden;margin:2px 0;float:left;font-size:14px"><a href="http://42qu.com/-10000217" style="text-decoration:none">阿稳</a>, 豆瓣, 算法工程师</div>
+<div style="clear:left">推荐系统；数据挖掘；算法架构及实现的可扩展性；R环境编程  如果你的问题已经能从我的博客中得到解答，就最好不过了：http://www.wentrue.net/blog/</div>
+</div>
+</div>
+</div>
+<div style="text-align:right;border-top:1px dotted #ccc;padding:10px">
+<div style="float:left"><a href="http://www.douban.com/people/wentrue/" style="margin-right:7px;text-decoration:none">豆瓣</a> <a href="https://twitter.com/wentrue" style="margin-right:7px;text-decoration:none">Twitter</a> <a href="http://www.wentrue.net/blog/" style="margin-right:7px;text-decoration:none">blog</a> <a href="http://www.linkedin.com/profile?viewProfile=&amp;key=76007067&amp;locale=en_US&amp;trk=tab_pro" style="margin-right:7px;text-decoration:none">LinkedIn</a> <a href="http://www.slideshare.net/wentrue/edit_my_uploads" style="margin-right:7px;text-decoration:none">SlideShare</a> <a href="http://t.sina.com.cn/wentrue" style="margin-right:7px;text-decoration:none">新浪微博</a> </div>
+<div><a href="http://42qu.com/-10000217/pay?title=Youtube%E8%A7%86%E9%A2%91%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95%EF%BC%9A%E4%BB%8E10%E9%A1%B5%E8%AE%BA%E6%96%87%E5%88%B04%E9%A1%B5%E8%AE%BA%E6%96%87%E7%9A%84%E5%8F%98%E8%BF%81&amp;url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181&amp;rel=blog" style="text-decoration:none;margin-right:17px">向文章付费</a> <a href="http://42qu.com/-10000217/pay?title=Youtube%E8%A7%86%E9%A2%91%E6%8E%A8%E8%8D%90%E7%AE%97%E6%B3%95%EF%BC%9A%E4%BB%8E10%E9%A1%B5%E8%AE%BA%E6%96%87%E5%88%B04%E9%A1%B5%E8%AE%BA%E6%96%87%E7%9A%84%E5%8F%98%E8%BF%81&amp;url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181&amp;cid=1&amp;rel=blog" style="text-decoration:none;margin-right:16px">请作者吃饭</a></div>
+</div>
+</div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="物理学背景的推荐算法与协同过滤" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D794&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/27/1608352.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">物理学背景的推荐算法与协同过滤</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="开源推荐框架DUINE概览" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D743&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/27/1608357.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">开源推荐框架DUINE概览</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="2011推荐系统峰会及全民娱乐" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1208&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">2011推荐系统峰会及全民娱乐</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="推荐系统resys小组线下活动见闻2009-08-22" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D559&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1181">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/27/1608365.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">推荐系统resys小组线下活动见闻2009-08-22</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "网站上线之前需要检查的13个问题"
+date:   2011-08-21 09:41:46
+author: pestwave
+categories: program
+---
+
+## 网站上线之前需要检查的13个问题
+### by pestwave
+### at 2011-08-21 09:41:46
+### original <http://ucdchina.com/snap/10530>
+
+<p>废话少说：</p>
+<p><strong>1、用了Google分析等统计工具了吗？</strong></p>
+<p>你应该跟踪每个页面的访问情况，哪些受欢迎，哪些挣得钱多。</p>
+<p><strong>2、用了<a href="http://code.google.com/speed/page-speed/">Pagespeed</a>和<a href="http://developer.yahoo.com/yslow/">Yslow</a>了吗？</strong></p>
+<p>70%用户看得到的速度提升都是通过客户端优化完成的。这两个工具可以帮你了解你的网站是否符合最佳惯例，并提供改进建议。</p>
+<p><strong>3、通过<a href="http://feedbackarmy.com/">feedbackarmy.com</a>和<a href="http://usertesting.com/">usertesting.com</a>进行可用性测试了吗？</strong></p>
+<p>哪怕只有5个用户参与测试，你也能发现85%的问题。</p>
+<p><strong>4、当网站出现错误时管理员能收到错误通知邮件。</strong></p>
+<p>天有不测风云，不管你准备得多么充分，网站都可能出现意外错误，如果你能立马发现错误，就可以尽快修复。</p>
+<p><strong>5、使用了Siteuptime.com/Pingdom.com等网站监测服务和吗？{国内用户可用监控宝}</strong></p>
+<p>网站总会宕机，网站监测服务会告诉你网站出现的问题，省的让你的顾客告诉你。</p>
+<p><strong>6、媒体和数据库备份了吗？</strong></p>
+<p>服务器会宕机，人会犯错。有备无患。你的主机一般会提供备份选项，此外你还应该有一个额外备份。</p>
+<p><strong>7、对备份进行过测试了吗？</strong></p>
+<p>如果你从没对备份进行过测试，那么他们就没有用，很多人在做备份时忽视了这一步。</p>
+<p><strong>8、有网站地图（sitemap.xml）文件吗？</strong></p>
+<p>搜索引擎可以发现网站所有页面，但网站地图可以给搜索引擎指路，并告诉它们页面的权重。</p>
+<p><strong>9、有robots.txt文件吗？</strong></p>
+<p>有些东西你可能不想让外人知道，robots.txt可以将其隐藏，不被搜索引擎发现。</p>
+<p><strong>10、在多个浏览器下测试过吗？</strong></p>
+<p>你可以通过<a href="http://browsershots.org/">browsershots.org</a>检查你的网站是否在所有浏览器下都顺眼。</p>
+<p><strong>11、用户可以联系到网站管理员吗？</strong></p>
+<p>应该有个联系人页面，让人可以很方便地联系到你，给你发email。</p>
+<p><strong>12、管理员可以获得无效链接通知邮件吗？</strong></p>
+<p>当页面被移动、链接被修改时，确保你可以应对404错误。</p>
+<p><strong>13、有一个最新内容板块或一个RSS feed吗？</strong></p>
+<p>你的用户希望了解你。这些信息不应该让他们去找，如果你有一个博客或者RSS feed，就可以自动完成内容推送。</p>
+<p>来源：<a href="http://newsletter.agiliq.com/the-quick-website-launch-checklist">Agiliq</a></p><p>源地址：<a href="http://www.36kr.com/p/40176.html">http://www.36kr.com/p/40176.html</a></p>

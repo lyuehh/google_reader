@@ -1,0 +1,133 @@
+---
+layout: post
+title:  "视窗meta标签的理解"
+date:   2013-02-02 15:10:28
+author: Airen
+categories: program
+---
+
+## 视窗meta标签的理解
+### by Airen
+### at 2013-02-02 15:10:28
+### original <http://www.w3cplus.com/css/understanding-the-viewport-meta-tag.html>
+
+<div><div><div><blockquote><p><strong>特别声明：</strong>此篇文章由<a href="http://weibo.com/gigantic2">杨礼鑫</a>根据<a href="http://www.paulund.co.uk" title="Paulund">Paulund</a>的英文文章原名《<a href="http://www.paulund.co.uk/understanding-the-viewport-meta-tag">Understanding The Viewport Meta Tag</a>》进行翻译，整个译文带有我们自己的理解与思想，如果译得不好或不对之处还请同行朋友指点。如需转载此译文，需注明英文出处：<a href="http://www.paulund.co.uk/understanding-the-viewport-meta-tag">http://www.paulund.co.uk/understanding-the-viewport-meta-tag</a>以及作者相关信息</p>
+<p style="text-align:right">——作者：<a href="http://www.paulund.co.uk" title="Paulund">Paulund</a></p>
+<p style="text-align:right">——译者：<a href="http://weibo.com/gigantic2">杨礼鑫</a></p>
+</blockquote>
+<p>在设计网页时，响应式设计是众多考虑之一。有一个问题就是，你做的网站到底需不需要响应式设计？</p>
+<p>在我认为所有面向大众的网站都应该把响应式设计纳入考虑范围。当然一些朋友会觉得这没必要，因为在使用 <a href="http://www.paulund.co.uk/css3-animated-media-queries">移动设备</a>的时候可以利用缩放来浏览我们感兴趣的内容，但我还是认为开发人员应该让你的网站在任何设备上都方便浏览。</p>
+<h4>
+	什么是响应式设计？</h4>
+<p>响应式设计是一种让你的网页在<a href="http://www.paulund.co.uk/test-your-website-in-different-browser-sizes">不同尺寸的设备上都能够自适应的设计方式</a>，依据你设置的断点，通过CSS文件的 <a href="http://www.paulund.co.uk/css3-animated-media-queries">媒体查询</a>改变网页元素的样式来实现。仅仅在一些元素上添加width:100%样式都能够让他们适应不同的屏幕。</p>
+<p>断点会为不同宽度范围下的内容指定各自的CSS样式，特别是比如一些尺寸不一样的手机，7英寸平板，10英寸平板，13英寸笔记本和一般的显示器。</p>
+<p>你可以使用像素宽度或者像素比来定义断点。下面一段代码教你如何使用 <a href="http://www.paulund.co.uk/boilerplate-css-media-queries">媒体查询</a>。</p>
+<pre>
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-width : 320px) and (max-width : 480px) {
+  /* Styles */
+}
+/* Smartphones (landscape) ----------- */
+@media only screen and (min-width : 321px) {
+  /* Styles */
+}
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 320px) {
+  /* Styles */
+}
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-width : 768px) and (max-width : 1024px) {
+  /* Styles */
+}
+/* iPads (landscape) ----------- */
+@media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : landscape) {
+  /* Styles */
+}
+/* iPads (portrait) ----------- */
+@media only screen and (min-width : 768px) and (max-width : 1024px) and (orientation : portrait) {
+  /* Styles */
+}
+/* Desktops and laptops ----------- */
+@media only screen and (min-width : 1224px) {
+  /* Styles */
+}
+/* Large screens ----------- */
+@media only screen and (min-width : 1824px) {
+  /* Styles */
+}
+/* iPhone 4 ----------- */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
+  /* Styles */
+}	
+</pre><p><a href="http://www.paulund.co.uk/boilerplate-css-media-queries" title="Boilerplate CSS Media Queries">Boilerplate media queries</a></p>
+<blockquote><h4>
+		扩展阅读</h4>
+<ol>
+<li>
+			<a href="http://www.w3cplus.com/content/css3-media-queries">CSS3 Media Queries</a></li>
+<li>
+			<a href="http://www.w3cplus.com/css3/css3-media-queries-for-different-devices">CSS3 Media Queries模板</a></li>
+<li>
+			<a href="http://www.w3cplus.com/codes/Media-Queries-Using-EMs.html">使用em单位创建CSS3的Media Queries 主标签 </a></li>
+<li>
+			<a href="http://www.w3cplus.com/css3/responsive-design-with-css3-media-queries">Responsive设计和CSS3 Media Queries的结合</a></li>
+<li>
+			<a href="http://www.w3cplus.com/css3/css-media-queries-for-iPads-and-iPhones.html">iPads和iPones的Media Queries</a></li>
+<li>
+			<a href="http://www.w3cplus.com/css/A-pixel-is-not-a-pixel-is-not-a-pixel.html">此像素非彼像素</a></li>
+</ol>
+</blockquote>
+<h4>
+	定义视窗</h4>
+<p>视窗meta标签能告诉浏览器如何规范的渲染网页，然而你则需要告诉它视窗有多大。</p>
+<p>视窗就是我们能看到页面的部分。举个栗子：好比你在手机上浏览网站，当你放大页面去看左上角的内容时，视窗的宽度会被设置为定值；当你已经能够看到整个的网页宽度，继续缩小页面时，视窗的宽度则会跟页面的宽度一致。</p>
+<p>下面的例子给出了视窗meta标签的用法。</p>
+<pre>
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1&quot;&gt;	
+</pre><p>代码以显示网页的屏幕宽度定义了视窗宽度。网页的比例和最大比例被设置为100%。</p>
+<p><a href="http://www.paulund.co.uk/test-your-website-in-different-browser-sizes">不同的浏览器视窗</a>不同。大部分移动端浏览器都是用默认的980px宽度的视窗，这表示绘制网页时宽度是980px，通过缩小才能浏览整个网页。</p>
+<p>屏幕尺寸越小的设备，在其显示的网页被显示的越小。如果你对比同一个网站分别在iphone和ipad上浏览，你会发现它在爱疯上会小得多。</p>
+<p>改变视窗的赋值能够让你制定设备如何绘制网页。</p>
+<h4>
+	视窗宽度</h4>
+<p>指定视窗宽就仿佛告诉了浏览器你的网页在这个宽度下显示是最合适的。你要是做了一个专门在iPhone上浏览的网页，那么你就设置视窗宽为320px.</p>
+<pre>
+&lt;meta name=&quot;viewport&quot; content=&quot;width=320&quot;&gt;	
+</pre><p>但是这不易于 <a href="http://www.paulund.co.uk/css3-animated-media-queries">响应式设计</a>，因为当你在平板上浏览它的时候，它会被缩小到320px的区域中。在响应式设计中最好指定视窗宽和设备的屏宽一致。</p>
+<pre>
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width&quot;&gt;	
+</pre><h4>
+	视窗缩放</h4>
+<p>在移动端，屏幕上开合手指可以控制缩放，但当你设定视窗宽和设备宽度一致时，你就没必要去放大浏览整个网页了。为了确保网页的初始显示不是放大过的，你可以用initial-scale属性来设置初值。</p>
+<p>若用户在浏览过程中不需要缩放，你可以设置它为1。</p>
+<pre>
+&lt;meta name=&quot;viewport&quot; content=&quot;initial-scale=1&quot;&gt;	
+</pre><p>甚至是如果你连用户的滚屏操作都想禁止，你可以设置maximum-scale为1，这样就完全不能放大了。</p>
+<pre>
+&lt;meta name=&quot;viewport&quot; content=&quot;maximum-scale=1&quot;&gt;	
+</pre><h4>
+	几个视窗的例子</h4>
+<p>下图说明了一张图片在两个不同视窗中的显示。第一张是默认980px宽度视窗下的图片显示，第二章是320px宽度的视窗。</p>
+<p><img alt="视窗980" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/css/vp980notspecified.jpg" style="padding:2px;border:1px solid rgb(204,204,204)"></p>
+<p><img alt="视窗980" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/css/vp320width.jpg" style="padding:2px;border:1px solid rgb(204,204,204)"></p>
+<p>图片来自于：<a href="https://developer.apple.com/library/safari/#documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html">Apple explanation of viewport meta tag</a></p>
+<h4>
+	视窗的理解</h4>
+<p>如果你还想看看更多关于使用不同尺寸视窗的例子，这儿有个Github项目包含了多视窗的设定。这个链接里面是一个移动端浏览器，从那你可以直观的看到效果。</p>
+<p><a href="http://andreasbovens.github.com/understanding-viewport/">理解视窗</a></p>
+<p><strong>译者手语：</strong>初次翻译前端技术博文，整个翻译依照原文线路进行，并在翻译过程略加了个人对技术的理解。如果翻译有不对之处，还烦请同行朋友指点。谢谢！</p>
+<blockquote><h4>
+		关于杨礼鑫</h4>
+<p>毕业于武汉大学，是一名专业的PHP程序员。强烈的兴趣爱好在计算机图形学，特效，3D和游戏，还有前端，才培养的；喜欢设计和创意。欢迎随时关注我：<a href="http://weibo.com/gigantic2">新浪微博</a></p>
+</blockquote>
+<p>如需转载烦请注明出处：</p>
+<p>英文原文：<a href="http://www.paulund.co.uk/understanding-the-viewport-meta-tag">http://www.paulund.co.uk/understanding-the-viewport-meta-tag</a></p>
+<p>中文译文：<a href="http://www.w3cplus.com/css/understanding-the-viewport-meta-tag.html">http://www.w3cplus.com/css/understanding-the-viewport-meta-tag.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/308.html">译文</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/306.html">meta</a></li></ul></div><div><div><div><div>
+      <div>23</div>
+                  <a href="http://www.w3cplus.com/vote/node/629/1/vote/alternate/UZmfhZDkVTXaMVFwxhIOHmh7i7LVBUg2oBNgllW_XLo/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/713413683/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css/understanding-the-viewport-meta-tag.html" border="0" height="0" width="0">

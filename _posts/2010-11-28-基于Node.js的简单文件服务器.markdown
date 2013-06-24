@@ -1,0 +1,352 @@
+---
+layout: post
+title:  "基于Node.js的简单文件服务器"
+date:   2010-11-28 20:21:18
+author: 
+categories: program
+---
+
+## 基于Node.js的简单文件服务器
+### by 
+### at 2010-11-28 20:21:18
+### original <http://www.javaeye.com/topic/827328>
+
+最近看了下Node.js，基于V8的服务端javascript，有点意思，就写了个简单的文件夹系统，用于列出系统的某个文件夹下的文件，并可以实现下载。不过对于比较大的文件，可能会有点问题。。Node.js一般在linux下运行，附件是基于cygwin的版本，可以测试下<img src="http://www.iteye.com/images/smiles/icon_biggrin.gif"> ，运行方式为<strong>node filesystem.js</strong>。javaeye的文件上传很让人无奈，太慢，只好放在其他地方了。<a href="http://files.cnblogs.com/flyingzl/node.js.7z">http://files.cnblogs.com/flyingzl/node.js.7z</a>
+<br>
+<br>
+<br><img src="http://dl.javaeye.com/upload/attachment/355308/a7c6b3b3-9c21-3d0f-a571-bcda5f8bab84.png">
+<br>
+<br>贴下代码：
+<br><pre name="code">
+/***
+ * @author flyingzl
+ * @date 2010-11-27
+ * 一个基于Node.js的简单文件服务器
+ */
+
+var fs=require(&quot;fs&quot;),
+	http=require(&quot;http&quot;),
+	url=require(&quot;url&quot;),
+	path=require(&quot;path&quot;),
+	mime=require(&quot;./mime&quot;).mime,
+	util=require(&#39;util&#39;);
+
+//www根目录
+var root=__dirname,
+	host=&quot;127.0.0.1&quot;,
+	port=&quot;8888&quot;;
+	
+	
+if(!path.existsSync(root)){
+	util.error(root+&quot;文件夹不存在，请重新制定根文件夹！&quot;);
+	process.exit();
+}
+	
+//显示文件夹下面的文件
+function listDirectory(parentDirectory,req,res){
+	fs.readdir(parentDirectory,function(error,files){
+		var body=formatBody(parentDirectory,files);
+		res.writeHead(200,{
+			&quot;Content-Type&quot;:&quot;text/html;charset=utf-8&quot;,
+			&quot;Content-Length&quot;:Buffer.byteLength(body,&#39;utf8&#39;),
+			&quot;Server&quot;:&quot;NodeJs(&quot;+process.version+&quot;)&quot;
+		});
+		res.write(body,&#39;utf8&#39;);
+		res.end();
+	});
+
+}
+
+//显示文件内容
+function showFile(file,req,res){
+	fs.readFile(filename,&#39;binary&#39;,function(err,file){
+		var contentType=mime.lookupExtension(path.extname(filename));
+		res.writeHead(200,{
+			&quot;Content-Type&quot;:contentType,
+			&quot;Content-Length&quot;:Buffer.byteLength(file,&#39;binary&#39;),
+			&quot;Server&quot;:&quot;NodeJs(&quot;+process.version+&quot;)&quot;
+		});
+		res.write(file,&quot;binary&quot;);
+		res.end();
+	})
+}
+
+//在Web页面上显示文件列表，格式为&lt;ul&gt;&lt;li&gt;&lt;/li&gt;&lt;li&gt;&lt;/li&gt;&lt;/ul&gt;
+function formatBody(parent,files){
+	var res=[],
+		length=files.length;
+	res.push(&quot;&lt;!doctype&gt;&quot;);
+	res.push(&quot;&lt;html&gt;&quot;);
+	res.push(&quot;&lt;head&gt;&quot;);
+	res.push(&quot;&lt;meta http-equiv=&#39;Content-Type&#39; content=&#39;text/html;charset=utf-8&#39;&gt;&lt;/meta&gt;&quot;)
+	res.push(&quot;&lt;title&gt;Node.js文件服务器&lt;/title&gt;&quot;);
+	res.push(&quot;&lt;/head&gt;&quot;);
+	res.push(&quot;&lt;body width=&#39;100%&#39;&gt;&quot;);
+	res.push(&quot;&lt;ul&gt;&quot;)
+	files.forEach(function(val,index){
+		var stat=fs.statSync(path.join(parent,val));
+		if(stat.isDirectory(val)){
+			val=path.basename(val)+&quot;/&quot;;
+		}else{
+			val=path.basename(val);
+		}
+		res.push(&quot;&lt;li&gt;&lt;a href=&#39;&quot;+val+&quot;&#39;&gt;&quot;+val+&quot;&lt;/a&gt;&lt;/li&gt;&quot;);
+	});
+	res.push(&quot;&lt;/ul&gt;&quot;);
+	res.push(&quot;&lt;div style=&#39;position:relative;width:98%;bottom:5px;height:25px;background:gray&#39;&gt;&quot;);
+	res.push(&quot;&lt;div style=&#39;margin:0 auto;height:100%;line-height:25px;text-align:center&#39;&gt;Powered By Node.js&lt;/div&gt;&quot;);
+	res.push(&quot;&lt;/div&gt;&quot;)
+	res.push(&quot;&lt;/body&gt;&quot;);
+	return res.join(&quot;&quot;);
+}
+
+//如果文件找不到，显示404错误
+function write404(req,res){
+	var body=&quot;文件不存在:-(&quot;;
+	res.writeHead(404,{
+		&quot;Content-Type&quot;:&quot;text/html;charset=utf-8&quot;,
+		&quot;Content-Length&quot;:Buffer.byteLength(body,&#39;utf8&#39;),
+		&quot;Server&quot;:&quot;NodeJs(&quot;+process.version+&quot;)&quot;
+	});
+	res.write(body);
+	res.end();
+}
+
+//创建服务器
+http.createServer(function(req,res){
+	//将url地址的中的%20替换为空格，不然Node.js找不到文件
+	var pathname=url.parse(req.url).pathname.replace(/%20/g,&#39; &#39;),
+		re=/(%[0-9A-Fa-f]{2}){3}/g;
+	//能够正确显示中文，将三字节的字符转换为utf-8编码
+	pathname=pathname.replace(re,function(word){
+		var buffer=new Buffer(3),
+			array=word.split(&#39;%&#39;);
+		array.splice(0,1);
+		array.forEach(function(val,index){
+			buffer[index]=parseInt(&#39;0x&#39;+val,16);
+		});
+		return buffer.toString(&#39;utf8&#39;);
+	});
+	if(pathname==&#39;/&#39;){
+		listDirectory(root,req,res);
+	}else{
+		filename=path.join(root,pathname);
+		path.exists(filename,function(exists){
+			if(!exists){
+				util.error(&#39;找不到文件&#39;+filename);
+				write404(req,res);
+			}else{
+				fs.stat(filename,function(err,stat){
+					if(stat.isFile()){
+						showFile(filename,req,res);
+					}else if(stat.isDirectory()){
+						listDirectory(filename,req,res);
+					}
+				});
+			}
+		});
+	}
+	
+	
+}).listen(port,host);
+
+util.debug(&quot;服务器开始运行 http://&quot;+host+&quot;:&quot;+port)
+
+</pre>
+<br>
+<br>
+<br>接下来是mime.js，一个用于显示文件类型的js文件
+<br><pre name="code">
+var mime = {
+
+  //查找文件后缀类型
+  lookupExtension : function(ext, fallback) {
+    return mime.TYPES[ext.toLowerCase()] || fallback || 'text/plain';
+  },
+
+  //文件类型
+  TYPES : { ".3gp"   : "video/3gpp"
+          , ".a"     : "application/octet-stream"
+          , ".ai"    : "application/postscript"
+          , ".aif"   : "audio/x-aiff"
+          , ".aiff"  : "audio/x-aiff"
+          , ".asc"   : "application/pgp-signature"
+          , ".asf"   : "video/x-ms-asf"
+          , ".asm"   : "text/x-asm"
+          , ".asx"   : "video/x-ms-asf"
+          , ".atom"  : "application/atom+xml"
+          , ".au"    : "audio/basic"
+          , ".avi"   : "video/x-msvideo"
+          , ".bat"   : "application/x-msdownload"
+          , ".bin"   : "application/octet-stream"
+          , ".bmp"   : "image/bmp"
+          , ".bz2"   : "application/x-bzip2"
+          , ".c"     : "text/x-c"
+          , ".cab"   : "application/vnd.ms-cab-compressed"
+          , ".cc"    : "text/x-c"
+          , ".chm"   : "application/vnd.ms-htmlhelp"
+          , ".class"   : "application/octet-stream"
+          , ".com"   : "application/x-msdownload"
+          , ".conf"  : "text/plain"
+          , ".cpp"   : "text/x-c"
+          , ".crt"   : "application/x-x509-ca-cert"
+          , ".css"   : "text/css"
+          , ".csv"   : "text/csv"
+          , ".cxx"   : "text/x-c"
+          , ".deb"   : "application/x-debian-package"
+          , ".der"   : "application/x-x509-ca-cert"
+          , ".diff"  : "text/x-diff"
+          , ".djv"   : "image/vnd.djvu"
+          , ".djvu"  : "image/vnd.djvu"
+          , ".dll"   : "application/x-msdownload"
+          , ".dmg"   : "application/octet-stream"
+          , ".doc"   : "application/msword"
+          , ".dot"   : "application/msword"
+          , ".dtd"   : "application/xml-dtd"
+          , ".dvi"   : "application/x-dvi"
+          , ".ear"   : "application/java-archive"
+          , ".eml"   : "message/rfc822"
+          , ".eps"   : "application/postscript"
+          , ".exe"   : "application/x-msdownload"
+          , ".f"     : "text/x-fortran"
+          , ".f77"   : "text/x-fortran"
+          , ".f90"   : "text/x-fortran"
+          , ".flv"   : "video/x-flv"
+          , ".for"   : "text/x-fortran"
+          , ".gem"   : "application/octet-stream"
+          , ".gemspec" : "text/x-script.ruby"
+          , ".gif"   : "image/gif"
+          , ".gz"    : "application/x-gzip"
+          , ".h"     : "text/x-c"
+          , ".hh"    : "text/x-c"
+          , ".htm"   : "text/html"
+          , ".html"  : "text/html"
+          , ".ico"   : "image/vnd.microsoft.icon"
+          , ".ics"   : "text/calendar"
+          , ".ifb"   : "text/calendar"
+          , ".iso"   : "application/octet-stream"
+          , ".jar"   : "application/java-archive"
+          , ".java"  : "text/x-java-source"
+          , ".jnlp"  : "application/x-java-jnlp-file"
+          , ".jpeg"  : "image/jpeg"
+          , ".jpg"   : "image/jpeg"
+          , ".js"    : "application/javascript;charset=utf-8"
+          , ".json"  : "application/json"
+          , ".log"   : "text/plain;charset=utf-8"
+          , ".m3u"   : "audio/x-mpegurl"
+          , ".m4v"   : "video/mp4"
+          , ".man"   : "text/troff"
+          , ".mathml"  : "application/mathml+xml"
+          , ".mbox"  : "application/mbox"
+          , ".mdoc"  : "text/troff"
+          , ".me"    : "text/troff"
+          , ".mid"   : "audio/midi"
+          , ".midi"  : "audio/midi"
+          , ".mime"  : "message/rfc822"
+          , ".mml"   : "application/mathml+xml"
+          , ".mng"   : "video/x-mng"
+          , ".mov"   : "video/quicktime"
+          , ".mp3"   : "audio/mpeg"
+          , ".mp4"   : "video/mp4"
+          , ".mp4v"  : "video/mp4"
+          , ".mpeg"  : "video/mpeg"
+          , ".mpg"   : "video/mpeg"
+          , ".ms"    : "text/troff"
+          , ".msi"   : "application/x-msdownload"
+          , ".odp"   : "application/vnd.oasis.opendocument.presentation"
+          , ".ods"   : "application/vnd.oasis.opendocument.spreadsheet"
+          , ".odt"   : "application/vnd.oasis.opendocument.text"
+          , ".ogg"   : "application/ogg"
+          , ".p"     : "text/x-pascal"
+          , ".pas"   : "text/x-pascal"
+          , ".pbm"   : "image/x-portable-bitmap"
+          , ".pdf"   : "application/pdf"
+          , ".pem"   : "application/x-x509-ca-cert"
+          , ".pgm"   : "image/x-portable-graymap"
+          , ".pgp"   : "application/pgp-encrypted"
+          , ".pkg"   : "application/octet-stream"
+          , ".pl"    : "text/x-script.perl"
+          , ".pm"    : "text/x-script.perl-module"
+          , ".png"   : "image/png"
+          , ".pnm"   : "image/x-portable-anymap"
+          , ".ppm"   : "image/x-portable-pixmap"
+          , ".pps"   : "application/vnd.ms-powerpoint"
+          , ".ppt"   : "application/vnd.ms-powerpoint"
+          , ".ps"    : "application/postscript"
+          , ".psd"   : "image/vnd.adobe.photoshop"
+          , ".py"    : "text/x-script.python"
+          , ".qt"    : "video/quicktime"
+          , ".ra"    : "audio/x-pn-realaudio"
+          , ".rake"  : "text/x-script.ruby"
+          , ".ram"   : "audio/x-pn-realaudio"
+          , ".rar"   : "application/x-rar-compressed"
+          , ".rb"    : "text/x-script.ruby"
+          , ".rdf"   : "application/rdf+xml"
+          , ".roff"  : "text/troff"
+          , ".rpm"   : "application/x-redhat-package-manager"
+          , ".rss"   : "application/rss+xml"
+          , ".rtf"   : "application/rtf"
+          , ".ru"    : "text/x-script.ruby"
+          , ".s"     : "text/x-asm"
+          , ".sgm"   : "text/sgml"
+          , ".sgml"  : "text/sgml"
+          , ".sh"    : "application/x-sh"
+          , ".sig"   : "application/pgp-signature"
+          , ".snd"   : "audio/basic"
+          , ".so"    : "application/octet-stream"
+          , ".svg"   : "image/svg+xml"
+          , ".svgz"  : "image/svg+xml"
+          , ".swf"   : "application/x-shockwave-flash"
+          , ".t"     : "text/troff"
+          , ".tar"   : "application/x-tar"
+          , ".tbz"   : "application/x-bzip-compressed-tar"
+          , ".tcl"   : "application/x-tcl"
+          , ".tex"   : "application/x-tex"
+          , ".texi"  : "application/x-texinfo"
+          , ".texinfo" : "application/x-texinfo"
+          , ".text"  : "text/plain"
+          , ".tif"   : "image/tiff"
+          , ".tiff"  : "image/tiff"
+          , ".torrent" : "application/x-bittorrent"
+          , ".tr"    : "text/troff"
+          , ".txt"   : "text/plain"
+          , ".vcf"   : "text/x-vcard"
+          , ".vcs"   : "text/x-vcalendar"
+          , ".vrml"  : "model/vrml"
+          , ".war"   : "application/java-archive"
+          , ".wav"   : "audio/x-wav"
+          , ".wma"   : "audio/x-ms-wma"
+          , ".wmv"   : "video/x-ms-wmv"
+          , ".wmx"   : "video/x-ms-wmx"
+          , ".wrl"   : "model/vrml"
+          , ".wsdl"  : "application/wsdl+xml"
+          , ".xbm"   : "image/x-xbitmap"
+          , ".xhtml"   : "application/xhtml+xml"
+          , ".xls"   : "application/vnd.ms-excel"
+          , ".xml"   : "application/xml"
+          , ".xpm"   : "image/x-xpixmap"
+          , ".xsl"   : "application/xml"
+          , ".xslt"  : "application/xslt+xml"
+          , ".yaml"  : "text/yaml"
+          , ".yml"   : "text/yaml"
+          , ".zip"   : "application/zip"
+          }
+};
+
+exports.mime=mime;
+</pre>
+<br>
+          
+          <br><br>
+          作者: <a href="http://flyingzl.javaeye.com">flyingzl</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/827328" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

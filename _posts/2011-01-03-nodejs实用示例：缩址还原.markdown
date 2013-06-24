@@ -1,0 +1,17 @@
+---
+layout: post
+title:  "nodejs实用示例：缩址还原"
+date:   2011-01-03 12:13:50
+author: 
+categories: program
+---
+
+## nodejs实用示例：缩址还原
+### by 
+### at 2011-01-03 12:13:50
+### original <http://www.oschina.net/bbs/thread/14727>
+
+nodejs最近好红火，我也趁寒冷天气在nodejs的火炉边取暖一下。 思路非常简单: 1. httpserver获取需要还原的url；2. 使用httpclient递归请求这个url，直到发现http status not in (302, 301)为止3. 返回还原的原url。 好吧，代码如下： var net = require('net'),
+	http = require('http'),
+	url = require('url'),
+	...

@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "现代新的简化”对象“和”面向对象“的定义"
+date:   2012-12-25 08:16:00
+author: 司徒正美
+categories: program
+---
+
+## 现代新的简化”对象“和”面向对象“的定义
+### by 司徒正美
+### at 2012-12-25 08:16:00
+### original <http://www.cnblogs.com/rubylouvre/archive/2012/12/25/2831776.html>
+
+<p>传统面向对象定义已经过时，过去定义已经不能满足新语言新思想的发展，来自<a href="http://wcook.blogspot.com/2012/07/proposal-for-simplified-modern.html">A Proposal for Simplified, Modern Definitions of "Object" and "Object Oriented" </a>一文试图提出一种新的对象定义，以容纳适应新的发展形势。</p><p>新的对象定义是：An object is a first-class module that is invoked polymorphically<br>对象是能够被多态调用的顶级模块。</p><p>这里模块module定义可以是传统语言的类Class,也可以是函数语言的函数function。这样，面向对象定义比以前更加宽广，可以包含Scala等新的函数语言。</p><p>多态性polymorphically被定义成运行调用方式，而传统<a href="http://www.jdon.com/oo.html"><b>OO</b></a>语言的继承只是其中一个代码机制的实现，在运行时实现多态，包括运行时的Mixin实现，在不改变不变动原来代码情况下将新的代码混入运行。这就更加侧重运行时的对象定义，而不是传统意义上编码阶段的对象定义了。</p><p>作者还总结了对象哪些特性是对象的重要本质特性，其中最重要的是可变状态Mutable State，值对象是一种不可变对象，大部分函数语言试图通过回避可变状态来实现高并发性能，但是这也许有些激进，因为可变状态的应用越来越多。</p><p>我们有办法从可变性分离出不变性，我们也有办法去控制可变性(先容纳再控制的哲学)，比如在GOF设计模式中只有State, Memento, Observer, Decorator, 以及Chain or Responsibility 和 Adapter都需要可变性. 通过模式，我们达到重点分界可变状态和不可变状态，然后围而分别歼之的策略，这样，不可变的安全区域才会变得更加广阔，变成一种缺省语境。</p><p>作者将标识Identity也归为对象必须的特性，在领域驱动设计<a href="http://www.jdon.com/ddd.html"><b>DDD</b></a>中我们知道实体的特点是标识，用来区别某个具体的对象，标识可以有能力来区别两个引用是否指向同一个对象，相同对象的定义是它们的引用都指向一个单一的对象创建<a href="http://www.jdon.com/eda.html"><b>事件</b></a>的结果。</p><p>作者认为其他特性如类Class 或方法定义Multi-methods都不适合纳入新的对象定义之中，还有比如反射reflection, 静态类型static typing, 接口interfaces, first-class classes, 并发对象concurrent objects, 同步synchronization。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2831776.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/12/25/2831776.html">本文链接</a></p>

@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "JRuby 和 Java 7 我们可以期待什么"
+date:   2011-08-10 22:06:14
+author: 
+categories: program
+---
+
+## JRuby 和 Java 7 我们可以期待什么
+### by 
+### at 2011-08-10 22:06:14
+### original <http://www.oschina.net/news/20500/what-can-we-expect-about-jruby-and-java7>
+
+<table width="100%"><tr>
+			<td valign="top" width="100"><a href="http://www.oschina.net/news/20500/what-can-we-expect-about-jruby-and-java7"><img src="http://www.oschina.net/img/logo/jruby.gif" border="0"></a></td>			<td valign="top">Java 7已经粉墨登场了，这次带来的新功能感觉有些普普通通，当然还是有几个重要改进。那么对于在Java 7上运行的JRuby，我们能够期待些什么呢？ Java 7改变了什么？ Java 7中最大的改变和Java语言本身并没有什么关系。当然，Java 7中的“project coin”提高了Java语言的异常处理能力，还有新的数字、数组、哈希常量、开发者们经常要求的“字符串开关（strings in switch）”支持，还有一些别的东西等等。但这些都是些综合性的功能提高，真正的革新出现在JVM和JDK级别。 新的字节码Invokedynamic Java 7中最重要的变化是加入了一种新的字...，<a href="http://www.oschina.net/news/20500/what-can-we-expect-about-jruby-and-java7?from=rss" style="font-weight:bold;color:#a00">阅读全文</a></td>
+			</tr></table>

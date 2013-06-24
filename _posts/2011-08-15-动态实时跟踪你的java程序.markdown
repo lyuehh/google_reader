@@ -1,0 +1,209 @@
+---
+layout: post
+title:  "动态实时跟踪你的java程序"
+date:   2011-08-15 14:48:28
+author: 聚石
+categories: program
+---
+
+## 动态实时跟踪你的java程序
+### by 聚石
+### at 2011-08-15 14:48:28
+### original <http://www.alidata.org/archives/1851>
+
+<p>之前有写 <a href="http://www.tbdata.org/archives/492">基于AOP的日志调试</a> 讨论一种跟踪Java程序的方法, 但不是很完美.后来发现了 <a href="http://kenai.com/projects/btrace">Btrace</a> , 由于它借助动态字节码注入技术 , 实现优雅且功能强大.<br>
+只不过, 用起来总是磕磕绊绊的, 时常为了跟踪某个问题, 却花了大把的时间调试Btrace的脚本. 为此, 我尝试将几种跟踪模式固化成脚本模板, 待用的时候去调整一下正则表达式之类的.<br>
+跟踪过程往往是假设与验证的螺旋迭代过程, 反复的用BTrace跟踪目标进程, 总有那么几次莫名其妙的不可用, 最后不得不重启目标进程. 若真是线上不能停的服务, 我想这种方式还是不靠谱啊.<br>
+为此, 据决定自己的搞个用起来简单, 又能良好支持反复跟踪而不用重启目标进程的工具.</p>
+<h1>AOP</h1>
+<p>AOP是Btrace, jip<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn1">1</a></sup>等众多监测工具的核心思想, 用一段代码最容易说明:</p>
+<pre><code>
+public void say(String words){
+  Trace.enter();
+  System.out.println(words);
+  Trace.exit();
+}
+</code></pre>
+<p>如上, Trace.enter() 和 Trace.exit() 将say(words)内的代码环抱起来, 对方法进出的进行切面的处理, 便可获取运行时的上下文, 如:</p>
+<ul>
+<li>调用栈</li>
+<li>当前线程</li>
+<li>时间消耗</li>
+<li>参数与返回值</li>
+<li>当前实例状态</li>
+</ul>
+<h1>实现的选择</h1>
+<p>实现切面的方式, 我知道的有以下几种:</p>
+<h2>代理(装饰器)模式</h2>
+<p>设计模式中装饰器模式和代理模式, 尽管解决的问题域不同, 代码实现是非常相似, 均可以实现切面处理, 这里视为等价. 依旧用代码说明:</p>
+<pre><code>
+interface Person {
+  void say(String words);
+}
+
+class Officer implements Person {
+  public void say(String words) { lie(words); }
+  private void lie(String words) {...}
+}
+
+class Proxy implements Person {
+  private final Officer officer;
+  public Proxy(Officer officer) { this.officer = officer; }
+  public void say(String words) {
+    enter();
+    officer.say(words);
+    exit();
+  }
+  private void enter() { ... }
+  private void exit() { ... }
+}
+
+Person p = new Proxy(new Officer());
+</code></pre>
+<p>很明显, 上述enter() 和exit()是实现切面的地方, 通过获取Officer的Proxy实例, 便可对Officer实例的行为进行跟踪. 这种方式实现起来最简单, 也最直接.</p>
+<h2>Java Proxy</h2>
+<p>Java Proxy是JDK内置的代理API, 借助反射机制实现. 用它来是完成切面则会是:</p>
+<pre><code>
+class ProxyInvocationHandler implements InvocationHandler {
+  private final Object target;
+  public ProxyInvocationHandler(Object target) { this.target = target;}
+  public Object handle(Object proxy, Method method, Object[] args) {
+    enter();
+    method.invoke(target, args);
+    exit();
+  }
+  private void enter() { ... }
+  private void exit() { ... }
+}
+ClassLoader loader = ...
+Class&lt;?&gt;[]  interfaces = {Person.class};
+Person p = (Person)Proxy.newInstance(loader, interfaces, new ProxyInvocationHandler(new Officer()));
+</code></pre>
+<p>相比较上一中方法, 这种不太易读, 但更为通用, 对具体实现依赖很少.</p>
+<h2>AspectJ</h2>
+<p>AspectJ<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn3">3</a></sup>是基于字节码操作的AOP实现, 相比较Java proxy, 它会显得对调用更”透明”, 编写更简明(类似DSL), 性能更好. 如下代码:</p>
+<pre><code>
+pointcut say(): execute(* say(..))
+before(): say() { ... }
+after() : say() { ... }
+</code></pre>
+<p>Aspectj实现切面的时机有两种: 静态编译和类加载期编织(load-time weaving). 并且它对IDE的支持很丰富.</p>
+<h2>CGlib</h2>
+<p>与AspectJ一样CGlib<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn4">4</a></sup>也是操作字节码来实现AOP的, 使用上与Java Proxy非常相似, 只是不像Java Proxy对接口有依赖, 我们熟知的Spring, Guice之类的IoC容器实现AOP都是使用它来完成的.</p>
+<pre><code>
+class Callback implements MethodInterceptor {
+  public Object intercept(Object obj, java.lang.reflect.Method method, Object[] args, MethodProxy proxy) throws Throwable {
+    enter();
+    proxy.invokeSuper(obj, args);
+    exit();
+  }
+  private void enter() { ... }
+  private void exit() { ... }
+}
+Enhancer e = new Enhancer();
+e.setSuperclass(Officer.class);
+e.setCallback(new Callback());
+Person p = e.create();
+</code></pre>
+<h1>字节码操纵</h1>
+<p>上面四种方法各有适用的场景, 但唯独对运行着的Java进程进行动态的跟踪支持不了, 当然也许是我了解的不够深入, 若有基于上述方案的办法还请不吝赐教.</p>
+<p>还是回到Btrace<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn5">5</a></sup>的思路上来, 在理解了它借助java.lang.Instrumentation进行字节码注入的实现原理<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn6">6</a></sup>后, 实现动态变化跟踪方式或目标应该没有问题.</p>
+<p>借下来的问题, 如何操作(注入)字节码实现切面的处理. 可喜的是, “构建自己的监测工具”<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn7">7</a></sup>一文给我提供了一个很好的切入点. 在此基础上, 经过一些对ASM<sup><a href="https://github.com/zhongl/jmxero/wiki/%E5%8A%A8%E6%80%81%E5%AE%9E%E6%97%B6%E8%B7%9F%E8%B8%AA%E4%BD%A0%E7%9A%84java%E7%A8%8B%E5%BA%8F#wiki-fn8">8</a></sup>的深入研究, 可以实现:</p>
+<ul>
+<li>方法调用进入时, 获取当前实例(this) 和 参数值列表;</li>
+<li>方法调用出去时, 获取返回值;</li>
+<li>方法异常抛出时, 触发回调并获取异常实例.</li>
+</ul>
+<p>其切面实现的核心代码如下:</p>
+<pre><code>
+ private static class ProbeMethodAdapter extends AdviceAdapter {
+
+    protected ProbeMethodAdapter(MethodVisitor mv, int access, String name, String desc, String className) {
+      super(mv, access, name, desc);
+      start = new Label();
+      end = new Label();
+      methodName = name;
+      this.className = className;
+    }
+
+    @Override
+    public void visitMaxs(int maxStack, int maxLocals) {
+      mark(end);
+      catchException(start, end, Type.getType(Throwable.class));
+      dup();
+      push(className);
+      push(methodName);
+      push(methodDesc);
+      loadThis();
+      invokeStatic(Probe.TYPE, Probe.EXIT);
+      visitInsn(ATHROW);
+      super.visitMaxs(maxStack, maxLocals);
+    }
+
+    @Override
+    protected void onMethodEnter() {
+      push(className);
+      push(methodName);
+      push(methodDesc);
+      loadThis();
+      loadArgArray();
+      invokeStatic(Probe.TYPE, Probe.ENTRY);
+      mark(start);
+    }
+
+    @Override
+    protected void onMethodExit(int opcode) {
+      if (opcode == ATHROW) return; // do nothing, @see visitMax
+      prepareResultBy(opcode);
+      push(className);
+      push(methodName);
+      push(methodDesc);
+      loadThis();
+      invokeStatic(Probe.TYPE, Probe.EXIT);
+    }
+
+    private void prepareResultBy(int opcode) {
+      if (opcode == RETURN) { // void
+        push((Type) null);
+      } else if (opcode == ARETURN) { // object
+        dup();
+      } else {
+        if (opcode == LRETURN || opcode == DRETURN) { // long or double
+          dup2();
+        } else {
+          dup();
+        }
+        box(Type.getReturnType(methodDesc));
+      }
+    }
+
+    private final String className;
+    private final String methodName;
+    private final Label start;
+    private final Label end;
+}
+</code></pre>
+<p>更多参考请见这里的 <a href="https://github.com/zhongl/jsmx/tree/ztrace">Demo</a> , 它是javaagent, 在伴随宿主进程启动后, 提供MBean可用jconsole进行动态跟踪的管理.</p>
+<h1>后续的方向</h1>
+<ol>
+<li>提供基于Web的远程交互界面;</li>
+<li>提供基于Shell的本地命令行接口;</li>
+<li>提供Profile统计和趋势输出;</li>
+<li>提供跟踪日志定位与分析.</li>
+</ol>
+<h1>参考</h1>
+<ol>
+<li><a href="http://jiprof.sourceforge.net/">The Java Interactive Profiler</a></li>
+<li><a href="http://download.oracle.com/javase/6/docs/api/java/lang/reflect/Proxy.html">Proxy Javadoc</a></li>
+<li><a href="http://www.eclipse.org/aspectj/">Aspectj</a></li>
+<li><a href="http://cglib.sourceforge.net/">CGlib</a></li>
+<li><a href="http://kenai.com/projects/btrace/pages/UserGuide">BTrace User’s Guide</a></li>
+<li><a href="http://kenwublog.com/btrace-theory-analysis">java动态跟踪分析工具BTrace实现原理</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/java/j-jip/index.html?ca=drs">构建自己的监测工具</a></li>
+<li><a href="http://download.forge.objectweb.org/asm/asm-guide.pdf">ASM Guide</a></li>
+<li><a href="http://www.ibm.com/developerworks/cn/java/j-lo-profiling/index.html?ca=drs">常用 Java Profiling 工具的分析与比较</a></li>
+<li><a href="https://www.ibm.com/developerworks/java/library/j-aopwork10/?S_TACT=105AGX52&amp;S_CMP=cn-a-j">AOP@Work: Performance monitoring with AspectJ</a></li>
+<li><a title="2nd" href="http://java.sun.com/docs/books/jvms/second_edition/html/VMSpecTOC.doc.html">The JavaTM Virtual Machine Specification</a></li>
+<li><a href="http://www.slideshare.net/cafusic/jvm20101228">来自rednaxelafx的JVM分享</a>, 他的 <a href="http://rednaxelafx.iteye.com/">Blog</a></li>
+<li><a href="http://commons.apache.org/bcel/manual.html">BCEL</a></li>
+</ol>

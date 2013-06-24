@@ -1,0 +1,63 @@
+---
+layout: post
+title:  "扎克伯格的错误"
+date:   2012-09-12 18:49:44
+author: dbanotes@gmail.com(Fenng)
+categories: program
+---
+
+## 扎克伯格的错误
+### by dbanotes@gmail.com(Fenng)
+### at 2012-09-12 18:49:44
+### original <http://www.dbanotes.net/review/Facebook_mistake.html>
+
+<p>by <a href="http://www.dbanotes.net">Fenng</a>@<a href="http://www.dbanotes.net/">dbanotes.net</a> 
+
+<p>今天业界热议的事情是Facebook创始人兼CEO马克·扎克伯格在接受采访的时候承认「专注在 HTML 5上面是他有史以来犯过的最大的错误。」然后，透露出来的数据是：用户浏览的 Feed 信息流是之前的 2 倍。</p>
+
+<p>Facebook 最初使用 HTML 5 的主要原因是什么呢？一次开发，跨平台发布肯定是其中考虑的一个因素，当然，开发上可以做到快速迭代，这和 Facebook 的工程文化也是相符的。不过，这样实际上是节约了开发成本，获得了开发上的「速度」，这样做也牺牲了用户的体验上的「速度」，牺牲了「性能」。</p>
+
+<p>为什么 Facebook 过度在移动上压注 HTML 5 是不对的？最大可能的原因或许就是「性能」的问题，没有更好的速度就没有更好的用户体验，而用户体验一直是扎克伯格最看重的东西。</p>
+
+<p>扎克伯格从 Facebook 创建之初就认识到，对 Facebook 这样的的网络服务而言，「性能表现就是关键。假如向用户传送新页面的速度开始减缓，那就是致命的一击。」从技术的角度看，Facebook 一向在网站优化上不遗余力，无论是 BigPipe 还是 HipHop for PHP， 这些不遗余力的优化实践以及技术创新为 Facebook 带来了绝佳的用户体验，而移动端押注 HTML 5 则恰恰是无形中背离了 Facebook 的这一准则。</p>
+
+<p>iOS 原生应用发布之后，浏览信息是原来的两倍意味着什么？用户会在意你用 HTML 5 开发还是用的本地原生应用？绝大多数用户都不在乎这个，甚至都不知道，用户更关心的是「应用的速度」，App 是否足够快? 是否可以更流畅的阅读信息，没有人愿意在手机上等待某个应用慢吞吞的打开，就这么简单。</p>
+
+<p>接下来面对 Facebook 的挑战是能否像在 Web 产品上进行的那些最佳实践那样也在移动产品上建立起更有效的研发机制，毕竟这是另外一个战场，一个互联网巨头在移动领域是否还是绝对的统治者? 没有人能知道。</p>
+
+<p>事后诸葛亮一样来评价这个事情的对错本身并不重要，重要的是，我们是否可以从中学到某些教训?</p>
+
+<p>--EOF--</p>
+
+<p>对 HTML 5 来说，谈不上是什么「打击」，或许是好事情也说不定，让更多人认识 HTML 5 的优点和缺点，而不是一窝蜂的冲上去。</p>
+
+<p>我在去年这个时间曾经说过这样一句话「我的两个固执的观点：1 HTML 5 不是移动开发的救星，至少现在不是；2 因为有 1 , 所以类似 PhoneGap 之类的解决方案还不靠谱，没有银弹。还需要再等 18 个月再看。」 </p>
+
+<p>现在看起来，还要再等 18 个月了。</p>
+
+<p>本文首发: 福布斯中文网 (<a href="http://www.forbeschina.com/review/201209/0020006.shtml">URL</a>)。<br>
+</p></p>
+<hr>
+<p><strong>最近文章|Recent Articles</strong></p>
+   <ul>
+    
+      <li><a href="http://www.dbanotes.net/review/Tech_Simple.html">技术含量的问题</a></li>
+    
+      <li><a href="http://www.dbanotes.net/startup/Hangzhou_City_for_Startup.html">作为互联网创业城市的杭州</a></li>
+    
+      <li><a href="http://www.dbanotes.net/mylife/The_Bloggers.html">那些写过博客的人们</a></li>
+    
+      <li><a href="http://www.dbanotes.net/techmemo/howto_import_Outlook_pst_into_gmail.html">如何将 Outlook PST 文件内容导入 Gmail </a></li>
+    
+   </ul>
+<p>本站赞助商：<a href="http://www.douban.com/">豆瓣网(Douban.com)</a></p>
+<p><strong> 评论数(0)|<a href="http://www.dbanotes.net/review/Facebook_mistake.html#comments" title="Comment on: 扎克伯格的错误">添加评论</a></strong> | 最近作者还说了什么? Follow <a href="http://www.twitter.com/fenng">Fenng@Twitter</a></p>
+<p>DBA Notes 理念: 用简约的技术取得最大的收益...</p>
+
+
+
+<div name="ClickComments"></div>
+
+<div>
+<a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/webarch?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:qj6IDK7rITs"><img src="http://feeds.feedburner.com/~ff/webarch?d=qj6IDK7rITs" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/webarch?i=O5mvUYI-iKU:nYs9Jt5fj2w:F7zBnMyn0Lo" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/webarch?i=O5mvUYI-iKU:nYs9Jt5fj2w:V_sGLiPBpWU" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:mqyYa2mfVbY"><img src="http://feeds.feedburner.com/~ff/webarch?d=mqyYa2mfVbY" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:I9og5sOYxJI"><img src="http://feeds.feedburner.com/~ff/webarch?d=I9og5sOYxJI" border="0"></a> <a href="http://feeds.feedburner.com/~ff/webarch?a=O5mvUYI-iKU:nYs9Jt5fj2w:bcOpcFrp8Mo"><img src="http://feeds.feedburner.com/~ff/webarch?d=bcOpcFrp8Mo" border="0"></a>
+</div>

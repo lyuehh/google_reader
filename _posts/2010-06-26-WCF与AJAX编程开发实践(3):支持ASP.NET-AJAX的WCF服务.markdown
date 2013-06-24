@@ -1,0 +1,59 @@
+---
+layout: post
+title:  "WCF与AJAX编程开发实践(3):支持ASP.NET AJAX的WCF服务"
+date:   2010-06-26 19:09:00
+author: Frank Xu Lei
+categories: program
+---
+
+## WCF与AJAX编程开发实践(3):支持ASP.NET AJAX的WCF服务
+### by Frank Xu Lei
+### at 2010-06-26 19:09:00
+### original <http://www.cnblogs.com/frank_xl/archive/2010/06/26/1584121.html>
+
+<p><a href="http://www.cnblogs.com/frank_xl/"><img src="http://pic.cnblogs.com/face/u47644.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/frank_xl/">Frank Xu Lei</a> 发表于 2010-06-26 19:09 <a href="http://www.cnblogs.com/frank_xl/archive/2010/06/26/1584121.html">原文链接</a> 阅读: 725 评论: 6</p><p>    在前2节里，我们分别依次学习了《<font color="#223355">AJAX基础概念和纯AJAX示例》和《<a href="http://www.cnblogs.com/frank_xl/archive/2010/06/20/1584119.html">支持ASP.NET AJAX的Web Service</a></font>》。今天继续学习WCF与AJAX编程开发实践(3):支持ASP.NET AJAX的WCF服务。这一节里，我们会讲解如何开发一个WCF服务，来支持ASP.NET Ajax客户端的调用，并给出详细的开发过程和示例代码。</p>
+<p>　　以下是这个系列的文章结构，虽然是为了学习WCF与AJAX编程，但是为了我们更够更好地理解和掌握这一框架，所以文章从最基本的概念开始，然后逐步引入到AJAX和WCF开发的内容上。</p>
+<p>     这些在第一节里有过介绍。这里开发一个支持AJAX的WCF服务十分的容易，主要原因呢，得益于Visual Studio功能的完善。我们可以轻而易举地创建一个WCF服务，来支持客户端AJAX的调用。本节里大致介绍的顺序从创建网站开始，然后是创建WCF服务，最后是客户端的开发工作。依次给出详细的介绍，并配有截图。这里以Visual Studio2008 英文版为例。截图部分会配以文字说明。中文版开发过程一样。</p>
+<p>【1】创建ASP.NET 网站：</p>
+<p>       首先这里要求你安装了Visual Studio2008 开发环境。</p>
+<p>　　创建一个普通的ASP.NET 网站，步骤很简单，也就是在New -&gt;Web Site 选择网站即可，如下图所示：</p>
+<p>  
+<div align="center"><img height="414" alt="" src="http://images.cnblogs.com/cnblogs_com/frank_xl/ASP.NETAjaxCallWCFService1.gif" width="679" border="0"></div>
+<p> </p>
+<p>【2】创建WCF Service：</p>
+<p>       【2.1】其次创建一个支持AJAX的WCF服务。</p>
+<p>　　　　这里与之前的ASP.NET Web Service不同，我们需要自己创建一个支持AJAX的WCF Service即可，如图所示：</p>
+<div align="center"><img height="411" alt="" src="http://images.cnblogs.com/cnblogs_com/frank_xl/ASP.NETAjaxCallWCFService2.gif" width="671" border="0"></div>
+<p>      </p>
+<p> 【2.2】服务类定义：</p>
+<p>　　　AjaxWCFService服务类型定义了一个操作，和普通的WCF服务操作没有区别，需要标注[OperationContract]。这个操作的代码很简单，就是接受一个name参数，然后返回一个字符串。具体实现如下：</p>
+<div>
+<div><span style="color:#000000">    [ServiceContract(Namespace</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">AjaxFrankXuLei</span><span style="color:#800000">"</span><span style="color:#000000">)]<br>    [AspNetCompatibilityRequirements(RequirementsMode </span><span style="color:#000000">=</span><span style="color:#000000"> AspNetCompatibilityRequirementsMode.Allowed)]<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> AjaxWCFService<br>    {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> Add [WebGet] attribute to use HTTP GET</span><span style="color:#008000"><br></span><span style="color:#000000">        [OperationContract]<br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> String SayHello(String name)<br>        {<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> String.Format(</span><span style="color:#800000">"</span><span style="color:#800000">Ajax, Hello {0}</span><span style="color:#800000">"</span><span style="color:#000000">, name);<br>        }<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> Add more operations here and mark them with [OperationContract]</span><span style="color:#008000"><br></span><span style="color:#000000">    }</span></div></div>
+<p> 　　这里比较关键的一个服务属性标注就是：</p>
+<p> [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]<span>应它的作用就是表示WCF服务能否在 ASP.NET 兼容模式下运行。我们这里设置为允许。</span></p>
+<p><span>     添加AjaxEnabledWCFService，Visual Studio会自动为我们加上这些标注。</span></p>
+<p>       【2.3】配置文件Web.Config：</p>
+<p>　　   Visual Studio会帮助我们添加一些重要的代码和配置信息</p>
+<p>【3】创建ASP.NET AJAX客户端：</p>
+<p>       选择我们需要一个客户端，来调用WCF服务。</p>
+<p>　　【3.1】这里创建ASP.NET AJAX客户端，最重要的是要使用一个服务端控件ScriptManager。这个可以在ToolBox里找到。</p>
+<p>它的作用很关键，上一节我们讨论过。 ScriptManager 控件是 ASP.NET 中 AJAX 功能的中心。该控件可管理一个页面上的所有 ASP.NET AJAX 资源。其中包括将 Microsoft AJAX Library 脚本下载到浏览器和协调通过使用 <a href="http://msdn.microsoft.com/zh-cn/library/system.web.ui.updatepanel.aspx">UpdatePanel</a> 控件启用的部分页面更新。(更多内容大家可以自己阅读<a title="http://msdn.microsoft.com/zh-cn/library/system.web.ui.scriptmanager.aspx" href="http://msdn.microsoft.com/zh-cn/library/system.web.ui.scriptmanager.aspx">http://msdn.microsoft.com/zh-cn/library/system.web.ui.scriptmanager.aspx</a>页面的介绍)。</p>
+<p>       这里需要引用我们的AJAXWCFService.svc文件。代码如下：</p>
+<div>
+<div><span style="color:#000000">        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">asp:ScriptManager </span><span style="color:#ff0000">ID</span><span style="color:#0000ff">="ScriptManager1"</span><span style="color:#ff0000"> runat</span><span style="color:#0000ff">="server"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">Services</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">asp:ServiceReference </span><span style="color:#ff0000">Path</span><span style="color:#0000ff">="~/AjaxWCFService.svc"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">Services</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">asp:ScriptManager</span><span style="color:#0000ff">&gt;</span></div></div>
+<p> 　　【3.2】HTML页面设计，我们就沿用第二节里的页面控件。基本不做修改。功能很简单，和第二节一样，我们输入用户名UserName,然后调用WCF服务，返回SayHello字符串。</p>
+<p>      【3.3】 剩下的就是Javascript函数，这个过程也非常的简单，因为Visual Studio2008的脚本代码编写的提示也非常的方便，你可以方便地写出一个完成的Javascript函数，这里也可以使用Jquery。 代码如下：</p>
+<div>
+<div><span style="color:#000000"> </span><span style="color:#000000">&lt;</span><span style="color:#000000">script language</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">javascript</span><span style="color:#000000">"</span><span style="color:#000000"> type</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">text/javascript</span><span style="color:#000000">"</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">function</span><span style="color:#000000"> AjaxSearch() <br>        {<br>            </span><span style="color:#008000">//</span><span style="color:#008000">获取输入name</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#0000ff">var</span><span style="color:#000000"> name </span><span style="color:#000000">=</span><span style="color:#000000"> $get(</span><span style="color:#000000">"</span><span style="color:#000000">UserName</span><span style="color:#000000">"</span><span style="color:#000000">).value;<br>            </span><span style="color:#008000">//</span><span style="color:#008000">创建 ajaxClient</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#0000ff">var</span><span style="color:#000000"> ajaxClient </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> AjaxFrankXuLei.AjaxWCFService();<br>            </span><span style="color:#008000">//</span><span style="color:#008000">调用SayHello方法</span><span style="color:#008000"><br></span><span style="color:#000000">            ajaxClient.SayHello(name, OnComplete, OnError);          <br>        }<br>        </span><span style="color:#008000">//</span><span style="color:#008000">CallBack Sucessful</span><span style="color:#008000"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">function</span><span style="color:#000000"> OnComplete(result) <br>        {<br>            </span><span style="color:#008000">//</span><span style="color:#008000"> Assign the result</span><span style="color:#008000"><br></span><span style="color:#000000">            document.getElementById(</span><span style="color:#000000">"</span><span style="color:#000000">AjaxResult</span><span style="color:#000000">"</span><span style="color:#000000">).value </span><span style="color:#000000">=</span><span style="color:#000000"> result.toString();<br>        }<br>        </span><span style="color:#008000">//</span><span style="color:#008000">CallBack Error</span><span style="color:#008000"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">function</span><span style="color:#000000"> OnError(result) <br>        {<br>            alert(result.get_message());<br>        } <br>    </span><span style="color:#000000">&lt;</span><span style="color:#000000">/</span><span style="color:#000000">script&gt;</span></div></div>
+<p>      【4】运行结果：</p>
+<p>       这里我们可以直接在IE里测试一下效果，打开浏览器，浏览Default.aspx网页，这个网页里包含了我们调用WCF服务的客户端Javascript脚本。</p>
+<p>      我们在控件里输入姓名以后，点击Search按钮，就会看到调用WCF服务操作SayHello返回的结果。如图所示：</p>
+<p>
+<div align="center"><img height="326" alt="" src="http://images.cnblogs.com/cnblogs_com/frank_xl/ASP.NETAjaxCallWCFService3.gif" width="487" border="0"></div>
+<div align="left">【5】总结：</div>
+<div align="left">    </div>
+<div align="left">　　ASP.NET AJAX框架，在ASP.NET 网站开发中的使用日益广泛，而作为服务框架，从早期ASP.NET Web Service到现在的WCF，都对于的支持ASP.NET AJAX提供了很好的支持。实际的项目中使用的也越来越常见。作为开发者，Visual Studio2008 给了我们很好的开发体验。大家可以自己编写一个支持AJAX的WCF服务的Demo，最后，我也给出本文的例子代码，供各位参考：<a href="http://files.cnblogs.com/frank_xl/3.AjaxWCFWebSite.zip">/Files/frank_xl/3.AjaxWCFWebSite.zip</a> </div>
+<p> 参考：</p>
+<p>1.<a href="http://msdn.microsoft.com/en-us/library/bb924552.aspx">http://msdn.microsoft.com/en-us/library/bb924552.aspx</a></p>
+<p>2.<a href="http://www.cnblogs.com/frank_xl/archive/2009/10/17/1583588.html"><font color="#223355">WCF与AJAX编程开发实践(1):AJAX基础概念和纯AJAX示例</font></a> </p>
+<p>3.<a href="http://www.cnblogs.com/frank_xl/archive/2010/06/20/1584119.html"><font color="#223355">WCF与AJAX编程开发实践(2):支持ASP.NET AJAX的Web Service</font></a> </p> <img src="http://www.cnblogs.com/frank_xl/aggbug/1584121.html?type=1" width="1" height="1" alt=""><p>评论: 6　<a href="http://www.cnblogs.com/frank_xl/archive/2010/06/26/1584121.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/frank_xl/archive/2010/06/26/1584121.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67041/">谷歌加密搜索启用新域名 将SSL进行到底</a><span style="color:gray">(2010-06-27 15:44)</span><br>· <a href="http://news.cnblogs.com/n/67040/">iPhone进军商务手机市场 企业支持率升至29%</a><span style="color:gray">(2010-06-27 15:34)</span><br>· <a href="http://news.cnblogs.com/n/67038/">诺基亚宣布N系旗舰机型全面弃用塞班换用MeeGo系统</a><span style="color:gray">(2010-06-27 12:37)</span><br>· <a href="http://news.cnblogs.com/n/67037/">吸引个人用户，Linux需要的不仅仅是特效</a><span style="color:gray">(2010-06-27 12:35)</span><br>· <a href="http://news.cnblogs.com/n/67034/">Palm CEO将担任合并后的惠普移动部门负责人</a><span style="color:gray">(2010-06-27 09:55)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/zc22/archive/2010/06/27/1766007.html">再次回首 TCP Socket 服务器编程</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p></p>

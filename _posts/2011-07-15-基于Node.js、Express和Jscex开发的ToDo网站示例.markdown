@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "基于Node.js、Express和Jscex开发的ToDo网站示例"
+date:   2011-07-15 16:57:40
+author: jeffz@live.com (老赵)
+categories: program
+---
+
+## 基于Node.js、Express和Jscex开发的ToDo网站示例
+### by jeffz@live.com (老赵)
+### at 2011-07-15 16:57:40
+### original <http://blog.zhaojie.me/2011/07/nodejs-express-jscex-demo-website-todo.html>
+
+<p><a href="https://github.com/JeffreyZhao/jscex">Jscex</a>的主要使用场景是“JavaScript异步编程”，不过并没有限制是跑在浏览器还是服务器端。最近<a href="http://nodejs.org/">Node.js</a>很火热，也刚发布了原生的Windows版，不少同学会用它来做一些网站这样的小程序。目前用Node.js开发网站最著名的框架是<a href="http://expressjs.com/">Express</a>，使用起来也是比较容易的。前段时间看到<a href="http://cnodejs.org/blog/?p=1310">CNodeJS社区的一篇文章</a>，有同学将一个<a href="http://simple-is-better.com/news/309">Python写的ToDo列表网站</a>移植到了Node.js上，我为了推广Jscex，就fork了这个项目，将其修改为<a href="https://github.com/JeffreyZhao/todo">基于Jscex的版本</a>，大伙儿可以来比较一下。当然这个网站过于简单，我也正在寻找更合适的项目。</p>
+
+<p>JavaScript是一个没有阻塞特性的语言，因此各类API都会设计为异步，这对于服务器的伸缩性和客户端网页的响应能力都有好处，不过在程序编写上就会遇到各种问题了。例如在ToDo示例中的一个简单的处理函数，因为需要查询数据库，就要写成带回调的样子：</p>
+
+<pre>exports.index = <span style="color:blue">function </span>(req, res, next) {
+    db.query(<span style="color:maroon">'select * from todo order by finished asc, id asc limit 50'</span>, <span style="color:blue">function </span>(err, rows) {
+        <span style="color:blue">if </span>(err) <span style="color:blue">return </span>next(err);
+        res.render(<span style="color:maroon">'index'</span>, { todos: rows });
+    });
+};</pre>
+
+<p>db变量用来操作MySQL数据库，它的query方法传入sql（可能还会有参数）并提供一个回调函数，用来提示错误或是返回查询结果。在回调中我们必须判断err是否存在，如果存在便调用next报告框架“出错了”。每个异步操作都必须如此，试想如果在这个查询后还有另一个查询，则还需要进行一次嵌套和err判断。每个处理函数都是如此，这也是异步编程的烦恼之一：难以进行统一的异常处理，处理代码总是需要分散在各处，一不小心就变成“野异常”，还很难排查出来。</p>
+
+<p>我将ToDo网站简单地Jscex化了一下。首先让MySQL的查询能够接入Jscex（lib\jscex.mysql.js）：</p>
+
+<pre>exports.jscexify = <span style="color:blue">function </span>(db) {
+    db.queryAsync = <span style="color:blue">function </span>() {
+        <span style="color:blue">var </span>_this = <span style="color:blue">this</span>;
+
+        <span style="color:blue">var </span>args = [];
+        <span style="color:blue">for </span>(<span style="color:blue">var </span>i = 0; i &lt; arguments.length; i++) {
+            args.push(arguments[i]);
+        }
+
+        <span style="color:blue">var </span>delegate = {
+            onStart: <span style="color:blue">function </span>(callback) {
+
+                args.push(<span style="color:blue">function </span>(err, result) {
+                    <span style="color:blue">if </span>(err) {
+                        callback(<span style="color:maroon">&quot;failure&quot;</span>, err);
+                    } <span style="color:blue">else </span>{
+                        callback(<span style="color:maroon">&quot;success&quot;</span>, result);
+                    }
+                });
+
+                _this.query.apply(_this, args);
+            }
+        };
+
+        <span style="color:blue">return new </span>Jscex.Async.Task(delegate);
+    }
+}</pre>
+
+<p>一般来说，将一个异步接口给Jscex化并不需要那么多代码（最关键的其实只是onStart函数）。这里近30行代码，其中大部分是为了支持“变长”参数，因此queryAsync函数会保留调用时的所有参数，补上一个callback，再去调用query函数本身。此时，便可以去改写之前的index等处理函数了（controllers\todo.js），例如：</p>
+
+<pre>exports.index = toHandler(eval(Jscex.compile(<span style="color:maroon">&quot;async&quot;</span>, <span style="color:blue">function </span>(req, res) {
+
+    <span style="color:blue">var </span>todos = $await(db.queryAsync(<span style="color:maroon">'select * from todo order by finished asc, id asc limit 50'</span>));
+    res.render(<span style="color:maroon">&quot;index&quot;</span>, { todos: todos });
+
+})));</pre>
+
+<p>toHandler函数的作用，是将一个“接受req和res，返回Task”的函数，封装成标准的“接受req、res和next三个参数”的处理函数，并提供统一的错误处理：</p>
+
+<pre><span style="color:blue">var </span>toHandler = <span style="color:blue">function </span>(asyncFunc) {
+    <span style="color:blue">return function </span>(req, res, next) {
+        <span style="color:blue">var </span>task = asyncFunc(req, res);
+        task.addListener(<span style="color:blue">function </span>() {
+            <span style="color:blue">if </span>(task.status == <span style="color:maroon">&quot;failed&quot;</span>) {
+                next(task.error);
+            }
+        });
+        task.start();
+    }
+}</pre>
+
+<p>我在todo.js里保留了原有各个处理函数的实现，感兴趣的朋友可以对比一下它们之前的差别。可惜的是，由于ToDo实在过于简单，Jscex的优势并没有表现出来太多。例如，每个处理程序中只有一个MySQL查询，没有判断和循环，更别说为了充分利用IO并发能力，从而组合多个异步函数了。因此，我最近也一直在寻找更复杂一些的示例，不过似乎用Express的开源网站并不多见，我几乎都想自己写一个了。目前感觉<a href="https://github.com/alexyoung/nodepad">Nodepad</a>似乎还算不错，接下来可能会对它下手。</p>
+
+<p>ToDo网站依赖Express，ejs和MySQL驱动，同时我把Jscex作为添加为它的子模块。如果您要<a href="https://github.com/JeffreyZhao/todo">克隆一份ToDo的代码</a>把玩一番，可以：</p>
+
+<pre>&gt; git clone git://github.com/JeffreyZhao/todo.git
+&gt; cd todo
+&gt; git submodule init
+&gt; git submodule update
+&gt; npm install express ejs mysql
+&gt; node server.js</pre>
+
+<p>从现在开始，我会在InfoQ中文站上发表一系列关于Jscex的文章，既有关于浏览器端的JavaScript开发，也有在服务器端利用Node.js开发的内容。可能您目前还可能会有所疑惑，例如为什么要使用危险的eval函数，eval和Jscex.compile函数不能封装起来吗？其实在看了我的文章并对Jscex有了基本了解之后，就会发现这些都是以“传统眼光”来看待Jscex时所形成的误解。Jscex的做法的确“另辟蹊径”，否则在JavaScript异步类库已经多如牛毛的情况下，我不知如何让它脱颖而出。</p>

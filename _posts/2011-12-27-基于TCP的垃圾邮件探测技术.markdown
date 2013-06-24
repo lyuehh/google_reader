@@ -1,0 +1,20 @@
+---
+layout: post
+title:  "基于TCP的垃圾邮件探测技术"
+date:   2011-12-27 16:05:01
+author: 
+categories: program
+---
+
+## 基于TCP的垃圾邮件探测技术
+### by 
+### at 2011-12-27 16:05:01
+### original <http://www.cnbeta.com/articles/167174.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/194.htm"><img src="http://img.cnbeta.com/topics/2010-4-9%208-48-36.gif" alt="email 电子邮件" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.cheapsupraforsaletobuy.com">supra sale</a>的投递</b><br>
+新闻来源:solidot<br>
+美国海军学院的一组研究人员研发出一种技术，通过分析TCP数据包信号模式，实时检测电子邮件流量，<a rel="nofollow" href="http://www.itworld.com/networking/235527/naval-researchers-pioneer-tcp-based-spam-detection">识别出垃圾邮件</a>。 研究人员本月在波士顿举行的Usenix Large Installation System Administration 
+(LISA)会议上公开了他们的研究，通过分析包定时、包序重排、信号拥挤和流量控制等的信号，可以揭示出发送垃圾邮件的僵尸网络。</p>
+		<p>研究人员说，大量的
+spam都来自于僵尸网络，它们尽一切可能的发送消息，拥挤了本地上传链路，因此通过检查TCP数据流就能发现spam。</p></div>

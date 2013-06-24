@@ -1,0 +1,89 @@
+---
+layout: post
+title:  "多面手程序员"
+date:   2012-12-29 22:47:41
+author: 四火
+categories: program
+---
+
+## 多面手程序员
+### by 四火
+### at 2012-12-29 22:47:41
+### original <http://www.udpwork.com/item/8944.html>
+
+<p><strong>文章系本人原创，转载请保持完整性并注明出自<a href="http://www.raychase.net/1132">《四火的唠叨》</a></strong>
+</p>
+<p><a href="http://www.raychase.net/wp-content/uploads/2012/12/1.jpg"><img src="http://www.raychase.net/wp-content/uploads/2012/12/1_thumb.jpg" alt="多面手程序员"></a>先来看看这样的场景：</p>
+<ul><li>“没有美工做的高保真页面，我怎么来开发呢？我没有审美，也不会用PS作图啊。”</li>
+<li>“正交测试这种技巧，是测试工程师应该掌握的，开发不需要了解。”</li>
+<li>“目前进度的瓶颈在产品经理那里，他还没有给我澄清需求。难道要一个写代码的去给客户整理需求么？”</li>
+<li>“我是C++程序员，我是做底层开发的啊，这种页面样式的问题我怎么可能懂？”</li>
+<li>“这是维优人员关注的线上数据，他应该把日志、错误现象全部备齐了再提交问题给开发。”</li>
+<li>“这是他的模块，把问题提给他来处理。”</li>
+<li>……</li>
+</ul>
+<p>这些是我下面要反驳的一些做法，你有没有中枪的？</p>
+<p>事实上，我已经在很多篇文章里（比如<a href="http://www.raychase.net/367">这篇文章</a>）阐述了这样的观点：程序员要多能。很多情况下，优秀的程序员一个人就可以搞定一切。</p>
+<p>但是如果我直接把我的观点扔上来，可能不会遭到很多的质疑。我们的教育一直都讲究“做一行，爱一行”，明确哪些事是自己应该管的，哪些事是别人的，切勿指手画脚。因此，即便有的人暂时赞同了我的看法，却只似雁过留痕而已，在实际学习工作中，依然不容易扭转这样的观念。</p>
+<p>所以我摆出这样的几个场景，有异议、有争论是好事。</p>
+<p><strong>程序员替代不了美工吗？</strong>
+</p>
+<p>有人反驳我，说：“如果程序员可以替代美工，可以替代UI设计师，那还要专门设置这些职位干什么？”</p>
+<p>说得好。程序员当然可以做美工的工作，但是程序员不能取代他们，这里至少有两个原因：</p>
+<ol><li>多数程序员并不具备美工的专业技巧和丰富的UI经验，换言之，无法如他们那样精通界面设计；</li>
+<li>出色的美工需要有非常优秀的审美，这需要审美天赋，也是大多数程序员不具备的。</li>
+</ol>
+<p>但是——</p>
+<ul><li>程序员可以用PS切图吗？可以。</li>
+<li>程序员可以设计CSS和HTML界面吗？可以。</li>
+<li>程序员可以设计UI吗？当然可以，而且往往清晰、简洁，组件复用性好。</li>
+</ul>
+<p>美工，只是一个特例而已。你可以把它套到各种相关工种名称上，比如测试。有这样一篇文章<a href="http://coolshell.cn/articles/6994.html">《我们需要专职的QA吗？》</a>，答案当然可以不是非黑即白的，可这需要放下成见，我想，你会有自己的思考。</p>
+<p><strong>请不要忽视工具的威力</strong>
+</p>
+<p>工具的威力有多大？想想Bootstrap，可以让一个对CSS和JavaScript只是略懂的人，就可以做出非常简洁美观的界面来；再比如<a href="http://www.raychase.net/652">这篇文章</a>，谁说程序员不能做运维？当工具足够强大，运维并没有那么困难。</p>
+<p>在工具降低重复劳动和降低门槛的时候，真正精通的专家都去开发工具了。正所谓“授之以鱼，不如授之以渔”，但这句话有个特例，如果对方是程序员，那么这两者都不用，还是给他开发一个自动捕鱼工具吧。</p>
+<p><strong>小团队和简单流程</strong>
+</p>
+<p>小团队也好，简单流程也好，就是要让沟通成本尽可能小，容易保持对话交流这种高效的方式。在享受这样的好处的时候，“专才”可以吸引你的眼球，但是“通才”却是一个必不可少的要求。</p>
+<p>对一支创业团队来说尤为如此。小团队让一个创意可以快速得到实施，但是你没有太多钱和精力，谁负责宣传？谁负责约见客户？谁负责上线？谁负责响应投诉？……你需要多面手而不是技能单一的专家。</p>
+<p><strong>一专多能</strong>
+</p>
+<p>多面手并不阻碍你成为某一领域的专家。深度和广度往往是相伴而行的，很难想象一名优秀的DBA不懂操作系统底层的知识；也不可能见到出色的“前端工程师”却只会写JavaScript客户端脚本语言。毕竟问题不可能非常单纯，总是牵一发而动全身的，唯有了解的东西多了，才能够去更好地认识自己最擅长和熟知的领域。</p>
+<p>事实上，一专多能已经成为了潮流。在足球领域，现代足球的发展造就了多样化的角色，为这些角色使用了独立的词语，以前锋为例，就有Poacher（抢点型）、Trequartista（9号半）和Target Man（站桩中锋）等等。</p>
+<p><strong>多走一步</strong>
+</p>
+<p>我的同事在定位问题的时候，如果发现不是我们自己的问题，而是别的产品引发的问题（由别的团队维护），都已经形成这样的习惯：尝试花少量的代价去定位一下问题的所在。这其中，我们经常会去阅读对方的产品的代码。有人觉得不可思议，你去读别的产品的代码？其实听起来恐怖，可多数情况下做起来却没有那么困难。至少，你可以把你的调查分析结果给目标团队，了解别的产品和阅读别的产品的代码，对于扩大视野还是有助益的。</p>
+<p>在模块划分上亦如此，不要把模块的责任划分得那么清晰，谁都有查看、修改代码的权利和义务。</p>
+<p>多走一步还表现在团队中非设计编码的其它事务上，程序员应当尝试做各种各样的事情。比如招聘——招来的人是要和你每天在一起工作的好伙伴、好基友，这是事关你切身利益的大事，如果让别人去决定你的团队要安插什么样的人，这谈何合理呢？</p>
+<p>有的人甚爱搞科研，这些人叫做研究员、科学家；有的人擅长做工程，这些人才是工程师。做工程就是要解决实际的问题，于是你不可避免地接触到形形色色的领域和现象。SDE不只是Software Development Engineer，同时更是Someone Do Everything。</p>
+<p><strong>文章系本人原创，转载请保持完整性并注明出自<a href="http://www.raychase.net/1132">《四火的唠叨》</a></strong>
+</p>
+<div>分享到：<a href="http://www.raychase.net//javascript:void(0);" title="分享到新浪"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到腾讯微博"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到QQ空间"></a><a href="javascript:void(0);" title="分享到Google Reader"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到人人网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到豆瓣"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到鲜果"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到开心"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到Follow5"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到同学网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到嘀咕"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到饭否"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到做啥"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到百度收藏"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到twitter"></a><a href="http://www.raychase.net//javascript:void(0);" title="添加到收藏夹"></a></div>
+<div>你可能也喜欢：</div>
+<ul><li><a href="http://www.raychase.net/1040" title="我们到底要怎样招程序员？"><img src="http://www.raychase.net/wp-content/uploads/2012/11/hire-150x150.jpg" alt="多面手程序员"></a><a href="http://www.raychase.net/1040" title="我们到底要怎样招程序员？">我们到底要怎样招程序员？</a></li>
+<li><a href="http://www.raychase.net/962" title="程序员漫画"><img src="http://www.raychase.net/wp-content/uploads/2012/10/wtf-150x150.jpg" alt="多面手程序员"></a><a href="http://www.raychase.net/962" title="程序员漫画">程序员漫画</a></li>
+<li><a href="http://www.raychase.net/924" title="C++程序员和Java程序员的差异"><img src="http://www.raychase.net/wp-content/uploads/2012/10/C_Java-150x150.jpg" alt="多面手程序员"></a><a href="http://www.raychase.net/924" title="C++程序员和Java程序员的差异">C++程序员和Java程序员的差异</a></li>
+<li><a href="http://www.raychase.net/807" title="编程的未来"><img src="http://www.raychase.net/wp-content/uploads/2012/10/13-150x150.jpg" alt="多面手程序员"></a><a href="http://www.raychase.net/807" title="编程的未来">编程的未来</a></li>
+<li><a href="http://www.raychase.net/707" title="致那些自嘲码农的苦逼程序员"><img src="http://www.raychase.net/wp-content/uploads/2012/09/1-150x150.jpg" alt="多面手程序员"></a><a href="http://www.raychase.net/707" title="致那些自嘲码农的苦逼程序员">致那些自嘲码农的苦逼程序员</a></li>
+</ul>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8944.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8944.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">4</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8944.html#reviews">评论: 4</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

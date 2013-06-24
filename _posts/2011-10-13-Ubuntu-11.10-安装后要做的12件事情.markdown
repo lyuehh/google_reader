@@ -1,0 +1,128 @@
+---
+layout: post
+title:  "Ubuntu 11.10 安装后要做的12件事情"
+date:   2011-10-13 14:58:21
+author: tuhaihe
+categories: program
+---
+
+## Ubuntu 11.10 安装后要做的12件事情
+### by tuhaihe
+### at 2011-10-13 14:58:21
+### original <http://www.bentutu.com/2011/10/ubuntu-11-10-%e5%ae%89%e8%a3%85%e5%90%8e%e8%a6%81%e5%81%9a%e7%9a%8412%e4%bb%b6%e4%ba%8b%e6%83%85/>
+
+<p>
+<div>
+<a></a><a></a><a></a><a></a><a href="http://www.jiathis.com/share/"></a><a></a>
+</div>
+<p><br>
+Ubuntu 11.10 在10月13日发布。Ubuntu有很多变化，我们不再赘述。除去《Ubuntu 11.10 专题总结》外，本文又总结了《Ubuntu 11.10 安装后要做的12件事情》。希望对各位有所指导帮助。</p>
+<p>（“Ubuntu ＊＊安装后要做的＊＊件事情”几乎成了Ubuntu每次发布的惯例。原因在Ubuntu的流行，吸引人们不断折腾）<br>
+<span></span><br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/thingstodo_after_installing_ubuntu_oneric.png"><img title="thingstodo_after_installing_ubuntu_oneric" src="http://www.bentutu.com/wp-content/uploads/2011/10/thingstodo_after_installing_ubuntu_oneric-300x175.png" alt="" width="300" height="175"></a></p>
+<h3>#1，安装Restricted Extras</h3>
+<p>从Ubuntu 11.04 版本开始，我们就可以在Ubuntu安装过程中安装一些编码包，如Adobe Flash\MP3等等。（但是必须连接网络，如果网速很慢，这回延长安装时间，建议直接下一步）<br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/Screenshot.png"><img title="Screenshot" src="http://www.bentutu.com/wp-content/uploads/2011/10/Screenshot-300x225.png" alt="" width="300" height="225"></a></p>
+<h3>#2，升级软件源</h3>
+<p>安装Ubuntu 11.10后，第一件事情就是更新软件列表。打开终端（快捷键：Ctrl+Alt+T）：</p>
+<pre>sudo apt-get update &amp;&amp; sudo apt-get upgrade</pre>
+<h3>#3，安装Ubuntu Restricted Extras</h3>
+<p>安装Ubuntu Restricted Extras软件包后，我们就可以播放mp3,avi,Flash等了。</p>
+<p>直接输入命令：</p>
+<pre>sudo apt-get install ubuntu-restricted-extras</pre>
+<h3>#4，支持DVD播放</h3>
+<p>第#3步可以解决大部分问题，但是要支持DVD播放，还需要安装：libdvdcss2:</p>
+<pre>sudo wget --output-document=/etc/apt/sources.list.d/medibuntu.list http://www.medibuntu.org/sources.list.d/$(lsb_release -cs).list &amp;&amp; sudo apt-get --quiet update &amp;&amp; sudo apt-get --yes --quiet --allow-unauthenticated install medibuntu-keyring &amp;&amp; sudo apt-get --quiet update
+sudo apt-get install libdvdcss2</pre>
+<h3>#5，升级显卡驱动</h3>
+<p>在Unity搜索“附件驱动”，打开，激活推荐驱动即可。<br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/drivers_ubuntu1110.png"><img title="drivers_ubuntu1110" src="http://www.bentutu.com/wp-content/uploads/2011/10/drivers_ubuntu1110-300x280.png" alt="" width="300" height="280"></a></p>
+<h3>#6，安装CCSM</h3>
+<p>安装CCSM，可以启动Ubuntu 桌面特效和3D加速效果。</p>
+<p>命令：</p>
+<pre>sudo apt-get install compizconfig-settings-manager</pre>
+<h3>#7，Unity 快捷键操作</h3>
+<p>徽标键：打开Dash面板；<br>
+长按徽标键，唤醒启动器；<br>
+Alt+F1,从Unity启动器启动程序；<br>
+Alt+F2,打开Dash面板，输入命令；<br>
+Super+F:打开文件／文件夹；<br>
+更多点击此图片：<a href="http://lh3.googleusercontent.com/_1QSDkzYY2vc/TbVnyAUtG3I/AAAAAAAAEGo/xbI3PnYNEkw/cbjs0.resized.png">http://lh3.googleusercontent.com/_1QSDkzYY2vc/TbVnyAUtG3I/AAAAAAAAEGo/xbI3PnYNEkw/cbjs0.resized.png</a></p>
+<h3>#8，设置Unity 顶部面板透明：</h3>
+<p>启动CCSM（徽标键+a，搜索ccsm），点击启动，选择“Ubuntu Unity 插件”，依次打开“Experimental tab—Panel Opacity”，即可设定透明度。<br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/Screenshot-2.png"><img title="Screenshot-2" src="http://www.bentutu.com/wp-content/uploads/2011/10/Screenshot-2-300x190.png" alt="" width="300" height="190"></a></p>
+<p>同时，我们可以设置“Launcher Icon size”,即启动器上图标大小。</p>
+<h3>#9，设定桌面大小</h3>
+<p>徽标键+S，显示工作窗口。还是启动CCSM，在”常规选项”,”桌面尺寸”标签下，即可设定值。<br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/unity_workspaces.png"><img title="unity_workspaces" src="http://www.bentutu.com/wp-content/uploads/2011/10/unity_workspaces-300x175.png" alt="" width="300" height="175"></a></p>
+<h3>#10，在Unity启动器上添加快捷方式（Quicklist）</h3>
+<p><a href="http://www.bentutu.com/wp-content/uploads/2011/10/Unity_quicklists.png"><img title="Unity_quicklists" src="http://www.bentutu.com/wp-content/uploads/2011/10/Unity_quicklists-271x300.png" alt="" width="271" height="300"></a></p>
+<p>快捷方式（Quicklist）是Ubuntu 11.10 一个默认功能。具体设定参考文章<a href="http://www.bentutu.com/2011/05/top-6-quicklists-for-ubuntu-natty/">Ubuntu 11.04 Unity所需的6个快捷列表<br>
+</a></p>
+<h3>#11，启用Unity Grab 功能</h3>
+<p>Unity Grab可用于调整窗口大小，尤其对触摸屏设备特别有帮助。</p>
+<p>还是启动CCSM，找到Png，选中，然后在“未分类”中选中“Unity MT Grab Handles”，点击选项，开启，选择快捷键设定即可。</p>
+<p>效果如下：<br>
+<a href="http://www.bentutu.com/wp-content/uploads/2011/10/unity_grab_handles.png"><img title="unity_grab_handles" src="http://www.bentutu.com/wp-content/uploads/2011/10/unity_grab_handles-300x212.png" alt="" width="300" height="212"></a></p>
+<h3>#12，安装插件扩展</h3>
+<p>如ClassicMenu Indicator等等，具体参考下面文章。<br>
+推荐文章：<a href="http://www.bentutu.com/2011/06/10-applets-in-ubuntu-11-04-natty/">Ubuntu 11.04流行的10款应用插件</a></p>
+<p><span style="color:#800000"><strong>推荐专题阅读：<a href="http://www.bentutu.com/2011/10/ubuntu-11-10-post/"><span style="color:#800000">Ubuntu 11.10 专题总结(更新)</span></a></strong></span></p>
+<p>-本文写作<a href="http://www.techdrivein.com/2011/10/15-things-i-did-after-installing-new.html">参考</a>来源</p>
+<p><strong>声明：</strong>笨兔兔原创文章，博客文章遵循<a href="http://cn.creativecommons.org/licenses/meet-the-licenses/">CC协议</a>，转载需注明@<a href="http://www.bentutu.com/">笨兔兔</a>，本文<a href="http://www.bentutu.com/2011/10/ubuntu-11-10-%e5%ae%89%e8%a3%85%e5%90%8e%e8%a6%81%e5%81%9a%e7%9a%8412%e4%bb%b6%e4%ba%8b%e6%83%85/">链接地址</a></p>
+<p><a href="http://www.bentutu.com/upost/">文稿投递|文章写作规范</a>|<small>欢迎加入<span style="color:rgb(0,128,0)">QQ群:121584708（此群已满）；2群：170591351；Gtalk群:ibentutu@roomchinese.appspotchat.com</span></small></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-ppa-install-gnome-3-e%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585%25E5%2590%258E%25E8%25A6%2581%25E5%2581%259A%25E7%259A%258412%25E4%25BB%25B6%25E4%25BA%258B%25E6%2583%2585%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Ubuntu 11.10  PPA安装GNOME 3 扩展</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585mediubuntu-faenza%25E5%259B%25BE%25E6%25A0%2587%25E4%25B8%25BB%25E9%25A2%2598%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585%25E5%2590%258E%25E8%25A6%2581%25E5%2581%259A%25E7%259A%258412%25E4%25BB%25B6%25E4%25BA%258B%25E6%2583%2585%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Ubuntu 11.10 安装Mediubuntu &amp; Faenza图标主题</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-04-ppa-install-libreoffice-3-4-3%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585%25E5%2590%258E%25E8%25A6%2581%25E5%2581%259A%25E7%259A%258412%25E4%25BB%25B6%25E4%25BA%258B%25E6%2583%2585%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Ubuntu 11.04 PPA安装LibreOffice 3.4.3</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F06%2Finstall-firefox-5-in-ubuntu-11-04%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585%25E5%2590%258E%25E8%25A6%2581%25E5%2581%259A%25E7%259A%258412%25E4%25BB%25B6%25E4%25BA%258B%25E6%2583%2585%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Ubuntu 11.04安装FF5</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F04%2F20-top-things-to-do-after-installing-ubuntu-1104-natty%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2011%2F10%2Fubuntu-11-10-%25E5%25AE%2589%25E8%25A3%2585%25E5%2590%258E%25E8%25A6%2581%25E5%2581%259A%25E7%259A%258412%25E4%25BB%25B6%25E4%25BA%258B%25E6%2583%2585%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Ubuntu 11.04 安装后要做的20件事情</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></p>

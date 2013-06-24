@@ -1,0 +1,103 @@
+---
+layout: post
+title:  "为什么我希望用C而不是C++来实现ZeroMQ（第二篇）"
+date:   2012-09-03 03:03:05
+author: 
+categories: program
+---
+
+## 为什么我希望用C而不是C++来实现ZeroMQ（第二篇）
+### by 
+### at 2012-09-03 03:03:05
+### original <http://blog.jobbole.com/26314/?utm_source=rss&utm_medium=rss&utm_campaign=%25e4%25b8%25ba%25e4%25bb%2580%25e4%25b9%2588%25e6%2588%2591%25e5%25b8%258c%25e6%259c%259b%25e7%2594%25a8c%25e8%2580%258c%25e4%25b8%258d%25e6%2598%25afc%25e6%259d%25a5%25e5%25ae%259e%25e7%258e%25b0zeromq%25ef%25bc%2588part-2%25ef%25bc%2589>
+
+<p><strong>译注</strong>：这篇文章可能又会引起 C++ <span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span>的诸多不适，就作者本文所描述的问题来看，某些“C++的问题”其实是可以有C++的解决方案的。请参阅<a href="http://boost-sandbox.sourceforge.net/doc/html/intrusive/intrusive_vs_nontrusive.html">侵入式和非侵入式容器</a>。但是考虑到ZeroMQ是一个很底层的高性能网络库（ZeroMQ的目标是纳入Linux内核中，这也应该是改用C的一大原因，毕竟目前的ZeroMQ是用C++实现的），对错误处理、内存分配次数、并发效率等有着极高的要求，这些特定的限制往往不是所有的C++程序员所常见的应用场景。因此希望各位在阅读时能多从作者的角度来考虑这些问题，而不是一味地批判作者的C++编程实践能力。</p>
+<p>在<span style="color:#0000ff"><strong><a title="为什么我希望用C而不是C++来实现ZeroMQ" href="http://blog.jobbole.com/19647/"><span style="color:#0000ff">上一篇</span></a></strong></span>博文中，我已经讨论过了在需要进行严格错误处理的系统底层基础架构的开发中需要避免使用一些C++特性（异常、构造函数、析构函数）。我的结论是，当为C++加上了这样的使用限制后，用C来实现的话会使得代码更简短也更容易阅读。这么做的副作用是消除了对C++运行时库的依赖，而这不应该轻易地去掉，尤其是在嵌入式环境下。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/05/ZeroMQ.jpg" rel="lightbox[26314]" title="ZeroMQ"><img title="ZeroMQ" src="http://blog.jobbole.com/wp-content/uploads/2012/05/ZeroMQ.jpg" alt="" width="300" height="225"></a></p>
+<p>在这一篇博文中，我想从另一个不同的角度来探究这个问题。即：使用C++和C相比，在性能上有什么区别？理论上，这两种语言产生的程序性能应该是相同的。面向对象只不过是在过程式语言之上的语法糖而已，这使得代码对人类而言更加容易理解。人类大脑似乎已经进化为一种自然的能力来处理以流程，关系等这类实体为主的对象。</p>
+<p>每个C++程序都能自动转换为等同的C程序——尽管这种说法理论上成立——但面向对象的观念使得开发者以特定的方式来思考并相应地以面向对象的方式来设计他们的算法和数据结构，而这反过来会对程序性能带来影响。</p>
+<p>让我们来比较一下，C++程序员要如何实现对象链表：</p>
+<p><span style="color:#888888"><em>注：假设包含在链表中的对象是不可赋值（non-assignable）的，因为这种情况下任何非简单的对象，比如持有大量内存缓冲区，文件描述符，句柄等这样的对象，如果对象是可赋值的，那么简单地使用std::list&lt;person&gt;就够用了，不会有任何问题。</em></span></p>
+<pre>class person
+{
+    int age;
+    int weight;
+};
+std::list &lt;person*&gt;</pre>
+<p>C程序员更倾向于按照如下的方式解决同样的问题：</p>
+<pre>struct person
+{
+    struct person *prev;
+    struct person *next;
+    int age;
+    int weight;
+};
+
+struct
+{
+    struct person *first;
+    struct person *last;
+}people;</pre>
+<p>现在，让我们比较一下两种解决方案的内存模型：</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/cpp1.jpg" rel="lightbox[26314]" title="cpp1"><img title="cpp1" src="http://blog.jobbole.com/wp-content/uploads/2012/09/cpp1.jpg" alt="" width="322" height="544"></a></p>
+<p>首先注意到的是C++的解决方案对比C来说多分配了2倍的内存块。针对链表中的每个元素，都要创建一个小的帮助对象。当程序中有许多容器时，这些帮助对象的总数就会扩散开来。比如，在ZeroMQ中创建和连接一个socket将导致数十次内存分配。而在我当前正在做的C版本中，创建一个socket只需要一次内存分配，连接时会再需要一次。</p>
+<p>很明显，内存分配的次数会引起性能问题。分配内存所花费的时间可能是无关紧要的——在ZeroMQ中，这并不是关键路径（请参阅关于ZeroMQ中<a href="http://www.ituring.com.cn/article/4669">关键路径</a>的分析）——但是，内存使用量以及内存碎片带来的问题就非常重要了。这直接影响到CPU缓存是如何填充的，以及由此带来的缓存miss率。回顾一下，到目前为止对物理内存的访问是现代计算机上最慢的操作，这样就知道这种性能影响会有多严重了。</p>
+<p>当然，这还没完呢。</p>
+<p>实现方案的选择对算法的复杂度有着直接的影响。在C++版中，从链表中移除一个对象是O(n)的复杂度：</p>
+<pre>void erase_person(person *ptr)
+{
+    for (std::list &lt;person*&gt;::iterator it = people.begin();
+            it != people.end(); it++)
+    {
+        if (*it == ptr)
+            people.erase(it);
+    }
+}</pre>
+<p>在C版本中，可以确保在常数时间内完成（简化版）：</p>
+<pre>void erase_person(struct person *ptr)
+{
+    ptr-&gt;next-&gt;prev = ptr-&gt;prev;
+    ptr-&gt;prev-&gt;next = ptr-&gt;next;
+    ptr-&gt;next = NULL;
+    ptr-&gt;prev = NULL;
+}</pre>
+<p>C++版本效率的低下是由于std::list的实现所致还是由于面向对象的编程范式所致呢？让我们深入的探究这个问题。</p>
+<p>C++程序员不会以C的方式来设计链表的真正原因是因为这种设计破坏了封装的原则：“person”类的实现者必须要知道person的实例最终会存储到“people”链表中。此外，如果第三方开发者决定将其存储到另外一个链表中时，就必须修改person的实现。这正是奉行面向对象编程的程序员所极力避免的。</p>
+<p>但是，如果我们不把prev和next指针放在person类内部，我们就必须把它们放置在别的地方。所以，除了多分配一个帮助对象外没有别的办法了，这正是std::list&lt;&gt;所采用的做法。</p>
+<p>此外，虽然帮助对象中包含有指向“person”对象的指针，但“person”对象却不能包含有指向帮助对象的指针。如果这么做了，那就破坏了封装的原则——“person”就必须知道包含自己的容器。结果就是，我们可以将指向帮助对象（迭代器iterator）的指针转型为指向“person”，但反过来却不可以。这就是为什么从std::list&lt;&gt;中移除一个元素需要遍历整个链表，换句话说，这就是为什么需要O(n)的复杂度。</p>
+<p>简单来说，如果我们遵从面向对象的编程范式，我们就无法实现一个所有操作都是O(1)的链表。如果要那么做就必须破坏封装的原则。</p>
+<p><span style="color:#888888"><em>注：很多人都指出应该使用迭代器而不是指针。但是，假设某个对象需要被包含在10个不同的链表中。你将不得不传递一个包含10个迭代器的结构体，而不是只传一个指针。此外，这并没有解决封装的问题，只是把问题移到了别处而已。当你希望将对象添加到一个新的容器类型中时，虽然你不用修改“person”的实现了，但你仍然不得不去修改包含迭代器的结构体。</em></span></p>
+<p>这应该就是本文的结论了。但是这个主题实在太有意思了，我还想再问一个问题：这种低效到底是源于面向对象的设计还是说只是特定于C++语言呢？我们能否设想以一种面向对象的<span><a href="http://blog.jobbole.com/tag/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" title="如何选择语言和编程语言排名相关文章">编程语言</a></span>来实现所有相关操作都为O(1)复杂度的链表呢？</p>
+<p>要回答这个问题我们必须理解问题的根本。而这个问题来自对术语“对象”的定义。在C++中“class”只是对C语言中“struct”的代名词，这两个关键字几乎可以互换使用。言下之意是指“对象”是一系列存储在连续内存空间中的数据集合。</p>
+<p>这对于C++程序员来说是想都不用想的问题。但是让我们从不同的角度来分析“对象”。</p>
+<p>我们说对象是一系列逻辑上相关联的数据的集合，在多线程程序中应该处于同一个临界区中受到保护。这一定义从根本上改变了我们对程序架构的理解。下面这张图展示了C语言版的person/people程序，并标识出了数据域应该由一个链表级的临界区（黄色部分），还是由元素级的临界区（绿色部分）来保护。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/cpp2.jpg" rel="lightbox[26314]" title="cpp2"><img title="cpp2" src="http://blog.jobbole.com/wp-content/uploads/2012/09/cpp2.jpg" alt="" width="422" height="262"></a></p>
+<p>从面向对象的角度来看，这张图实在太诡异。“people”对象不仅包含有“people”结构体内的字段，还包含有“person”结构体中的一些域（“prev”和“next”指针）。</p>
+<p>但是出人意料的是，从技术角度来看这种分解却十分有道理：</p>
+<p>1.  链表级的临界区保护着黄色部分的字段，这确保了链表的一致性。另一方面，链表级的临界区并没有对绿色部分的字段进行保护（“age”和“weight”），因此      允许对单独的数据进行修改而不必锁住整个链表。</p>
+<p>2.  黄色部分的字段应该只能由“people”类的方法来访问，尽管从内存布局上来看它们都是属于“person”结构体的。</p>
+<p>3.  如果编程语言允许我们在“people”类的内部声明黄色部分的字段，那么封装的原则就不会被打破。换句话说，将“person”添加到其它链表中时就不需要         对“person”类的定义进行修改。</p>
+<p>最后，让我们做一个概念性的实验，采用上述思想来扩展C++。请注意，我们的目标不是为了提供一种完美的语言扩展设计，更多的是为了展示在C++中实现这种思想的可能性。</p>
+<p>也就是说，让我引入一种“private in X”的语法结构。它可以使用在类定义中，遵循“private in X”形式的数据成员在物理上（作者指的是按内存布局来看）属于结构体X的一部分，但是它们只能由被定义的类来访问：</p>
+<pre>class person
+{
+public:
+    int age;
+    int weight;
+};</pre>
+<pre>class people
+{
+private:
+    person *first;
+    person *last;
+private in person:
+    person *prev;
+    person *next;
+};</pre>
+<p>我的结论是，如果ZeroMQ用C来实现的话，内存分配将更少，产生的内存碎片也更少。一些算法的复杂度将达到O(1)，而不是O(n)或者O(logn)。</p>
+<p>效率低下的问题不在于ZeroMQ的代码本身，也不是面向对象编程的固有缺陷，更多的是在于C++语言的设计上。当然，公平的说C++并不是唯一，同样的问题也存在于大多数——如果不是全部的话——面向对象编程语言中。</p>
+<p> </p>
+<p>英文原文：<a href="http://www.250bpm.com/blog:8">martin_sustrik</a>      编译：<a href="http://www.jobbole.com/">伯乐</a>在线— <a href="http://blog.jobbole.com/26314/">陈舸</a></p>
+<p><span style="color:#ff0000">【如需转载，请标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+<p> </p>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/19647/" title="为什么我希望用C而不是C++来实现ZeroMQ">为什么我希望用C而不是C++来实现ZeroMQ</a></li><li><a href="http://blog.jobbole.com/25428/" title="C++ Primer第五版之二：语言修订对写作策略的影响">C++ Primer第五版之二：语言修订对写作策略的影响</a></li><li><a href="http://blog.jobbole.com/25300/" title="C++11各编译器支持情况对比">C++11各编译器支持情况对比</a></li><li><a href="http://blog.jobbole.com/25199/" title="C++ Primer第五版之一：如何修订原书">C++ Primer第五版之一：如何修订原书</a></li><li><a href="http://blog.jobbole.com/24997/" title="C++多进程并发框架">C++多进程并发框架</a></li><li><a href="http://blog.jobbole.com/24892/" title="陈皓：C++的坑真的多吗？">陈皓：C++的坑真的多吗？</a></li><li><a href="http://blog.jobbole.com/24641/" title="Effective C++：面向对象与继承">Effective C++：面向对象与继承</a></li><li><a href="http://blog.jobbole.com/24372/" title="卡马克：用C++进行函数式编程">卡马克：用C++进行函数式编程</a></li><li><a href="http://blog.jobbole.com/24306/" title="Effective C++：类与函数的设计和申明">Effective C++：类与函数的设计和申明</a></li><li><a href="http://blog.jobbole.com/24227/" title="Effective C++：构造函数析构函数Assignment运算符">Effective C++：构造函数析构函数Assignment运算符</a></li></ul>

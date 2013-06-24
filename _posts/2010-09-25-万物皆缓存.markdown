@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "万物皆缓存"
+date:   2010-09-25 22:08:30
+author: 枯藤昏鸦
+categories: program
+---
+
+## 万物皆缓存
+### by 枯藤昏鸦
+### at 2010-09-25 22:08:30
+### original <http://ioio.name/cache-everything.html>
+
+<p>浏览器缓存很重要，与缓存相关的几个头信息：</p>
+<ul>
+<li>ETag 与 If-None-Match</li>
+<li>Last-Modified 与 If-Modified-Since</li>
+<li>Cache-Control</li>
+<li>Expires</li>
+</ul>
+<p>ETag是用在向服务器GET请求的时候判断文件是否过期。<br>
+而Expires是用来判断本地缓存的组件是否过期。<br>
+Etag 和 If-Modified-Since 均是用来判断服务器端的文件是否过期。<br>
+如果页面已经缓存，当页面刷新（F5）的时候浏览器不会向服务器GET请求。<br>
+如果页面（Ctrl+F5）的时候浏览器会向服务器发起询问，If-Modified-Since提交本地记录的组件的日期给服务器，如果服务器查询组件未做修改，那么返回304(Not Modified)，如果服务器端文件有做修改那么服务器会返回新的组件给客户端。<br>
+Expires 和 Cache-Control用来判断本地电脑中的缓存文件是否过期。</p>
+<p>通常的页面访问中，如果是访问一个全新的页面那么ETag，Expires的作用如下：<br>
+第一次访问服务器会将ETag和Expires发送给浏览器。<br>
+再次访问浏览器会根据缓存来加载组件，此时如果有缓存的就不发起HTTP请求。如果本地有缓存但是依旧强制向服务器提交组件的GET请求，那么ETag就会派上用场。</p>
+<p><strong>Cache-Control 比 Expires 有更高的优先级。<br>
+If-None-Match（ETag）比 If-Modified-Since（Last-Modified）有更高的优先级。</strong><br>
+-EOF-</p>
+<hr><h2>Related posts:</h2><ul><li><a href="http://ioio.name/iis-cache.html" rel="bookmark" title="Permanent Link: IIS 缓存问题">IIS 缓存问题</a></li><li><a href="http://ioio.name/ubuntu-fonts-install.html" rel="bookmark" title="Permanent Link: Ubuntu 下字体的安装">Ubuntu 下字体的安装</a></li></ul><hr><small>Copyright © 2005~2009 | <a href="http://ioio.name/cache-everything.html" title="Permalink">Permalink</a> | <a href="http://ioio.name/cache-everything.html#comments">0 Comments</a> | <a href="http://closetou.com" title="Close To U">Close To U</a> <br>
+<a href="http://feeds.feedburner.com/miss">订阅</a> <a href="https://twitter.com/tearnon">Twitter</a> <a href="http://ioio.name/godaddy">域名优惠码</a> <a href="http://ioio.name/mt">Media Temple空间</a>
+<a href="http://shortener.ioio.name/">Google URL Shortener</a> 
+<a href="http://750m.com/">Hot Topics New!</a>
+<a href="http://affiliate.godaddy.com/redirect/3FA34877354E42FE78E82878FE3CAE7C45E1074DB489803F8705676166D4FFE0" title="Domain Sale! $6.89 .com at GoDaddy">Domain Sale! $6.89 .com at GoDaddy</a>
+</small> )

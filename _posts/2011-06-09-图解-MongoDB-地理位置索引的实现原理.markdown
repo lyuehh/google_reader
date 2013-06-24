@@ -1,0 +1,92 @@
+---
+layout: post
+title:  "图解 MongoDB 地理位置索引的实现原理"
+date:   2011-06-09 10:51:35
+author: nosqlfan
+categories: program
+---
+
+## 图解 MongoDB 地理位置索引的实现原理
+### by nosqlfan
+### at 2011-06-09 10:51:35
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/520805250/6253001/1/item.html>
+
+<p><a href="http://www.mongodb.org/display/DOCS/Geospatial+Indexing">地理位置索引</a>支持是MongoDB的一大亮点，这也是全球最流行的LBS服务foursquare 选择MongoDB的原因之一。我们知道，通常的数据库索引结构是B+ Tree，如何将地理位置转化为可建立B+Tree的形式，下文将为你描述。</p>
+<p>首先假设我们将需要索引的整个地图分成16×16的方格，如下图（左下角为坐标0,0 右上角为坐标16,16）：</p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map1.png"><img title="map1" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map1.png" alt="" width="300" height="300"></a></p>
+<p>单纯的［x，y］的数据是无法建立索引的，所以MongoDB在建立索引的时候，会根据相应字段的坐标计算一个可以用来做索引的hash值，这个值叫做geohash，下面我们以地图上坐标为［4，6］的点（图中红叉位置）为例。</p>
+<p>我们第一步将整个地图分成等大小的四块，如下图：</p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map2.png"><img title="map2" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map2.png" alt="" width="300" height="300"></a></p>
+<p>划分成四块后我们可以定义这四块的值，如下（左下为00，左上为01，右下为10，右上为11）：</p>
+<table border="1">
+<tbody>
+<tr>
+<td>01</td>
+<td>11</td>
+</tr>
+<tr>
+<td>00</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>这样［4，6］点的geohash值目前为 00</p>
+<p>然后再将四个小块每一块进行切割，如下：</p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map3.png"><img title="map3" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map3.png" alt="" width="300" height="300"></a></p>
+<p>这时［4，6］点位于右上区域，右上的值为11，这样［4，6］点的geohash值变为：0011</p>
+<p>继续往下做两次切分：</p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map4.png"><img title="map4" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map4.png" alt="" width="300" height="300"></a></p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map5.png"><img title="map5" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/map5.png" alt="" width="300" height="300"></a></p>
+<p>最终得到［4，6］点的geohash值为：00110100</p>
+<p>这样我们用这个值来做索引，则地图上点相近的点就可以转化成有相同前缀的geohash值了。</p>
+<p>我们可以看到，这个geohash值的精确度是与划分地图的次数成正比的，上例对地图划分了四次。而MongoDB默认是进行26次划分，这个值在建立索引时是可控的。具体建立二维地理位置索引的命令如下：</p>
+<pre lang="shell">db.map.ensureIndex({point : "2d"}, {min : 0, max : 16, bits : 4})</pre>
+<p>其中的bits参数就是划分几次，默认为26次。</p>
+<p>相关链接：<a href="http://www.snailinaturtleneck.com/blog/2011/06/08/mongo-in-flatland/">Mongo in Flatland</a></p>
+<p style="font-weight:bold">觉得文章还不错？快分享给更多的人吧！<a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html&amp;text=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKEJk/ga3Zw.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html" title="新浪微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKrzm/b6giQ.png"></a><a href="http://v.t.qq.com/share/share.php?title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html" title="腾讯微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJX6o/HMY8k.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html" title="QQ空间" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJSKI/6hVj7.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html&amp;title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJrri/SB2B.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html&amp;title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJ4v4/3CHaH.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html" title="人人网" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVI86k/1yDki.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html&amp;title=%E5%9B%BE%E8%A7%A3%20MongoDB%20%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AE%E7%B4%A2%E5%BC%95%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%20@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVHr67/ftAKQ.png"></a><table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能还喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="mongodb GridFS 介绍" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F406.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/10/11640413.jpg" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">mongodb GridFS 介绍</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="在OpenShift云服务上架构MongoDB应用" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1853.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/10/11643742.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">在OpenShift云服务上架构MongoDB应用</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="foursquare 的数据分析系统（Hadoop+Hive+Redis+MongoDB）" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1466.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11639351.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">foursquare 的数据分析系统（Hadoop+Hive+Redis+MongoDB）</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="从MySQL到MongoDB(添加MongoDB循环插入数据方法)" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F287.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11641035.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">从MySQL到MongoDB(添加MongoDB循环插入数据方法)</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB 文档阅读笔记 —— 优雅的 NoSQL" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1369.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1811.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11640641.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB 文档阅读笔记 —— 优雅的 NoSQL</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/520805250/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/520805250/6253001/1/item.html" border="0" height="0" width="0"></p>

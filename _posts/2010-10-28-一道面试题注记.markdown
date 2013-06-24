@@ -1,0 +1,131 @@
+---
+layout: post
+title:  "一道面试题注记"
+date:   2010-10-28 00:59:16
+author: boyan
+categories: program
+---
+
+## 一道面试题注记
+### by boyan
+### at 2010-10-28 00:59:16
+### original <http://rdc.taobao.com/team/jm/archives/430>
+
+<p>    javaeye的一个帖子介绍<a href="http://www.javaeye.com/topic/795101">一道面试题</a>，取数组的最大元素和前n个大元素，取最大元素很简单，遍历即可。取前N大元素，可以利用排序，最简单的实现：</p>
+<pre>
+    public static int[] findTopNValues(int[] anyOldOrderValues, int n) {
+        Arrays.sort(anyOldOrderValues);
+        int[] result = new int[n];
+        System.arraycopy(anyOldOrderValues, anyOldOrderValues.length - n,
+                result, 0, n);
+        return result;
+    }
+</pre>
+<p>     Arrays.sort(int[])使用的是快排，平均的时间复杂度是O( n lg(n))，在一般情况下已经足够好。那么有没有平均情况下O(n)复杂度的算法？这个还是有的，这道题目其实是选择算法的变形，选择一个数组中的第n 大元素，可以采用类似快排的方式划分数组，然后只要在一个子段做递归查找就可以，平均状况下可以做到O(n)的时间复杂度，对于这道题来说稍微变形下算法即可解决：</p>
+<pre>
+    /**
+     * 求数组的前n个元素
+     *
+     * @param anyOldOrderValues
+     * @param n
+     * @return
+     */
+    public static int[] findTopNValues(int[] anyOldOrderValues, int n) {
+        int[] result = new int[n];
+        findTopNValues(anyOldOrderValues, 0, anyOldOrderValues.length - 1, n,
+                n, result);
+        return result;
+    }
+
+    public static final void findTopNValues(int[] a, int p, int r, int i,
+            int n, int[] result) {
+        // 全部取到，直接返回
+        if (i == 0)
+            return;
+        // 只剩一个元素，拷贝到目标数组
+        if (p == r) {
+            System.arraycopy(a, p, result, n - i, i);
+            return;
+        }
+        int len = r - p + 1;
+        if (i &gt; len || i &lt; 0)
+            throw new IllegalArgumentException();
+        // if (len &lt; 7) {
+        // Arrays.sort(a, p, r+1);
+        // System.arraycopy(a, r - i+1 , result, n - i, i);
+        // return;
+        // }
+
+        // 划分
+        int q = medPartition(a, p, r);
+        // 计算右子段长度
+        int k = r - q + 1;
+        // 右子段长度恰好等于i
+        if (i == k) {
+            // 拷贝右子段到结果数组，返回
+            System.arraycopy(a, q, result, n - i, i);
+            return;
+        } else if (k &gt; i) {
+            // 右子段比i长，递归到右子段求前i个元素
+            findTopNValues(a, q + 1, r, i, n, result);
+        } else {
+            // 右子段比i短，拷贝右子段到结果数组，递归左子段求前i-k个元素
+            System.arraycopy(a, q, result, n - i, k);
+            findTopNValues(a, p, q - 1, i - k, n, result);
+        }
+    }
+
+    public static int medPartition(int x[], int p, int r) {
+        int len = r - p + 1;
+        int m = p + (len &gt;&gt; 1);
+        if (len &gt; 7) {
+            int l = p;
+            int n = r;
+            if (len &gt; 40) { // Big arrays, pseudomedian of 9
+                int s = len / 8;
+                l = med3(x, l, l + s, l + 2 * s);
+                m = med3(x, m - s, m, m + s);
+                n = med3(x, n - 2 * s, n - s, n);
+            }
+            m = med3(x, l, m, n); // Mid-size, med of 3
+        }
+        if (m != r) {
+            int temp = x[m];
+            x[m] = x[r];
+            x[r] = temp;
+        }
+        return partition(x, p, r);
+    }
+
+    private static int med3(int x[], int a, int b, int c) {
+        return x[a] &lt; x[b] ? (x[b] &lt; x[c] ? b : x[a] &lt; x[c] ? c : a)
+                : x[b] &gt; x[c] ? b : x[a] &gt; x[c] ? c : a;
+    }
+
+    public static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public static int partition(int a[], int p, int r) {
+        int x = a[r];
+        int m = p - 1;
+        int j = r;
+        while (true) {
+            do {
+                j--;
+            } while (j&gt;=p&amp;&amp;a[j] &gt; x);
+            do {
+                m++;
+            } while (a[m] &lt; x);
+
+            if (j &lt; m)
+                break;
+            swap(a, m, j);
+        }
+        swap(a, r, j + 1);
+        return j + 1;
+    }
+</pre>
+<p> 选择算法还有最坏情况下O(n)复杂度的实现，有兴趣可以读算法导论和<a href="http://en.wikipedia.org/wiki/Selection_algorithm">维基百科</a>。题外，我测试了下这两个实现，在我的机器上大概有2倍多的差距，还是很明显。</p>

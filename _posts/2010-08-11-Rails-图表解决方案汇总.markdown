@@ -1,0 +1,49 @@
+---
+layout: post
+title:  "Rails 图表解决方案汇总"
+date:   2010-08-11 20:03:21
+author: Yuanyi ZHANG
+categories: program
+---
+
+## Rails 图表解决方案汇总
+### by Yuanyi ZHANG
+### at 2010-08-11 20:03:21
+### original <http://www.letrails.cn/archives/rails-chart-solutions/>
+
+<p>最近需要给<a href="http://www.51qiangzuo.com/">抢座</a>增加图表功能，于是对Rails的图表方案做了些调查，整理成这篇贴，希望对有同样需求的人有所帮助。</p>
+<p><a href="http://code.google.com/apis/chart/">Google Chart</a></p>
+<p>Google Chart的优点是接口简单，容易上手，但是缺点也很明显，需要依赖Google的服务，在有些地方加载可能会存在速度问题，并且有被GFW的风险。</p>
+<p>Google Chart的Rails插件很多，个人比较喜欢mattetti的googlecharts：</p>
+<ul>
+<li>googlecharts: <a href="javascript:void(0);"> http://github.com/mattetti/googlecharts</a></li>
+<li>gchartrb：<a href="http://code.google.com/p/gchartrb">http://code.google.com/p/gchartrb</a></li>
+<li>google-charts-on-rails：<a href="http://code.google.com/p/google-charts-on-rails/">http://code.google.com/p/google-charts-on-rails/</a></li>
+<li>gc4r：<a href="http://code.google.com/p/google-charts-on-rails/">http://code.google.com/p/gc4r/</a></li>
+</ul>
+<p><a href="http://code.google.com/apis/visualization">Google Visualization</a></p>
+<p>Google Visualization是Google Chart的升级版，Rails插件：<a href="http://github.com/mwarnock/rails-google-visualization-plugin">http://github.com/mwarnock/rails-google-visualization-plugin</a></p>
+<p><a href="http://nubyonrails.com/pages/gruff">Gruff</a></p>
+<p>Gruff是基于RMagick的Ruby绘图工具，功能强大，可扩展性和可定制性都非常好，不过由于Gruff需要在服务端实时生成图片，因此不适合实时展示数据。</p>
+<p>Gruff还有一个JS封装bluff：<a href="http://bluff.jcoglan.com/">http://bluff.jcoglan.com/</a></p>
+<p><a href="http://code.google.com/p/flot/">Flot</a></p>
+<p>Flot是一个jQuery插件，可以基于JS生成实时图表，如果你使用jQuery，那么Flot是个不错的选择。Flot有一个很好用的Rails插件插件Flotilla: <a href="http://github.com/joshuamiller/flotilla">http://github.com/joshuamiller/flotilla</a></p>
+<p><a href="http://www.gnuplot.info/">GNUPlot</a></p>
+<p>GNUPlot最初是为学术目的使用的数据可视化工具，但是现在也支持生成非交互式的2d和3d图形，如果你需要生成非常复杂的图形，那么可以试试gnuplot，GNUPlot有一个叫rgplot的rubygem可以使用：<a href="http://rgplot.rubyforge.org">http://rgplot.rubyforge.org</a></p>
+<p><a href="http://ziya.liquidrail.com/">Ziya</a></p>
+<p>Ziya是一个Rails图表插件，可以生成非常漂亮和复杂的Flash图表，如果你不介意Flash，那么Ziya是个不错的选择。</p>
+<p><a href="http://scruffy.rubyforge.org/">Scruffy</a></p>
+<p>Scruffy是一个Rubygem，它的目标是帮你生成高质量的SVG和PNG图片，同Gruff一样，是一个服务端解决方案，不过Scruffy目前似乎已经停止开发了，首页的图片在Firefox和Chrome下均无法显示。</p>
+<p>Highcharts</p>
+<p>感谢dxiao同学留言，<a href="http://www.highcharts.com/">Highchars</a>是一个纯JS的图表库，但是实现的效果却和Flash不相上下，相当绚丽，兼容性也很不错，并且有一个<a href="http://github.com/loudpixel/highcharts-rails">Rails的插件</a>可以用，值得一试。</p>
+<p><strong>Raphaeljs</strong></p>
+<p>感谢Quake推荐，Raphael也是一个非常不错的JS绘图控件，他的核心库是raphaeljs，一个画图工具，详情可以看官方网站 : <a rel="nofollow" href="http://g.raphaeljs.com/">http://g.raphaeljs.com/</a></p>
+<p>Flash</p>
+<p>除了上面介绍的Ziya，Flash图表解决方案还有很多，下面列举几个对Rails支持比较好的：</p>
+<ul>
+<li>Open Flash Chart II：<a href="http://pullmonkey.com/projects/open_flash_chart2/">http://pullmonkey.com/projects/open_flash_chart2/</a></li>
+<li>Fusion Charts Free：<a href="http://www.fusioncharts.com/free/">http://www.fusioncharts.com/free/</a></li>
+<li>maani.us xml/swf charts：<a href="http://www.maani.us/xml_charts/">http://www.maani.us/xml_charts/</a></li>
+<li>amcharts： <a href="http://www.amcharts.com/">http://www.amcharts.com/</a>，archarts有一个很好用的Rails插件：<a href="http://ambling.rubyforge.org/">ambling</a></li>
+</ul>
+<p>参考：<a href="http://stackoverflow.com/questions/87561/what-is-your-preferred-way-to-produce-charts-in-a-ruby-on-rails-web-application">http://stackoverflow.com/questions/87561/what-is-your-preferred-way-to-produce-charts-in-a-ruby-on-rails-web-application</a></p>

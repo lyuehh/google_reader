@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "Tilt：将2D网页变成3D"
+date:   2011-07-21 12:48:00
+author: blackhat
+categories: program
+---
+
+## Tilt：将2D网页变成3D
+### by blackhat
+### at 2011-07-21 12:48:00
+### original <http://solidot.org.feedsportal.com/c/33236/f/556826/s/16cf8c33/l/0Lsoftware0Bsolidot0Borg0Carticle0Bpl0Dsid0F110C0A70C210C0A5220A80Gamp0Pfrom0Frss/story01.htm>
+
+Mozilla Hacks介绍了一个有趣的Firefox扩展程序Tilt，它能将2D网页内容变成3D对象。 网页的可视化是基于WebGL，通过分析网页DOM树渲染出3D对象，对每个网页元素赋予不同的深度和纹理。在安装之后，用户可以按快捷键Ctrl+Shift+L（OS X是Cmd+Shift+L）启动3D浏览，按Esc键关闭浏览。目前它处于早期开发阶段，存在一些bug，许多用户试用后反应它甚至不能在Firefox 5上正常运行，并且会频繁导致崩溃。<img width="1" height="1" src="http://solidot.org.feedsportal.com/c/33236/f/556826/s/16cf8c33/mf.gif" border="0"><div><table border="0"><tr><td valign="middle"><a href="http://res.feedsportal.com/viral/sendemail2.html?title=Tilt%EF%BC%9A%E5%B0%862D%E7%BD%91%E9%A1%B5%E5%8F%98%E6%88%903D&amp;link=http%3A%2F%2Fsoftware.solidot.org%2Farticle.pl%3Fsid%3D11%2F07%2F21%2F052208%26amp%3Bfrom%3Drss"><img src="http://res3.feedsportal.com/images/emailthis2.gif" border="0"></a></td><td valign="middle"><a href="http://res.feedsportal.com/viral/bookmark.cfm?title=Tilt%EF%BC%9A%E5%B0%862D%E7%BD%91%E9%A1%B5%E5%8F%98%E6%88%903D&amp;link=http%3A%2F%2Fsoftware.solidot.org%2Farticle.pl%3Fsid%3D11%2F07%2F21%2F052208%26amp%3Bfrom%3Drss"><img src="http://res3.feedsportal.com/images/bookmark.gif" border="0"></a></td></tr></table></div><br><br><a href="http://da.feedsportal.com/r/108458612836/u/49/f/556826/c/33236/s/16cf8c33/a2.htm"><img src="http://da.feedsportal.com/r/108458612836/u/49/f/556826/c/33236/s/16cf8c33/a2.img" border="0"></a><div>
+<a href="http://feeds.feedburner.com/~ff/solidot?a=vFe5O7b5SlQ:rrIjTjwWqLc:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/solidot?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/solidot?a=vFe5O7b5SlQ:rrIjTjwWqLc:7Q72WNTAKBA"><img src="http://feeds.feedburner.com/~ff/solidot?d=7Q72WNTAKBA" border="0"></a>
+</div>

@@ -1,0 +1,176 @@
+---
+layout: post
+title:  "Rails版本变迁历程"
+date:   2010-06-19 02:05:48
+author: 
+categories: program
+---
+
+## Rails版本变迁历程
+### by 
+### at 2010-06-19 02:05:48
+### original <http://www.javaeye.com/topic/694335>
+
+<span style="font-size:medium">越是使用rails,就越对它爱不惜手....之前问了朋友,找ror工作的时候一般会问些什么问题.....他说有可能会问rails各版本间的变迁情况,我一听就蒙了....于是,我开始收集相关资料,如下所示....由于很多资料,别人已经写的很清楚,而我文笔实在不咋滴,所以基本上采取链接的形式...希望对各位rails爱好者们有用....当然,如果有更好的资料,烦请提出,我会补充进去的....让我们开始吧....</span><span style="color:yellow">(备注:下面的资料从2.0版本开始,本来也有1.0的,不过想想,还是舍弃吧...其实是因为那篇链接丢失了,难得去找尸体..)</span>
+<br>
+<br>在开始之前,奉上两个好东西,
+<br>
+<br>深入Ruby/Rails系列(大R口味非常重,大家看过也就算了...别太当回事...)
+<br><a href="http://book.douban.com/doulist/331664/">http://book.douban.com/doulist/331664/</a>
+<br>
+<br>Rails Wiki(NS君提供的资料...它说基本上里面已经说的很清楚....)   
+<br><a href="http://wiki.rubyonrails.org/getting-started/upgrading?s">http://wiki.rubyonrails.org/getting-started/upgrading?s</a>
+<br>
+<br><span style="font-size:medium"><span style="color:blue">*Rails2.0版本变迁资料收集</span></span>
+<br>1.Ruby on Rails 2.0的新功能介绍
+<br><a href="http://www.javaeye.com/news/557">http://www.javaeye.com/news/557</a>
+<br>
+<br>2. Rails版本2.0技术资料集
+<br><a href="http://www.lycom.de/past/2007/12/9/rails-20-20071209/">http://www.lycom.de/past/2007/12/9/rails-20-20071209/</a>
+<br>里面的东西不可说不齐全,不过其实看不看都行...除非你要重新梳理下知识点,不然可以直接跳过这里,看下面的...
+<br>
+<br>3. Rails2.0框架系列教程
+<br><a href="http://www.lycom.de/past/2008/6/9/rails-tutorial-2008-06-09/">http://www.lycom.de/past/2008/6/9/rails-tutorial-2008-06-09/</a>
+<br>里面有7篇教程,不过都是英文的...其实英文挺好的...
+<br>
+<br>4. Rails 2.0.2就要发布了
+<br><a href="http://www.javaeye.com/news/592-rails-2-0-2-will-be-released">http://www.javaeye.com/news/592-rails-2-0-2-will-be-released</a>
+<br>它虽然是JE的老新闻..但也较为清晰的说清楚了2.0.2有何鸡冻的地方
+<br>再配上下面这道菜,哇咔咔
+<br>------我是连接线------&gt;
+<br> Rails2.0.2源码分析
+<br>记得第一个接触的Rails版本就是这个,在JE不小心看到这哥们的文章,感动的屁滚尿流...这个值得看看...当然买了&lt;Rails之道&gt;也就是以前英文版的那本&lt;The Rails Way&gt;可以忽略它.
+<br>(1)<a href="http://woody-420420.javaeye.com/blog/170683">http://woody-420420.javaeye.com/blog/170683</a>
+<br>(2)<a href="http://woody-420420.javaeye.com/blog/172796">http://woody-420420.javaeye.com/blog/172796</a>
+<br>(3)<a href="http://woody-420420.javaeye.com/blog/174352">http://woody-420420.javaeye.com/blog/174352</a>
+<br>(4)<a href="http://woody-420420.javaeye.com/blog/175556">http://woody-420420.javaeye.com/blog/175556</a>
+<br>
+<br>5. Rails2.0比1.2提速了30%
+<br><a href="http://www.javaeye.com/news/1557-rails2-0-than-1-2-speed-by-30">http://www.javaeye.com/news/1557-rails2-0-than-1-2-speed-by-30</a>
+<br>这篇JE新闻当年让很多人鸡冻
+<br>
+<br><span style="font-size:medium"><span style="color:blue">*Rails2.1版本变迁资料收集</span></span>
+<br>
+<br>1. Ruby on Rails 2.1更新了什么?
+<br><a href="http://chinaonrails.com/topic/view/1754.html">http://chinaonrails.com/topic/view/1754.html</a>
+<br>很多人都参与了翻译,如果要了解可直接下载下面的PDF...
+<br>
+<br>可供下载的PDF
+<br><a href="http://blog.libinpan.com/download/libin-rubyonrails21-cn.pdf">http://blog.libinpan.com/download/libin-rubyonrails21-cn.pdf</a>
+<br>
+<br>2. Rails框架：Rails 2.1最重要的改进功能
+<br><a href="http://www.lycom.de/past/2008/6/5/rails-2-1-2008-06-04/">http://www.lycom.de/past/2008/6/5/rails-2-1-2008-06-04/</a>
+<br>这里面较为详细的说明了Rails2.1对比以前版本改善了些什么. 如:
+<br>    * 模型方法named_scope
+<br>    * 软件包gem的配置方法
+<br>    * 测试数据fixtures文件
+<br>等等之类的.....其实可以跟上面的PDF混着看...
+<br>
+<br>*Rails 2.2版本变迁资料汇总
+<br>
+<br>1. Ruby on Rails 2.2版本相关资料
+<br><a href="http://www.lycom.de/past/2008/11/25/ruby_on_rails_22_release/">http://www.lycom.de/past/2008/11/25/ruby_on_rails_22_release/</a>
+<br>它清晰的告诉你,Rails2.2更新了什么,哪些东西不再推荐...
+<br>
+<br>2. Rails2.2国际化功能问与答系列
+<br>(1)<a href="http://www.lycom.de/past/2008/11/26/rails22-i18n-2008-11-24_1249/">http://www.lycom.de/past/2008/11/26/rails22-i18n-2008-11-24_1249/</a>
+<br>(2)<a href="http://www.lycom.de/past/2008/11/28/i18n-user-define-2008-11-27_2140/">http://www.lycom.de/past/2008/11/28/i18n-user-define-2008-11-27_2140/</a>
+<br>(3)<a href="http://www.lycom.de/past/2008/11/30/i18n-use-methods-2008-11-29/">http://www.lycom.de/past/2008/11/30/i18n-use-methods-2008-11-29/</a>
+<br>(4)<a href="http://www.lycom.de/past/2008/12/13/i18n-04-2008-12-12/">http://www.lycom.de/past/2008/12/13/i18n-04-2008-12-12/</a>
+<br>(5)<a href="http://www.lycom.de/past/2008/12/28/rails22-i18n-2008-12-27/">http://www.lycom.de/past/2008/12/28/rails22-i18n-2008-12-27/</a>
+<br>(备注:不解析)
+<br>@=======我们都是JE新闻=============
+<br>3.Rails 2.2 RC2的新改进
+<br><a href="http://www.javaeye.com/news/4164-rails-2-2-rc2-of-the-new-improved">http://www.javaeye.com/news/4164-rails-2-2-rc2-of-the-new-improved</a>
+<br>
+<br>4.Rails 2.2 新特性提示
+<br><a href="http://www.javaeye.com/news/3934-rails-2-2-new-features-tips">http://www.javaeye.com/news/3934-rails-2-2-new-features-tips</a>
+<br>
+<br>5.Rails 2.2要改成线程安全的了！
+<br><a href="http://www.javaeye.com/news/3247-rails-2-2-should-be-replaced-by-a-thread-safe">http://www.javaeye.com/news/3247-rails-2-2-should-be-replaced-by-a-thread-safe</a>
+<br>===================================@
+<br>
+<br><span style="font-size:medium">
+<br><span style="color:blue">*Rails 2.3 版本变迁资料汇总</span></span>
+<br>
+<br>1. Rails 2.3.0 RC1发布，包括Templates，Engines，Rack，Metal以及更多新特性
+<br><a href="http://www.javaeye.com/news/5390">http://www.javaeye.com/news/5390</a>
+<br>它大概告诉我们Rails2.3由哪些改进,属于启蒙贴
+<br>
+<br>2. Rails 2.3版本重要功能（应用软件生成器Rails Templates）
+<br><a href="http://www.lycom.de/past/2009/1/25/rails_23-rails_templates/">http://www.lycom.de/past/2009/1/25/rails_23-rails_templates/</a>
+<br>它提供了很详细的参考资料,让我们快速的了解Rails2.3，相信现在还有很多兄弟姐妹都在Rails2.3里奋斗,可以试着阅读下,加深下了解....
+<br>
+<br>3. Ruby on Rails 2.3 Release Notes
+<br><a href="http://guides.rubyonrails.org/2_3_release_notes.html">http://guides.rubyonrails.org/2_3_release_notes.html</a>
+<br>官方教程,不解析
+<br>
+<br>4. 深入Rails2.3 Rack
+<br><a href="http://www.javaeye.com/topic/461012">http://www.javaeye.com/topic/461012</a>
+<br>(不解析)
+<br>貌似还有很多其它资料的,有的兄弟们,麻烦推荐下..
+<br>
+<br><span style="font-size:large"><span style="color:blue">*Rails3 版本變遷資料匯總 </span></span>
+<br>
+<br>1. rails3 插件网检查是否相配
+<br><a href="http://www.railsplugins.org/home">http://www.railsplugins.org/home</a>
+<br>	
+<br>2. rails3上安装paperclip
+<br><a href="http://chinaonrails.com/topic/view/4030.html">http://chinaonrails.com/topic/view/4030.html</a>
+<br>paperclip这个插件相信大家都不陌生...所以不说也罢
+<br>
+<br>3. What’s new in Rails 3.0 Beta 2
+<br><a href="http://blog.envylabs.com/2010/04/new-in-rails3-beta2/">http://blog.envylabs.com/2010/04/new-in-rails3-beta2/</a>
+<br>详细的说清楚了,到底有哪些新东西在Rails3里面....
+<br>
+<br>4. Rails 3 資料收集...(这个网站很特别丫)
+<br><a href="http://blog.peepcode.com/tutorials/2010/rethinking-rails-3-routes">http://blog.peepcode.com/tutorials/2010/rethinking-rails-3-routes</a>
+<br>我还没认真看,不过看过很多人推荐,所以也加进来...
+<br>
+<br>5. Rails 3有哪些传闻(现在应该叫旧闻了)
+<br><a href="http://www.lycom.de/past/2008/12/26/rails-merb-2008-12-27/">http://www.lycom.de/past/2008/12/26/rails-merb-2008-12-27/</a>
+<br>当时的传闻,围观党可去唬几下...做真相帝
+<br>
+<br>6. Rails3世界：安装Ruby1.9.1（一乙）
+<br><a href="http://www.lycom.de/past/2010/2/6/2010-02-07-rvm-ruby191/">http://www.lycom.de/past/2010/2/6/2010-02-07-rvm-ruby191/</a>
+<br>
+<br>7. &lt;转&gt;Rails3 Beta 发布: 重点导览
+<br><a href="http://www.javaeye.com/topic/591833#1366152">http://www.javaeye.com/topic/591833#1366152</a>
+<br>
+<br>8. 从Rails 2.3.5 升级到 Rails 3.0 beta
+<br><a href="http://www.javaeye.com/topic/626273">http://www.javaeye.com/topic/626273</a>
+<br>某男的实战经验....值得敬佩啊
+<br>
+<br>9. Rails 3 文章集合
+<br><a href="http://liuming.javaeye.com/blog/578339">http://liuming.javaeye.com/blog/578339</a>
+<br>其实跟上面的7是差不多的...不过它要精简的多...
+<br>
+<br>10. Rails2 与 Rails3 代码比较
+<br><a href="http://www.lycom.de/past/2010/4/3/20100403-rails2-rails3/">http://www.lycom.de/past/2010/4/3/20100403-rails2-rails3/</a>
+<br>这种东西相信没人不喜欢吧...去看看吧
+<br>
+<br>11.rails server之后发生了什么？ rails3代码启动过程代码分析
+<br><a href="http://ryanbigg.com/guides/initialization.html">http://ryanbigg.com/guides/initialization.html</a>
+<br>
+<br>12. Ruby1.9+Rails3.0时代即将来到
+<br><a href="http://www.lycom.de/past/2009/12/12/rails3-ruby191/">http://www.lycom.de/past/2009/12/12/rails3-ruby191/</a>
+<br>
+<br>13. RailsConf2010 - 有關 Rails3 的重點整理(新鮮出爐的)
+<br><a href="http://blog.xdite.net/?p=1781">http://blog.xdite.net/?p=1781</a>
+<br>
+<br>14.Rails3屏幕教學(之前發新聞沒成功,現在補發)
+<br><a href="http://rubyonrails.org/screencasts/rails3">http://rubyonrails.org/screencasts/rails3</a>
+          
+          <br><br>
+          作者: <a href="http://fireflyman.javaeye.com">fireflyman</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/694335" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

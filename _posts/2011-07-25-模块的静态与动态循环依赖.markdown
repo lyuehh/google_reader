@@ -1,0 +1,94 @@
+---
+layout: post
+title:  "模块的静态与动态循环依赖"
+date:   2011-07-25 03:43:14
+author: 
+categories: program
+---
+
+## 模块的静态与动态循环依赖
+### by 
+### at 2011-07-25 03:43:14
+### original <http://yiminghe.iteye.com/blog/1131960>
+
+<h1>场景：</h1>
+<p> </p>
+<p><a href="http://en.wikipedia.org/wiki/Circular_dependency">循环依赖</a>
+我是不支持的，但现实中似乎又确实需要循环依赖，例如前端的选择器场景 （ie&lt;8）：</p>
+<p> </p>
+<p>首先实现了 DOM 模块来保证各个浏览器的兼容性以及 api 的易用性，其中包含必要简单的选择器逻辑</p>
+<p> </p>
+<p>然后实现了高级选择器模块，但这并不是最常用，为了效率该模块是不放入核心 DOM 模块中的，而选择将它作为独立模块 :selector，显然 selector 模块依赖于 DOM 进行 dom 遍历.</p>
+<p> </p>
+<pre name="code">S.add("selector",function(){
+
+},{requires:["dom"]});</pre>
+<p> </p>
+<p>而 DOM 中会进行判断是否当前选择器字符串过于负责而自己不能处理，需要高级选择器模块介入:</p>
+<p> </p>
+<pre name="code">S.add("dom",function(S,Selector){
+  return {
+      querySelectorAll:function(q){
+           if(isAdvanced(q)){
+               return Selector.querySelectorAll(q);
+           } else{
+               // simple logic
+           }
+      }
+  };
+},{requires:["selector"]});</pre>
+<p> </p>
+<p>这时就形成了<span style="color:#ff0000">循环依赖</span>
+</p>
+<p> </p>
+<h1>解决：</h1>
+<p> </p>
+<p>其实我们需要区分模块间到底是静态依赖还是动态依赖，静态依赖指模块的初始化就需要另一个模块参与，而动态依赖则是指直到模块的运行期才会需要调用另一个模块，对于静态循环依赖这个问题我觉得是无解的，而对于动态循环依赖则是完全可以绕过.</p>
+<p> </p>
+<p>动态循环依赖可以参考类似 <a href="http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">serviceloader</a>
+ 的做法，DOM 模块完全可以动态取得高级选择器接口的一个具体实现模块，而selector 模块实现接口并保证自己可以被找到即可:</p>
+<p> </p>
+<p>DOM 模块:</p>
+<p> </p>
+<pre name="code">S.add("dom",function(S){
+  return {
+      querySelectorAll:function(q){
+           if(isAdvanced(q)){
+               return S.ServiceLoader.load("selector").querySelectorAll(q);
+           } else{
+               // simple logic
+           }
+      }
+  };
+});</pre>
+<p> </p>
+<p>高级选择器模块仍可以依赖 DOM ，实现 querySelectorAll 接口（概念上，动态语言完全没必要），并注册自己即可.</p>
+<p> </p>
+<p>而 ServiceLoad.load 完全可以和模块系统结合在一起，用户可以通过模块系统静态或动态载入一些高级附加模块，ServiceLoad.load 询问模块系统即可得到实现了高级选择器接口的具体模块.</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<h1>refer:</h1>
+<p> </p>
+<p>static vs dynamic <a href="http://codebetter.com/patricksmacchia/2009/02/01/understanding-code-static-vs-dynamic-dependencies/">1</a>
+,<a href="http://ayende.com/blog/3839/understanding-code-static-vs-dynamic-dependencies">2</a>
+</p>
+<p> </p>
+<p><a href="http://en.wikipedia.org/wiki/Circular_dependency">circular dependency wiki</a>
+</p>
+<p> </p>
+<p><a href="http://download.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">java.util.ServiceLoader api</a>
+</p>
+<p> </p>
+<p> </p>
+<p> </p>
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://yiminghe.iteye.com/blog/1131960#comments" style="color:red">已有 <strong>2</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

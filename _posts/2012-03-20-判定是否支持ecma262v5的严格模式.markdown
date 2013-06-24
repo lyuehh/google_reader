@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "判定是否支持ecma262v5的严格模式"
+date:   2012-03-20 16:14:00
+author: 司徒正美
+categories: program
+---
+
+## 判定是否支持ecma262v5的严格模式
+### by 司徒正美
+### at 2012-03-20 16:14:00
+### original <http://www.cnblogs.com/rubylouvre/archive/2012/03/20/2408109.html>
+
+<pre>
+var supportStrict =  (function() {
+    'use strict';
+    return (function(){
+        return !this
+    })();
+})();
+</pre><img src="http://www.cnblogs.com/rubylouvre/aggbug/2408109.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/03/20/2408109.html">本文链接</a></p>

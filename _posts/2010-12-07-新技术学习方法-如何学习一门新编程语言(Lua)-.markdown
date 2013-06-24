@@ -1,0 +1,50 @@
+---
+layout: post
+title:  "新技术学习方法-如何学习一门新编程语言(Lua)?"
+date:   2010-12-07 21:17:00
+author: Lua
+categories: program
+---
+
+## 新技术学习方法-如何学习一门新编程语言(Lua)?
+### by Lua
+### at 2010-12-07 21:17:00
+### original <http://www.cnblogs.com/lua5/archive/2010/12/07/1896760.html>
+
+<p><p><a href="http://sunxiunan.com/?p=1597">http://sunxiunan.com/?p=1597</a></p>
+<p>学习一门编程语言或者编程技术的方式基本上是这样一个流程：</p>
+<p> </p>
+<p>1，对学习这门语言或者技术的必要性进行评估。比如你是工作需要，或者兴趣所至，甚至是为了把妹。这个必要性关系到你要学多深入，需要学习多长时间。</p>
+<p>比如我想学Lua，是想学它如何在万把行代码里面实现了一个如此精巧的编程语言，想学习它的GC机制，学习它如何设计VM，如何用纯C语言设计项目等等。</p>
+<p> </p>
+<p>2，寻找相关资源。比较好的起始点是这门技术的官方网站以及维基百科。</p>
+<p>比如Lua语言的官方网站是<a href="http://www.lua.org/">http://www.lua.org</a>，维基百科地址为<a title="http://en.wikipedia.org/wiki/Lua_%28programming_language%29" href="http://en.wikipedia.org/wiki/Lua_%28programming_language%29">http://en.wikipedia.org/wiki/Lua_%28programming_language%29</a></p>
+<p>一般在google.com里面敲入"lua wiki"之类就能直接搜索到相关维基条目。使用维基百科的好处是能够对编程语言有个概括了解，基本上看了以后，你都可以跟别人扯上几句一点问题也没有。另外维基百科在编程语言相关条目中有一个很有意思的特色就是：influenced by以及influenced列表。比如Lua条目中注明被Scheme、SNOBOL、Modula、CLU、C++所影响，影响了IO、GameMonkey、Squirrel、Falcon、Dao、MiniD这些语言，通过它可以了解到这门语言的祖先以及后代，相当的有意思。</p>
+<p>而在官方网站，会有最新鲜的新闻、下载、文档帮助、论坛等相关内容。</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/82583/2010120509052190.png" alt=""></p>
+<p> </p>
+<p>3 找到官网以后，就要花上一段时间在官方网站好好浏览探寻一番。比如Lua官方网站的about栏目介绍了Lua是什么，为什么选择Lua，谁编写了Lua代码等等。在News栏目有关于Lua的最新新闻。Download栏目中有软件下载，学习一门语言，重要的是在练习中学习，大多数人都用Windows，就可以下载推荐的Lua for windows。</p>
+<p> </p>
+<p>4 下载了软件（Lua for windows），安装成功以后，就可以看看文档document了。在Lua的文档网页中有在线参考手册（reference manual），大多数编程语言也都会在下载安装包中自带一份手册文档（就我所知Ruby Python都是如此）。</p>
+<p> </p>
+<p>如何系统的学习一门语言？通过手册不是什么好办法，手册内容相对教条枯燥，读起来不容易。而且在线学习注意力不容易集中，很容易点着点着就跑偏了。最好的办法还是要买一本实体的参考书。买实体书就要用到amazon或者douban了，你可以根据amazon以及douban上的打分来确定这本书的好坏，另外在Lua的document页面也有几本书推荐，像是Lua这种略微偏门的语言，其实选书很简单，因为就那么两三本，我个人推荐Programming in lua，国内有翻译版本，另外也可以下载到5.0的中文版。</p>
+<p>那么对于java、dotnet这类参考书乌央乌央的技术来说，该如何选书？这时候我会参考以下几个因素：一个是语言创始人写的可选择，一个是奥莱里oreilly出版的可以买，另外可以参考豆瓣或者amazon的书单功能，看看其他人都推荐什么。最不济的办法可以看销量，销量高的书未必就好，但是选了也不至于错的离谱。买到书以后，最好花上几天时间通读一下，对于不理解的部分先标记略过，力争先对语言技术的整体有个了解，对于一些基本操作、命令有一些印象。</p>
+<p> </p>
+<p>5 通读以后就要细读了，一般来讲，每个编程语言都力争相对完整，所以必然有一些你未必感兴趣的内容或者用不到的内容，这些都可以放在一边需要时候再捡起来。细读的过程最好准备个小本子，另外建议在github上注册一个账号，github有个gist.github.com页面可以保存代码片段，在做代码练习的时候很有用。</p>
+<p>细读的过程力争完全理解，书上的示例代码也都尽量自己敲进去运行一次，另外可以对示例代码做一定的扩展，比如在第五章的代码中加入第四章的代码，让它们组合起来看看如何。</p>
+<p> </p>
+<p>6 用一两个月时间细读以后就是熟练提高阶段。当你细读了感兴趣的章节，最好在一段时间内尽量用新语言完成自己的编程需求，比如写个网络爬虫，或者删除某个目录下的特定文件，或者做做文本处理，一定要经常用才不会忘记。这段使用过程可能需要两三个月的时间，力争达到常见的代码函数不怎么查手册就可以熟练写下来。另外可以有意的对自己已经完成的算法或者应用进行语言上的翻译，用新语言实现一下快速排序，实现一下正则表达式。编程其实就是个熟练过程，越练越顺手。</p>
+<p>这个时候可以试着购买一些advanced级别的书籍，了解一些更深入的内容，书籍的好坏依然是到amazon或者douban上搜索。</p>
+<p>提高的过程中可以订阅一些相关的博客内容，可以到blogsearch.google.com查找博客文章，或者到csdn、javaeye、cnblogs这样的技术相关博客站点搜索。看到好的文章，可以使用delicious.com这个书签网站保存起来以后慢慢阅读。</p>
+<p> </p>
+<p>7 在这段期间包括以后的使用过程，如果出现问题怎么办？可以遵照以下顺序查找帮助：</p>
+<p>    a）书籍或者手册，在线文档，在线帮助等等</p>
+<p>    b）在官网的wiki或者stackoverflow.com上搜索相关的关键字。</p>
+<p>    c）使用google搜索相关关键字。</p>
+<p>    d）到stackoverflow或者官方邮件列表、官方论坛中提问。</p>
+<p>一般来说最好订阅这门语言的邮件列表，比如Lua的邮件列表就是<a title="http://www.lua.org/lua-l.html" href="http://www.lua.org/lua-l.html">http://www.lua.org/lua-l.html</a> 即使不提问，看看别人的问题也是很有意思的。</p>
+<p>我不建议大家加入什么QQ群学习，QQ或者msn的即时通讯特性决定了它不是一个很好的学习方式，基本上只适合打屁聊天。</p>
+<p> </p>
+<p>8 到了四五个月以后，按照前面步骤学下来的朋友应该已经算是中级水平了，不太可能问出什么“跪求、裸求”之类的弱智问题。这时候就可以往更深入的层次发展，比如试着读读源代码，试着写写相关编程库编程插件，在官方论坛、maillist、stackoverflow里面帮人解答解答问题，试着多写写自己对于这门语言的使用经验，分享一些相关问题等等，就此走向“破碎虚空”的高手之路。</p>
+<p> </p>
+<p>好了，就这样吧！</p><img src="http://www.cnblogs.com/lua5/aggbug/1896760.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lua5/">Lua</a> 发表于 2010-12-07 21:17 <a href="http://www.cnblogs.com/lua5/archive/2010/12/07/1896760.html">原文链接</a></p><p>评论: 3　<a href="http://www.cnblogs.com/lua5/archive/2010/12/07/1896760.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lua5/archive/2010/12/07/1896760.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/83863/">美法院受理绿坝软件侵权案 原告索赔22亿美元</a><span style="color:gray">(2010-12-08 10:08)</span><br>· <a href="http://news.cnblogs.com/n/83862/">MT工作室：一夜开发出QQ大战360 一天下载过万</a><span style="color:gray">(2010-12-08 10:07)</span><br>· <a href="http://news.cnblogs.com/n/83861/">暴雪5年产品开发计划泄露：明年推星际2和暗黑3</a><span style="color:gray">(2010-12-08 10:05)</span><br>· <a href="http://news.cnblogs.com/n/83860/">优酷当当今晚齐登纽交所</a><span style="color:gray">(2010-12-08 10:04)</span><br>· <a href="http://news.cnblogs.com/n/83859/">微软WP7入华先拉拢本地化应用</a><span style="color:gray">(2010-12-08 09:58)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/83856/">Visual Studio 2010 Service Pack 1 Beta发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

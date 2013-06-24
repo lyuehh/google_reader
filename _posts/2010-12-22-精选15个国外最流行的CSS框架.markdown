@@ -1,0 +1,118 @@
+---
+layout: post
+title:  "精选15个国外最流行的CSS框架"
+date:   2010-12-22 18:25:27
+author: 
+categories: program
+---
+
+## 精选15个国外最流行的CSS框架
+### by 
+### at 2010-12-22 18:25:27
+### original <http://www.cnbeta.com/articles/130377.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/128.htm"><img src="http://img.cnbeta.com/topics/global.png" alt="网络软件" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.songjiguang.com">宋骥光</a>的投递</b><br>
+新闻来源:wpued.com<br>
+CSS框架通常指的是一些CSS文件的集合，这些文件包括网页的基本布局、表单样式、网格或简单结构、以及样式重置。虽然对于小的WEB开发项目来说，CSS框架并不一定适用，但是对于规模较大的团队开发项目而言，CSS框架不仅能加快设计开发速度，而且还能有效解决网站改版中带来的诸多麻烦和问题。这里推荐的15款CSS框架是现在国外最流行的CSS框架，希望能对你的开发有所帮助！</p>
+		<p>例如：<br>
+<ul>
+    <li><strong><em>typography.css</em> 基本排版规则</strong></li>
+    <li><strong><em>grid.css</em> 基于网格的布局</strong></li>
+    <li><strong><em>layout.css</em> 通常的布局</strong></li>
+    <li><strong><em>form.css</em> for 表单样式</strong></li>
+    <li><strong><em>general.css</em> 更多通用规则</strong></li>
+</ul>
+<br>
+<strong> 1 . </strong><a rel="nofollow" href="http://elements.projectdesigns.org/"><strong>Elements CSS Frameworks</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825270971815856.gif" title="1_Elements" style="display:inline"><br>
+<br>
+<strong><em> Elements</em></strong> 是一个实用的CSS框架。它是为了帮助设计师更快更高效的来写CSS而建立。Elements 已经超越了仅仅作为一个框架，它有自己的项目工作流。它拥有你完成项目所需的所有东西，这也让你和你的浏览者感到愉悦。阅读 <a rel="nofollow" href="http://elements.projectdesigns.org/overview.html">概述</a> 了解更多。<br>
+<br>
+<strong> 2 . </strong><a rel="nofollow" href="http://developer.yahoo.com/yui/grids/"><strong>YUI Grids CSS</strong> </a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825271118080192.gif" title="2_YUIGrids" style="display:inline"><br>
+<br>
+<strong><em> YUI Grids</em></strong>基本的YUI网格CSS提供4种预设的页宽、6种预设模板和再分为2、3、4卷的区块的功能。 这个4KB的文件可提供超过1000中页面布局组合。 <a rel="nofollow" href="http://developer.yahoo.com/yui/grids/">更多信息</a><br>
+<br>
+<strong> 3 . </strong><a rel="nofollow" href="http://www.yaml.de/en/home.html"><strong>YAML CSS Framework</strong> </a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/182527270621835.gif" title="3_YAML" style="display:inline"><br>
+<br>
+Dirk   Jesse的强大的(X)HTML/CSS框架为许多的简单或更复杂的网站项目提供完整的默认模板包。YAML基于网页标准并支持所有现代浏览器。所有的   Internet Explorer的主要渲染漏洞都被解决。YAML 完全支持从5.x到7.0的所有的IE版本。<br>
+<br>
+<strong> 4 . </strong><a rel="nofollow" href="http://code.google.com/p/blueprintcss/"><strong>Blueprint CSS</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252831466417770.gif" title="4_BluePrint" style="display:inline"><br>
+<br>
+<strong><em> Blueprint</em></strong> 是一个CSS 框架，它的目的是减少你的css开发时间。它提供一个可靠的css基础去创建你的项目，BP由一个易用的网格、合理的布局和一个打印样式。<br>
+<br>
+<strong> 5 . </strong><a rel="nofollow" href="http://www.davidgoldingdesign.com/schema.html"><strong>Schema Web Design Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825284118015834.gif" title="5_Schema" style="display:inline"><br>
+<br>
+<em><strong> Schema</strong> </em>是一个为了提供在重复的设计任务中必须的CSS和HTML标签而设计的表现层的网页框架设计。 与为每一个新的网站项目从零开始创建HTMl/CSS不同，Schema提供必要的基础来开始并立马让你的设计跑起来。<br>
+<br>
+<strong> 6 . </strong><a rel="nofollow" href="http://sandbox.pocoo.org/clevercss/"><strong>CleverCSS</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825285607179124.gif" title="6_CleverCSS" style="display:inline"><br>
+<br>
+<strong><em> CleverCSS</em></strong>是一个用于css的受Python启发的小型的标记语言，它可用于以整洁的和结构化的方式创建一个样式表。在很多方面它都比CSS2整洁和强大。与CSS最明显的区别是句法：它基于缩进而且不单调。虽然这显然违反了Python的规则，它依然是组织样式的很好的主意。<br>
+<br>
+<strong> 7 . </strong><a rel="nofollow" href="http://devkick.com/lab/tripoli/"><strong>Tripoli CSS Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825286232841771.gif" title="7_Tripoli" style="display:inline"><br>
+<br>
+<strong><em> Tripoli</em></strong>是一个用于HTML表现的通用css规范。通过重设和重建浏览器标准，Tripoli 为你的网站项目提供了一个标准的、跨浏览器表现的基础。<br>
+<br>
+<strong> 8 . </strong><a rel="nofollow" href="http://eswat.ca/"><strong>ESWAT Web Project Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/1825287577256996.gif" title="8_ESWAT" style="display:inline"><br>
+<br>
+<strong><em> ESWAT</em></strong>正在重新整理。如果你是冲着我的网站框架来的，那么你就可以在这里下载。也许你也想看看我的其他项目gmachina、AppleSeed。<br>
+<br>
+<strong> 9 . </strong><a rel="nofollow" href="http://code.google.com/p/css-boilerplate/"><strong>Boilerplate CSS Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252881562528476.gif" title="9_Boilerplate" style="display:inline"><br>
+<br>
+作为BluePrint CSS的原作者之一，我决定把我的思想重新整理到一个赤裸裸的框架，它提供最基本的要素来开始任何项目。这个框架将是较小的而且力求不使用非语义的命名习惯。你就是设计者而且你的技术很重要。<br>
+<br>
+<strong> 10 . </strong><a rel="nofollow" href="http://www.wymstyle.org/en/"><strong>WYMstyle CSS Framework</strong> </a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252891458023369.gif" title="10_WYMstyle" style="display:inline"><br>
+<br>
+<strong><em> WYMstyle</em></strong>是一组CSS文件，你可以很容易的组合这些文件来快速的创建你的网站的布局。通过提供可靠的、经过良好测试的CSS模块，WYMstyle 力求让每个网站防止枯燥的跨浏览器兼容性测试。<br>
+<br>
+<strong> 11 . </strong><a rel="nofollow" href="http://www.contentwithstyle.co.uk/Articles/17/a-css-framework/"><strong>Content with Style Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252810353817082.gif" title="11_Content" style="display:inline"><br>
+<br>
+<strong><em> Content with Style</em></strong>下一个逻辑步骤就是将这个扩展为CSS框架，允许使用写好并通过测试的组件来快速开发网站。实际上所需的是搞定一套命名习惯和一个灵活的基本模板。<br>
+<br>
+<strong> 12 . </strong><a rel="nofollow" href="http://code.google.com/p/logicss/"><strong>Logicss Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252811986191114.gif" title="12_Logicss" style="display:inline"><br>
+<br>
+<strong><em> Logicss </em></strong>框架是用来减少开发符合web标准的xHTML布局的时间的一个由CSS文件和PHP程序组成的集合。通常跨浏览器表现行为(不是Meyer的reset文件或是用“*”)，排版支持文本字体大小调整(使用EMs) 和垂直居中，符合可定义的灵活的布局网格利用<a rel="nofollow" href="http://logicss.googlecode.com/svn/trunk/tools/grid_builder.html">css代码生成工具</a>。<br>
+<br>
+<strong> 13 . </strong><a rel="nofollow" href="http://www.thatstandardsguy.co.uk/blog/2006/11/23/my-css-framework/"><strong>That Standards Guy CSS Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252812927631191.gif" title="13_ThatStandardsGuy" style="display:inline"><br>
+<br>
+<strong><em> That Standards Guy</em></strong>只能调用单个样式文件，主样式需要取得  CSS认证(WCAG 1.0)； 跨浏览器兼容性—包括Internet Explorer (IE) 5.x for Mac； IE   Hacks使用独立文件； 快速创建模板；框架中提供 少量注释/实例演示，可以节省时间来理解。<br>
+<br>
+<strong> 14 . </strong><a rel="nofollow" href="http://960.gs/"><strong>960 Grid System</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/182528131276458543.gif" title="14_960GridSystem" style="display:inline"><br>
+<br>
+<strong><em> 960 Grid System</em></strong>是一个通过提供通常使用的尺寸简化网站开发流程的努力的结果，基于960像素的页面宽度。它有两种类型，12和16列，他们可以独立使用或是协同使用。<br>
+<br>
+<strong> 15 . </strong><a rel="nofollow" href="http://code.google.com/p/emastic/"><strong>Emastic CSS Framework</strong></a><br>
+<div>CSS Frameworks</div>
+<img width="270" height="120" alt="" src="http://img.cnbeta.com/newsimg/101222/18252814802186421.gif" title="15_Emastic" style="display:inline"><br>
+<br>
+<strong><em> Emastic </em></strong>是一个CSS框架，它有连续的任务：探索陌生的新世界，寻找新生活和新的网站空间，大胆的去CSS框架尚未到达的领域。它是轻量的、在页面宽度上比较人性化，在网格中使用固定和不固定的列宽。 Elastic 用“em”布局。<br>
+<br>
+<a rel="nofollow" href="http://www.microspaze.com/?p=339">原文链接</a><br>
+<a rel="nofollow" href="http://www.microspaze.com/?p=339">本文链接：</a><a rel="nofollow" href="http://wpued.com/1433.html">精选15个国外最流行的CSS框架</a><br></p></div>

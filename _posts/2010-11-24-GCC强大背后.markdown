@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "GCC强大背后"
+date:   2010-11-24 21:37:00
+author: wwang
+categories: program
+---
+
+## GCC强大背后
+### by wwang
+### at 2010-11-24 21:37:00
+### original <http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html>
+
+<p><p>前记： 经常浏览博客园的同学应该会觉得本文有标题党之嫌，这个标题的句式来自于MiloYip大牛的大作《<a href="http://www.cnblogs.com/miloyip/archive/2010/09/17/behind_cplusplus.html">C++强大背后</a>》，在此，向Milo兄致意。</p>
+<p> </p>
+<p> </p>
+<p><a href="http://gcc.gnu.org/">GCC</a>，全称GNU Compiler Collection，是一套GNU开发的编译器环境，它的创始人便是大名鼎鼎的<a href="http://stallman.org/">Richard.M.Stallman</a>。最初GCC刚开始开发时，它还叫做GNU C Compiler，随着开发的深入，GCC很快得到了扩展，不仅可以支持C语言，还可以处理C++，Pascal，Object-C，Java以及Ada等其他语言。目前，GCC不仅是GNU的官方编译器，也成为编译和创建其他操作系统的编译器，包括BSD家族以及MAC OS X等。另外，GCC也是跨平台交叉编译的首选，它不仅支持Intel的x86系列，同时也支持MIPS，ARM，PowerPC，SPARC等等处理器。可以这么说，即使GCC不是世界上效率最高的编译器，它也一定是世界上最全面的编译器。</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/175492/2010112321205617.jpg" alt=""></p>
+<p> </p>
+<h1>1. GCC简介</h1>
+<div>我们先回到一个常识性的问题，什么是编译器呢？简单地说，编译器可以看作是一个语言翻译器。就像把中文翻译成英语一样，编译器可以把高级语言翻译成计算机能够执行的机器语言。这样看来，GCC可以算得上是一个精通多国语言的高级翻译官了。</div>
+<div>最简单的GCC使用指令如下所示：</div>
+<blockquote>
+<div>gcc  hello.c  -o  hello</div>
+</blockquote>
+<div> </div>
+<div>GCC接受hello.c作为输入，最后产生目标可执行代码hello。这个简单的流程实际上经历了很多步骤，如下图所示：</div>
+<div><img src="http://pic002.cnblogs.com/images/2010/175492/2010112421321949.jpg" alt=""></div>
+<div>虽然我们只用了一条命令就完成了编译，但实际上gcc命令依次呼叫了cpp，gcc自己，gas以及ld来进行完整的编译流程，最后生成最终的可执行文件hello。</div>
+<div>下面我们看一下分解动作：</div>
+<blockquote>
+<div>cpp  hello.c  &gt;  hello.i</div>
+</blockquote>
+<blockquote>
+<div>gcc  -S  hello.i</div>
+</blockquote>
+<blockquote>
+<div>as  hello.s  -o  hello.o</div>
+</blockquote>
+<blockquote>
+<div>ld  -dynamic-linker  /lib/ld-linux.so.2  /usr/lib/crt1.o  /usr/lib/crti.o  /usr/lib/gcc/i686-linux-gnu/4.4.5/crtbegin.o -L/usr/lib/gcc/i686-linux-gnu/4.4.5 hello.o  -lgcc  -lgcc_eh  -lc  /usr/lib/gcc/i686-linux-gnu/4.4.5/crtend.o  /usr/lib/crtn.o  -o  hello</div>
+</blockquote>
+<div> </div>
+<div>看完这些步骤有没有晕头转向的感觉呢？对于普通的用户来说，还是让GCC帮我们做这些事情比较好。</div>
+<div>对于如何学习使用GCC，可以参考GCC官方的手册，如果大家觉得官方的手册太罗嗦，我这里推荐一本GCC的入门书籍《<a href="http://www.network-theory.co.uk/gcc/intro/">An Introduction to GCC</a>》，这本书详尽的介绍了GCC的使用方法，内容浅显易懂，很适合初学者。</div>
+<div> </div>
+<h1>2. GCC强大的背后</h1>
+<p>学过编译原理这门课程的同学对下面这副图应该很熟悉，这是经典的编译流程。</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/175492/2010112321385743.jpg" alt=""></p>
+<p>GCC作为经典的编译器，自然也是遵循这个教科书流程（实际GCC的处理更复杂点，但本质上是一样的）。我们先简化一下上面这幅图，以中间代码为分界，前面的词法分析、语法分析、语义分析我们把它称之为前端处理，后面的优化和目标代码生成我们称之为后端处理。</p>
+<p>试想一下，是否可以为不同的高级语言单独写一个前端，然后为不同的处理器架构单独写一个后端呢？</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/175492/2010112421324033.jpg" alt=""></p>
+<p>GCC基本上也是这么实现的，不过不要误会，并没有一个统一的gcc执行程序能够处理如此多的前端和后端，每个语言的编译器都是一个独立的程序（如C语言的编译器是gcc，C++的编译器是g++），而不同的后端也要对应不同的可执行程序。你可以下载单独的一份GCC源代码，通过不同的configure来编译自己需要的编译器。</p>
+<p>而且，编译器的实现也比上图要复杂的多，前端的主要功能是产生一个可供后端处理的语法树，而语法树结构实际上很难与处理器架构脱钩，这些都是编译器应用中需要解决的问题。</p>
+<p>GCC强大的真正原因是什么？是因为它支持了众多的前端和后端吗？这些都不过是一个表象而已。GCC是一款真正自由的编译器，我们可以随时把代码拿过来修改以实现自己需要的功能。如果你的硬件平台增加了一些指令，而普通的编译器并不能产生这些指令怎么办？在GCC后端添加这些指令吧。如果你觉得C语言用的不太顺手，想给它添加一些功能怎么办？修改GCC的前端吧。因为有了GCC，我们才拥有这些自由，以及迅速实现自己想法的能力，而这些才是GCC强大背后的基础。</p>
+<p>2010年1月份的时候，Google的Go语言前端被允许进入GCC编译器家族，GCC更加强大了。</p>
+<p> </p>
+<h1>3. GCC的多样性</h1>
+<div>GCC因为其灵活性被应用到了很多领域和系统，从PC上的开发到嵌入式开发，都可以见到GCC的影子。</div>
+<div> </div>
+<h2>3.1   PC开发</h2>
+<div>我们先看看PC。MAC自从投入Intel的怀抱，是否也可以看作是一种PC呢？</div>
+<h3>Linux</h3>
+<div>Linux系统应该是GCC的主战场，但也是最没必要去说的一个系统，除了GCC，难道我们还有更好的选择吗？Linux内核、Apache服务器、MySQL数据库，等等一系列伟大的作品都是通过GCC来构建的，GCC可以说是GNU/Linux系统的基石。</div>
+<h3>MAC OS X</h3>
+<div>MAC OS X也是GCC的重度用户，其应用程序开发环境Cocoa就是使用的GCC，所以在MAC OS X下开发也是离不开GCC的。</div>
+<h3>Windows</h3>
+<div>现在在Windows下开发C/C++程序一般都是用微软的编译器，当年的Borland已经成为传说。但是如果你不想付钱的话，也可以考虑Windows下的GCC。</div>
+<div>在Windows下体验GCC最常用的有两种方式：一是在Cygwin下使用GCC，另外一种是使用MinGW。</div>
+<div><a href="http://www.cygwin.com/">Cygwin</a>是一个自由软件的集合，最初由Cygnus Solutions开发，目的是在Windows系统上运行类Unix的软件。通过Cygwin编译的程序可以在Windows上运行，但必须使用cygwin.dll。</div>
+<div><a href="http://www.mingw.org/">MinGW</a>(Minimalist GNU for Windows)，是将GNU开发工具移植到Windows平台的产物，包括一系列头文件、库和可执行文件，用MinGW开发的程序不需要额外的第三方DLL就可以直接在Windows上运行。Nokia的图形开发包QT在Windows下就是调用MinGW来编译的。</div>
+<h3>DOS</h3>
+<div>在DOS系统下也是可以用GCC的，国内的DOS开发者可能更熟悉Turbo C或者Open Watcom，GCC的DOS版本<a href="http://www.delorie.com/djgpp/">DJGPP</a>其实也是32位DOS程序开发的主流环境之一。最初DJGPP的发起人DJ Delorie曾经询问过Richard Stallman，FSF是否考虑过把GCC移植到MS-DOS下，当时Richard的回答是GCC太庞大，而MS-DOS只不过是个16位的操作系统，所以官方并没有考虑这件事。DJ Delorie并没有因此而退缩，最终给我们带来了这个优秀的开发平台。DJGPP刚开始开发时叫做djgcc，在引入了C++之后改为现在这个名字（DJ's GNU Programming Platform）。</div>
+<div> </div>
+<h2>3.2   嵌入式开发</h2>
+<div>对于嵌入式开发领域来说，因为开发板的能力限制，是无法运行编译环境的，这样就需要在PC上通过交叉编译来生成目标可执行程序，GCC的高度灵活性在嵌入式开发上发挥了极大的作用。</div>
+<h3>Android</h3>
+<div>看看当今最火的移动平台Android，就是完全用GCC来构建的，请注意，这里指的不是Android应用程序，Android下的应用程序是运行在Dalvik虚拟机上的Java程序。</div>
+<h3>iOS</h3>
+<div>Apple的iOS应用程序开发也是用Cocoa来进行，这怎么会离开GCC呢？</div>
+<h3>MeeGo/Symbian</h3>
+<div>在Apple和Google的冲击下，Nokia似乎已经日薄西山了，但对于中国国情来说，真的是这样吗？iPhone高高在上，拥有者只会是少数，Google退出中国之后，Android Market很难在国内有所作为，再加上Nokia手机一贯皮实的口碑，现在的Symbian以及将来的MeeGo的保有量应该不会低。Nokia已经把Symbian和MeeGo的开发环境统一到QT上了，这里依然是GCC的一亩三分田。</div>
+<div> </div>
+<div> </div>
+<div>GCC是强大的，但它并不是一个人在战斗，在它的背后站着<a href="http://en.wikipedia.org/wiki/GNU_toolchain">GNU工具链</a>，包括make，GCC，Binutils，GDB等一系列工具，这些工具之间是相辅相成的，只有把它们组合起来使用才能发挥其最大的威力。</div>
+<div> </div><img src="http://www.cnblogs.com/wwang/aggbug/1883850.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/wwang/">wwang</a> 发表于 2010-11-24 21:37 <a href="http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html">原文链接</a></p><p>评论: 17　<a href="http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/82309/">Magnetjoy：国内开放平台分成需调整</a><span style="color:gray">(2010-11-25 11:57)</span><br>· <a href="http://news.cnblogs.com/n/82308/">社交黑洞</a><span style="color:gray">(2010-11-25 11:49)</span><br>· <a href="http://news.cnblogs.com/n/82307/">传东芝和Vizio明年1月推出谷歌电视产品</a><span style="color:gray">(2010-11-25 11:36)</span><br>· <a href="http://news.cnblogs.com/n/82305/">纽约时报深度报道：Twitter的CEO为何自降职位？</a><span style="color:gray">(2010-11-25 11:27)</span><br>· <a href="http://news.cnblogs.com/n/82304/">刘强东：京东图书订单数过万 圣诞前或突破2.5万</a><span style="color:gray">(2010-11-25 11:24)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html">GCC强大背后</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "快速web app之道"
+date:   2012-11-05 08:40:59
+author: 神飞
+categories: program
+---
+
+## 快速web app之道
+### by 神飞
+### at 2012-11-05 08:40:59
+### original <http://www.qianduan.net/keys-to-a-fast-web-app.html>
+
+<p>我最近提到，一个快速的Web App的关键是Ajax架构、Javascript和缓存。虽然这样说是基于我的经验——我并没有每一项的贡献的实际数据或者量化的可能节省的性能。但请听我细说～～<span></span></p>
+<p><strong>Ajax架构</strong>——Web 1.0的基于用户每次操作来重新加载页面显然不是正确的选择。让用户拉下页面（移动终端拉下页面来刷新的方法）然后重新请求没有任何改变的资源会是一种很2B的用户体验。使用Web 2.0的App来维持稳定的UI就会更优雅，而且Ajax允许我们通过轻量的数据API请求和客户端Javascript来实现内容更新，这会显得平滑而快速。</p>
+<p><strong>Javascript</strong>——Javascript是网站性能的中流砥柱，但是几年前它更糟糕。还记得吗？过去通常会加载一个脚本，然后阻塞HTML解析和页面中其它资源的下载。脚本一次只下载一个！在2009年，IE8成为第一个支持<a href="http://www.browserscope.org/?category=network&amp;v=1&amp;ua=Chrome%201,Chrome%202,Firefox%203.0,Firefox%203.5,IE%207,IE%208,Opera%2011,Opera%2012,Safari%203,Safari%204">并行脚本加载</a>的浏览器。Firefox 3.5、Chrome 2、Safari4也很快跟进了，然后最近Opera 12也才跟上队伍。（在我看来对网站性能来说，并行脚本加载是唯一的、最重要的改进）除了加载脚本以外，Javascript引擎自身的速度也有了显著的提高。所以我们比几年前强太多了。但是当我深入研究主流网站的性能的时候发现Javascript依然是导致网站比较慢的最常见的因素，特别是减慢渲染。这主要源于几个原因。比如，<a href="http://httparchive.org/trends.php?s=Top1000&amp;minlabel=Sep+1+2011&amp;maxlabel=Sep+1+2012#bytesJS&amp;reqJS">Javascript请求已经增加到了约200kb了</a>。浏览器仍然屏蔽Javascript的一些行为，比如，在有些浏览器中<a href="http://www.stevesouders.com/blog/2009/05/06/positioning-inline-scripts/">一个后面跟有内联脚本的样式会阻塞后面资源的下载</a>。然后直到我们开始广泛支持<a href="http://www.alistapart.com/articles/understandingprogressiveenhancement/">渐进增强</a>之前，很多网页在等待一个比较大的javascript加载、解析和执行之前还是一个空白页面。</p>
+<p><strong>缓存</strong>——更好的缓存对第一次访问的用户来说并不会让网站更快。但是在web app的背景下，我们谈论的用户是那些会停留较长时间或者会再次访问的人。在创建web app体验的过程中，与桌面页面和Native app对比，缓存是一个关键的因素。缓存让我感到忧伤。站长们并没有尽可能多的使用缓存。<a href="http://httparchive.org/interesting.php#max-age">58%的请求没有缓存header，89%缓存期小于一个月</a>尽管<a href="http://www.stevesouders.com/blog/2012/03/22/cache-them-if-you-can/">其中的38%没有变化</a>。浏览器缓存<a href="http://www.guypo.com/uncategorized/mobile-browser-cache-sizes-round-2/">太小</a>，他们的<a href="http://www.stevesouders.com/blog/2010/04/26/call-to-improve-browser-caching/">清除算法</a>需要更新。我们有带有超级简单API的LocalStorage，但是<a href="https://hacks.mozilla.org/2012/03/there-is-no-simple-solution-for-local-storage/">浏览器厂商说它对性能有害</a>。应用缓存（application cache）是一个很稳重的方案，但是它比较<a href="http://www.stevesouders.com/blog/2011/10/03/improving-app-cache/">难用</a>（请查看Jake Archibald的<a href="http://vimeo.com/43336762">牛B的分享</a>——不知道为什么，这个国外的视频无法播放，可先查看<a href="https://speakerdeck.com/jaffathecake/application-cache-douchebag">与之对应的PPT</a>）。</p>
+<p><strong>结语：</strong></p>
+<p>网站性能优化是前端开发的一个永恒的话题，也是前端工程师的基本技能，steve shoulder的这篇文章很有用，重点是，老外思考和解决问题的方法值得我们学习——那就是用事实和数据说话，而我们通常很少思考“为什么”和“真的是这样吗？”。。。</p>
+<p>本文整理自：<a href="http://www.stevesouders.com/blog/2012/09/06/keys-to-a-fast-web-app/">Keys to a fase web app<br>
+</a>中文原文：<a href="http://www.qianduan.net/keys-to-a-fast-web-app.html">快速web app之道<br>
+</a>请尊重版权，转载请注明来源，多谢~~</p>

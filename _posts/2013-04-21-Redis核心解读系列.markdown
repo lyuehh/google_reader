@@ -1,0 +1,96 @@
+---
+layout: post
+title:  "Redis核心解读系列"
+date:   2013-04-21 22:35:06
+author: nosqlfan
+categories: program
+---
+
+## Redis核心解读系列
+### by nosqlfan
+### at 2013-04-21 22:35:06
+### original <http://blog.nosqlfan.com/html/4198.html>
+
+<p>本文内容来自@<a href="http://weibo.com/wanghaomai">麦子迈</a> 同学的系列文章，本系列文章旨在对<span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>内部实现进行全方位的深入剖析，与huangz同学的源码解读系统各有千秋。推荐给各位对Redis内部实现感兴趣的朋友。</p>
+<p>（PS：作者的其它文章也很值得一读）</p>
+<blockquote><p><a href="http://redis.io/">Redis</a>是知名的键值数据库，它广泛用于缓存系统。关于Redis的信息已经不用我多介绍了。这个系统的Redis文章主要从另外一个角度关注，Redis作为一个开源项目，短短2W行代码包含了一个健壮的服务器端软件的必需，我们从Redis中可以学习C语言项目的编程风格、范式，学习类Unix下的系统编程，还有对于一个常驻服务的健壮性考虑等等。</p>
+<p>对于一个C语言的初学者来说，学习一个类似Redis这样不大不小的项目是非常好的选择。Redis既没有Nginx深入性能细节的晦涩编码方式，又具备了一个性能敏感应用的C项目编程方式，是一个非常适合入门的项目。</p>
+<p>Redis核心解读系统来自于本人对于Redis的学习和总结，不同于<a href="http://www.redisbook.com/en/latest/">Redis 设计与实现</a>(对于这本书的作者表示非常佩服，能写出如此漂亮，详细的Redis解读)这个Redis代码注释方式+详细解读，本系列主要是选取精彩代码和关键路径进行解读，带领进入Redis的核心内容。并且会着重介绍Redis实现上的Hack写法。另外，本人对于Redis的某些设计也有独特见解，特别是对Redis的集群分发管理上，见相关文章。</p>
+<p>Redis核心解读系列主要有以下内容:</p>
+<ul>
+<li><a href="http://www.wzxue.com/%e8%a7%a3%e8%af%bbredis-ae%e4%ba%8b%e4%bb%b6%e9%a9%b1%e5%8a%a8%e5%ba%93/">解读Redis ae事件驱动库</a></li>
+<li><a href="http://www.wzxue.com/%e8%a7%a3%e8%af%bbredis-dict%e6%a0%b8%e5%bf%83%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84/">解读Redis dict核心数据结构</a></li>
+<li><a href="http://www.wzxue.com/%e8%a7%a3%e8%af%bbredis%e4%b8%adziplist%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82/">解读Redis中ziplist、zipmap、intset实现细节</a></li>
+<li><a href="http://www.wzxue.com/%e8%a7%a3%e8%af%bbredis%e8%bf%90%e8%a1%8c%e6%a0%b8%e5%bf%83%e5%be%aa%e7%8e%af%e8%bf%87%e7%a8%8b/">解读Redis运行核心循环过程</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-%e4%bb%8emaster%e5%88%b0slave%e7%9a%84replicantion/">Redis核心解读-从Master到Slave的Replicantion</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-%e7%b1%bb%e5%9e%8b%e7%b3%bb%e7%bb%9f%e8%a7%a3%e6%9e%84/">Redis核心解读–类型系统解构</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-%e6%95%b0%e6%8d%ae%e6%8c%81%e4%b9%85%e5%8c%96%e8%bf%87%e7%a8%8b%e4%b8%8erdb%e6%96%87%e4%bb%b6/">Redis核心解读–数据持久化过程与RDB文件</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-aof%e4%b8%8erewrite%e6%9c%ba%e5%88%b6/">Redis核心解读–AOF与REWRITE机制</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-slow-log/">Redis核心解读–Slow Log</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-%e4%ba%8b%e5%8a%a1multi%e5%92%8ccas%e7%9a%84%e5%ae%9e%e7%8e%b0/">Redis核心解读–事务(Multi和CAS)的实现</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-pubsub%e5%8f%91%e5%b8%83%e8%80%85-%e8%ae%a2%e9%98%85%e8%80%85%e6%a8%a1%e5%bc%8f%e7%9a%84%e5%ae%9e%e7%8e%b0/">Redis核心解读–pubsub(发布者-订阅者模式)的实现</a></li>
+<li><a href="http://www.wzxue.com/redis%e6%a0%b8%e5%bf%83%e8%a7%a3%e8%af%bb-%e9%9b%86%e7%be%a4%e7%ae%a1%e7%90%86%e5%b7%a5%e5%85%b7redis-sentinel/">Redis核心解读–集群管理工具(Redis-sentinel)</a></li>
+<li><a href="http://www.wzxue.com/wheatredis-spec/">Redis集群的讨论及WheatRedis说明</a></li>
+</ul>
+</blockquote>
+<div style="margin-top:20px;margin-left:70px;line-height:24px;border:1px solid #ccc;text-align:center;width:545px;background:#fff">
+<div style="font-size:16px;font-family:Verdana;background:#d20;color:#fff;float:left;border-radius:10px 0 10px 0;padding:3px 12px 4px;line-height:32px;margin-top:14px">42区 VPS</div>
+<div>
+42qu.com 云主机 , 卖给创业的你 。 <a href="http://vps.42qu.com/by/iammutex/rss" style="text-decoration:none;background:none;color:#02d">点击这里 , 查看详情</a>
+</div>
+</div>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3705.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4198.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">使用Redis的五个注意事项</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F718.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4198.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis Logo 你喜欢哪一个？</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F169.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4198.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis教程一篇</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2460.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4198.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Bump的Redis应用经验</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3644.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4198.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">redmon：Redis监控管理Web工具</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/732087114/nosqlfan/feedsky/s.gif?r=http://blog.nosqlfan.com/html/4198.html" border="0" height="0" width="0">

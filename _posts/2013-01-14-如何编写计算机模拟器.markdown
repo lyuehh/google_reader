@@ -1,0 +1,292 @@
+---
+layout: post
+title:  "如何编写计算机模拟器"
+date:   2013-01-14 19:39:04
+author: 
+categories: program
+---
+
+## 如何编写计算机模拟器
+### by 
+### at 2013-01-14 19:39:04
+### original <http://blog.jobbole.com/32268/?utm_source=rss&utm_medium=rss&utm_campaign=%25e5%25a6%2582%25e4%25bd%2595%25e7%25bc%2596%25e5%2586%2599%25e8%25ae%25a1%25e7%25ae%2597%25e6%259c%25ba%25e6%25a8%25a1%25e6%258b%259f%25e5%2599%25a8>
+
+<p>译文来源：<a href="http://shunyuan-chou.blogspot.com/2010/02/8.html">Shun-Yuan Chou</a> 的博客<span style="color:#888888">（原译文为繁体，大部分术语已转换成大陆译法，可能少数术语有遗漏）</span></p>
+<p>早期在 PC 上写模拟器的牛人，Marat Fayzullin 是其中之一。1997 年，他就已经开发出 fMSX 模拟器，并且以这篇文章《<a href="http://fms.komkon.org/EMUL8/HOWTO.html">How to write a computer emulator</a>?》分享他的知识。中文翻译的网页已经不存在了，可惜。</p>
+<p>下面是阅读后的整理：<span></span></p>
+<p><strong>纲要：</strong></p>
+<p>●什麼可以被模拟？</p>
+<p>●什麼是 emulation，它跟 simulation 有什麼不同？</p>
+<p>●模拟有专利的硬件，是合法的吗？</p>
+<p>●什麼是直译式的模拟器，跟编译式的模拟器有何不同？</p>
+<p>●我想写一个模拟器，我该从何开始？</p>
+<p>●我该用哪一种程序语言？</p>
+<p>●我从哪裡可以得到想模拟的硬体的资讯？</p>
+<p> </p>
+<p><strong>实现：</strong></p>
+<p><strong></strong>●如何模拟一个 CPU？</p>
+<p>●如何存取被模拟的内存？</p>
+<p>●周期性的运作有哪些？</p>
+<p> </p>
+<p><strong>程序技巧：</strong></p>
+<p><strong></strong>●如何优化 C 程序码？</p>
+<p>●什麼是高低字节顺序？</p>
+<p>●如何让程序具可移植性？</p>
+<p>●为何我要模组化我的程序？</p>
+<p> </p>
+<p><strong>什麼可以被模拟？</strong></p>
+<p>基本上，任何东西有微处理器在裡面，就可模拟。当然，只有那些可以跑程序装置，我们才有兴趣模拟。包括：电脑、计算机、游乐器、大型电动、其他……</p>
+<p>必须特别註明，你可以模拟任何电脑系统，即是事非常复杂的系统（譬如 Amiga 电脑），但是执行效率可能很低。</p>
+<p><strong>什麼是 Emulation，它跟 Simulation 有什麼不同？</strong></p>
+<p>Emulation 模拟装置内部的硬体，Simulation 是模拟装置内部的功能。举例来说，一个程序模拟小精灵大型电动的硬体，然后执行小精灵的 ROM，就是个 emulator。一个小精灵的 PC 游戏，就是个 simulator。</p>
+<p><strong>模拟有专利的硬件，是合法的吗？</strong></p>
+<p>这是个灰色地带，只要你不是透过不合法的管道，拿到硬体的资讯，就应该不违法。但是很清楚知道，跟模拟器一起散佈有著作权的系统 ROM（例如 BIOS），是违法的。</p>
+<p> </p>
+<p> </p>
+<p><strong> 什麼是直译式的模拟器，跟编译式的模拟器有何不同？</strong></p>
+<p>模拟器有三种设计的方式，这些设计也可以混用，来达到最好的效果。</p>
+<p><strong>直译式</strong></p>
+<p><strong></strong>模拟器一个位元又一个位元的，从内存读取代码，然后解码，执行对应的暂存器、内存、输出入的命令。通用的演算法如下：</p>
+<pre>while(CPUIsRunning)
+{
+  Fetch OpCode
+  Interpret OpCode
+}</pre>
+<p>这种设计的好处是，容易除错，容易移植，容易同步（你只需要计算过了多少 CPU 周期，然后让你模拟的其他部份，跟 CPU 同步）。</p>
+<p>这种设计明显的弱点，就是执行效率很差。执行直译会花很多 CPU 时间，你会需要很快的电脑，才能有不错的执行速度。</p>
+<p><strong>静态编译式</strong></p>
+<p>这种技术，就是把一支你要模拟的系统的代码，编译成你的电脑的的汇编语言。编译的结果，通常是一支你的电脑的普通执行档，不需要额外的工具就可以执行。静态编译，听起来很美好，但通常不可行。例如，你就无法静态编译会自我修改的代码，因为这种代码只有执行时，才会知道内容是什麼。为瞭解决上述的问题，或许需要混用直译器，或是动态编译编译器。</p>
+<p><strong>动态编译式</strong></p>
+<p><strong></strong>动态编译基本上跟静态编译一样，但动态编译发生在程序执行时。动态编译是在执行到 CALL 或 JUMP 时才编译，取代一开始就编译一整个程序。为了增加执行效率，这种技术常常结合静态编译。你可以读，动态编译式麦金塔模拟器的作者 Ardi，的这篇动态编译白皮书学到更多</p>
+<p> </p>
+<p><strong>我想写一个模拟器，我该从何开始？</strong></p>
+<p>想要写一个模拟器，你必须懂程序设计，以及数位电子。如果懂得汇编语言，会更好。</p>
+<p>1. 选一种程序语言</p>
+<p>2. 找到所有被模拟硬体的所有资讯</p>
+<p>3. 写 CPU 模拟，或是选用一个现成的 CPU 模拟程序</p>
+<p>4. 写个粗略的其他周边硬体的模拟，至少要一部分</p>
+<p>5. 在这个时候，写个内建除错器，让你可以暂停模拟，检查程序执行的结果。你也会需要一个被模拟 CPU 的汇编语言反组译器。如果找不到现成的，就自己写一个。</p>
+<p>6. 试著用你的模拟器执行程序</p>
+<p>7. 用除错程序跟反组译器，看看程序到底在干麼，然后根据此修改你的模拟器</p>
+<p> </p>
+<p><strong>我该用哪一种程序语言？</strong></p>
+<p>最常被用到是 C 跟汇编语言，各有优缺点。</p>
+<p><strong>汇编</strong></p>
+<p><strong></strong>+ 通用，可以產生速度快的程序码<br>
++ 可以直接使用暂存器，来映射被模拟的暂存器<br>
++ 很多汇编语言指令，可以对应到被模拟的汇编语言指令<br>
+- 程序是不可移植的，换句话说，你的模拟器，不能在别种 CPU 上跑<br>
+- 很难除错跟维护</p>
+<p><strong>C 语言</strong></p>
+<p><strong></strong>+ 可移植性，所以可以在不同的作业系统上跑<br>
++ 相对容易除错跟维护<br>
++ 对硬体的不同假设，可以很快的测试<br>
+- 通常 C 语言的程序比汇编语言的程序慢</p>
+<p>要写模拟器，对所选择的语言，瞭解得很透彻，是绝对必要的。因为模拟器的程序很复杂，你要优化你的模拟器，让它跑得越快越好。电脑模拟器程序，绝对不是你越来学习程序语言的专案。</p>
+<p> </p>
+<p><strong>我从哪裡可以得到想模拟的硬体的资讯？</strong></p>
+<p>下列地方，你会想去看一看：</p>
+<p><strong>●网路新闻群组</strong></p>
+<p><strong>comp.emulators.misc</strong></p>
+<p>这个新闻群组，讨论模拟器一般的问题。许多模拟器作者会订阅，虽然裡面杂音很多。如果要贴问题到这个新闻群组，记得先看 c.e.m FAQ 常见问题。</p>
+<p><strong>comp.emulators.game-consoles</strong></p>
+<p>跟 comp.emulators.misc 一样，不过这个新闻群组，专攻电视游乐器的模拟器。如果要贴问题到这个新闻群组，记得先看 c.e.m FAQ 常见问题。</p>
+<p><strong>comp.sys./emulated-system/</strong></p>
+<p>comp.sys.* 新闻群组阶层，专攻特定的电脑系统。你阅读这些新闻群组，可以得到有用的技术资料。典型的例子：</p>
+<pre>com.sys.msx MSX / MSX2 / MSX2+ / TurboR 电脑
+comp.sys.sinclair Sinclair ZX80/ZX81/ZXSpectrum/QL
+comp.sys.apple2 Apple ][</pre>
+<p>如果要发问题到这个新闻群组，记得先看 FAQ</p>
+<p><strong>alt.folklore.computers</strong></p>
+<p><strong>rec.games.video.classic</strong></p>
+<p> </p>
+<p><strong>FTP</strong></p>
+<ul>
+<li><a href="ftp://x2ftp.oulu.fi/">Console and Game Programming?</a></li>
+<li>?<a href="ftp://ftp.spies.com/">Arcade Videogame Hardware?</a></li>
+<li>?<a href="ftp://ftp.komkon.org/pub/EMUL8/">Computer History and Emulation?</a></li>
+</ul>
+<div><strong>WWW</strong></div>
+<div>
+<ul>
+<li><a href="http://www.komkon.org/fms/">Marat Fayzullin Homepage</a></li>
+<li><a href="http://valhalla.ph.tn.tudelft.nl/emul8/arcade.html">Arcade Emulation Programming Repository?</a></li>
+<li><a href="http://www.classicgaming.com/EPR/">Emulation Programmer's Resource?</a></li>
+</ul>
+</div>
+<p> </p>
+<p><strong> 如何模拟一个 CPU？</strong></p>
+<p>首先，如果你需要模拟一个标準的 Z80 或 6502 CPU，你可以使用 Marat Fayzullin 所写的 CPU 模拟器 当然有些限制。</p>
+<p>对那些想要自己写 CPU 模拟核心，或是对其中的运作原理感性趣的人，我提供一个用 C 写的范例架构如下，在真正的实做，你或许会考虑略过其中部份，或添加新的部份。</p>
+<pre>Counter=InterruptPeriod;
+PC=InitialPC;
+
+for(;;)
+{
+  OpCode=Memory[PC++];
+  Counter-=Cycles[OpCode];
+
+  switch(OpCode)
+  {
+    case OpCode1:
+    case OpCode2:
+    ...
+  }
+
+  if(Counter&lt;=0)
+  {
+    /* Check for interrupts and do other */
+    /* cyclic tasks here                 */
+    ...
+    Counter+=InterruptPeriod;
+    if(ExitRequired) break;
+  }
+}</pre>
+<p>首先我们指定 CPU 周期记数器 (Counter)，以及指令位址记数器 (PC)</p>
+<pre>Counter=InterruptPeriod;
+PC=InitialPC;</pre>
+<p>Counter 纪录了到下一次系统中断发生，还剩多少个 CPU 周期。注意当 Counter 过其实，系统中断不必然发生。你可以利用他来处理其事情：像是时钟同步，更新萤幕的扫瞄线等。等等，我们会讨论这些。PC 则纪录了CPU 会从那个内存位址，读取下次的执行的指令。</p>
+<p>在我们给这些设定初始值之后，然后开始进入主循环：</p>
+<pre>for(;;)
+{</pre>
+<p>主循环也可以写成这样：</p>
+<pre>while(CPUIsRunning)
+{</pre>
+<p>CPUIsRunning 是个布林值，这样写有个好处，你可以在任何时候，设 CPUIsRunning＝0，来终止主循环。然而在每个循环检查这个变数，会花不少的 CPU，而我们应该尽量减少花费 CPU。同时，不要写成下面这样子：</p>
+<pre>while(1)
+{</pre>
+<p>因为这样写，编译器產生代码，去检查 1 为 “真” 或 “假”，你不会希望在主循环的每个循环，都去执行这多餘的动作。</p>
+<p>现在我们在主循环内，第一件事，就是去读下一个执行码，然后修改程序位址记数器。</p>
+<pre>OpCode=Memory[PC++];</pre>
+<p>注意，这是最简易的方式，来模拟读取内存，但并非永远可行。更通用的方式，来存取内存，稍后会提到。</p>
+<p>在提取操作码后，会从 CPU 周期计数器，扣掉这个指令所需的周期数。</p>
+<pre>Counter-=Cycles[OpCode];</pre>
+<p>Cycles[] 表内放的是每个操作码，所需要的周期数。要特别注意，有些指令（例如条件式跳跃，或是呼叫副程序），需要的周期数，是跟操作后面紧接的参数而变动。这个可以在执行指令码时调整。</p>
+<p>现在该是解译操作码，然后跟著执行的时候了：</p>
+<pre>switch(OpCode)
+ {</pre>
+<p>有一个错误的观念，认为 switch 语句是没有效率的，因为会被编译成 if () …… else if () …….. 语句。这只有在 case 数量很少的 switch 语句，才会被这样编译。当有 100 到 200 个 case 的时候，switch 语句通常会被翻译成 jump 表格，jump 表格，其实蛮有效率的。</p>
+<p>有其他两种替代方案，可以用来解译操作码。第一种方法，是建一个函式表，然后呼叫对应的函式。这种方式，比用 switch() 没效率，因为呼叫函式，有额外的开销。第二种方式，是建一个位址的表格，然后使用 goto 语句。这种方式，稍比用 switch() 有效率一点，但这种方式，只适合用在编译器支援未预定位址表格。其他的编译器，不会允许你这样定义表格。</p>
+<p>在成功解译并执行一个操作码后，这时候该去检查有没有任何系统中断发生。这时候，你也可以执行任何需要跟系统时钟同步的工作。</p>
+<pre>if(Counter&lt;=0)
+ {
+ /* Check for interrupts and do other hardware emulation here */
+ ...
+ Counter+=InterruptPeriod;
+ if(ExitRequired) break;
+ }</pre>
+<p>有关周期性的工作，后面会提到。</p>
+<p>注意，我们并非直接指定 Counter=InterruptPeriod，而是执行 Counter+=InterruptPeriod，这样会让周期的计算更精确，因为有时候，Counter 会变成负数。</p>
+<p>同时，注意这</p>
+<pre>if(ExitRequired) break;</pre>
+<p>这个语句如果在每个循环都执行，成本太高，所以只有在中断发生时才检查。这样就可以在 ExitRequired=1 时，停止模拟，但又不会花太大的成本。</p>
+<p> </p>
+<p><strong>如何存取被模拟的内存？</strong></p>
+<p>模拟内存存取最简单的方式，就是把它当成一个摊平的位元组或字元组阵列。如此，存取内存，就是一件微不足道的事情：</p>
+<pre>Data=Memory[Address1]; /* Read from Address1 */
+ Memory[Address2]=Data; /* Write to Address2 */</pre>
+<p>这种简易的作法，并非永远可行，原因如下：</p>
+<p><strong>●分页式的内存 ?</strong>内存空间，可能被切成小块，变成可以切换的页，就是所谓的 banks。例如常见的，小内存位址空间（ 64 KB），所使用的扩充内存。</p>
+<p><strong>●映射的内存</strong> ?这块内存空间，可以用数个不同的位址来存取。例如你写资料到位址 $4000，然后你在位址$6000，及位址 $8000，你也可以读到。</p>
+<p>●<strong>ROM 的读取保护</strong> ?有些存到卡夹的软体（例如 MSX 的游戏），就算你写到 ROM，回传成功，事实上 ROM 上的资料也不会改变。这麼做，是为了做软体保护。为了让这样的软体，可以在你的模拟器运行，你需要把 ROM 设成唯读。</p>
+<p>●<strong>内存映射到 I/O ?</strong>系统可能有 I/O 装置，映射到内存位址。存取这样的内存位址，会產生特殊效果，所以必须被追踪。</p>
+<p>要成功处理上述问题，我们引进几个函式：</p>
+<pre>Data=ReadMemory(Address1); /* Read from Address1 */
+ WriteMemory(Address2,Data); /* Write to Address2 */</pre>
+<p>所有特殊的处理，包括内存分页，内存映射，I/O 的处理，等等，都在函式内处理。</p>
+<p>ReadMemory() 跟 WriteMemory() 对模拟器造成很大的 CPU 负担，因为它们执行的非常频繁。因此这些函式必须写得越有效率越好。这裡有一个存取分页式内存的例子：</p>
+<pre>static inline byte ReadMemory(register word Address)
+ {
+ return(MemoryPage[Address&gt;&gt;13][Address&amp;0x1FFF]);
+ }
+static inline void WriteMemory(register word Address,register byte Value)
+ {
+ MemoryPage[Address&gt;&gt;13][Address&amp;0x1FFF]=Value;
+ }</pre>
+<p>注意那个 inline 关键字，它会指示编译器，直接把这些函式码，直接插入程序中，以取代函式呼叫。如果你的编译器，不支援 inline 或是 _inline，试著改把这些函式，宣告成 static，有些编译器（例如 Watcom C）优化时，会把短的函式，变成 inline 函式。</p>
+<p>同时要记住，通常 ReadMemory() 的呼叫次数，是 WriteMemory() 的好几倍。所以尽量把程序码放到 WriteMemory()，让 ReadMemory() 保持简单。</p>
+<p>关於内存映射的一个小註记：</p>
+<p>之前说过，被映射的内存，写入一个位址，可以在其他位址读取。这个功能，可以实做在 ReadMemory()，但是通常我们不这样做，因为 ReadMemory() 比 WriteMemory() 更频繁被呼叫。更有效率的方式，是实做内存映射到 WriteMemory()函式。<br>
+<strong>周期性的运作有哪些？</strong></p>
+<p>周期性的运作，是被模拟的机器，固定一段时间，就会执行的工作，例如：</p>
+<ul>
+<li>屏幕更新</li>
+<li>VBlank 跟 HBlank 系统中断</li>
+<li>更新时钟</li>
+<li>更新声音参数</li>
+<li>更新键盘跟摇桿状态</li>
+<li>其他</li>
+</ul>
+<p>为了要模拟这样的运作，你要替它们绑上固定的周期。例如 CPU 假设以 2.5 MHz，并且以 50 Hz 更新显示（PAL 系统），所以 VBlank 系统中断，就会每 5000 CPU 周期，发生一次。</p>
+<p>2500000/50 = 50000 CPU cycles</p>
+<p>现在，假设整个萤幕是（包含 VBlank）是 256 条扫瞄线，实际上只有 212 条显示（44 条在 VBlank），我们得到一条扫瞄线 195 个 CPU 周期，更新一次。</p>
+<p>50000/256 ~= 195 CPU cyles</p>
+<p>然后，我们应该產生一个 VBlank 系统中断，然后在 VBlank 期间不做任何事情。</p>
+<p>(256-212)*50000/256 = 44*50000/256 ~= 8594 CPU cycles</p>
+<p>小心计算每个周期性运作所需的 CPU 周期，然后使用他们的最大公约数，作为中断检查的周期，然后绑定给每个周期性运作。</p>
+<p> </p>
+<p><strong> 如何优化 C 程序？</strong></p>
+<p>首先，很多执行效率的增进，只要选对编译器的编译选项，就有了。根据我的经验，下面的编译选项，可以给你的最佳的执行速度：</p>
+<pre>Watcom C++ -oneatx -zp4 -5r -fp3
+GNU C++ -O3 -fomit-frame-pointer
+Borland C++</pre>
+<p>如果你发现，这三个编译器，更好的优化参数，或是其他的编译器的优化参数，请让我知道。</p>
+<p><strong>●一些关於把循环摊平的笔记</strong></p>
+<p><strong></strong>虽然说，把循环摊平的这个优化选项，看起来是有用的。这个选项，会把短的循环，摊平成线性的语句。但我的经验告诉我，开啟这个选项，执行效率并不会提升太大，反而在某些情况下，程序反而会出现异常。</p>
+<p>优化 C 程序码，比选择编译器选项，还难搞。跟执行你的程序的 CPU 有很大关系。有一些通用的规则，可以适用在所有 CPU。但别把它们当成真理。</p>
+<p>●使用分析程序</p>
+<p>用分析工具来执行你的程序（第一个就想到 GPROF），或许可以发现你从没怀疑的神奇事情。你会发现毫不起眼的程序，频繁的被执行，拖慢整个程序。优化这些程序码，或是用汇编语言改写，可以让你的程序执行效率飞耀。</p>
+<p>●不要用 C++</p>
+<p>不要用任何非用 C++ 不可的架构。C++ 跟纯 C 比起来，额外的开销比较大。</p>
+<p>●整数的类型</p>
+<p>尽量用你的 CPU 支持的整数类型。举例 int 对比 short 或 long，这会减少编译器產生不同整数行别的转换。</p>
+<p>●寄存器配置</p>
+<p>尽量减少在程序区块配置太多变数，并且宣告他们为 register （大部分的编译器已经会自动把变数变成 register）。特别是有很多通用暂存器的 CPU （PowerPC）这个优势，就比有专属暂存器（Intel 8086）来的强。</p>
+<p>●摊平小循环<strong>Unroll small loops</strong></p>
+<p><strong></strong>如果你刚好有小循环会执行好几次，把小循环摊平成线性执行的程序，是好主意。对照前面提到的编译器自动摊平选项。</p>
+<p>●算术移位 vs. 乘除法</p>
+<p>尽量用算术移位，如果你乘或除一个数是 2 的 n 次方（J/128==J&gt;&gt;7），算术移位在大多数的 CPU 都比较快。另外用位元的 &amp; 来求餘数（J%128==J&amp;0x7F）。<br>
+<strong>什麼是高低字节顺序？</strong></p>
+<p>所有的 CPU 通常都根据它们如何储存资料到内存，分为几个等级。除了非常特殊的种类，绝大多数的 CPU 分成两个等级：</p>
+<p>High-endian CPU 先存放 higher byte of word。例如，在这样的 CPU 你存放 0×12345678，内存的内容会长像这样：</p>
+<pre>                      0  1  2  3
+                     +--+--+--+--+
+                     |12|34|56|78|
+                     +--+--+--+--+</pre>
+<p>Low-endian CPU 先存放 lower byte of word。上述了例子，内存内容会看起来完全不一样。</p>
+<pre>                      0  1  2  3
+                     +--+--+--+--+
+                     |78|56|34|12|
+                     +--+--+--+--+</pre>
+<p>典型 High-endian 的 CPU 有 6809，摩罗托拉 680×0 系列，PowerPC，及昇阳的 SPARC。Low-Endian 的 CPU 有 6502，及其后代 65816，及 zilog Z80，绝大多数 Intel CPU （8086，8088），DEC alpha 等。</p>
+<p>当我们写模拟器时，必须注意到，你模拟的 CPU，及执行你的模拟器的 CPU 的高低字节。举例，我们想要模拟 low-endian 的 Z80，Z80 会先存 lower byte of word。如果你用的也是 low-endian 的 CPU，例如 intel 8006，那麼完全不需要特别处理。但是如果你用的是 high-endian 的 CPU，例如 PowerPC，这时候，要存放 16 bit 的 Z80 资料到内存，就会有问题。如果你的程序，必须两种高低字节顺序的 CPU 都能跑，问题就更复杂了。</p>
+<p>一种解节高低字节顺序的作法如下：</p>
+<pre>typedef union
+ {
+short W; /* Word access */
+struct /* Byte access... */
+ {
+ #ifdef LOW_ENDIAN
+ byte l,h; /* ...in low-endian architecture */
+ #else
+ byte h,l; /* ...in high-endian architecture */
+ #endif
+ } B;
+} word;</pre>
+<p>可以看到，可以用 w 存取整个字节。而每次如果你需要存取个别 byte，用 B.l 及 B.w，来对应高低位元组。</p>
+<p>如果你的程序，要在跨平台编译，在程序开始执行前，你也许会想要测试，是否编译有设定正确的 endian 旗标。这裡有如何测试的程序码。</p>
+<pre>int *T;
+T=(int *)&quot;\01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0&quot;;
+ if(*T==1) printf(&quot;This machine is high-endian.\n&quot;);
+ else printf(&quot;This machine is low-endian.\n&quot;);</pre>
+<p> </p>
+<p> </p>
+<p><strong>如何让程序具可移植性？</strong></p>
+<p>尚未撰写。<br>
+<strong>为何我要模组化我的程序？</strong></p>
+<p>大多数的计算机系统，是由几块比较大的芯片所组成，各自执行一部分的系统功能。有 CPU、显示控制器、声音產生器、及其他。有些芯片，有自己的内存，及周边的硬件。</p>
+<p>一个典型的模拟器，应该重现原有的系统设计，并实做每个子系统的功能，在不同的模组。这样做，首先除错会比较容易，因为问题会被独立在各自的模组裡。其次模组化，可以让你在别的模拟器，重复使用你的模组。电脑的硬体，其实标準化成度很高，你可以在不同型号的电脑，发现相同的 CPU，相同的显示控制器。为某个芯片，模组化写一次模拟的程序，会比你每次都重写来的容易。</p>
+<p>（翻译完毕）</p>
+<p> </p>
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/23274/">神舟飞天的秘密：揭秘神舟九号的太空计算机</a></li><li><a href="http://blog.jobbole.com/1339/">那些拿着高薪的CEO</a></li><li><a href="http://blog.jobbole.com/1408/">首个计算机Bug的由来</a></li><li><a href="http://blog.jobbole.com/1215/">计算机的10大经典错误</a></li><li><a href="http://blog.jobbole.com/1383/">一些经典的计算机书籍</a></li><li><a href="http://blog.jobbole.com/1238/">计算机科学的奠基人：艾伦·佩利</a></li><li><a href="http://blog.jobbole.com/1575/">算法之道：形而之上谓之道</a></li><li><a href="http://blog.jobbole.com/1206/">分布式计算领域的哥德尔Eric Brewer</a></li><li><a href="http://blog.jobbole.com/31178/">用Chrome开发者工具做JavaScript性能分析</a></li><li><a href="http://blog.jobbole.com/31218/">Ubuntu桌面生存指南(4)：Ubuntu系统备份恢复升级策略</a></li></ul>

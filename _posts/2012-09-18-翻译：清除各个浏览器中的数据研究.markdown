@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "翻译：清除各个浏览器中的数据研究"
+date:   2012-09-18 23:06:53
+author: 张 鑫旭
+categories: program
+---
+
+## 翻译：清除各个浏览器中的数据研究
+### by 张 鑫旭
+### at 2012-09-18 23:06:53
+### original <http://www.zhangxinxu.com/wordpress/2012/09/%e7%bf%bb%e8%af%91%ef%bc%9a%e6%b8%85%e9%99%a4%e5%90%84%e4%b8%aa%e6%b5%8f%e8%a7%88%e5%99%a8%e4%b8%ad%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a0%94%e7%a9%b6/>
+
+<p>by <a href="http://www.zhangxinxu.com/">zhangxinxu</a> from <a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a><br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=2630">http://www.zhangxinxu.com/wordpress/?p=2630</a></p>
+<div>
+原文地址：<a href="http://www.stevesouders.com/blog/2012/09/10/clearing-browser-data/">http://www.stevesouders.com/…/clearing-browser-data/</a><br>
+原文作者：没找到<br>
+翻译编辑：<a href="http://www.zhanxinxu.com/">张鑫旭</a>
+</div>
+<p><span style="color:gray">——–最近较忙，直接进入正题以下为翻译全文——</span></p>
+<p>对于快速Web APP，缓存四赢得性能的关键。最近个把月，我做了个所谓“清除浏览器实验”，研究下用户清除缓存的时候会发生哪些奇葩的事情。另外，除了浏览器的磁盘缓存（指图片啊等数据），我还折腾了其他一些数据格式，如：cookies, <a href="http://www.w3.org/TR/webstorage/#the-localstorage-attribute">localStorage</a>, 以及 <a href="http://www.w3.org/TR/2011/WD-html5-20110525/offline.html#appcache">application cache</a>. <a href="http://www.w3.org/TR/IndexedDB/">indexedDB</a>并不在其中，因为貌似其要嗝屁了。</p>
+<h3>实验的准备与操作(大致看看)</h3>
+<p>该<a href="http://stevesouders.com/tests/clearbrowser/">测试</a>从<a href="http://stevesouders.com/tests/clearbrowser/save.php">Save Stuff</a>这个页面开始。该页面做了4件事情：</p>
+<ol>
+<li>设置了一个叫做”cachetest”的永久Cookie, JavaScript创建；</li>
+<li>测试<code>window.localStorage</code>以确定是否支持本地存储。如果支持，将会看到一个关键字为”cachetest”的本地存储值；</li>
+<li>测试<code>window.applicationCache</code>以确定是否支持应用程序缓存 – appcache(Application Cache – 可用来实现离线应用)。如果支持，会使用appcache加载一个<a href="http://stevesouders.com/tests/clearbrowser/iframe.html">iframe</a>. 该<a href="http://stevesouders.com/tests/clearbrowser/iframe.manifest">iframe的manifest文件</a>有个包含“iframe404.js iframe.js”的备份片段。因为<code>iframe404.js</code>是不存在的，appcache会加载<a href="http://stevesouders.com/tests/clearbrowser/iframe.js">iframe.js</a>（定义了全局变量<code>iframejsNow</code>）代替之。</li>
+<li>加载一个需要5秒返回的图片，并缓存30天。</li>
+</ol>
+<p>OK，现在数据已经保存到浏览器中了，然后用户根据系统提示清除浏览器数据，然后去<a href="http://stevesouders.com/tests/clearbrowser/check.php">检查缓存页面</a>去查看之前保存的数据项还在不在。</p>
+<ol>
+<li>查找名叫”cachetest”的Cookie;</li>
+<li>检查关键字为”cachetest”本地存储数据；</li>
+<li>再次加载iframe, 通过iframe的onload事件处理，检查<code>iframejsNow</code>是否被定义，以确定appcache是否被清掉了；</li>
+<li>加载同样那个要超过5秒的图片，如果这回图片加载的时间多于5秒，说明图片的缓存被干掉了。</li>
+</ol>
+<h3>我的测试结果</h3>
+<p><img alt="浏览器数据缓存清除的结果 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/my-results.png" title="浏览器数据缓存清除的结果" width="493" height="381"></p>
+<p>上图所示结果虽然不尽相同，但是跟我预想的很接近，然后其他一些知识碎片：</p>
+<ul>
+<li><strong>Chrome 21</strong>不清除localStorage. 这个异常结果可能归结于测试结果。 Chrome 21清除localStorage，但是并不在当前选项卡的内存中清除。如果你切换选项卡或者是重启Chrome浏览器，则被清掉了，是从内存中也清掉了。这实际上是一个bug, Chrome 23.0.1259以及后续版本修正了这个问题。</li>
+<li><strong>Firefox 3.6</strong>不清楚磁盘缓存，该问题的出现似乎与Chrome 21约好的：图片已经从磁盘缓存中清掉，但是，内存缓存中还在。按理说，两者都应该被清除掉的，2010的时候，FireFox团队修复了这个<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=576621">bug</a>.</li>
+<li><strong>IE 6-7</strong>不支持appcache以及localStorage.</li>
+<li><strong>IE 8-9</strong>不支持appcache</li>
+<li><strong>Firefox 3.6, IE 8-9, and Safari 5.0.5</strong>不清除localStorage, 我猜想，出现这个问题的原因是浏览器没有连接这些本地存储的界面。可参考下面展示的浏览器界面。</li>
+</ul>
+<h3>浏览器的交互界面们</h3>
+<p>在查看广泛数据下的结果前，有必要先看看各个浏览器清除数据的界面是怎样的，包含哪些清除的选项。下面截图来自Mac或window, 因此，可能和你自己看到的是有一些差异的。</p>
+<p><strong>Chrome</strong><br>
+点击扳手图标 → 历史 → 清除所有浏览数据…Chrome 21浏览器下如下显示。复选”Empty the cache”（“清空缓存”）清除磁盘缓存，”Delete cookies and other site and plug-in data”（“删cookie以及其他站点和插件数据”）清除cookies, localStorage, 及appcache.</p>
+<p><img alt="Chrome21浏览器下清除数据的操作界面 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/chrome21.png" title="Chrome21浏览器下清除数据的操作界面" width="511" height="311"></p>
+<p><strong>Firefox</strong><br>
+清除Firefox 3.6点击工具 → 清除最近历史…然后复选Cookie和Cache. 没有清除localStorage的复选框。<br>
+<img alt="FireFox3.6浏览器下的数据清除  张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/firefox3.6.png" title="FireFox3.6浏览器下的数据清除 " width="321" height="342"></p>
+<p>FireFox12通过新增离线站点数据(Offline Website Data)这个复选项修复了这个问题。Firefox 15 有同样选择。结果localStorage被成功清掉了！<br>
+<img alt="FireFox12浏览器下的数据清除（含离线站点数据）" src="http://image.zhangxinxu.com/image/blog/201209/firefox12.png" title="FireFox12浏览器下的数据清除（含离线站点数据）" width="321" height="278"></p>
+<p><strong>Internet Explorer</strong><br>
+IE6下可能要折腾点。点击工具 → internet选项… → 两个按钮：删除Cookie…(Delete Cookies…)和删除文件…(Delete Files…). 两个按钮都需要确认是否选择并删除。这里有个“删除所有离线内容”(“Delete all offline content”)选项，但因为appcache和localStorage不支持，对于本实验而言纯属打酱油的。</p>
+<p><img alt="IE6浏览器下浏览数据的清除 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/ie6.png" title="IE6浏览器下浏览数据的清除" width="444" height="465"></p>
+<p>清除IE7则点击工具 → 删除浏览历史…仍然是两个分离的按钮，删除文件(deleting files)和删除cookie(deleting cookies), 同样有个“删除所有…”按钮，可以一键搞定everything~~<br>
+<img alt="IE7浏览器下数据的清除截图 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/ie7.png" title="IE7浏览器下数据的清除截图" width="396" height="385"></p>
+<p>IE8的UI通过工具 → Internet选项 → 常规 → 删除…访问，相比IE7其多了个复选框“私人筛选数据”(“InPrivate Filtering data”)（其还有“保留收藏网站数据(Preserve Favorites website data)”项，这个在以后的文章我会讨论的）, IE8已经支持localStorage, 不过看样子是清不掉的，因为没有提供相关的复选框，就像FireFox12中清除离线数据一样。<br>
+<img alt="IE8中清除浏览器数据 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/ie8.png" title="IE8中清除浏览器数据" width="398" height="485"></p>
+<p>IE9的界面又变了，添加了“下载历史”(“Download History”), “私人筛选数据”(“InPrivate Filtering data”)被“ActiveX筛选以及跟踪保护数据”(“ActiveX Filtering and Tracking Protection data”)替换了。类似IE8, localStorage在IE9中是支持的，但是，貌似不能被清除（木有清除的复选框框）~~<br>
+<img alt="IE9浏览器下数据清除的界面效果 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/ie9.png" title="IE9浏览器下数据清除的界面效果" width="396" height="537"></p>
+<p><strong>iphone</strong><br>
+iPhone（果不其然）有这最简单的清除数据的界面。通过设置 → safari浏览器，我们可以看到一个单按钮：“清除Cookie和数据(Clear Cookies and Data)”。 结果显示，这个可以清除掉cookies, localStorage, appcache, 一级磁盘缓存。在iPhone上很难运行我的测试，因为你要离开浏览器去进行设置，当你回到浏览器的时候，这个页面已经被清除了。为解决这个问题，我在下一个页面键入下面地址进行测试：<code>http://stevesouders.com/tests/clearbrowser/check.php</code><br>
+<img alt="iphone4上清除Safari浏览器数据的UI" src="http://image.zhangxinxu.com/image/blog/201209/iphone4.png" title="iphone4上清除Safari浏览器数据的UI" width="320" height="480"></p>
+<p><strong>Opera</strong><br>
+Opera的删除选项最细化。Opera 12中，访问工具 → 删除私有数据…就会出现一个对话框。关键的复选框是“删除所有Cookie(Delete all cookies)”， “删除全部缓存(Delete entire cache)”， 以及“删除长期存储(Delete persistent storage)”。有很多选择，但都在一个对话框中。<br>
+<img alt="Opera12浏览器中数据清除操作对话框截图 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/opera12.png" title="Opera12浏览器中数据清除操作对话框截图" width="493" height="674"></p>
+<p><strong>Safari</strong><br>
+Safari 5.0.5下，进入齿轮图标→重设Safari…(windows下)，然后，会出现一个有很多选项的对话框，没有“离线数据(offline data)”很明确地表明时无法删除localStorage的。（“清除历史(Clear history)”是没有效果的——当时我只是想看看是否可以把localStorage删掉的）。<br>
+<img alt="Safari 5.0.5下的数据清除" src="http://image.zhangxinxu.com/image/blog/201209/safari5.0.5.png" title="Safari 5.0.5下的数据清除" width="459" height="338"></p>
+<p>Safari 5.1.7让我有些疑惑。一开始，我选择了Safari → 清空缓存(Empty cache)…（在Mac上），但只影响了磁盘缓存。而后我看到了 Safari → 重设Safari(Reset Safari)… ，但是只有“清除所有网站数据(Remove all website data)”，这个看上去太含糊太宽泛了。再后来，我搜索寻找更多清除选项，然后发现了Safari → 首选项… → 隐私，有一个按钮“清除所有网站数据(Remove all website data)”，这……也太不细分了吧~这个按钮可以成功清除Cookies，本地存储，appcache和磁盘高速缓存。<br>
+<img alt="Mac上Safari5浏览器的数据清除界面 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201209/safari5.png" title="Mac上Safari5浏览器的数据清除界面" width="480" height="226"></p>
+<h3>大测试数据下（众包形式）的结果</h3>
+<blockquote><p>下面的结果产生大致这样：作者折腾了一个测试页面，放出来，然后N多同行或莫名被忽悠进来的人点击几个帮助其完成了测试，然后这N多人的测试结果就是下面所要展示的结果。类似于外包中的众包。作者自己无需傻不拉几的一个一个浏览器去测。</p></blockquote>
+<p>下面的<a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBiUyIESDA?v=2&amp;layout=simple&amp;highlight=1">测试结果</a>包含~100个浏览器(webOS, Blackberry, 及RockMelt)，我摘录中相同主浏览器下的一些结果（点击下图可查看更详细的表格结果）。<br>
+<a href="http://www.browserscope.org/user/tests/table/agt1YS1wcm9maWxlcnINCxIEVGVzdBiUyIESDA?v=2&amp;layout=simple&amp;highlight=1"><img alt="众包测试结果大部分主流浏览器数据摘要" src="http://image.zhangxinxu.com/image/blog/201209/cs-results.png" title="众包测试结果大部分主流浏览器数据摘要" width="492" height="381"></a></p>
+<p><span style="color:gray">//zxx: 下面几段就是原作者的一些颠来倒去的“废话”了，我就翻译个大致意思……</span></p>
+<p>本实验<del>没杀</del>没啥刻骨铭心，发人深省的提示，因此，数据还算是蛮客观滴。</p>
+<p>我个人测试结果和大家的测试结果不同的是iPhone, 估计原因是iPhone清除数据要离开浏览器……然后，什么什么的~~</p>
+<p>不同浏览器清除数据的界面的复杂度和缺乏一致性可能导致了这些不太一致的结果，Chrome浏览器21和Firefox 15都有相当数量的测试（154，46），但是，挑落Boss的只有50％或68％。FireFox可能是特例，因为其本地数据存储之前会先询问用户；然后还有Chrome等浏览器有隐私浏览模式~~等</p>
+<p>大家测试结果的不同可能与不同浏览器界面不一致有关。应该有跨浏览器的更一致的交互界面。一致的交互界面应该长什么样子呢？像iPhone那样直接一键解决，早死早超生吗？这真的是用户需要的吗？我有时候就想清除磁盘高速缓存，而不想删除Cookie~~ 不过嘛，现在希望所有浏览器都能按照用户所想删除数据是不可能的！</p>
+<p><span style="color:gray">——–以上为翻译全文，虽然不是什么深奥的东西，对于知识拓展还是有一定的帮助的——</span></p>
+<p>原创文章，转载请注明来自<a href="http://www.zhangxinxu.com/">张鑫旭-鑫空间-鑫生活</a>[<a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a>]<br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=2630">http://www.zhangxinxu.com/wordpress/?p=2630</a></p>
+<p>（本篇完）</p>
+<div>有话要说，点击<a href="http://www.zhangxinxu.com/wordpress/2012/09/%e7%bf%bb%e8%af%91%ef%bc%9a%e6%b8%85%e9%99%a4%e5%90%84%e4%b8%aa%e6%b5%8f%e8%a7%88%e5%99%a8%e4%b8%ad%e7%9a%84%e6%95%b0%e6%8d%ae%e7%a0%94%e7%a9%b6/#response">这里</a>发表评论。</div>

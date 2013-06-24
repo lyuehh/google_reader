@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "25 条 SSH 命令和技巧"
+date:   2010-11-26 22:40:15
+author: Linux
+categories: program
+---
+
+## 25 条 SSH 命令和技巧
+### by Linux
+### at 2010-11-26 22:40:15
+### original <http://www.linuxidc.com/Linux/2010-11/30091.htm>
+
+<p>SSH是一个非常伟大的工具，如果你要在互联网上远程连接到服务器，那么SSH无疑是最佳的候选。下面是通过网络投票选出的25个最佳SSH命令，你必须牢记于心。</p><p>1、复制SSH密钥到目标主机，开启无密码SSH登录</p><p>ssh-copy-id user@host</p><p>如果还没有密钥，请使用ssh-keygen命令生成。</p><p>2、从某主机的80端口开启到本地主机2001端口的 ssh 隧道</p>...

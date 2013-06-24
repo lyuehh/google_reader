@@ -1,0 +1,123 @@
+---
+layout: post
+title:  "函数编程思想写快速排序"
+date:   2010-07-29 16:24:04
+author: 
+categories: program
+---
+
+## 函数编程思想写快速排序
+### by 
+### at 2010-07-29 16:24:04
+### original <http://www.javaeye.com/topic/724505>
+
+从Haskell的快速排序例子借鉴过来的，发现用PHP 5.3也可以比较优美地写出来<img src="http://www.iteye.com/images/smiles/icon_biggrin.gif"> 
+<br><pre name="code">
+function qsort($list) {
+    // 空表排序后的结果仍然是空表
+    if(empty($list)) {
+        return $list;
+    }
+    
+    // 取出第一个元素
+    $x = array_shift($list);
+    
+    // 在剩下部分找到所有小于等于 $x 的元素
+    $less = array_filter($list, function($n) use($x) {
+        return $n &lt;= $x;
+    });
+    
+    // 找到所有大于 $x 的元素
+    $larger = array_filter($list, function($n) use($x) {
+        return $n &gt; $x;
+    });
+    
+    // 对两部分分别应用快速排序，并将 $x 放到正确的位置上
+    return array_merge(qsort($less), array($x), qsort($larger));
+}
+
+// 测试……
+$list = array(3,1,9,18,3,1,10,13,9,8,7);
+$list_sorted = qsort($list);
+print_r($list_sorted);
+</pre>
+<br>
+<br>原始的Haskell实现非常简洁：
+<br><pre name="code">
+qsort [] = []
+qsort (x:xs) = qsort (filter (&lt; x) xs) ++ [x] ++ qsort (filter (&gt;= x) xs)
+</pre>
+<br>
+<br>我又用Scheme语言试了一下，也非常爽，只是filter函数需要自己实现：
+<br><pre name="code">
+(define (filter pred lst)
+  (if (null? lst)
+      lst
+      (if (pred (car lst))
+          (cons (car lst) (filter pred (cdr lst)))
+          (filter pred (cdr lst)))))
+(define (qsort lst)
+  (if (null? lst)
+      lst
+      (append (qsort (filter (lambda (x) (&lt;= x (car lst))) (cdr lst)))
+              (list (car lst))
+              (qsort (filter (lambda (x) (&lt; x (car lst))) (cdr lst))))))
+
+; 测试
+(qsort &#39;(3 2 9 1 8 3 2 10 9 13 22 17))
+</pre>
+<br>
+<br>最后再拿一个教科书上常见的用C语言以过程式思维实现的快速排序算法：
+<br><pre name="code">
+＃include &lt;iostream.h&gt;
+int   data[9] = {54,38,96,23,15,72,60,45,83};
+void quick_sort(int data[], int low, int high)
+{
+       int i, j, pivot;
+       if (low &lt; high)
+       {
+              pivot=data[low];
+              i=low;
+              j=high;
+            
+              while(i&lt;j)
+              {
+                     while (i&lt;j &amp;&amp; data[j]&gt;=pivot)
+                            j--;
+                     if(i&lt;j)
+                            data[i++]=data[j];   //将比枢轴记录小的记录移到低端
+                    
+                     while (i&lt;j &amp;&amp; data[i]&lt;=pivot)
+                            i++;
+                     if(i&lt;j)
+                            data[j--]=data[i];       //将比枢轴记录大的记录移到高端
+              }
+            
+              data[i]=pivot;         //枢轴记录移到最终位置
+            
+              quick_sort(data,low,i-1);
+              quick_sort(data,i+1,high);
+       }
+}
+
+void main()
+{
+       quick_sort(data, 0, 8);
+}
+</pre>
+<br>说实话，这段C语言的算法当初想了好几个星期才弄明白，现在却又看不懂了……
+<br>相比之下，用函数式的思想写的程序非常好懂 
+          
+          <br><br>
+          作者: <a href="http://ggggqqqqihc.javaeye.com">ggggqqqqihc</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/724505" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,178 @@
+---
+layout: post
+title:  "有DNS的地方就能上网"
+date:   2012-02-04 13:05:25
+author: iGFW
+categories: program
+---
+
+## 有DNS的地方就能上网
+### by iGFW
+### at 2012-02-04 13:05:25
+### original <http://igfw.net/archives/7354>
+
+<p>这个小技巧的应用场景是：在机场或者酒吧里，当你输入一个网址比如www.google.com时，浏览器会弹出一个页面，要你输入账号和密码后才能上网。也即，你上网需要付费认证。</p>
+<p>Google Reader 上分享的最广的<a href="http://blog.creke.net/747.html">“用DNS隧道实现免费上网</a>”这篇文章其实是转载自<a href="http://www.nsbeta.info/">风河博客</a>上的文章“<a href="http://www.nsbeta.info/archives/96">有DNS的地方就能上网</a>”，同时云风进行了一些改进后的方案：<a href="http://blog.codingnow.com/2011/06/dns_tunnel.html">DNS隧道</a>。云风给出的改进方案中，没有使用风河中提到的OzymanDNS，而是使用了另外一个小玩意儿<a href="http://dev.kryo.se/iodine/">iodine</a>。云风也并没有提供很方便的设置代码，只是用文字将涉及到的相关问题或者技巧说明了下。</p>
+<p><span></span>翻到<a href="http://dev.kryo.se/iodine/">iodine</a>的主页，查看其Wiki上的<a href="http://dev.kryo.se/iodine/wiki/HowtoSetup">How to Setup</a>，文中的The quick way讲的很清楚。只需将其下下来，在服务器端运行iodined，在客户端运行iodine就行了。但其实它还需要你有一个域名，能够设置域名的DNS之类的。讲的最清楚的一篇文章，当属<a href="http://dev.kryo.se/iodine/wiki/HowtoSetup">How to Setup</a>末尾提供的一个链接：<a href="http://www.putdispenserhere.com/2011/bypassing-captive-portalsairport-pay-restrictions-with-iodine-on-a-debian-vps-guide/">Guide for debian server and win32 client</a>。</p>
+<p>要进行这项工程，你需要一台能够让自己自由安装软件的服务器，和一个能够设置NS记录的域名。对于服务器，iodine很强大，<a href="http://dev.kryo.se/iodine/wiki/SupportedPlatforms">支持各种各样的系统</a>：FreeBSD、Linux、Mac OS X、NetBSD、OpenBSD以及Windows。在Linux下，编译安装就行。在Mac OS X下，还需要安装一个<a href="http://tuntaposx.sourceforge.net/download.xhtml">TunTap</a>，很简单，下载下来一路点下去就行。在Windows下，需要安装<a href="http://openvpn.net/index.php/open-source/downloads.html">OpenVPN的TAP Virtual Ethernet Adapter</a>模块。</p>
+<p>下面以Ubuntu或者Debian作为服务器，Windows作为客户机，说明如何配置。</p>
+<p><strong>1. 设置服务器</strong></p>
+<p>在服务器上，只需安装iodine这个小工具就可以了。如果你的服务器系统是最新版本的Ubuntu，即Ubuntu Natty，可以这样通过添加源的方式来安装iodine：</p>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre>1
+2
+3
+4
+5
+6</pre>
+</td>
+<td>
+<pre>cat &gt;&gt; /etc/apt/sources.list &lt; &lt;END
+deb http://archive.ubuntu.com/ubuntu natty main restricted universe
+END
+apt-get update
+apt-get -t natty install iodine
+sed -i &#39;$d&#39; /etc/apt/sources.list</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在Debian上可以这样安装：</p>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre>1
+2
+3
+4
+5
+6</pre>
+</td>
+<td>
+<pre>cat &gt;&gt; /etc/apt/sources.list &lt; &lt;END
+deb http://ftp.debian.org/debian sid main
+END
+apt-get update
+apt-get -t sid install iodine
+sed -i &#39;$d&#39; /etc/apt/sources.list</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>2. 设置域名的DNS</strong></p>
+<p>首先需要设置域名服务器。</p>
+<p>其次，在域名下面添加一个A记录，A记录的名字可以任意，如server.helishi.net，A记录的值为你VPS服务器的IP地址。</p>
+<p>最后，再添加一个NS记录，这个NS的名字可以任意，比如iodine.helishi.net，NS记录的值为你上面添加的A记录的名字，即server.helishi.net。</p>
+<p><strong>3. 在你VPS服务器上运行iodined程序</strong></p>
+<p>通过SSH登入你的服务器，运行iodined这个程序：</p>
+<div>
+<div>
+<pre>iodined -c -f 10.0.0.1 -P password iodine.helishi.net</pre>
+</div>
+</div>
+<p>上面这段代码的10.0.0.1 IP地址是你设置的虚拟局域网的IP地址，如果你所在的局域网的网段刚好也在10.0.0.1，可以换一个网段，比如172.16.0.0。其中的 password是你在服务器端自己设定的一个密码，客户端登入的时候需要用到这个密码。iodine.helishi.net则是你后面添加的那个NS 记录。</p>
+<p>运行上面的代码之后，程序会输出如下信息，表示你的服务器端成功运行iodine小程序：</p>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre>1
+2
+3
+4
+5</pre>
+</td>
+<td>
+<pre>OOpened dns0
+Setting IP of dns0 to 10.0.0.1
+Setting MTU of dns0 to 1130
+Opened UDP socket
+Listening to dns for domain iodine.yourdomain.com</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>4. 设置客户端</strong></p>
+<p>接下来就要用客户机去链接服务器了。无论你的客户机是什么系统，只需在这里把iodine下下来就行了。在Linux下，需要自己编译安装一下即可运行。在Mac下，需先安装<a href="http://tuntaposx.sourceforge.net/download.xhtml">TunTap</a>这个小工具，再编译安装即可运行。在Windows下，需安装<a href="http://openvpn.net/index.php/open-source/downloads.html">OpenVPN</a>的Tap模块。下面以Windows客户端做说明。</p>
+<p>从<a href="http://openvpn.net/index.php/open-source/downloads.html">OpenVPN</a>官网下载最新版本的OpenVPN，在安装的时候只勾选TAP Virtual Ethernet Adapter这个模块，如下图：</p>
+<p><img title="OpenVPN_TAP" src="http://i.imgur.com/66Cdq.png" alt="" width="513" height="399"></p>
+<p><strong>5. 通过虚拟内网地址连接服务器</strong></p>
+<p>下载<a href="http://code.kryo.se/iodine/iodine-0.6.0-rc1-win32.zip">最新版本的iodine Windows客户端</a>。解压后，通过命令行（cmd程序。如果你的系统是Windows XP，直接打开cmd即可。如果你的是Windows 7系统，需要以管理员的身份运行这个程序）进入这个目录。然后，通过以下这个命令运行这个程序：</p>
+<div>
+<div>
+<pre>iodine -f -P password server_ip server.helishi.net</pre>
+</div>
+</div>
+<p>上面的password是你在服务器端运行iodined这个程序时设置的密码，server_ip是你的VPS服务器的ip地址，server.helishi.net是你设置的NS记录的域名。运行以上命令后，你会看到类似下面的输出：</p>
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16</pre>
+</td>
+<td>
+<pre>Opening device Local Area Connection 2
+Opened UDP socket
+Opened UDP socket
+Opened UDP socket
+Sending DNS queries for iodine.cwaffles.co.cc to 74.63.253.53
+Autodetecting DNS query type (use -T to override).
+Using DNS type NULL queries
+Version ok, both using protocol v 0x00000502. You are user #0
+Enabling interface 'Local Area Connection 2'
+Setting IP of interface 'Local Area Connection 2' to 10.0.0.2 (can take a few seconds)...
+
+Server tunnel IP is 10.0.0.1
+Testing raw UDP data to the server (skip with -r)
+Server is at 74.63.253.53, trying raw login: OK
+Sending raw traffic directly to 74.63.253.53
+Connection setup complete, transmitting data.</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>上面的74.63.253.53是你服务器的ip地址。</p>
+<p>现在，你可以测试下是否能够Ping同10.0.0.1这个服务器了：</p>
+<div>
+<div>
+<pre>ping 10.0.0.1 /t</pre>
+</div>
+</div>
+<p>如果Ping通了，一切顺利。</p>
+<p>现在，即使你的电脑打开浏览器的时候跳出让你输入密码认证的页面，即使你不输入认证，你也可以上网了。前提是，你还需要进一步的设置。</p>
+<p><strong>6. 通过虚拟内网地址登入服务器</strong></p>
+<p>如果你以前用过SSH连接代理服务器，并拿它来翻墙，接下来的设置很简单，因为两者是一样的。但是，如果你以前连翻墙都不会，也不会通过SSH登入服务器，那就有点麻烦了。本文不再详述这些设置，只给出几个客户端和浏览器插件：</p>
+<p>1). 所连接服务器的IP地址：10.0.0.1</p>
+<p>你可以通过SSH登入10.0.0.1这个服务器了，这个服务器跟你的VPS服务器是一样的，只不过是以不同的地址登入。你原有的是外网IP地址，现在多了一个10.0.0.1内部地址。登入的用户名和密码还是跟你原来登入VPS的用户名和密码一样的。</p>
+<p>2). 连接服务器的客户端：<a href="http://www.chiark.greenend.org.uk/%7Esgtatham/putty/">PuTTY</a>、<a href="http://www.9bis.net/kitty/">KiTTY</a>和<a href="http://www.bitvise.com/tunnelier">Tunnelier</a></p>
+<p>推荐使用Tunnelier，设置代理端口非常的方便。</p>
+<p>3). 浏览器的代理插件</p>
+<p>你可以在浏览器下设置代理类型，代理IP地址和相应的端口。也可以使用第三方插件设置代理，如Chrome的<a href="https://chrome.google.com/extensions/detail/caehdcpeofiiigpdhbabniblemipncjj">Switchy</a>和Firefox的<a href="https://addons.mozilla.org/en-US/firefox/addon/autoproxy/">AutoProxy</a>或<a href="https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/">FoxyProxy</a>。</p>
+<p><strong>来源</strong>：<a href="http://loosky.net/?p=1934">http://loosky.net/?p=1934</a></p>

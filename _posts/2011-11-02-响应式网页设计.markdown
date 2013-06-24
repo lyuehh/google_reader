@@ -1,0 +1,330 @@
+---
+layout: post
+title:  "响应式网页设计"
+date:   2011-11-02 00:36:11
+author: 神飞
+categories: program
+---
+
+## 响应式网页设计
+### by 神飞
+### at 2011-11-02 00:36:11
+### original <http://www.qianduan.net/responsive-web-design.html>
+
+<p>这个话题最近很火爆，我也一直在关注，响应式网页设计和移动互联网密切相关，并因移动终端的丰富和普及而兴盛，并且是一个颇具争议的话题，我今天将和大家探讨下。<span></span></p>
+<p>上周写了个简单的ppt在组内大概介绍了下，感兴趣的话可以<a href="http://mienflying.bitbucket.org/responsive/">先看下这个PPT</a>。</p>
+<h3>移动互联网的现状和未来</h3>
+<p>在说到这个话题前，我们先看下网页设计和前端开发的现状：</p>
+<ol>
+<li>全球有超过53亿手机用户（包括传统手机）</li>
+<li>国内3G用户超过1亿</li>
+<li>iPhone4手机在2010年出货量超过3000万部；</li>
+<li>iPhone 4S上市前3天卖掉400万部；</li>
+<li>Android手机每天激活超过50万部；</li>
+<li>iPad出货量已经超过2.5亿部；</li>
+<li>预计到2015年，移动互联网的数据流量<a title="[图表]移动互联网的现状和趋势" href="http://www.qianduan.net/chart-status-and-trends-of-mobile-internet.html">将超越桌面端的流量</a>。</li>
+<li>。。。</li>
+</ol>
+<p>嗯，大家也许已经开始注意到，自己和身边的朋友也都越来越多的用上了iPhone或者android手机或平板——一两年前我们预料的移动互联网时代即将来临，现在已然实现了——我们正处在移动互联网快速发展的时代——已经不再是起步阶段了。</p>
+<h3>那么，什么是响应式网页设计？</h3>
+<p>响应式网页设计是<a title="Responsive Web Design" href="http://www.alistapart.com/articles/responsive-web-design/">Ethan Marcotte在去年5月份提出的一个概念</a>，简而言之，就是一个网站能够兼容多个终端——而不是为每个终端做一个特定的版本。这个概念可以说是是为移动互联网而生的！</p>
+<p>或许大家之前会注意到，有很多知名网站都推出了iPhone或针对智能手机的专门网站，比如3g.qq.com、m.taobao.com、ipad.xxx.com等等。。。甚至前端观察之前也尝试过用wordpress插件实现m.qianduan.net的移动网站。</p>
+<p>那么问题就来了——我们要为每一个设备做一个单独的网站吗？来让网站在每个设备中得到相应的视觉风格和操作体验？</p>
+<p>这样势必就要增加很多的工作量，而且很多还是重复的。</p>
+<p>我们在做页面的时候，一般很强调模块化的概念，我们要求一个合格的模块要能够“可扩展、无侵染”，它要能够用在任何地方都能够正常的显示。响应式网页设计与此类似——网站在任何设备中都能够正常适配，而不用为每个设备单独做个子网站！</p>
+<p>但是，产品经理和设计师可能还是会要求网站在各个浏览器里面表现要一模一样，甚至要像素还原——WTF！不同的浏览器本身的功能、行为和处理方式都不一样，为什么要表现完全一样？！</p>
+<p>let the browser flow…</p>
+<h3>怎么做？</h3>
+<p>其实响应式网页的实现很简单，都是大家熟悉的技术。</p>
+<h4>media query(媒体查询)</h4>
+<p>因为现在主流的智能终端都是基于iOS和Android的，而它们自带的浏览器都是基于webkit内核，所以我们可以完全使用viewport属性和media query技术实现网站的响应性：</p>
+
+<div><div><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">meta</span> <span style="color:#000066">name</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;viewport&quot;</span> <span style="color:#000066">content</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;width=device-width, initial-scale=1, maximum-scale=1&quot;</span>&gt;</span></pre></div></div>
+
+<p>后面的initial-scale表示初始缩放，maximum-scale表示最大缩放比例，1意味着不能进行缩放。</p>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td><pre style="font-family:monospace"><span style="color:#808080;font-style:italic">/* for 240 px width screen */</span>
+<span style="color:#a1a100">@media only screen and (max-device-width:240px){</span>
+    selector<span style="color:#00aa00">{</span>
+    <span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span>
+ 
+<span style="color:#808080;font-style:italic">/* for 360px width screen */</span>
+<span style="color:#a1a100">@media only screen and (min-device-width:241px) and (max-device-width:360px){</span>
+    selector<span style="color:#00aa00">{</span>
+    <span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span>
+ 
+<span style="color:#808080;font-style:italic">/* for 480 px width screen */</span>
+<span style="color:#a1a100">@media only screen (min-device-width:361px)and (max-device-width:480px){</span>
+    selector<span style="color:#00aa00">{</span>
+    <span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<p>当然依靠屏幕宽度来进行适配是最简单的方法，media query有很多参数可以使用比如orientation、aspect-ratio等，不太了解的可以查看<a title="media type与media query" href="http://www.qianduan.net/media-type-and-media-query.html" rel="bookmark">这篇详细的介绍</a>。</p>
+<p>其实，media query是响应式网页设计中被用到最多的技术。</p>
+<h4>fluid grid(流体网格)</h4>
+<p>很多项目都在使用网格技术(或者叫栅格)，前几年960.gs很流行，但是随着屏幕分辨率的普遍提升，它已经不太适合当前需求了，于是最近几年fluid grid开始逐渐多了起来，这种技术其实也很简单，只是将格栅的单位由px变成%，用百分比来控制页面每列的宽度，从而实现宽度的自适应。</p>
+<p>使用流体网格的网站能够根据屏幕宽度自动调整页面中每列的宽度，从而保证页面的完整展现和基本功能。这也是一种不错的方法。</p>
+<h4>flex box</h4>
+<p>flex box是css3中的新技术，它很强大，可以实现很多我们之前无法想象的自适应布局。</p>
+<p>有时我们希望网站能够以webapp的外观呈现给手机用户，flexbox是个不二的选择。</p>
+<p>比如，要实现这样的简单结构：</p>
+<p><img title="flex box layout" src="http://www.qianduan.net/wp-content/uploads/2011/11/flex.jpg" alt="" width="312" height="402"></p>
+<p>它很像一个app的结构，头部和底部固定，中间高度自适应，用flexbox可以简单实现：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+</pre></td><td><pre style="font-family:monospace">.flex_wrap<span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">100%</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span> box<span style="color:#00aa00">;</span>  
+	<span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span> -moz-box<span style="color:#00aa00">;</span>  
+	<span style="color:#000000;font-weight:bold">display</span><span style="color:#00aa00">:</span> -webkit-box<span style="color:#00aa00">;</span>
+	-webkit-box-orient<span style="color:#00aa00">:</span> vertical<span style="color:#00aa00">;</span>
+	-moz-box-orient<span style="color:#00aa00">:</span> vertical<span style="color:#00aa00">;</span>
+	box-orient<span style="color:#00aa00">:</span> vertical<span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+.flex_bd<span style="color:#00aa00">{</span>
+	box-flex<span style="color:#00aa00">:</span> <span style="color:#cc66cc">1</span><span style="color:#00aa00">;</span>
+	-moz-box-flex<span style="color:#00aa00">:</span> <span style="color:#cc66cc">1</span><span style="color:#00aa00">;</span> 
+	-webkit-box-flex<span style="color:#00aa00">:</span><span style="color:#cc66cc">1</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">background</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#E7E7E7</span><span style="color:#00aa00">;</span>
+	overflow-y<span style="color:#00aa00">:</span><span style="color:#993333">auto</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+.flex_hd<span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#16364C</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">line-height</span><span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">text-align</span><span style="color:#00aa00">:</span><span style="color:#993333">center</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#FFF</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">font-weight</span><span style="color:#00aa00">:</span><span style="color:#cc66cc">700</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">font-family</span><span style="color:#00aa00">:</span><span style="color:#933">14px</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span>
+.flex_ft<span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">background</span><span style="color:#00aa00">:</span><span style="color:#993333">green</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">line-height</span><span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span>
+	<span style="color:#000000;font-weight:bold">text-align</span><span style="color:#00aa00">:</span><span style="color:#000000;font-weight:bold">right</span><span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<p>HTML代码：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;flex_wrap&quot;</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;flex_hd&quot;</span>&gt;</span>前端观察<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;flex_bd&quot;</span>&gt;</span>
+		<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">p</span>&gt;</span>这里是主内容区<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">p</span>&gt;</span>
+		<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">p</span>&gt;</span>这里是主内容区<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">p</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;flex_ft&quot;</span>&gt;</span>
+		<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">a</span> <span style="color:#000066">href</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;http://www.qianduan.net/about&quot;</span> <span style="color:#000066">title</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;关于我们&quot;</span>&gt;</span>关于我们<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">a</span>&gt;</span>
+		<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">a</span> <span style="color:#000066">href</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;http://www.qianduan.net/copyright&quot;</span> <span style="color:#000066">title</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;版权声明&quot;</span>&gt;</span>版权声明<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">a</span>&gt;</span>
+		<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">a</span> <span style="color:#000066">href</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;http://www.qianduan.net/sitemap&quot;</span> <span style="color:#000066">title</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;网站地图&quot;</span>&gt;</span>网站地图<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">a</span>&gt;</span>
+	<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+<p>虽然这里还会有点儿问题，比如主内容区域内容太多会被隐藏掉，因为android webkit和iOS 5之前的mobile safari均不支持overflow:scroll属性，但是这个问题还是很好解决的，比如在里面嵌套一个子容器，用js来给定个高度并使用定位来实现滚动条从而完整展示内容，或者直接使用iscroll等js库来实现。好消息是，iOS5中safari开始支持overflow:scroll了。</p>
+<h3>不足之处</h3>
+<p>如果你关注网站性能之类的话，可能已经发现了一些问题：</p>
+<ul>
+<li>加载很多不需要的资源，比如多余的图片和样式内容</li>
+<li>带宽限制</li>
+<li>移动终端的内存和CPU限制</li>
+<li>图片大小和屏幕大小不匹配</li>
+</ul>
+<p>嗯，任何一个方案都不是完美的，但也不会很糟糕。下面我们会提到一些可行的优化方案：</p>
+<h4>HTML5本地存储</h4>
+<p>对于支持HTML5 appcache /manifest特性的浏览器，我们可以将一些不常改动的静态资源存储到本地，比如css文件，css中用到的图片，以及一些js文件等：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace">CACHE MANIFEST
+NETWORK:
+/*
+ 
+CACHE:
+img/bg.jpg
+img/days.otf
+slideshow.js
+slideshow.css
+classList.js</pre></td></tr></table></div>
+
+<p>然后将文件保存为manifest格式，并在HTML标签中引入即可：</p>
+
+<div><div><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">html</span> manifest<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;responsive.manifest&quot;</span>&gt;</span></pre></div></div>
+
+<p>这样，用户在第一次访问的时候会慢一点儿，但是后续访问会很快，3G网络中也能为用户节省带宽。</p>
+<h4>移动设备优先</h4>
+<p>一种新的设计流程是，先为移动设备设计界面，然后将PC端作为一个扩展。</p>
+<p>这样做的好处是显而易见的，移动终端不会加载多余的资源，也不会因为PC端的样式而重绘页面，同时也不会影响PC端的表现。</p>
+<h4>流体图片(fluid image)</h4>
+<p>页面中的图片有时会比手机/平板的屏幕（viewport）宽，这样会将页面容器撑开，但是移动浏览器又不能scroll，结果图片被切掉一部分，然后还会有一部分内容被隐藏掉，用户看不到。</p>
+<p>解决这个问题的方法很简单，将img的最大宽度设置成100%就可以了：</p>
+
+<div><div><pre style="font-family:monospace">img<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">max-width</span><span style="color:#00aa00">:</span><span style="color:#933">100%</span><span style="color:#00aa00">}</span></pre></div></div>
+
+<p>嗯，这里的前提是，没有给img标签设置宽度和高度，否则显示会有问题。另外不建议直接设置width=”100%”，因为会把小图拉大，模糊显示。</p>
+<p>同理，video标签和iframe标签的宽度也可以这样做，而且最好不要使用iframe，宽度是个问题，性能也是一个方面吧。</p>
+<h4>CSS3 image</h4>
+<p>这个方法有些惊艳</p>
+<p>我们都知道可以用::before和::after伪元素+content属性来动态显示一些内容或者做其它很酷的事情，而且在CSS 2.1中即被支持。不过content属性在CSS 2.1中只能用于这两个伪元素中，而在CSS3中，任何元素都可以使用content属性了，这个方法就是结合css3 的attr属性和HTML自定义属性的功能：</p>
+
+<div><div><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">img</span> <span style="color:#000066">src</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;image.jpg&quot;</span> </span>
+<span style="color:#009900">	data-src-600px<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;image-600px.jpg&quot;</span> </span>
+<span style="color:#009900">	data-src-800px<span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;image-800px.jpg&quot;</span> <span style="color:#000066">alt</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;&quot;</span>&gt;</span></pre></div></div>
+
+<p>然后用media query来动态赋值：</p>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace"><span style="color:#a1a100">@media (min-device-width:600px) { </span>
+	img<span style="color:#00aa00">[</span>data-src<span style="color:#933">-600px</span><span style="color:#00aa00">]</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">content</span><span style="color:#00aa00">:</span> attr<span style="color:#00aa00">(</span>data-src<span style="color:#933">-600px</span><span style="color:#00aa00">,</span> <span style="color:#993333">url</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span> 
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span>
+<span style="color:#a1a100">@media (min-device-width:800px) {</span>
+	img<span style="color:#00aa00">[</span>data-src<span style="color:#933">-800px</span><span style="color:#00aa00">]</span> <span style="color:#00aa00">{</span>
+		<span style="color:#000000;font-weight:bold">content</span><span style="color:#00aa00">:</span> attr<span style="color:#00aa00">(</span>data-src<span style="color:#933">-800px</span><span style="color:#00aa00">,</span> <span style="color:#993333">url</span><span style="color:#00aa00">)</span><span style="color:#00aa00">;</span>
+	<span style="color:#00aa00">}</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+<p>当然，这种方法也有不足之处，比如PC端宽屏幕需要加载两个图片文件，然后我们也要为此准备多张图片文件等。</p>
+<h4>pre标签</h4>
+<p>有的网站，比如，像前端观察这样的技术博客，会用pre来显示源代码，而浏览器对pre标签默认设置white-space:pre，这样，代码就不会换行，从而撑开子容器，造成内容被隐藏的问题：</p>
+<p><img title="pre" src="http://www.qianduan.net/wp-content/uploads/2011/11/pre.jpg" alt="" width="427" height="427"></p>
+<p>右边的文字被隐藏掉了。</p>
+<p>解决方法很简单：</p>
+
+<div><div><pre style="font-family:monospace">pre<span style="color:#00aa00">{</span>
+	<span style="color:#000000;font-weight:bold">white-space</span><span style="color:#3333ff">:pre-wrap
+	</span>word-wrap<span style="color:#00aa00">:</span> break-word<span style="color:#00aa00">;</span>
+	word-break<span style="color:#00aa00">:</span> break-all<span style="color:#00aa00">;</span><span style="color:#808080;font-style:italic">/*如果要兼容IE，可以加上这句，连续字母断行的问题伤不起啊。。。。*/</span>
+<span style="color:#00aa00">}</span></pre></div></div>
+
+<p>当然，不只是pre标签，关键是white-space和word-break属性的值。</p>
+<p>嗯，主要的技术和技巧其实就这些，大家不会陌生。下面是一些比较有用的工具什么的：</p>
+<h3>响应式网页设计工具与资源</h3>
+<p>国外在响应式网页设计上已经走的很远了，已经有很多工具和资源供我们参考和使用：</p>
+<h4>CSS 框架</h4>
+<ul>
+<li><a href="http://stuffandnonsense.co.uk/projects/320andup/">320 and Up</a>
+</li>
+<li><a href="http://html5boilerplate.com/mobile/">Mobile Boilerplate</a>
+</li>
+<li><a href="http://goldengridsystem.com/" rel="nofollow">Golden Grid System</a>
+</li>
+<li><a href="http://thatcoolguy.github.com/gridless-boilerplate/" rel="nofollow">Gridless</a>
+</li>
+<li><a href="http://lessframework.com/" rel="nofollow">Less Framework</a>
+</li>
+<li><a href="http://cssgrid.net/" rel="nofollow">1140 CSS Grid System</a>
+</li>
+<li><a href="http://www.designinfluences.com/fluid960gs/" rel="nofollow">Fluid 960 Grid System</a>
+</li>
+<li><a href="http://simplegrid.info/" rel="nofollow">SimpleGrid</a>
+</li>
+<li><a href="http://www.getskeleton.com/" rel="nofollow">Skeleton</a>
+</li>
+</ul>
+<h4>实用工具</h4>
+<ul>
+<li><a href="http://filamentgroup.com/lab/respondjs_fast_css3_media_queries_for_internet_explorer_6_8_and_more/">Respond.js</a>，让IE6-8支持meidia query
+</li>
+<li><a href="http://mattkersley.com/responsive/">Responsive Design Testing</a> 简单而方便的测试网站的响应性的工具，输入网址即可看到网站在不同分辨率下的表现</li>
+
+<li><a href="http://resizemybrowser.com/">Resize My Browser</a> 缩放浏览器工具，不过不支持chrome和opera浏览器
+</li>
+<li><a href="http://seesparkbox.com/foundry/media_query_bookmarklet">Media Query Bookmarklet</a> 顾名思义，这是一个关于media query的书签工具
+</li>
+<li><a href="http://protofluid.com/">ProtoFluid</a> 在线查看和调试网站对移动终端兼容性的工具，很赞
+</li>
+<li><a href="http://quirktools.com/screenfly/">ScreenFly</a> 和ProtoFluid类似
+</li>
+<li><a href="http://responsivepx.com/" rel="nofollow">responsivepx</a> 更直观的测试网站对不同分辨率的适配性
+</li></ul>
+<h3>争论和总结</h3>
+<p>响应式网页设计被提出以来，争论就不断，其实核心问题只有两个个：太多的资源请求和有限的终端支持之间的矛盾、响应式的网页设计和移动终端在用户体验和视觉风格上的差异。前者不能容忍在弱小的手机/平板上通过龟速的3G/2G网络来加载一个笨重的PC端页面，而后者纠结响应式网站不像手机网站。</p>
+<p>我的想法是，具体问题具体分析，比如，强内容的网站，完全可以尝试响应式网站，而重视觉和功能的网站，则可以尝试建立一个独立的移动网站。</p>
+<p>另外，显然，响应式网页设计的大部分技术，是可以用在WebApp开发中的。</p>
+<p>最后，欢迎各种吐槽、各种批评、各种建议、各种发散、以及各种新观点新技术～～欢迎发表评论～～</p>
+<p>PS：如果你手上有android/iPhone，可以直接访问下<a href="http://www.qianduan.net" title="前端观察">前端观察</a>。 :)</p>
+<h4>参考文章：</h4>
+<ul>
+<li><a href="http://www.smashingmagazine.com/2011/07/22/responsive-web-design-techniques-tools-and-design-strategies/">Responsive Web Design Techniques, Tools and Design Strategies</a></li>
+<li>
+<a href="http://www.alistapart.com/articles/responsive-web-design/">Responsive Web Design</a></li>
+<li><a href="http://www.webdesignerdepot.com/2011/09/the-ultimate-responsive-web-design-roundup/" rel="bookmark" title="Permanent Link to The ultimate responsive web design roundup">The ultimate responsive web design roundup</a></li>
+</ul>

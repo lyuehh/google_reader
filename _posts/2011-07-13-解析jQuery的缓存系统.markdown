@@ -1,0 +1,149 @@
+---
+layout: post
+title:  "解析jQuery的缓存系统"
+date:   2011-07-13 15:26:06
+author: admin
+categories: program
+---
+
+## 解析jQuery的缓存系统
+### by admin
+### at 2011-07-13 15:26:06
+### original <http://stylechen.com/cachedata.html>
+
+<p>前不久在研究jQuery的动画队列的时候，发现jQuery的缓存系统也很强大，尽管以前也稍微接触过，但一直都没有深入研究过。jQuery的缓存系统在外部应用的时候都比较简单，比如要将某个URL数据存到缓存中只要这么写：</p>
+<pre>
+var val = 'stylechen.com';
+$('div').data( 'url' );  // 返回undefined
+$('div').data( 'url', val );  // 返回'stylechen.com'
+$('div').data( 'url' );  // 返回'stylechen.com'
+</pre>
+<p>不光可以存储字符串，上面的val也可以是任意数据，对象、数组、函数等都可以存到里面。仅仅实现这种功能还是挺简单的，声明一个全局对象用来存储数据，然后使用data方法来存储或返回数据：</p>
+<pre>
+var cacheData = {};  // 用来存储数据的全局对象
+var data = function( key, val ){
+	if( val !== undefined ){
+		cacheData[key] = val;
+	}
+
+	return cacheData[key];
+};
+</pre>
+<p>jQuery缓存系统的真正魅力在于其内部应用中，动画、事件等都有用到这个缓存系统。之前在写<a href="http://stylechen.com/easyanim.html">easyAnim</a>的时候，我将动画的队列都存储到各DOM元素的自定义属性中，这样虽然可以方便的访问队列数据，但也同时带来了隐患。如果给DOM元素添加自定义的属性和过多的数据可能会引起内存泄漏，所以要尽量避免这么干。</p>
+<p>如果是使用jQuery的缓存系统来存放DOM元素的数据，会先给该DOM元素添加一个随机生成的属性，这个属性用来存放访问缓存数据的索引值，就好比DOM元素都有一把开启缓存保险箱的钥匙，只要有了钥匙就可以随时开启缓存保险箱。将本来存放到DOM元素中的数据都转到了缓存中，而DOM元素本身只要存储一个简单的属性就可以了，这样就可以将由DOM元素引起的内存泄漏的风险规避到最小。下面是我模拟jQuery自己写的一个简单的缓存系统：</p>
+<pre>
+var cacheData = {},	// 用来存储数据的全局对象
+	uuid = 0,
+	// 声明随机数
+	expando = 'cacheData' + ( +new Date() + "" ).slice( -8 );  
+
+var data = function( key, val, data ){
+	if( typeof key === 'string' ){
+		if( val !== undefined ){
+			cacheData[key] = val;
+		}
+
+		return cacheData[key];
+	}
+	else if( typeof key === 'object' ){
+		var index,
+			thisCache;
+
+		if( !key[expando] ){
+			// 添加一个DOM元素的属性
+			// 随机数是属性名 索引值是属性值
+			index = key[expando] = ++uuid;
+			thisCache = cacheData[index] = {};
+		}
+		else{
+			index = key[expando];
+			thisCache = cacheData[index];
+		}
+
+		if( !thisCache[expando] ){
+			thisCache[expando] = {};
+		}
+
+		if( data !== undefined ){
+			// 将数据存到缓存对象中
+			thisCache[expando][val] = data;
+		}
+
+		// 返回DOM元素存储的数据
+		return thisCache[expando][val];
+	}
+};
+
+var removeData = function( key, val ){
+	if( typeof key === 'string' ){
+		delete cacheData[key];
+	}
+	else if( typeof key === 'object' ){
+		if( !key[expando] ){
+			return;
+		}
+		// 检测对象是否为空
+		var isEmptyObject = function( obj ) {
+				var name;
+				for ( name in obj ) {
+					return false;
+				}
+				return true;
+			},
+
+			removeAttr = function(){
+				try{
+					// IE8及标准浏览器可以直接使用delete来删除属性
+					delete key[expando];
+				}
+				catch (e) {
+					// IE6/IE7使用removeAttribute方法来删除属性
+					key.removeAttribute(expando);
+				}
+			},
+
+			index = key[expando];
+
+		if( val ){
+			// 只删除指定的数据
+			delete cacheData[index][expando][val];
+			// 如果是空对象 索性全部删除
+			if( isEmptyObject( cacheData[index][expando] ) ){
+				delete cacheData[index];
+				removeAttr();
+			}
+		}
+		else{
+			// 删除DOM元素存到缓存中的所有数据
+			delete cacheData[index];
+			removeAttr();
+		}
+	}
+};
+</pre>
+<p>上面的代码值得注意的是IE6/IE7中用delete来删除自定义的属性会报错，只能使用removeAttribute来删除，标准的浏览器都可以使用delete来删除。下面是调用的结果：</p>
+<pre>
+var box = document.getElementById( 'box' ),
+	list = document.getElementById( 'list' );
+
+data( box, 'myName', 'chen' );
+alert( data( box, 'myName' ) );  // chen
+
+data( box, 'myBlog', 'stylechen.com' );
+alert( data( box, 'myBlog' ) );  // stylechen.com
+
+removeData( box, 'myBlog' );
+
+alert( data( box, 'myBlog' ) );   // undefined
+alert( data( box, 'myName' ) );  // chen
+alert( box[expando] );  // 1
+
+removeData( box );
+alert( box[expando] );   // undefined
+</pre>
+<p>当然，jQuery的缓存系统比我的这个要复杂些，不过核心原理还是一样的。easyAnim将会在后续的版本中引入这个缓存系统。</p>
+<div>
+原载于：雨夜带刀’s Blog<br>
+本文链接：<a href="http://stylechen.com/cachedata.html">http://stylechen.com/cachedata.html</a><br>
+如需转载请以链接形式注明原载或原文地址。
+</div>

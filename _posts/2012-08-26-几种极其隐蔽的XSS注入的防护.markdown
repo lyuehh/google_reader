@@ -1,0 +1,81 @@
+---
+layout: post
+title:  "几种极其隐蔽的XSS注入的防护"
+date:   2012-08-26 17:37:46
+author: ideawu
+categories: program
+---
+
+## 几种极其隐蔽的XSS注入的防护
+### by ideawu
+### at 2012-08-26 17:37:46
+### original <http://www.udpwork.com/item/8004.html>
+
+<p>XSS注入的本质就是: 某网页中根据用户的输入, 不期待地生成了可执行的js代码, 并且js得到了浏览器的执行. 意思是说, 发给浏览器的字符串中, 包含了一段非法的js代码, 而这段代码跟用户的输入有关.</p>
+<p>常见的XSS注入防护, 可以通过简单的 htmlspecialchars(转义HTML特殊字符), strip_tags(清除HTML标签) 来解决, 但是, 还有一些隐蔽的XSS注入不能通过这两个方法来解决, 而且, 有时业务需要不允许清除HTML标签和特殊字符. 下面列举几种隐蔽的XSS注入方法:</p>
+<h3>IE6/7 UTF7 XSS 漏洞攻击</h3>
+<p>隐蔽指数: 5
+<br>
+伤害指数: 5</p>
+<p>这个漏洞非常隐蔽, 因为它让出现漏洞的网页看起来只有英文字母(ASCII字符), 并没有非法字符, htmlspecialchars 和 strip_tags 函数对这种攻击没有作用. 不过, 这个攻击只对 IE6/IE7 起作用, 从 IE8 起微软已经修复了. 你可以把下面这段代码保存到一个文本文件中(前面不要有空格和换行), 然后用 IE6 打开试试(没有恶意代码, 只是一个演示):</p>
+<pre>
++/v8 +ADw-script+AD4-alert(document.location)+ADw-/script+AD4-
+</pre><p>最容易中招的就是 JSONP 的应用了, 解决方法是把非字母和数字下划线的字符全部过滤掉. 还有一种方法是在网页开始输出空格或者换行, 这样, UTF7-XSS 就不能起作用了.</p>
+<p>因为只对非常老版本的 IE6/IE7 造成伤害, 对 Firefox/Chrome 没有伤害, 所以伤害指数只能给 4 颗星.</p>
+<p>参考资料:<a href="http://openmya.hacker.jp/hasegawa/public/20071107/s6/h6.html">UTF7-XSS</a></p>
+<h3>不正确地拼接 JavaScript/JSON 代码段</h3>
+<p>隐蔽指数: 5
+<br>
+伤害指数: 5</p>
+<p>Web 前端程序员经常在 PHP 代码或者某些模板语言中, 动态地生成一些 JavaScript 代码片段, 例如最常见的:</p>
+<pre>
+var a = &#39;&lt;?php echo htmlspecialchars($name); ?&gt;&#39;;
+</pre><p>不想, $name 是通过用户输入的, 当用户输入 a’; alert(1); 时, 就形成了非法的 JavaScript 代码, 也就是 XSS 注入了.</p>
+<p>在解决问题之前, 我们要思考问题的本质是什么? 本质在于程序员可以用字符串来控制整个世界, 却没有用正确的方法来生成正确的字符串, 而是采用了功能强大且原始的”手工字符串拼接”.</p>
+<p>只需要把上面的代码改成:</p>
+<pre>
+var a = &lt;?php echo json_encode($name); ?&gt;;
+</pre><p>去掉单引号, 利用 PHP 的 json_encode() 函数来生成表示字符串的字符串. 这样做是因为,<strong>最好用 json_encode() 函数来生成所有的 JSON 串, 而不要试图自己去拼接</strong>
+. 程序员总是犯这样的错误: 自己去解析 HTTP 报文, 而不是用现成的成熟的库来解析. 用 json_encode() 的好处还在于, 即使业务要求”我要保留单引号”时, XSS注入也可以避免.</p>
+<p>隐蔽指数最高级, 伤害所有的通用浏览器. 这种 XSS 注入方式具有非常重要的参考意义.</p>
+<p>最后, 根据工作中的经验, 以及我自己和别人犯过的错, 我总结出一个定理: 没有一劳永逸的单一方法可以解决所有 XSS 注入问题.</p>
+<p>有用的经验:</p>
+<ul><li>输出 HTML 代码时 htmlspecialchars</li>
+<li>输出 JavaScript 代码时 json_encode</li>
+<li>输入过滤应该用于解决业务限制, 而不是用于解决 XSS 注入(与严进宽出的原则相悖, 所以本条值得讨论)</li>
+</ul>
+<p><strong>讨论:</strong>
+</p>
+<p>上文提到的经验第3条, 是一种”宽进严出”的原则, 和”严进宽出”原则是相悖的. 其实, 我认为不应该把”严进宽出”作为一条伪真理, 好像除了它其它的说法都不对了似的. “宽进严出”和”严进宽出”应该具有完全相等的地位, 根据实现的成本进行取舍.</p>
+<p>例如, 用户的名字可以采用”严进宽出”原则, 不允许用户填写单引号, 大于号小于号等. 但是用户的签名呢? 难道就不能填单引号? 如果要走极端, 想找出一种银弹, 那么我能想到的就是对所有的输入一律进行 htmlspecialchars 和 json_encode(且不说解决不了 utf7-xss).</p>
+<p>其实, XSS 注入的解决应该是和输出端相关的. 当需要输出到文本文件时, 过滤和转义都是无必要的. 当输出到 HTML 渲染引擎时, json_encode 是无必要的. 当输出到 JS 引擎时, htmlspecialchars 是无必要的.</p>
+<h3>Related posts:</h3>
+<ol><li><a href="http://www.ideawu.net/blog/archives/399.html" title="Permanent Link: JavaScript+jQuery两栏选择控件">JavaScript+jQuery两栏选择控件</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/619.html" title="Permanent Link: PHP浮点数显示和转成字符串">PHP浮点数显示和转成字符串</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/542.html" title="Permanent Link: 以浏览器为核心的客户端软件的安全问题">以浏览器为核心的客户端软件的安全问题</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/611.html" title="Permanent Link: 强大的纯JS数据图工具-flot">强大的纯JS数据图工具-flot</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/412.html" title="Permanent Link: JavaScript分页控件">JavaScript分页控件</a></li>
+</ol>
+<div><p><img src="http://www.ideawu.net/favicon.ico">你现在看的文章是:<a href="http://www.ideawu.net/blog/archives/661.html" title="几种极其隐蔽的XSS注入的防护">几种极其隐蔽的XSS注入的防护</a></p>
+<div><a href="http://www.benegg.com/linode-ad.php">Linode VPS - 美国虚拟主机</a>|<a href="http://www.udpwork.com/">IT牛人博客聚合网站</a></div>
+</div>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8004.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8004.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8004.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

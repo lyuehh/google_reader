@@ -1,0 +1,137 @@
+---
+layout: post
+title:  "开发笔记 (7) : 服务器底层框架及 RPC"
+date:   2012-01-09 01:03:17
+author: 云风
+categories: program
+---
+
+## 开发笔记 (7) : 服务器底层框架及 RPC
+### by 云风
+### at 2012-01-09 01:03:17
+### original <http://blog.codingnow.com/2012/01/dev_note_7.html>
+
+<p>很久没有写工作笔记了，如果不在这里写，我连写周报的习惯都没有。所以太长时间不写就会忘记到底做了些啥了。</p>
+
+<p>这半个多月其实做了不少工作，回想起来又因为太琐碎记不太清。干脆最近这几天完成的这部分工作来写写吧。</p>
+
+<p>我在 <a href="http://blog.codingnow.com/cloud/DevNotes">开发笔记</a> 第四篇谈到了 agent 的处理流程。但实际操作下来还是觉得概念显得复杂。推而广之，对于不是 agent 的服务，我需要一个通用的消息处理框架。</p>
+
+<p>对于每个服务器，可以看成是对一组约定的服务协议进行处理。对于协议分组，之前我有许多想法，可做下来又发现了若干问题。本来我希望定义出一个完整的 session 概念，同一个 session 下，可以分不同的步骤，每个步骤都有一个激活的协议组。协议组之间可以共享状态，同时限制并发。做下来发现，很难定义出完整的事务处理流程并描述清楚。可能需要设计一个 DSL 来解决这个问题更好一些。一开始我也是计划设置这个小语言的。可一是时间紧迫，二是经验不足，很难把 DSL 设计好。</p>
+
+<p>而之前的若干项目证明，其实没有良好的事务描述机制，并不是不可用。实现一个简单的 RPC 机制，一问一答的服务提供方式也能解决问题。程序员只要用足够多经验，是可以用各种土法模拟长流程的事务处理流。只是没有严格约束，容易写出问题罢了。那么这个问题的最小化需求定义就是：可以响应发起请求人的请求，解析协议，匹配到对应的处理函数。所有请求都应该可以并发，这样就可以了。至于并发引起的问题，可以不放在这个层次解决。</p>
+
+<p>我谨慎的选择了 RPC 这种工作方式。实现了一个简单的 RPC 调用。因为大多数服务用 Lua 来实现，利用 coroutine 可以工作的很好。不需要利用 callback 机制。在每条请求/回应的数据流上，都创建了独立的环境让工作串行进行。相比之前，我设计的方案是允许并发的 RPC 调用的。这个修改简化了需求定义，也简化的实现。</p>
+
+<p>举例来说，如果 Client 发起登陆验证请求，那么由给这个 Client 服务的 Agent 首先获知 Client 的需求。然后它把这个请求经过加工，发送到认证服务器等待回应（代码上看起来就是一次函数调用），一直等到认证服务器响应发回结果，才继续跑下面的逻辑。所以处理 Client 登陆请求这单条处理流程上，所有的一切都仅限于串行工作。当然，Agent 同时还可以相应 Client 别的一些请求。</p>
+
+<p>如果用 callback 机制来表达这种处理逻辑，那就是在发起一个 RPC 调用后，不能做任何其它事情，后续流程严格在 callback 函数中写。</p>
+
+<p>每个 RPC 调用看起来是这样的：</p>
+
+        <pre>
+  local salt = service.call(addr ,
+     "login.salt" , { username = username }).salt
+  local response = md5(username .. ":" .. password .. ":" .. salt)
+  local ok = service.call(addr, "login.challenge" ,
+     { username = username , response = response }).ok
+  print(ok)
+</pre>
+
+<p>而 service 编写是这样的：</p>
+
+<pre>
+-- login.lua
+function salt(username)
+  local salt = gen_salt(username)
+  return { salt = salt }
+end
+
+function challenge(username , response)
+    local salt = gen_salt(username)
+    local password = service.call("authdb",
+       "query" , { username = username }).password
+    local result = md5(username .. ":" .. password .. ":" .. salt
+    return { ok = (result == response) }
+end
+</pre>
+
+<p>大家需要约定中间的协议，采用 protobuf 格式描述：</p>
+
+<pre>
+package login;
+
+message salt {
+  optional string username = 1;
+  message response {
+    optional bool salt = 1;
+  }
+}
+
+message challenge {
+  optional string username = 1;
+  optional string response = 2;
+  message response {
+    optional bool ok = 1;
+  }
+}
+</pre>
+
+<p>btw, 我没有用 protobuf 的 serivce 特性。觉得不太方便，而且也没有太多必要引入过多特性。</p>
+
+<p>当然这只是 RPC 范例代码，不设计认证协议的具体设计。实际应用中，校验过程会比这个更完备一些。</p>
+
+<p>在 login 服务中，收到用户来的请求，会去向 authdb 服务索取密码信息。这个 RPC 调用是阻塞的，直到 authdb 返回结果。但是，login 服务并不被阻塞，可以接受其它请求。每个不同请求的回应对应关系，是在低一个层次上的 session id 来区分。这些隐藏在框架实现中了。</p>
+
+<p>设计细节今天先不列了，也没太多难度。</p>
+
+<p>最后，我对 RPC 的使用是谨慎的。必须留意 RPC 会带来的问题。这些在《<a href="http://blog.codingnow.com/2006/10/taoup.html">Unix 编程艺术</a>》7.3.2 有论述，我再说多少次也超不出这个范畴。</p>
+
+<hr>
+
+<p>做这套东西，我和蜗牛是有一些分工的。服务器数据流框架并不是我来实现。蜗牛用 erlang 做的。</p>
+
+<p>这些东西我们折腾了好久，这里面有我的很多工作失误。最终，我觉得应该把工作严格划分开，需要有一个清晰的模块需求定义。</p>
+
+<p>本来是初步定好了，每个服务工作在一个独立的 Lua State 中（并不一定在独立进程/线程中），包括为每个 Client 服务的 Agent 。一开始是在 Lua 的层次来划分工作的。蜗牛写了一部分的 Lua 驱动代码。我觉得是我在分工问题上的错误。这个需求很难稳定下来。后来，我整理了一下思路，决定定义明确的 C 接口，然后我来做 Lua 封装。</p>
+
+<p>服务器的大框架主要解决玩家的接入问题，各个服务间的数据流向问题，服务的启动和停止等等。我设想，每个服务都有单一的输入输出流，只面对框架。实现上可能框架并不是在做复制转发，有可能直接对接两个服务的输入输出。尤其是两个服务可能是在同一个线程中，以 coroutine 的形式工作。这个优化空间可以留下来。</p>
+
+<p>我在做后面的工作之前，先写了一份文档，描述需求：</p>
+
+<ul>
+<li>向 skynet 发送一条指令, 并立刻获得一个结果. 目前提供以下三条指令:
+<ul>
+<li>注册自己到 skynet , 可以给出一个 well-known 的名字 (name), 也可以不给出. skynet 返回一个 unique 名字 (uid)</li>
+<li>向 skynet 查询系统时间</li>
+<li>设置 timer , skynet 会在 timeout 时回调</li>
+</ul></li>
+<li>向 skynet 发送数据, 由 skynet 决定把数据送达何处.</li>
+<li>注册一个 callback , 当 skynet 有消息送达的时候触发.</li>
+</ul>
+
+<p>注：skynet 是框架的开发代号。</p>
+
+<p>然后是接口的 C 定义</p>
+
+<pre><span>void</span> <span>*</span> skynet_context<span><span>(</span></span><span>void</span><span><span>)</span></span><span>;</span>
+<span>void</span> skynet_exit<span><span>(</span></span><span>void</span> <span>*</span> context<span><span>)</span></span><span>;</span>
+<span>void</span> skynet_step<span><span>(</span></span><span>void</span> <span>*</span> ud<span><span>)</span></span><span>;</span>
+
+<span>const</span> <span>char</span> <span>*</span> skynet_command<span><span>(</span></span><span>void</span> <span>*</span> context<span>,</span> <span>const</span> <span>char</span> <span>*</span> cmd <span>,</span> <span>const</span> <span>char</span> <span>*</span> parm<span><span>)</span></span><span>;</span>
+<span>void</span> skynet_send<span><span>(</span></span><span>void</span> <span>*</span> context<span>,</span> <span>const</span> <span>char</span> <span>*</span> addr <span>,</span> <span>const</span> <span>char</span> <span>*</span> msg<span>,</span> <span>size_t</span> sz<span><span>)</span></span><span>;</span>
+
+<span>typedef</span> <span>void</span> <span><span>(</span></span><span>*</span>skynet_cb<span><span>)</span></span><span><span>(</span></span><span>void</span> <span>*</span>context<span>,</span> <span>void</span> <span>*</span>ud<span>,</span> <span>const</span> <span>char</span> <span>*</span> uid <span>,</span> <span>const</span> <span>char</span> <span>*</span> msg<span>,</span> <span>size_t</span> sz<span><span>)</span></span><span>;</span>
+<span>void</span> skynet_callback<span><span>(</span></span><span>void</span> <span>*</span> context<span>,</span> skynet_cb cb<span><span>)</span></span><span>;</span></pre>
+
+<p>注: command 我选取了最简单的字符串风格。是因为考虑到字符串的知识依赖最小，很容易 binding 到任何语言中。也最容易实现网络传输。不同 command 的协议定义也写了文档，包括文本协议的定义。这里就不一一列出了。</p>
+
+<p>有了文档之后，我开始编写 skynet 的黑盒。基本上就是一个本地单一进程，用来调度同一进程下的不同服务。这个很好写，大约两三小时，不到 300 行 C 代码就搞定了。虽然限制很多，性能也很低下，但可以实现以上的接口。</p>
+
+<p>之后的代码就不再是假盒子了。是把这几个 C 接口 binding 到 lua 里，然后在 lua 层面写真实的应用。工作量比较大，但也好做。一旦蜗牛那边真正的 skynet 工作正确，整合工作只是替换前面几个接口的实现库而已。</p>
+
+<hr>
+
+<p>Blog 写这种系列， 不太方便整理。 这点还是 wiki 比较好。<a href="http://blog.codingnow.com/cloud/DevNotes">我把这个系列整理出一个列表了</a>。</p>
+
+<p>ps. 这段时间还做了许多琐碎的工作，包括帮客户端解决一些问题。中间闲了两天，想玩一下 LaTeX ，结果就写了这个：<a href="http://www.codingnow.com/download/readinglua.pdf">Lua 源码欣赏</a> 。结果工作一忙就没时间写下去了。估计这个半拉子工程会这么太监掉的。</p>

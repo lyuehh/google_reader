@@ -1,0 +1,246 @@
+---
+layout: post
+title:  "Backbone.js Tutorial: Backbone.sync"
+date:   2012-12-20 08:00:00
+author: 
+categories: program
+---
+
+## Backbone.js Tutorial: Backbone.sync
+### by 
+### at 2012-12-20 08:00:00
+### original <http://feedproxy.google.com/~r/dailyjs/~3/sir13oqvmI4/backbone-tutorial-4>
+
+<ul>
+  <li><a href="http://dailyjs.com/2012/11/29/backbone-tutorial-1/">Part 1: Build Environment</a></li>
+  <li><a href="http://dailyjs.com/2012/12/06/backbone-tutorial-2/">Part 2: Google's APIs and RequireJS</a></li>
+  <li><a href="http://dailyjs.com/2012/12/13/backbone-tutorial-3/">Part 3: Authenticating with OAuth2</a></li>
+  <li><a href="http://dailyjs.com/2012/12/20/backbone-tutorial-4/">Part 4: Backbone.sync</a></li>
+  <li><a href="http://dailyjs.com/2012/12/27/backbone-tutorial-5/">Part 5: List Views</a></li>
+</ul>
+<h3>Preparation</h3>
+
+<p>Before starting this tutorial, you’ll need the following:</p>
+
+<ul>
+<li><a href="https://github.com/alexyoung/dailyjs-backbone-tutorial">alexyoung / dailyjs-backbone-tutorial</a> at commit <code>c1d5a2e7cc</code></li>
+
+<li>The API key from part 2</li>
+
+<li>The “Client ID” key from part 2</li>
+
+<li>Update <code>app/js/config.js</code> with your keys (if you’ve checked out my source)</li>
+</ul>
+
+<p>To check out the source, run the following commands (or use a suitable Git GUI tool):</p>
+<div><pre><code>git clone git@github.com:alexyoung/dailyjs-backbone-tutorial.git
+cd dailyjs-backbone-tutorial
+git reset --hard c1d5a2e7cc
+</code></pre>
+</div>
+<h3>Google’s Tasks API</h3>
+
+<p>To recap: the point of this tutorial series is to build a Backbone.js single page application that uses client-side JavaScript to communicate with Google’s authentication and to-do list APIs. Got that? Good!</p>
+
+<p>Google provides access to our to-do lists through two APIs:</p>
+
+<ul>
+<li><a href="https://developers.google.com/google-apps/tasks/v1/reference/tasklists#resource">Tasklists</a></li>
+
+<li><a href="https://developers.google.com/google-apps/tasks/v1/reference/tasks">Tasks</a></li>
+</ul>
+
+<p>When loading Google’s JavaScript, the browser is bestowed with a global called <code>gapi</code> that provides access to various objects and methods. In the last part, I quietly included a call to <code>gapi.client.load</code> that loads the <code>tasks</code> API:</p>
+<div><pre><code><span>gapi</span><span>.</span><span>client</span><span>.</span><span>load</span><span>(</span><span>&#39;tasks&#39;</span><span>,</span> <span>&#39;v1&#39;</span><span>,</span> <span>function</span><span>()</span> <span>{</span> <span>/* Loaded */</span> <span>});</span>
+</code></pre>
+</div>
+<p>This can be found in <code>app/js/gapi.js</code>. The remaining challenge before building the interface is to implement a new <code>Backbone.sync</code> method that uses <code>gapi</code> to communicate with the Tasks and Tasklists APIs.</p>
+
+<h3>Backbone.sync Structure</h3>
+
+<p>I’ve already talked about the overall structure of <code>Backbone.sync</code> in <a href="http://dailyjs.com/2012/12/06/backbone-tutorial-2/">part 2</a>. The pattern I’ll use in these tutorials is fairly generic, so you could use the same approach to communicate with something other than Google’s APIs.</p>
+
+<p>The <code>sync</code> method itself takes three arguments, the first of which is the <code>method</code> (<code>create</code>, <code>update</code>, <code>delete</code>, and <code>read</code>). We need to map <code>method</code> to something Google’s API can understand.</p>
+
+<p>This is what we’ve got so far:</p>
+<div><pre><code><span>Backbone</span><span>.</span><span>sync</span> <span>=</span> <span>function</span><span>(</span><span>method</span><span>,</span> <span>model</span><span>,</span> <span>options</span><span>)</span> <span>{</span>
+  <span>options</span> <span>||</span> <span>(</span><span>options</span> <span>=</span> <span>{});</span>
+
+  <span>switch</span> <span>(</span><span>method</span><span>)</span> <span>{</span>
+    <span>case</span> <span>&#39;create&#39;</span><span>:</span>
+    <span>break</span><span>;</span>
+
+    <span>case</span> <span>&#39;update&#39;</span><span>:</span>
+    <span>break</span><span>;</span>
+
+    <span>case</span> <span>&#39;delete&#39;</span><span>:</span>
+    <span>break</span><span>;</span>
+
+    <span>case</span> <span>&#39;read&#39;</span><span>:</span>
+    <span>break</span><span>;</span>
+  <span>}</span>
+<span>};</span>
+</code></pre>
+</div>
+<p>Google’s Tasks API methods map to the Backbone <code>method</code> argument like this:</p>
+<table>
+  <thead>
+    <tr>
+      <th>Google Tasks API</th><th>Backbone.sync Method</th><th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>insert</code></td><td><code>create</code></td><td>Create a new task.</td>
+    </tr>
+    <tr>
+      <td><code>update</code></td><td><code>update</code></td><td>Update an existing task.</td>
+    </tr>
+    <tr>
+      <td><code>delete</code></td><td><code>delete</code></td><td>Delete a task.</td>
+    </tr>
+    <tr>
+      <td><code>list</code></td><td><code>read</code></td><td>Get a list of tasks.</td>
+    </tr>
+  </tbody>
+</table>
+<p>Even though Google’s API doesn’t look like the Rails 3-based RESTful API that Backbone.js is designed for out of the box, it’s still very close.</p>
+
+<h3>Making Requests with <code>gapi</code></h3>
+
+<p>The <code>gapi</code> object makes requests using this pattern:</p>
+
+<ul>
+<li>Call one of the <code>gapi.client.tasks</code> methods with the <em>request content</em> to get a <code>request</code> object</li>
+
+<li>Call <code>request.execute</code> with a callback to send the request</li>
+
+<li>The callback receives a <code>response</code> object, much like a standard Ajax request</li>
+</ul>
+
+<p>Here’s what this looks like in reality:</p>
+<div><pre><code><span>var</span> <span>requestContent</span> <span>=</span> <span>{}</span>
+  <span>,</span> <span>request</span>
+  <span>,</span> <span>gapiResource</span><span>;</span>
+
+<span>gapiResource</span> <span>=</span> <span>&#39;tasks&#39;</span><span>;</span>
+<span>requestContent</span><span>[</span><span>&#39;tasklist&#39;</span><span>]</span> <span>=</span> <span>tasklistId</span><span>;</span> <span>// Assuming we have one</span>
+<span>requestContent</span><span>[</span><span>&#39;resource&#39;</span><span>]</span> <span>=</span> <span>model</span><span>.</span><span>toJSON</span><span>();</span>
+
+<span>// &#39;insert&#39; is for creating new tasks</span>
+<span>request</span> <span>=</span> <span>gapi</span><span>.</span><span>client</span><span>.</span><span>tasks</span><span>[</span><span>gapiResource</span><span>].</span><span>insert</span><span>(</span><span>requestContent</span><span>);</span>
+
+<span>// Send the request to the API</span>
+<span>request</span><span>.</span><span>execute</span><span>(</span><span>function</span><span>(</span><span>res</span><span>)</span> <span>{</span>
+  <span>// Handle the response</span>
+<span>});</span>
+</code></pre>
+</div>
+<p>Looking at this, it’s clear that we need two models: <code>Task</code> and <code>TaskList</code>. There also need to be two corresponding collections: <code>Tasks</code> and <code>TaskLists</code>.</p>
+
+<p>Backbone models and collections have URLs – these are used for making API requests. Similarly, Google’s APIs have URLs: <code>tasks</code> and <code>tasklists</code>, so by using the model URL <code>Backbone.sync</code> can determine which API resource is required for a given request.</p>
+
+<h3>Models</h3>
+
+<p>Create a new directory called <code>app/js/models</code> and add <code>task.js</code>:</p>
+<div><pre><code><span>define</span><span>(</span><span>function</span><span>()</span> <span>{</span>
+  <span>var</span> <span>Task</span> <span>=</span> <span>Backbone</span><span>.</span><span>Model</span><span>.</span><span>extend</span><span>({</span>
+    <span>url</span><span>:</span> <span>&#39;tasks&#39;</span>
+  <span>});</span>
+
+  <span>return</span> <span>Task</span><span>;</span>
+<span>});</span>
+</code></pre>
+</div>
+<p>You’ll also want to create a <code>app/js/models/tasklist.js</code>:</p>
+<div><pre><code><span>define</span><span>(</span><span>function</span><span>()</span> <span>{</span>
+  <span>var</span> <span>TaskList</span> <span>=</span> <span>Backbone</span><span>.</span><span>Model</span><span>.</span><span>extend</span><span>({</span>
+    <span>url</span><span>:</span> <span>&#39;tasklists&#39;</span>
+  <span>});</span>
+
+  <span>return</span> <span>TaskList</span><span>;</span>
+<span>});</span>
+</code></pre>
+</div>
+<h3>Collections</h3>
+
+<p>Create another new directory called <code>app/js/collections</code> and add <code>tasklists.js</code>:</p>
+<div><pre><code><span>define</span><span>([</span><span>&#39;models/tasklist&#39;</span><span>],</span> <span>function</span><span>(</span><span>TaskList</span><span>)</span> <span>{</span>
+  <span>var</span> <span>TaskLists</span> <span>=</span> <span>Backbone</span><span>.</span><span>Collection</span><span>.</span><span>extend</span><span>({</span>
+    <span>model</span><span>:</span> <span>TaskList</span>
+  <span>,</span> <span>url</span><span>:</span> <span>&#39;tasklists&#39;</span>
+  <span>});</span>
+
+  <span>return</span> <span>TaskLists</span><span>;</span>
+<span>});</span>
+</code></pre>
+</div>
+<p>We’re going to use the <code>TaskList</code> collection later on to load your task lists.</p>
+
+<h3>Making API Requests</h3>
+
+<p>Open up <code>app/js/gapi.js</code> and add a new line after line 36:</p>
+<div><pre><code><span>app</span><span>.</span><span>views</span><span>.</span><span>auth</span><span>.</span><span>$el</span><span>.</span><span>hide</span><span>();</span>
+<span>$</span><span>(</span><span>&#39;#signed-in-container&#39;</span><span>).</span><span>show</span><span>();</span>
+<span>self</span><span>.</span><span>trigger</span><span>(</span><span>&#39;ready&#39;</span><span>);</span> <span>// This one</span>
+</code></pre>
+</div>
+<p>This <code>&#39;ready&#39;</code> event will be used to signify that authentication was successful, and the Tasks API is ready for use. Next, add the following two lines to <code>Backbone.sync</code>, inside the <code>read</code> switch case:</p>
+<div><pre><code><span>case</span> <span>&#39;read&#39;</span><span>:</span>
+  <span>var</span> <span>request</span> <span>=</span> <span>gapi</span><span>.</span><span>client</span><span>.</span><span>tasks</span><span>[</span><span>model</span><span>.</span><span>url</span><span>].</span><span>list</span><span>(</span><span>options</span><span>.</span><span>data</span><span>);</span>
+  <span>Backbone</span><span>.</span><span>gapiRequest</span><span>(</span><span>request</span><span>,</span> <span>method</span><span>,</span> <span>model</span><span>,</span> <span>options</span><span>);</span>
+<span>break</span><span>;</span>
+</code></pre>
+</div>
+<p>This code creates a request, and then <code>Backbone.gapiRequest</code> will execute it and delegate the response.</p>
+
+<p>Here’s the most basic <code>Backbone.gapiRequest</code> implementation:</p>
+<div><pre><code><span>Backbone</span><span>.</span><span>gapiRequest</span> <span>=</span> <span>function</span><span>(</span><span>request</span><span>,</span> <span>method</span><span>,</span> <span>model</span><span>,</span> <span>options</span><span>)</span> <span>{</span>
+  <span>var</span> <span>result</span><span>;</span>
+  <span>request</span><span>.</span><span>execute</span><span>(</span><span>function</span><span>(</span><span>res</span><span>)</span> <span>{</span>
+    <span>if</span> <span>(</span><span>res</span><span>.</span><span>error</span><span>)</span> <span>{</span>
+      <span>if</span> <span>(</span><span>options</span><span>.</span><span>error</span><span>)</span> <span>options</span><span>.</span><span>error</span><span>(</span><span>res</span><span>);</span>
+    <span>}</span> <span>else</span> <span>if</span> <span>(</span><span>options</span><span>.</span><span>success</span><span>)</span> <span>{</span>
+      <span>result</span> <span>=</span> <span>res</span><span>.</span><span>items</span><span>;</span>
+      <span>options</span><span>.</span><span>success</span><span>(</span><span>result</span><span>,</span> <span>true</span><span>,</span> <span>request</span><span>);</span>
+    <span>}</span>
+  <span>});</span>
+<span>};</span>
+</code></pre>
+</div>
+<p>All it does is run <code>request.execute</code>, which is provided by Google, and then maps the result to be compatible with Backbone’s API by running the <code>success</code> and <code>error</code> callbacks.</p>
+
+<p>Just so you can see something is really happening, open <code>app/js/app.js</code> and make it load the <code>TaskLists</code> collection by changing the <code>define</code> invocation at the top:</p>
+<div><pre><code><span>define</span><span>([</span>
+  <span>&#39;gapi&#39;</span>
+<span>,</span> <span>&#39;views/app&#39;</span>
+<span>,</span> <span>&#39;views/auth&#39;</span>
+<span>,</span> <span>&#39;collections/tasklists&#39;</span>
+<span>],</span>
+
+<span>function</span><span>(</span><span>ApiManager</span><span>,</span> <span>AppView</span><span>,</span> <span>AuthView</span><span>,</span> <span>TaskLists</span><span>)</span> <span>{</span>
+</code></pre>
+</div>
+<p>Now add this to the <code>connectGapi</code> method:</p>
+<div><pre><code><span>this</span><span>.</span><span>apiManager</span><span>.</span><span>on</span><span>(</span><span>&#39;ready&#39;</span><span>,</span> <span>function</span><span>()</span> <span>{</span>
+  <span>self</span><span>.</span><span>collections</span><span>.</span><span>lists</span><span>.</span><span>fetch</span><span>({</span> <span>data</span><span>:</span> <span>{</span> <span>userId</span><span>:</span> <span>&#39;@me&#39;</span> <span>},</span> <span>success</span><span>:</span> <span>function</span><span>(</span><span>res</span><span>)</span> <span>{</span>
+    <span>_</span><span>.</span><span>each</span><span>(</span><span>res</span><span>.</span><span>models</span><span>,</span> <span>function</span><span>(</span><span>model</span><span>)</span> <span>{</span>
+      <span>console</span><span>.</span><span>log</span><span>(</span><span>model</span><span>.</span><span>get</span><span>(</span><span>&#39;title&#39;</span><span>));</span>
+    <span>});</span>
+  <span>}});</span>
+<span>});</span>
+</code></pre>
+</div>
+<p>That code uses Underscore’s <code>each</code> method to iterate over each “model” returned by <code>Backbone.sync</code>, which is called by the <code>TaskList</code> collection.</p>
+
+<p>Run the server with <code>npm start</code>, and visit <code>http://localhost:8080</code>. If you run it in a browser that supports <code>console</code>, then you should see your task lists printed out.</p>
+<div>
+  <img alt="" src="http://dailyjs.com/images/posts/backbone-tutorial-api-example.png">
+  <small>My task lists.</small>
+</div>
+<p>If you’ve got this working then you’re not far off building a real world Backbone.js app that communicates with Google’s APIs. The same concepts can be applied to other Google JavaScript APIs.</p>
+
+<h3>Summary</h3>
+
+<p>The full source for this tutorial can be found in <a href="https://github.com/alexyoung/dailyjs-backbone-tutorial/tree/fcd653ec6fa5916246e3f8b9b5f942f4be31d2e7">alexyoung / dailyjs-backbone-tutorial, commit fcd653ec6</a>.</p>
+   <img src="http://feeds.feedburner.com/~r/dailyjs/~4/sir13oqvmI4" height="1" width="1">

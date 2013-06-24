@@ -1,0 +1,144 @@
+---
+layout: post
+title:  "理解Git工作流"
+date:   2011-08-05 02:31:03
+author: yuanyi
+categories: program
+---
+
+## 理解Git工作流
+### by yuanyi
+### at 2011-08-05 02:31:03
+### original <http://item.feedsky.com/~feedsky/heikezhi/~8608072/547688279/6713895/1/item.html>
+
+<p>如果你不了解Git背后的设计初衷，那么你正处在危险境地，当然有很多参数可以强迫Git按照你的意愿行事，但这并不是Git被设计的工作方式，这就好比你可以把改锥当锤子使用，并且它也可以完成工作，但这对改锥没什么好处。</p>
+<p>下面就让我们来看一个最常见的Git工作流是如何变得没法收拾的。</p>
+<blockquote><p>首先从Master创建一个新分支，在这个分支上完成你的工作，然后将它合并回Master分支。</p></blockquote>
+<p>大多数情况下这不会有什么问题，你都会得到你预期的结果，这是因为在你创建新分支之后，Master的代码已经发生了变化。但是有一天，你合并了一个新特性到Master，不过这次Master的代码并没有发生变化，所以同以往不同，这次Git直接将Master指向了你的特性分支上的最后一个Commit，也就是“fast forwards”（<a href="http://sandofsky.com/images/fast_forward.pdf">见图</a>），而不是创建一个合并commit。</p>
+<p>不幸的是，你的新特性分支可能会包含一些checkpoint commits，这些小的commit保证了你的工作不会意外丢失，但是也让你的代码进入了相对不稳定的状态，现在你已经无法从Master的稳定commit中区分这些不稳定的commit了，一旦需要回滚，你很容易就会陷入灾难之中。</p>
+<p>当然你可以添加一条规则：“只要是合并新特性时，都必须使用-no-ff来强制生成一个新的commit。”这样问题就解决了，于是你继续往下走。</p>
+<p>直到有一天你在Production发现了一个严重的bug，你需要追踪这个bug是何时被引入的，于是你试图通过<a href="http://book.git-scm.com/5_finding_issues_-_git_bisect.html">bisect</a>来找出答案，但却总是找到那些checkpoint commit，于是你放弃了，并开始手动检查。</p>
+<p>最终你将Bug定位到了某个单独的文件上，你想通过blame来查看过去48小时这个文件发生的变化，但是你发现这是不可能的，因为blame报告这个文件已经有几个星期没人碰过了，事实证明blame报告的是你最初的commit，而不是合并时的，你的第一个checkpoint commit在几周之前改变了这个文件，但是这个改变直到今天才被合并进来。</p>
+<p>-no-ff标识就这样神奇的破坏了bisect和blame，就像你将改锥当做锤子一样。</p>
+<p><strong>重新考虑版本控制</strong></p>
+<p>版本控制系统的出现是为了解决2个问题</p>
+<p>第一个问题就是帮助你更好的编写代码，你需要同你的团队成员同步代码，并且备份你的工作，通过Email发送压缩文件明显不是个靠谱的办法。</p>
+<p>第二个问题就是<a href="http://en.wikipedia.org/wiki/Software_configuration_management">配置管理</a>，这主要是针对并行开发的管理，比如你需要在开发下一个大版本的同时，继续修复当前production版本存在的bug，配置管理也可以用来查找变更，但是这对于诊断Bug用处不是很大。</p>
+<p>通常来说，这两个目的是矛盾的。</p>
+<p>当你为一个新特性开发原型时，你应该不断的添加checkpoint commit，尽管如此，这些commit通常会破坏测试。</p>
+<p>在一个理想的世界中，你的版本历史中的每次变更都应该是简明并且稳定的，不应该有checkpoint commit这种东西来制造噪音，也不应该有巨无霸，比如10，000行代码的commit，干净的提交历史让你可以很容易的撤销变更，或是在分支之间使用<a href="http://gitready.com/intermediate/2009/03/04/pick-out-individual-commits.html">cherry-pick</a>，干净的提交历史也让后期的代码检查和分析变得更简单。尽管如此，维护一个干净的提交历史记录却意味着你需要等待一切都变得完美之后再进行提交。</p>
+<p>那么我们应该选择哪种策略呢？经常性的提交，还是保证提交历史干净整洁？</p>
+<p>如果你是在一个产品还未发布的2人创业公司工作，干净的提交历史对你带来的好处非常有限，你可以把所有的commit都扔到Master，并在任何你需要的时候进行部署。</p>
+<p>然后随着变更的增加，以及团队规模或是你的用户基数的增长，你需要工具和技术来确保所有事情都是经过检查的，这通常包括自动化测试，代码检查，以及干净的提交历史。</p>
+<p>特性分支看起来是个不错的选择，它们解决了最基本的并行开发问题，但是在你写代码的时候，你迟早会开始考虑最后的集成问题。</p>
+<p>当你的项目变得足够大时，简单的分支/提交/合并策略就变得不再奏效了，作坊式的开发时代已经结束了，你需要一个干净的提交历史。</p>
+<p>Git的革命性就在于它很好的同时解决了这2个问题，让你在分支上开发新特性时，可以随时提交你的任何变更，并且在随后合并时，你依然可以得到一个干净的提交历史，如果这是你想要的，那么你就应该遵从Git的默认设置。</p>
+<p><strong>Git工作流</strong></p>
+<p>考虑下这两种类型的分支：公共和私有</p>
+<p>公共分支保存着这个项目的权威历史，在公共分支上，每个提交都应该是简明，原子的，并且提交信息应该准确表达变更，同事应该尽可能的保证提交是线性的，并且是永久的，公开的分支包含Master以及Release分支。</p>
+<p>而私有分支是属于你自己的，它就相当于你解决问题时候用到的草纸。</p>
+<p>将私有分支存在本地是最安全的，如果你需要在你的工作电话和家庭电脑之间同步，最好告诉你的同事你推送的是一个私有分支，以防止他们在这个分支上进行开发。</p>
+<p>永远不要把你的私有分支直接合并到任何公共分支上，而应该先使用reset，rebase，squash merges或者commit amending这样的工具清理你的分支。</p>
+<p>你可以把自己想象成一个作家，并且将每个commit看做是一本书的章节，作家不会发布第一版手稿，Michael Crichton说过，“好书不是写出来的——而是改出来的”。</p>
+<p>如果你使用的是其它系统，你可能会觉得修改历史是不可能的，所有提交就像刻在了石头上一样，是不可改变的，按照这个逻辑，那我们就应该在文本编辑器中禁用撤销功能。</p>
+<p>实用主义者一般会直到事情变得不可收拾之时才会注意到问题的存在，对于配置管理来说，我们关心的是全局的变更，checkpoint commit仅仅只是为了方便撤销而保存的缓冲而已。</p>
+<p>如果你认为你的公共历史是干净的，那么fast-forward合并不仅很安全，而且很可取，他们保证版本历史是线性的并且非常容易追踪。</p>
+<p>而-no-ff参数唯一的作用就是“文档”，有人或许会使用merge commit的消息来表示最后一次合并到production代码中的版本信息，但是这是不对的，你应该使用tag。</p>
+<p>根据我修改的代码量，以及修改的时间跨度，还有这个分支偏离Master的程度，我设定了3中基本的工作流。</p>
+<p><strong>短期开发</strong></p>
+<p>大多数情况都是这样，我通过squash merge来完成清理工作。</p>
+<p>假设我创建了一个特性分支，并在接下来的一个小时做了许多checkpoint 提交。</p>
+<p>git checkout -b private_feature_branch<br>
+touch file1.txt<br>
+git add file1.txt<br>
+git commit -am “WIP”</p>
+<p>在我完成我的工作之后，我会运行下面的命令来完成合并：</p>
+<p>git checkout master<br>
+git merge –squash private_feature_branch<br>
+git commit -v</p>
+<p>然后花上一分钟详细的写上这次变更的注释。</p>
+<p><strong>大改动</strong></p>
+<p>有时一个特性可能需要几天才能够完成，并且包含许多小的提交。</p>
+<p>这时我认为我的改动将会被打碎成许多更小的改动，所以squash在这种情况下就拍不上用场了（作为我的一条经验法则，我会问自己”这样有利于代码检查吗？“）</p>
+<p>如果我的checkpoint commit包含逻辑上的递增，我可以使用<a href="http://kernel.org/pub/software/scm/git/docs/git-rebase.html">rebase</a>的互动模式。</p>
+<p>互动模式非常强大，你可以使用它来编辑老的commit，分割它们，重新排序，在某些情况下，你还可以压缩（squash）它们。</p>
+<p>我会在特性分支上执行：</p>
+<p>git rebase –interactive master</p>
+<p>它会打开一个编辑器，每一行包含一个commit，有SHA1以及commit的message，并且每个commit后面还会跟随一个可以执行的命令列表。</p>
+<p>默认情况，每个commit都使用‘pick’，这不会改变commit。</p>
+<p>pick ccd6e62 Work on back button<br>
+pick 1c83feb Bug fixes<br>
+pick f9d0c33 Start work on toolbar</p>
+<p>我将这个操作改成了squash，这就会将第二个commit压缩到第一个commit中。</p>
+<p>pick ccd6e62 Work on back button<br>
+squash 1c83feb Bug fixes<br>
+pick f9d0c33 Start work on toolbar</p>
+<p>当我保存并关闭之后，会出现一个新的文本编辑器提示我为这些合并后的commit填写一个commit message，然后一切就绪。</p>
+<p><strong>废弃旧分支</strong></p>
+<p>如果我的特性分支已经存在了太久时间，并且我需要合并几个分支到我的特性分支以保证它是最新的，这样事情就变得错综复杂了，这时你可以很容易的获取原始的diff并创建一个干净的新分支。</p>
+<p>git checkout master<br>
+git checkout -b cleaned_up_branch<br>
+git merge –squash private_feature_branch<br>
+git reset</p>
+<p>现在我就有了一个新的分支，既有最近的Master上的commit，又有我上一个分支上的工作，现在我可以手动添加并提交我的变更了。</p>
+<p><strong>总结</strong></p>
+<p>如果你没有遵从Git的默认设置，那么你应该问问自己为什么？</p>
+<p>你应该保证公共历史是永久的，原子的，并且易于追踪，而将私有分支看做是临时的，可丢弃的。</p>
+<p>因此，理想的工作流应该是：</p>
+<ol>
+<li>从一个公开分支创建一个似有分支。</li>
+<li>经常新的在似有分支上提交你的工作</li>
+<li>一旦你的代码已经完美了，那么清除它的历史</li>
+<li>合并干净的分支到你的公共分支</li>
+</ol>
+<p>特别感谢<a href="http://twitter.com/joshaber">@joshaber</a>以及<a href="http://twitter.com/jbarnette">@jbarnette</a>提供反馈。</p>
+<p>————–<br>
+本文翻译自”Understanding the Git Workflow”，作者：<a href="http://twitter.com/sandofsky">Benjamin Sandofsky</a>，翻译：<a href="http://twitter.com/yuanyiz">@yuanyiz</a></p>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2Fgit-201-slightly-more-advanced%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F04%2Funderstanding-the-git-workflow%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Git 201: 就高了那么一点点</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F03%2Ften-lessons-from-githubs-first-year%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F04%2Funderstanding-the-git-workflow%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Github第一年教给我的10堂课</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F02%2Fmy-standing-desk-experiment%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F04%2Funderstanding-the-git-workflow%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">我的站立工作实验</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F24%2Fwant-a-job-working-on-mongodb-your-first-online-interview-is-in-this-post%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F04%2Funderstanding-the-git-workflow%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">想去MongoDB工作？解决这个问题</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/547688279/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/547688279/6713895/1/item.html" border="0" height="0" width="0">

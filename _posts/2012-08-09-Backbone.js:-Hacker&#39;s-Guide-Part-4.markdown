@@ -1,0 +1,133 @@
+---
+layout: post
+title:  "Backbone.js: Hacker&#39;s Guide Part 4"
+date:   2012-08-09 07:00:00
+author: 
+categories: program
+---
+
+## Backbone.js: Hacker&#39;s Guide Part 4
+### by 
+### at 2012-08-09 07:00:00
+### original <http://feedproxy.google.com/~r/dailyjs/~3/OXMovNe27HQ/mvstar-5>
+
+<p>Last week we looked at <a href="http://dailyjs.com/2012/08/02/mvstar-4/">Backbone’s History and View APIs</a>. We’re coming to the end of this detailed look at Backbone’s internals, but there are still a few interesting things left:</p>
+
+<ul>
+<li>Backbone’s inheritance implementation</li>
+
+<li><code>Backbone.sync</code></li>
+</ul>
+
+<h3>Backbone’s inheritance Implementation</h3>
+
+<p>The comments indicate that the <code>inherits</code> function is inspired by <code>goog.inherits</code>. Google’s implementation is from the <a href="https://developers.google.com/closure/library/docs/introduction">Closure Library</a>, but Backbone’s API accepts two objects (incorrectly referred to as a hash) containing “instance” and “static” methods. Each of Backbone’s objects has an <code>extend</code> method:</p>
+<div><pre><code><span>Model</span><span>.</span><span>extend</span> <span>=</span> <span>Collection</span><span>.</span><span>extend</span> <span>=</span> <span>Router</span><span>.</span><span>extend</span> <span>=</span> <span>View</span><span>.</span><span>extend</span> <span>=</span> <span>extend</span><span>;</span>
+</code></pre>
+</div>
+<p>Most development with Backbone is based around inheriting from these objects, and they’re designed to mimic a classical object-oriented implementation.</p>
+
+<p>Backbone uses <a href="https://github.com/documentcloud/underscore/blob/53c67e7be33ed17a6b4a1cabbf318ae218c65284/underscore.js#L691-698">Underscore’s extend method</a>:</p>
+<div><pre><code><span>each</span><span>(</span><span>slice</span><span>.</span><span>call</span><span>(</span><span>arguments</span><span>,</span> <span>1</span><span>),</span> <span>function</span><span>(</span><span>source</span><span>)</span> <span>{</span>
+  <span>for</span> <span>(</span><span>var</span> <span>prop</span> <span>in</span> <span>source</span><span>)</span> <span>{</span>
+    <span>obj</span><span>[</span><span>prop</span><span>]</span> <span>=</span> <span>source</span><span>[</span><span>prop</span><span>];</span>
+  <span>}</span>
+<span>});</span>
+<span>return</span> <span>obj</span><span>;</span>
+</code></pre>
+</div>
+<p>This isn’t the same as <a href="http://es5.github.com/#x15.2.3.5">ES5’s Object.create</a>, it’s actually copying properties (methods and values) from one object to another. Since this isn’t enough to support Backbone’s inheritance and class model, the following steps are performed:</p>
+
+<ol>
+<li>The instance methods are checked to see if there’s a <code>constructor</code> property. If so, the class’s constructor is used, otherwise the parent’s constructor is used (i.e., <code>Backbone.Model</code>)</li>
+
+<li>Underscore’s <code>extend</code> method is called to add the parent class’s methods to the new child class</li>
+
+<li>The <code>prototype</code> property of a blank constructor function is assigned with the parent’s prototype, and a new instance of this is set to the child’s <code>prototype</code> property</li>
+
+<li>Underscore’s <code>extend</code> method is called twice to add the static and instance methods to the child class</li>
+
+<li>The child’s prototype’s constructor and a <code>__super__</code> property are assigned</li>
+</ol>
+
+<p>This pattern is also used for classes in CoffeeScript, so Backbone classes are compatible with CoffeeScript classes.</p>
+
+<p><em>Update</em>: Jeremy Ashkenas <a href="https://twitter.com/jashkenas/status/234017859964108801">clarified this process</a> on Twitter:</p>
+
+<blockquote>
+<p>… it’s just your basic prototype chain, plus one extra goodie: any constructor properties (static) are copied over as well.</p>
+</blockquote>
+
+<h3>Backbone’s Sync API</h3>
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L1331">Backbone.sync</a> method is intended to be overridden to support other backends. The built-in method is tailed to a certain breed of RESTful JSON APIs – Backbone was originally extracted from a Ruby on Rails application, which uses HTTP methods like <code>PUT</code> the same way.</p>
+
+<p>The way this works is the model and collection classes have a <code>sync</code> method that calls <code>Backbone.sync</code>. Both will call <code>this.sync</code> internally when fetching, saving, or deleting items.</p>
+
+<p>The <code>sync</code> method is called with three parameters:</p>
+
+<ul>
+<li><code>method</code>: One of <code>create</code>, <code>update</code>, <code>delete</code>, <code>read</code></li>
+
+<li><code>model</code>: The Backbone model object</li>
+
+<li><code>options</code>: May include success and error methods</li>
+</ul>
+
+<p>Implementing a new <code>sync</code> method can use the following pattern:</p>
+<div><pre><code><span>Backbone</span><span>.</span><span>sync</span> <span>=</span> <span>function</span><span>(</span><span>method</span><span>,</span> <span>model</span><span>,</span> <span>options</span><span>)</span> <span>{</span>
+  <span>var</span> <span>requestContent</span> <span>=</span> <span>{},</span> <span>success</span><span>,</span> <span>error</span><span>;</span>
+
+  <span>function</span> <span>success</span><span>(</span><span>result</span><span>)</span> <span>{</span>
+    <span>// Handle results from MyAPI</span>
+    <span>if</span> <span>(</span><span>options</span><span>.</span><span>success</span><span>)</span> <span>{</span>
+      <span>options</span><span>.</span><span>success</span><span>(</span><span>result</span><span>);</span>
+    <span>}</span>
+  <span>}</span>
+
+  <span>function</span> <span>error</span><span>(</span><span>result</span><span>)</span> <span>{</span>
+    <span>// Handle results from MyAPI</span>
+    <span>if</span> <span>(</span><span>options</span><span>.</span><span>error</span><span>)</span> <span>{</span>
+      <span>options</span><span>.</span><span>error</span><span>(</span><span>result</span><span>);</span>
+    <span>}</span>
+  <span>}</span>
+
+  <span>options</span> <span>||</span> <span>(</span><span>options</span> <span>=</span> <span>{});</span>
+
+  <span>switch</span> <span>(</span><span>method</span><span>)</span> <span>{</span>
+    <span>case</span> <span>&#39;create&#39;</span><span>:</span>
+      <span>requestContent</span><span>[</span><span>&#39;resource&#39;</span><span>]</span> <span>=</span> <span>model</span><span>.</span><span>toJSON</span><span>();</span>
+      <span>return</span> <span>MyAPI</span><span>.</span><span>create</span><span>(</span><span>model</span><span>,</span> <span>success</span><span>,</span> <span>error</span><span>);</span>
+
+    <span>case</span> <span>&#39;update&#39;</span><span>:</span>
+      <span>requestContent</span><span>[</span><span>&#39;resource&#39;</span><span>]</span> <span>=</span> <span>model</span><span>.</span><span>toJSON</span><span>();</span>
+      <span>return</span> <span>MyAPI</span><span>.</span><span>update</span><span>(</span><span>model</span><span>,</span> <span>success</span><span>,</span> <span>error</span><span>);</span>
+
+    <span>case</span> <span>&#39;delete&#39;</span><span>:</span>
+      <span>return</span> <span>MyAPI</span><span>.</span><span>destroy</span><span>(</span><span>model</span><span>,</span> <span>success</span><span>,</span> <span>error</span><span>);</span>
+
+    <span>case</span> <span>&#39;read&#39;</span><span>:</span>
+      <span>if</span> <span>(</span><span>model</span><span>.</span><span>attributes</span><span>[</span><span>model</span><span>.</span><span>idAttribute</span><span>])</span> <span>{</span>
+        <span>return</span> <span>MyAPI</span><span>.</span><span>find</span><span>(</span><span>model</span><span>,</span> <span>success</span><span>,</span> <span>error</span><span>);</span>
+      <span>}</span> <span>else</span> <span>{</span>
+        <span>return</span> <span>MyAPI</span><span>.</span><span>findAll</span><span>(</span><span>model</span><span>,</span> <span>success</span><span>,</span> <span>error</span><span>);</span>
+      <span>}</span>
+  <span>}</span>
+<span>};</span>
+</code></pre>
+</div>
+<p>This pattern delegates API calls to a new object, which could be a Backbone-style class that supports events. This can be safely tested separately, and potentially used with libraries other than Backbone.</p>
+
+<p>There are quite a few sync implementations out there:</p>
+
+<ul>
+<li><a href="https://github.com/sorensen/backbone-redis">Backbone Redis</a></li>
+
+<li><a href="https://github.com/neebz/backbone-parse">backbone-parse</a></li>
+
+<li><a href="https://github.com/jeromegn/Backbone.localStorage">Backbone localStorage</a></li>
+
+<li><a href="https://github.com/MarrLiss/backbone-websql">backbone-websql</a></li>
+
+<li><a href="https://github.com/ggozad/Backbone.cachingSync">Backbone Caching Sync</a></li>
+</ul><img src="http://feeds.feedburner.com/~r/dailyjs/~4/OXMovNe27HQ" height="1" width="1">

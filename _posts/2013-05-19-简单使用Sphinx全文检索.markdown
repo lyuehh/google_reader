@@ -1,0 +1,32 @@
+---
+layout: post
+title:  "简单使用Sphinx全文检索"
+date:   2013-05-19 13:56:39
+author: amoydavid
+categories: program
+---
+
+## 简单使用Sphinx全文检索
+### by amoydavid
+### at 2013-05-19 13:56:39
+### original <http://liuw.net/jian-dan-shi-yong-sphinx-quan-wen-jian-suo.html>
+
+<p>我知道的Sphinx有三个，一个是那个人面狮身的神兽，一个是一个python下的文档生成工具，一个则是一个全文检索引擎。</p>
+<p>去下个sphinx-for-chinese的包，装完。然后是配置。</p>
+<p>市面上全文检索的配置路线都差不多，配置数据源，配置索引，生成索引（如果有增量索引的话，要定时生成增量索引，定时合并）。</p>
+<p>我现在是用MySQL做Sphinx的数据源的。在Sphinx上的文档有的地方讲得不是太清楚。我理一下。<br>
+如果我们在某个源中有这样的配置：</p>
+<pre>sql_query = SELECT id, title, content, \
+    author_id, forum_id, post_date FROM my_forum_posts
+sql_attr_uint = author_id
+sql_attr_uint = forum_id
+sql_attr_timestamp = post_date</pre>
+<p>这样我们的索引数据将从my_forum_posts表中读取。可以看到我们select了id, title, content, author_id, forum_id, post_date总共六个字段。<br>
+后面的sql_attr_xxxxxx这些的配置是将对应的字段设为索引的attribute（属性），这些字段是不会参与全文检索的。但可以用SetFilter来做结果过滤。具体的可以看SetFilter的使用。<br>
+而id是文档id。所以剩下的title, content将做为这个源的全文检索的字段。做为全文检索的字段在Sphinx中称为field。</p>
+<p>有意思的是，如果我们把title, content也做为attribute的话，这样这个源中就没有用于全文检索的字段。生成索引的时候你可以看到文档有写到索引中，但做查询的时候是无论如何也查不到结果的。所以至少要留一个字段做全文检索。<br>
+<h3>您还可能喜欢:</h3>
+<ul>
+<li>没有找到和这篇文章相关的，您将就着看看其它的吧</li>
+</ul>
+</p><p><a href="http://liuw.net/jian-dan-shi-yong-sphinx-quan-wen-jian-suo.html">继续阅读 »</a></p>

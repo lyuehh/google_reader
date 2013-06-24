@@ -1,0 +1,57 @@
+---
+layout: post
+title:  "这段代码奇怪的输出"
+date:   2010-12-15 20:33:28
+author: 
+categories: program
+---
+
+## 这段代码奇怪的输出
+### by 
+### at 2010-12-15 20:33:28
+### original <http://www.javaeye.com/topic/843250>
+
+class singlen {
+<br>	private static singlen obj=new singlen();
+<br>	public static int count1;
+<br>	public  static int count2=0;
+<br>	
+<br>	private singlen(){
+<br>		count1++;
+<br>		
+<br>		count2++;
+<br>	}
+<br>	public static singlen getInstence(){
+<br>		return obj;
+<br>	}
+<br>	
+<br>}
+<br>
+<br>class dd{
+<br>	public static void main(String[] args){
+<br>		singlen s=singlen.getInstence();
+<br>		System.out.println("count1=="+s.count1);
+<br>		System.out.println("count2=="+s.count2);
+<br>		
+<br>	}
+<br>}
+<br>
+<br>上边代码将输出：
+<br>count1==1
+<br>count2==0
+<br>
+<br>首先初始化静态变量，再执行构造函数，怎么会奇怪的输出
+          
+          <br><br>
+          作者: <a href="http://zkun001.javaeye.com">zkun001</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/843250" style="color:red">已有 <strong>8</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

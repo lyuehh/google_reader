@@ -1,0 +1,259 @@
+---
+layout: post
+title:  "Web布局连载——两栏固定布局（一）"
+date:   2012-08-11 14:39:55
+author: Airen
+categories: program
+---
+
+## Web布局连载——两栏固定布局（一）
+### by Airen
+### at 2012-08-11 14:39:55
+### original <http://www.w3cplus.com/css/layout/fixed-layout/two-columns-1.html>
+
+<div><div><div><p>CSS布局是一个很老的话题了，网上这方面的教程可以说是随处可见，本站前面也有一些相关的布局教程，但都是一些特殊的，比如说《<a href="http://www.w3cplus.com/css/creaet-equal-height-columns">等高布局</a>》、《<a href="http://www.w3cplus.com/css/two-cloumn-width-one-fixed-width-one-fluid-width">左定宽度右边自适应的等高布局</a>》、《<a href="http://www.w3cplus.com/css/css-layout-with-960-grids">960网格布局</a>》、《<a href="http://www.w3cplus.com/css/css-sticky-foot-at-bottom-of-the-page">固定footer布局</a>》和《<a href="http://www.w3cplus.com/css/layout-column-three">中间固定两边自适应布局</a>》等等。但这些布局并不是常见的布局，使用起来并不是太多，而对于常见的布局，w3cplus还没有对口的教程。好久之前有同学想了解这方面的知识，答应简单的写些这方面的教程，方便初学的csser，或者方便大家使用时，可以直接copy使用。于是就有了这个系列的想法，从今天开始我会针对布局开展一个系列的布局demo结构，整个系列中会包括固定布局（两栏固定布局、三栏固定布局）、自适应布局（两栏自适应布局、三栏自适应布局）、弹性布局（两栏弹性布局、三栏弹性布局）、网格布局（960网格布局、1140网格布局）和响应式布局。希望这些布局的demo结构对大家会有所帮助。</p>
+<p>在开始这个系列教程之前先向大家说明一下，这个系列教程都会以简单的篇幅为主，首先从html结构出发，然后对应的布局样式（其中修饰样式，大家可以自行修改），接着向大家展示对应的DEMO效果。如有特殊说明，会以代码注解形式展，或者会单独以特殊效果向大家展。</p>
+<p>整个布局系列首先以最常见的固定布局展开，比如说第一篇就是要向大家介绍的是固定布局的中两栏布局。</p>
+<h4>1、固定布局之两栏布局——边栏在左边，主内容在右边</h4>
+<p>实现的布局效果：整个布局居中显示，而且侧栏显示在左边，主内容在右边。如下图所示</p>
+<p><a href="http://www.w3cplus.com/sites/default/files/layout/fixed-layout/two-columns/demo1.html" title="固定布局之两栏布局"><img alt="边栏在左，主内容在右" height="350" src="http://www.w3cplus.com/sites/default/files/201202/layout/fixwidth-twocol-demo1.jpg" style="padding:2px;border:1px solid #ccc" width="500"></a></p>
+<h4>HTML结构:</h4>
+<pre>&lt;div class=&quot;wrapper&quot;&gt;
+    &lt;div class=&quot;header&quot;&gt;
+        &lt;h1&gt;Header content&lt;/h1&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;aside sidebar&quot;&gt;
+        &lt;h2&gt;Sidebar Content&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;main-content&quot;&gt;
+        &lt;h2&gt;Main Content&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;footer&quot;&gt;
+        &lt;h2&gt;Footer Content&lt;/h2&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre><p>结构简单描述：</p>
+<ol><li>div.wrapper是主容器，以960px为例，并且居中显示</li>
+<li>div.header是页头部分</li>
+<li>div.sidebar是侧栏部分，此处设置为220px的宽度</li>
+<li>div.main-content是主内容部分，此处设置为720px的宽度</li>
+<li>div.footer是页脚部分</li>
+<li>文档流形式是从上往上加载，也就是按这样的顺序加载：header/sidebar/main-content/footer</li>
+</ol><h4>CSS代码</h4>
+<pre>*{
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Amarante', cursive;
+  background: url(http://www.w3cplus.com/sites/default/files/bg_body.png) repeat;
+  text-align: center; /*IE6下让元素居中*/
+}
+
+/*===================================================*\
+ *                                                   *
+ *   Layout                                          *
+ *  .wrapper宽度=.sidebar宽度+间距+.main-content宽度 *
+ *                                                   *
+\*===================================================*/
+.wrapper {
+  width: 960px; /*页面总宽度*/
+  margin: 0 auto; /*水平居中*/
+  text-align: left; /*重置文本对齐方式*/
+}
+
+.header {
+  margin-bottom: 5px; /*顶部与主内容垂直间距，可自行修改*/
+}
+
+.sidebar {
+  width: 220px; /*左边栏宽度，可自行修改*/
+  margin-right: 20px; /*边栏间距，可自行修改*/
+  display: inline; /*防止IE6双边距*/
+  float: left;
+  margin-bottom: 5px; /*边栏与footer之间的垂直间距，可自行修改*/
+}
+
+.main-content {
+  width: 720px; /*主内容宽度*/
+  display: inline; /*防止IE6又边距*/
+  float: left;
+  margin-bottom: 5px; /*主内容与footer之间的垂直间距，可自行修改*/
+}
+
+.footer {
+  clear: both; /*清除浮动，非常重要，不可缺少*/
+}
+
+/*===================================================*\
+ *                                                   *
+ *   装饰样式，可自行修改                            *
+ *                                                   *
+\*===================================================*/
+.header {
+  height: 75px;
+  background-color: #BD9C8C;
+  margin-bottom: 5px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar {
+  height: 350px;
+  background-color: #E7DBD5;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.main-content {
+  background-color: #F2F2E6;
+  height: 350px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.footer {
+  background-color: #BD9C8C;
+  margin-bottom: 5px;
+  box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
+}
+</pre><p>这个布局写样式有两个地方需要特别注意，第一是宽度的计算，“div.wrapper”的总宽度(960px) = “div.sidebar”宽度(220px) + “div.sidebar”右边距(margin-rihgt:20px) + “div.main-content”宽度（720px）；第二是清除浮动，由于“div.sidebar”和“div.main-content”进行了浮动，特别要记得在“div.footer”上清除浮动（此例是这样，如果不是footer紧挨这两个文档流，那么就要考虑在别的标签上添加）。</p>
+<h4>2、固定布局之两栏布局——边栏在右边，主内容在左边</h4>
+<p>第二种布局和第一种仅有一处差别，就是侧栏居右，主内容居左，效果如下所示：</p>
+<p><a href="http://www.w3cplus.com/sites/default/files/layout/fixed-layout/two-columns/demo2.html" title="固定布局之两栏布局"><img alt="边栏居右，主内容居左" height="350" src="http://www.w3cplus.com/sites/default/files/201202/layout/fixwidth-twocol-demo2.jpg" style="padding:2px;border:1px solid #ccc" width="500"></a></p>
+<p>这种布局的HTML结构不变，使用第一种布局的结构，我们仅将“div.sidebar”和“div.main-content”的布局样式做一下修改：</p>
+<pre>/*===================================================*\
+ *                                                   *
+ *   Layout                                          *
+ *  .wrapper宽度=.sidebar宽度+间距+.main-content宽度 *
+ *                                                   *
+\*===================================================*/
+.wrapper {
+  width: 960px; /*页面总宽度*/
+  margin: 0 auto; /*水平居中*/
+  text-align: left; /*重置文本对齐方式*/
+}
+
+.header {
+  margin-bottom: 5px; /*顶部与主内容垂直间距，可自行修改*/
+}
+
+.sidebar {
+  width: 220px; /*左边栏宽度，可自行修改*/
+  display: inline; /*防止IE6双边距*/
+  <strong style="color:red">margin-left: 20px; /*边栏间距，可自行修改*/ 
+  float: right;</strong>
+  margin-bottom: 5px; /*边栏与footer之间的垂直间距，可自行修改*/
+}
+
+.main-content {
+  width: 720px; /*主内容宽度*/
+  display: inline; /*防止IE6又边距*/
+  float: left;
+  margin-bottom: 5px; /*主内容与footer之间的垂直间距，可自行修改*/
+}
+
+.footer {
+  clear: both; /*清除浮动，非常重要，不可缺少*/
+}
+</pre><p>前面两种布局效果，有些同学喜欢在文档流中先加载“div.main-content”主内容部分，然后在加载“div.sidebar”侧栏部分，这样就延伸出来另外两种布局，不过他们的效果是一样的，只是文档流加载的顺序和样式做一定的调整。</p>
+<h4>调整后HTML结构</h4>
+<pre>&lt;div class=&quot;wrapper&quot;&gt;
+    &lt;div class=&quot;header&quot;&gt;
+        &lt;h1&gt;Header content&lt;/h1&gt;
+    &lt;/div&gt;
+    <strong style="color:red">&lt;div class=&quot;main-content&quot;&gt;
+        &lt;h2&gt;Main Content&lt;/h2&gt;
+    &lt;/div&gt;</strong>
+    <strong style="color:green">&lt;div class=&quot;aside sidebar&quot;&gt;
+        &lt;h2&gt;Sidebar Content&lt;/h2&gt;
+    &lt;/div&gt;</strong>    
+    &lt;div class=&quot;footer&quot;&gt;
+        &lt;h2&gt;Footer Content&lt;/h2&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre><p>接下来，我们在看看改变HTML结构后，制作上面两种效果的方法。</p>
+<h4>1、侧栏在左，主内容在右</h4>
+<p><a href="http://www.w3cplus.com/sites/default/files/layout/fixed-layout/two-columns/demo3.html" title="固定布局之两栏布局"><img alt="边栏在左，主内容在右" height="350" src="http://www.w3cplus.com/sites/default/files/201202/layout/fixwidth-twocol-demo1.jpg" style="padding:2px;border:1px solid #ccc" width="500"></a></p>
+<h4>CSS 代码</h4>
+<pre>/*===================================================*\
+ *                                                   *
+ *   Layout                                          *
+ *  .wrapper宽度=.sidebar宽度+间距+.main-content宽度 *
+ *                                                   *
+\*===================================================*/
+.wrapper {
+  width: 960px; /*页面总宽度*/
+  margin: 0 auto; /*水平居中*/
+  text-align: left; /*重置文本对齐方式*/
+}
+
+.header {
+  margin-bottom: 5px; /*顶部与主内容垂直间距，可自行修改*/
+}
+
+.sidebar {
+  width: 220px; /*左边栏宽度，可自行修改*/
+  margin-right: 20px; /*边栏间距，可自行修改*/
+  display: inline; /*防止IE6双边距*/
+  float: left;
+  margin-bottom: 5px; /*边栏与footer之间的垂直间距，可自行修改*/
+}
+
+.main-content {
+  width: 720px; /*主内容宽度*/
+  display: inline; /*防止IE6又边距*/
+  <strong style="color:red">float: right;</strong>
+  margin-bottom: 5px; /*主内容与footer之间的垂直间距，可自行修改*/
+}
+
+.footer {
+  clear: both; /*清除浮动，非常重要，不可缺少*/
+}
+</pre><p>结构改变后，我们样式跟着改动的地方其实很简单，只要注意改变“div.sidebar”和“div.main-content”两个元的浮动方向，以及控制他们之间的间距（就左右两栏布局来说，如果一个左浮动，一个右浮动，都可以不设置他们之间的任何间距值）。</p>
+<h4>2、侧栏在右边，主内容在左边</h4>
+<p><a href="http://www.w3cplus.com/sites/default/files/layout/fixed-layout/two-columns/demo4.html" title="固定布局之两栏布局"><img alt="边栏居右，主内容居左" height="350" src="http://www.w3cplus.com/sites/default/files/201202/layout/fixwidth-twocol-demo2.jpg" style="padding:2px;border:1px solid #ccc" width="500"></a></p>
+<h4>CSS 代码</h4>
+<pre>/*===================================================*\
+ *                                                   *
+ *   Layout                                          *
+ *  .wrapper宽度=.sidebar宽度+间距+.main-content宽度 *
+ *                                                   *
+\*===================================================*/
+.wrapper {
+  width: 960px; /*页面总宽度*/
+  margin: 0 auto; /*水平居中*/
+  text-align: left; /*重置文本对齐方式*/
+}
+
+.header {
+  margin-bottom: 5px; /*顶部与主内容垂直间距，可自行修改*/
+}
+
+.sidebar {
+  width: 220px; /*左边栏宽度，可自行修改*/
+  display: inline; /*防止IE6双边距*/
+  <strong style="color:red">margin-left: 20px; /*边栏间距，可自行修改*/
+  float: right;</strong>
+  margin-bottom: 5px; /*边栏与footer之间的垂直间距，可自行修改*/
+}
+
+.main-content {
+  width: 720px; /*主内容宽度*/
+  display: inline; /*防止IE6又边距*/
+  float: left;
+  margin-bottom: 5px; /*主内容与footer之间的垂直间距，可自行修改*/
+}
+
+.footer {
+  clear: both; /*清除浮动，非常重要，不可缺少*/
+}
+</pre><p>上面两种布局效果，使用了两种不同的文档结构，每种结构配合两整不同的布局方式，大家可以点击对应的效果图，打开在线的demo效果。以上布局兼容所有浏览器。</p>
+<p>那么有关于CSS布局第一篇就说到这里，下期将继续为大家介绍固定布局中的两列布局，不过使用的方法并不是今天介绍的方法，如果你对此感兴趣，请关注本站的相关更新。</p>
+<p>下一节：《<a href="http://www.w3cplus.com/css/layout/fixed-layout/two-columns-2.html">Web布局连载——两栏固定布局（二）</a>》</p>
+<p>如需转载，烦请注明出处：<a href="http://www.w3cplus.com/css/layout/fixed-layout/two-columns-1.html">http://www.w3cplus.com/css/layout/fixed-layout/two-columns-1.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/8.html">css</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/180.html">layout</a></li><li><a href="http://www.w3cplus.com/blog/tags/102.html">templates</a></li><li><a href="http://www.w3cplus.com/blog/tags/181.html">fixed width</a></li><li><a href="http://www.w3cplus.com/blog/tags/182.html">two columns</a></li></ul></div><div><div><div><div>
+      <div>6</div>
+                  <a href="http://www.w3cplus.com/vote/node/367/1/vote/alternate/cF77G7RhS6THKuq-O1y8LTlGDJxUSEIwSmc0IfMRHHc/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/666585510/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css/layout/fixed-layout/two-columns-1.html" border="0" height="0" width="0">

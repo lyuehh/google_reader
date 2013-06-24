@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "关于 JVM 命令行标志您不知道的 5 件事"
+date:   2010-10-12 22:05:19
+author: 
+categories: program
+---
+
+## 关于 JVM 命令行标志您不知道的 5 件事
+### by 
+### at 2010-10-12 22:05:19
+### original <http://www.ibm.com/developerworks/cn/java/j-5things11/index.html?ca=drs->
+
+Java 虚拟机有数百个命令行选项，被经验丰富的开发人员用来调优 Java 运行时。本文中，您将学习如何监控和记录编译器性能、禁用显式垃圾收集（System.gc();）、扩展 JRE 等等。

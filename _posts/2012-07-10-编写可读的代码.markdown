@@ -1,0 +1,62 @@
+---
+layout: post
+title:  "编写可读的代码"
+date:   2012-07-10 10:29:55
+author: baiyuzhong
+categories: program
+---
+
+## 编写可读的代码
+### by baiyuzhong
+### at 2012-07-10 10:29:55
+### original <http://www.programmer.com.cn/12482/>
+
+<p>代码最重要的读者不再是编译器、解释器或者电脑，而是人。写出的代码能让人易于理解、轻松维护、容易扩展的程序员才是专业的程序员。</p>
+<p><img title="编写可读代码的艺术-封面" src="http://www.programmer.com.cn/wp-content/uploads/2012/07/%E7%BC%96%E5%86%99%E5%8F%AF%E8%AF%BB%E4%BB%A3%E7%A0%81%E7%9A%84%E8%89%BA%E6%9C%AF-%E5%B0%81%E9%9D%A2.jpg" alt="" width="199" height="261"><span></span></p>
+<p><span style="color:#000000"><strong>代码应当易于理解</strong></span></p>
+<p>在过去的五年里，我们收集了上百个“坏代码”的例子（其中很大一部分是我们自己写的），并且分析是什么原因使它们变坏，使用什么样的原则和技术可以让它们变好。我们发现所有的原则都源自同一个主题思想。</p>
+<p><span style="color:#000000"><strong>关键思想：代码应当易于理解</strong></span><br>
+<span style="color:#808080"><strong> 我们相信这是当你考虑要如何写代码时可以使用的最重要的指导原则。</strong></span>我们会展示如何把这条原则应用于你每天编码工作的各个不同方面。但在开始之前，我们会详细地介绍这条原则并证明它为什么这么重要。</p>
+<p><span style="color:#000000"><strong>是什么让代码变得“更好”</strong></span></p>
+<p>大多数程序员（包括两位作者）依靠直觉和灵感来决定如何编程。我们都知道这样的代码：</p>
+<blockquote><p>for (Node* node = list-&gt;head; node != NULL; node = node-&gt;next)<br>
+Print(node-&gt;data);</p></blockquote>
+<p>比下面的代码好：</p>
+<blockquote><p>Node* node = list-&gt;head;<br>
+if (node == NULL) return;<br>
+while (node-&gt;next != NULL) {<br>
+Print(node-&gt;data);<br>
+node = node-&gt;next;<br>
+}<br>
+if (node != NULL) Print(node-&gt;data);</p></blockquote>
+<p>（尽管两个例子的行为完全相同。）但很多时候这个选择会更艰难。例如，这段代码：</p>
+<blockquote><p>return exponent &gt;= 0 ? mantissa * (1 &lt;&lt; exponent) : mantissa / (1 &lt;&lt; -exponent);</p></blockquote>
+<p>它比下面这段要好些还是差些？</p>
+<blockquote><p>if (exponent &gt;= 0) {<br>
+return mantissa * (1 &lt;&lt; exponent);<br>
+} else {<br>
+return mantissa / (1 &lt;&lt; -exponent);<br>
+}</p></blockquote>
+<p>第一个版本更紧凑，但第二个版本更直白。哪个标准更重要呢？一般情况下，在写代码时你如何来选择？</p>
+<p><span style="color:#000000"><strong>可读性基本定理</strong></span></p>
+<p>在对很多这样的例子进行研究后，我们总结出，有一种对可读性的度量比其他任何的度量都要重要。因为它是如此重要，我们把它叫做“可读性基本定理”。</p>
+<p><span style="color:#000000"><strong>关键思想：代码的写法应当使别人理解它所需的时间最小化。</strong></span></p>
+<p>这是什么意思？其实很直接，如果你叫一个普通的同事过来，测算一下他通读你的代码并理解它所需的时间，这个“理解代码时间”就是你要最小化的理论度量。</p>
+<p>并且当我们说“理解”时，我们对这个词有个很高的标准。如果有人真的完全理解了你的代码，他就应该能改动它、找出缺陷并且明白它是如何与你代码的其他部分交互的。</p>
+<p>现在，你可能会想：“谁会关心是不是有人能理解它？我是唯一使用这段代码的人！”就算你从事只有一个人的项目，这个目标也是值得的。那个“其他人”可能就是6个月的你自己，那时你自己的代码看上去已经很陌生了。而且你永远也不会知道——说不定别人会加入你的项目，或者你“丢弃的代码”会在其他项目里重用。</p>
+<p><span style="color:#000000"><strong>总是越小越好吗</strong></span><br>
+一般来讲，你解决问题所用的代码越少就越好。很可能理解2000行代码写成的类所需的时间比5000行的类要短。但少的代码并不总是更好！很多时候，像下面这样的一行表达式：</p>
+<blockquote><p>assert((!(bucket = FindBucket(key))) || !bucket-&gt;IsOccupied());</p></blockquote>
+<p>理解起来要比两行代码花更多时间：</p>
+<blockquote><p>bucket = FindBucket(key);<br>
+if (bucket != NULL) assert(!bucket-&gt;IsOccupied());</p></blockquote>
+<p>类似地，一条注释可以让你更快地理解代码，尽管它给代码增加了长度：</p>
+<blockquote><p>// Fast version of “hash = (65599 * hash) + c”<br>
+hash = (hash &lt;&lt; 6) + (hash &lt;&lt; 16) – hash + c;</p></blockquote>
+<p>因此尽管减少代码行数是一个好目标，但把理解代码所需的时间最小化是一个更好的目标。</p>
+<p><span style="color:#000000"><strong>理解代码所需的时间是否与其他目标有冲突</strong></span></p>
+<p>你可能在想：“那么其他约束呢？像是使代码更有效率，或者有好的架构，或者容易测试等？这些不会在有些时候与使代码容易理解这个目标冲突吗？”我们发现这些其他目标根本就不会互相影响。就算是在需要高度优化代码的领域，还是有办法能让代码同时可读性更高。并且让你的代码容易理解往往会把它引向好的架构且容易测试。有些程序员对于任何没有完美地分解的代码都不自觉地想要修正它。这时很重要的是要停下来并且想一下：“这段代码容易理解吗？”如果容易，可能转而关注其他代码是没有问题的。</p>
+<p><span style="color:#000000"><strong>最难的部分</strong></span></p>
+<p>是的，要经常地想一想其他人是不是会觉得你的代码容易理解，这需要额外的时间。这样做就需要你打开大脑中从前在编码时可能没有打开的那部分功能。但如果你接受了这个目标（像我们一样），我们可以肯定你会成为一个更好的程序员，会产生更少的缺陷，从工作中获得更多的自豪，并且编写出你周围人都爱用的代码。</p>
+<p><span style="color:#808080"><strong>本文节选自《编写可读代码的艺术》一书，Dustin Boswell、Trevor Foucher著，尹哲、郑秀雯译，由机械工业出版社出版。</strong></span></p>
+<p> </p>

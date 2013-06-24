@@ -1,0 +1,35 @@
+---
+layout: post
+title:  "pdf.js 0.2"
+date:   2011-07-04 17:46:18
+author: 黑日白月
+categories: program
+---
+
+## pdf.js 0.2
+### by 黑日白月
+### at 2011-07-04 17:46:18
+### original <http://linuxtoy.org/archives/pdfjs-02.html>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/r45t08ks0fj6sr7aa7q8jurtt8/300/250?ca=1&amp;fh=280#http%3A%2F%2Flinuxtoy.org%2Farchives%2Fpdfjs-02.html" width="100%" height="280" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p><p>使用 JavaScript 编写的 PDF 解析器发布 0.2 版本，实现<strong>Type 1 字体加载</strong>。<span></span></p>
+
+<p>同时还实现了：
+<ul>
+    <li>浓淡图像。</li>
+    <li>混合字型。</li>
+    <li>左侧预览视图。</li>
+    <li>连续页滚动显示。</li>
+</ul></p>
+
+<p>目前该功能在 Firefox Nightly 效果完美，其他浏览器亦可运行，但兼容性方面尚需改进。</p>
+
+<p><a href="http://andreasgal.github.com/pdf.js/multi_page_viewer.html">效果测试</a></p>
+
+<p><a href="http://blog.mozilla.com/cjones/2011/07/03/pdf-js-first-milestone/">发布公告</a></p>
+	<p></p>
+	<p>分类: <a href="http://linuxtoy.org/category/news" title="View all posts in News" rel="category tag">News</a> | 
+	<a href="http://linuxtoy.org/archives/pdfjs-02.html">永久链接</a> |
+	<a href="http://delicious.com/save?url=http://linuxtoy.org/archives/pdfjs-02.html&amp;title=pdf.js%200.2">收藏到 del.icio.us</a> | 
+	<a href="mailto:?Subject=Check+This+Out&amp;body=I+think+you&#39;ll+like+this:+http://linuxtoy.org/archives/pdfjs-02.html">Email 给好友</a> | 
+    <a href="http://linuxtoy.org/archives/pdfjs-02.html#comments">19 评论</a> |
+    <a href="http://linuxtoy.org/faq/donate">捐助本站</a></p>

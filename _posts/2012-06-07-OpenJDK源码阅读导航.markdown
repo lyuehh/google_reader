@@ -1,0 +1,213 @@
+---
+layout: post
+title:  "OpenJDK源码阅读导航"
+date:   2012-06-07 20:00:17
+author: 
+categories: program
+---
+
+## OpenJDK源码阅读导航
+### by 
+### at 2012-06-07 20:00:17
+### original <http://rednaxelafx.iteye.com/blog/1549577>
+
+这是链接帖。主体内容都在各链接中。
+<br>怕放草稿箱里过会儿又坑掉了，总之先发出来再说…回头再慢慢补充内容。
+<br>先把ItEye网站上的信息聚合起来。
+<br>
+<br>近期提问帖：
+<br><a href="http://hllvm.group.iteye.com/group/topic/35385">阅读openjdk源代码</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/33594">如何来看OpenJDK源码</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/29611">如何分析OpenJDK中JVM的实现</a>
+<br>一个个回复太麻烦了，合在一块儿写这么一篇。
+<br>
+<br>================
+<br>
+<br><span style="font-size:x-large"><strong>前言</strong></span>
+<br>
+<br><a href="http://rednaxelafx.iteye.com/blog/362738">我的VM帖的索引</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/">高级语言虚拟机（HLLVM）群组</a>
+<br>
+<br>新浪微群“<a href="http://q.weibo.com/1823766">JVM源码阅读活动</a>”
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/24553#173698">如何构建javac的调试环境</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/25798">为什么有时候调试代码的时候看不到变量的值</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/25839">自己编译JDK的src.zip的步骤</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/26059">Ubuntu下编译openjdk成为可调试版</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/27149">有人在Centos5 下build jdk1.6 成功吗？</a>
+<br>
+<br>ItEye论坛讨论帖：
+<br><a href="http://www.iteye.com/topic/869992">Java IDE 添加 JDK 源代码关联</a>
+<br><a href="http://www.iteye.com/topic/857587">JDK(32bit)的高级安装——Client模式与Server模式</a>
+<br>
+<br>===========================
+<br>
+<br><span style="font-size:x-large"><strong><span style="color:orange">Open</span><span style="color:blue">JDK</span>概况</strong></span>
+<br>
+<br>http://openjdk.java.net
+<br>
+<br><span style="font-size:large"><strong>OpenJDK历史</strong></span>
+<br>
+<br>曾任OpenJDK 6项目发布经理一职的<a href="https://blogs.oracle.com/darcy/resource/OSCON/oscon2011_OpenJDKState.pdf">Joe Darcy</a>在<a href="http://www.oscon.com/oscon2011/public/schedule/detail/21184">OSCON 2011</a>上讲解了<a href="https://blogs.oracle.com/darcy/resource/OSCON/oscon2011_OpenJDKState.pdf">JDK与OpenJDK的历史与现状</a>。下面引用他的演示稿中的几幅图。
+<br>
+<br>OpenJDK的历史与版本系谱：
+<br><div>Joe Darcy 写道</div><div><img src="http://dl.iteye.com/upload/attachment/0069/2863/2a606846-c9d6-342d-8d7f-f4285ac00968.png"></div>
+<br>
+<br>Joe在他<a href="https://blogs.oracle.com/darcy/entry/openjdk_6_genealogy">更早的一篇博文里详细描述过OpenJDK（特别是OpenJDK 6）的系谱</a>。同一段文字也发布在<a href="http://openjdk.java.net/projects/jdk6/">OpenJDK的JDK 6项目主页面</a>。
+<br>
+<br>Red Hat的Deepak Bhole则从项目的开源性角度写了<a href="http://dbhole.wordpress.com/2011/05/27/why-do-xx-and-yy-in-jdk6-uxx-and-openjdk-byy-differ/">另一篇讲述OpenJDK项目历史</a>的博文。
+<br><div>Deepak Bhole 写道</div><div><img src="http://dl.iteye.com/upload/attachment/0069/2867/fdc7435c-d9c1-3e6d-b98a-dc99e6802ee2.jpg"></div>
+<br>
+<br>综合上述资料及其它来源的一些信息可知：
+<br>
+<br>Sun JDK有“发布列车”（release train）的概念。例如说，在JDK 6还在早期开发阶段，连首个版本都尚未发布时，JDK 6就是最新的开发分支，而同时也存在着JDK 1.4.2 update和JDK 5 update两个老版本的维护分支。开发通常是在最新分支上进行的；当功能或修复在最新分支上稳定下来之后，会backport到老版本的维护分支。
+<br><pre name="code">
+... \
+ |  JDK 1.4.2 update -&gt; ...
+ v
+JDK 5
+ |\
+ |  JDK 5 update -&gt; ...
+ v
+JDK 6
+ |\
+ |  JDK 6 update -&gt; ...
+ v
+...</pre>
+<br>类似这样。当Sun决定将JDK开源出来时，JDK 6与JDK 6 update 1都已经正式发布，而JDK 6 update维护分支已经从最新开发分支分离出来一段时间了；此时最新的开发分支是JDK 7。所以很自然的，OpenJDK以JDK 7为基础演化而来。
+<br>
+<br>开源Java社区欢迎OpenJDK的工作，但JDK 7尚在早期开发阶段，不适合实际部署。在社区需求的驱动下，OpenJDK创建了JDK 6的对应版本——OpenJDK 6项目。但这份代码并不是从JDK 6 update分支开源而来，而是以OpenJDK 7 build 20为基础，将一些不适合放在JDK 6的代码去掉之后再打上JDK 6 update分支累积的一些代码更新而来。然后JDK 6 update、(Open)JDK 7、OpenJDK 6三个分支就分开发展了。这就是上面的系谱图所展现的情况。
+<br>
+<br>在Oracle完成对Sun的收购后，OpenJDK的开发模型基本维持跟原本Sun时代一致；只在非常最近才开始有新的变化。在JDK 7正式发布、JDK 7 update项目建立后，JDK 8就成为了现在的最新开发分支。
+<br>
+<br>现状是，Oracle主要也是在OpenJDK上进行主要的功能开发，这部分是以GPLv2 + Classpath Exception许可证完全开源的。同时Oracle也在开发一些商用的、闭源的功能，例如<a href="http://hirt.se/blog/?p=211">Java Flight Recorder</a>。将这些闭源功能叠加在开源的OpenJDK上打包起来，就是产品版的Oracle JDK 7 / 7 update / 8。
+<br>
+<br>
+<br><span style="font-size:large"><strong><span style="color:orange">Open</span><span style="color:blue">JDK</span>与<span style="color:red">Oracle JDK</span></strong></span>
+<br>
+<br>大家都会对这个问题感兴趣：OpenJDK与Oracle JDK到底有多像？
+<br>说真的我也不知道准确答案。从外部看：
+<br><ul>
+<li> JDK 6的源码从最早的JDK 6到JDK 6 update 23都有以JRL许可证发布。但上面的系谱已经说明了，Oracle/Sun JDK 6的源码跟OpenJDK 6的源码由于来源路径的不同，本来就会存在一定的差异，所以并不适合直接用于比较。
+</li><li> Oracle JDK 7的源码没有像JDK 6那样以JRL许可证发布，外界无法比较它与OpenJDK 7的准确差异。JDK 7 update、JDK 8都是同理。
+</li></ul>
+<br>这种情况下，还是让我们相信Joe Darcy的说法吧。继续引用他在OSCON 2011上的演示稿里的图：
+<br><div>Joe Darcy 写道</div><div><img src="http://dl.iteye.com/upload/attachment/0069/2917/3ad66b5c-2587-3cc6-b23e-bfa0d2b7da30.png"></div>
+<br>
+<br>
+<br><span style="font-size:large"><strong>JDK、OpenJDK与HotSpot VM的版本</strong></span>
+<br>
+<br>
+<br><a href="https://gist.github.com/925323">Oracle/Sun JDK、OpenJDK与HotSpot VM的版本对应关系</a>
+<br>
+<br>
+<br><span style="font-size:large"><strong>OpenJDK的其它发行版</strong></span>
+<br>
+<br><a href="http://icedtea.classpath.org/">IcedTea</a>
+<br>
+<br><a href="https://www.reservoir.com/ultraviolet">UltraViolet™ Virtual Machine Development Kit</a>
+<br>
+<br>--------------------------
+<br>
+<br><span style="font-size:large"><strong>OpenJDK源码结构</strong></span>
+<br>
+<br>主项目
+<br>引用自OpenJDK 8的<a href="http://hg.openjdk.java.net/jdk8/build/raw-file/tip/README-builds.html#directories">README</a>
+<br><div>引用</div><div>The source code for the OpenJDK is delivered in a set of directories: hotspot, langtools, corba, jaxws, jaxp, and jdk.
+<br>
+<br>The hotspot directory contains the source code and make files for building the OpenJDK Hotspot Virtual Machine.
+<br>The langtools directory contains the source code and make files for building the OpenJDK javac and language tools.
+<br>The corba directory contains the source code and make files for building the OpenJDK Corba files.
+<br>The jaxws directory contains the source code and make files for building the OpenJDK JAXWS files.
+<br>The jaxp directory contains the source code and make files for building the OpenJDK JAXP files.
+<br>The jdk directory contains the source code and make files for building the OpenJDK runtime libraries and misc files.
+<br>
+<br>The top level Makefile is used to build the entire OpenJDK.</div>
+<br>
+<br>----------------------------
+<br>
+<br><span style="font-size:large"><strong>编译OpenJDK</strong></span>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/37834#post-245536">如何通过Mercurial下载OpenJDK的源码</a>
+<br>
+<br>经验帖：
+<br><a href="http://rednaxelafx.iteye.com/blog/875957">在XUbuntu 10.10上以JRL源码构建Oracle JDK 6 update 23</a>
+<br><a href="http://robilad.livejournal.com/75483.html">Oracle已经决定不再以JRL许可证发布JDK 6的源码</a>，所以上面这篇经验帖的许多内容变得没用了。不过这帖里也有写了OpenJDK的build方法，其实很简单的（取决于在什么平台上…）。
+<br>
+<br><a href="http://icyfenix.iteye.com/">周志明（IcyFenix）</a>写的《深入理解Java虚拟机》一书的第一章，1.5小节介绍了在Windows上build出OpenJDK 7的步骤，也值得入门者参考。
+<br>
+<br>淘宝的同事<a href="http://happyenjoylife.iteye.com/">大仁</a>的经验帖：<a href="http://happyenjoylife.iteye.com/blog/858147">Ubuntu10.04下build OpenJDK7 的过程</a>
+<br><a href="http://hllvm.group.iteye.com/group/topic/29615">哪位大大编译过OpenJDK6，请教些问题</a>
+<br>
+<br>最新的OpenJDK 8里有新的build infrastructure，编译过程可能会有些变化。
+<br>
+<br>===========
+<br>
+<br><span style="font-size:x-large"><strong>真的要读JVM的源码么？</strong></span>
+<br>
+<br><a href="http://rednaxelafx.iteye.com/blog/1426530">第0次JVM源码阅读活动</a>讨论了“是不是真的要读JVM源码，要读的话读什么，相关的推荐阅读”的话题。
+<br>具体内容请参考活动的演示稿：<a href="http://www.slideshare.net/RednaxelaFX/hotspot-vm20120303">为啥别读HotSpot VM的源码</a>
+<br>
+<br>特别推荐<a href="https://wikis.oracle.com/display/MaxineVM/Home">Maxine VM</a>项目。
+<br>
+<br>最新的一篇<a href="https://wikis.oracle.com/display/MaxineVM/Technical+Report">综述报告</a>讲解了Maxine VM的目标、高层架构、性能水平等。
+<br>
+<br><div>引用</div><div>A highly productive platform accelerates the production of research results. The design of a virtual machine (VM) written in the Java programming language can be simplified through exploitation of interfaces, type and memory safety, automated memory management (garbage collection), exception handling, and
+<br>reflection. Moreover, modern Java IDEs offer time-saving features such as refactoring, auto-completion, and code navigation. Finally, Java annotations enable compiler extensions for low-level "systems programming" while retaining IDE compatibility. These techniques collectively make complex system software more "approachable" than has been typical in the past.
+<br>
+<br>The Maxine VM, a meta-circular Java VM implementation, has aggressively used these features since its inception. A co-designed companion tool, the Maxine Inspector, offers integrated debugging and visualization of all aspects of the VM's run-time state. The Inspector's implementation exploits advanced Java
+<br>language features, embodies intimate knowledge of the VM's design, and even reuses a significant amount of VM code directly. These characteristics make Maxine a highly approachable VM research platform and a productive basis for research and teaching.</div>
+<br>
+<br>Maxine VM的其它相关文献也都很值得一读
+<br>https://wikis.oracle.com/display/MaxineVM/Publications
+<br>
+<br>===========
+<br>
+<br><span style="font-size:x-large"><strong>阅读HotSpot VM的源码</strong></span>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/26998#193368">HotSpot VM的源码结构</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/35803#post-239996">简记java launcher与HotSpot VM对VM参数的处理</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/26896">请教一个share/vm/oops下的代码做fast subtype check的问题</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/27149">HotSpot中这么多的Mutex Locker知多少</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/27722">[请教]hotspot的模板解释方法时如何将方法的指令串起来</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/27856">修改java.lang.String类时出错？</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/21769#159708">查看HotSpot VM动态生成的机器码</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/29140">HotSpot没实现Megamorphic inline caching？</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/28797">关于OpenJDK1.7的javac源码中JavaCompiler类的一点疑问</a>
+<br>
+<br><a href="http://hllvm.group.iteye.com/group/topic/33401">请教ad文件的格式</a>
+<br>
+<br>===========
+<br>
+<br>结合论文来阅读源码
+<br>
+<br>必读资料
+<br><a href="https://wiki.openjdk.java.net/display/HotSpot/Main">HotSpot Internals for OpenJDK</a>
+<br>（该wiki迁移到了OpenJDK官网上。老的https://wikis.oracle.com/display/HotSpotInternals/Home已经改为只读模式）
+<br>
+<br>===========
+<br>
+<br>邮件列表
+<br>
+<br>在<a href="http://openjdk.java.net/">OpenJDK官网</a>左边栏上面的<a href="http://mail.openjdk.java.net/">Mailing Lists</a>
+<br>
+<br>===========
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://rednaxelafx.iteye.com/blog/1549577#comments" style="color:red">已有 <strong>2</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://rednaxelafx.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

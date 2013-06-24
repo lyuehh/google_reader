@@ -1,0 +1,53 @@
+---
+layout: post
+title:  "Google极客谈软件开发团队的不良行为"
+date:   2013-03-19 11:22:39
+author: 童海波
+categories: program
+---
+
+## Google极客谈软件开发团队的不良行为
+### by 童海波
+### at 2013-03-19 11:22:39
+### original <http://blog.jobbole.com/36185/?utm_source=rss&utm_medium=rss&utm_campaign=google%25e6%259e%2581%25e5%25ae%25a2%25e8%25b0%2588%25e8%25bd%25af%25e4%25bb%25b6%25e5%25bc%2580%25e5%258f%2591%25e5%259b%25a2%25e9%2598%259f%25e7%259a%2584%25e4%25b8%258d%25e8%2589%25af%25e8%25a1%258c%25e4%25b8%25ba>
+
+<p>来源：<a href="http://www.infoq.com/cn/news/2013/03/google-geek">infoq</a></p>
+<p>开发团队是一个整体，稳定的、沟通无碍的团队文化非常重要。好的文化氛围应该包括基于共识决策的开发模式、高质量的代码、代码审查，以及能让人放心尝试新事物或者快速失败的环境。Brian和Ben是Google的两位开发主管，他们在《极客与团队》书中列举了软件开发团队的典型不良行为，提醒开发者时刻保持警惕，并提出了一些实际的解决办法。</p>
+<p>Brian和Ben指出，团队的注意力和专注力是最容易受到威胁的。团队规模越大，编写软件和解决有趣问题的能力就越强—不过这种能力毕竟是有极限的。要是你不去主动保护它们，很容易就会被害群之马引入歧途。团队最终会争论不休，变得心烦意乱、身心疲惫。所有人都会把注意力和专注力放到那些编写优秀软件以外的事情上去。</p>
+<blockquote><p>根据我们的经验，很少会有人故意干坏事（也就是存心捣乱的那种）。我们管这种行为叫作“钓鱼”，通常无视这种人就可以了。而大多数人在行为出格的时候，要么是没有意识到自己过分了，要么就是根本不在乎别人的感受。无知和冷漠其实比蓄意更严重。</p></blockquote>
+<p>他们列举了一些典型的不良行为。第一条就是<strong>不尊重别人的时间</strong> ，总会有一些人搞不清楚项目的状况，他们的危害通常是浪费团队的时间。他们宁可不断地拿那些很容易就能找到答案的问题去骚扰整个团队，也不愿意自己花点时间去读一读最基本的项目文档、任务宗旨、FAQ，或是最近的邮件讨论。 这里有一个现实当中的例子：</p>
+<blockquote><p>我们在Subversion项目里就曾经碰到过这样一个人，他把开发主论坛当成了自己每天报流水账的地方。查理实际上没有贡献什么代码，但他每隔两三个小时就会发布自己最新的异想天开。这样就无可避免地产生了很多回复，去解释为什么他的想法是不正确的，不可能的，已经在开发中了，之前已经讨论过了，或者是已经有文档记录了等。更糟糕的是，查理甚至开始回答那些临时用户的问题，而且都答错了。这样，我们的核心成员只好不断地去更正他的回复。过了好久我们才反应过来，这位和蔼可亲的热心人其实是好心办坏事，大家被他牵扯了太多的精力。</p></blockquote>
+<p>第二条是<strong>自负，</strong>这里“自负”可能不是最恰当的词，Brian和Ben想要表达的是那种无法接受多数人决议，无法倾听和尊重其他观点，以及不愿作出妥协的人。这种人常常会重新挑起些早就已经结束（并且保留在邮件存档里）的讨论，仅仅是因为当时她不在场。这种人不肯去读存档，也压根不想去思考，她只会要求为了自己重启争论。她常常会就项目的前途作出极端的评价，声称除非按照她的思路走，否则失败就在眼前。</p>
+<p><strong>过分索求</strong>是另外一种不良行为。每当有陌生人跟你要求做什么的时候，一定要提高警惕。这样的人把所有的精力都用来抱怨软件功能不足，却不愿意自己动手作点贡献。有时候等天上掉馅饼的心态会演变成过激行为。在运营Google的项目托管服务时，Brian和Ben就遇到过这样的例子:</p>
+<blockquote><p>当时有一个项目作者要求我们封掉一个用户，因为他的所作所为实在是太讨厌了。这是一个开源的电视游戏模拟器项目，而这个用户最喜欢的游戏却无法在上面正常运行，于是他在问题跟踪系统里提交了一个口气相当粗鲁的bug报告。开发人员礼貌地解释了那个游戏跑不起来的原因，还告诉他相当一段时间里可能都没办法修复那个问题，结果那个人接受不了，每天都来骚扰开发人员。他不断地提交同样的bug报告，里面充斥着各种不满，还在其他bug报告里评论说拒绝修复他的问题的<span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span>是个“蠢货”。尽管项目人员和Google管理员屡次警告，他的用词却反而越来越不堪。不管我们怎么努力去消除他的这种破坏性行为，他就是冥顽不灵，万般无奈之下，我们只好祭出最后一招—彻底把他封掉了。</p></blockquote>
+<p>除此之外，还有两种行为需要警惕<strong>：</strong></p>
+<ul>
+<li><strong>幼稚或是莫名其妙的交流——</strong>这样的人不会用真名。他们常常会用一些幼稚的昵称，比如“SuperCamel”、“jubjub89”，或是“SirHacksalot”之类。更糟糕的是，这样的人往往会在不同的地方用不同的昵称—E-mail一个，即时消息里又是另外一个，可能提交代码的时候还有一个。更有甚者，你会看到他们用火星文、黑客语、全部大写，甚至含有大量标点符号的沟通方式！</li>
+<li><strong>偏执妄想——</strong>在上面的例子里我们看到，有时候不切实际要求会直接转变成对项目的恶意。我们无数次看到它彻底演变成偏执。当团队和访客的意见不一时，这种心怀恶意的人就会抛出某种阴谋论。要是太把他当真，去花精力和时间反驳的话就实在是太滑稽了。而且如果你已经建立起一条开放透明的沟通渠道的话，这种指控只会显得更加可笑，因为所有的谈话内容都是有公开记录的。我们的建议是根本就不用去理会这种指控。当这种人真的做到这一步的时候，你说什么都是没用的，既然这样干嘛还费这劲呢？还不如把时间用来写代码。</li>
+</ul>
+<p>最后一条是<strong>完美主义。</strong>乍看之下，完美主义者根本就是无害的。尽管时不时地会有一些奇怪的强迫症类型的行为出现，但是总体上这样的人都是谦虚有礼貌的，而且愿意倾听别人的意见，看起来满是良好的本意。那么问题出在哪里呢？答案就是太追求完美会变得瞻前顾后、犹豫不决。现实当中的例子：</p>
+<blockquote><p>帕特里克是一名非常出色的工程师。他做的设计非常出色，代码和测试的质量也很高，人也非常容易相处。但是每当要设计新软件的时候，他就会无休止地调整、改进自己的设计。他从不满足，好像永远也不会开始写代码一样。尽管他对我们所面临的问题有非常好的见解和洞察力，但是团队里的其他成员最后都被折腾到不行。这样下去就没法工作了，我们几个考虑了很久要怎么办。一方面，对团队来说帕特里克是巨大的财富；另一方面，他也妨碍了团队前进的步伐。每次我们打算开始编写代码的时候，他就会很有礼貌地否定我们的方案，指出其中只在理论上成立的潜在问题，而且都是一时半会不会产生什么影响的问题，不知不觉中他让我们整个陷于瘫痪状态。</p></blockquote>
+<p>Brian和Ben提出了一些实际的解决办法：</p>
+<ul>
+<li>写一份明明白白的任务宗旨。这样可以随时保持专注，知道哪些是目标，哪些不是。</li>
+<li>E-mail讨论要有礼仪。保留归档，要求新人研读，防范那些“嘈杂的少数人”。</li>
+<li>所有历史都要有记录。这不单指代码历史，还有设计决策、重要的bug修复，以及过去犯下的错误。</li>
+<li>有效地进行协作。利用版本控制，代码改动要尽可能的小，方便进行审查，扩大“公车因子”，避免出现领地感。</li>
+<li>修复bug，测试，发布软件要有清晰的政策和流程。</li>
+<li>降低新人加入时的壁垒。</li>
+<li>依赖基于共识决策，在无法达成共识的时候也要准备好化解矛盾的方法。</li>
+</ul>
+<h4>相关文章</h4>
+<ul>
+<li><a href="http://blog.jobbole.com/1032/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/10.jpg" alt="勿将明星雇员和优秀团队对立起来"></a><a href="http://blog.jobbole.com/1032/">勿将明星雇员和优秀团队对立起来</a></li>
+<li><a href="http://blog.jobbole.com/1364/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/25.jpg" alt="Google按图搜索，中国团队完成一半以上研发"></a><a href="http://blog.jobbole.com/1364/">Google按图搜索，中国团队完成一半以上研发</a></li>
+<li><a href="http://blog.jobbole.com/5900/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2011/11/dan-cross-150x150.jpg" alt="Google&#39;s Dan Cross in Afghanistan Dan Cross在阿富汗"></a><a href="http://blog.jobbole.com/5900/">Google软件工程师：从战争中得到的启示</a></li>
+<li><a href="http://blog.jobbole.com/14876/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/03/geek-love-10-reasons-to-date-a-geek1-150x150.jpg" alt="选择跟极客约会的10个理由"></a><a href="http://blog.jobbole.com/14876/">选择跟极客约会的10个理由</a></li>
+<li><a href="http://blog.jobbole.com/12158/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/01/10-laws-every-geek-should-know10-150x150.jpg" alt="极客须知十大定律"></a><a href="http://blog.jobbole.com/12158/">极客须知十大定律 </a></li>
+<li><a href="http://blog.jobbole.com/35497/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/03/103-150x150.jpg" alt="日本艺术家自制IT界产品Logo的拿铁咖啡"></a><a href="http://blog.jobbole.com/35497/">日本艺术家自制IT界产品Logo的拿铁咖啡</a></li>
+<li><a href="http://blog.jobbole.com/803/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/23.jpg" alt="适合小型外包团队的5个Web应用程序组合"></a><a href="http://blog.jobbole.com/803/">适合小型外包团队的5个Web应用程序组合</a></li>
+<li><a href="http://blog.jobbole.com/9115/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/team-management-logo.jpg" alt="软件工程之动物世界"></a><a href="http://blog.jobbole.com/9115/">软件工程之动物世界</a></li>
+<li><a href="http://blog.jobbole.com/6997/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/team-management-logo.jpg" alt="如何才能做好技术团队管理"></a><a href="http://blog.jobbole.com/6997/">如何才能做好技术团队管理</a></li>
+<li><a href="http://blog.jobbole.com/629/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/12.jpg" alt="Facebook创始人扎克伯格谈团队管理"></a><a href="http://blog.jobbole.com/629/">Facebook创始人扎克伯格谈团队管理</a></li>
+</ul>
+<p><a href="http://blog.jobbole.com/36185/">Google极客谈软件开发团队的不良行为</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>

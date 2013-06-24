@@ -1,0 +1,223 @@
+---
+layout: post
+title:  "利用函数来画任意图形"
+date:   2013-05-03 23:24:28
+author: isnowfy
+categories: program
+---
+
+## 利用函数来画任意图形
+### by isnowfy
+### at 2013-05-03 23:24:28
+### original <http://www.udpwork.com/item/9767.html>
+
+<p><a href="http://www.isnowfy.com/wp-content/uploads/2013/05/dft.jpg"><img src="http://www.isnowfy.com/wp-content/uploads/2013/05/dft-300x227.jpg" alt="dft"></a></p>
+<p>最近我们经常看到像鸟叔，初音之类的通过函数图像来画出来，看上去十分神奇的样子，<a href="http://www.wolframalpha.com/input/?i=person%20curve&amp;lk=1&amp;a=ClashPrefs_%2aPlaneCurveClass.Person-">wolframalpha</a>这里有大量的通过函数图像来画人物的例子，大家可以去围观，而且最上面我这几个字也是我用函数图像画出来的，今天我们就说说这是怎么做到的。</p>
+<p></p>
+<p>首先我画的图形的函数是这个样子的</p>
+<blockquote><p>x(t)= 3.69696969697 *cos( 0.0 *t)- 1.78787878788 *sin( 0.0 *t) + -0.608631557183 *cos( 0.190399554763 *t)- 0.637886769069 *sin( 0.190399554763 *t) + -1.00348014017 *cos( 0.380799109526 *t)- -0.251077539499 *sin( 0.380799109526 *t) + 0.0858300019403 *cos( 0.571198664289 *t)- 0.0312569171374 *sin( 0.571198664289 *t) + 0.0403938878342 *cos( 0.761598219052 *t)- -0.424077642684 *sin( 0.761598219052 *t) + -0.029533908125 *cos( 0.951997773815 *t)- -0.612124881382 *sin( 0.951997773815 *t) + -0.196190215552 *cos( 1.14239732858 *t)- 0.0779263864101 *sin( 1.14239732858 *t) + -0.317379458544 *cos( 1.33279688334 *t)- -0.107897599954 *sin( 1.33279688334 *t) + 0.195824060124 *cos( 1.5231964381 *t)- -0.0603270845874 *sin( 1.5231964381 *t) + 0.0206709920939 *cos( 1.71359599287 *t)- -0.192643145398 *sin( 1.71359599287 *t) + -0.0390613766898 *cos( 1.90399554763 *t)- -0.0233815418361 *sin( 1.90399554763 *t) + 0.120124291368 *cos( 2.09439510239 *t)- 0.165578836822 *sin( 2.09439510239 *t) + 0.118680071019 *cos( 2.28479465716 *t)- 0.192116690811 *sin( 2.28479465716 *t) + 0.000254592255497 *cos( 2.47519421192 *t)- 0.0310134506924 *sin( 2.47519421192 *t) + 0.082560849545 *cos( 2.66559376668 *t)- -0.0576194138539 *sin( 2.66559376668 *t) + -0.0926779308527 *cos( 2.85599332145 *t)- -0.0839813133077 *sin( 2.85599332145 *t) + -0.192145472441 *cos( 3.04639287621 *t)- -0.00294302065064 *sin( 3.04639287621 *t) + -0.0467279999084 *cos( 3.23679243097 *t)- 0.0312620057434 *sin( 3.23679243097 *t) + -0.131380808582 *cos( 3.42719198573 *t)- 0.0240572405524 *sin( 3.42719198573 *t) + -0.146394824366 *cos( 3.6175915405 *t)- 0.0428285063991 *sin( 3.6175915405 *t) + -0.0688190483421 *cos( 3.80799109526 *t)- -0.02541184382 *sin( 3.80799109526 *t) + -0.0901484634214 *cos( 3.99839065002 *t)- 0.181258333651 *sin( 3.99839065002 *t) + -0.0898212610648 *cos( 4.18879020479 *t)- -0.0443667156102 *sin( 4.18879020479 *t) + -0.0750426044852 *cos( 4.37918975955 *t)- 0.0736544316679 *sin( 4.37918975955 *t) + -0.119525232263 *cos( 4.56958931431 *t)- -0.0355835823163 *sin( 4.56958931431 *t) + -0.193150001399 *cos( 4.75998886908 *t)- 0.0319541260203 *sin( 4.75998886908 *t) + 0.25777892582 *cos( 4.95038842384 *t)- -0.000416186591487 *sin( 4.95038842384 *t) + 0.171027143418 *cos( 5.1407879786 *t)- 0.218778298585 *sin( 5.1407879786 *t) + -0.16745165654 *cos( 5.33118753336 *t)- -0.127545487283 *sin( 5.33118753336 *t) + 0.242332056731 *cos( 5.52158708813 *t)- -0.263812652924 *sin( 5.52158708813 *t) + 0.0367447452299 *cos( 5.71198664289 *t)- -0.534397947337 *sin( 5.71198664289 *t) + -0.325288006456 *cos( 5.90238619765 *t)- 0.163558793585 *sin( 5.90238619765 *t) + -1.13634134796 *cos( 6.09278575242 *t)- -0.84340197599 *sin( 6.09278575242 *t)
+<br>
+y(t)= 1.78787878788 *cos( 0.0 *t)+ 3.69696969697 *sin( 0.0 *t) + 0.637886769069 *cos( 0.190399554763 *t)+ -0.608631557183 *sin( 0.190399554763 *t) + -0.251077539499 *cos( 0.380799109526 *t)+ -1.00348014017 *sin( 0.380799109526 *t) + 0.0312569171374 *cos( 0.571198664289 *t)+ 0.0858300019403 *sin( 0.571198664289 *t) + -0.424077642684 *cos( 0.761598219052 *t)+ 0.0403938878342 *sin( 0.761598219052 *t) + -0.612124881382 *cos( 0.951997773815 *t)+ -0.029533908125 *sin( 0.951997773815 *t) + 0.0779263864101 *cos( 1.14239732858 *t)+ -0.196190215552 *sin( 1.14239732858 *t) + -0.107897599954 *cos( 1.33279688334 *t)+ -0.317379458544 *sin( 1.33279688334 *t) + -0.0603270845874 *cos( 1.5231964381 *t)+ 0.195824060124 *sin( 1.5231964381 *t) + -0.192643145398 *cos( 1.71359599287 *t)+ 0.0206709920939 *sin( 1.71359599287 *t) + -0.0233815418361 *cos( 1.90399554763 *t)+ -0.0390613766898 *sin( 1.90399554763 *t) + 0.165578836822 *cos( 2.09439510239 *t)+ 0.120124291368 *sin( 2.09439510239 *t) + 0.192116690811 *cos( 2.28479465716 *t)+ 0.118680071019 *sin( 2.28479465716 *t) + 0.0310134506924 *cos( 2.47519421192 *t)+ 0.000254592255497 *sin( 2.47519421192 *t) + -0.0576194138539 *cos( 2.66559376668 *t)+ 0.082560849545 *sin( 2.66559376668 *t) + -0.0839813133077 *cos( 2.85599332145 *t)+ -0.0926779308527 *sin( 2.85599332145 *t) + -0.00294302065064 *cos( 3.04639287621 *t)+ -0.192145472441 *sin( 3.04639287621 *t) + 0.0312620057434 *cos( 3.23679243097 *t)+ -0.0467279999084 *sin( 3.23679243097 *t) + 0.0240572405524 *cos( 3.42719198573 *t)+ -0.131380808582 *sin( 3.42719198573 *t) + 0.0428285063991 *cos( 3.6175915405 *t)+ -0.146394824366 *sin( 3.6175915405 *t) + -0.02541184382 *cos( 3.80799109526 *t)+ -0.0688190483421 *sin( 3.80799109526 *t) + 0.181258333651 *cos( 3.99839065002 *t)+ -0.0901484634214 *sin( 3.99839065002 *t) + -0.0443667156102 *cos( 4.18879020479 *t)+ -0.0898212610648 *sin( 4.18879020479 *t) + 0.0736544316679 *cos( 4.37918975955 *t)+ -0.0750426044852 *sin( 4.37918975955 *t) + -0.0355835823163 *cos( 4.56958931431 *t)+ -0.119525232263 *sin( 4.56958931431 *t) + 0.0319541260203 *cos( 4.75998886908 *t)+ -0.193150001399 *sin( 4.75998886908 *t) + -0.000416186591487 *cos( 4.95038842384 *t)+ 0.25777892582 *sin( 4.95038842384 *t) + 0.218778298585 *cos( 5.1407879786 *t)+ 0.171027143418 *sin( 5.1407879786 *t) + -0.127545487283 *cos( 5.33118753336 *t)+ -0.16745165654 *sin( 5.33118753336 *t) + -0.263812652924 *cos( 5.52158708813 *t)+ 0.242332056731 *sin( 5.52158708813 *t) + -0.534397947337 *cos( 5.71198664289 *t)+ 0.0367447452299 *sin( 5.71198664289 *t) + 0.163558793585 *cos( 5.90238619765 *t)+ -0.325288006456 *sin( 5.90238619765 *t) + -0.84340197599 *cos( 6.09278575242 *t)+ -1.13634134796 *sin( 6.09278575242 *t)</p>
+</blockquote>
+<p>如果像我们这里只用cos和sin的话，我们可以画出任意我们想画的闭合曲线，至于其他图像那样包含很多闭合曲线的是用了<a href="http://mathematica.stackexchange.com/questions/17704/how-to-create-new-person-curve">step function</a>的技巧，这里我就暂时不说了，也就说我这里是说明如何画出任意的闭合曲线的。当然了也就是说只要你能一笔画的东西都可以，线当然是可以交叉或者重合的。</p>
+<p>因为我们是要画闭合曲线，并且注意到我们的函数最后是x(t)和y(t)这种形式，所以也就是说，我们可以把x和y分别当作是周期函数来对待，说道周期函数当然就是想到傅里叶级数了，因为傅里叶级数可以逼近任意的周期函数。所以这里我们就要用到DFT<a href="http://zh.wikipedia.org/wiki/%E7%A6%BB%E6%95%A3%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2">离散傅立叶变换</a>。</p>
+<p>我们这里就要用到离散傅里叶变换和逆变换的公式</p>
+<blockquote><p><img src="http://www.isnowfy.com/wp-content/plugins/latex/cache/tex_fb4231eb48abc6afd455f9c90a160e26.gif" alt="\hat{x}[k]=\sum_{n=0}^{N-1}e^{-i\frac{2\pi}{N}nk}x[n]">
+<br>
+<img src="http://www.isnowfy.com/wp-content/plugins/latex/cache/tex_3295dd38a685049ad671beadbc093d0d.gif" alt="x[n]=\frac{1}{N}\sum_{k=0}^{N-1}e^{-i\frac{2\pi}{N}nk}\hat{x}[k]"></p>
+</blockquote>
+<p>也就是说我们可以把我们想要画的图形画出来，然后依次找出我们要连接的这些点，这些点就是x[n]，带入到上面的第一个公式，我们可以得到x[k]，于是再调用第二个公式也就是离散傅里叶的逆变换，最后利用欧拉公式把e^ix=cosx+isinx展开，就能得到我们最后的函数形式了。</p>
+<p>按照这个思路实现的python代码如下</p>
+<div><ol><li><div>importmath</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>N =int(raw_input())</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>f =[]</div>
+</li>
+<li><div>foriinrange(N):</div>
+</li>
+<li><div>   (x, y)=map(float,raw_input().split())</div>
+</li>
+<li><div>    f.append(complex(x, y))</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>F =[]</div>
+</li>
+<li><div>foriinrange(N):</div>
+</li>
+<li><div>    ang =-2*1j*math.pi*i / N</div>
+</li>
+<li><div>    r =0</div>
+</li>
+<li><div>   forjinrange(N):</div>
+</li>
+<li><div>        r +=(math.e**(ang*j))*f[j]</div>
+</li>
+<li><div>    F.append(r)</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>print&quot;set parametric&quot;</div>
+</li>
+<li><div>print&quot;set samples&quot;, N +1</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>print&quot;x(t)=&quot;,</div>
+</li>
+<li><div>foriinrange(N):</div>
+</li>
+<li><div>    ang =2*math.pi*i / N</div>
+</li>
+<li><div>   ifi&gt;0:</div>
+</li>
+<li><div>       print&quot;+&quot;,</div>
+</li>
+<li><div>   printF[i].real/ N,&quot;*cos(&quot;, ang,&quot;*t)-&quot;,</div>
+</li>
+<li><div>   printF[i].imag/ N,&quot;*sin(&quot;, ang,&quot;*t)&quot;,</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>print</div>
+</li>
+<li><div>print&quot;y(t)=&quot;,</div>
+</li>
+<li><div>foriinrange(N):</div>
+</li>
+<li><div>    ang =2*math.pi*i / N</div>
+</li>
+<li><div>   ifi&gt;0:</div>
+</li>
+<li><div>       print&quot;+&quot;,</div>
+</li>
+<li><div>   printF[i].imag/ N,&quot;*cos(&quot;, ang,&quot;*t)+&quot;,</div>
+</li>
+<li><div>   printF[i].real/ N,&quot;*sin(&quot;, ang,&quot;*t)&quot;,</div>
+</li>
+<li><div> </div>
+</li>
+<li><div>print</div>
+</li>
+<li><div>print&quot;plot [t=0:&quot;, N,&quot;] x(t), y(t)&quot;</div>
+</li>
+<li><div>print&quot;pause 60&quot;</div>
+</li>
+</ol>
+</div>
+<p>也可以在<a href="https://gist.github.com/isnowfy/5509275">这里</a>看代码，把代码存成dft.py然后运行python dft.py输入点的个数以及点的位置，运行程序就可以看到生成的函数了，把结果输入到gnuplotli就可以看到函数图像了。</p>
+<p>比如我生成的那个函数图像的输入是这个样子的</p>
+<blockquote><p>33
+<br>
+0 0
+<br>
+2 0
+<br>
+1 0
+<br>
+1 3
+<br>
+0 3
+<br>
+2 3
+<br>
+2 2
+<br>
+3.5 0
+<br>
+5 2
+<br>
+5 3
+<br>
+4 3
+<br>
+3.5 2
+<br>
+3 3
+<br>
+2 3
+<br>
+3 3
+<br>
+3.5 2
+<br>
+4 3
+<br>
+5 3
+<br>
+5 1
+<br>
+5.5 0
+<br>
+6.5 0
+<br>
+7 1
+<br>
+7 3
+<br>
+7 1
+<br>
+6.5 0
+<br>
+5.5 0
+<br>
+5 1
+<br>
+5 3
+<br>
+4 3
+<br>
+3.5 2
+<br>
+3 3
+<br>
+1 3
+<br>
+1 0</p>
+</blockquote>
+<p>可以把输入文件保存到input.txt，然后运行cat input.txt | python dft.py | gnuplot就可以看到绘制好的函数了。</p>
+<p>也就是说只要把你要画的东西的点描绘出来，输入到程序中就可以生成不可思议的函数了！</p>
+<p>参考资料：
+<br>
+<a href="http://mathematica.stackexchange.com/questions/17704/how-to-create-new-person-curve">http://mathematica.stackexchange.com/questions/17704/how-to-create-new-person-curve</a>
+<br>
+<a href="http://tieba.baidu.com/p/2156093774">http://tieba.baidu.com/p/2156093774</a>
+<br>
+<a href="http://www.quora.com/Mathematics/How-is-the-Gangnam-Style-mathematical-plot-made">http://www.quora.com/Mathematics/How-is-the-Gangnam-Style-mathematical-plot-made</a>
+<br>
+<strong>我猜您可能还会喜欢:</strong>
+</p>
+<ul><li><a href="http://www.isnowfy.com/wordpress-hotlink-protection/" title="2011 年 07 月 08 日">wordpress防盗链</a></li>
+<li><a href="http://www.isnowfy.com/download-doubanfm-songs/" title="2011 年 11 月 13 日">自动下载豆瓣FM的加心歌曲</a></li>
+<li><a href="http://www.isnowfy.com/introduction-to-svd-and-lsa/" title="2012 年 11 月 23 日">谈谈SVD和LSA</a></li>
+<li><a href="http://www.isnowfy.com/introduction-to-python-c-extension/" title="2012 年 10 月 05 日">写python的c扩展简介</a></li>
+<li><a href="http://www.isnowfy.com/quine/" title="2012 年 11 月 26 日">打印自身的程序</a></li>
+<li><a href="http://www.isnowfy.com/introduction-to-gevent/" title="2011 年 12 月 21 日">gevent初步</a></li>
+<li><a href="http://www.isnowfy.com/information-theory-and-entropy/" title="2012 年 07 月 19 日">信息熵</a></li>
+</ul>
+<p></p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/9767.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/9767.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/9767.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

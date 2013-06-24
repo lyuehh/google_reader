@@ -1,0 +1,172 @@
+---
+layout: post
+title:  "MVC模式参数传递的探究"
+date:   2010-08-21 10:04:00
+author: 丁丁3
+categories: program
+---
+
+## MVC模式参数传递的探究
+### by 丁丁3
+### at 2010-08-21 10:04:00
+### original <http://www.cnblogs.com/dingding3/archive/2010/08/21/MVC.html>
+
+<p>作者: <a href="http://www.cnblogs.com/dingding3/">丁丁3</a> 发表于 2010-08-21 10:04 <a href="http://www.cnblogs.com/dingding3/archive/2010/08/21/MVC.html">原文链接</a> 阅读: 798 评论: 5</p><table>
+<tbody>
+<tr>
+<td>
+<div>
+<div>最近公司一直在用MVC模式写程序，所以最近一直再查MVC的资料，目前在研究MVC的参数传递方法，因此有了此文。</div>
+<div>MVC模式既可以通过Model传递参数，也可以用ViewData来保存数据，两种方式的组合传递参数就是一种新的模式了。</div>
+<div>使用这种组合传参的新模式可以非常快的实现，但美中不足的是输入错误会导致错误，不能在编译时发现错误原因，而且ViewData必须要用as来转换。</div>
+<div><strong>从Controller</strong><strong>传递数据到View</strong><strong>视图模板</strong></div>
+<div>MVC模式一个典型的特征是严格的功能隔离。Model模型、Controller控制器和View视图各自定义了作用和职责，且相互之间以定义好的方式进行沟通。这有助于提升测试性和代码重用。</div>
+<div>当Controller决定呈现HTML响应给客户端是，它负责显式传递给View模板所有需要的数据。View模板从不执行任何数据查询或应用程序逻辑 – 仅仅负责呈现Model或Controller传递过来的数据。</div>
+<p><strong>当需要从Controller传递不止一个Model对象</strong>时，就要用到<strong>ViewData</strong>字典或<strong>ViewModel</strong>模式。例如，当我们需要Controller在View呈现Dinner对象和支持的Countries列表的时候，采用如下两种方式来实现。</p>
+<div><strong>使用ViewData </strong><strong>字典</strong></div>
+<div>
+<p>Controller基类公开了一个ViewData 字典属性，用来从Controllers传递额外的数据给Views视图。<br>     Controller中代码</p>
+<div>
+<pre>    [Authorize]
+    public ActionResult Edit(int id)
+    {
+        Dinner dinner = dinnerRepository.GetDinner(id);
+         ViewData["Countries"] = new SelectList(PhoneValidator.Countries, dinner.Country);
+        return View(dinner);
+    }
+</pre>
+</div>
+<br>    上面代码中SelectList构造函数的第一个参数显示国家列表，第二个参数指定当前选中的国家。    <br>    View中代码<br> 
+<div>
+<pre>   &lt;%= Html.DropDownList(&quot;Country&quot;, ViewData[&quot;Countries&quot;] as SelectList)%&gt;
+</pre>
+</div>
+<span><span><span style="color:#000000"><span><br></span></span></span></span>    上面代码中第一个参数表示输出的HTML表单元素名称，第二个参数是通过ViewData传递的模型类。<br>   <strong>使用ViewModel模式：<br></strong>    ViewData的优点:非常快，容易实现<br>    ViewData的缺点:输入错误会导致错误；不能在编译期发现错误原因；在View视图模板中使用强类型时，ViewData要用as来转换。<br>    ViewModel模式：<br><strong>    1.针对特定的View视图创建强类型的类<br>    2.公开View模板需要的动态参数值或内容<br>    3.Controller类填充和传递这些类给View模板去用<br>    4.优点:类型安全、编译期检查和编辑器的智能提示</strong><br>    示例代码:
+<div>
+<pre>    public class DinnerFormViewModel
+    {
+           public Dinner Dinner {get; private set;}
+            public SelectList Countries{get; private set;}
+           public DinnerFormViewModel(Dinner dinner)
+           {
+                Dinner = dinner;
+                Countries = new SelectList(PhoneValidator.Countries,dinner.Country);
+           }
+    }
+</pre>
+</div>
+<p> </p>
+<p>    在Controller类中</p>
+<div>
+<pre>    [Authorize]
+    public ActionResult Edit(int id)
+    {
+        Dinner dinner = dinnerRepository.GetDinner(id);
+        return View(new DinnerFormViewModel(dinner));
+    }
+</pre>
+</div>
+<br>    在View视图模板中<br>    头部Inherits = &quot;System.Web.Mvc.ViewPage&lt;NerdDinner.Models.Dinner&gt;&quot;改为<br>    <span>Inherits = &quot;System.Web.Mvc.ViewPage&lt;NerdDinner.Controllers.DinnerFormViewModel&gt;&quot;</span><br>    绑定列表即为<span>&lt;% = Html.DropDownList(&quot;Country&quot;.Model.Countries) %&gt;</span>
+<p> </p>
+<span>
+<div>下面我们需要更新视图中的代码。对于表单中的HTML元素的名称不需要更新，仍旧保持为Title、Country等等，我们需要更新HTML辅助方法，使用DinnerFormViewModel类来获取属性值。</div>
+<div align="left">
+<div>
+<pre>&lt;p&gt;
+&lt;label for=&quot;Title&quot;&gt;Dinner Title:&lt;/label&gt;
+&lt;%= Html.TextBox(&quot;Title&quot;, Model.Dinner.Title) %&gt;
+&lt;%= Html.ValidationMessage(&quot;Title&quot;, &quot;*&quot;) %&gt;
+&lt;/p&gt;
+&lt;p&gt;
+&lt;label for=&quot;Country&quot;&gt;Country:&lt;/label&gt;
+&lt;%= Html.DropDownList(&quot;Country&quot;, Model.Countries) %&gt;
+&lt;%= Html.ValidationMessage(&quot;Country&quot;, &quot;*&quot;) %&gt;
+&lt;/p&gt;
+</pre>
+</div>
+</div>
+<div></div>
+<div>同样地，我们也需要更新Edit Post方法，在产生错误时，使用DinnerFormViewModel类传递给视图模板：</div>
+<div align="left">
+<div>
+<pre>//
+// POST: /Dinners/Edit/5
+[
+AcceptVerbs(HttpVerbs.Post)]
+public ActionResult Edit(int id, FormCollection collection) {
+Dinner dinner = dinnerRepository.GetDinner(id);
+try {
+UpdateModel(dinner);
+dinnerRepository.Save();
+return RedirectToAction("Details", new { id=dinner.DinnerID });
+}
+catch {
+ModelState.AddModelErrors(dinner.GetRuleViolations());
+return View(new DinnerFormViewModel(dinner));
+}
+}
+</pre>
+</div>
+</div>
+<div></div>
+<div>我们也更新Create() Action方法，重用相同的DinnerFormViewModel类，在View中实现Country下拉列表框。下面是HTTP-GET的实现代码：</div>
+<div align="left">
+<div>
+<pre>//
+// GET: /Dinners/Create
+public ActionResult Create() {
+Dinner dinner = new Dinner() {
+EventDate = DateTime.Now.AddDays(7)
+};
+return View(new DinnerFormViewModel(dinner));
+}
+</pre>
+</div>
+</div>
+<div></div>
+<div>下面是HTTP-POST Create方法的实现代码：</div>
+<div align="left">
+<div>
+<pre>//
+// POST: /Dinners/Create
+[AcceptVerbs(HttpVerbs.Post)]
+public ActionResult Create(Dinner dinner) {
+if (ModelState.IsValid) {
+try {
+dinner.HostedBy = "SomeUser";
+dinnerRepository.Add(dinner);
+dinnerRepository.Save();
+return RedirectToAction("Details", new { id=dinner.DinnerID });
+}
+catch {
+ModelState.AddModelErrors(dinner.GetRuleViolations());
+}
+}
+return View(new DinnerFormViewModel(dinner));
+}
+</pre>
+</div>
+</div>
+<div align="left">
+<span>
+<div><span style="font-size:10pt"><strong>定制ViewModel</strong><strong>类（Custom-shaped ViewModel Classes</strong><strong>）</strong></span></div>
+<div><span style="font-size:10pt">在上面的实现方案中，DinnerFormViewModel类直接公开了2个公有属性：Dinner 模型对象和SelectList模型属性。这一方法适合于View模板中HTML用户界面元素和业务Model对象比较接近的场景。</span></div>
+<div><span style="font-size:10pt">如果不符合这一情况，可以考虑创建定制的ViewModel类，根据视图的使用情况创建优化的对象模型 – 该对象模型可能完全不同于底层的业务模型对象（Domain Model Object）。例如，该ViewModel类有可能公开不同的属性或者从多个Model对象中汇总的属性。</span></div>
+<div><span style="font-size:10pt">定制的ViewModel类不仅可用来从Controller传递数据到View去呈现，而且可用来处理从表单提交回来给Controller的action方法的数据。针对后一种情况，你可以让Action方法根据表单提交回来的数据更新ViewModel对象，接着使用ViewModel实例来映射或者获取时间的业务模型对象（Domain Model Object）。</span></div>
+<div><span style="font-size:10pt">定制ViewModel类提供了很好的灵活性，在任何时候，你发现View模板中的呈现代码或Action方法中表单提交代码越来越开始复杂时，你可以考虑使用定制的ViewModel了。通常，这意味着业务模型对象和View视图中的用户界面元素不一致，一个中介的定制ViewModel类就可以发挥作用了。</span></div>
+</span></div>
+</span></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>MVC模式还有很多妙用，以后还会写更多有关MVC的文章。</p>
+<p>
+
+
+
+
+
+
+</p><img src="http://www.cnblogs.com/dingding3/aggbug/1805167.html?type=1" width="1" height="1" alt=""><p>评论: 5　<a href="http://www.cnblogs.com/dingding3/archive/2010/08/21/MVC.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/dingding3/archive/2010/08/21/MVC.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/71556/">曲晓东：百度不能控制的企业仅有360与腾讯</a><span style="color:gray">(2010-08-21 21:44)</span><br>· <a href="http://news.cnblogs.com/n/71555/">Lady Java视频标志着极客文化的衰退</a><span style="color:gray">(2010-08-21 21:20)</span><br>· <a href="http://news.cnblogs.com/n/71554/">又一位前 Google 员工投奔 Foursquare 任市场主管</a><span style="color:gray">(2010-08-21 21:18)</span><br>· <a href="http://news.cnblogs.com/n/71550/">美国人最需要什么？——电视正渐渐成为生活非必需品</a><span style="color:gray">(2010-08-21 19:55)</span><br>· <a href="http://news.cnblogs.com/n/71549/">马化腾的住房观是一代白领的指引</a><span style="color:gray">(2010-08-21 19:53)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/nick4/archive/2010/08/19/1803393.html">十年技术，不要再迷茫</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

@@ -1,0 +1,52 @@
+---
+layout: post
+title:  "OOW 2012 keynote摘要"
+date:   2012-10-01 21:43:16
+author: 小荷
+categories: program
+---
+
+## OOW 2012 keynote摘要
+### by 小荷
+### at 2012-10-01 21:43:16
+### original <http://www.udpwork.com/item/8183.html>
+
+<p>Oracle open world(oow) 2012于9月29日在美国旧金山如火如荼的展开了，开始的前两天，已经有不少激动人心的新产品和新特性发布了，在这里，我根据twitter，微博，youtube上的资料简单做了一些摘要，给大家先尝尝鲜，具体的完整信息，可能要的产品发布之后才能获得了。</p>
+<p>Larry：oracle是世界上著名的平台服务的公司，我们有世界上最流行的数据库，我们有世界上最流行的的编程语言，我们有世界上最流行的中间件，而且我们也在改进上述产品。</p>
+<p>(1)oracle的云计算战略
+<br>
+Saas：为application提供了几乎完美的组件，CRM suit，HCM suit，ERP suit。主要的竞争对手：salesforse.com，不是SAP。
+<br>
+Paas：最好的的标准化平台服务，oracle RDBMS #1，JAVA #1，Fusion Middleware#1，oracle social netork。
+<br>
+Iaas：高性能，安全的，可靠的基础架构服务，OS，VM，计算服务，存储服务，Exadata，Exalogic，Supercluster，infiniband，主要的竞争对手是亚马逊，而不是IBM。</p>
+<p>评：从上述的产品线来看，oracle已经基本覆盖了云计算的3种类型。在Saas，给自己设定的对手是salesforce，而不是SAP，说明oracle向往Saas发展的不是个人对象(不把google设置主要对手)，而salesforce目前确实在企业级Saas做的最好，大部分的基于云计算的CRM都是基于salesforce。在Iaas上，oracle的主要对象是亚马逊的aws、EC2，目前这已经是行业标杆了，oracle给自己定这个目标，我个人觉得比较高，加上oracle一向的高价格和亚马逊一向的硬件良心价，oracle的挑战不小。而在Iaas上，oracle没列主要竞争对手，我认为是oracle认为目前在这个领域自己还没有竞争对手。</p>
+<p>关于Iaas，据kamus在现场的消息，oracle的公有云：一个服务＝一个用户＝一个表空间＝一个数据文件，计价原则基于存储大小，一个月一千多RMB。</p>
+<p>(2) oracle database 12c的发布
+<br>
+12c有不少新特性，其中有row limit clause(解决一直一来以rownum控制返回行数的问题)， pluggable database(类似像sql server一样的分成一个一个的小库，而不在用传统的用schema来分隔，，每个库有独立的system表空间，能alter database pluggable xxx open read only或正常open。)</p>
+<p>oracle database 12c另外一个重要的特性是Compression and Information Lifecycle Management (ILM)，可实现历史数据的分层(不同的表空间)和压缩。</p>
+<p>跨CDB的做零宕机的unplug和plug迁移，以及PDB级别的flashback，需要在12cR2实现。</p>
+<p>(3)Exadata x3的发布
+<br>
+这是Exadata的第三个版本，最小的购买单位不再是四分之一rack，而是八分之一rack。4T的DRAM，500T的disk，flash memory扩大到原来的4倍，增加到22T，同时支持flash写cache(smart flash write caching)，一台满配的x3可以将220T的用户数据通过压缩放在flash memory，40T的用户数据通过压缩放在DRAM中处理。Exadata x3的价格和原来x2一样，呵呵，学苹果的销售定价策略嘛。</p>
+<img src="http://www1.feedsky.com/t1/680100324/oracleblog/feedsky/s.gif?r=http://www.oracleblog.org/its-my-life/oow-2012-keynote-diagest/">
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8183.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8183.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8183.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

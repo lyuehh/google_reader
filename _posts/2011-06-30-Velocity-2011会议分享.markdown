@@ -1,0 +1,299 @@
+---
+layout: post
+title:  "Velocity 2011会议分享"
+date:   2011-06-30 14:12:20
+author: nwind
+categories: program
+---
+
+## Velocity 2011会议分享
+### by nwind
+### at 2011-06-30 14:12:20
+### original <http://www.baiduux.com/blog/2011/06/30/velocity-2011/>
+
+<p>感谢公司和部门的支持，6月12号我和其它同事一起前往美国参加了<a href="http://velocityconf.com">Velocity 2011</a>的会议，在此期间学习到了很多性能优化方面的经验和方法，通过本文整理出来分享给大家。
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/844bce021cbe2c8c09fa934b.jpg" alt="velocity">
+</p>
+<h2>启程<a name="启程"> </a></h2>
+<p>我们乘坐12号下午4点的国航飞机出发，经过11小时到达了旧金山国际机场，由于时差的关系，到了旧金山后的当地时间是12号中午12点，感觉像穿越了。
+</p>
+<p>下飞机后我们租了2辆车，在美国租车是最经济方便的交通工具，因为地广人稀，除了大城市其它地方都很少见到公交和出租车，导航仪很精确，很顺利就从机场开到了宾馆。
+</p>
+<h2>参观Facebook总部<a name="参观Facebook总部"> </a></h2>
+<p><span></span></p>
+<p>13号我们参观了公司在Cupertino的办公室，然后在HR的带领下驱车前往Facebook总部进行参观，Facebook内部不大，只有2层办公室，里面的场景和电影social network中见到的一样，不像想象中的吵，但也不安静，很多人都戴着耳麦，由于签署了保密协议不能拍照片，感兴趣的同学可以观看Facebook官方的MTV <a href="http://www.verycd.com/topics/2887025/">Diary of Facebook</a>，幸运的是我们在办公室里还见到了Mark。
+</p>
+<p>然后我们在一个会议室里和2位Facebook工程师简单进行了交流，对Facebook最大的感受就是其内部的小巧和高效，像一个小公司一样在运作，每个工程师都可以自由修改任何Facebook的代码（当然，会有code review和自动化测试才能上线），Facebook有健全的小流量测试机制来不断改进产品，任何人都能提需求，然后通过对比测试来决定某个功能是否大规模部署，他们没有专门的QA，而是由工程师自己来保证质量。
+</p>
+<p>保持小巧是Facebook高效率运作的一个重要原因，目前Facebook的工程师只有500人左右，而且他们不想增长太快。在这次Velocity大会上Jonathan的演讲也提到了Facebook的内部的工程师文化：small and hungry，在对php进行优化时他们最终选择<a href="https://github.com/facebook/hiphop-php">hiphop</a>这个高风险但高收益的方案，感觉很少有大公司会这么激进。
+</p>
+<p>之前网上有篇文章<a href="http://framethink.wordpress.com/2011/01/17/how-facebook-ships-code/">How Facebook Ships Code</a>谈到了Facebook内部运作的很多细节，感兴趣的同学可以阅读，与传统的企业相比确实有很多值得借鉴的地方。
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/379b83a0e920feeb4610644a.jpg" alt="facebook">
+</p>
+<h2>6月14号的workshop<a name="6月14号的Workshop"> </a></h2>
+<p>由于每个分会场的人都太多了（超过400），第一天的workshop基本上相当于演讲，之前还以为主要是动手实验。
+</p>
+<p>接下来我会列举出每个session相关的信息，大家可以点击session标题浏览详细的信息，其中大部分session都有slide可以下载，有些还有视频（youtube），而对于还没有视频的session请耐心等待一段时间。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/19771">Performance Tools</a></h3>
+<p>这个session主要介绍了4个性能优化相关的工具：WebPagetest、Mobitest、ShowSlow、dynatrace。
+</p>
+<p>首先介绍的是<a href="http://www.webpagetest.org">WebPagetest</a>，这是google员工Patrick Meenan全职开发的性能监测工具，它可以通过截图来直观地看到页面加载的过程，并能进行视频对比，方便演示性能优化结果，WebPagetest是目前功能最全面的开源监测工具，还可以部署到本地机器，方便进行内部的性能测试。
+</p>
+<p><a href="http://www.blaze.io/mobile/">Mobitest</a>是专门用来测试iOS和android页面性能的在线服务，可以在线免费使用，但由于移动设备的局限性（性能、相关工具），能监测到的信息要比桌面上的少。它的实现原理是在这些移动设备上运行一个自己开发的app，监听服务器的指令然后调用内嵌的webkit来监测页面性能。
+</p>
+<p><a href="http://www.showslow.com/">ShowSlow</a>是一个聚合YSlow、Page Speed、dynaTrace测试结果的平台，方便浏览，并能查看历史数据，它的实现方法是通过收集<a href="http://developer.yahoo.com/yslow/help/beacons.html">beacons</a>结果。
+</p>
+<p><a href="http://ajax.dynatrace.com/ajax/en/">dynatrace AJAX</a>就不用多介绍了，它目前最强大的页面性能监测工具，可以详细列出页面渲染中详细的信息，甚至是每个函数的执行时间。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/19967">Analyzing the Performance of Mobile Web</a></h3>
+<p>Ariya的这个演讲是这次会议最好的演讲之一，因为Ariya是WebKit的reviewer之一，他对WebKit有深入的研究，提供了不少移动设备如何进行性能优化的思路，以下是我总结的要点：
+</p>
+<ul>
+<li>
+     监测移动设备性能的方法
+<ul>
+<li>
+     源码注入方式，在相关部分加上日志，可以得到最详细的数据，但需要重新编译
+ </li>
+<li>
+     通过代理的方式，类似Fiddle 2，不过有局限
+ </li>
+<li>
+     通过高速摄像头，可以方便得到视觉效果，而且不影响运行的性能，但不能得到更多的数据，且不好进行分析
+ </li>
+</ul>
+</li>
+<li>
+     PhantomJS
+<ul>
+<li>
+     这是一个基于WebKit的命令行工具，可以在JS中调用WebKit引擎，方便进行自动化测试
+ </li>
+</ul>
+</li>
+<li>
+     通过代码注入方式来监测性能
+<ul>
+<li>
+     可以得到页面各元素渲染的顺序
+ </li>
+<li>
+     可以得到细致的元素速度数据
+ </li>
+<li>
+     JS引擎GC的情况
+ </li>
+<li>
+     他采用的方法是修改android的代码，然后重新编译，在绘图部分打日志
+ </li>
+</ul>
+</li>
+<li>
+     <a href="http://github.com/senchalabs/android-tools">android-tools</a>
+<ul>
+<li>
+     android的Web类应用开发和调试工具，包括eventrecoder和remotejs
+ </li>
+<li>
+     remotejs可以实用console.log来获取页面中的数据，执行js等，解决了如何方便调试的问题
+ </li>
+<li>
+     eventrecoder可以用来进行android上web的单元测试
+ </li>
+</ul>
+</li>
+<li>
+     <a href="https://github.com/senchalabs/hammerjs/">hammerjs</a>
+<ul>
+<li>
+     一个JS的shell，基于v8实现，类似nodejs，不过功能要简单很多
+ </li>
+<li>
+     其中有一个模块Reflect可以用来分析js的语法，它的实现居然是从JavaScriptCore中将解析部分剥离出来，生成的结果类似<a href="https://developer.mozilla.org/en/SpiderMonkey/Parser_API">SpiderMonkey</a>的parser，这个工具可以用来简化js相关分析工具的开发。
+ </li>
+</ul>
+</li>
+</ul>
+<p>Ariya还提供了一些性能优化和需要注意的事项，如避免创建对象等，具体请参考其slide，建议大家等这个视频出来后都看一下。
+</p>
+<p>下面是其中的一页，整个slide做得相当漂亮
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/c3b6ed2baca98efb023bf6ff.jpg" alt="ariya">
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/19976">Mobile Web &amp; HTML5 Performance Optimization</a></h3>
+<p>整体来看这个session没有什么亮点，对于mobile web开发不太了解的同学可以看看，系统了解一下，演讲者写过很多书，比较善于整理和总结，但缺乏新意。
+</p>
+<h2>6月15号的会议<a name="6月15号的会议"> </a></h2>
+<p>15号是velocity第一天的正式会议，sessions很多，整体时间也比14号长。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/20141">JavaScript &amp; Metaperformance</a></h3>
+<p>果然到处都能见到Douglas，这次除了介绍js语言特点以外还不忘鄙视了一下java，感兴趣的同学可以看看ppt。
+</p>
+<p>Douglas说现在的JS性能测试都是骗人的，除了<a href="http://research.microsoft.com/en-us/projects/jsmeter/">JSMeter</a>看上去还行。
+</p>
+<p>接下来是大家常听到的：DOM是瓶颈，大部分时间花在layout、painting等工作上，不要过早优化，避免导致代码不易维护。。。
+</p>
+<p>然后他说JS中还是有优秀部分的，顺带推广自己的书JavaScript: The Good Parts。
+</p>
+<p>最后忽悠大家用JSLint来作为性能监测工具，这。。。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/20894">Testing and Monitoring Mobile Apps</a></h3>
+<p>主要是Keynote产品的广告，不过做得很不错，介绍了Mobile Device Perspective 5，它是一个非常强大的手机测试工具，可以远程操作真实的iphone、android手机，还可以运行自动化脚本，监测应用性能等，是移动设备开发和性能优化的利器。
+</p>
+<p>但实现原理不清楚，怀疑是在越狱的手机上运行后台进程，大家可以通过看视频了解其功能，这是我15号上午印象最深的一个session，欢迎了解内幕的同学指教。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18184">Real-Time Real-Fast</a></h3>
+<p>主要谈使用WebSocket来减少overhead，可以用于实时性要求高的场景，然后推广了一下dojo中的socket API，它可以简化WebSocket的开发，并自动fallback到传统的long-polling方式，其它没听到什么特别的。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18039">Performance Measurement and Case Studies at MSN</a></h3>
+<p>MSN的工程师分享了在性能优化方面的经验和内部数据，我这边记的一些要点：
+</p>
+<ul>
+<li>
+     之前太过于关注下载时间等网络数据，缺乏对实际展现性能的关注
+ </li>
+<li>
+     应该更多关注渲染及展现时间，并提议浏览器增加这些监测API
+ </li>
+<li>
+     js越来越大了，要将js放底部或延迟加载及执行
+ </li>
+<li>
+     延迟广告的加载，看上去他们的广告长宽是固定的，所以延迟是可行的
+ </li>
+<li>
+     使用Data URL来显示缩率图，减少请求数
+ </li>
+</ul>
+<p>建议简单看一下这个slide，里面有一些性能优化对比测试的数据。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/21089">Improving Performance by Changing the Rules – From Fast to SPDY</a></h3>
+<p>主要介绍了SPDY对http的优化对比，在3G网络下性能提升效果显著，看slide就好了，没太多可听的，虽然Google的ssl请求都支持SPDY了，但其它网站及少有支持的。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18241">Understanding Mobile Web Browser Performance</a></h3>
+<p>主要内容是介绍了手机中的网络情况，手机为了节能，网络不会一直开启，所以初次打开时会有启动网络的时间，而且3G网络延迟还是很高，也许4G会好点。
+</p>
+<p>在android中只有4个线程来处理http请求，所以android中浏览器的并发不会超过4个。
+</p>
+<p>android中的浏览器默认打开了pipelining，是极少数默认开启这个技术的浏览器。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18135">10 Tricks for Mobile Performance</a></h3>
+<p>介绍了针对移动设备进行性能优化的建议，具体内容建议看看slide就好了。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18087">Know Your Engines: How to Make Your JavaScript Fast</a></h3>
+<p>重点推荐一下David的这个session，David是Mozilla的JS引擎工程师，之前在他的<a href="http://blog.mozilla.com/dmandelin/">blog</a>上学习到了很多JS引擎优化的细节，这次又有不少收获，建议对JS引擎实现不太了解的同学抽空听听这个session，可以学到很多知识。
+</p>
+<p>David首先讲解了JS引擎中的JIT和GC实现原理，然后介绍如何根据这些原理来优化JS代码，如避免动态改变对象的类型来优化JIT的执行、减小使用全局变量来减小GC、避免使用稀疏的数组等。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18229">Take it all off! Lossy Image Optimization</a></h3>
+<p>主要针对如何优化图片这一主题，详细介绍了如何优化图片的大小，包括png、jpeg，有损、无损压缩等细节。通过一定程度的有损压缩，在性能和效果上进行权衡。
+</p>
+<p>从目前HTTP Archive的数据来看，图片是占带宽最多的部分（60%左右），对其进行优化可以明显减少带宽消耗。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/17977">WebPagetest Update</a></h3>
+<p>WebPagetest的作者Patrick详细介绍了WebPagetest这一年来的改进，包括：
+</p>
+<ul>
+<li>
+     支持dynaTrace
+ </li>
+<li>
+     Web Page Replay
+ </li>
+<li>
+     对外API
+ </li>
+<li>
+     提供WPT Monitor来监控页面性能变化的情况
+ </li>
+</ul>
+<p>建议关注这个性能优化工具。
+</p>
+<h2>6月16号的会议<a name="6月16号的会议"> </a></h2>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/20204">Holistic Performance</a></h3>
+<p>John介绍了jQuery中如何进行性能优化的，一些注意的点等：
+</p>
+<ul>
+<li>
+     需要进行全局考虑，运行快的代码有可能耗cpu和内存
+ </li>
+<li>
+     用JS字典作为例子来解释性能优化需要考虑很多方面，包括文件大小、cpu、内存等，之前John在他的<a href="http://ejohn.org/blog/revised-javascript-dictionary-search/">blog上讨论过</a>
+ </li>
+<li>
+     jQuery性能优化的准则：
+<ul>
+<li>
+     通过<a href="http://jsperf.com">JSPerf</a>来测试优化效果，JSPerf基于<a href="http://benchmarkjs.com/">Benchmark.js</a>，是一个很优秀的JS性能测试工具，它通过很多方法来保证测试结果的准确性
+ </li>
+<li>
+     考虑全局优化，细节优化意义不大，纯js的性能问题很少见，基本上都是DOM性能问题
+ </li>
+<li>
+     保持简洁的代码，避免为了性能而减低可读性
+ </li>
+<li>
+     保证IE的性能，即便IE是最慢的浏览器，但由于市场占用率高，IE的性能是最重要的
+ </li>
+</ul>
+</li>
+</ul>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/20912">Making the Web Instant</a></h3>
+<p>介绍了Chrome中的prerender，宣传视频很唬人，将原先需要等待6秒的页面降到了0秒，看来要是大家都用Chrome，咱们也没必要做性能优化了。
+</p>
+<h3>浏览器专栏<a name="浏览器专栏"> </a></h3>
+<p>浏览器专栏和去年在北京的velocity类似，主要介绍浏览器的一些最新的进展，Chrome、Firefox、IE平时大家也都比较了解，所以没太多特别的地方。
+</p>
+<p>不过今年Opera首次出现，介绍了Opera的产品线，Opera在移动领域有两个版本，mini和mobile，mobile是全功能的，而mini的渲染是由服务端完成的，原来Opera还有一个<a href="http://www.opera.com/developer/tools/mobile/">模拟器</a>，可以用它来在桌面测试Opear mobile的展现效果。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/17986">HTML5, Flash and the Battle for Faster Cat Videos</a></h3>
+<p>来自YouTube的工程师介绍了YouTube中视频播放器的一些经验，并对HTML5中的video标签和Flash进行了对比，HTML5最大的优势是能和页面中的其它元素更好地结合，而Flash目前在性能上要比HTML5好，尤其是视频加载的速度。
+</p>
+<p>最后建议主要使用Flash，而专门针对iOS用户提供HTML5版本，因为iOS对YouTube API流量的贡献不小。
+</p>
+<h3><a href="http://velocityconf.com/velocity2011/public/schedule/detail/18407">The Impact of Ads on Performance and Improving Perceived Performance</a></h3>
+<p>这个session我并没有听，不过从发出来的ppt看，内容还是不错的，介绍了Yahoo mail中如何改进广告加载来提高页面性能，有很多细节的技术方案。
+</p>
+<h2>参观Google总部<a name="参观Google总部"> </a></h2>
+<p>17号我们前往位于Mountain View的Google总部进行了参观，正如传闻所说的，Google总部很大，里面人很多。
+</p>
+<p>看到了传说中的恐龙骨架、飞船、大Nexus One、全景Google map、沙滩排球场，比起facebook工位要宽敞不少，还有很多4人一间的房间，里面很安静，传说中空气净化开得很足也是真的，办公室里面空气质量很不错，关于Google总部的情况大家可以搜索相关的资料，网上说的基本上靠谱。
+</p>
+<p>Google总部里有很多餐厅，里面有各种风格的食物，还有中国、印度等不同地区的口味，比Facebook要大得多。
+</p>
+<p>这里感谢一下Tim在百忙中抽空带我们到处参观。
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/b0d5ab5907c109be9d8204a2.jpg" alt="google">
+</p>
+<h2>整体感受<a name="整体感受"> </a></h2>
+<p>这里零碎写下一些自己一些参会的感受：
+</p>
+<ul>
+<li>
+     和国内相比还是更容易遇到牛人，比如Ariya和David的两个session是我觉得收获最大的，但在国内很难听到这样深入的演讲
+ </li>
+<li>
+     最头疼的问题是时差，上午11点就相当于北京夜里2点，影响了开会的效率
+ </li>
+<li>
+     今年性能优化主题已经逐渐转向了自动化测试和持续集成，通过自动化的方法来保证性能
+ </li>
+<li>
+     标准化也是一个很大趋势，beacons和HAR这两个标准都逐渐被大家接受
+ </li>
+<li>
+     数据分析对性能优化来说至关重要，Facebook在这方面做得很专业，从他们招聘Web Optimization工程师的职位要求也能看得出来
+ </li>
+</ul>
+<p>最后，除了开会，我们还抽空参观了漂亮的斯坦福大学：
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/74deef89fa0e0bf4a5c2724a.jpg" alt="stanford">
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/3bcf6f4f91da5d69b2de051b.jpg" alt="stanford2">
+</p>
+<p>最后去参观了宏伟的金门大桥，硅谷和旧金山的气候差距很大，忽然就变成阴云密布了：
+</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/2f8c463f7b38455d71cf6c4a.jpg" alt="golden"></p>

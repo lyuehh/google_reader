@@ -1,0 +1,211 @@
+---
+layout: post
+title:  "word wrap 解惑"
+date:   2010-10-14 17:38:30
+author: 法海
+categories: program
+---
+
+## word wrap 解惑
+### by 法海
+### at 2010-10-14 17:38:30
+### original <http://ued.taobao.com/blog/2010/10/14/research-of-word-wrap/>
+
+<h2>源起</h2>
+<p>我们经常需要“修复”一个老生常谈的“bug”，那就是文本的自动换行问题。在专业术语上，这种期望得到的渲染现象被称作“word wrap”，即文本处理器有能力把超出页边的整个词自动传到下一行。</p>
+<p>在现实项目中，尤其是在测试阶段，鉴于测试使用非常极端的测试用例，我们经常需要“修复”如图所示的这个问题：</p>
+<div style="width:430px"><img src="http://img04.taobaocdn.com/tps/i4/T1KTFNXm4zXXXXXXXX-420-113.jpg" alt="长单词溢出" width="420" height="113"><p>长单词溢出</p></div>
+<p>图中，极长的这个英文单词（虽然是生造的）为了保证完整的显示，无奈地超出了容器的限制，它溢出了。为了“修复”这个“问题”，使得无论东亚还是西欧文字都能被限定在容器的尺寸范围内，我们一般会加上诸如“word-wrap: break-word; word-break:  break-all;”这样的属性，令我们满意（好吧，其实是令测试满意）的结果如图所示：</p>
+<div style="width:117px"><img src="http://img03.taobaocdn.com/tps/i3/T1CTdNXmhzXXXXXXXX-107-194.jpg" alt="长单词被强行断行" width="107" height="194"><p>长单词被强行断行</p></div>
+<p>从以结果现象为导向的观点出发，这个“bug”被“修复”了，但是在做了三五次这样的重复工作后，我开始产生这样几个疑问：</p>
+<ol>
+<li>word-wrap 和 word-break  究竟是什么？</li>
+<li>为什么会乐此不疲地重复碰到这个问题？</li>
+<li>这个问题是问题么？</li>
+</ol>
+<h2><span></span>规则</h2>
+<p>在解惑之前，有几个关乎问题本质的客观现实需要指出，因为这些“常识”最容易被人忽视：</p>
+<p>CJK  文字和 !CJK  文字有各自的排版规则。</p>
+<p>在这里，CJK 代表 Chinese, Japanese, and  Korean，即东亚文字，!CJK 就是非东亚文字，大多数情况下是西欧文字。</p>
+<p>在文字的呈现规则上，两者很不相同，CJK  文字中，一个字母就是一个字素（单词），独立成义，!CJK  文字中，一些字母组成一个字素，并且字素们由连接符“-”连接，或由空格“ ”分隔。</p>
+<ul>
+<li>有关 CJK  文字更多的排版规则上，比较有代表性的是：对中文来说，标点符号不能成为行首（特殊除外）；双字长的标点符号（省略号、破折号）不能断开。</li>
+<li>对于 !CJK，主要是：单词不能在中间不合法地断开（合法情况例如从连接符处断开）；标点符号不能成为行首（特殊除外）</li>
+</ul>
+<h2>解惑一</h2>
+<p>word-wrap 和 word-break  究竟是什么？对于这个问题，直接拜访 W3C 官方，找到 CSS3  草案：<a href="http://www.w3.org/TR/2010/WD-css3-text-20101005/%EF%BC%8C%E5%86%8D%E8%AE%BF%E9%97%AE%E5%BE%AE%E8%BD%AF%EF%BC%8C%E5%80%9F%E9%89%B4%E8%AF%B8%E5%A6%82">http://www.w3.org/TR/2010/WD-css3-text-20101005/</a>，再访问微软，借鉴诸如 <a href="http://msdn.microsoft.com/en-us/library/ms531184%28VS.85%29.aspx">http://msdn.microsoft.com/en-us/library/ms531184%28VS.85%29.aspx</a></p>
+<p>得出的结论如下：</p>
+<p>word-wrap, line-break, word-break 这几个属性都是 MS  的独立实现，随后其他浏览器也不同程度地实现了其中的某些，之后，这几个属性都被吸纳为 CSS3  标准。在对文字排版的渲染上，微软还是走在前面的。</p>
+<p>在现有的 CSS3 草案中，关乎到文字排版的几个重要属性有：white-space,  text-wrap, word-wrap, line-break, word-break</p>
+<p>根据 CSS3 的描述，列出这些属性各自的要点，这部分读者可以跳过……</p>
+<ul>
+<li>white-space 是  white-space-collapsing 和 text-wrap 的缩写</li>
+</ul>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="73" valign="top"><strong>属性</strong></td>
+<td width="210" valign="top"><strong>设置</strong><strong> white-space-collapsing</strong></td>
+<td width="109" valign="top"><strong>设置</strong><strong> text-wrap</strong></td>
+<td width="69" valign="top"><strong>空行</strong></td>
+<td width="69" valign="top"><strong>空格</strong></td>
+<td width="100" valign="top"><strong>文字自动换行</strong></td>
+<td width="306" valign="top"><strong>效果</strong></td>
+</tr>
+<tr>
+<td width="73" valign="top">normal</td>
+<td width="210" valign="top">collapse</td>
+<td width="109" valign="top">normal</td>
+<td width="69" valign="top">collapse</td>
+<td width="69" valign="top">collapse</td>
+<td width="100" valign="top">wrap</td>
+<td width="306" valign="top">忽略多余空行和空格，文字自动换行</td>
+</tr>
+<tr>
+<td width="73" valign="top">pre</td>
+<td width="210" valign="top">preserve</td>
+<td width="109" valign="top">none</td>
+<td width="69" valign="top">preserve</td>
+<td width="69" valign="top">preserve</td>
+<td width="100" valign="top">no  wrap</td>
+<td width="306" valign="top">保留所有空行和空白，文字不自动换行</td>
+</tr>
+<tr>
+<td width="73" valign="top">nowrap</td>
+<td width="210" valign="top">collapse</td>
+<td width="109" valign="top">none</td>
+<td width="69" valign="top">collapse</td>
+<td width="69" valign="top">collapse</td>
+<td width="100" valign="top">no  wrap</td>
+<td width="306" valign="top">忽略多余空行和空格，文字不自动换行</td>
+</tr>
+<tr>
+<td width="73" valign="top">pre-wrap</td>
+<td width="210" valign="top">preserve</td>
+<td width="109" valign="top">normal</td>
+<td width="69" valign="top">preserve</td>
+<td width="69" valign="top">preserve</td>
+<td width="100" valign="top">wrap</td>
+<td width="306" valign="top">保留所有空行和空白，文字自动换行</td>
+</tr>
+<tr>
+<td width="73" valign="top">pre-line</td>
+<td width="210" valign="top">preserve-breaks</td>
+<td width="109" valign="top">normal</td>
+<td width="69" valign="top">preserve</td>
+<td width="69" valign="top">collapse</td>
+<td width="100" valign="top">wrap</td>
+<td width="306" valign="top">合并多余空格，保留多余空行，文字自动换行</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>text-wrap  定义文本的自动换行效果</li>
+</ul>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="106" valign="top"><strong>属性</strong></td>
+<td width="829" valign="top"><strong>效果</strong></td>
+</tr>
+<tr>
+<td width="106" valign="top">normal</td>
+<td width="829" valign="top">在允许的断点处自动换行</td>
+</tr>
+<tr>
+<td width="106" valign="top">none</td>
+<td width="829" valign="top">文本不会自动换行；对于不“合身”的容器，文本将会溢出</td>
+</tr>
+<tr>
+<td width="106" valign="top">unrestricted</td>
+<td width="829" valign="top">在任意的文法单词间都可断行，比 normal 的限制要松散很多</td>
+</tr>
+<tr>
+<td width="106" valign="top">suppress</td>
+<td width="829" valign="top">除非断行处没有其他任何允许的断点，方可进行断行，这比 unrestricted 严格，比 normal 松散</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>word-wrap  执行最激进的单词断行控制，从单词的内部断开以防止文本溢出容器并且完全适应容器的宽度</li>
+<li>在  IE 的实际效果中，word-break  的效果要激进得多，它穷凶极恶地断开所有单词（如果到达边界的话）</li>
+</ul>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="99" valign="top"><strong>属性</strong></td>
+<td width="842" valign="top"><strong>效果</strong></td>
+</tr>
+<tr>
+<td width="99" valign="top">normal</td>
+<td width="842" valign="top">仅在允许的文本断点处自动换行</td>
+</tr>
+<tr>
+<td width="99" valign="top">break-word</td>
+<td width="842" valign="top">如果一行中没有其他可接受的断点，那么将强行断开文本单词</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>line-break 是断行的规则，针对东亚文字</li>
+<li>基本是针对日文的换行规则</li>
+<li>word-break 是断行的规则，针对非东亚文字</li>
+</ul>
+<table style="height:82px" border="0" cellspacing="0" cellpadding="0" width="946">
+<tbody>
+<tr>
+<td width="110" valign="top"><strong>属性</strong></td>
+<td width="830" valign="top"><strong>效果</strong></td>
+</tr>
+<tr>
+<td width="110" valign="top">normal</td>
+<td width="830" valign="top">根据特定非东亚文字自己的规则来决定是否自动断行</td>
+</tr>
+<tr>
+<td width="110" valign="top">break-all</td>
+<td width="830" valign="top">允许非东亚语言文本行的任意字内断开。该值适合包含一些非东亚文本的东亚文本</td>
+</tr>
+<tr>
+<td width="110" valign="top">keep-all</td>
+<td width="830" valign="top">不允许非东亚语言文本行的任意字内断开。该值适合包含一些东亚文本的非东亚文本</td>
+</tr>
+<tr>
+<td width="110" valign="top">hyphenation</td>
+<td width="830" valign="top">文本会在合适的连字符处断开，这需要浏览器的支持</td>
+</tr>
+</tbody>
+</table>
+<p>做一个归纳：专门用于控制文本自动换行功能的属性是 text-wrap 和 word-wrap，而 line-break 和 word-break  用来控制断行和单词边界分隔，根据 W3C 的描述来说，word-wrap 是最激进的自动换行方式，可以强行断开单词。而现实情况是，word-break: break-all; 的方式要更为激进，如图：</p>
+<div style="width:118px"><img src="http://img01.taobaocdn.com/tps/i1/T1LDFNXmRzXXXXXXXX-108-355.jpg" alt="word-wrap" width="108" height="355"><p>word-wrap</p></div>
+<div style="width:122px"><img src="http://img04.taobaocdn.com/tps/i4/T1aDJNXchzXXXXXXXX-112-325.jpg" alt="word-break" width="112" height="325"><p>word-break</p></div>
+<p>对比 word-wrap: break-word; 和 word-break: break-all;，两者都将文本限定在了容器的范围内，只是 break-all 将所有单词，不论长短地，通通截断，break-word 则非如此，它尽量地遵从了排版规则。</p>
+<h2>兼容性</h2>
+<p>由于几个属性都来自于微软（部分来自于 CSS3），那么理所当然 IE  是支持最良好的，不过对于浮动元素，IE67 的表现会有些  bug（可在文后给出的 demo 中验证）。</p>
+<p>至于其他浏览器，FF 3.6 不支持 word-break；Chrome 7 支持良好；Safari 5 同 Chrome；Opera 10 同  FF</p>
+<h2>解惑二三</h2>
+<p>碰到相关问题的场景大体是两个：</p>
+<ol>
+<li>测试使用了很极端的测试用例（比如 asdfasdfasdfasdfasdfasdfasdf）</li>
+<li>IE67  下，在宽度不大的容器中使用了浮动元素，同时浮动元素内包含了长的串，如图：</li>
+</ol>
+<div style="width:579px"><img src="http://img02.taobaocdn.com/tps/i2/T1WnFNXiVzXXXXXXXX-569-290.jpg" alt="IE67 中浮动盒子杯具" width="569" height="290"><p>IE67 中浮动盒子杯具</p></div>
+<p>对于场景一，使用 word-wrap: break-word;</p>
+<p>对于场景二，使用 IE67 的 hack，word-break: keep-all; 或者用 inline-block  来代替浮动（IE67 中，hasLayout  的 inline 盒子大体等同于  inline-block）</p>
+<p>回头看疑问二，我们为什么会乐此不疲地重复碰到这个问题？原则上，各个浏览器默认的文字排版方式已经很好地顾及了 CJK 文字和 !CJK  文字，根据各个语言自己的规则来呈现排版，不应该出现诡异的问题。所以，对于上面的两个问题场景，之所以产生场景一，是因为使用了极端的测试用例，但是在现实中，这种极长的英文单词是根本不存在的（特殊行业除外），又，即使英文单词较长，也不应该突兀地截断，这有违西欧文字的排版规则。所以我认为，如果在现实环境下发生场景一中的问题，责任应该在于版面的设计，比如容器宽度太小，而不是去截断文本；对于场景二，应该归咎于 IE67 的渲染 bug，这时，使用  inline-block 代替，或用 word-break: keep-all;  来给犯错的浏览器擦屁股。</p>
+<h2>实践方案</h2>
+<ul>
+<li>对于我们输出的内容（可控的），不使用任何 word-wrap 和 word-break  等属性，对于可能产生的长单词溢出这种小概率事件，首先考虑容器宽度是否合理，其次可以为长单词添加连字符“-”以便合理地断开，最后设置 overflow: hidden;  避免视觉上的溢出。</li>
+<li>对于用户输出的内容（不可控的），比如评论等，由于不排除用户会输入“dddddddddddd”这样没营养的垃圾数据，使用 word-wrap:  break-word; 来强行截断。</li>
+</ul>
+<h2>最后的观点</h2>
+<ul>
+<li>不能完全迁就测试用例，因为有时不合现实情理。</li>
+<li>浏览器默认已经做得够好，强加诸如 break-all; 这样的指令是不优雅的。</li>
+<li>问题大多不在于实现，而在于设计（如容器太窄）。</li>
+<li>对于  bug 浏览器使用 hack 即可，这是它们的错。</li>
+</ul>
+<h2>相关资源</h2>
+<ul>
+<li>CSS3  草案：<a href="http://www.w3.org/TR/2010/WD-css3-text-20101005/">http://www.w3.org/TR/2010/WD-css3-text-20101005/</a></li>
+<li>demo 页面：<a href="http://ued.taobao.com/lab/word-wrap/word-wrap.html">http://ued.taobao.com/lab/word-wrap/word-wrap.html</a></li>
+</ul>

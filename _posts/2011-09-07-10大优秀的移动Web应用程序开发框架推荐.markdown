@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "10大优秀的移动Web应用程序开发框架推荐"
+date:   2011-09-07 09:22:00
+author: 梦想天空（山边小溪）
+categories: program
+---
+
+## 10大优秀的移动Web应用程序开发框架推荐
+### by 梦想天空（山边小溪）
+### at 2011-09-07 09:22:00
+### original <http://www.cnblogs.com/lhb25/archive/2011/09/07/mobile-web-app-frameworks.html>
+
+<p><p>　　在最近几年里，移动互联网高速发展、市场潜力巨大。继计算机、互联网之后，移动互联网正掀起第三次信息技术革命的浪潮，新技术、新应用不断涌现。今天这篇文章向大家推荐10大优秀的移动Web开发框架，帮助开发者更加高效的开发移动Web应用。</p>
+<h3>Sencha Touch Framework</h3>
+<p>　　Sencha Touch 是世界上第一个基于 HTML5 的移动 Web 开发框架，支持最新的 <a href="http://www.cnblogs.com/lhb25/category/146076.html">HTML5</a> 和 <a href="http://www.cnblogs.com/lhb25/category/146075.html">CSS3</a> 标准，全面兼容 Android 和 Apple iOS 设备，提供了丰富的 WEB UI 组件，可以快速的开发出运行于移动终端的应用程序。</p>
+<p><a href="http://www.sencha.com/products/touch/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414113774.jpg" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>jQuery Mobile</h3>
+<p>　　jQuery Mobile 框架把“write less, do more”精神提升到更高的层次。<a href="http://www.cnblogs.com/lhb25/category/277997.html">jQuery</a> 移动框架可以帮助你设计一个可运行于所有流行智能手机和平板平台的应用程序，而不需要为每种移动终端都开发一个特别的版本。</p>
+<p><a href="http://jquerymobile.com/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709292152.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>jQTouch</h3>
+<p>　　jQTouch 是一款 <a href="http://www.cnblogs.com/lhb25/category/277997.html">jQuery</a> 的插件，用于手机上实现动画、列表导航、默认应用样式等各种常见UI效果。支持 iPhone、Android 等手机。</p>
+<p><a href="http://jqtouch.com/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709300666.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>The M Project</h3>
+<p>　　The-M-Project 是一个包含各种UI组件，基于<a href="http://www.cnblogs.com/lhb25/category/277997.html"> jQuery</a> 开发 <a href="http://www.cnblogs.com/lhb25/category/146076.html">HTML5</a> 应用程序的移动Web应用框架，支持 iOS、Android、Palm webOS和BlackBerry 等平台。</p>
+<p><a href="http://the-m-project.net/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709303721.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>DHTMLX Touch – HTML5 JavaScript Framework for Mobile</h3>
+<p>　　DHTMLX Touch 是一个基于 <a href="http://www.cnblogs.com/lhb25/category/146076.html">HTML5</a> 的免费 <a href="http://www.cnblogs.com/lhb25/category/146074.html">JavaScript</a> 库，用于构建跨平台的移动 Web 应用程序。这不只是一组UI部件，而是一个完整的框架，它允许你为手机等触摸设备创建强大的Web应用程序。</p>
+<p><a href="http://www.dhtmlx.com/touch/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709310138.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>WebApp.Net</h3>
+<p>　　WebApp.Net 提供了很多的 API，因此可以帮助你节省很多工作了。不需要花时间去进行 Ajax 调用的编码，因为已经内置了，另外还有很多其它内置功能，提供了详细的文档和应用演示。</p>
+<p><a href="http://webapp-net.com/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709312420.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>Wijmo – jQuery UI Widgets</h3>
+<p>　　Wijmo 混合了 <a href="http://www.cnblogs.com/lhb25/category/146074.html">JavaScript</a>、<a href="http://www.cnblogs.com/lhb25/category/146075.html">CSS3</a>、SVG 和 <a href="http://www.cnblogs.com/lhb25/category/146076.html">HTML5</a>，拥有30多个组件，是 jQuery UI 的一个扩展。</p>
+<p><a href="http://wijmo.com/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709315788.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>960 Grid on jQuery-Mobile</h3>
+<p>　　jquery-mobile-960 是一个用于移动 <a href="http://www.cnblogs.com/lhb25/tag/web/">Web</a> 开发的网格框架，综合了 960.gs 的灵活性和 jQuery Mobile 的方便性。它的目的是让 jQuery Mobile 布局更加的灵活，使得应用应许在移动终端更加易用。</p>
+<p><a href="http://jeromeetienne.github.com/jquery-mobile-960/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090414565266.jpg" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>SproutCore HTML5 Application Framework</h3>
+<p>　　SproutCore 是一个 <a href="http://www.cnblogs.com/lhb25/category/146076.html">HTML5</a> 移动 <a href="http://www.cnblogs.com/lhb25/tag/web/">Web</a> 开发框架，它的目标是在无需浏览器插件的情况下，在浏览器中位应用程序提供极佳的桌面效果。</p>
+<p><a href="http://www.sproutcore.com/about/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709322333.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>NimbleKit</h3>
+<p>　　NimbleKit 是为 iOS 设备构建应用程序最快速的方式，你不需要知道 Objective-C 或者 iOS SDK，你只需结合  <a href="http://www.cnblogs.com/lhb25/category/146074.html">JavaScript</a> 代码编写 HTML 页面就可以了。 </p>
+<p><a href="http://www.nimblekit.com/index.php"><img src="http://pic002.cnblogs.com/images/2011/36987/2011090709332635.png" alt="10大优秀的移动Web应用程序开发框架推荐"></a></p>
+<h3>你可能还喜欢</h3>
+<br>
+<ul>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/04/14/2001319.html">推荐18个非常棒的Web和移动开发框架</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/04/07/1988647.html">分享30套精美的Web和手机开发UI素材包</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/02/27/1965688.html">七个非常有用的Android开发工具和工具包</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/03/22/1988636.html">分享25佳 iPad 应用程序的网站设计案例</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/05/17/2021541.html">非常有用的免费UI设计工具和资源分享</a></li>
+</ul>
+<br>
+<p>英文链接：<a href="http://creativefan.com/mobile-web-app-frameworks/">10 Great Mobile Web App Frameworks</a></p>
+<p>编译来源：<a href="http://www.cnblogs.com/lhb25/">梦想天空 ◆ 关注前端开发技术 ◆ 分享网页设计资源</a></p><img src="http://www.cnblogs.com/lhb25/aggbug/2147531.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lhb25/">梦想天空（山边小溪）</a> 发表于 2011-09-07 09:22 <a href="http://www.cnblogs.com/lhb25/archive/2011/09/07/mobile-web-app-frameworks.html">原文链接</a></p><p>评论: 15　<a href="http://www.cnblogs.com/lhb25/archive/2011/09/07/mobile-web-app-frameworks.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lhb25/archive/2011/09/07/mobile-web-app-frameworks.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/114457/">巴茨与马云交恶始末</a><span style="color:gray">(2011-09-07 16:57)</span><br>· <a href="http://news.cnblogs.com/n/114455/">25 +网页设计师和开发人员必须具备的浏览器插件</a><span style="color:gray">(2011-09-07 16:45)</span><br>· <a href="http://news.cnblogs.com/n/114454/">宝马将配激光车灯</a><span style="color:gray">(2011-09-07 16:27)</span><br>· <a href="http://news.cnblogs.com/n/114453/">人人网正式发布轻博客产品人人小站</a><span style="color:gray">(2011-09-07 16:26)</span><br>· <a href="http://news.cnblogs.com/n/114452/">亚马逊平板细节曝光：7英寸触屏 售价249美元</a><span style="color:gray">(2011-09-07 16:21)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/fish-li/archive/2011/09/05/2168073.html">用ASP.NET写自己的服务框架</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

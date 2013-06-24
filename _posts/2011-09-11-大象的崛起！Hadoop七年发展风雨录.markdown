@@ -1,0 +1,111 @@
+---
+layout: post
+title:  "大象的崛起！Hadoop七年发展风雨录"
+date:   2011-09-11 21:33:46
+author: nosqlfan
+categories: program
+---
+
+## 大象的崛起！Hadoop七年发展风雨录
+### by nosqlfan
+### at 2011-09-11 21:33:46
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/556131664/6253001/1/item.html>
+
+<p>在互联网这个领域一直有这样的说法：“如果老二无法战胜老大，那么就把老大赖以生存的东西开源吧”。当年Yahoo!与Google还是处在强烈竞争关系时候，招聘了Doug(Hadoop创始人)，把Google老大赖以生存的DFS与Map-Reduce开源了，开始了Hadoop的童年时期。差不多在2008年的时候，Hadoop才算逐渐成熟。</p>
+<p>从初创到现在，Hadoop经过了至少7年的积累，现在的Hadoop不仅是当年的老二Yahoo的专用产品了，从Hadoop长长的用户名单中，可以看到Facebook、Linkedin、Amazon，可以看到EMC、eBay、Twitter、IBM、Microsoft,、Apple、HP…国内的公司有淘宝、百度等等。</p>
+<p style="text-align:center"><img title="hadoop" src="http://pic.yupoo.com/iammutex/BmrJ41KM/medium.jpg" alt="" width="500" height="483"></p>
+<p>本文将对Hadoop七年（2004-2011）的<span><a href="http://blog.nosqlfan.com/tags/%e5%8f%91%e5%b1%95%e5%8e%86%e7%a8%8b" title="查看 发展历程 的全部文章">发展历程</a></span>进行梳理。读完本文后，将不难看出，Hadoop的发展基本上经历了这样一个过程：从一个开源的Apache基金会项目，随着越来越多的用户的加入，不断地使用、贡献和完善，形成一个强大的生态系统，从2009年开始，随着云计算和大数据的发展，Hadoop作为海量数据分析的最佳解决方案，开始受到许多IT厂商的关注，从而出现了许多Hadoop的商业版以及支持Hadoop的产品，包括软件和硬件。</p>
+<ul>
+<li>2004年，Google发表论文，向全世界介绍了MapReduce。</li>
+<li>2005年初，为了支持Nutch搜索引擎项目，Nutch的开发者基于Google发布的MapReduce报告，在Nutch上开发了一个可工作的MapReduce应用。</li>
+<li>2005年年中，所有主要的Nutch算法被移植到使用MapReduce和NDFS(Nutch Distributed File System )来运行。</li>
+<li>2006年1月，Doug Cutting加入雅虎，Yahoo!提供一个专门的团队和资源将Hadoop发展成一个可在网络上运行的系统。</li>
+<li>2006年2月，Apache Hadoop项目正式启动以支持MapReduce和HDFS的独立发展。</li>
+<li>2007年，百度开始使用Hadoop做离线处理，目前差不多80%的Hadoop集群用作日志处理。</li>
+<li>2007年，中国移动开始在“大云”研究中使用Hadoop技术，规模超过1000台。</li>
+<li>2008年，淘宝开始投入研究基于Hadoop的系统——云梯，并将其用于处理<a title="电子商务" href="http://product.it168.com/list/b/1362_1.shtml">电子商务</a>相关数据。云梯1的总容量大概为9.3PB，包含了1100台机器，每天处理约18000道作业，扫描500TB数据。</li>
+<li>2008年1月，Hadoop成为Apache顶级项目。</li>
+<li>2008年2月，Yahoo!宣布其搜索引擎产品部署在一个拥有1万个内核的Hadoop集群上。</li>
+<li>2008年7月，Hadoop打破1TB数据排序基准测试记录。Yahoo!的一个Hadoop集群用209秒完成1TB数据的排序 ，比上一年的纪录保持者保持的297秒快了将近90秒。</li>
+<li>2009 年 3 月，Cloudera推出CDH(Cloudera’s Distribution including Apache Hadoop)平台，完全由开放源码软件组成，目前已经进入第3版。</li>
+<li>2009年5月，Yahoo的团队使用Hadoop对1 TB的数据进行排序只花了62秒时间。</li>
+<li>2009年7月 ，Hadoop Core项目更名为Hadoop Common;</li>
+<li>2009年7月 ，MapReduce 和 Hadoop Distributed File System (HDFS) 成为Hadoop项目的独立子项目。</li>
+<li>2009年7月 ，Avro 和 Chukwa 成为Hadoop新的子项目。</li>
+<li>2010年5月 ，Avro脱离Hadoop项目，成为Apache顶级项目。</li>
+<li>2010年5月 ，HBase脱离Hadoop项目，成为Apache顶级项目。</li>
+<li>2010年5月，IBM提供了基于Hadoop 的大数据分析软件——InfoSphere BigInsights，包括基础版和企业版。</li>
+<li>2010年9月，Hive( Facebook) 脱离Hadoop，成为Apache顶级项目。</li>
+<li>2010年9月，Pig脱离Hadoop，成为Apache顶级项目。</li>
+<li>2011年1月，ZooKeeper 脱离Hadoop，成为Apache顶级项目。</li>
+<li>2011年3月，Apache Hadoop获得Media Guardian Innovation Awards 。</li>
+<li>2011年3月， Platform Computing 宣布在它的Symphony软件中支持Hadoop MapReduce API。</li>
+<li>2011年5月，Mapr Technologies公司推出分布式文件系统和MapReduce引擎——MapR Distribution for Apache Hadoop。</li>
+<li>2011年5月，HCatalog 1.0发布。该项目由Hortonworks 在2010年3月份提出，HCatalog主要用于解决数据存储、元数据的问题，主要解决HDFS的瓶颈，它提供了一个地方来存储数据的状态信息，这使得数据清理和归档工具可以很容易的进行处理。</li>
+<li>2011年4月，SGI( Silicon Graphics International )基于SGI Rackable和CloudRack<a title="服务器" href="http://product.it168.com/list/b/0402_1.shtml">服务器</a>产品线提供Hadoop优化的解决方案。</li>
+<li>2011年5月，EMC为客户推出一种新的基于开源Hadoop解决方案的数据中心设备——GreenPlum HD，以助其满足客户日益增长的数据分析需求并加快利用开源数据分析软件。Greenplum是EMC在2010年7月收购的一家开源数据仓库公司。</li>
+<li>2011年5月，在收购了Engenio之后， NetApp推出与Hadoop应用结合的产品E5400存储系统。</li>
+<li>2011年6月，Calxeda公司(之前公司的名字是Smooth-Stone)发起了“开拓者行动”，一个由10家软件公司组成的团队将为基于Calxeda即将推出的ARM系统上芯片设计的<a title="服务器" href="http://product.pcpop.com/Server/00000_1.html">服务器</a>提供支持。并为Hadoop提供低功耗服务器技术。</li>
+<li>2011年6月，数据集成供应商Informatica发布了其旗舰产品，产品设计初衷是处理当今事务和社会媒体所产生的海量数据，同时支持Hadoop。</li>
+<li>2011年7月，Yahoo!和硅谷风险投资公司 Benchmark Capital创建了Hortonworks 公司，旨在让Hadoop更加鲁棒(可靠)，并让企业用户更容易安装、管理和使用Hadoop。</li>
+<li>2011年8月，Cloudera公布了一项有益于合作伙伴生态系统的计划——创建一个生态系统，以便硬件供应商、软件供应商以及系统集成商可以一起探索如何使用Hadoop更好的洞察数据。</li>
+<li>2011年8月，Dell与Cloudera联合推出Hadoop解决方案——Cloudera Enterprise。Cloudera Enterprise基于Dell PowerEdge C2100机架服务器以及Dell PowerConnect 6248以太网<a title="交换机" href="http://product.it168.com/list/b/0412_1.shtml">交换机</a> 。</li>
+</ul>
+<p style="text-align:center"><a href="http://pic.yupoo.com/iammutex/BmrJ2XRi/HOxzN.png"><img title="hadoop map" src="http://pic.yupoo.com/iammutex/BmrJ2XRi/medium.jpg" alt="" width="500" height="374"></a></p>
+<p>在梳理的过程中，笔者发现了上图，它很好地展现了Hadoop生态系统是如何在使用中一步一步成长起来的。</p>
+<p>本文转自it186云计算频道，原文地址：<a href="http://cloud.it168.com/a2011/0906/1243/000001243128.shtml">cloud.it168.com</a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3068.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3022.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">淘宝Hadoop数据分析实践</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F417.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3022.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">hadoop的1TB排序</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1105.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3022.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Hadoop Map-Reduce 实例的 Ruby 实现</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F983.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3022.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">百度Hadoop分布式系统揭秘：4000节点集群</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2552.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3022.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Hoop：Hadoop HDFS的RESTFul封装</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/556131664/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/556131664/6253001/1/item.html" border="0" height="0" width="0">

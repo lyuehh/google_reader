@@ -1,0 +1,170 @@
+---
+layout: post
+title:  "对比jbpm更精巧更灵活的一个工作流引擎，已开源"
+date:   2010-10-08 18:56:13
+author: 
+categories: program
+---
+
+## 对比jbpm更精巧更灵活的一个工作流引擎，已开源
+### by 
+### at 2010-10-08 18:56:13
+### original <http://www.javaeye.com/topic/778942>
+
+一年前因为有感于jbpm实现一个中国式的审批流程的复杂，自己动手写了一个工作流引擎，现在把这个引擎开源出来给大家参考，如果谁有兴趣改进这个引擎，你也可以加入进来。 现在这个引擎代码我基本没有维护了，因为公司的事情越来越忙，公司项目的方向与工作流的方向也不大一致，所以我也就想把这个成果开放出来，谁觉得好的可以接着往下做。
+<br>项目代码地址是： <a href="http://github.com/wyx6fox/shrimp">http://github.com/wyx6fox/shrimp</a>
+<br>整个引擎的特点是灵活，简单。 
+<br>核心思想是 以Task为核心驱动流程流转，节点支持“transitDerived-enter-leave"三步骤， 不同类型的节点在在这三个步骤的处理逻辑不相同。这三个”transitDerived-enter-leave"事件都会记录流转日志，对于复杂的嵌套的fork-join的处理的思路是利用数据库的存储的每个节点的流转日志的查询来进行判断，
+<br>触发的事件动作通过配置组件容器的BeanName.methodName的方式来调用，比较方便，避免大量编写action类的繁琐。 
+<br>支持逐级审批、自循环、超时限制等等操作。 
+<br>
+<br>整个引擎的有效代码行数不到四千行，才3539行，类的数目是 39个。 
+<br>
+<br>比较经典的测试样例请参照这个：
+<br><pre name="code">
+public void testNestedJoinWorkflow() {
+
+		ProcessEngine engine = getProcessEngine(&quot;simple3.xml&quot;, &quot;test_process&quot;);
+
+		HashMapBeanFactory bf = new HashMapBeanFactory();
+		bf.beans.put(&quot;testAction&quot;, new TestAction());
+		engine.setBeanFactory(bf);
+		engine.setProcessIdGenerator(new IncrementNumProcessIdGenerator());
+		HashMapPersister persister = new HashMapPersister();
+		engine.setProcessPersistence(persister);
+		Serializable taskId = &quot;1&quot;;
+		Map&lt;String, Object&gt; userVariables = TestHelper.buildUserVars();
+		engine.beginProcess(userVariables);
+		ProcessTaskInstance task = engine.getTaskById(taskId);
+
+		engine.finishTask(task, userVariables);
+		assertEquals(Integer.valueOf(1), Tester.counts2.get(&quot;default&quot;));
+
+		List&lt;ProcessTaskInstance&gt; tasks = engine.findAllOpenTasks(task
+				.getProcessInstanceId());
+		assertEquals(3, tasks.size());
+		ProcessTaskInstance task_work = tasks.get(0);
+		assertEquals(&quot;1&quot;, task_work.getForkId());
+		assertEquals(&quot;task2&quot;, task_work.getTaskName());
+		assertEquals(&quot;work1&quot;, task_work.getProcessNode());
+
+		ProcessTaskInstance task_work2 = tasks.get(1);
+		assertEquals(&quot;2&quot;, task_work2.getForkId());
+		assertEquals(&quot;task11&quot;, task_work2.getTaskName());
+		assertEquals(&quot;work11&quot;, task_work2.getProcessNode());
+
+		ProcessTaskInstance task_work3 = tasks.get(2);
+		assertEquals(&quot;2&quot;, task_work3.getForkId());
+		assertEquals(&quot;task12&quot;, task_work3.getTaskName());
+		assertEquals(&quot;work12&quot;, task_work3.getProcessNode());
+
+		engine.finishTask(task_work, userVariables);
+
+		List&lt;ProcessTaskInstance&gt; tasks2 = engine.findAllOpenTasks(task
+				.getProcessInstanceId());
+		assertEquals(2, tasks2.size());
+		assertEquals(&quot;task11&quot;, tasks2.get(0).getTaskName());
+		assertEquals(&quot;work11&quot;, tasks2.get(0).getProcessNode());
+		assertEquals(&quot;task12&quot;, tasks2.get(1).getTaskName());
+		assertEquals(&quot;work12&quot;, tasks2.get(1).getProcessNode());
+
+		engine.finishTask(tasks2.get(0), userVariables);
+		engine.finishTask(tasks2.get(1), userVariables);
+
+		List&lt;ProcessTaskInstance&gt; tasks3 = engine.getProcessPersistence()
+				.findAllOpenTasksWithSystemTasks(task.getProcessInstanceId());
+		assertEquals(1, tasks3.size());
+		assertEquals(&quot;task3&quot;, tasks3.get(0).getTaskName());
+		assertEquals(&quot;work2&quot;, tasks3.get(0).getProcessNode());
+		System.out.println(engine.getProcessPersistence());
+		// assertEquals(2, tester.count1);
+
+	}
+
+</pre>
+<br>
+<br>流程描述文件：
+<br><pre name="code">
+&lt;process name=&quot;test_process&quot;
+	taskClassName=&quot;com.xysd.internal_wf.domain.impl.StrTypeWorkflowTask&quot;
+	processVariableClassName=&quot;com.xysd.internal_wf.domain.impl.StrTypeProcessVariable&quot;
+	processLockerClassName=&quot;com.xysd.internal_wf.domain.impl.StrTypeProcessLocker&quot;
+	processLogClassName=&quot;com.xysd.internal_wf.domain.impl.StrTypeProcessLog&quot;&gt;
+
+	&lt;begin id=&quot;begin&quot;&gt;
+		&lt;task name=&quot;task1&quot;&gt;&lt;/task&gt;
+
+		&lt;transit id=&quot;default&quot; to=&quot;fork1&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/begin&gt;
+	&lt;fork id=&quot;fork1&quot;&gt;
+		&lt;transit id=&quot;trans1&quot; to=&quot;work1&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+		&lt;transit id=&quot;trans2&quot; to=&quot;fork2&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/fork&gt;
+	&lt;processNode id=&quot;work1&quot;&gt;
+		&lt;task name=&quot;task2&quot;&gt;&lt;/task&gt;
+		&lt;transit id=&quot;trans3&quot; to=&quot;join1&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/processNode&gt;
+	
+	&lt;fork id=&quot;fork2&quot;&gt;
+		&lt;transit id=&quot;trans4&quot; to=&quot;work11&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+		&lt;transit id=&quot;trans5&quot; to=&quot;work12&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/fork&gt;
+	&lt;processNode id=&quot;work11&quot;&gt;
+		&lt;task name=&quot;task11&quot;&gt;&lt;/task&gt;
+		&lt;transit id=&quot;trans6&quot; to=&quot;join2&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/processNode&gt;
+	&lt;processNode id=&quot;work12&quot;&gt;
+		&lt;task name=&quot;task12&quot;&gt;&lt;/task&gt;
+		&lt;transit id=&quot;trans7&quot; to=&quot;join2&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/processNode&gt;
+	
+	&lt;join id=&quot;join2&quot;&gt;
+
+		&lt;transit id=&quot;trans8&quot; to=&quot;join1&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/join&gt;
+	&lt;join id=&quot;join1&quot;&gt;
+
+		&lt;transit id=&quot;trans9&quot; to=&quot;work2&quot;&gt;
+			&lt;action invoker=&quot;testAction.execute&quot; /&gt;
+		&lt;/transit&gt;
+	&lt;/join&gt;
+
+	&lt;processNode id=&quot;work2&quot;&gt;
+		&lt;task name=&quot;task3&quot;&gt;&lt;/task&gt;
+		
+	&lt;/processNode&gt;
+
+&lt;/process&gt;
+</pre>
+          
+          <br><br>
+          作者: <a href="http://firebody.javaeye.com">firebody</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/778942" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

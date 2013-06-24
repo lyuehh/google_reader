@@ -1,0 +1,101 @@
+---
+layout: post
+title:  "[转载]PNG详解"
+date:   2013-05-02 14:01:57
+author: 晴方好玲
+categories: program
+---
+
+## [转载]PNG详解
+### by 晴方好玲
+### at 2013-05-02 14:01:57
+### original <http://blog.sina.com.cn/s/blog_897db7b50101b4cs.html>
+
+<div style="padding-top:15px;margin:20px 0;border:none;border-top:1px dotted #ccc"><div style="margin-bottom:12px"><span style="margin-right:25px"><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_6c07dac30100lc5u.html" title="PNG详解">PNG详解</a></span><span><strong>作者：</strong><a href="http://blog.sina.com.cn/u/1812454083" title="yychao">yychao</a></span></div><div><p><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">
+<strong><font color="#000000" face="宋体">PNG图片格式特点：</font></strong></span></span></p>
+<p><strong><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">
+     
+Png这种图片格式包括了许多子类，但是在实践中大致可以分为256色的png和全色的png，你完成可以用256色的png代替gif，用全色的png代替jpeg，<span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px"><span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">Png是完全支持alpha透明的(透明，半透明，不透明)，尽管有两个怪异的现象（在ie6下）。</span></span></span></span></strong></p>
+<p><strong><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">
+<span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">
+<span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:22px;FonT-FAMiLY:Verdana,Arial,Helvetica,sans-serif,宋体;CoLor:rgb(43,43,43);FonT-siZe:14px">
+     
+png是一种无损耗的图像格式，这也意味着你可以对png图片做任何操作也不会使 
+得图像质量产生损耗。这也使得png可以作为jpeg编辑的过渡格式。</span></span></span></span></span></span></strong></p>
+<p> </p>
+<p><strong>PNG在ie中的怪异表现：</strong></p>
+<ol>
+<li>IE6以下的浏览器支持PNG8的索引透明，但图片必须为全透明，半透明的png8在浏览器下显示为全透明。</li>
+<li>Alpha透明的全色PNG(png32）在ie6中会出现背景颜色(通常是灰色)。<br></li>
+</ol>
+<p><strong>由上面可以总结：</strong></p>
+<p>   
+(a)全透明的png8可以在任一浏览器正常显示（就像gif一样）。半透明的png8在除了ie6及其以下的浏览器下错误的显示成全透明，其它浏览器都能正常显示半透明。这个bug并不需要特殊对待，因为在不支持半透明的浏览器下只是显示为全透明，对用户体验影响不大，它反而是透明gif的加强版。</p>
+<p>   
+(b)第二个bug没有什么好的方法解决，只能通过(<font color="#464646">AlphaImageLoader滤镜和htc)</font>方法来处理。</p>
+<p> </p>
+<p><strong>更多关于PNG：</strong></p>
+<p><font style="FonT-siZe:14px"><font color="#ED1C24">PNG8</font><br>
+256色PNG的别名，无损格式，体积最小，但最多只支持256色<br>
+<font color="#ED1C24">PNG24</font><br>
+全色PNG的别名，除了png8的特点，理论上可以存储2的24次方种颜色，但ie6之前的版本对此格式兼容有问题<br>
+<font color="#ED1C24">PNG32</font><br>
+全色PNG的别名，除了以上的特点外，体积稍大</font></p>
+<p><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:20px simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="CoLor:rgb(255,0,0)"><font style="FonT-siZe:14px">相比GIF</font></span></span></p>
+<p><font style="FonT-siZe:14px">PNG
+8除了不支持动画外，PNG8有GIF所有的特点，但是比GIF更加具有优势的是它支持alpha透明和更优的压缩。所以，大多数情况下，你都应该用PNG8不是GIF（除了非常小的图片GIF会有更好的压缩外）。</font></p>
+<p><span style="CoLor:rgb(255,0,0)"><font style="FonT-siZe:14px">相比JPEG</font></span></p>
+<p><font style="FonT-siZe:14px">JPEG比全色PNG具有更加好的压缩，因此也使得JPEG适合照片，但是编辑JPEG过程中容易造成质量的损失，所以全色PNG适合作为编辑JPEG的过渡格式.</font></p>
+<p> </p>
+<p><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:medium simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="Line-HeiGHT:18px;FonT-FAMiLY:宋体;FonT-siZe:12px"><font size="4"><strong>到底是png24 Alpha透明还是png32
+Alpha透明？<br></strong></font></span></span></p>
+<p><span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:medium simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="Line-HeiGHT:18px;FonT-FAMiLY:宋体;FonT-siZe:12px"><font style="FonT-siZe:14px">这个可能跟每个人使用切图软件有关。<br>
+<strong>1、Photoshop</strong><br>
+  
+1）只能导出布尔透明（全透明或者全不透明）的PNG8。<span> </span><br>
+  
+2）能导出alpha透明（全透明，全不透明，半透明）的PNG24。<span> </span><br>
+
+   3）不能导出PNG32。<span> </span><br>
+
+<strong>2、Fireworks</strong><br>
+  
+1）既能导出布尔透明的PNG8,也能导出alpha透明的PNG8,半透明的png8在除了ie6及其以下的浏览器下错误的显示成全透明。<br>
+
+  
+2）能导出PNG24，但是和jpeg差不多，不能透明。<span> </span><br>
+  
+3）能导出alpha透明的PNG32。<span> </span></font></span></span></p>
+<p><br>
+<span style="TexT-TrAnsForM:none;TexT-inDenT:0px;BorDer-CoLLApse:separate;FonT:medium simsun;WHiTe-spACe:normal;LeTTer-spACinG:normal;CoLor:rgb(0,0,0);WorD-spACinG:0px">
+<span style="TexT-ALiGn:left;Line-HeiGHT:21px;FonT-FAMiLY:simsun;CoLor:rgb(73,73,73);FonT-siZe:14px">
+    <font color="#000000">应该说PNG24和PNG32是一样，（</font><a style="CoLor:rgb(27,101,132);TexT-DeCorATion:none" href="http://www.icommunicate.co.uk/articles/all/the_difference_between_png24_and_png32_49/"><font color="#6F3198"><u>The difference between
+PNG24 and PNG32</u></font></a><font color="#000000">）一文中指出PNG32中每个像素不仅存储了24位真彩信息还存储了8位alpha通道。所以fw导出PNG32不用选择透明，而ps导出
+PNG24时是要勾选透明度的，这时候的PNG24应该就转化成了PNG32了吧。</font></span></span></p>
+<p> </p>
+<p><strong>PNG8与PNG24的区别：</strong></p>
+<p>
+    PNG-8和PNG-24，其最大的区别不是颜色位的区别，而是存储方式不同;<br>
+
+    PNG-8
+色盘索引、调色板中一位透明值、不支持阿尔法通道的半透明，存储格式中每个像素无透明度的数据块定义;PNG-8是用8位索引值来在调色盘中索引一个颜色，因为一个索引值的最大上限为2的8次方既128，故调色盘中颜色数最多为128种，所以该文件格式又被叫做PNG-8128仿色。<br>
+
+    PNG-24
+无调色板、支持阿尔法通道的半透明、每个点阵都有透明度的定义，最低32位真彩色;是PNG-24是用24位来保存一个像素值，是真彩色。<br>
+
+    PNG-8 和 gif
+有一些相似之处，模式都是索引颜色，只支持像素级的纯透明，不支持 alpha 透明。我们通常说的“IE6 不支持 PNG
+透明”，是指不支持 PNG-24 的透明（将透明区域显示为灰色）。</p>
+<p> </p>
+<p><strong>png的优化</strong><b>：</b><a href="http://www.csspeople.cn/?p=86">http://www.csspeople.cn/?p=86</a>  
+<a href="http://www.csspeople.cn/?p=136">http://www.csspeople.cn/?p=136</a></p>
+<p><b>淘宝UED：</b><a href="http://ued.taobao.com/blog/2010/12/10/%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F%E4%B8%8E%E8%AE%BE%E8%AE%A1%E9%82%A3%E7%82%B9%E4%BA%8B%E5%84%BF/">图片格式与设计那点事儿</a></p>
+<p><b>网易UED:</b> <a href="http://ucd.blog.163.com/blog/static/111307086201091845135874/">PNG8图片在IE下有色差，不过解决方法也很简单</a></p></div></div><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=9">

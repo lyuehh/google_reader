@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "用 Hadoop 进行分布式数据处理，第 2 部分: 进阶"
+date:   2010-07-05 13:08:59
+author: 
+categories: program
+---
+
+## 用 Hadoop 进行分布式数据处理，第 2 部分: 进阶
+### by 
+### at 2010-07-05 13:08:59
+### original <http://www.ibm.com/developerworks/cn/linux/l-hadoop-2/index.html?ca=drs->
+
+本系列的第一篇文章展示了如何在一个单节点集群中使用 Hadoop。本文在此基础之上继续介绍一个更加高级的设置，即使用多个节点进行并行处理。展示了多节点集群所需的各种节点类型，并探讨了一个并行环境中的 MapReduce 功能。本文还深入探究了 Hadoop 的管理方面 —— 同时基于命令行和 Web。

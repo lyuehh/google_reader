@@ -1,0 +1,105 @@
+---
+layout: post
+title:  "jar包中读取资源文件"
+date:   2010-12-23 20:01:26
+author: 
+categories: program
+---
+
+## jar包中读取资源文件
+### by 
+### at 2010-12-23 20:01:26
+### original <http://www.javaeye.com/topic/850544>
+
+<p><span style="font-size:medium">      今天写代码的时候发现一个有趣的问题，就是在代码中读取一些资源文件(txt,gif等等)时候，单独运行的时候，当然没问题，但是当我们将项目打包成jar后，尽管资源文件在jar包内，但我们却怎么也访问不到它了。</span></p>
+<p><span style="font-size:medium">代码结构如下：</span></p>
+<pre name="code">src|---com
+                ---cn
+                       ---ChineseUtil.java
+src|---pinyin.txt</pre>
+<p> ChineseUtil.java</p>
+<pre name="code">package com.cn;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+
+public class ChineseUtil {
+	private Properties properties;
+
+	public ChineseUtil() {
+		this.properties=loadProperties("pinyin.txt");
+	}
+
+	
+	/**
+	 * 加载资源文件
+	 * @param file
+	 * @return
+	 */
+	private Properties loadProperties(String file) {
+		Properties p = new Properties();
+		URL url=this.getClass().getResource("/"+file);
+		System.out.println(url.getPath());//输出文件路径
+		try {
+			p.load(new FileInputStream(url.getFile()));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return p;
+	}	
+}
+</pre>
+<p> <span style="font-size:medium"><span style="color:#ff0000">在本工程下</span>，测试代码如下：</span></p>
+<pre name="code">public class PinyinTest {
+	public static void main(String[] args) {
+         ChineseUtil util=new ChineseUtil();
+	}
+}</pre>
+<p> <span style="font-size:medium">测试一切正常，没有抛出异常，但是当我们将该项目打包成jar，新建一个java工程，并仍然采用上面的java代码进行测试时，却发现代码抛出异常：</span></p>
+<p><span style="font-size:medium">
+<pre name="code">file:/D:/frame/pinyin.jar!/pinyin.txt
+<span style="color:#ff0000">java.io.FileNotFoundException: file:\D:\frame\pinyin.jar!\pinyin.txt (文件名、目录名或卷标语法不正确。)</span></pre>
+<p> </p>
+<p> 抛出异常了，找不到资源文件了！让我们注意一下输出的文件的路径，<span style="color:#000000">file:\D:\frame\pinyin.jar<span style="color:#ff0000">!</span>\pinyin.txt,和一般的文件路径相比，多了一个！，你不仔细观察，是看不出来的！查阅了相关资料，原来jar包中文件URL有专用格式的：jar:&lt;url&gt;!/{entry},而我们是不能以这种形式来new一个File的，那该怎么做呢，我们把 loadProperties方法修改如下：</span></p>
+<font size="4">
+<p> </p>
+</font></span></p>
+<p> </p>
+<pre name="code">private Properties loadProperties(String file) {
+		Properties p = new Properties();
+		//注意加载资源文件的写法  /表示从根目录开始  否则就表示从当前类所在的路径下开始
+		InputStream is=this.getClass().getResourceAsStream("/"+file);  
+		try {
+			p.load(is);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return p;
+	}</pre>
+<p> <span style="font-size:medium">即通过<span style="color:#000000">通过Class类的getResourceAsStream()方法来获取文件，这个方法是透明的，你可以像普通的File一样去定位jar包中的资源文件（不管你是jar文件还是普通的文件夹）。另外还有一个比较让人纠结的方式是使用java.util.jar.JarFile类才访问，不过使用起来非常的不习惯，具体大家可以参考API试试。</span></span></p>
+<p><span style="font-size:medium">PS：接下来该看看底层是怎么实现了，有经验的朋友不妨说说</span></p>
+<p> </p>
+<p> </p>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://zhangcong170.javaeye.com">zhangcong170</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/850544" style="color:red">已有 <strong>1</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

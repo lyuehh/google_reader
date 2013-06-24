@@ -1,0 +1,229 @@
+---
+layout: post
+title:  "ASP.NET MVC3 让依赖注入来的更简单（新补充了Ninject示例）"
+date:   2010-10-13 12:30:00
+author: 老马快跑
+categories: program
+---
+
+## ASP.NET MVC3 让依赖注入来的更简单（新补充了Ninject示例）
+### by 老马快跑
+### at 2010-10-13 12:30:00
+### original <http://www.cnblogs.com/cnmaxu/archive/2010/10/13/1849972.html>
+
+<p><a href="http://www.cnblogs.com/cnmaxu/"><img src="http://pic.cnblogs.com/face/u95392.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/cnmaxu/">老马快跑</a> 发表于 2010-10-13 12:30 <a href="http://www.cnblogs.com/cnmaxu/archive/2010/10/13/1849972.html">原文链接</a> 阅读: 1360 评论: 17</p><p>昨天，我写了一篇文章（参见：<a href="http://www.cnblogs.com/cnmaxu/archive/2010/10/12/1848735.html" title="ASP.NET MVC 依赖注入">ASP.NET MVC 依赖注入</a>），这种实现方式我个人一直感觉不太顺，在写出来与大家一起分享的同时，</p>
+<p>也是想让大家提提自己的建议， 今天下载了微软发布的最新的 ASP.NET MVC3 Beta 版，同时也仔细阅读了它的 Release Notes，</p>
+<p>让我感觉到惊喜的是，MVC3增加了对依赖注入的支持，增加了一个 <span style="font-family:consolas;color:#2b91af;white-space:pre">IDependencyResolver</span><span style="font-family:consolas;white-space:pre"> 接口定义，真的是很不错，比起我原来的实现要顺畅很多，</span></p>
+<p>还是老方法，上微软牛人们的博客逛一圈看看有没有已经写好的代码，有就拿来用之，没有就只能自己写了，结果让我很失望，也可能是我太笨，</p>
+<p>我没有找到一个完整的示例，只有一些代码片断，于是，我将其整理了一翻，也有一点点个人的心得，拿出来，与大家分享一下，</p>
+<p>如遇高人请不吝赐教，下面是代码片断。</p>
+<p>１、实现 MVC3 Beta 中提供的依赖注入接口 <span style="font-family:consolas;color:#2b91af;white-space:pre"><span style="color:#000000;font-family:verdana,&#39;courier new&#39;;white-space:normal"><span style="font-family:consolas;color:#2b91af;white-space:pre">IDependencyResolver</span><span style="font-family:consolas;white-space:pre"> ，</span></span></span><span style="font-family:&#39;Courier New&#39;;font-size:13px">MyDependencyResolver.cs 的代码</span><span style="font-family:consolas;white-space:pre">：</span>  </p>
+<div>
+<div><span style="color:#0000ff">using</span><span style="color:#000000"> System;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Collections.Generic;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Linq;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web.Mvc;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> Microsoft.Practices.Unity;<br>
+<br>
+</span><span style="color:#0000ff">namespace</span><span style="color:#000000"> Demo<br>
+{<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MyDependencyResolver : IDependencyResolver<br>
+    {<br>
+        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IDependencyResolver 成员</span><span style="color:#000000"><br>
+<br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#008000"><br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> 依赖注入容器<br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#808080"><br>
+</span><span style="color:#000000">        </span><span style="color:#0000ff">private</span><span style="color:#000000"> UnityContainer _unityContainer;<br>
+<br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#008000"><br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> 构造<br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#008000"><br>
+        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;param name=&quot;aUnityContainer&quot;&gt;</span><span style="color:#008000">依赖注入容器</span><span style="color:#808080">&lt;/param&gt;</span><span style="color:#808080"><br>
+</span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> MyDependencyResolver( UnityContainer aUnityContainer )<br>
+        {<br>
+            _unityContainer </span><span style="color:#000000">=</span><span style="color:#000000"> aUnityContainer;<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">object</span><span style="color:#000000"> GetService( Type aServiceType )<br>
+        {<br>
+            </span><span style="color:#0000ff">try</span><span style="color:#000000"><br>
+            {<br>
+                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _unityContainer.Resolve( aServiceType );<br>
+            }<br>
+            </span><span style="color:#0000ff">catch</span><span style="color:#000000"><br>
+            {<br>
+                </span><span style="color:#808080">///</span><span style="color:#008000"> 按微软的要求，此方法，在没有解析到任何对象的情况下，必须返回 null，必须这么做！！！！</span><span style="color:#808080"><br>
+</span><span style="color:#000000">                </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">;<br>
+            }<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#0000ff">object</span><span style="color:#000000">&gt;</span><span style="color:#000000"> GetServices( Type aServiceType )<br>
+        {<br>
+            </span><span style="color:#0000ff">try</span><span style="color:#000000"><br>
+            {<br>
+                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _unityContainer.ResolveAll( aServiceType );<br>
+            }<br>
+            </span><span style="color:#0000ff">catch</span><span style="color:#000000"><br>
+            {<br>
+                </span><span style="color:#808080">///</span><span style="color:#008000"> 按微软的要求，此方法，在没有解析到任何对象的情况下，必须返回空集合，必须这么做！！！！</span><span style="color:#808080"><br>
+</span><span style="color:#000000">                </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> List</span><span style="color:#000000">&lt;</span><span style="color:#0000ff">object</span><span style="color:#000000">&gt;</span><span style="color:#000000">( );<br>
+            }<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>
+    }<br>
+<br>
+}</span></div>
+</div>
+<p> ２、在 Global.asax.cs 中设置依赖注入解析器  <span style="font-family:consolas;color:#2b91af;white-space:pre">DependencyResolver （</span><span style="font-family:consolas;white-space:pre">这是一个全局静态类，也是 MVC3 Beta 新增的）：</span></p>
+<div>
+<div><span style="color:#0000ff">using</span><span style="color:#000000"> System;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Collections.Generic;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Linq;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web.Mvc;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web.Routing;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> Microsoft.Practices.Unity;<br>
+<br>
+</span><span style="color:#0000ff">namespace</span><span style="color:#000000"> Demo<br>
+</span><span style="color:#000000">{<br>
+    </span><span style="color:#008000">//</span><span style="color:#008000"> Note: For instructions on enabling IIS6 or IIS7 classic mode, <br>
+    </span><span style="color:#008000">//</span><span style="color:#008000"> visit </span><span style="color:#008000;text-decoration:underline">http://go.microsoft.com/?LinkId=9394801</span><span style="color:#008000"><br>
+</span><span style="color:#000000"><br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MvcApplication : System.Web.HttpApplication<br>
+</span><span style="color:#000000">    {<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> RegisterGlobalFilters( GlobalFilterCollection filters )<br>
+</span><span style="color:#000000">        {<br>
+</span><span style="color:#000000">            filters.Add( </span><span style="color:#0000ff">new</span><span style="color:#000000"> HandleErrorAttribute( ) );<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> RegisterRoutes( RouteCollection routes )<br>
+</span><span style="color:#000000">        {<br>
+</span><span style="color:#000000">            routes.IgnoreRoute( </span><span style="color:#800000">"</span><span style="color:#800000">{resource}.axd/{*pathInfo}</span><span style="color:#800000">"</span><span style="color:#000000"> );<br>
+<br>
+</span><span style="color:#000000">            routes.MapRoute(<br>
+                </span><span style="color:#800000">"</span><span style="color:#800000">Default</span><span style="color:#800000">"</span><span style="color:#000000">, </span><span style="color:#008000">//</span><span style="color:#008000"> Route name</span><span style="color:#008000"><br>
+</span><span style="color:#000000">                </span><span style="color:#800000">"</span><span style="color:#800000">{controller}/{action}/{id}</span><span style="color:#800000">"</span><span style="color:#000000">, </span><span style="color:#008000">//</span><span style="color:#008000"> URL with parameters</span><span style="color:#008000"><br>
+</span><span style="color:#000000">                </span><span style="color:#0000ff">new</span><span style="color:#000000"> { controller </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">Home</span><span style="color:#800000">"</span><span style="color:#000000">, action </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">Index</span><span style="color:#800000">"</span><span style="color:#000000">, id </span><span style="color:#000000">=</span><span style="color:#000000"> UrlParameter.Optional }<br>
+</span><span style="color:#000000">            );<br>
+<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">protected</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Application_Start( )<br>
+</span><span style="color:#000000">        {<br>
+</span><span style="color:#000000">            AreaRegistration.RegisterAllAreas( );<br>
+<br>
+</span><span style="color:#000000">            RegisterGlobalFilters( GlobalFilters.Filters );<br>
+</span><span style="color:#000000">            RegisterRoutes( RouteTable.Routes );<br>
+            </span><span style="color:#008000">//</span><span style="color:#008000">设置依赖注入</span><span style="color:#008000"><br>
+</span><span style="color:#000000">            RegisterDependency( );<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> UnityContainer _Container;<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> UnityContainer Container<br>
+</span><span style="color:#000000">        {<br>
+            </span><span style="color:#0000ff">get</span><span style="color:#000000"><br>
+</span><span style="color:#000000">            {<br>
+                </span><span style="color:#0000ff">if</span><span style="color:#000000"> ( _Container </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000"> )<br>
+</span><span style="color:#000000">                {<br>
+</span><span style="color:#000000">                    _Container </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> UnityContainer( );<br>
+</span><span style="color:#000000">                }<br>
+                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _Container;<br>
+</span><span style="color:#000000">            }<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">protected</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> RegisterDependency( )<br>
+</span><span style="color:#000000">        {<br>
+</span><span style="color:#000000">            Container.RegisterType</span><span style="color:#000000">&lt;</span><span style="color:#000000">ITest, Test</span><span style="color:#000000">&gt;</span><span style="color:#000000">( );<br>
+</span><span style="color:#000000">            DependencyResolver.SetResolver( </span><span style="color:#0000ff">new</span><span style="color:#000000"> MyDependencyResolver( Container ) );<br>
+</span><span style="color:#000000">        }<br>
+</span><span style="color:#000000">    }<br>
+</span><span style="color:#000000">}</span></div>
+</div>
+<p>  3、Controller的代码，<span style="font-family:&#39;Courier New&#39;;font-size:13px">HomeController.cs</span>：</p>
+<div>
+<div><span style="color:#0000ff">using</span><span style="color:#000000"> System;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Collections.Generic;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Linq;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web.Mvc;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> Microsoft.Practices.Unity;<br>
+<br>
+</span><span style="color:#0000ff">namespace</span><span style="color:#000000"> Demo.Controllers<br>
+</span><span style="color:#000000">{<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> HomeController : Controller<br>
+</span><span style="color:#000000">    {<br>
+</span><span style="color:#000000">        [Dependency]<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> ITest Test { </span><span style="color:#0000ff">get</span><span style="color:#000000">; </span><span style="color:#0000ff">set</span><span style="color:#000000">; }<br>
+        <br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> ActionResult Index( )<br>
+</span><span style="color:#000000">        {<br>
+</span><span style="color:#000000">            ViewModel.Message </span><span style="color:#000000">=</span><span style="color:#000000"> Test.GetString( );<br>
+<br>
+            </span><span style="color:#0000ff">return</span><span style="color:#000000"> View( );<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> ActionResult About( )<br>
+</span><span style="color:#000000">        {<br>
+            </span><span style="color:#0000ff">return</span><span style="color:#000000"> View( );<br>
+</span><span style="color:#000000">        }<br>
+</span><span style="color:#000000">    }<br>
+</span><span style="color:#000000">}<br>
+</span></div>
+</div>
+<p>  ４、ITest.cs代码：<span style="font-size:14.1667px"> </span></p>
+<div>
+<div><span style="color:#0000ff">using</span><span style="color:#000000"> System;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Collections.Generic;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Linq;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Text;<br>
+<br>
+</span><span style="color:#0000ff">namespace</span><span style="color:#000000"> Demo<br>
+</span><span style="color:#000000">{<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">interface</span><span style="color:#000000"> ITest<br>
+</span><span style="color:#000000">    {<br>
+        </span><span style="color:#0000ff">string</span><span style="color:#000000"> GetString( );<br>
+</span><span style="color:#000000">    }<br>
+</span><span style="color:#000000">}<br>
+</span></div>
+</div>
+<p> 5<span style="font-size:14.1667px">、Test.cs代码：<span style="font-size:9.838px"> </span></span> </p>
+<div>
+<div><span style="color:#0000ff">using</span><span style="color:#000000"> System;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Collections.Generic;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Linq;<br>
+</span><span style="color:#0000ff">using</span><span style="color:#000000"> System.Web;<br>
+<br>
+</span><span style="color:#0000ff">namespace</span><span style="color:#000000"> Demo<br>
+</span><span style="color:#000000">{<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> Test:ITest<br>
+</span><span style="color:#000000">    {<br>
+        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> ITest 成员</span><span style="color:#000000"><br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000"> GetString( )<br>
+</span><span style="color:#000000">        {<br>
+            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">Run demo!</span><span style="color:#800000">"</span><span style="color:#000000">;<br>
+</span><span style="color:#000000">        }<br>
+<br>
+        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>
+</span><span style="color:#000000">    }<br>
+</span><span style="color:#000000">}</span></div>
+</div>
+<p>  </p>
+<p><strong> </strong><span style="font-size:14.1667px"><strong>***** 注意，这篇文章只适用于 ASP.NET MVC3 Beta 版，将来正式版出来了，未必采用这种方式来实现，毕竟对于依赖注入这块，</strong></span></p>
+<p><strong>从 MVC1 -&gt; MVC3 Preview1 -&gt; MVC3 Beta 一直都在变化，微软牛人（</strong><a href="http://bradwilson.typepad.com/blog/" title="Brad Wilson"><strong>Brad Wilson</strong></a><strong>）在自己的博客中也多次提到：</strong></p>
+<h2 style="font-weight:bold!important;margin-top:10px;margin-bottom:10px;font-family:&#39;Segoe UI&#39;,Arial,sans-serif;line-height:normal;font-size:13px;color:#333333">Disclaimer</h2>
+<p><span style="font-family:&#39;Segoe UI&#39;,Arial,sans-serif;line-height:normal;font-size:13px;color:#333333"><em>This blog post talks about ASP.NET MVC 3 Beta, which is a pre-release version. Specific technical details may change before the final release of MVC 3. </em></span> </p>
+<p><span style="font-family:&#39;Segoe UI&#39;,Arial,sans-serif;line-height:normal;font-size:13px;color:#333333"><em>This release is designed to elicit feedback on features with enough time to make meaningful changes before MVC 3 ships, </em></span></p>
+<p><span style="font-family:&#39;Segoe UI&#39;,Arial,sans-serif;line-height:normal;font-size:13px;color:#333333"><em>so please comment on this blog post or <a href="http://bradwilson.typepad.com/about.html" style="text-decoration:underline;color:#56763a">contact me</a> if you have comments.</em></span></p>
+<p> （参见原文：<a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt5-idependencyresolver.html">http://bradwilson.typepad.com/blog/2010/10/service-location-pt5-idependencyresolver.html</a>）</p>
+<p> </p>
+<p>在下 e 文太差，我就不丢人了，e 文好的自己看吧。</p>
+<p><a title="Demo" href="http://files.cnblogs.com/cnmaxu/Demo.zip" style="color:#0000ff"></a></p>
+<p> </p>
+<p>这里是采用Unity依赖注入框架的完整示例：<a title="请下载" href="http://files.cnblogs.com/cnmaxu/Demo.zip">下载</a>（环境：VS2010 + MVC3 Beta + Unity） </p>
+<p>这里是采用Ninject依赖注入框架的完整示例：<a title="下载" href="http://files.cnblogs.com/cnmaxu/DemoForNinject.zip">下载</a>（环境：VS2010 + MVC3 Beta + Ninject）</p>
+<p><br>
+</p><img src="http://www.cnblogs.com/cnmaxu/aggbug/1849972.html?type=1" width="1" height="1" alt=""><p>评论: 17　<a href="http://www.cnblogs.com/cnmaxu/archive/2010/10/13/1849972.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/cnmaxu/archive/2010/10/13/1849972.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77215/">Google Labs 发布两个 Android 应用来帮助盲人导航</a><span style="color:gray">(2010-10-13 21:39)</span><br>· <a href="http://news.cnblogs.com/n/77213/">Facebook新增三项安全功能防止帐户被劫持</a><span style="color:gray">(2010-10-13 21:16)</span><br>· <a href="http://news.cnblogs.com/n/77214/">从社区定位到顺势而为</a><span style="color:gray">(2010-10-13 21:16)</span><br>· <a href="http://news.cnblogs.com/n/77212/">Google 测试用 Ads 代替 AdWords 里的 Sponsored Links 标识？</a><span style="color:gray">(2010-10-13 21:10)</span><br>· <a href="http://news.cnblogs.com/n/77211/">多数台湾手机厂商不愿投资WP7</a><span style="color:gray">(2010-10-13 21:09)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77144/">上海麻辣马资深程序员叶劲峰：我的游戏人生</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

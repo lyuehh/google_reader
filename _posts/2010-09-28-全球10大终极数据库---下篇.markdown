@@ -1,0 +1,114 @@
+---
+layout: post
+title:  "全球10大终极数据库 - 下篇"
+date:   2010-09-28 12:59:03
+author: 
+categories: program
+---
+
+## 全球10大终极数据库 - 下篇
+### by 
+### at 2010-09-28 12:59:03
+### original <http://www.cnbeta.com/articles/123056.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/305.htm"><img src="http://img.cnbeta.com/topics/view.gif" alt="cnBeta 视点观察" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.jobBole.com">GuanGuan</a>的投递</b><br>
+看了<a rel="nofollow" href="http://www.cnbeta.com/articles/122954.htm">上篇</a>的回复评论，有朋友说自家电脑上的影片都是TB级的。一般来说，明智的管理员是不大可能把视频和图片之类的文件保存在数据库中的。<br>
+<strong>5. Sprint 斯普林特</strong></p>
+		<p>       导读：看了<a rel="nofollow" href="http://www.jobbole.com/entry.php/242">上篇</a>的回复评论，有朋友说自家电脑上的影片都是TB级的。一般来说，明智的管理员是不大可能把视频和图片之类的文件保存在数据库中的。<br>
+<br>
+<br>
+<div align="center"><a rel="nofollow" href="http://img.cnbeta.com/newsimg/100928/12590302136116958.jpg"><img height="299" src="http://img.cnbeta.com/newsimg/100928/12590302136116958.jpg" alt=""></a> </div>
+Sprint是全球最大的通信公司之一，向5300万客户提供服务。在和Nextel合并之前，提供本地和长途通信服务。（Sprint Nextel公司现已是全美第3大通信公司，仅次于Verizon和AT&amp;T。）<br>
+<br>
+像Sprint这样的大型通信公司，均有庞大的数据库，以追踪客户呼叫请求。Sprint的数据库每天要处理多达3.65亿次呼叫记录。其数据库已扩展到2.85万亿行。在顶峰期间，每秒有7万次呼叫详细记录新增到数据库中。<br>
+<br>
+Sprint数据库概括：<br>
+<ul>
+    <li>1. 数据库有2.85万亿行；</li>
+    <li>2. 每日平均处理3.65亿个呼叫详细记录；</li>
+    <li>3. 顶峰期间，每秒插入7万次呼叫详细记录。</li>
+</ul>
+<br>
+<strong>4. Google</strong><br>
+<br>
+尽管目前外界没有太多关于Google的数据库真实大小的信息（Google一直能严守信息，这让诺克斯堡军事基地情何以堪。），但我们已知道Google所收集信息的数量和种类。<br>
+<br>
+<div align="center"><a rel="nofollow" href="http://img.cnbeta.com/newsimg/100928/125903155980274.jpg"><img height="190" src="http://img.cnbeta.com/newsimg/100928/125903155980274.jpg" alt=""></a> <br>
+<br>
+</div>
+编者注：文中提到的诺克斯堡军事基地，是美国国库黄金储备地之一（还有一个是西点，至于纽约联邦储备银行的地下金库，主要是存放外国的黄金。 ）。该基地许多地方可以随便开车进入，惟独金库用铁丝网拦住，外人不得入内。故原文作者这样说。<br>
+<br>
+Google平均每天处理9100万次查询（<a rel="nofollow" href="http://www.jobbole.com/entry.php/173">Google的处理海量请求的能力是基于其庞大且强大的数据中心</a>），这将近占整个互联网每日查询总量的50%。Google把用户的每一次搜索保存在数据库中。所以，Google平均一年要保存33万亿条查询记录。根据Google数据的结构类型，一年的查询总量将折合成数百TB。<br>
+<br>
+除了查询记录，Google还收集用户的个人信息。（怎么收集？）Google把用户的查询请求和用户电脑上Cookie保留的信息整合到一起，创建虚拟的个人信息。<br>
+<br>
+尤为重要的是，除了搜索，Google帝国的疆土还在不断扩大，现有疆土已有数字媒体（Google视频和YouTube）、广告（Google Ads）和邮箱等。归根结底，Google的疆土越大，其数据库处理的信息量就越大。就互联网范围内的数据库而言，Google是No 1。 <br>
+<br>
+Google数据库概括：<br>
+<ul>
+    <li>1. 平均每天9100万查询请求；</li>
+    <li>2. 查询数量占所有互联网查询量的50%；</li>
+    <li>3. 不计其数的用户虚拟资料。</li>
+</ul>
+<br>
+<strong>3. AT&amp;T 美国电话电报公司</strong><br>
+<br>
+和Sprint一样，美国的老牌通信公司AT&amp;T的数据库也能进入排名。从结构上来说，AT&amp;T的最大数据库是百里挑一的，因为它有2个 重要“头衔”，总量最大的独立数据库（312TB）和行数第二大的独立数据库（1.9万亿行，这个数据库是处理呼叫记录的）。<br>
+<div align="center"><a rel="nofollow" href="http://img.cnbeta.com/newsimg/100928/1259032465950741.jpg"><img height="209" src="http://img.cnbeta.com/newsimg/100928/1259032465950741.jpg" alt=""></a> </div>
+1.9万亿条呼叫记录，包括了主叫和被叫号码、呼叫时间和通话时长以及其他各种账单目录信息。AT&amp;T的工作做得非常细致，他们业保存了10年前的呼叫信息。要知道，10年前可没有保存数百TB级数据的技术。（或者说技术还不成熟。）<br>
+<br>
+AT&amp;T数据库概括：<br>
+<ul>
+    <li>1. 信息量为323TB；</li>
+    <li>2. 1.9万亿的通话记录。</li>
+</ul>
+<br>
+<strong>2. 美国国家能源研究科学计算中心（简称NERSC）</strong><br>
+<br>
+第二大的数据库应属加州奥克兰的NERSC。NERSC由“劳伦斯伯克利能源实验室”和“美国能源部”共同运作。它数据库保存的信息包括了原子能研究、高 能物理实验和早期宇宙模拟等数据。如果想看宇宙过去的模样，启动NERSC的超级计算机就可以观看“大爆炸”时期的宇宙形态。<br>
+<div align="center"><a rel="nofollow" href="http://img.cnbeta.com/newsimg/100928/1259033165496155.jpg"><img height="288" src="http://img.cnbeta.com/newsimg/100928/1259033165496155.jpg" alt=""></a> <br>
+<br>
+</div>
+编者注：NERSC有超级计算机群，其中最大的名为“富兰克林”。2009年11月，全球超超级计算机Top500排行榜中，“富兰克林”位列15。 <br>
+<br>
+NERSC数据库由2000多名计算机科学家操作和维护，其数据量高达2.8PB。（注：1 PB = 1024 TB；1 TB = 1024 GB；）<br>
+<br>
+NERSC数据库概括：<br>
+<ul>
+    <li>1. 信息量高达2.8PB；</li>
+    <li>2. 由2000多名计算机科学家共同运作；</li>
+</ul>
+<br>
+<strong>1. 世界气候数据中心（WDCC）</strong><br>
+<br>
+如果你有一台价值3500万欧元的超级计算机，你会把它用来做什么？炒股？搭建自己的“因特网”？WDCC就有一台这样的机器，又逢全球变暖，正好用它来做气候研究。WDCC由马克思·普朗克气象研究院和德国气候计算机中心共同运作，其数据库是全球最大的。<br>
+<div align="center"><a rel="nofollow" href="http://img.cnbeta.com/newsimg/100928/12590441037765177.gif"><img height="300" src="http://img.cnbeta.com/newsimg/100928/12590441037765177.gif" alt=""></a> <br>
+<br>
+</div>
+WDCC有220TB的网络数据，包括气候研究、预测气候变化和110TB（24500张DVD）的气候模拟数据。尤为重要的是，它还有保存在磁带上的6PB的其他信息。你会问，这6PB的数据有多大呢？这个数据是全美所有学术研究图书馆内容总和的3倍。<br>
+<br>
+WDCC数据库概括：<br>
+<ul>
+    <li>1. 220TB的网络数据：</li>
+    <li>2. 6PB的其他数据。</li>
+</ul>
+<br>
+<strong>编者后话</strong><br>
+<br>
+对于这份原文作者整理的这份列表，相信有朋友会有疑惑，这能称上是“全球10大终极数据库”么？我也有此疑问，但我对Google、AT&amp;T、 NERSC和WDCC可以进入排名没有疑问。我想，既然美国的第三通信公司Sprint能进入，那国内的同行企业的数据库为什么没能上榜呢？按道理来说， 有着庞大人口/用户基数的，应该能入围的。或许有这种可能：虽然美国通信企业的用户数量没法和国内的同行比，但他们保存的通话记录比国内更长，故数据库更 庞大。<br>
+<br>
+其实本文恰当的标题应该是“<strong>全美10大终极数据库</strong>”。并且原文作者还把Facebook漏掉了。Facebook这么庞大的活跃用户群（用户总量已超过5亿），看下面3个数据：（<a rel="nofollow" href="http://www.jobbole.com/entry.php/73">数据来源参考</a>）<br>
+<ul>
+    <li>1. 每月处理超过250亿条的信息内容（包括用户状态更新，评论等）；</li>
+    <li>2. Facebook图片总量已有200亿张（其实共有800百张，因为每张图片按4种分辨率保存）；</li>
+    <li>3. 每个月有超过30亿的图片上传到Facebook。</li>
+</ul>
+主要看第一条数据（图片不会保存在数据库中的），每月有250亿条，Facebook已运作这么多年了，数据库中应该存有5000亿条信息（保守数字），假设平均每条信息10B，则共约为50TB。<br>
+<br>
+总而言之，如果要算数据库总量大小，Facebook能进入这个列表。如果你还有其他观点，不妨在评论中和大家一起分享。<br>
+<br>
+本文来源：<a rel="nofollow" href="http://www.jobbole.com/">伯乐</a>在线 - <a rel="nofollow" href="http://www.jobbole.com/blog.php">职场博客</a><br>
+本文链接：<a rel="nofollow" href="http://www.jobbole.com/entry.php/245">http://www.jobbole.com/entry.php/245</a><br>
+参考来源：Wikipedia 和 <a rel="nofollow" href="http://www.topstrange.com/ultimate-top-10-largest-databases-in-the-world-2138">Topstrange<br>
+</a> 　　 从cnBeta转载此文的朋友，请注明原文来源和链接<br></p></div>

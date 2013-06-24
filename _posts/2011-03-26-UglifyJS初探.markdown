@@ -1,0 +1,111 @@
+---
+layout: post
+title:  "UglifyJS初探"
+date:   2011-03-26 00:56:51
+author: 
+categories: program
+---
+
+## UglifyJS初探
+### by 
+### at 2011-03-26 00:56:51
+### original <http://www.javaeye.com/topic/975786>
+
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">jquery 1.5 代码压缩工具已经从GCL（Google Closure）切换到了UglifyJS，UglifyJS的压缩效果非常好，并且压缩后的代码是安全的。</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">下面是UglifyJS 与  YUI 、 GCL 间压缩结果对比。</span></span></p>
+<p><span style="font-family:helvetica,arial,freesans,clean,sans-serif;font-size:13px;line-height:18px"><span style="font-size:small">
+<span style="font-size:small">
+</span>
+<table style="margin-top:1em!important;margin-right:0px!important;margin-bottom:1em!important;margin-left:0px!important;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;font-size:inherit;line-height:1.4em" border="0"><tbody style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;line-height:1.4em">
+<tr style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;line-height:1.4em">
+<th style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#bbbbbb!important">Library</th>
+<th style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#bbbbbb!important">Orig. size</th>
+<th style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#bbbbbb!important">UglifyJS</th>
+<th style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#bbbbbb!important">YUI</th>
+<th style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#bbbbbb!important">GCL</th>
+</tr>
+<tr style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;line-height:1.4em">
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">DynarchLIB</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">636896</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">241441</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">246452 (+5011)</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">240439 (-1002) (buggy)</td>
+</tr>
+<tr style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;line-height:1.4em">
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">jQuery</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">163855</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">72006</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">79702 (+7696)</td>
+<td style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0.2em!important;padding-right:1em!important;padding-bottom:0.2em!important;padding-left:1em!important;line-height:1.4em;border-bottom-width:1px!important;border-bottom-style:solid!important;border-bottom-color:#dddddd!important">71858 (-148)</td>
+</tr>
+</tbody></table></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><strong><span style="font-size:small"><span style="font-size:small">uglifyjs通过下面方式来达到代码高度压缩：</span></span></strong></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<ul>
+<li><span style="font-size:small"><span style="font-size:small">foo[“bar”] <span style="font-family:helvetica,arial,freesans,clean,sans-serif;font-size:13px;line-height:18px">==&gt;</span> foo.bar</span></span></li>
+<li><span style="font-size:small"><span style="font-size:small">删除{}块</span></span></li>
+<li><span style="font-size:small"><span style="font-size:small">var a = 10; var b = 20; <span style="font-family:helvetica,arial,freesans,clean,sans-serif;font-size:13px;line-height:18px">==&gt;</span> var a=10,b=20;</span></span></li>
+<li><span style="font-size:small"><span style="font-size:small">1 +2 * 3 <span style="font-family:helvetica,arial,freesans,clean,sans-serif;font-size:13px;line-height:18px">==&gt;</span> 7</span></span></li>
+<li><span style="font-size:small"><span style="font-size:small">连续的代码块会合并成一个</span></span></li>
+<li><span style="font-size:small"><span style="font-size:small">删除一些无法访问的代码</span></span></li>
+</ul>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p><span style="font-size:small"><span style="font-size:small">    对于if语句uglifyjs 会做下面的优化</span></span></p>
+<p><span style="font-size:small"><span style="font-size:small"><br></span></span></p>
+<p>
+</p>
+<p>
+</p>
+<ul>
+<li><span style="font-size:small">if (foo) bar(); else baz(); ==&gt; foo?bar():baz();</span></li>
+<li><span style="font-size:small">if (!foo) bar(); else baz(); ==&gt; foo?baz():bar();</span></li>
+<li><span style="font-size:small">if (foo) bar(); ==&gt; foo&amp;&amp;bar();</span></li>
+<li><span style="font-size:small">if (!foo) bar(); ==&gt; foo||bar();</span></li>
+<li><span style="font-size:small">if (foo) return bar(); else return baz(); ==&gt; return foo?bar():baz();</span></li>
+<li><span style="font-size:small">if (foo) return bar(); else something(); ==&gt; {if(foo)return bar();something()}</span></li>
+</ul>
+<ul style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px"></ul>
+<div style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px"><span style="font-size:small"><span style="font-size:small"><br></span></span></div>
+<div style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px"><span style="font-size:small"><span style="font-size:small"><br></span></span></div>
+<div>
+<div>
+<span style="font-size:small"><span style="font-family:helvetica,arial,freesans,clean,sans-serif;font-size:small"><span style="line-height:18px">不同平台UglifyJS</span></span><span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px;font-size:medium">版本：</span>
+</span>
+</div>
+<div><span style="font-size:small"><br></span></div>
+<div>
+<span style="font-size:small"><span style="font-size:small"><span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px">nodejs </span>version<span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px">:                </span></span><a href="https://github.com/mishoo/UglifyJS">https://github.com/mishoo/UglifyJS</a>
+</span>
+</div>
+<div>
+<span style="font-size:small"><span style="font-size:small"><span style="font-family:helvetica,arial,freesans,clean,sans-serif"><span style="line-height:18px">common Lisp </span></span>version<span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:18px">:    </span></span><a href="http://github.com/mishoo/cl-uglify-js">http://github.com/mishoo/cl-uglify-js</a>
+</span>
+</div>
+<div>
+<span style="font-size:small"><span style="font-size:small">java version：          </span><a href="https://github.com/yuanyan/UglifyJS-java">https://github.com/yuanyan/UglifyJS-java</a> </span>
+</div>
+<div><span style="font-size:small"><br></span></div>
+<div><span style="font-size:small"><br></span></div>
+<div><span style="font-size:small"><br></span></div>
+<div><span style="font-size:small"><br></span></div>
+<div><span style="font-size:small"><span style="font-size:small"><br></span></span></div>
+</div>
+<div><span style="font-size:small"><span style="font-size:small"><br></span></span></div>
+<p> </p>
+          
+          <br><br>
+          作者: <a href="http://javamore.javaeye.com">javamore</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/975786" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

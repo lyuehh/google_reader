@@ -1,0 +1,220 @@
+---
+layout: post
+title:  "CRM 2011 RC版本的安装"
+date:   2010-12-16 05:28:00
+author: 石头居
+categories: program
+---
+
+## CRM 2011 RC版本的安装
+### by 石头居
+### at 2010-12-16 05:28:00
+### original <http://www.cnblogs.com/StoneGarden/archive/2010/12/16/1907502.html>
+
+<p><p>    2010年12月15日，微软发布了CRM2011的RC版本，具体下载地址如下：</p>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="121" valign="top">
+<p><strong>Component</strong></p>
+</td>
+<td width="396" valign="top">
+<p><strong>Name </strong></p>
+</td>
+<td width="366" valign="top">
+<p><strong>URL</strong></p>
+</td>
+<td width="180" valign="top">
+<p><strong>Language Availability</strong></p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>Server RC</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 Server Release Candidate</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=c3f82c6f-c123-4e80-b9b2-ee422a16b91d">http://www.microsoft.com/downloads/details.aspx?FamilyID=c3f82c6f-c123-4e80-b9b2-ee422a16b91d</a></span></p>
+</td>
+<td width="180">
+<p>Available in English only  </p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>Outlook Client</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 for Microsoft Office Outlook</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=22dc423a-7194-491e-a169-6ace16bfdd36">http://www.microsoft.com/downloads/details.aspx?FamilyID=22dc423a-7194-491e-a169-6ace16bfdd36</a></span></p>
+</td>
+<td width="180">
+<p>Available in 25 languages</p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>Language Pack</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 Language Pack</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=db44c564-2338-407e-980a-c9c83ad37729">http://www.microsoft.com/downloads/details.aspx?FamilyID=db44c564-2338-407e-980a-c9c83ad37729</a></span></p>
+</td>
+<td width="180">
+<p>Available in 41 languages</p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>Email Router</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 E-mail Router</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=a995f6ad-0099-42fd-9b22-cf7b3d40a2bf">http://www.microsoft.com/downloads/details.aspx?FamilyID=a995f6ad-0099-42fd-9b22-cf7b3d40a2bf</a></span></p>
+</td>
+<td width="180">
+<p>Available in 25 languages</p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>Report Extension</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 Report Authoring Extension</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=64a09b75-8376-4b9d-aea3-8a83a1837c4d">http://www.microsoft.com/downloads/details.aspx?FamilyID=64a09b75-8376-4b9d-aea3-8a83a1837c4d</a></span></p>
+</td>
+<td width="180">
+<p>Available in 25 languages</p>
+</td>
+</tr>
+<tr>
+<td width="121">
+<p>SharePoint</p>
+</td>
+<td width="396">
+<p><strong>Microsoft Dynamics CRM 2011 List Component for Microsoft SharePoint Server 2010</strong></p>
+</td>
+<td width="366" valign="top">
+<p><span style="text-decoration:underline"><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=23c0f351-8694-4d92-9ddf-34a949aec6a7">http://www.microsoft.com/downloads/details.aspx?FamilyID=23c0f351-8694-4d92-9ddf-34a949aec6a7</a></span></p>
+</td>
+<td width="180">
+<p>Available in 41 languages</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>为了尝个新鲜，就下载一个，安装上，耍一耍。本文就是我安装的<span style="color:#ff0000">全过程</span>，<span style="color:#ff0000">包括有安装域、DNS、IIS、SQL Server以及CRM Server。</span></p>
+<p>首先是安装域。<span style="color:#ff0000">提前声明一下，CRM 2011 Server只能够安装在Windows 2008 x64版本的服务器上。</span>我的虚拟机操作系统是Windows2008R2 X64版本。</p>
+<p><span style="font-size:14pt">下面是配置域的过程。</span></p>
+<p>1）打开服务器管理器，右键点击左侧导航栏的“角色”节点，选择上下文菜单的“添加角色”选项。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160525462776.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160525484463.png" border="0" alt="image" width="478" height="235"></a> </p>
+<p>2）系统弹出“添加角色向导”对话框，在“选择服务器角色”页面，勾选“Active Directory域服务”前面的复选框，系统将弹出对话框，提示需要添加.Net Framework 3.5功能，点击“添加必需的功能”按钮，返回向导界面。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160525528004.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160525542723.png" border="0" alt="image" width="478" height="292"></a> </p>
+<p>3) 点击“下一步”按钮进入“Active Directory域服务”介绍界面，再次点击“下一步”按钮，进入“确认安装选择”界面，点击“安装”按钮，系统将开始安装AD域服务。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/2010121605255617.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160525587900.png" border="0" alt="image" width="481" height="356"></a> </p>
+<p>4）安装完成后，打开命令行工具（开始菜单--&gt;所有程序--&gt;附件--&gt;命令提示符），在其中输入dcpromo，系统将启动“Active Directory 域服务安装向导”完成后续的安装，如下图。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526002162.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526014505.png" border="0" alt="image" width="496" height="322"></a> </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526043892.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526105250.png" border="0" alt="image" width="489" height="428"></a> </p>
+<p>5）在“Active Directory 域服务安装向导”的向导页面“选择某一部署配置”时，根据实际情况，设定是向现有林中添加域控制器还是在新林中新建域，我的安装中选择后者，即“在新林中新建域”选项。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526108215.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526136871.png" border="0" alt="image" width="478" height="421"></a> </p>
+<p>6）在“命名林根域”中，输入新目录林根级域的FQDN名称，我这里输入的是“CRM2011RC.com”作为根级域名。如下图</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526134297.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526159082.png" border="0" alt="image" width="484" height="424"></a> </p>
+<p>7）点击“下一步”时，系统会对输入的域名做一个重名检测，以免和当前网络环境中域名发生重复，检测通过后，向导进入“设置林功能级别”页面，可以在“林功能级别”下拉框中设定级别，分别有windows server 2000、Windows server2003、Windows server 2008以及Windows server 2008 R2，默认是Windows server 2003。如<span style="color:#ff0000">果选择了高等级的林功能级别，那么以后再添加域控制器时，其OS级别也必须等于或者高于林功能所设定的级别</span>。所以，我不准备改变这个值，直接点击“下一步”。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526178361.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526215489.png" border="0" alt="image" width="485" height="425"></a> </p>
+<p>8）和设置林功能级别类似，在接下来的“设置域功能级别”页面，同样不做更改，保持“域功能级别”为windows server 2003。在步骤7和步骤8中，各位看官同学，可以根据自己的实际情况进行设置。</p>
+<p>9）接下来，系统将会进行检测，我的环境是一个纯粹的刚刚安装好的Windows server 2008 R2环境，所以，向导提示我需要为域控制器安装DNS服务。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526217583.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526244287.png" border="0" alt="image" width="489" height="428"></a> </p>
+<p>10）在点击下一步按钮时，系统提示，无法创建DNS服务器的委派等等一系列的提示，直接忽视了，毕竟我只是一个独立的，不与外界进行联通的CRM server系统。点击“是”，关闭此对话框。</p>
+<p>11）一路点击“下一步”按钮，进入“目录服务还原模式的administrator密码”页面，此东东的解释，看Windows的帮助吧，我不多说了。输入一个我们记得住的，符合密码规则的密码。我就不说我输入了什么密码了。一路点击“下一步”，系统开始配置域服务，勾选此页面的“完成后重新启动”复选框。静等系统的配置吧。如下图。(这个配置工作还是比较费时间的，大概要10几分钟，大家可以喝喝茶、聊聊天、抽抽烟)</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526273434.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526292123.png" border="0" alt="image" width="498" height="313"></a> </p>
+<p>等系统重启后，域的安装就完成了。</p>
+<p><span style="font-size:18pt">下面介绍IIS的安装</span>。</p>
+<p>1）和添加“Active Directory域服务”类似，启动“服务器管理器”，点击左侧导航栏的“角色”节点，添加角色，在“选择服务器角色”页面，勾选“Web服务器（IIS)”前的复选框，如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526324857.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526346229.png" border="0" alt="image" width="506" height="374"></a> </p>
+<p>2）点击“下一步”按钮，进入“Web服务器IIS”介绍页面，再点击“下一步”按钮进入“选择角色服务”页面，勾选“Asp.net”节点、“Windows身份验证”节点、“http重定向”节点。在勾选“ASP.NET”节点时，系统会自动勾选相关的依赖角色服务。最终勾选效果如下所示</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526376215.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/2010121605264062.png" border="0" alt="image" width="512" height="379"></a> </p>
+<p>3）点击“下一步”按钮，进入“确认”页面，点击“安装”按钮，系统开始安装IIS（安装耗时不长，5分钟）。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526427945.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526437780.png" border="0" alt="image" width="512" height="378"></a> </p>
+<p>4）安装完成后，启动IE，在地址栏输入<a href="http://localhost">http://localhost</a>，看看效果，验证IIS安装成功。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526508416.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526565903.png" border="0" alt="image" width="512" height="385"></a> </p>
+<p>至此，IIS安装完成。</p>
+<p>下面开始安装SQL Server。</p>
+<p><span style="color:#ff0000">声明，CRM 2011需要的SQL Server版本必需是64位的SQL Server2008，并且需要SQL Server 2008的SP1，可以是标准版、企业版、datacenter版以及开发版。我使用的是SQL Server的64位开发版</span></p>
+<p>安装步骤如下：</p>
+<p>1）运行安装程序，选择“安装”--&gt;“全新SQL Server独立安装或向现有安装添加功能”，如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160526597491.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527025799.png" border="0" alt="image" width="516" height="388"></a> </p>
+<p>2）安装程序向导经过“系统检测”、“产品密钥”、“许可条款”三个页面，进入“安装程序支持文件”页面，点击“安装”，进行支持文件的安装过程。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527041946.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527076699.png" border="0" alt="image" width="518" height="390"></a> </p>
+<p>3）支持文件安装完后，进入“规则检查”页面，安装程序会给出几个警告，包括“计算机域控制器”“防火墙”等，没有关系，我是要安装一个自己用的测试开发环境，这些问题可以忽略，直接点击“下一步”。</p>
+<p>4）在“功能选择”页面，勾选“数据库引擎服务”、“全文检索”、“Reporting Service”、“Business Intelligence Development Studio”、“管理工具—基本”、“管理工具—完整”这几个功能。分别对应了数据库服务、全文检索、报表服务、VS2008以及报表开发的项目模板、SQL Server Management Studio这几个功能。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052711348.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527148099.png" border="0" alt="image" width="522" height="392"></a> </p>
+<p>5）点击“下一步”，进入“实例配置”页面，不修改实例名称，直接使用默认实例名称。点击“下一步”，进入“磁盘空间要求”页面，继续点击“下一步”按钮。进入“服务器配置”页面，因为是开发环境，为了简单，我直接点击“为所有SQL Server服务使用相同的帐号”，在随之弹出的对话框的“帐户名”下拉框中，选择“NT AUTHORITY\SYSTEM”帐号，点击“确定”按钮，返回“服务器配置”页面，点击“下一步”按钮。完成这一部分的设置，如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527186623.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527204374.png" border="0" alt="image" width="530" height="399"></a> </p>
+<p>6）在接下来的“数据库引擎设置”页面，点击“添加当前账户”按钮，将当前账户指定为SQL Server管理员，您也可以按照实际情况需要，点击“添加”按钮，将域中的某个或者某几个帐号指定为SQL Server管理员。对“数据目录”页签以及“FileStream”页签中的内容不做修改，点击“下一步”按钮。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527241502.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527279253.png" border="0" alt="image" width="539" height="405"></a> </p>
+<p>7）在Reporting Service配置页面，保持默认选项，点击“下一步”，在“错误和使用情况报告”，继续点击“下一步”，在“安装规则”页面，如果没有错误，点击“下一步”，否则，就要点击“查看详细信息”按钮，看看到底哪里出现了错误，进行相应的修改，以便通过“安装规则”的检查。在“准备安装”页面，查看安装摘要信息，确认无误，点击“安装”按钮，开始进行安装。如下图所示。（这个过程依据选择的功能服务数量不同，耗时也是有长有短，不过，即使就是同我一样，只是选择了那些必须安装的内容，安装也要30分钟才能够完成）</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527308334.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527326499.png" border="0" alt="image" width="550" height="413"></a> </p>
+<p>安装完成后，找到相应的SQL Server 2008的SP1补丁，打补丁，这个挺费时间的，半个小时吧。</p>
+<p>补丁安装完成后，启动SQL Server Management Studio（路径是开始菜单--所有程序--Microsoft SQL Server 2008--SQL Server Management Studio），在“服务器名称”对话框输入本机名称，或者输入小数点“.”，建立与本机SQL Server的连接，打开数据库节点，浏览一下。启动IE，在地址栏输入<a href="http://localhost/reportserver">http://localhost/reportserver</a>，看看是否有如下图的结果。这两项验证SQLServer是否安装成功，以及报表服务是否安装成功。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527355297.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527376560.png" border="0" alt="image" width="415" height="259"></a> </p>
+<p>若成功了，就进入CRM Server的安装步骤。</p>
+<p>下面是CRM安装步骤</p>
+<p>1） 双击从微软服务器下载的“CRM2011-Server-ENU-amd64.exe”文件，这是一个压缩包，需要指定一个文件夹作为其解压缩文件存放位置，我放在了桌面上，名字叫做“CRM Server”；</p>
+<p>2）解压缩后，进入安装步骤，首先是询问是否需要从微软网站查找更新，刚刚发布的RC版本，不会48小时就有更新了吧？我选择不查找更新，点击“next”，进入下一步；</p>
+<p><span style="color:#ff0000">3）注意，此处，要停下来，做一些准备工作。因为我的VPC没有联网，而且是一个纯净的虚拟机，之前没有安装过任何版本的CRM系统。所以，要将beta版的安装文件包中的redist文件夹copy到桌面，也就是说，和crm server安装文件夹处于同一目录层次。这样在后续的安装必要组件步骤中，就不会出现安装程序找不到必要组件安装程序包的问题。在RC的Server安装包中，不包含redist文件夹，可能是产品组认为大家都是卸载了beta版之后，再安装rc版本的吧。碰上我这么一个从头安装crm的，可能他们没有想到。怪不得下载Server安装包的时候，我还在想，怎么一下子比beta版小了200M呢，问题就处在了redist文件夹上面了。</span></p>
+<p>4）输入序列号，在下载Server安装包的页面上，已经给出了ProductKey，如果是安装企业版，key是：MQM2H-JYYRB-RRD6J-8WBBC-CVBD3，如果安装工作组版，key是：H84KC-JH8DF-7PDYK-TXBXR-2RMMT。两个版本的区别是，企业版没有用户数量的限制，而工作组版的用户数量上限是5个。我使用企业版。点击“next”，同意“License Agreement”，点击“next”。需要安装“Requirement components”，点击”install“按钮，安装必要组件。</p>
+<p>5）安装.net framework 4.0组件后，需要重新启动操作后，才可以安装其他组件。</p>
+<p>6）重启系统后，继续安装必要组件，安装完成后，点击“next”</p>
+<p>7）在“select installation location”页面，输入程序的安装位置，我未作修改，保持默认设置，点击“next”；</p>
+<p>8）进入“Specify Server Roles”页面，可以看到，CRM2011比CRM4的角色多了很多，不仅有CRM4中已经提出“前端服务器”、“后端服务器”概念，还有“部署管理服务器”的概念，有关各个服务器角色的内容，我会在后续文章中介绍。我是安装一台CRM服务器作为测试、学习、开发使用，所以选择安装所有服务器角色。点击“next”</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527396329.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527417211.png" border="0" alt="image" width="502" height="390"></a> </p>
+<p>9）在“Specify Deployment Options”页面，设定用于存放CRM数据库的SQL Server服务器名称。因为我是一台机器，所以输入了本机的机器名（也可以输入一个小数点“.”，这也代表是本机），各位同学可以根据自己情况，如果是CRMServer和SQL Server分开部署，那么需要在这里输入IP地址或者机器名都是可以的。输入完成后，可以选择是创建新的部署，还是连接到已有部署。我是纯新安装，选择“create a new deployment”。点击“next”；</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527435584.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052745718.png" border="0" alt="image" width="512" height="397"></a> </p>
+<p>10）CRM安装过程中，会创建几个安全组，以便其程序运行的安全验证使用，而“Select the Organization Unit”页面，就是用于指定存放安全组的容器的位置。在指定容器之前，首先创建该容器。</p>
+<p>打开“Active Directory用户和计算机”管理台（打开方式：开始菜单--管理工具--Active Directory用户和计算机），右键点击左侧导航栏的域名节点（我的环境中是“CRM2011RC.com”），在上下文菜单中选择“新建”--&gt;“组织单位”</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527474075.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052749780.png" border="0" alt="image" width="521" height="327"></a> </p>
+<p>在“新建对象 - 组织单位”对话框中，输入容器名称，我设定的容器名称为CRM2011RC，各位同学可以根据具体情况进行设定。</p>
+<p> </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527502665.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052751548.png" border="0" alt="image" width="342" height="267"></a> </p>
+<p>点击“确定”按钮，最后的效果如下。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527575527.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160527592788.png" border="0" alt="image" width="548" height="385"></a> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>创建了容器后，返回安装程序，指定Organization Unit就是我们刚刚创建的CRM2011RCOU这个组织单位，如下图。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052802572.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528043405.png" border="0" alt="image" width="544" height="341"></a> </p>
+<p>点击“确定”返回安装向导，点击“next”。</p>
+<p>11）进入“Specify Service Accounts”页面，在此设置CRM各个服务的帐号名称以及相应的密码，出于简单考虑，我就使用了NT Authority\Networkservice帐号，如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052806948.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528089878.png" border="0" alt="image" width="546" height="424"></a> </p>
+<p>设置完帐号，点击“next”，进入下一步。</p>
+<p>12）进入“Specify Web Site”页面，设定CRM Web站点的信息，默认的选项是使用80端口，因为我将来准备安装SharePoint，所以，不使用80端口，而是用具有Dynamics CRM特色的5555端口，如下图。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528109124.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528124498.png" border="0" alt="image" width="552" height="429"></a> </p>
+<p>点击“next”，进入下一步。</p>
+<p>13）进入“Specify Email Router Settings”页面，在安装CRM过程中，可以不指定Email Router，所以，不输入内容，直接“next”</p>
+<p>14）进入“Specify the Organization Settings”页面，在此页面，输入一个组织的信息，这个组织在CRM过程中，也将会被创建。我设定的组织名称以及该组织的显示名称都是“DefaultOrg”，其他选项不变。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528148138.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528175300.png" border="0" alt="image" width="564" height="438"></a> </p>
+<p>点击“next”，进入下一步。</p>
+<p>15）进入“Specify Reporting Services Server”页面，设定报表服务器的位置，URL地址的格式是“http://&lt;机器名或IP地址&gt;/reportserver”，我的机器名称是Crmserver，所以，报表服务器URL地址就是<a href="http://crmserver/reportserver">http://crmserver/reportserver</a>。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528201165.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528215983.png" border="0" alt="image" width="574" height="446"></a> </p>
+<p> </p>
+<p>一路点击“next”.</p>
+<p>16）进入最有一个步骤”System Check”页面，CRM安装程序进行环境检测，绿色的对勾是通过了检测，黄色的感叹号是警告信息，提醒你去注意，红色的小叉叉，代表有条件不满足。如下图所示。</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/201012160528247704.png"><img style="display:inline;border:0px" title="image" src="http://images.cnblogs.com/cnblogs_com/StoneGarden/201012/20101216052826504.png" border="0" alt="image" width="582" height="452"></a> </p>
+<p>由图上可见，第二个检测项“Microsoft Dynamics CRM Server User Input”有警告，而“Microsoft SQL Server”检测项没有通过——因为没有为SQL Server 2008打SP1的补丁，而CRM2011要安装在已经有SP1补丁的X64版本SQL Server 2008上。</p>
+<p>通过这个检测，点击“next”，向导显示安装摘要信息，点击“Install”，即开始安装过程（安装要很长的时间）。</p>
+<p>至此，从一个刚刚安装了X64版本Windows 2008 R2的系统基础上，逐步操作，直至最后安装成功Dynamics 2010 RC的全过程就介绍完了。希望对大家能够有帮助。</p>
+<p> </p>
+<p>因为条件所限，我的部署环境很简单，和实际的生产环境有很大差别，请各位同学自己安装时，根据具体情况，进行差别对待，参考安装指南。</p>
+<p> </p>
+<p>由于能力、经验所限，可能有疏漏或者错误的地方，还望大家指正，谢谢。</p><img src="http://www.cnblogs.com/StoneGarden/aggbug/1907502.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/StoneGarden/">石头居</a> 发表于 2010-12-16 05:28 <a href="http://www.cnblogs.com/StoneGarden/archive/2010/12/16/1907502.html">原文链接</a></p><p>评论: 4　<a href="http://www.cnblogs.com/StoneGarden/archive/2010/12/16/1907502.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/StoneGarden/archive/2010/12/16/1907502.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/84855/">Android开发者掘金（3）—未来</a><span style="color:gray">(2010-12-16 21:49)</span><br>· <a href="http://news.cnblogs.com/n/84854/">唐骏：中国楼市有巨大泡沫 连我都买不起房</a><span style="color:gray">(2010-12-16 21:44)</span><br>· <a href="http://news.cnblogs.com/n/84853/">上月必应 Bing 份额显著上升，Facebook 的功劳？</a><span style="color:gray">(2010-12-16 21:38)</span><br>· <a href="http://news.cnblogs.com/n/84852/">传微软甲骨文将出价约60亿美元竞购Autonomy</a><span style="color:gray">(2010-12-16 21:27)</span><br>· <a href="http://news.cnblogs.com/n/84851/">灰狐十年，中国开源稳步前进</a><span style="color:gray">(2010-12-16 21:20)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/84788/">软件开发中的11个系统思维定律</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

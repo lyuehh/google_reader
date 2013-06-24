@@ -1,0 +1,17 @@
+---
+layout: post
+title:  "一些css技巧与应用"
+date:   2010-11-08 21:19:50
+author: jozhi
+categories: program
+---
+
+## 一些css技巧与应用
+### by jozhi
+### at 2010-11-08 21:19:50
+### original <http://gaoshou.org/blog/?p=30>
+
+<p>下面的这段代码是用来改变被选中文本的背景颜色，很早之前就搜集过这个小功能，今天搜集到了记录一下。他能使你的页面增加一些趣味。</p>
+
+<p>::selection{background: #A8141B; color: white; /* Safari */}<br>
+::-moz-selection{background: #A8141B; color: white; /* Firefox */ }</p>

@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "一个很棒的Redis介绍PPT"
+date:   2011-07-13 00:51:01
+author: nosqlfan
+categories: program
+---
+
+## 一个很棒的Redis介绍PPT
+### by nosqlfan
+### at 2011-07-13 00:51:01
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/535603142/6253001/1/item.html>
+
+<p>下面slide来自<a href="http://www.gr8conf.org/">gr8conf 2011</a>大会，内容包括了：</p>
+<ul>
+<li><span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>的存储方式描述</li>
+<li>Redis的功能特点列举</li>
+<li>Redis几种数据格式的操作图解及代码示例</li>
+<li>Redis实际应用案例及代码演示</li>
+</ul>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/07/Redis-and-Groovy-and-Grails.jpg"><img title="Redis and Groovy and Grails" src="http://blog.nosqlfan.com/wp-content/uploads/2011/07/Redis-and-Groovy-and-Grails.jpg" alt="" width="593" height="367"></a></p>
+<div style="width:595px"><strong><a title="Redis and Groovy and Grails - gr8conf 2011" href="http://www.slideshare.net/tednaleid/redis-and-groovy-and-grails-gr8conf-2011">Redis and Groovy and Grails – gr8conf 2011</a></strong> <iframe src="http://reader.googleusercontent.com/reader/embediframe?src=http://static.slidesharecdn.com/swf/ssplayer2.swf?doc%3Dredis-gr8conf-110627225017-phpapp01%26stripped_title%3Dredis-and-groovy-and-grails-gr8conf-2011%26userName%3Dtednaleid&amp;width=595&amp;height=497" width="595" height="497"></iframe>
+<div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/tednaleid">Ted Naleid</a></div>
+</div>
+<p style="font-weight:bold"><span style="padding-top:5px;float:left">技术传播，需要你我共同努力！</span><a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html&amp;text=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKEJk/custom.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html" title="新浪微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKrzm/custom.png"></a><a href="http://v.t.qq.com/share/share.php?title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html" title="腾讯微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJX6o/custom.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html" title="QQ空间" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJSKI/custom.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html&amp;title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJrri/custom.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html&amp;title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJ4v4/custom.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html" title="人人网" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVI86k/custom.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2395.html&amp;title=%E4%B8%80%E4%B8%AA%E5%BE%88%E6%A3%92%E7%9A%84Redis%E4%BB%8B%E7%BB%8DPPT%20@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVHr67/custom.png"></a></p><img src="http://www1.feedsky.com/t1/535603142/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/535603142/6253001/1/item.html" border="0" height="0" width="0">

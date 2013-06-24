@@ -1,0 +1,65 @@
+---
+layout: post
+title:  "任何时候都适用的20个C++技巧 &lt;9-11&gt; 性能的提升"
+date:   2010-12-06 15:33:00
+author: 凌云健笔
+categories: program
+---
+
+## 任何时候都适用的20个C++技巧 &lt;9-11&gt; 性能的提升
+### by 凌云健笔
+### at 2010-12-06 15:33:00
+### original <http://www.cnblogs.com/lijian2010/archive/2010/12/06/1897798.html>
+
+<p><p><strong><span style="color:#000080;font-size:12pt">Nine to 11: Performance Enhancements</span></strong></p>
+<p>下面所列出的是三个相当简单但又不是很常见的技术，在不牺牲程序可读性、不修改程序设计的前提下，提高程序的性能。例如，程序员往往不太清楚，只是简单的对数据成员进行重新排序就可以大大减少它的大小。这种优化可以提高性能，如果应用程序使用到了这些对象的数组，效果尤其明显。此外，我们还将学习前缀和后缀操作符之间的差异；在重载操作符中，这是一个很重要的问题。最后，我们将学习一些消除临时对象的创建的方法。</p>
+<p><span style="text-decoration:underline"><strong>技巧9：类成员对齐方式的优化</strong></span></p>
+<p>　　只需改变类成员的声明顺序就可以改变这个类的大小：</p>
+<div>
+<pre><div><span style="color:#0000ff">struct</span><span style="color:#000000"> A<br>{<br> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> a;<br> </span><span style="color:#0000ff">int</span><span style="color:#000000"> b;<br> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> c;<br>}; </span><span style="color:#008000">/*</span><span style="color:#008000">sizeof (A) == 12</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　在我的机器上，sizeof (A) 等于12。结果看起来非常的出乎意料，因为A的成员大小之和仅仅是6个字节，多余的6个字节来自何方呢？编译器在每个bool类型成员的后面插入了各插入三个填充字节，使得它四字节边界对齐。你可以按照下面的方式重新组织数据成员减少A的大小：</p>
+<div>
+<pre><div><span style="color:#0000ff">struct</span><span style="color:#000000"> B<br>{<br> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> a;<br> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> c;<br> </span><span style="color:#0000ff">int</span><span style="color:#000000"> b;<br>}; </span><span style="color:#008000">//</span><span style="color:#008000"> sizeof (B) == 8</span></div></pre>
+</div>
+<p>　　这次编译器只是在成员c的后面插入两个填充字节。因为b占4字节，它自然就word边界对齐，而不需要额外的填充字节。</p>
+<p> </p>
+<p><span style="text-decoration:underline"><strong>技巧10：明确前缀后缀操作符之间的差异</strong></span></p>
+<p>　　内置的++操作符可以放在操作数的两边：</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> n</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;<br></span><span style="color:#000000">++</span><span style="color:#000000">n; </span><span style="color:#008000">/*</span><span style="color:#008000">前缀</span><span style="color:#008000">*/</span><span style="color:#000000"><br>n</span><span style="color:#000000">++</span><span style="color:#000000">; </span><span style="color:#008000">/*</span><span style="color:#008000">后缀</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　你一定知道前缀操作符首先改变操作数，然后再使用它的值。比如：</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> n</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">, m</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;<br>n </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">++</span><span style="color:#000000">m; </span><span style="color:#008000">/*</span><span style="color:#008000">first increment m, then assign its value to n</span><span style="color:#008000">*/</span><span style="color:#000000"><br>cout </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000"> n </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000"> m; </span><span style="color:#008000">/*</span><span style="color:#008000"> display 1 1</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　在这个例子中，在赋值之后，n等于1；因为它是在将m赋予n之前完成的自增操作。</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> n</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">, m</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;<br>n </span><span style="color:#000000">=</span><span style="color:#000000"> m</span><span style="color:#000000">++</span><span style="color:#000000">; </span><span style="color:#008000">/*</span><span style="color:#008000">first assign m's value to n, then increment m</span><span style="color:#008000">*/</span><span style="color:#000000"><br>cout </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000"> n </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000"> m; </span><span style="color:#008000">/*</span><span style="color:#008000">display 0 1</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　在这个例子中，赋值之后，n等于0；因为它是先将m赋予n，之后m再加1。</p>
+<p>　　为了更好的理解前缀操作符和后缀操作符之间的区别，我们可以查看这些操作的反汇编代码。即使你不了解汇编语言，你也可以很清楚地看到二者之间的区别，注意inc指令出现的位置：</p>
+<div>
+<pre><div><span style="color:#000000">/*disassembly of the </span><span style="color:#008080">expression:</span><span style="color:#000000"> m=n++</span><span style="color:#008000">;</span><span style="color:#008000">*/</span><span style="color:#008000"><br></span><span style="color:#0000ff">mov</span><span style="color:#000000"> ecx, [ebp-0x04] /*store n</span><span style="color:#800000">'</span><span style="color:#800000">s value in ecx register*/<br>mov [ebp-0x08], ecx /*assign value in ecx to m*/<br>inc dword ptr [ebp-0x04] /*increment n*/<br><br><br><br>/*disassembly of the expression: m=++n;*/<br>inc dword ptr [ebp-0x04] /*increment n;*/<br>mov eax, [ebp-0x04] /*store n</span><span style="color:#800000">'</span><span style="color:#000000">s value </span><span style="color:#0000ff">in</span><span style="color:#000000"> eax register*/<br></span><span style="color:#0000ff">mov</span><span style="color:#000000"> [ebp-0x08], eax /*assign value </span><span style="color:#0000ff">in</span><span style="color:#000000"> eax to m*/</span></div></pre>
+</div>
+<p><span style="text-decoration:underline"> </span></p>
+<p><span style="color:#808080;text-decoration:underline">注：前缀操作符、后缀操作符与性能之间的联系是什么？原文作者没有说明。所以有了<a href="http://www.cnblogs.com/Alexander-Lee/">亚历山大同志</a> 的疑问。在此做一下说明：当应用内置类型的操作时，前缀和后缀操作符的性能区别通常可以忽略。然而，对于用户自定义类型，前缀操作符的效率要低于后缀操作符，这是因为在运行操作符之间编译器需要建立一个临时的对象</span><br> </p>
+<p><span style="text-decoration:underline"><strong>技巧11：尽量消除临时对象</strong></span></p>
+<p>　　在一些情况下，C++会“背着你”创建一些临时对象。一个临时对象的开销可能很大，因为它的构造和析构函数肯定会被调用。但是，在大多数情况下，您可以防止临时对象的创建。在下面的例子，一个临时对象被创建：</p>
+<div>
+<pre><div><span style="color:#000000">Complex x, y, z;<br>x</span><span style="color:#000000">=</span><span style="color:#000000">y</span><span style="color:#000000">+</span><span style="color:#000000">z; </span><span style="color:#008000">/*</span><span style="color:#008000"> temporary created </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　表达式y+z;将会导致一个Complex类型的临时对象的产生，这个临时对象保存着相加的结果。之后，这个临时对象被赋予x，随后销毁。临时对象的生成可以用两种方式加以避免：</p>
+<div>
+<pre><div><span style="color:#000000">Complex y,z;<br>Complex x</span><span style="color:#000000">=</span><span style="color:#000000">y</span><span style="color:#000000">+</span><span style="color:#000000">z; </span><span style="color:#008000">/*</span><span style="color:#008000"> initialization instead of assignment </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　在上面的例子中，y和z相加的结果直接用于对象x的构造，所以就避免了起中介作用的临时对象。或者你可以用+=代替+，同样可以达到相同的效果：</p>
+<div>
+<pre><div><span style="color:#008000">/*</span><span style="color:#008000"> instead of x = y+z; </span><span style="color:#008000">*/</span><span style="color:#000000"><br>x</span><span style="color:#000000">=</span><span style="color:#000000">y;  <br>x</span><span style="color:#000000">+=</span><span style="color:#000000">z;</span></div></pre>
+</div>
+<p>　　虽然采用+=的这个版本不太优雅，它只有两个成员函数调用：赋值操作和+=操作。相较而言，使用+操作符则产生三次成员函数调用：临时对象的构造、对于x的拷贝构造，以及临时对象的析构！</p>
+<p>  </p>
+<p>// 续 任何时候都适用的20个C++技巧 &lt;12-13&gt;  Object-oriented Design </p>
+<p>作者: 凌云健笔</p>
+<p>出处：<a href="http://www.cnblogs.com/lijian2010/">http://www.cnblogs.com/lijian2010/</a></p>
+<p>版权：本文版权归作者和博客园共有 <br>转载：欢迎转载，为了保存作者的创作热情，请按要求【转载】 <br>要求：未经作者同意，必须保留此段声明；必须在文章中给出原文连接；否则必究法律责任</p><img src="http://www.cnblogs.com/lijian2010/aggbug/1897798.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lijian2010/">凌云健笔</a> 发表于 2010-12-06 15:33 <a href="http://www.cnblogs.com/lijian2010/archive/2010/12/06/1897798.html">原文链接</a></p><p>评论: 3　<a href="http://www.cnblogs.com/lijian2010/archive/2010/12/06/1897798.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lijian2010/archive/2010/12/06/1897798.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/83681/">财富杂志：谷歌如何在Facebook时代维持增长</a><span style="color:gray">(2010-12-06 22:48)</span><br>· <a href="http://news.cnblogs.com/n/83679/">维基解密列出美国重要设施地址清单</a><span style="color:gray">(2010-12-06 22:38)</span><br>· <a href="http://news.cnblogs.com/n/83678/">［讨论］GroupOn 是否应该拒绝收购？</a><span style="color:gray">(2010-12-06 22:35)</span><br>· <a href="http://news.cnblogs.com/n/83677/">维基解密瑞典服务器再遭遇DDoS攻击</a><span style="color:gray">(2010-12-06 22:17)</span><br>· <a href="http://news.cnblogs.com/n/83676/">iPhone5或将增加投影仪和移动数字电视功能</a><span style="color:gray">(2010-12-06 21:40)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2010/12/06/1897727.html">博客园电子期刊2010年11月刊发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

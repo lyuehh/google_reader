@@ -1,0 +1,46 @@
+---
+layout: post
+title:  "【外刊IT评论网】敲击最多的键和编程语言语法"
+date:   2011-09-23 00:22:00
+author: Aqee
+categories: program
+---
+
+## 【外刊IT评论网】敲击最多的键和编程语言语法
+### by Aqee
+### at 2011-09-23 00:22:00
+### original <http://www.aqee.net/most-pressed-keys-and-programming-syntaxes/>
+
+本文是从 <a href="http://www.mahdiyusuf.com/post/9947002105/most-pressed-keys-and-programming-syntaxes">Most Pressed Keys and Programming Syntaxes</a> 这篇文章翻译而来。 <hr><p>我研究过很多编程语言；我经常的好奇于在面对这些不同的语法时，编程过程会有哪些不同，一种不同的语法会让你更富有表达性或编码速度的更快吗？我并不知道，我知道的只是在使用不同的语言时你都敲击了哪些键盘上的键。<span></span></p>
+<p>这也许是那些不知道该学习使用哪种编程语言的人会感兴趣的事。据我的认识，键盘使用分布越广的语言通常是设计的很糟糕的语言。</p>
+<p>你也许会争辩说，程序中变量名的取法会影响统计的结果。可是，大部分编程语言都有自己的命名习惯，我们可以假设这些变量的命名都很正常。不过，在下面的热点图中，有些键被忽略掉了，比如Shift和Caps键。<em>在perl里会大量使用美元符号($)</em></p>
+<p>空格符也没有计算在内。</p>
+<p>用于统计的程序是来自于Github上一些很流行的项目。</p>
+<h2>Javascript</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qtxBJbJ1qd12yo.png" alt=""></p>
+<h2>Shell</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qujXgS11qd12yo.png" alt=""></p>
+<h2>Java</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qvaLbKR1qd12yo.png" alt=""></p>
+<h2>C</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qvwAZAj1qd12yo.png" alt=""></p>
+<h2>C++</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qw8DdVD1qd12yo.png" alt=""></p>
+<h2>Ruby</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qxmVW6t1qd12yo.png" alt=""></p>
+<h2>Python</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qy4gDIl1qd12yo.png" alt=""></p>
+<h2>PHP</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qyh1xVt1qd12yo.png" alt=""></p>
+<h2>Perl</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qyvfYPl1qd12yo.png" alt=""></p>
+<h2>ObjC</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr6qzggeh91qd12yo.png" alt=""></p>
+<h2>Lisp</h2>
+<p><img src="http://www.aqee.net/wordpress/wp-content/uploads/2011/09/tumblr_lr7k02vX6q1qd12yo.png" alt=""></p>
+<p>Lisp代码是来自<a href="http://lib.store.yahoo.net/lib/paulgraham/onlisp.lisp">这里</a>的由Paul Graham所写的程序。</p>
+<ol>
+<li>产生这个效果图的 <a href="http://www.patrick-wied.at/projects/heatmap-keyboard/">heatmap.js</a> 脚本</li>
+<li>关注作者的twitter<a href="http://www.twitter.com/myusuf3">@myusuf3</a></li>
+</ol>
+<hr>本文来自<a href="http://www.aqee.net">外刊IT评论网</a>(<a href="http://www.aqee.net">www.aqee.net</a>)，原始地址：<a href="http://www.aqee.net/most-pressed-keys-and-programming-syntaxes/" rel="bookmark">敲击最多的键和编程语言语法</a><br><img src="http://www1.feedsky.com/t1/560791689/aqee-net/feedsky/s.gif?r=http://www.aqee.net/most-pressed-keys-and-programming-syntaxes/" border="0" height="0" width="0">

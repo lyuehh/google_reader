@@ -1,0 +1,865 @@
+---
+layout: post
+title:  "前端笔试题收集1"
+date:   2013-06-06 12:52:49
+author: 晴方好玲
+categories: program
+---
+
+## 前端笔试题收集1
+### by 晴方好玲
+### at 2013-06-06 12:52:49
+### original <http://blog.sina.com.cn/s/blog_897db7b50101bu45.html>
+
+<h2>WEB前端面笔试题总结</h2>
+<div style="HeiGHT:10px;CLeAr:both"></div>
+
+<div style="WiDTH:690px">
+<div style="FLoAT:right;CLeAr:both;VerTiCAL-ALiGn:top"></div>
+<div>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">1.</span> <span style="FonT-FAMiLY:simsun">如何显示</span><span style="FonT-FAMiLY:Verdana">/</span><span style="FonT-FAMiLY:simsun">隐藏一个</span><span style="FonT-FAMiLY:Verdana">DOM</span><span style="FonT-FAMiLY:simsun">元素？</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">更改元素的</span><span style="FonT-FAMiLY:Verdana">css style</span><span style="FonT-FAMiLY:Calibri">，设为</span><span style="FonT-FAMiLY:Verdana">display: none</span><span style="FonT-FAMiLY:Calibri">。此外还可以将</span><span style="FonT-FAMiLY:Verdana">visibility</span><span style="FonT-FAMiLY:Calibri">设为</span><span style="FonT-FAMiLY:Verdana">hidden</span><span style="FonT-FAMiLY:Calibri">，透明度设为</span><span style="FonT-FAMiLY:Verdana">0</span><span style="FonT-FAMiLY:Calibri">，或长、宽设为</span><span style="FonT-FAMiLY:Verdana">0</span><span style="FonT-FAMiLY:Calibri">。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">2.</span> <span style="FonT-FAMiLY:simsun">一个定宽网页在浏览器（</span><span style="FonT-FAMiLY:Verdana">IE6</span><span style="FonT-FAMiLY:simsun">，</span><span style="FonT-FAMiLY:Verdana">IE7</span><span style="FonT-FAMiLY:simsun">，</span><span style="FonT-FAMiLY:Verdana">Firefox</span><span style="FonT-FAMiLY:simsun">，</span><span style="FonT-FAMiLY:Verdana">IE5</span><span style="FonT-FAMiLY:simsun">）中横向居中对齐的布局，请写出主要的</span><span style="FonT-FAMiLY:Verdana">HTML</span><span style="FonT-FAMiLY:simsun">标签及</span><span style="FonT-FAMiLY:Verdana">CSS</span><span style="FonT-FAMiLY:simsun">。</span></p>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="1"><span style="FonT-siZe:10.5pt"><a href="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd</a><span style="FonT-siZe:10.5pt"><font face="Verdana">”&gt;<br>
+</font></span></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="2"><span style="FonT-siZe:10.5pt"><font face="Verdana"><br></font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="3"><br></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="4"><span style="FonT-siZe:10.5pt"><font face="Verdana"><br></font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="5"><span style="FonT-FAMiLY:simsun;FonT-siZe:10.5pt">居中</span><span style="FonT-siZe:10.5pt"><font face="Verdana"><br></font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="7"><span style="FonT-siZe:10.5pt"><font face="Verdana">body
+{width: 600px}<br></font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="8"><span style="FonT-siZe:10.5pt"><font face="Verdana">html, body {margin: auto; padding:
+0}<br></font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Verdana">div.wrap
+{text-align:center; margin: 0; padding: 0}<br></font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Verdana"><br></font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Verdana"><br></font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="12"><br></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="13">
+<div><span style="FonT-FAMiLY:simsun;FonT-siZe:10.5pt">居中</span></div>
+<br></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Verdana;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="14"><br></li>
+</ol>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,102,153);FonT-siZe:10pt">
+复制代码</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">3. CSS</span><span style="FonT-FAMiLY:simsun">中</span><span style="FonT-FAMiLY:Verdana">margin</span><span style="FonT-FAMiLY:simsun">和</span><span style="FonT-FAMiLY:Verdana">padding</span><span style="FonT-FAMiLY:simsun">的区别</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">margin</span><span style="FonT-FAMiLY:Calibri">是外边距，属于元素之外，相邻元素的</span><span style="FonT-FAMiLY:Verdana">margin</span><span style="FonT-FAMiLY:Calibri">可以融合。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">padding</span><span style="FonT-FAMiLY:Calibri">是内边距，在元素之内，相邻元素的</span><span style="FonT-FAMiLY:Verdana">padding</span><span style="FonT-FAMiLY:Calibri">不可融合。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">4. JavaScript</span><span style="FonT-FAMiLY:simsun">中如何检测一个变量是一个</span><span style="FonT-FAMiLY:Verdana">String</span><span style="FonT-FAMiLY:simsun">类型？请写出函数实现</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+function(obj) {</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">returntypeof(obj) ==</span>
+<span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Verdana">string</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Verdana">;</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">5.</span> <span style="FonT-FAMiLY:simsun">网页中实现一个计算当年还剩多少时间的倒数计时程序，要求网页上实时动态显示“</span><span style="FonT-FAMiLY:Verdana">××</span><span style="FonT-FAMiLY:simsun">年还剩</span><span style="FonT-FAMiLY:Verdana">××</span><span style="FonT-FAMiLY:simsun">天</span><span style="FonT-FAMiLY:Verdana">××</span><span style="FonT-FAMiLY:simsun">时</span><span style="FonT-FAMiLY:Verdana">××</span><span style="FonT-FAMiLY:simsun">分</span><span style="FonT-FAMiLY:Verdana">××</span><span style="FonT-FAMiLY:simsun">秒”</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+这个看我论坛右上角的就知道了…</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">6.</span> <span style="FonT-FAMiLY:simsun">如何控制网页在网络传输过程中的数据量</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+题目貌似有问题，应该是减少数据量吧。</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">最显著的方法是启用</span><span style="FonT-FAMiLY:Verdana">GZIP</span><span style="FonT-FAMiLY:Calibri">压缩。此外保持好的编码习惯，避免重复和</span><span style="FonT-FAMiLY:Verdana">css</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Verdana">JavaScript</span><span style="FonT-FAMiLY:Calibri">代码，多余的</span><span style="FonT-FAMiLY:Verdana">HTML</span><span style="FonT-FAMiLY:Calibri">标签和属性。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">7.</span> <span style="FonT-FAMiLY:simsun">补充代码，是鼠标单击后</span><span style="FonT-FAMiLY:Verdana">Button1</span><span style="FonT-FAMiLY:simsun">到</span><span style="FonT-FAMiLY:Verdana">Button2</span><span style="FonT-FAMiLY:simsun">的后面</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<div>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+</div>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Verdana;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+var parent =this.parentNode; parent.removeChild(this);
+parent.appendChild(this);</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">8. Linux</span><span style="FonT-FAMiLY:simsun">中，将</span><span style="FonT-FAMiLY:Verdana">a</span><span style="FonT-FAMiLY:simsun">、</span><span style="FonT-FAMiLY:Verdana">b</span><span style="FonT-FAMiLY:simsun">打包为</span><span style="FonT-FAMiLY:Verdana">back.tar</span><span style="FonT-FAMiLY:simsun">，命令是（</span> <span style="FonT-FAMiLY:simsun">）</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+不知道＝。＝</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">9. Flash</span><span style="FonT-FAMiLY:simsun">、</span><span style="FonT-FAMiLY:Verdana">Ajax</span><span style="FonT-FAMiLY:simsun">各自的优缺点，在使用中如何取舍？</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">Flash</span><span style="FonT-FAMiLY:Calibri">的缺点是需要客户端安装</span><span style="FonT-FAMiLY:Verdana">Flash</span><span style="FonT-FAMiLY:Calibri">插件，比较大，且更改了默认的</span><span style="FonT-FAMiLY:Verdana">HTML</span><span style="FonT-FAMiLY:Calibri">页面行为；但可以方便地实现很多特效及动画，且具有较高权限。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Verdana">Ajax</span><span style="FonT-FAMiLY:Calibri">的缺点是编程较为复杂，需要服务器端的支持，能实现的效果只能是</span><span style="FonT-FAMiLY:Verdana">DOM
+API</span><span style="FonT-FAMiLY:Calibri">提供的，权限很低，较难跨域；但可以显著加快页面的载入速度和用户体验。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">此外，二者都不能被搜索引擎索引（</span><span style="FonT-FAMiLY:Verdana">Google</span><span style="FonT-FAMiLY:Calibri">已支持</span><span style="FonT-FAMiLY:Verdana">Flash</span><span style="FonT-FAMiLY:Calibri">文本的索引），不利于</span><span style="FonT-FAMiLY:Verdana">SEO</span><span style="FonT-FAMiLY:Calibri">。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">建议:重要和关键部分直接用</span><span style="FonT-FAMiLY:Verdana">HTML</span><span style="FonT-FAMiLY:Calibri">，交互部分可以使用</span><span style="FonT-FAMiLY:Verdana">Ajax</span><span style="FonT-FAMiLY:Calibri">，复杂的动画可采用</span><span style="FonT-FAMiLY:Verdana">Flash</span><span style="FonT-FAMiLY:Calibri">。</span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri"><br></span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri"><strong>百度2010</strong></span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">1、JS主要数据类型？5分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+答：主要的类型有number、string、object 以及 Boolean 类型,其他两种类型为 null 和
+undefined。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">2、img的alt和title的异同？10分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+答：title属性为设置该属性的元素提供建议性的信息。比如为链接添加描述性文字。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+为不能显示图像、窗体或applets的用户代理（UA），alt属性用来指定替换文字。使用alt属性是为了给那些不能看到你文档中图像的浏览者提供文字说明。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">3、CSS的JS调用？如font-family, -moz-border-radius
+10分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+答：fontFamily、MozBorderRadius</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">4、CSS布局：两列，左边宽度自适应，右边宽度固定200px 15分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+下载: <a href="http://www.hemin.cn/blog/wp-content/plugins/coolcode/coolcode.php?p=1104&amp;download=test-1.html">
+test-1.html</a></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="1"><span style="FonT-siZe:10.5pt"><font face="Calibri">#box1{width:100%;height:600px;position:relative;}</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="2"><span style="FonT-siZe:10.5pt"><font face="Calibri">#left1{margin-right:200px;border:1px solid
+red;height:100%;}</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="3"><span style="FonT-siZe:10.5pt"><font face="Calibri">#right1{width:200px;height:100%;position:absolute;top:0px;right:0px;border:1px
+solid blue;}</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="4">
+<div></div>
+</li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="5">
+<div></div>
+</li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="6">
+<div></div>
+</li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt"></ol>
+</div>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">5、js对象的深度克隆？20分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+下载: <a href="http://www.hemin.cn/blog/wp-content/plugins/coolcode/coolcode.php?p=1104&amp;download=test-2.html">
+test-2.html</a></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="1"><span style="FonT-siZe:10.5pt"><font face="Calibri">Object.prototype.deepClone=function(){</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="2"><span style="FonT-siZe:10.5pt"><font face="Calibri">function cloneObj(){}</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="3"><span style="FonT-siZe:10.5pt"><font face="Calibri">cloneObj.prototype=this;</font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Calibri">var obj=new
+cloneObj();</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="5"><span style="FonT-siZe:10.5pt"><font face="Calibri">for(var o in obj){</font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Calibri">if(typeof(obj[o])=="object")obj[o]=obj[o].deepClone();</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="7"><span style="FonT-siZe:10.5pt"><font face="Calibri">}
+return obj;</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="8"><span style="FonT-siZe:10.5pt"><font face="Calibri">}</font></span></li>
+</ol>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">6、动态打印时间，格式为yyyy-MM-dd hh:mm:ss? 15分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+下载: <a href="http://www.hemin.cn/blog/wp-content/plugins/coolcode/coolcode.php?p=1104&amp;download=test-3.html">
+test-3.html</a></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="1"><span style="FonT-siZe:10.5pt"><font face="Calibri">function printTime(){</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="2"><span style="FonT-siZe:10.5pt"><font face="Calibri">var
+timer1=new Date();</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="3"><span style="FonT-siZe:10.5pt"><font face="Calibri">var
+timer=timer1.toLocaleString();</font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Calibri">timer=timer.replace(/[</font></span><span style="FonT-FAMiLY:simsun;FonT-siZe:10.5pt">年月</span><span style="FonT-siZe:10.5pt"><font face="Calibri">]/g,"-");</font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Calibri">timer=timer.replace(/</font></span><span style="FonT-FAMiLY:simsun;FonT-siZe:10.5pt">日</span><span style="FonT-siZe:10.5pt"><font face="Calibri">/,"");</font></span></li>
+</ol>
+<ol style="Line-HeiGHT:26px;MArGin-Top:0in;FonT-FAMiLY:Calibri;DireCTion:ltr;MArGin-BoTToM:0in;CoLor:rgb(51,51,51);MArGin-LeFT:0.375in;FonT-siZe:10.5pt">
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle" value="6"><span style="FonT-siZe:10.5pt"><font face="Calibri">time.innerHTML=timer;</font></span></li>
+<li style="MArGin-Top:0px;MArGin-BoTToM:0px;VerTiCAL-ALiGn:middle">
+<span style="FonT-siZe:10.5pt"><font face="Calibri">}setInterval("printTime()",1000);</font></span></li>
+</ol>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">7、如何提高网页运行性能？20分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+没写。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">8、linux下删除当前目录下扩展名为c的文件（如a.c，b.c）5分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+rm–r *.c</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+find. -name “*.doc” -type f -exec cp {} /tmp/doc
+\;找到当前目录（.）下扩展名为(doc)的文件并拷贝到指定目录【注意-type f 指普通文件，-exec
+ls-l{}列出文件，最后加上\】</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+cp[options] source dest 复制</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">9、flash
+as2.0和flash as3.0在面向对象方面的异同？10分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+答：面向对象方面，2.0像javascript，3.0像java。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">到了 AS
+2.0,面向对象被引入了，但它实质上是动态脚本语言，虽然已经有了类的概念和class关键字，但对象支持还是基于类似JavaScript的prototype机制——</span><span style="FonT-FAMiLY:simsun">动态继承。</span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+3.0同时支持静态类型，即基于类的继承方式；以及动态类型，即基于prototype的继承方式。推荐用静态类型。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-WeiGHT:bold"><font face="Calibri">10、Flash、Ajax各自的优缺点，在使用中如何取舍？10分</font></span></p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+1、Flashajax对比</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+Flash适合处理多媒体、矢量图形、访问机器；对CSS、处理文本上不足，不容易被搜索。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+Ajax对CSS、文本支持很好，支持搜索；多媒体、矢量图形、机器访问不足。</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+共同点：与服务器的无刷新传递消息、用户离线和在线状态、操作DOM</p>
+<p style="Line-HeiGHT:26px;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Calibri;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+2、项目中遇到什么问题？如何解决？</p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri"><br></span></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+<strong>前端题目总结</strong></p>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(203,203,203)">
+<font face="Arial"><span style="BACKGroUnD-CoLor:rgb(165,165,165)">HTML</span><span style="BACKGroUnD-CoLor:rgb(165,165,165)">相关</span></font></p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li style="list-style:none">标签的定义与用法。</li>
+<li>块级元素和行内元素都有哪些？</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="3">你真的了解HTML吗？
+雅虎面试题把前面黄底那段拿去搜索下就知道了(曾在某浪公司面试的时候被问到过，确实是很好的问题)。</li>
+</ol>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(203,203,203)">
+<font face="Arial"><span style="BACKGroUnD-CoLor:rgb(165,165,165)">CSS</span><span style="BACKGroUnD-CoLor:rgb(165,165,165)">相关</span></font></p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="1">介绍所知道的CSS hack技巧(如：_， *， +， \9， !important 之类)。</li>
+<li>介绍CSS盒模型。</li>
+<li>CSS层叠是什么？介绍一下。</li>
+<li>都知道哪些CSS浏览器兼容性问题。</li>
+<li>有时会被问到些刁钻点的题，比如position值都有哪些，CSS3都有哪些新内容...</li>
+</ol>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(203,203,203)">
+<font face="Arial"><span style="BACKGroUnD-CoLor:rgb(165,165,165)">JavaScript</span><span style="BACKGroUnD-CoLor:rgb(165,165,165)">基础相关</span></font></p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="1">HTTP协议的状态消息都有哪些？(如200、302对应的描述)</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="2">AJAX是什么? AJAX的交互模型(流程)? AJAX跨域的解决办法?</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="3">同步和异步的区别?</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="4">简述JavaScript封装。</li>
+<li>JavaScript继承有哪两种形式形式，进行描述。</li>
+<li>什么是闭包？以下代码点击
+<p>会输出什么？为什么？能大概说明白的话继续问能想出几种解决办法。<br>
+答案: 5 解释: 由于闭包 i被保留在内存中,alert 显示的是i当前的值, 最后一次i++ 会导致i为5<br>
+<font face="Arial"><span style="CoLor:blue"><span style="CoLor:fuchsia">DOCTYPE HTML</span></span><font face="Arial"><span style="CoLor:blue">&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">html</span></span><font face="Arial"><span style="CoLor:blue">&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">head</span></span><font face="Arial"><span style="CoLor:blue">&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">meta</span>
+<span style="CoLor:red">charset</span><span style="CoLor:blue">="utf-8"</span></span> <font face="Arial"><span style="CoLor:blue">/&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">title</span><span style="CoLor:blue">&gt;</span>闭包演示<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">title</span></span><font face="Arial"><span style="CoLor:blue">&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">style</span>
+<span style="CoLor:red">type</span></span><font face="Arial"><span style="CoLor:blue">=&quot;text/css&quot;&gt;<br></span><span style="CoLor:maroon">p</span> <span style="CoLor:black">{</span><span style="CoLor:red">background</span><span style="CoLor:black">:</span><span style="CoLor:blue">gold</span></font><font face="Arial"><span style="CoLor:black">;}<br></span><span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">style</span></span><font face="Arial"><span style="CoLor:blue">&gt;<br>
+&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">script</span>
+<span style="CoLor:red">type</span><span style="CoLor:blue">=&quot;text/javascript&quot;&gt;</span></span> <font face="Arial"><span style="CoLor:black"><br></span><span style="CoLor:blue">function</span></font> <font face="Arial"><span style="CoLor:black">init() {<br></span>
+<span style="CoLor:blue">var</span></font> <font face="Arial"><span style="CoLor:black">pAry =
+document.getElementsByTagName("p");<br></span> <span style="CoLor:blue">for</span><span style="CoLor:black">(</span>
+<span style="CoLor:blue">var</span></font> <font face="Arial"><span style="CoLor:black">i=0; i<br>
+pAry[i].onclick =</span> <span style="CoLor:blue">function</span></font><font face="Arial"><span style="CoLor:black">() {<br>
+alert(i);<br>
+}<br>
+}<br>
+}<br></span><span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">script</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">head</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">body</span> <span style="CoLor:red">onload</span><span style="CoLor:blue">=&quot;init();&quot;&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span>产品
+0<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span>产品
+1<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span>产品
+2<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span>产品
+3<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span>产品
+4<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">p</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">body</span><span style="CoLor:blue">&gt;</span><br>
+<span style="CoLor:blue">&lt;/&lt;/SPAN&gt;<span style="CoLor:maroon">html</span><span style="CoLor:blue">&gt;</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></font></font></font></font></span></font></font></font></font></font></p>
+</li>
+</ol>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="7">在JS中this关键字的使用场合和用法(如在构造函数中、setTimeout中等)。</li>
+<li>简述下cookie的操作，还有cookie的属性都知道哪些。</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="9">IE与FF的JS兼容性都知道哪些。</li>
+<li>DOM操作 - 怎样添加、移除、移动、复制、创建和查找节点(这个问题真心是基础题，一般不会问)。</li>
+</ol>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(203,203,203)">
+<font face="Arial"><span style="BACKGroUnD-CoLor:rgb(165,165,165)">jQuery</span><span style="BACKGroUnD-CoLor:rgb(165,165,165)">相关</span></font></p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="1">jQuery源码是否尝试去读过？说说基本的架构或者 jQuery.fn.init
+中都做了哪些判断。</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="2">都知道哪些不好的jQuery书写方式。</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="3">Sizzle是否有读过？</li>
+</ol>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+ </p>
+<p style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(203,203,203)">
+<span style="BACKGroUnD-CoLor:rgb(165,165,165)"><font face="Arial">其它相关的加分项：</font></span></p>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="1">都使用和了解过哪些编辑器？都使用和了解过哪些日常工具？</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="2">都知道有哪些浏览器内核？开发过的项目都兼容哪些浏览器？</li>
+<li>国内外的JS牛人都知道哪些？</li>
+</ol>
+<ol style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">
+<li value="4">瀑布流布局或者流式布局是否有了解</li>
+<li>正则表达式有系统学习过吗(看书或网上教程)？有的话就问问简单点的邮箱验证、URL验证， 或者问问 <font face="Arial"><span style="BACKGroUnD-CoLor:yellow">贪婪匹配与懒惰匹配</span>
+的理论知识。</font></li>
+<li>Node.js是否有过尝试？到什么程度？说说个人理解的看法？</li>
+<li>HTML5都有哪些新的JS API？</li>
+<li>前端优化知识都知道哪些？</li>
+<li>基础算法题（如快速排序，能否一两句说说重要的核心原理或者数组消重等）。</li>
+<li>是否有接触过或者了解过重构。</li>
+</ol>
+<strong style="Line-HeiGHT:26px;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51)">其他一些总结</strong>
+<p style="Line-HeiGHT:18pt;MArGin:0in 0in 0in 0.375in;FonT-FAMiLY:Arial;CoLor:rgb(51,51,51);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:26px;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">百度</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">前端笔试试卷上的题目：</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1.</span><span style="FonT-FAMiLY:Calibri">判断字符串是否是这样组成的，第一个必须是字母，后面可以是字母、数字、下划线，总长度为</span><span style="FonT-FAMiLY:Tahoma">5-20</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2.</span><span style="FonT-FAMiLY:Calibri">截取字符串</span><span style="FonT-FAMiLY:Tahoma">abcdefg</span><span style="FonT-FAMiLY:Calibri">的</span><span style="FonT-FAMiLY:Tahoma">efg</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3.</span><span style="FonT-FAMiLY:Calibri">让一个</span><span style="FonT-FAMiLY:Tahoma">input</span><span style="FonT-FAMiLY:Calibri">的背景颜色变成红色</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">4</span><span style="FonT-FAMiLY:Calibri">。给一个页面，写</span><span style="FonT-FAMiLY:Tahoma">html css</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">5</span><span style="FonT-FAMiLY:Calibri">。</span><span style="FonT-FAMiLY:Tahoma">div</span><span style="FonT-FAMiLY:Calibri">的高宽等于浏览器可见区域的高宽，浏览器滚动，</span><span style="FonT-FAMiLY:Tahoma">div</span><span style="FonT-FAMiLY:Calibri">始终覆盖浏览器的整个可见区域</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">6</span><span style="FonT-FAMiLY:Calibri">。判断一个字符串中出现次数最多的字符，统计这个次数</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">7</span><span style="FonT-FAMiLY:Calibri">。</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">与</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">脚本兼容性问题</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">又重新问的是</span><span style="FonT-FAMiLY:Tahoma">1</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">4</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">6</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">7</span><span style="FonT-FAMiLY:Calibri">，这次问出题者的意图，并且让给出</span><span style="FonT-FAMiLY:Tahoma">7</span><span style="FonT-FAMiLY:Calibri">的更多答案，以及</span><span style="FonT-FAMiLY:Tahoma">IE FF</span><span style="FonT-FAMiLY:Calibri">不兼容的原因</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+然后看了看简历，没有问简历上的项目，而是让自己随便谈谈</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1</span><span style="FonT-FAMiLY:Calibri">对于</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">客户端技术未来趋势发展谈谈看法</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+javascript + ajax=RIA</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Adobe Flash AS 3</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Flex</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Sliveright</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2web</span><span style="FonT-FAMiLY:Calibri">开发团队人员应该如何分工协作</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">布局</span> <span style="FonT-FAMiLY:Tahoma">CSS</span> <span style="FonT-FAMiLY:Calibri">脚本</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">比如脚本人员长期的积累可能铸造类型</span><span style="FonT-FAMiLY:Tahoma">YUI</span><span style="FonT-FAMiLY:Calibri">这样的产品级脚本库（亮点）</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3web</span><span style="FonT-FAMiLY:Calibri">开发曾经的团队有没有别人遇到问题，什么问题，向你请教</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">4</span><span style="FonT-FAMiLY:Calibri">如果要实习，什么时候可以</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">5</span><span style="FonT-FAMiLY:Calibri">自己在开发的过程中遇到什么问题，谈谈看法</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">6web</span><span style="FonT-FAMiLY:Calibri">开发脚本开发环境用什么、调试用什么</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">试过</span><span style="FonT-FAMiLY:Tahoma">aptana</span><span style="FonT-FAMiLY:Calibri">，现在就用</span><span style="FonT-FAMiLY:Tahoma">editplus</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">调试肯定用</span><span style="FonT-FAMiLY:Tahoma">firebug</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">ie</span><span style="FonT-FAMiLY:Calibri">下看页面</span><span style="FonT-FAMiLY:Tahoma">DOM</span><span style="FonT-FAMiLY:Calibri">用</span><span style="FonT-FAMiLY:Tahoma">IEInspector</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">7</span><span style="FonT-FAMiLY:Calibri">如果有个新技术，现在需要掌握，你会怎么做</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">新技术的发现我一般是通过</span><span style="FonT-FAMiLY:Tahoma">RSS</span><span style="FonT-FAMiLY:Calibri">工具，比如我用</span><span style="FonT-FAMiLY:Tahoma">GoogleReader</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+每天有半个小时左右在看最新的资讯、技术走向</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+发现新技术，首先有个大概了解，如果有深入的必要</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">我一般会看他的官网，比如</span><span style="FonT-FAMiLY:Tahoma">jquery</span><span style="FonT-FAMiLY:Calibri">，我会搜索到</span><span style="FonT-FAMiLY:Tahoma">www.jquery.com</span><span style="FonT-FAMiLY:Calibri">，然后看</span><span style="FonT-FAMiLY:Tahoma">Docs</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">samples</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">如果要用到项目中，有困难的问题，我会</span><span style="FonT-FAMiLY:Tahoma">svn</span><span style="FonT-FAMiLY:Calibri">得到最新的这个技术的源码，深入跟踪进去，看实现原理</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">一般现在涌现的技术都是</span><span style="FonT-FAMiLY:Tahoma">opensource</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+提问时间</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1</span><span style="FonT-FAMiLY:Calibri">百度</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">开发脚本是否有做类似</span><span style="FonT-FAMiLY:Tahoma">YUI</span><span style="FonT-FAMiLY:Calibri">库的打算</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2</span><span style="FonT-FAMiLY:Calibri">百度</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">开发工程师打算招多少人</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">百度电话二面回忆</span> <span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">开发部</span><span style="FonT-FAMiLY:Tahoma">–web</span><span style="FonT-FAMiLY:simsun">开发工程师</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+首先是自我介绍</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">然后谈谈做的</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">项目</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+然后开始问技术问题</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+前端开发的优化问题</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答</span><span style="FonT-FAMiLY:Tahoma">:</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">产品发布时，</span><span style="FonT-FAMiLY:Tahoma">js</span><span style="FonT-FAMiLY:Calibri">的压缩，即函数名替换、整个文件压缩成一行</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">开发的时候</span> <span style="FonT-FAMiLY:Calibri">注释写清楚，先有个</span><span style="FonT-FAMiLY:Tahoma">base.css</span><span style="FonT-FAMiLY:Calibri">，然后根据不同页面需要再加</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">，发布的时候将</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">中的一个定义写成一行，目的是压缩文件大小</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">最终发布的时候甚至可以将</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">js</span><span style="FonT-FAMiLY:Calibri">分别压缩成一个文件，甚至</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">js</span><span style="FonT-FAMiLY:Calibri">通过技巧压缩到一个里边（亮点）</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">这样的目的是，减少用户访问</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">产品的</span><span style="FonT-FAMiLY:Tahoma">http</span><span style="FonT-FAMiLY:Calibri">连接数</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">前端产品的开发流程</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答</span><span style="FonT-FAMiLY:Tahoma">:</span><span style="FonT-FAMiLY:Calibri">首先根据产品的定位、用户群，确定配色，然后纸上设计整体布局，然后</span><span style="FonT-FAMiLY:Tahoma">png</span><span style="FonT-FAMiLY:Calibri">或者</span><span style="FonT-FAMiLY:Tahoma">psd</span><span style="FonT-FAMiLY:Calibri">出效果图，切出需要的小图片，然后手写代码</span><span style="FonT-FAMiLY:Tahoma">div+css</span><span style="FonT-FAMiLY:Calibri">构造出页面，然后根据功能写脚本</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">参考</span><span style="FonT-FAMiLY:Tahoma">126</span><span style="FonT-FAMiLY:Calibri">邮箱首页，将所有小图片放到一个图片中，通过</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">的</span><span style="FonT-FAMiLY:Tahoma">background-position</span><span style="FonT-FAMiLY:Calibri">实现页面，还是为了优化，减少</span><span style="FonT-FAMiLY:Tahoma">http</span><span style="FonT-FAMiLY:Calibri">连接数</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">规避</span><span style="FonT-FAMiLY:Tahoma">javascript</span><span style="FonT-FAMiLY:Calibri">多人开发函数重名问题</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答</span><span style="FonT-FAMiLY:Tahoma">:</span><span style="FonT-FAMiLY:Calibri">首先是通过命名规范，比如根据不同的开发人员实现的功能，在函数名加前缀，虽然函数名看起来复杂，发布的时候还是可以替换，从而优化。</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">还有一种办法是，每个开发人员都把自己的函数封装到类中，然后调用的时候即使函数名相同，但是因为是要类</span><span style="FonT-FAMiLY:Tahoma">.</span><span style="FonT-FAMiLY:Calibri">函数名来调用，所以也减少了重复的可能性。</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">javascript</span><span style="FonT-FAMiLY:Calibri">面向对象中继承实现</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答：我是用</span><span style="FonT-FAMiLY:Tahoma">prototype.js extend.js</span><span style="FonT-FAMiLY:Calibri">扩展</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">然后子类中</span><span style="FonT-FAMiLY:Tahoma">parent.initialize()</span><span style="FonT-FAMiLY:Calibri">…</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+答的不好</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+正确答案：</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">// 1.</span> <span style="FonT-FAMiLY:Calibri">构造器</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+function Animal() {};</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+function Mammal() {};</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+function Canine() {};</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+function Dog() {};</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">// 2.</span> <span style="FonT-FAMiLY:Calibri">原型链表</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Mammal.prototype = new Animal();</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Canine.prototype = new Mammal();</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Dog.prototype = new Canine();</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">prototype.js</span><span style="FonT-FAMiLY:Calibri">实现的基本原理</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+答：</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+将功能封装</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">比如</span><span style="FonT-FAMiLY:Tahoma">Ajax.Request</span><span style="FonT-FAMiLY:Calibri">，还是有判断浏览器的代码；</span><span style="FonT-FAMiLY:Tahoma">Position</span><span style="FonT-FAMiLY:Calibri">这样的实现页面元素位置的计算</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">prototye</span><span style="FonT-FAMiLY:Calibri">太大，如果一个页面功能不需要这样的，自己实现，怎么做</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答：首先页面、</span><span style="FonT-FAMiLY:Tahoma">css</span><span style="FonT-FAMiLY:Calibri">、脚本分离之后，脚本中将整个模块功能写成一个类</span><span style="FonT-FAMiLY:Tahoma">var Do={}</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">其中初始化函数</span><span style="FonT-FAMiLY:Tahoma">init:function(){}</span><span style="FonT-FAMiLY:Calibri">，然后最后做</span><span style="FonT-FAMiLY:Tahoma">Do.init()</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">其中</span><span style="FonT-FAMiLY:Tahoma">init</span><span style="FonT-FAMiLY:Calibri">会对页面上</span><span style="FonT-FAMiLY:Tahoma">form</span><span style="FonT-FAMiLY:Calibri">中需要交互的元素绑定事件，比如</span><span style="FonT-FAMiLY:Tahoma">$(</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">input1′).onclick=function(){}</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">下面脚本的区别</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+答：</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1.IE</span><span style="FonT-FAMiLY:Calibri">有</span><span style="FonT-FAMiLY:Tahoma">outerHTML</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">没有</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2.</span><span style="FonT-FAMiLY:Calibri">页面元素</span><span style="FonT-FAMiLY:Tahoma">id</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">可以直接取，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">必须</span><span style="FonT-FAMiLY:Tahoma">document.getElementById_x()</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3.Ajax</span><span style="FonT-FAMiLY:Calibri">里边</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">是</span><span style="FonT-FAMiLY:Tahoma">newXMLHttpRequest</span><span style="FonT-FAMiLY:Calibri">，而</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">是</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">try new
+ActiveXObject(</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">Msxml2.XMLHTTP</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">)try new ActiveXObject(</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">Microsoft.XMLHTTP</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">)</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">下面实现</span><span style="FonT-FAMiLY:Tahoma">outerHTML</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答：</span><span style="FonT-FAMiLY:Tahoma">.parenet.firstChild
+.parent.innerHTML</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+这个没答好</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">正确答案：原理是，</span><span style="FonT-FAMiLY:Tahoma">get</span><span style="FonT-FAMiLY:Calibri">：取到这个标签的</span><span style="FonT-FAMiLY:Tahoma">tagname</span><span style="FonT-FAMiLY:Calibri">，然后属性循环构造成这个标签的属性</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">set</span><span style="FonT-FAMiLY:Calibri">：把字符串用</span><span style="FonT-FAMiLY:Tahoma">insertBefore</span><span style="FonT-FAMiLY:Calibri">插入到这个元素前面，然后</span><span style="FonT-FAMiLY:Tahoma">removeChild</span><span style="FonT-FAMiLY:Calibri">这个元素</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">if(typeof(HTMLElement)!=</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">undefined</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">&amp;&amp; !window.opera)</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">HTMLElement.prototype.__defineGetter__(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">outerHTML</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">,function()</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">var a=this.attributes,
+str=</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">&lt;”+this.tagName, i=0;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+for(;i</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(a[i].specified)</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">str+=</span><span style="FonT-FAMiLY:Calibri">”</span> <span style="FonT-FAMiLY:Calibri">“</span><span style="FonT-FAMiLY:Tahoma">+a[i].name+</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">=</span><span style="FonT-FAMiLY:Calibri">”‘</span><span style="FonT-FAMiLY:Tahoma">+a[i].value+</span><span style="FonT-FAMiLY:Calibri">’”‘</span><span style="FonT-FAMiLY:Tahoma">;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(!this.canHaveChildren)</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">return str+</span><span style="FonT-FAMiLY:Calibri">”</span> <span style="FonT-FAMiLY:Tahoma">/&gt;”;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">return str+</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">&gt;”+this.innerHTML+”&lt;/”+this.tagName+”&gt;”;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+});</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">HTMLElement.prototype.__defineSetter__(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">outerHTML</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">,function(s)</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">var d =
+document.createElement_x(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">DIV</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">);
+d.innerHTML= s;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+for(var i=0;i</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+this.parentNode.insertBefore(d.childNodes[i],this);</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+this.parentNode.removeChild(this);</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+});</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">HTMLElement.prototype.__defineGetter__(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">canHaveChildren</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">,function()</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+return!/^(area|base|basefont|col|frame|hr|img|br|input|isindex|link|meta|param)$/.test(this.tagName.toLowerCase());</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+});</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+//–&gt;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">下面</span><span style="FonT-FAMiLY:Tahoma">CSS</span><span style="FonT-FAMiLY:Calibri">的解释区别</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+答：</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1.png</span><span style="FonT-FAMiLY:Calibri">透明背景，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">下面没有问题，</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">需要用滤镜通道</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2.z-index</span><span style="FonT-FAMiLY:Calibri">在</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">下面的解释问题，</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">会认为第一个</span><span style="FonT-FAMiLY:Tahoma">z-index=0</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3.</span><span style="FonT-FAMiLY:Calibri">长字符串，</span><span style="FonT-FAMiLY:Tahoma">word-wrap:break-all</span><span style="FonT-FAMiLY:Calibri">可以解决</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">，但是</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">需要</span><span style="FonT-FAMiLY:Tahoma">overflow:hidden</span><span style="FonT-FAMiLY:Calibri">才行</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Calibri;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+冯舒娅补充：</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1</span><span style="FonT-FAMiLY:Calibri">、有些标签在</span><span style="FonT-FAMiLY:Tahoma">ff</span><span style="FonT-FAMiLY:Calibri">中不能用，比如</span><span style="FonT-FAMiLY:Tahoma">button</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2</span><span style="FonT-FAMiLY:Calibri">、滤镜</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3</span><span style="FonT-FAMiLY:Calibri">、鼠标</span><span style="FonT-FAMiLY:Tahoma">cursor:hand cursor:pointer</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">4</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">div</span><span style="FonT-FAMiLY:Calibri">的高度自适应</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">5</span><span style="FonT-FAMiLY:Calibri">、对</span><span style="FonT-FAMiLY:Tahoma">box</span><span style="FonT-FAMiLY:Calibri">模型解析不一样</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">6</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">ul</span><span style="FonT-FAMiLY:Calibri">、</span><span style="FonT-FAMiLY:Tahoma">ol</span><span style="FonT-FAMiLY:Calibri">的</span><span style="FonT-FAMiLY:Tahoma">padding</span><span style="FonT-FAMiLY:Calibri">和</span><span style="FonT-FAMiLY:Tahoma">margin</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">都能识别</span><span style="FonT-FAMiLY:Tahoma">*</span><span style="FonT-FAMiLY:Calibri">，标准浏览器（如</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">）不能识别</span><span style="FonT-FAMiLY:Tahoma">*</span><span style="FonT-FAMiLY:Calibri">；</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE6</span><span style="FonT-FAMiLY:Calibri">能识别</span><span style="FonT-FAMiLY:Tahoma">*</span><span style="FonT-FAMiLY:Calibri">，但不能识别</span> <span style="FonT-FAMiLY:Tahoma">!important</span><span style="FonT-FAMiLY:Calibri">；</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE7</span><span style="FonT-FAMiLY:Calibri">能识别</span><span style="FonT-FAMiLY:Tahoma">*</span><span style="FonT-FAMiLY:Calibri">，也能识别</span> <span style="FonT-FAMiLY:Tahoma">!important</span><span style="FonT-FAMiLY:Calibri">；</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">不能识别</span><span style="FonT-FAMiLY:Tahoma">*</span><span style="FonT-FAMiLY:Calibri">，但能识别</span> <span style="FonT-FAMiLY:Tahoma">!important</span><span style="FonT-FAMiLY:Calibri">；</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">例如</span><span style="FonT-FAMiLY:Tahoma">style=</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">*width:10px;!importantwidth:20px;</span><span style="FonT-FAMiLY:Calibri">”</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">这样在</span><span style="FonT-FAMiLY:Tahoma">IE6</span><span style="FonT-FAMiLY:Calibri">下宽度为</span><span style="FonT-FAMiLY:Tahoma">10px,</span><span style="FonT-FAMiLY:Calibri">在</span><span style="FonT-FAMiLY:Tahoma">IE7</span><span style="FonT-FAMiLY:Calibri">下宽度时</span><span style="FonT-FAMiLY:Tahoma">20px</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">前端技术的展望</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">答：</span><span style="FonT-FAMiLY:Tahoma">javascript ajax</span><span style="FonT-FAMiLY:Calibri">；</span><span style="FonT-FAMiLY:Tahoma">flashAS</span><span style="FonT-FAMiLY:Calibri">；</span><span style="FonT-FAMiLY:Tahoma">Flex</span><span style="FonT-FAMiLY:Calibri">；</span><span style="FonT-FAMiLY:Tahoma">Sliveright</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">附上网上的百度</span><span style="FonT-FAMiLY:Tahoma">web</span><span style="FonT-FAMiLY:Calibri">开发工程师笔试问题集</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">1</span><span style="FonT-FAMiLY:Calibri">编写一个方法</span> <span style="FonT-FAMiLY:Calibri">求一个字符串的字节长度</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+</p><p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+new function(s)</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(!arguments.length||!s) returnnull;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">if(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">"==s) return 0;</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+var l=0;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+for(var i=0;i</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(s.charCodeAt(i)&gt;255) l+=2;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+else l++;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+alert(l);</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">}(</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">hello</span><span style="FonT-FAMiLY:Calibri">你好，我好</span><span style="FonT-FAMiLY:Tahoma">,</span><span style="FonT-FAMiLY:Calibri">大家好！</span><span style="FonT-FAMiLY:Tahoma">world!</span><span style="FonT-FAMiLY:Calibri">”</span><span style="FonT-FAMiLY:Tahoma">);</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">2</span><span style="FonT-FAMiLY:Calibri">编写一个方法</span> <span style="FonT-FAMiLY:Calibri">去掉一个数组的重复元素</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+</p><p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+Array.prototype.strip=function()</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(this.length&lt;2) return[this[0]]||[];</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+var arr=[];</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+for(var i=0;i</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+arr.push(this.splice(i–,1));</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+for(var j=0;j</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if(this[j]==arr[arr.length-1])</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+{</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+this.splice(j–,1);</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+return arr;</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+vararr=["abc",85,"abc",85,8,8,1,2,5,4,7,8];</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+alert(arr.strip());</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">3</span><span style="FonT-FAMiLY:Calibri">说出</span><span style="FonT-FAMiLY:Tahoma">3</span><span style="FonT-FAMiLY:Calibri">条以上</span><span style="FonT-FAMiLY:Tahoma">ff</span><span style="FonT-FAMiLY:Calibri">和</span><span style="FonT-FAMiLY:Tahoma">ie</span><span style="FonT-FAMiLY:Calibri">的脚本兼容问题</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">IE</span> <span style="FonT-FAMiLY:Calibri">有</span><span style="FonT-FAMiLY:Tahoma">children</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">没有；</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">有</span><span style="FonT-FAMiLY:Tahoma">parentElement</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">没有；</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">有</span><span style="FonT-FAMiLY:Tahoma">innerText,outerText,outerHTML</span><span style="FonT-FAMiLY:Calibri">，</span><span style="FonT-FAMiLY:Tahoma">FF</span>
+<span style="FonT-FAMiLY:Calibri">没有；</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">有</span><span style="FonT-FAMiLY:Tahoma">HTMLElement,HTMLDivElement,XMLDocument,DocumentFragment,Node,Event,Element</span><span style="FonT-FAMiLY:Calibri">等等，</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">没有；</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">有数据岛，</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">没有；</span><span style="FonT-FAMiLY:Tahoma">IE</span><span style="FonT-FAMiLY:Calibri">跟</span><span style="FonT-FAMiLY:Tahoma">FF</span><span style="FonT-FAMiLY:Calibri">创建</span><span style="FonT-FAMiLY:Tahoma">HttpRequest</span><span style="FonT-FAMiLY:Calibri">实例的方法不一样。。等等。。</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">4</span><span style="FonT-FAMiLY:Calibri">用脚本写去除字符串的前后空格</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+String.prototype.trim =function(mode)</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">{//</span><span style="FonT-FAMiLY:Calibri">前后去空格</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">if (mode==</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">left</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">)
+{</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">return ((this.charAt(0) ==</span>
+<span style="FonT-FAMiLY:Calibri">”</span> <span style="FonT-FAMiLY:Calibri">“</span> <span style="FonT-FAMiLY:Tahoma">&amp;&amp;this.length &gt; 0) ?
+this.slice(1).trim(’left’) : this);</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+} else</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">if (mode ==</span> <span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">right</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">)
+{</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">return ((this.charAt(this.length
+-1) ==</span> <span style="FonT-FAMiLY:Calibri">”</span>
+<span style="FonT-FAMiLY:Calibri">“</span> <span style="FonT-FAMiLY:Tahoma">&amp;&amp; this.length &gt; 0) ?
+this.slice(0, this.length -1).trim(’right’) : this);</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+} else {</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">return
+this.trim(</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">left</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">).trim(</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">right</span><span style="FonT-FAMiLY:Calibri">’</span><span style="FonT-FAMiLY:Tahoma">);</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+};</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">5</span><span style="FonT-FAMiLY:Calibri">算出字符串中出现次数最多的字符是什么，出现了多少次</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">//var
+str="adadfdfseffserfefsefseeffffftsdg"; //</span><span style="FonT-FAMiLY:simsun">命名一个变量放置给出的字符串</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">var maxLength = 0;
+//</span><span style="FonT-FAMiLY:Calibri">命名一个变量放置字母出现的最高次数并初始化为</span><span style="FonT-FAMiLY:Tahoma">0</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">var result = '';
+//</span><span style="FonT-FAMiLY:Calibri">命名一个变量放置结果输入</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">while( str != '' ){
+//</span><span style="FonT-FAMiLY:Calibri">循环迭代开始，并判断字符串是否为空</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">oldStr = str;
+//</span><span style="FonT-FAMiLY:Calibri">将原始的字符串变量赋值给新变量</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">getStr = str.substr(0,1);
+//</span><span style="FonT-FAMiLY:Calibri">用字符串的</span><span style="FonT-FAMiLY:Tahoma">substr</span><span style="FonT-FAMiLY:Calibri">的方法得到第一个字符（首字母）</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">eval_r("str
+=str.replace(/"+getStr+"/g,'')"); //</span><span style="FonT-FAMiLY:Calibri">详细如补充</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+if( oldStr.length-str.length &gt;maxLength )</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">{ //</span><span style="FonT-FAMiLY:Calibri">判断原始的字符串的长度减去替代后字符串长度是否大于之前出现的最大的字符串长度</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">maxLength
+=oldStr.length-str.length; //</span><span style="FonT-FAMiLY:Calibri">两字符串长度相减得到最大的字符串长度</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">result = getStr + "=" +maxLength
+//</span><span style="FonT-FAMiLY:Calibri">返回最大的字符串结果（字母、出现次数）</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+}</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">alert(result)
+//</span><span style="FonT-FAMiLY:Calibri">弹出结果</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+//</p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Tahoma;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+ </p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">6</span><span style="FonT-FAMiLY:Calibri">写出</span><span style="FonT-FAMiLY:Tahoma">3</span><span style="FonT-FAMiLY:Calibri">中使用</span><span style="FonT-FAMiLY:Tahoma">this</span><span style="FonT-FAMiLY:Calibri">的典型应用</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">在</span><span style="FonT-FAMiLY:Tahoma">HTML</span><span style="FonT-FAMiLY:Calibri">元素事件属性中</span><span style="FonT-FAMiLY:Tahoma">inline</span><span style="FonT-FAMiLY:Calibri">方式使用</span><span style="FonT-FAMiLY:Tahoma">this</span><span style="FonT-FAMiLY:Calibri">关键字：</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Tahoma">7.</span><span style="FonT-FAMiLY:Calibri">最后一个问题是，如何制作一个</span><span style="FonT-FAMiLY:Tahoma">combo</span><span style="FonT-FAMiLY:Calibri">选项，就是可以输入可以下拉菜单选择。</span></p>
+<p style="Line-HeiGHT:15pt;MArGin:0in;FonT-FAMiLY:Arial;CoLor:rgb(69,69,69);FonT-siZe:10.5pt">
+<span style="FonT-FAMiLY:Calibri">这个网上有很多成品，主要是通过绝对定位和相对定位结合的方式，改造原有的</span><span style="FonT-FAMiLY:Tahoma">select</span>
+<span style="FonT-FAMiLY:Calibri">标签和</span><span style="FonT-FAMiLY:Tahoma">input</span><span style="FonT-FAMiLY:Calibri">标签的方法。</span></p>
+</div><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=4">

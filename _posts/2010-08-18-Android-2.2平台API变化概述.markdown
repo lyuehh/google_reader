@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "Android 2.2平台API变化概述"
+date:   2010-08-18 17:20:33
+author: ddna
+categories: program
+---
+
+## Android 2.2平台API变化概述
+### by ddna
+### at 2010-08-18 17:20:33
+### original <http://www.linuxidc.com/Linux/2010-08/27924.htm>
+
+<p>Android平台现在支持应用主动要求安装在外部存储设备（如SD卡），以取代将其安装在设备的内部存储区。</p><p>应用开发者可以通过manifest文件里一个新的&lt;menifest&gt;属性来说明更希望将应用安装在哪里，即Android:installLocation。这个属性支持三个值：”internalOnly”,”preferExternal”,”auto”。可能的话在安装时，系统会检查android:installLocation的值，根据倾向的位置安装应用的.apk。如果应用要求安装在外部，系统会将其安装在外部存储介质的一个私有加密的分区上。一旦应用的.apk被安装在外部，系统会通过用户设定里的应用管理(Manage Applications)来使用户可以在需要的时候将其移动到内部存储区域，反之也是一样。</p>...

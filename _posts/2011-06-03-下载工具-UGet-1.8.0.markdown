@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "下载工具 UGet 1.8.0"
+date:   2011-06-03 19:52:06
+author: 
+categories: program
+---
+
+## 下载工具 UGet 1.8.0
+### by 
+### at 2011-06-03 19:52:06
+### original <http://www.oschina.net/news/18527/uget-1-8-0-aria2>
+
+<table width="100%"><tr>
+						<td valign="top">采用 aria2 作为后端的下载工具 uGet 发布了最新的 1.8.0 正式版，主要新功能包括： 支持 BT 文件和 Metalink 文件 (aria2 plug-in) 支持 Ubuntu  app indicator 可限制下载速度 支持计划下载功能 添加新插件，支持 aria2 1.10 及更新版本 (可多线程下载) 添加可选启动项 “–with-gtk3″，可用来支持 GTK+3 项目主页： http://urlget.sourceforge.net/ # Ubuntu 用户安装： sudo add-apt-repository ppa:plushuang-tw/uget-stable sudo apt-get update sudo apt-get install uget 从 Wow! Ubuntu / Ubuntu 新闻、技巧、软件及游戏！...，<a href="http://www.oschina.net/news/18527/uget-1-8-0-aria2?from=rss" style="font-weight:bold;color:#a00">阅读全文</a></td>
+			</tr></table>

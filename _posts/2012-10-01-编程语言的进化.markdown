@@ -1,0 +1,43 @@
+---
+layout: post
+title:  "编程语言的进化"
+date:   2012-10-01 10:30:06
+author: 杨玉廷
+categories: program
+---
+
+## 编程语言的进化
+### by 杨玉廷
+### at 2012-10-01 10:30:06
+### original <http://hp.dewen.org/?p=1690>
+
+<div style="text-align:center;margin-bottom:5px;margin-top:5px"><img src="http://hp.dewen.org/wp-content/uploads/2012/09/programming-languages.png" alt="编程语言的进化" title="编程语言的进化" border="0"></div>
+<p>早上读到了一篇文章<a href="http://coolshell.cn/articles/7526.html">《Lisp的永恒之道》</a>，这一篇文章解决了我一直以来对Lisp编程语言的疑惑，加深了对DSL（领域编程语言），同时对编程语言的理解也越来越深入。写一篇文章的目的就是从主要编程语言的进化来看看编程语言发展的过程以及背后的<a href="http://hp.dewen.org/?p=1690">设计哲学</a>，当然，这个只是我自己的认识，如果有不足之处，请博友指教。<span></span></p>
+<h2 style="font-size:16px;text-transform:none">机器语言</h2>
+<p>最早的编程语言是卡带，也就是机器语言，这种语言没有语义和语法，操作符和数据混合在一起，偏向于具体的设备，依赖觉得硬件。</p>
+<h2 style="font-size:16px;text-transform:none">汇编语言</h2>
+<p>随后，汇编语言就出现了，汇编语言定义了基本的语法结构，定义了操作符和数据类型，但是汇编语言还是针对特定的硬件编程，比如cpu，我记得大学的时候学习的就是8086汇编语言程序设计，这个就是针对intel 8086cpu的编程语言而设计，如果cpu是80386，那么就必须在对80386的cpu进行编程，可移植性非常差。如果针对每一个cpu就要重新写整一套代码，那么将会是多么复杂的事情，困难度不可想象。</p>
+<h2 style="font-size:16px;text-transform:none">C语言</h2>
+<div style="text-align:center;margin-bottom:5px;margin-top:5px"><img src="http://hp.dewen.org/wp-content/uploads/2012/09/c.jpg" alt="编程语言的进化" title="编程语言的进化" border="0"></div>
+<p>对于汇编语言的问题，主要要解决跨硬件平台，那么怎么解决这个问题了，对啦，添加一个抽象层，这个就是硬件抽象层，它隐藏了特定平台的硬件接口细节,为操作系统提供虚拟硬件平台,使其具有硬件无关性,可在多种平台上进行移植。相当于提供统一的api 比如C语言printf函数，打印字符串，由于每个终端设备的类型和型号都不一样，需要在适配到每个终端设备上，那么通过一个终端虚拟硬件，由它进行各个终端差异的屏蔽，提供统一的对外接口，有点类似适配器模式。用C语言写出来的程序。虽然这样简化了操作硬件的这种复杂行，但是直接写操作虚拟硬件的代码也是很苦逼的事情，这样就出现了系统内核，用来提供更高一层的抽象，所以C语言操作硬件的函数都会调用系统内核，由系统内核再去调用具体的虚拟终端设备。这个就和特定的操作系统有关了，C语言编译器编译出来的代码就和操作系统进行关联。所以C语言程序很难做到跨操作系统平台，因为每个操作系统都提供私有函数，并且编译出来的二进制代码也是不一样的，跨平台基本不可能。</p>
+<h2 style="font-size:16px;text-transform:none">高级语言：java,.net</h2>
+<div style="text-align:center;margin-bottom:5px;margin-top:5px"><img src="http://hp.dewen.org/wp-content/uploads/2012/09/java1.jpg" alt="编程语言的进化" title="编程语言的进化" border="0"></div>
+<p>为了解决C语言的跨平台的问题，可以考虑再在操作系统这一层添加一个抽象。那么就出现了java和.net这样的编程语言。java通过实现一个jvm虚拟机，屏蔽了各个操作系统的差异，同时定义了一个标准的目标代码（class文件），只要class文件满足jcp定义的规范，就可以被jvm执行。这就解决了两个问题，目标代码格式固定，这个平台都一样，函数调用都一样，都和jvm打交道。这样就实现了跨越操作系统平台。但是还存在一个问题，jvm的实现只能够获取各个操作系统公共的部分进行抽象，但是有一些操作系统私有的个性化是无法屏蔽的，只能通过开通一个小后门，让开发者能够开发基于操作系统的native实现。</p>
+<h2 style="font-size:16px;text-transform:none">DSL领域编程语言</h2>
+<div style="text-align:center;margin-bottom:5px;margin-top:5px"><img src="http://hp.dewen.org/wp-content/uploads/2012/09/dsl.jpg" alt="编程语言的进化" title="编程语言的进化" border="0"></div>
+<p>好了，编程语言发展到这一层，已经非常高级了，对于开发者来说，已经够简单了。不需要硬件只是，不需要懂操作系统知识。如果在继续发展会怎么样，对啦，是不是可以跨越编程语言。还有，编程语言一般都是语法和语义绑定在一起的，比如 int c = a + b 这一条赋值语句，我们知道要把 a 和 b相加 赋予 c ，相当于知道语法，就知道语义了，那么是不是可以把语义 和 语法 分开 ？<br>
+语义:  define c  = add(b,c) 或者 
+<br>
+那么转化为 java语言 就是 int  c = a + b; 转化为javasrpit var c = a + b 等等<br>
+相当于what 和 how 分开，就是说 我要做什么 和 我怎么做 这一层在区分开来。目前我们使用的比较多的就是maven</p>
+<p>maven通过自己的一套语义，定义了整个构建的过程。我只定义了怎么做，通过xml这一套语法来定义，但是具体怎么做我通过一个解释层来实现，同时也可以用不同的语言，可能在java平台上，我用java语言来实现，在.net平台，我用.net来实现。</p>
+<p>其中大名顶顶的 facebook的 Thrift框架就是这种设计思想，通过自己定义的一套语言，定了一个分布式服务框架，通过自己的解释器，把自己定义的解释成为不同的语言实现。</p>
+<p>但是由于领域语言的语义定义的规则和模式都不一样，对于每个不同的领域，都有自己的DSL，比如是ant，我就必须学习一下整个ant的规则，比如maven也需要重新开始学习。</p>
+<p>目前很多语言转化服务，比如目前把java写的语言转化为obejct-c和windows的云服务，原理和上面类似，应该都是先转化为一套中间语言，然后转化成为各个实际的特性语言。</p>
+<h2 style="font-size:16px;text-transform:none">未来想象</h2>
+<p>随着DSL语言的快速发展，我在想未来是不是会把DSL也统一起来，定义一套通用的规则和规范，找出每个领域特性部分，进行抽象，形成一种统一的开发语言。比如web编程，只需要web方面的DSL语言就可以了，不需要在学习python，php，jsp，asp等等，在数据库操作方面也一样，不需要在了解各个平台具体连接数据库的方式以及代码实现，用统一的数据操作DSL就可以了。这个想法比较大，也是扯扯淡的，不过还是希望未来的某一天，编程语言会统一，不过现在越来越有这个趋势了，各个语言都在添加其他语言的特性，增强自己的特性，以后各个语言都变的越来越类似，功能也越来越雷同，唯一需要考虑的是语言性能问题，但是随着硬件的发展，除非某一个特定的领域，大部分应用在语言层面的性能应该会忽略。</p>
+<p>通过编程语言的进化，起始发现背后的思想都是一样的，原话我忘记是怎么说的，大概意思是：<strong>任何两个系统之间的复杂性，都可以通过添加一个抽象层要屏蔽</strong>。整个编程语言的进化也都说明了这个问题。</p>
+<p>延伸阅读：</p>
+<p><a href="http://www.dewen.org/">德问编程社交问答</a><br>
+<a href="http://www.dewen.org/questions/hot">最近热门问题</a></p>
+<p><b>本文作者：<a href="http://www.cnblogs.com/aigongsi/">爱公司的程序员</a> | 原文地址：<a href="http://www.cnblogs.com/aigongsi/archive/2012/09/28/2706604.html">编程语言的进化</a></b></p>

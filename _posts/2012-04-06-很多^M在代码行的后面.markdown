@@ -1,0 +1,47 @@
+---
+layout: post
+title:  "很多^M在代码行的后面"
+date:   2012-04-06 05:11:18
+author: 
+categories: program
+---
+
+## 很多^M在代码行的后面
+### by 
+### at 2012-04-06 05:11:18
+### original <http://hlee.iteye.com/blog/1476195>
+
+在git diff的时候发现
+<br>可能是Windows开发工具搞上来的，因为有不一样的换行回车
+<br>解决办法是
+<br><pre name="code">
+vim
+:set fileformat=unix
+:%s/^M//g
+:%s/\r//g
+
+:w
+</pre>
+<br>
+<br><div>引用</div><div>dos2unix
+<br>
+<br>perl -pie 's/\r//g' filename.txt
+<br></div>
+<br>
+<br>
+<br><pre name="code">
+sed s/\r// hello.txt &gt; helloUNIX.txt
+dos2unix hello.txt helloUNIX.txt
+cat hello.txt | tr -d \r &gt; helloUNIX2.txt
+
+</pre>
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://hlee.iteye.com/blog/1476195#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

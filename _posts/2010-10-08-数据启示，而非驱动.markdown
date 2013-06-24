@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "数据启示，而非驱动"
+date:   2010-10-08 14:10:35
+author: helicopter621
+categories: program
+---
+
+## 数据启示，而非驱动
+### by helicopter621
+### at 2010-10-08 14:10:35
+### original <http://ucdchina.com/snap/8104>
+
+<p style="margin-top:0pt;margin-bottom:12pt;margin-left:0in"><span>Facebook的产品设计经理</span> <span>Adam Mosseri最近做了一个非常棒的演讲：</span> <a title="Data informed, not data driven" href="http://www.uxweek.com/pages/49089"><span>Data informed, not data driven（数据启示，而非驱动）</span> </a></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><a title="Data informed, not data driven" href="http://www.uxweek.com/pages/49089"><span> </span> <span style="text-decoration:underline"> </span> <span> </span> <span> </span> <span> </span> <span> </span> <span> </span> <span> </span> <span> </span> <span> </span> </a> <span>演讲以Facebook如何利用数据指导产品设计为主线，还涉及到Facebook的产品设计团队架构、不少的设计案例，以及Facebook是如何做产品设计决策等。</span> <span>本文将其内容以译介形式总结如下（意译非翻译）。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">1. 小而精的产品设计团队</span> <span><br> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="color:#3366ff"><span style="font-style:italic">“</span> <span style="font-style:italic">It's important to understand that, at Facebook, we believe in particularly small teams.</span> </span> <span><span style="color:#3366ff">”<br> （有一点需要被清楚认识的是，在Facebook，我们特别认可小团队）</span> <br> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>Facebook的产品设计团队通常只有6、7人，因为他们认为这个人数最高效率，且团队拥有的产品决策权很高，架构扁平(</span> <span>flat decision-making structure</span> )<span>，有的决策可以直接到CEO那里待通过。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>一个产品设计团队的结构通常是这样的：</span> <span><br> </span></p>
+ 
+<ul style="list-style-type:disc">
+<li><span>一名设计师，负责交互、视觉，产品战略(product strategy)，甚至一点前端</span> </li>
+ 
+<li><span>一名用户研究员。两年前，Facebook只有为数较少的研究员，而且只负责大项目，如今，随着对于定性研究的重视逐步增加，基本上每个团队都配一名。</span> </li>
+ 
+<li><span>一至四个工程师。</span> </li>
+ 
+<li><span>一个项目经理(PM)，项目经理通常相当于团队中的迷你CEO，需要对产品负责。不仅要保证项目的按时完成、资源协调，还要保证产品质量。</span> </li>
+ 
+</ul>
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>产品</span> <span>设计团队之上，会有一个经理负责统筹管理。演讲者本人就担任这一职位，他负责着九个产品设计团队。另外，有专门的20人数据团队，一半是工程师，一半是数据分析专家。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">2. Facebook如何利用数据</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold"> </span> <span style="color:#3366ff"><span style="font-weight:normal;font-style:italic">“</span> <span style="font-style:italic">Data helps us understand how users use the product, which then in turn helps us</span> <span style="font-style:italic"> understand how to optimize the product.</span> <span style="font-style:italic">”</span> <br> （<span>数据帮助我们了解用户如何使用我们的产品，从而帮助我们更好地优化产品）</span> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:normal">Facebook每天会采集到4TB的用户行为数据，这些数据能指导设计持续优化。例如</span> <span style="font-weight:normal">通过瀑布式分析、追踪交互步骤的转化/流失率，大量的A/B testing，观测行为使用模式</span> <span style="font-weight:bold">，</span> <span style="font-weight:normal">优化界面交互和操作流。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">例1：照片上传器的改造</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>在新照片上传器刚上线时，有85%的用户每次只上传一张照片。针对这一痛点，对界面进行了优化，在用户选中一张照片后浮出了一个上传tips，虽然有点“扰民”，但结果数据每次只上传一张照片的用户数降到40%，平均每次上传数从3上升到11.</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>同样地，通过数据他们发现，用户在周日量达到平时的150%，这种行为模式的识别也为设计带来不少启示。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">例2：What's on your mind的位移</span></p>
+ 
+<p style="margin-top:0pt;margin-bottom:12pt"><span> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>在推出Question这个产品后，原来的What's on your mind需要调整位置。于是他们使用A/B testing的方式测试了</span> <span style="font-weight:bold">8</span> <span>个设计版本，但每个版本对于核心指标的影响都不具有统计意义上的差异，所以最终他们选择了最简洁的一个方案。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">例3：注销页的改造</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>除了瀑布式的分析，数据还会用于回溯性式的分析、优化一些小页面。例如一个设计师发起了注销页的改造，他思考的是如何在用户即将离开之时将其挽回。最终他通过一种情感化设计改造了这个页面（图1），成功将注销率降低了7%，这对于Facebook的用户量来讲是非常了不起的数字（当时Facebook有7千万用户）。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><img src="http://img.ucdchina.com/upload/snap/2010-10/5eca928a2f9d256512768261835ee4c0.jpeg" alt="" align="bottom"></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><br style="font-weight:bold"> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">3. 对数据过度利用的警惕</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="color:#3366ff"><span style="font-style:italic">“…at Facebook, in product – we call product &quot;product</span> <span style="font-style:italic"> management and product design&quot; – that there&#39;s a healthy skepticism of being overly data</span> <span style="font-style:italic"> driven</span> ”</span> <br> <br> <span>演讲者提到数据怀疑论的三个原因：</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">一组数据指标很难完整地代表你所重视的价值</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>影响产品决策的因素很多，除了定量数据，还有定性数据。Facebook的用户研究员会做大量定性研究，如可用性测试、眼动测试等。另外还有战略因素，用户需求，竞争产品，商业利益因素。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">过度依赖于数据，可能导致“微优化”或“局部最大化”</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>对数据的变化过度敏感，可能导致所谓的“微优化”(micro-optimization)，即过度着重、不断追求某一项指标的提升，而忽略了其他因素。尤其当Facebook规模不断扩大，各个团队更专一于自己的产品，就可能导致各自只从自己的指标出发，使得整体上出现冲突，没有了全局观。</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>例如</span> <span>，应用菜单的设计几经周折，位置从左边栏换到顶部，又换到底部，由于流量不见大增，还曾考虑使用蓝色大按钮的方案。虽然流量提高了5倍，但由于设计师自己都觉得很难接受，这个方案最终没有被发布。无论如何，直到一年后他们才发现，尽管朝着提高引导到应用的流量这一指标不断优化，却出现停滞不前、达到局部最大化(local maximization)的瓶颈。最终他们成立了一个菜单项目组，推翻之前的重新开始，设计了目前的版本——而这实际上有一半回归到菜单最初的样子。<br> </span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><img src="http://img.ucdchina.com/upload/snap/2010-10/b0229a5ca4a2534c1a3dc7dbc263434c.jpeg" alt="" align="bottom"> <img src="http://img.ucdchina.com/upload/snap/2010-10/3fae85437e42e922772d396678e04381.jpeg" alt="" align="bottom"> <img src="http://img.ucdchina.com/upload/snap/2010-10/60f9c93e6e89826d11f8e924fb8f673c.jpeg" alt="" align="bottom"></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold"> </span> <span style="font-weight:normal">另一个例子是相片上传器。相片团队花了好几个月朝着提高上传成功率的数字优化，</span> <span style="font-weight:normal">虽然数字有提升</span> <span>，</span> <span style="font-weight:normal">但成功率已几乎稳定，不可能有什么新的变化了。如果一直围着这个指标打转，体验并不会有质的变化。</span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <span style="font-weight:bold"> </span> <br style="font-weight:bold"></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="font-weight:bold">真正的创新通常会导致数据的变差</span> <span style="font-weight:bold;font-style:italic">，</span> <span style="font-weight:bold">但这未必是坏事</span> <span style="font-weight:bold;font-style:italic"><br> </span> <span style="font-weight:bold;font-style:italic">“…</span> <span style="font-style:italic;font-weight:bold">real innovation invariably</span> <span style="font-style:italic;font-weight:bold"> involves disruption. And disruption is usually – involves a dip in metrics</span> <span style="font-weight:bold">”</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span>Facebook一个核心价值在于打破，甚至扰乱。这往往导致某些指标变差，但这也是创新的意义所在。他们曾经有不少无视民意无视数据的革新，比如新首页，就完全不是根据数据来的。当然，他们的革新有的成功（News Feed和Mini Feed），有的失败（如Beacon，将你在外站行为导入到FB的功能）。失败了，只要理解失败、承认失败，就能继续向前。不可能因为害怕数据变差而拒绝变革。但是，</span> <span>变革有时候会因为扰乱用户而造成他们的反感，坚持变革，不代表不聆听。如演讲者提到他最喜欢的Facebook group是“我不由自主地讨厌新的Facebook首页”。需要学会如何更好地向用户传达革新的目的和意义。</span> <br> <br> <span style="font-weight:bold">4. 最大的冒险在于不敢冒险</span></p>
+ 
+<p style="margin-bottom:12pt;margin-top:0pt;margin-left:0in"><span style="color:#3366ff"><span style="font-style:italic">“For us, the greatest risk is really taking no risk at all…</span> <span>at the end of the day we make decisions based on common</span> <span> sense, on interests, on strategic interests. And we use data. We acknowledge it's</span> <span> important, but it's really just a small piece of the pie.</span> <span>”</span> <br> <span>（</span> <span>对我们而言，最大的冒险在于不敢冒险……很多时候，我们最终依靠常识、洞见、战略意义做决策。我们使用数据，数据很重要，但这只是大饼的一小块）</span> </span></p>
+ 
+<p> </p><p>源地址：<a href="http://piglili.blogbus.com/logs/77069181.html">http://piglili.blogbus.com/logs/77069181.html</a></p>

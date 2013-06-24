@@ -1,0 +1,465 @@
+---
+layout: post
+title:  "Node.js：用JavaScript写服务器端程序-介绍并写个MVC框架"
+date:   2011-01-28 02:06:00
+author: Q.Lee.lulu
+categories: program
+---
+
+## Node.js：用JavaScript写服务器端程序-介绍并写个MVC框架
+### by Q.Lee.lulu
+### at 2011-01-28 02:06:00
+### original <http://www.cnblogs.com/QLeelulu/archive/2011/01/28/nodejs_into_and_n2mvc.html>
+
+<p><p><span face="Arial" size="2" style="font-family:Arial;font-size:x-small">(注：1、本文基于Node.js V0.3.6； 2、本文假设你了解JavaScript； 3、本文假设你了解MVC框架；4、本文作者：<a href="http://www.cnblogs.com/QLeelulu/">QLeelulu</a>，转载请注明出处。)</span> </p>
+<h3>Node.js是什么</h3>
+<p>Node让你可以用javascript编写服务器端程序，让javascript脱离web浏览器的限制，这也让一些熟悉Javascript的前端开发人员进军到服务器端开发提供了一个便利的途径。 Node是基于Google的V8引擎封装的，并提供了一些编写服务器程序的常用接口，例如文件流的处理。Node的目的是提供一种简单的途径来编写高性能的网络程序。 </p>
+<h3>Node.js的性能</h3>
+<p>hello world 测试： </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280205575971.jpg"><img title="clip_image002" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="407" alt="clip_image002" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280205599517.jpg" width="531" border="0"></a> </p>
+<p>300并发请求，返回不同大小的内容： </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206002713.jpg"><img title="clip_image004" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="414" alt="clip_image004" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206022322.jpg" width="519" border="0"></a> </p>
+<p>为什么node有如此高的性能？看node的特性。 </p>
+<h3>Node.js的特性</h3>
+<blockquote>
+<p><strong>1. 单线程</strong> </p>
+<p><strong>2. 非阻塞IO</strong> </p>
+<p><strong>3. Google V8</strong> </p>
+<p><strong>4. 事件驱动</strong></p>
+</blockquote>
+<p>更详细的了解node请看淘宝UED博客上的关于node.js的一个幻灯片：<a href="http://www.slideshare.net/lijing00333/node-js">http://www.slideshare.net/lijing00333/node-js</a> </p>
+<h3>你好，世界</h3>
+<p>这，当然是俗套的Hello World啦（hello_world.js）： </p>
+<div>
+<pre><div><span style="color:#000000">var http </span><span style="color:#000000">=</span><span style="color:#000000"> require(</span><span style="color:#008000">'</span><span style="color:#008000">http');</span><span style="color:#008000"><br></span><span style="color:#000000">http.createServer(</span><span style="color:#0000ff">function</span><span style="color:#000000"> (req, res) {<br>    res.writeHead(</span><span style="color:#800080">200</span><span style="color:#000000">, {</span><span style="color:#008000">'</span><span style="color:#008000">Content-Type': 'text/plain'});</span><span style="color:#008000"><br></span><span style="color:#000000">    res.end(</span><span style="color:#008000">'</span><span style="color:#008000">Hello World\n');</span><span style="color:#008000"><br></span><span style="color:#000000">}).listen(</span><span style="color:#800080">8124</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">127.0.0.1</span><span style="color:#800000">"</span><span style="color:#000000">);<br>console.log(</span><span style="color:#008000">'</span><span style="color:#008000">Server running at http://127.0.0.1:8124/');</span></div></pre>
+</div>
+<p>require类似于C#的using、Python的import，用于导入模块（module）。node使用的是CommonJS的模块系统。http.createServer 的参数为一个函数，每当有新的请求进来的时候，就会触发这个函数。最后就是绑定要监听的端口。</p>
+<h2>怎么运行？</h2>
+<p>当然，是先安装node.js啦。到<a href="http://nodejs.org/">http://nodejs.org/</a>下载并编译，支持Linux、Mac，也支持windows下的Cygwin。具体的安装说明见：<a href="http://howtonode.org/how-to-install-nodejs">http://howtonode.org/how-to-install-nodejs</a> </p>
+<p>装好node后，就可以运行我们的hello world了： </p>
+<div>
+<pre><div><span style="color:#000000">$ node hello_world.js<br>Server running at http:</span><span style="color:#000000">//</span><span style="color:#800080">127.0</span><span style="color:#000000">.</span><span style="color:#800080">0.1</span><span style="color:#000000">:</span><span style="color:#800080">8124</span><span style="color:#000000">/</span></div></pre>
+</div>
+<p><a href="http://127.0.0.1:8124/"></a> </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206035486.jpg"><img title="clip_image006" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="89" alt="clip_image006" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206042586.jpg" width="265" border="0"></a> </p>
+<h3>编程习惯的改变？</h3>
+<p>我们来写一个读取文件内容的脚本： </p>
+<p> </p>
+<div>
+<pre>//output_me.js
+var fs = require('fs'), fileContent = 'nothing';
+fs.readFile(__filename, "utf-8", function(err, file) {  
+    if(err) {  
+        console.log(err);
+        return;  
+    }
+    fileContent = file;
+    console.log('end readfile \n');
+});
+console.log('doSomethingWithFile: '+ fileContent +'\n');
+</pre>
+</div>
+<p>这个脚本读取当前文件的内容并输出。__filename是node的一个全局变量，值为当前文件的绝对路径。我们执行这个脚本看一下： </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206057636.jpg"><img title="clip_image008" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="98" alt="clip_image008" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206056830.jpg" width="254" border="0"></a> </p>
+<p>有没发现结果不对呢？打印的fileContent并不是读取到的文件内容，而是初始化的时候赋值的nothing，并且‘end readfile’最后才打印出来。前面我们提到node的一个特性就是非阻塞IO，而readFile就是异步非阻塞读取文件内容的，所以后面的代码并不会等到文件内容读取完了再执行。请谨记node的异步非阻塞IO特性。所以我们需要将上面的代码修改为如下就能正常工作了： </p>
+<p> </p>
+<div>
+<pre>//output_me.js
+var fs = require('fs'), fileContent = 'nothing';
+fs.readFile(__filename, "utf-8", function(err, file) {  
+    if(err) {  
+        console.log(err);
+        return;  
+    }
+    fileContent = file;
+    //对于file的处理放到回调函数这里处理
+    console.log('doSomethingWithFile: '+ fileContent +'\n');
+});
+console.log('我们先去喝杯茶\n');
+</pre>
+</div>
+<h3>写个Web MVC框架试试</h3>
+<p>下面我们用node来写一个小玩具：一个Web MVC框架。这个小玩具我称它为n2Mvc，它的代码结构看起来大概如下：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206066372.jpg"><img title="clip_image010" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="434" alt="clip_image010" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206072883.jpg" width="171" border="0"></a> </p>
+<p>和hello world一样，我们需要一个http的服务器来处理所有进来的请求： </p>
+<p> </p>
+<div>
+<pre>var http = require('http'),
+    querystring = require("querystring");
+exports.runServer = function(port){
+    port = port || 8080;
+    var server = http.createServer(function(req, res){
+        var _postData = '';
+        //on用于添加一个监听函数到一个特定的事件
+        req.on('data', function(chunk)
+        {
+            _postData += chunk;
+        })
+        .on('end', function()
+        {
+            req.post = querystring.parse(_postData);
+            handlerRequest(req, res);
+        });
+    }).listen(port);
+    console.log('Server running at http://127.0.0.1:'+ port +'/');
+};
+</pre>
+</div>
+<p>这里定义了一个runServer的方法来启动我们的n2Mvc的服务器。有没注意到runServer前面有个exports？这个exports相当于C#中的publish，在用require导入这个模块的时候，runServer可以被访问到。我们写一个脚本来演示下node的模块导入系统： </p>
+<p> </p>
+<div>
+<pre>//moduleExample.js
+var myPrivate = '艳照，藏着';
+exports.myPublish = '冠西的相机';
+this.myPublish2 = 'this也可以哦';
+console.log('moduleExample.js loaded \n');
+</pre>
+</div>
+<p>执行结果：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206089079.jpg"><img title="clip_image002[9]" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="225" alt="clip_image002[9]" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206099211.jpg" width="376" border="0"></a> </p>
+<p>从结果中我们可以看出exports和this下的变量在外部导入模块后，可以被外部访问到，而var定义的变量只能在脚本内部访问。 </p>
+<p>从结果我们还可以看出，第二次require导入moduleExample模块的时候，并没有打印“moduleExample.js loaded”，因为require导入模块的时候，会先从require.cache 中检查模块是否已经加载，如果没有加载，才会从硬盘中查找模块脚本并加载。 </p>
+<p>require支持相对路径查找模块，例如上面代码中require(&#39;./moduleExample&#39;)中的“./”就代表在当前目录下查找。如果不是相当路径，例如 require(&#39;http&#39;)，node则会到require.paths中去查找，例如我的系统require.paths为： </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206105689.jpg"><img title="clip_image004[7]" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="104" alt="clip_image004[7]" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206117457.jpg" width="304" border="0"></a> </p>
+<p>当require('http')的时候，node的查找路径为： </p>
+<div>
+<pre><div><span style="color:#800080">1</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_modules</span><span style="color:#000000">/</span><span style="color:#000000">http<br></span><span style="color:#800080">2</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_modules</span><span style="color:#000000">/</span><span style="color:#000000">http.js<br></span><span style="color:#800080">3</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_modules</span><span style="color:#000000">/</span><span style="color:#000000">http.node<br></span><span style="color:#800080">4</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_modules</span><span style="color:#000000">/</span><span style="color:#000000">http</span><span style="color:#000000">/</span><span style="color:#000000">index.js<br></span><span style="color:#800080">5</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_modules</span><span style="color:#000000">/</span><span style="color:#000000">http</span><span style="color:#000000">/</span><span style="color:#000000">index.node<br></span><span style="color:#800080">6</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_libraries</span><span style="color:#000000">/</span><span style="color:#000000">http<br></span><span style="color:#800080">7</span><span style="color:#000000">、</span><span style="color:#000000">/</span><span style="color:#000000">home</span><span style="color:#000000">/</span><span style="color:#000000">qleelulu</span><span style="color:#000000">/</span><span style="color:#000000">.node_libraries</span><span style="color:#000000">/</span><span style="color:#000000">http.js<br></span><span style="color:#800080">8</span><span style="color:#000000">、参考前面</span></div></pre>
+</div>
+<p>再看回前面的代码，http.createServer中的回调函数中的request注册了两个事件，前面提到过node的一个特点是事件驱动的，所以这种事件绑定你会到处看到（想想jQuery的事件绑定？例如$('a').click(fn)）。关于node的事件我们在后面再细说。request对象的data事件会在接收客户端post上来的数据时候触发，而end事件则会在最后触发。所以我们在data事件里面处理接收到的数据（例如post过来的form表单数据），在end事件里面通过handlerRequest 函数来统一处理所有的请求并分发给相应的controller action处理。</p>
+<p>handlerRequest的代码如下： </p>
+<p> </p>
+<div>
+<pre>var route = require('./route');
+var handlerRequest = function(req, res){
+    //通过route来获取controller和action信息
+    var actionInfo = route.getActionInfo(req.url, req.method);
+    //如果route中有匹配的action，则分发给对应的action
+    if(actionInfo.action){
+        //假设controller都放到当前目录的controllers目录里面，还记得require是怎么搜索module的么？
+        var controller = require('./controllers/'+actionInfo.controller); // ./controllers/blog
+        if(controller[actionInfo.action]){
+            var ct = new controllerContext(req, res);
+            //动态调用，动态语言就是方便啊
+            //通过apply将controller的上下文对象传递给action
+            controller[actionInfo.action].apply(ct, actionInfo.args);
+        }else{
+            handler500(req, res, 'Error: controller "' + actionInfo.controller + '" without action "' + actionInfo.action + '"')
+        }
+    }else{
+        //如果route没有匹配到，则当作静态文件处理
+        staticFileServer(req, res);
+    }
+};
+</pre>
+</div>
+<p>这里导入来一个route模块，route根据请求的url等信息去获取获取controller和action的信息，如果获取到，则通过动态调用调用action方法，如果没有匹配的action信息，则作为静态文件处理。 </p>
+<p>下面是route模块的代码： </p>
+<p> </p>
+<div>
+<pre>var parseURL = require(&#39;url&#39;).parse;
+//根据http请求的method来分别保存route规则
+var routes = {get:[], post:[], head:[], put:[], delete:[]};
+/**
+* 注册route规则
+* 示例：
+* route.map({
+*     method:&#39;post&#39;,
+*     url: /\/blog\/post\/(\d+)\/?$/i,
+*     controller: &#39;blog&#39;,
+*     action: &#39;showBlogPost&#39;
+* })
+*/
+exports.map = function(dict){
+    if(dict &amp;&amp; dict.url &amp;&amp; dict.controller){
+        var method = dict.method ? dict.method.toLowerCase() : &#39;get&#39;;
+        routes[method].push({
+            u: dict.url, //url匹配正则
+            c: dict.controller,
+            a: dict.action || &#39;index&#39;
+        });
+    }
+};
+exports.getActionInfo = function(url, method){
+    var r = {controller:null, action:null, args:null},
+        method = method ? method.toLowerCase() : &#39;get&#39;,
+        // url: /blog/index?page=1 ,则pathname为: /blog/index
+        pathname = parseURL(url).pathname;
+    var m_routes = routes[method];
+    for(var i in m_routes){
+        //正则匹配
+        r.args = m_routes[i].u.exec(pathname);
+        if(r.args){
+            r.controller = m_routes[i].c;
+            r.action = m_routes[i].a;
+            r.args.shift(); //第一个值为匹配到的整个url，去掉
+            break;
+        }
+    }
+    //如果匹配到route，r大概是 {controller:&#39;blog&#39;, action:&#39;index&#39;, args:[&#39;1&#39;]}
+    return r;
+};
+</pre>
+</div>
+<p>map方法用于注册路由规则，我们新建一个config.js的文件，来配置route规则： </p>
+<p> </p>
+<div>
+<pre>//config.js
+var route = require('./route');
+route.map({
+    method:'get',
+    url: /\/blog\/?$/i,
+    controller: 'blog',
+    action: 'index'
+});
+</pre>
+</div>
+<p>如果请求的url有匹配的route规则，则会返回controller和action信息。例如上面的route配置，当访问 /blog 这个url的时候，则会调用 ./controllers/blog.js 模块里面的index函数。 </p>
+<p>当调用action的时候，会传递controllerContext给acation： </p>
+<div>
+<pre><div><span style="color:#000000">            </span><span style="color:#0000ff">var</span><span style="color:#000000"> ct </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> controllerContext(req, res);<br>            </span><span style="color:#008000">//</span><span style="color:#008000">动态调用，动态语言就是方便啊</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000">通过apply将controller的上下文对象传递给action</span><span style="color:#008000"><br></span><span style="color:#000000">            controller[actionInfo.action].apply(ct, actionInfo.args);</span></div></pre>
+</div>
+<p>这里会通过apply将controllerContext作为action的this，并传递args作为action的参数来调用action。</p>
+<p>ontrollerContext封装了一些action会用到的方法： </p>
+<p> </p>
+<div>
+<pre>//controller的上下文对象
+var controllerContext = function(req, res){
+this.req = req;
+this.res = res;
+this.handler404 = handler404;
+this.handler500 = handler500;
+};
+controllerContext.prototype.render = function(viewName, context){
+viewEngine.render(this.req, this.res, viewName, context);
+};
+controllerContext.prototype.renderJson = function(json){
+viewEngine.renderJson(this.req, this.res, json);
+};
+</pre>
+</div>
+<p> 在action中处理完逻辑获取获取到用户需要的数据后，就要呈现给用户。这就需要viewEngine来处理了。ViewEngine的代码如下：</p>
+<p> </p>
+<p> </p>
+<div>
+<pre>var viewEngine = {
+    render: function(req, res, viewName, context){
+        var filename = path.join(__dirname, 'views', viewName);
+        try{
+            var output = Shotenjin.renderView(filename, context);
+        }catch(err){
+            handler500(req, res, err);
+            return;
+        }
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.end(output);
+    },
+    renderJson: function(res, json){
+        //TODO: 
+    }
+};
+</pre>
+</div>
+<p>这里viewEngine主要负责模板解析。node有很多的可用的模块，模板解析模块也有一大堆，不过这里我们是要“玩”，所以模板解析系统我们这里使用<a href="http://www.kuwata-lab.com/tenjin/jstenjin-users-guide.html">jstenjin</a>来稍作修改：</p>
+<p> </p>
+<div>
+<pre>//shotenjin.js 增加的代码
+//模板缓存，缓存解析后的模板
+Shotenjin.templateCatch = {};
+//读取模板内容
+//在模板中引用模板使用： {# ../layout.html #}
+Shotenjin.getTemplateStr = function(filename){
+    //console.log('get template:' + filename);
+    var t = '';
+    //这里使用的是同步读取
+    if(path.existsSync(filename)){
+        t = fs.readFileSync(filename, 'utf-8');
+    }else{
+        throw 'View: ' + filename + ' not exists';
+    }
+    t = t.replace(/\{#[\s]*([\.\/\w\-]+)[\s]*#\}/ig, function(m, g1) {
+        var fp = path.join(filename, g1.trim())
+        return Shotenjin.getTemplateStr(fp);
+    });
+    return t;
+};
+Shotenjin.renderView = function(viewPath, context) {
+    var template = Shotenjin.templateCatch[viewPath];
+    if(!template){
+        var template_str = Shotenjin.getTemplateStr(viewPath);
+        var template = new Shotenjin.Template();
+        template.convert(template_str);
+        //添加到缓存中
+        Shotenjin.templateCatch[viewPath] = template;
+    }
+    var output = template.render(context);
+    return output;
+};
+global.Shotenjin = Shotenjin;
+</pre>
+</div>
+<p>增加的代码主要是读取模板的内容，并解析模板中类似 {# ../layout.html #} 的标签，递归读取所有的模板内容，然后调用jstenjin的方法来解析模板。 </p>
+<p>这里读取文件内容使用的是fs.readFileSync，这是同步阻塞读取文件内容的，和我们平时使用的大多编程语言一样，而fs.readFile的非阻塞异步读。 </p>
+<p>这里的shotenjin.js原来是给客户端web浏览器javascript解析模板用的，现在拿到node.js来用，完全不用修改就正常工作。Google V8真威武。 </p>
+<p>现在基本的东西都完成了，但是对于静态文件，例如js、css等我们需要一个静态文件服务器： </p>
+<p> </p>
+<p> </p>
+<div>
+<pre>var staticFileServer = function(req, res, filePath){
+    if(!filePath){
+        filePath = path.join(__dirname, config.staticFileDir, url.parse(req.url).pathname);
+    }
+    path.exists(filePath, function(exists) {  
+        if(!exists) {  
+            handler404(req, res);  
+            return;  
+        }  
+        fs.readFile(filePath, "binary", function(err, file) {  
+            if(err) {  
+                handler500(req, res, err);
+                return;  
+            }
+            var ext = path.extname(filePath);
+            ext = ext ? ext.slice(1) : 'html';
+            res.writeHead(200, {'Content-Type': contentTypes[ext] || 'text/html'});
+            res.write(file, "binary");
+            res.end();
+        });  
+    });
+};
+var contentTypes = {
+  "aiff": "audio/x-aiff",
+  "arj": "application/x-arj-compressed"
+  //省略
+}
+</pre>
+</div>
+<p>简单来说就是读取文件内容并写入到response中返回给客户端。 </p>
+<p>现在该有的都有了，我们写一个action： </p>
+<p> </p>
+<div>
+<pre>// ./controllers/blog.js
+exports.index = function(){
+    this.render('blog/index.html', {msg:'Hello World'});
+};
+</pre>
+</div>
+<p>blog/index.html的内容为： </p>
+<div>
+<pre><div><span style="color:#000000">{# http://www.cnblogs.com/header.html #}<br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">h3 </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="title"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000">n2Mvc Demo</span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">h3</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">h1</span><span style="color:#0000ff">&gt;</span><span style="color:#000000">#{msg}</span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">h1</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>{# http://www.cnblogs.com/footer.html #}</span></div></pre>
+</div>
+<p> 接着，就是写一个脚本来启动我们的n2Mvc了：</p>
+<div>
+<pre><div><span style="color:#008000">//</span><span style="color:#008000"> run.js</span><span style="color:#008000"><br></span><span style="color:#0000ff">var</span><span style="color:#000000"> n2MvcServer </span><span style="color:#000000">=</span><span style="color:#000000"> require(</span><span style="color:#000000">'</span><span style="color:#000000">./server</span><span style="color:#000000">'</span><span style="color:#000000">);<br>n2MvcServer.runServer();</span></div></pre>
+</div>
+<p>ok，运行我们的启动脚本：</p>
+<p>在浏览器访问看看： </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206139541.jpg"><img title="clip_image006[7]" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="349" alt="clip_image006[7]" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206143053.jpg" width="512" border="0"></a> </p>
+<p>嗯嗯，一切正常。 </p>
+<p> </p>
+<p>好，接下来我们再写一个获取新浪微博最新微博的页面。首先，我们在config.js中增加一个route配置：</p>
+<p> </p>
+<div>
+<pre>route.map({
+    method:'get',
+    url: /\/tweets\/?$/i,
+    controller: 'blog',
+    action: 'tweets'
+});
+</pre>
+</div>
+<p>然后开始写我们的cnotroller action：</p>
+<p> </p>
+<div>
+<pre>var http = require(&#39;http&#39;),
+    events = require(&quot;events&quot;);
+var tsina_client = http.createClient(80, &quot;api.t.sina.com.cn&quot;);
+var tweets_emitter = new events.EventEmitter();
+// action: tweets
+exports.tweets = function(blogType){
+    var _t = this;
+    var listener = tweets_emitter.once(&quot;tweets&quot;, function(tweets) {  
+        _t.render(&#39;blog/tweets.html&#39;, {tweets: tweets});
+    });
+    get_tweets();
+};
+function get_tweets() {
+    var request = tsina_client.request(&quot;GET&quot;, &quot;/statuses/public_timeline.json?source=3243248798&quot;, {&quot;host&quot;: &quot;api.t.sina.com.cn&quot;});
+    request.addListener(&quot;response&quot;, function(response) {
+        var body = &quot;&quot;;
+        response.addListener(&quot;data&quot;, function(data) {
+            body += data;
+        });
+        response.addListener(&quot;end&quot;, function() {
+            var tweets = JSON.parse(body);
+            if(tweets.length &gt; 0) {
+                console.log(&#39;get tweets \n&#39;);
+                tweets_emitter.emit(&quot;tweets&quot;, tweets);
+            }
+        });
+    });
+    request.end();
+}
+</pre>
+</div>
+<p>这里使用http.createClient来发送请求获取新浪微博的最新微博，然后注册相应事件的监听。这里详细说下node的事件系统：EventEmitter。 EventEmitter可以通过require('events'). EventEmitter来访问，创建一个 EventEmitter的实例emitter后，就可以通过这个emitter来注册、删除、发出事件了。 </p>
+<p>例如上面的代码中，先创建来一个EventEmitter的实例： </p>
+<div>
+<pre><div><span style="color:#0000ff">var</span><span style="color:#000000"> tweets_emitter </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> events.EventEmitter();</span></div></pre>
+</div>
+<p>然后用once注册一个一次性的事件监听：</p>
+<div>
+<pre><div><span style="color:#000000">    </span><span style="color:#0000ff">var</span><span style="color:#000000"> listener </span><span style="color:#000000">=</span><span style="color:#000000"> tweets_emitter.once(</span><span style="color:#000000">"</span><span style="color:#000000">tweets</span><span style="color:#000000">"</span><span style="color:#000000">, </span><span style="color:#0000ff">function</span><span style="color:#000000">(tweets) {  <br>        _t.render(</span><span style="color:#000000">'</span><span style="color:#000000">blog/tweets_data.html</span><span style="color:#000000">'</span><span style="color:#000000">, {tweets: tweets});<br>    });</span></div></pre>
+</div>
+<p>once注册的事件在事件被触发一次后，就会自动移除。 </p>
+<p>最后，通过emit来发出事件： </p>
+<div>
+<pre><div><span style="color:#000000">tweets_emitter.emit(</span><span style="color:#000000">"</span><span style="color:#000000">tweets</span><span style="color:#000000">"</span><span style="color:#000000">, tweets);</span></div></pre>
+</div>
+<p>这样，整个事件的流程都清晰了。</p>
+<p>下面写一下显示tweets的模板： </p>
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>tweets.html</span>
+<div>
+<pre><div><span style="color:#0000ff">&lt;</span><span style="color:#800000">ul</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;?</span><span style="color:#ff00ff">js for(var i in tweets){ </span><span style="color:#0000ff">?&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;?</span><span style="color:#ff00ff">js var tweet = tweets[i], user = tweets[i].user; </span><span style="color:#0000ff">?&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">li</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="usericon"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">a </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="user_head"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="###"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">img </span><span style="color:#ff0000">src</span><span style="color:#0000ff">="#{user.profile_image_url}"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">a</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="mainContent"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="userName"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">a </span><span style="color:#ff0000">href</span><span style="color:#0000ff">="###"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    #{user.screen_name}<br>                </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">a</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="msg"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="tweet"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="tweet_text"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                        #{tweet.text}<br>                    </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;?</span><span style="color:#ff00ff">js if(tweet.thumbnail_pic){ </span><span style="color:#0000ff">?&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">a </span><span style="color:#ff0000">target</span><span style="color:#0000ff">="_blank"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="javascript:void(0);"</span><span style="color:#ff0000"> class</span><span style="color:#0000ff">="thumbnail_pic"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                            </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">img </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="pic"</span><span style="color:#ff0000"> src</span><span style="color:#0000ff">="#{tweet.thumbnail_pic}"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>                        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">a</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                    </span><span style="color:#0000ff">&lt;?</span><span style="color:#ff00ff">js } </span><span style="color:#0000ff">?&gt;</span><span style="color:#000000"><br>                </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">br </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="clear"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">li</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;?</span><span style="color:#ff00ff">js } </span><span style="color:#0000ff">?&gt;</span><span style="color:#000000"><br></span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">ul</span><span style="color:#0000ff">&gt;</span></div></pre>
+</div>
+</div>
+<p> </p>
+<p>万事大吉，运行并访问：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206157886.jpg"><img title="clip_image008[6]" style="display:block;float:none;margin-left:auto;margin-right:auto;border:0px" height="397" alt="clip_image008[6]" src="http://images.cnblogs.com/cnblogs_com/QLeelulu/201101/201101280206178924.jpg" width="380" border="0"></a></p>
+<p> </p>
+<h3>附一个简单的和Django的对比测试</h3>
+<p><img src="http://pic002.cnblogs.com/images/2011/26621/2011012811490365.png"></p>
+<p> </p>
+<p> </p>
+<h3>后记</h3>
+<p>本文写的mvc框架完全是为了尝试node.js，其实node已经有很多的
+
+<span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:22px"><a style="line-height:1.4em;color:#4183c4;text-decoration:none;outline-style:none;outline-width:initial;outline-color:initial;padding:0px;margin:0px" href="http://github.com/ry/node/wiki/modules">Modules</a></span>可以用，也有比较成熟的web框架<span style="font-family:helvetica,arial,freesans,clean,sans-serif;line-height:22px"><a style="line-height:1.4em;color:#4183c4;text-decoration:none;outline-style:none;outline-width:initial;outline-color:initial;padding:0px;margin:0px" href="http://github.com/visionmedia/express/tree/master">Express</a></span>。如果你要实现一个模块之前，可以先到node的modules页面查找下有没有你需要的模块先。</p>
+<p><span style="color:#ff0000">本文示例源代码</span>：<span style="font-family:Verdana;line-height:normal;font-size:12px;color:#333333"><a href="http://files.cnblogs.com/QLeelulu/learnNode.zip" style="color:#002c99;text-decoration:none;background:inherit">learnNode.zip</a></span></p>
+<p>
+
+</p>
+<p>
+
+</p>
+<h3>一些资源：</h3>
+<p> node.js的文档：<a href="http://nodejs.org/api.html">http://nodejs.org/api.html</a></p>
+<p>How To Node:  <a href="http://howtonode.org/">http://howtonode.org</a></p>
+<p>
+
+Node.js中文社区： <a href="http://cnodejs.org/">http://cnodejs.org</a> （由淘宝的工程师发起）</p>
+<p>learning-serverside-javascript-with-node-js: <a href="http://net.tutsplus.com/tutorials/javascript-ajax/learning-serverside-javascript-with-node-js/">http://net.tutsplus.com/tutorials/javascript-ajax/learning-serverside-javascript-with-node-js/</a> (中文翻译版：<a href="http://www.osseye.com/?p=456">http://www.osseye.com/?p=456</a> )</p>
+<p>
+
+</p>
+<p> </p>
+<p>
+
+</p>
+<p> </p>
+<p> </p>
+<p>
+
+</p>
+<p>
+
+</p><img src="http://www.cnblogs.com/QLeelulu/aggbug/1946576.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/QLeelulu/">Q.Lee.lulu</a> 发表于 2011-01-28 02:06 <a href="http://www.cnblogs.com/QLeelulu/archive/2011/01/28/nodejs_into_and_n2mvc.html">原文链接</a></p><p>评论: 14　<a href="http://www.cnblogs.com/QLeelulu/archive/2011/01/28/nodejs_into_and_n2mvc.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/QLeelulu/archive/2011/01/28/nodejs_into_and_n2mvc.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/89821/">Google操作系统Chrome OS最新Beta版发布</a><span style="color:gray">(2011-01-28 13:38)</span><br>· <a href="http://news.cnblogs.com/n/89820/">埃及政府关闭黑莓手机服务并中断互联网</a><span style="color:gray">(2011-01-28 13:35)</span><br>· <a href="http://news.cnblogs.com/n/89819/">怎样才能成为一个优秀的产品经理？</a><span style="color:gray">(2011-01-28 13:23)</span><br>· <a href="http://news.cnblogs.com/n/89818/">李国庆舌战大摩或徒劳：当当撬不动华尔街</a><span style="color:gray">(2011-01-28 13:20)</span><br>· <a href="http://news.cnblogs.com/n/89817/">邮递失误致用户损失达百万 快递公司只赔400元</a><span style="color:gray">(2011-01-28 13:10)</span><br></p><p>编辑推荐：<a href="http://zt.cnblogs.com/blogswarriors/auction">“博客无双”拍卖活动正在进行(奖品:微软背包)</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

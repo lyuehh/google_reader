@@ -1,0 +1,68 @@
+---
+layout: post
+title:  "jQuery制作瀑布流"
+date:   2012-08-07 12:24:22
+author: Airen
+categories: program
+---
+
+## jQuery制作瀑布流
+### by Airen
+### at 2012-08-07 12:24:22
+### original <http://www.w3cplus.com/resources/create-dynamic-grid-layouts-like-pinterest.html>
+
+<div><div><div><img src="http://www.w3cplus.com/sites/default/files/source/1.jpg" width="500" height="250" alt="jQuery制作瀑布流"></div></div></div><div><div><div><p>“瀑布流布局”随着<a href="http://pinterest.com/">pinterest</a>网的流行而出名，现在国内使用这种风格布局的网站也越来越多，比如说<a href="http://markzhi.com">Mark之</a>，<a href="http://www.mogujie.com/book/clothing/">蘑菇街</a>，<a href="http://www.diandian.com/">点点网</a>，<a href="http://wow%E3%80%82taobao.com/">哇哦</a>等等。我第一次听到这个布局名称是来自于“<a href="http://ued.taobao.com/blog/2011/09/14/waterfall/">乔花</a>写的《<a href="http://ued.taobao.com/blog/2011/09/14/waterfall/">瀑布流布局浅析</a>一文”，之后在群里也时不时有同学会问有关于这种布局的使用方法。今天我老话重谈，主要向大家介绍一些相关的制作插件，以及成功的案例，希望能给大家今后的工作有所帮助。</p>
+<h4>制作瀑布流布局的优秀插件</h4>
+<p>首先简单的向大家推荐几款制作瀑布流的jQuery插件，这些插件能帮助大家轻松的实现类似于<a href="http://pinterest.com/">pinterest</a>的布局效果：</p>
+<h4>1.<a href="http://masonry.desandro.com/index.html">Masonry</a></h4>
+<p><a href="http://masonry.desandro.com/index.html" title="Masonry"><img alt="Masonry" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/1.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>Masonry是一个动态的网格布局插件。每个元素水平方向都采用全float布局，但在垂直方向使用绝对定位来控制元素的位置，犹如彻墙一样，能做到见缝插针。</p>
+<h4>2.<a href="http://isotope.metafizzy.co/index.html">Isotope</a></h4>
+<p><a href="http://isotope.metafizzy.co/index.html" title="Isotope"><img alt="Isotope" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/2.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>Isotope是一款实现动态布局的精致jQuery插件，是单独的CSS无法实现的，而且他可以通过jQuery选择器来控制元素的显示与隐藏等。</p>
+<h4>3.<a href="http://www.inwebson.com/jquery/blocksit-js-dynamic-grid-layout-jquery-plugin">Blockslt</a></h4>
+<p><a href="http://www.inwebson.com/jquery/blocksit-js-dynamic-grid-layout-jquery-plugin" title="Blockslt"><img alt="Blockslt" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/3.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>BlocksIt.js是一个创建动态的网格布局的jQuery插件。它将HTML元素转换为“块”,它们的位置布局类似于网格布局的Pinterest一样。</p>
+<h4>4.<a href="http://www.wookmark.com/jquery-plugin">Wookmark</a></h4>
+<p><a href="http://www.wookmark.com/jquery-plugin" title="Wookmark"><img alt="Wookmark" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/4.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>Wookmark是一款简单的动态网格布局的jQuery插件。</p>
+<h4>5.<a href="https://github.com/evenwu/pinterest-clone-layout">Pinterest Clone Layout</a></h4>
+<p><a href="https://github.com/evenwu/pinterest-clone-layout" title="Pinterest Clone Layout"><img alt="Pinterest Clone Layout" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/5.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>这是一个客隆了Pinterest网站布局的jQuery，方便你快速创建一个类似于pinterest布局效果的站点</p>
+<h4>6.<a href="http://jsonenglish.com/projects/flex">Flex</a></h4>
+<p><a href="http://jsonenglish.com/projects/flex" title="Flex"><img alt="Flex" height="313" src="http://www.w3cplus.com/sites/default/files/source/dlayout/6.png" style="border:1px solid #ccc;padding:1px" width="550"></a></p>
+<p>Flex是一个流体不对称的动画网格布局插件。它还有一个鼠标悬停时放大的功能。</p>
+<p>上面六款都是jQuery插件，主要功能就是可以使用他们来制作大家所说的瀑布流布局，当然你要是认为他们不好，你可以自己动手写一个这样的插件，这点我相信您行的，但有很多不懂js的同学，还是可以用一用，顶个急。下面我们一起来看看哪些方网站在使用瀑布流布局。</p>
+<h4>谁在使用瀑布流布局？</h4>
+<p>下面展示的都是瀑布流布局的网站，看起来都很经典，然而看起来很熟悉,因为它们都是从<a href="http://pinterest.com/">Pinterest</a>克隆出来的。否则,他们中的许多人只是简单的创造性使用动态的网格来展示他们的作品和内容。</p>
+<p><strong>1.<a href="http://www.pinspire.com">Pinspire</a></strong></p>
+<p><a href="http://www.pinspire.com"><img alt="Pinspire" src="http://www.w3cplus.com/sites/default/files/source/dlayout/1.jpg" title="Pinspire"></a></p>
+<p>一个经典的瀑布流布局案例，常常被人拿来客隆。</p>
+<p><strong>2.<a href="http://www.woxihuan.com/">WoXiHuan</a></strong></p>
+<p><a href="http://www.woxihuan.com/"><img alt="WoXiHuan" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/2.jpg" style="border:1px solid #ccc" title="WoXiHuan" width="550"></a></p>
+<p><strong>3.<a href="http://huaban.com/">Huaban</a></strong></p>
+<p><a href="http://huaban.com/"><img alt="Huaban" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/3.jpg" style="border:1px solid #ccc" title="Huaban" width="550"></a></p>
+<p><strong>4.<a href="http://www.mishang.com/">Mishang</a></strong></p>
+<p><a href="http://www.mishang.com/"><img alt="Mishang" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/4.jpg" style="border:1px solid #ccc" title="Mishang" width="550"></a></p>
+<p><strong>5.<a href="http://www.trippy.com/">Trippy</a></strong></p>
+<p><a href="http://www.trippy.com/"><img alt="Trippy" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/5.jpg" style="border:1px solid #ccc" title="Trippy" width="550"></a></p>
+<p><strong>6.<a href="http://chill.com/">Chill</a></strong></p>
+<p><a href="http://chill.com/"><img alt="Chill" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/6.jpg" style="border:1px solid #ccc" title="Chill" width="550"></a></p>
+<p><strong>7.<a href="http://sworly.com/">Sworly</a></strong></p>
+<p><a href="http://sworly.com/"><img alt="Sworly" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/7.jpg" style="border:1px solid #ccc" title="Sworly" width="550"></a></p>
+<p><strong>8.<a href="http://veerle.duoh.com/inspiration">Veerle</a></strong></p>
+<p><a href="http://veerle.duoh.com/inspiration"><img alt="Veerle" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/8.jpg" style="border:1px solid #ccc" title="Veerle" width="550"></a></p>
+<p><strong>9.<a href="http://allwomenstalk.com/">All Womens Talk</a></strong></p>
+<p><a href="http://allwomenstalk.com/"><img alt="All Womens Talk" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/9.jpg" style="border:1px solid #ccc" title="All Womens Talk" width="550"></a></p>
+<p><strong>10.<a href="http://gentlemint.com/">GentleMint</a></strong></p>
+<p><a href="http://gentlemint.com/"><img alt="GentleMint" height="250" src="http://www.w3cplus.com/sites/default/files/source/dlayout/10.jpg" style="border:1px solid #ccc" title="GentleMint" width="550"></a></p>
+<p>除了这些案例之外，当然还有更优秀的，只不过我没有发现，如果大家手上还有更好的插件和案例，希望能与我们分享。谢谢大家。</p>
+<p>如需转载，烦请注明出处：<a href="http://www.w3cplus.com/resources/create-dynamic-grid-layouts-like-pinterest.html">http://www.w3cplus.com/resources/create-dynamic-grid-layouts-like-pinterest.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/resource/tags/54.html">jQuery</a></li><li><a href="http://www.w3cplus.com/resource/tags/98.html">Plus</a></li><li><a href="http://www.w3cplus.com/resource/tags/174.html">瀑布流</a></li><li><a href="http://www.w3cplus.com/resource/tags/175.html">layout</a></li></ul></div><div><div><div><div>
+      <div>12</div>
+                  <a href="http://www.w3cplus.com/vote/node/363/1/vote/alternate/fxqcaSZ_UQAdswh53w9dn_djuiNinaQuMSCPQnvqxJ4/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/664661578/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/resources/create-dynamic-grid-layouts-like-pinterest.html" border="0" height="0" width="0">

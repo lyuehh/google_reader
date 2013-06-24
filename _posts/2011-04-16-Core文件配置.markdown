@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "Core文件配置"
+date:   2011-04-16 10:43:00
+author: C++技术中心
+categories: program
+---
+
+## Core文件配置
+### by C++技术中心
+### at 2011-04-16 10:43:00
+### original <http://www.cppblog.com/API/archive/2011/04/16/144345.html>
+
+如何打开core dump呢？最简单的方法是用户在自己的~/.bash_profile中加入ulimit -S -c unlimited &gt; /dev/null 2&gt;&amp;1，这样设置后允许当前用户生成没有大小限制的core dump文件。此外还有两种系统级修改生成core dump的方法。<br><br>第一种方法是修改/etc/profile，把ulimit那一行改为<br><br>ulimit -S -c unlimited &gt; /dev/null 2&gt;&amp;1<br><br>这样设置后系统允许所有用户生成没有大小限制的core dump文件。这样做的优点是不需要重起系统，缺点是无法控制只让某些用户生成core dump文件。<br><br>第二种方法是修改/etc/security/limits.conf文件。很多系统上限都可以通过修改这个文件改变，如最大子进程个数，最大打开文件数等等。这个文件有详细的注释，对如何修改这个文件做了说明。如果想对所有用户打开core dump，可以加入一行<br><br>* soft 　core　 0<br><br><br><img src="http://www.cppblog.com/API/aggbug/144345.html" width="1" height="1"><br><br><div align="right"><a style="text-decoration:none" href="http://www.cppblog.com/API/">C++技术中心</a> 2011-04-16 10:43 <a href="http://www.cppblog.com/API/archive/2011/04/16/144345.html#Feedback" style="text-decoration:none">发表评论</a></div>

@@ -1,0 +1,58 @@
+---
+layout: post
+title:  "Blend4精选案例图解教程（四）：请给我路径指引"
+date:   2010-09-10 22:29:00
+author: 银光映画
+categories: program
+---
+
+## Blend4精选案例图解教程（四）：请给我路径指引
+### by 银光映画
+### at 2010-09-10 22:29:00
+### original <http://www.cnblogs.com/YGYH/archive/2010/09/10/1822945.html>
+
+<p><a href="http://www.cnblogs.com/YGYH/"><img src="http://pic.cnblogs.com/face/u154183.png" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/YGYH/">银光映画</a> 发表于 2010-09-10 22:29 <a href="http://www.cnblogs.com/YGYH/archive/2010/09/10/1822945.html">原文链接</a> 阅读: 487 评论: 4</p><p>路径在界面设计中，可以起到很好的辅助作用，我常常使用它来对元素进行规则排列和非规则排列控制。</p>
+<p>本次教程将演示，Blend中路径的常规用法。</p>
+<p>1、新建项目，在默认设计视图中添加一个椭圆（Elipse），按住Shift键可以画圆</p>
+<p>视图树<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/1_2.png"><img height="164" width="345" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/1_thumb.png" alt="1" border="0" title="1" style="display:inline;border-width:0px"></a>设计视图<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/1-1_2.png"><img height="187" width="194" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/1-1_thumb.png" alt="1-1" border="0" title="1-1" style="display:inline;border-width:0px"></a> </p>
+<p>2、从绘制的圆中提取路径，右键点击圆，弹出的窗口选择Path-Make Layout Path，在视图树中显示为PathListBox，这就是我们需要的路径</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/2_2.png"><img height="329" width="463" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/2_thumb.png" alt="2" border="0" title="2" style="display:inline;border-width:0px"></a> <a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/2-1_2.png"><img height="186" width="345" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/2-1_thumb.png" alt="2-1" border="0" title="2-1" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>3、选中PathListBox，通过双击图片，往PathListBox中添加需要通过路径排列的元素</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/3_2.png"><img height="295" width="272" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/3_thumb.png" alt="3" border="0" title="3" style="display:inline;border-width:0px"></a> 视图树<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/3-1_2.png"><img height="288" width="345" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/3-1_thumb.png" alt="3-1" border="0" title="3-1" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>4、为了查看效果，暂时把elipse的可见关闭</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/4_2.png"><img height="92" width="328" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/4_thumb.png" alt="4" border="0" title="4" style="display:inline;border-width:0px"></a> 效果图<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/4-1_2.png"><img height="209" width="234" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/4-1_thumb.png" alt="4-1" border="0" title="4-1" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>5、路径带来的效果已初步展现，下面在进行属性设置，使图片的排列更符合我们的要求。</p>
+<p>确保选中PathListBox，然后在属性窗口中进行属性调整</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5_2.png"><img height="180" width="345" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5_thumb.png" alt="5" border="0" title="5" style="display:inline;border-width:0px"></a> </p>
+<p>ZIndex:2 使图片显示在elipse（elipse的ZIndex属性为1）</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-1_2.png"><img height="146" width="266" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-1_thumb.png" alt="5-1" border="0" title="5-1" style="display:inline;border-width:0px"></a> </p>
+<p>排列属性：平均</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-2_2.png"><img height="170" width="272" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-2_thumb.png" alt="5-2" border="0" title="5-2" style="display:inline;border-width:0px"></a> </p>
+<p>方向：随路径居中</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-3_2.png"><img height="125" width="252" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/5-3_thumb.png" alt="5-3" border="0" title="5-3" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>6、对elipse进行简单的属性设置，作为图片显示的背景</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6_2.png"><img height="185" width="342" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6_thumb.png" alt="6" border="0" title="6" style="display:inline;border-width:0px"></a> <a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6-1_2.png"><img height="142" width="266" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6-1_thumb.png" alt="6-1" border="0" title="6-1" style="display:inline;border-width:0px"></a> <a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6-2_2.png"><img height="304" width="264" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/6-2_thumb.png" alt="6-2" border="0" title="6-2" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>7、OK，效果出来了，是不是有点像八卦图。呵呵，咱们继续！</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/7_2.png"><img height="211" width="220" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/7_thumb.png" alt="7" border="0" title="7" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>8、使用钢笔工具创建不规则路径，对图片进行不规则排列</p>
+<p>新建一个UserControl</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/8_2.png"><img height="430" width="399" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/8_thumb.png" alt="8" border="0" title="8" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>9、使用钢笔工具，随意画出一些路径</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/9_2.png"><img height="115" width="81" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/9_thumb.png" alt="9" border="0" title="9" style="display:inline;border-width:0px"></a> 设计图<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/10-1_2.png"><img height="196" width="354" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/10-1_thumb.png" alt="10-1" border="0" title="10-1" style="display:inline;border-width:0px"></a> 视图树<a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/10_2.png"><img height="167" width="341" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/10_thumb.png" alt="10" border="0" title="10" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>10、提取路径，加入图片元素</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/11_2.png"><img height="358" width="517" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/11_thumb.png" alt="11" border="0" title="11" style="display:inline;border-width:0px"></a> <a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12_2.png"><img height="247" width="255" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12_thumb.png" alt="12" border="0" title="12" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>11、把UserControl的背景设置为白色，改变分布（Distribution）属性为Even（平均）</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12-2_2.png"><img height="52" width="244" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12-2_thumb.png" alt="12-2" border="0" title="12-2" style="display:inline;border-width:0px"></a> <a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12-3_2.png"><img height="233" width="258" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/12-3_thumb.png" alt="12-3" border="0" title="12-3" style="display:inline;border-width:0px"></a> </p>
+<p> </p>
+<p>12、得到不规则排列图</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/13_2.png"><img height="220" width="383" src="http://images.cnblogs.com/cnblogs_com/YGYH/WindowsLiveWriter/Blend4_149F8/13_thumb.png" alt="13" border="0" title="13" style="display:inline;border-width:0px"></a> </p>
+<p><a href="http://files.cnblogs.com/YGYH/PathListDemo.zip">本教程项目下载</a></p><img src="http://www.cnblogs.com/YGYH/aggbug/1822945.html?type=1" width="1" height="1" alt=""><p>评论: 4　<a href="http://www.cnblogs.com/YGYH/archive/2010/09/10/1822945.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/YGYH/archive/2010/09/10/1822945.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73933/">调查称苹果iOS设备游戏玩家超过任天堂掌机</a><span style="color:gray">(2010-09-11 15:00)</span><br>· <a href="http://news.cnblogs.com/n/73932/">Oracle再次升级Solaris系统 提升安全性</a><span style="color:gray">(2010-09-11 14:58)</span><br>· <a href="http://news.cnblogs.com/n/73931/">传全球最大域名注册商GoDaddy即将挂牌拍卖</a><span style="color:gray">(2010-09-11 14:45)</span><br>· <a href="http://news.cnblogs.com/n/73930/">12款与众不同的苹果iPod</a><span style="color:gray">(2010-09-11 14:09)</span><br>· <a href="http://news.cnblogs.com/n/73928/">彭博新闻周刊：富士康帝国勾勒未来</a><span style="color:gray">(2010-09-11 14:03)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/73909/">IE9 Beta下周问世</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

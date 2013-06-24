@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "重做Unix命令，快速有效学习新语言"
+date:   2012-11-05 02:32:42
+author: 
+categories: program
+---
+
+## 重做Unix命令，快速有效学习新语言
+### by 
+### at 2012-11-05 02:32:42
+### original <http://blog.jobbole.com/29844/?utm_source=rss&utm_medium=rss&utm_campaign=%25e9%2580%259a%25e8%25bf%2587%25e9%2587%258d%25e5%2581%259aunix%25e5%25b0%258f%25e7%25a8%258b%25e5%25ba%258f%25e6%259d%25a5%25e5%25bf%25ab%25e9%2580%259f%25e5%25ad%25a6%25e4%25b9%25a0%25e6%2596%25b0%25e8%25af%25ad%25e8%25a8%2580>
+
+<p>注：本文译自巴西保利斯塔 18 岁<span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span> <a title="Follow Rodrigo Alves Vieira on Twitter" href="http://twitter.com/rodrigoavie">Rodrigo Alves Vieira</a> 的文章《Learn a Programming Language Faster by Copying Unix》。</p>
+<p>对于学习新<span><a href="http://blog.jobbole.com/tag/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" title="如何选择语言和编程语言排名相关文章">编程语言</a></span>的童鞋来说，看书是个选择，阅读他人代码也挺好，但要说效率，我觉得没什么比<strong>实际动手写代码</strong>更高效了。</p>
+<p>我在这篇文章中的建议就是：重新实现 Unix 命令。</p>
+<p><strong>如何着手？</strong></p>
+<p>假设你在学习 Python，你应当尝试做一个和 <strong>cat</strong> 命令功能的程序，或实现 <strong>tree</strong> 命令。</p>
+<p>Unix （命令）程序通常都很精简，功能单一，并且做得都很好（传说中的“Unix哲学”），它们就是学习编程的完美典范。针对一个问题，用最佳方式解决。</p>
+<p>Chris Wanstrath 很久之前<a href="http://ozmm.org/posts/time_in_irb.html">有一个相关范例</a>。</p>
+<p>在接触新语言时，通过重做这些小程序，可极大帮助学习了解该语言的类与函数。</p>
+<p>这里有个例子：</p>
+<div>
+<pre>#!/usr/bin/env ruby
+
+# 在 Ruby 中重做 cat 命令：
+
+ARGV.each do |file|
+  puts File.read file
+end</pre>
+</div>
+<p>虽然学习任何编程语言都采用这种方式，但如果你在学习脚本语言，如Ruby、Python，甚至是  <span><a href="http://blog.jobbole.com/1254/" title="Node.js 究竟是什么？">Node.js</a></span>， 这种技巧效果会更好。</p>
+<p>作为开发人员，我们常需要学习东西。我认为这样的小习惯（技巧）会有所作为的。</p>
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2012/11/Unix-where-there-is-a-shell-there-is-a-way.jpg" rel="lightbox[29844]" title="Unix where there is a shell there is a way"><img title="Unix where there is a shell there is a way" src="http://blog.jobbole.com/wp-content/uploads/2012/11/Unix-where-there-is-a-shell-there-is-a-way.jpg" alt="Unix where there is a shell there is a way" width="464" height="290"></a></p>
+<p> </p>
+<p><span style="color:#ff0000">译注：</span>如果你在学习 Haskell，Haskell 官方 wiki 有份实现 Unix 命令的程序<a href="http://www.haskell.org/haskellwiki/Simple_unix_tools">列表</a>。</p>
+<p> </p>
+<p>英文原文：<a title="Follow Rodrigo Alves Vieira on Twitter" href="http://twitter.com/rodrigoavie">Rodrigo Alves Vieira</a>，编译：<span><a href="http://www.jobbole.com" title="伯乐">伯乐</a></span>在线 – <a href="http://blog.jobbole.com/author/%E9%BB%84%E5%88%A9%E6%B0%91/">黄利民</a></p>
+<p><span style="color:#ff0000">【如需转载，请标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+<p> </p>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/24175/">2012年11月编程语言排行榜：Objective-C有望再度成为年度语言</a></li><li><a href="http://blog.jobbole.com/29411/">从程序员到项目经理（5）：程序员加油站，不是人人都懂的学习要点</a></li><li><a href="http://blog.jobbole.com/29029/">2012年10月编程语言排行榜：Dart 首次进入 Top 50</a></li><li><a href="http://blog.jobbole.com/28941/">在学校教学Java是有争议的</a></li><li><a href="http://blog.jobbole.com/26551/">不要在一门技术上吊死</a></li></ul>

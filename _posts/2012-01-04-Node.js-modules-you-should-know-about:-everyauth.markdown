@@ -1,0 +1,74 @@
+---
+layout: post
+title:  "Node.js modules you should know about: everyauth"
+date:   2012-01-04 02:34:38
+author: Peteris Krumins
+categories: program
+---
+
+## Node.js modules you should know about: everyauth
+### by Peteris Krumins
+### at 2012-01-04 02:34:38
+### original <http://feedproxy.google.com/~r/catonmat/~3/Lo25io4y6dg/nodejs-modules-everyauth>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/d2n91nq9qmj6vqrru8boa895t4/468/60#http%3A%2F%2Fwww.catonmat.net%2Fblog%2Fnodejs-modules-everyauth" width="100%" height="60" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p><p><img src="http://www.catonmat.net/images/nodejs-modules/nodejs-logo.png" alt="node logo" align="left">Hello everyone! This is the 14th post in the <a href="http://www.catonmat.net/blog/nodejs-modules-dnode/">node.js modules you should know about</a> article series.</p>
+<p>The first post was about <a href="http://www.catonmat.net/blog/nodejs-modules-dnode/">dnode</a> - the freestyle rpc library for node, the second was about <a href="http://www.catonmat.net/blog/nodejs-modules-optimist/">optimist</a> - the lightweight options parser for node, the third was about <a href="http://www.catonmat.net/blog/nodejs-modules-lazy/">lazy</a> - lazy lists for node, the fourth was about <a href="http://www.catonmat.net/blog/nodejs-modules-request/">request</a> - the swiss army knife of HTTP streaming, the fifth was about <a href="http://www.catonmat.net/blog/nodejs-modules-hashish/">hashish</a> - hash combinators library, the sixth was about <a href="http://www.catonmat.net/blog/nodejs-modules-read/">read</a> - easy reading from stdin, the seventh was about <a href="http://www.catonmat.net/blog/nodejs-modules-ntwitter/">ntwitter</a> - twitter api for node, the eighth was about <a href="http://www.catonmat.net/blog/nodejs-modules-socketio/">socket.io</a> that makes websockets and realtime possible in all browsers, the ninth was about <a href="http://www.catonmat.net/blog/nodejs-modules-redis/">redis</a> - the best redis client API library for node, the tenth was on <a href="http://www.catonmat.net/blog/nodejs-modules-express/">express</a> - an insanely small and fast web framework for node, the eleventh was <a href="http://www.catonmat.net/blog/nodejs-modules-semver/">semver</a> - a node module that takes care of versioning, the twelfth was <a href="http://www.catonmat.net/blog/nodejs-modules-cradle/">cradle</a> - a high-level, caching, CouchDB client for node, the thirteenth was <a href="http://www.catonmat.net/blog/nodejs-modules-jsonstream/">jsonstream</a> - streaming JSON parsing library.</p>
+<p>Today I'm gonna introduce you to <a href="https://github.com/bnoguchi/everyauth">everyauth</a> by <a href="https://github.com/bnoguchi">Brian Noguchi</a>. Everyauth is a <a href="http://senchalabs.github.com/connect/">connect</a> middleware that allows you to setup authentication for your app via facebook, twitter, google, vimeo, tumblr, 4square, etc.</p>
+<p>Here is a list of all the sites you can use to login into your app:</p>
+<div><p><img src="http://www.catonmat.net/images/nodejs-modules/everyauth.png"><br>
+<small>Everyauth supports a plenty of sites.</small></p>
+</div>
+<p>Everyauth supports OpenID, Google, Twitter, LinkedIn, Yahoo, Readability, Dropbox, Justin.tv, Vimeo, Tumblr, Facebook, Github, Instagram, Foursquare, Gowalla, 37signals, AngelList, Dwolla, Box.net.</p>
+<p>Using it is as simple as setting up a middleware for connect:</p>
+<div><pre><span>var</span> <span>everyauth</span> <span>=</span> <span>require</span><span>(</span><span>&#39;everyauth&#39;</span><span>);</span>
+<span>var</span> <span>connect</span> <span>=</span> <span>require</span><span>(</span><span>&#39;connect&#39;</span><span>);</span>
+
+<span>var</span> <span>app</span> <span>=</span> <span>connect</span><span>(</span><span>everyauth</span><span>.</span><span>middleware</span><span>());</span>
+</pre>
+</div>
+<p>And setting up <code>config.json</code> that contains secret keys from the sites you are going to be using for authentication:</p>
+<div><pre><span>module</span><span>.</span><span>exports</span> <span>=</span> <span>{</span>
+    <span>fb</span><span>:</span> <span>{</span>
+        <span>appId</span><span>:</span> <span>&#39;111565172259433&#39;</span>
+      <span>,</span> <span>appSecret</span><span>:</span> <span>&#39;85f7e0a0cc804886180b887c1f04a3c1&#39;</span>
+    <span>},</span>
+    <span>twit</span><span>:</span> <span>{</span>
+        <span>consumerKey</span><span>:</span> <span>&#39;JLCGyLzuOK1BjnKPKGyQ&#39;</span>
+      <span>,</span> <span>consumerSecret</span><span>:</span> <span>&#39;GNqKfPqtzOcsCtFbGTMqinoATHvBcy1nzCTimeA9M0&#39;</span>
+    <span>},</span>
+    <span>github</span><span>:</span> <span>{</span>
+        <span>appId</span><span>:</span> <span>&#39;11932f2b6d05d2a5fa18&#39;</span>
+      <span>,</span> <span>appSecret</span><span>:</span> <span>&#39;2603d1bc663b74d6732500c1e9ad05b0f4013593&#39;</span>
+    <span>},</span>
+    <span>// ...</span>
+<span>};</span>
+</pre>
+</div>
+<p>Then you setup routes for logging in for each particular site you want to support (in this example facebook) and you're done:</p>
+<div><pre><span>var</span> <span>conf</span> <span>=</span> <span>require</span><span>(</span><span>&#39;./config.json&#39;</span><span>);</span>
+
+<span>var</span> <span>usersByFbId</span> <span>=</span> <span>{};</span>
+
+<span>everyauth</span>
+  <span>.</span><span>facebook</span>
+    <span>.</span><span>appId</span><span>(</span><span>conf</span><span>.</span><span>fb</span><span>.</span><span>appId</span><span>)</span>
+    <span>.</span><span>appSecret</span><span>(</span><span>conf</span><span>.</span><span>fb</span><span>.</span><span>appSecret</span><span>)</span>
+    <span>.</span><span>findOrCreateUser</span><span>(</span><span>function</span> <span>(</span><span>session</span><span>,</span> <span>accessToken</span><span>,</span> <span>accessTokenExtra</span><span>,</span> <span>fbUserMetadata</span><span>)</span> <span>{</span>
+      <span>return</span> <span>usersByFbId</span><span>[</span><span>fbUserMetadata</span><span>.</span><span>id</span><span>]</span> <span>||</span>
+        <span>(</span><span>usersByFbId</span><span>[</span><span>fbUserMetadata</span><span>.</span><span>id</span><span>]</span> <span>=</span> <span>addUser</span><span>(</span><span>&#39;facebook&#39;</span><span>,</span> <span>fbUserMetadata</span><span>));</span>
+    <span>})</span>
+    <span>.</span><span>redirectPath</span><span>(</span><span>&#39;/&#39;</span><span>);</span>
+</pre>
+</div>
+<p>You can install <code>everyauth</code> through npm as always:</p>
+<pre>
+npm install everyauth
+</pre>
+<p>EveryAuth on GitHub: <a href="https://github.com/bnoguchi/everyauth">https://github.com/bnoguchi/everyauth</a>.</p>
+<h2>Sponsor this blog series!</h2>
+<p>Doing a node.js company and want your ad to appear in the series? The ad will go out to 14,000 rss subscribers, 7,000 email subscribers, and it will get viewed by thousands of my blog visitors! <a href="http://www.catonmat.net/feedback/">Email me</a> and we'll set it up! </p>
+<h2>Enjoy!</h2>
+<p>If you love these articles, <a href="http://www.catonmat.net/feed/" title="Subscribe to catonmat.net RSS feed">subscribe to my blog</a> for more, <a href="http://twitter.com/pkrumins" title="Peteris Krumins on Twitter">follow me on Twitter</a> to find about my adventures, and <a href="http://github.com/pkrumins" title="Peteris Krumins on GitHub">watch me produce code on GitHub</a>!</p>
+<div>
+<a href="http://feeds.feedburner.com/~ff/catonmat?a=Lo25io4y6dg:McqshYeKZL8:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/catonmat?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=Lo25io4y6dg:McqshYeKZL8:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/catonmat?i=Lo25io4y6dg:McqshYeKZL8:F7zBnMyn0Lo" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=Lo25io4y6dg:McqshYeKZL8:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/catonmat?i=Lo25io4y6dg:McqshYeKZL8:gIN9vFwOqvQ" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=Lo25io4y6dg:McqshYeKZL8:XiUCZPyL81w"><img src="http://feeds.feedburner.com/~ff/catonmat?d=XiUCZPyL81w" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=Lo25io4y6dg:McqshYeKZL8:DhrJZwOgkxs"><img src="http://feeds.feedburner.com/~ff/catonmat?d=DhrJZwOgkxs" border="0"></a>
+</div><img src="http://feeds.feedburner.com/~r/catonmat/~4/Lo25io4y6dg" height="1" width="1">

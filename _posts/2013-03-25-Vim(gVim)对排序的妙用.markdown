@@ -1,0 +1,63 @@
+---
+layout: post
+title:  "Vim(gVim)对排序的妙用"
+date:   2013-03-25 19:04:01
+author: 
+categories: program
+---
+
+## Vim(gVim)对排序的妙用
+### by 
+### at 2013-03-25 19:04:01
+### original <http://item.feedsky.com/~feedsky/vimer/~7891736/692562843/5995078/1/item.html>
+
+<p>前段时间有博友在群里问了一个关于vim排序的问题，因为时间问题一直没帮忙解决，今天时间正好空出来，就帮忙搞了一下。</p>
+<p>原文的问题如下:</p>
+
+<div><div><pre style="font-family:monospace">vimuser 说：
+2012年03月1日 于 5:04 下午  (编辑)
+今天折腾了一下午，研究vim的排序，看了教程和搜索了一些文档，还是没弄明白，vim的正则表达式跟一般的又不一样，来请教下博主。
+ 
+|1 | 11 | 111| 1111|
+|2 | 22 | 222| 2222|
+要根据第3个|和第4个|之间的列进行排序该如何写命令呢？</pre></div></div>
+
+<p>其实之前也只是简单的用过vim的sort命令，没有想过vim是否能完成如此复杂的排序，不过抱着试试看的态度，我看了一下sort的描述(:h :sort)，其中一段话如下:</p>
+
+<div><div><pre style="font-family:monospace">:[range]sor[t][!] [i][u][r][n][x][o] [/{pattern}/]
+ 
+When /{pattern}/ is specified and there is no [r] flag
+the text matched with {pattern} is skipped, so that
+you sort on what comes after the match.
+Instead of the slash any non-letter can be used.
+For example, to sort on the second comma-separated
+field:
+    :sort /[^,]*,/</pre></div></div>
+
+<p>翻译过来就是，sort确实可以指定跳过的字段，也就是说，我们只要能通过正则把</p>
+
+<div><div><pre style="font-family:monospace">|1 | 11 | 
+|2 | 22 |</pre></div></div>
+
+<p>这一部分跳过就可以了~~</p>
+<p>这部分的正则表达式是:</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+</span>\s<span style="color:#000000">*</span></pre></td></tr></table></div>
+
+<p>所以最终的sort命令如下:</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">:</span><span style="color:#25bb4d">sort</span> <span style="color:#000000">/|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+</span>\s<span style="color:#000000">*/</span></pre></td></tr></table></div>
+
+<p>原文给的例子不好看效果，我们改成如下的例子:</p>
+
+<div><div><pre style="font-family:monospace">|1 | 11 | 222| 1111|
+|2 | 22 | 111| 2222|</pre></div></div>
+
+<p>调用:sort命令的结果是和原来的样子一致的，而调用我们的新命令的结果是:</p>
+
+<div><div><pre style="font-family:monospace">|2 | 22 | 111| 2222|
+|1 | 11 | 222| 1111|</pre></div></div>
+
+<p>OK，就这样~</p>&lt;img src=&quot;http://www1.feedsky.com/t1/692562843/vimer/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/v

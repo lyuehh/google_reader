@@ -1,0 +1,70 @@
+---
+layout: post
+title:  "前端规范系列18-命名小结含思维导图"
+date:   2013-04-28 09:38:49
+author: 前端开发-周文彬
+categories: program
+---
+
+## 前端规范系列18-命名小结含思维导图
+### by 前端开发-周文彬
+### at 2013-04-28 09:38:49
+### original <http://www.zhouwenbin.com/archives/2383>
+
+<p><a href="http://www.zhouwenbin.com/wp-content/uploads/2013/04/%E5%9B%BE%E7%89%873.png"><img alt="图片3" src="http://www.zhouwenbin.com/wp-content/uploads/2013/04/%E5%9B%BE%E7%89%873-500x272.png" width="500" height="272"></a></p>
+<p>1<span style="font-family:宋体">、公用类：左浮动</span><span style="font-family:&#39;Times New Roman&#39;">.fl</span><span style="font-family:宋体">、右浮动</span><span style="font-family:&#39;Times New Roman&#39;">.fr</span><span style="font-family:宋体">、清除浮动</span><span style="font-family:&#39;Times New Roman&#39;">.clearfix</span><span style="font-family:宋体">、视觉隐藏</span><span style="font-family:&#39;Times New Roman&#39;">.vh</span><span style="font-family:宋体">，图片替换</span><span style="font-family:&#39;Times New Roman&#39;">.ir</span><span style="font-family:宋体">，记住这几个公用类就好了，不用去记一大堆原子类。</span></p>
+<p><a href="http://www.zhouwenbin.com/wp-content/uploads/2013/04/%E5%9B%BE%E7%89%872.png"><img alt="图片2" src="http://www.zhouwenbin.com/wp-content/uploads/2013/04/%E5%9B%BE%E7%89%872.png" width="462" height="716"></a></p>
+<p>2、页面划分：公用头部<span style="font-family:&#39;Times New Roman&#39;">#h</span><span style="font-family:宋体">、中部</span><span style="font-family:&#39;Times New Roman&#39;">#b</span><span style="font-family:宋体">、公用尾部</span><span style="font-family:&#39;Times New Roman&#39;">#f</span></p>
+<p>3、布局划分：居中<span style="font-family:&#39;Times New Roman&#39;">.w</span><span style="font-family:宋体">、分行</span><span style="font-family:&#39;Times New Roman&#39;">.r</span><span style="font-family:宋体">、分列</span><span style="font-family:&#39;Times New Roman&#39;">.c</span></p>
+<p>4、模块划分：<span style="font-family:&#39;Times New Roman&#39;">m1</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.m2</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.m3</span></p>
+<p>5、公共模块划分：<span style="font-family:&#39;Times New Roman&#39;">.ma</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.mb</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.mc</span></p>
+<p>6、模块内部划分：头部<span style="font-family:&#39;Times New Roman&#39;">.h</span><span style="font-family:宋体">、中部</span><span style="font-family:&#39;Times New Roman&#39;">.b</span><span style="font-family:宋体">、尾部</span><span style="font-family:&#39;Times New Roman&#39;">.f</span></p>
+<p>7、模块内部布局划分：<span style="font-family:&#39;Times New Roman&#39;">.</span><span style="font-family:宋体">分行</span><span style="font-family:&#39;Times New Roman&#39;">.hr1</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.br1</span><span style="font-family:宋体">、分列</span><span style="font-family:&#39;Times New Roman&#39;">hc1</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">bc1</span></p>
+<p>8、部件划分：<span style="font-family:&#39;Times New Roman&#39;">.wg1</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">.wg2</span><span style="font-family:宋体">。部件结构和样式一样，可以通用，使用</span><span style="font-family:&#39;Times New Roman&#39;">axure</span><span style="font-family:宋体">管理命名。</span></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="前端规范系列13-规范小结" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2081&amp;from=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2383">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/ti/114nB1iEW.png?i=1dzCpEBtX" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">前端规范系列13-规范小结</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="前端规范系列11-页面构建顺序" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2066&amp;from=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2383">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/ti/19gZTgNL4.jpg?i=meAdrUM" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">前端规范系列11-页面构建顺序</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="前端规范系列12-模板嵌套顺序" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2076&amp;from=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2383">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/ti/cR1AWkXV.png?i=1310oIygI" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">前端规范系列12-模板嵌套顺序</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="前端规范系列5-模块外层划分" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2008&amp;from=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2383">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/ti/b6W1f9Nu.jpg?i=dBYkiKff" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">前端规范系列5-模块外层划分</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="前端规范系列6-公共模块的划分" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2015&amp;from=http%3A%2F%2Fwww.zhouwenbin.com%2Farchives%2F2383">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/ti/8h46YQth.jpg?i=etYgVpYj" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">前端规范系列6-公共模块的划分</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><p><a href="http://www.zhouwenbin.com/archives/2383">继续阅读 »</a></p>

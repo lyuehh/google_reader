@@ -1,0 +1,106 @@
+---
+layout: post
+title:  "动态切换 Linux 使用的 CPU 数量"
+date:   2011-10-22 10:41:06
+author: 投稿/转载
+categories: program
+---
+
+## 动态切换 Linux 使用的 CPU 数量
+### by 投稿/转载
+### at 2011-10-22 10:41:06
+### original <http://wowubuntu.com/dynamic-cpu.html>
+
+<p>由于要测试一些代码，其运行结果会受到多核并行的影响，所以希望能够调整使用的 CPU 数量。网络上之前看到的方法是在内核的启动参数上添加一个 maxcpus，但是如果这样的话每切换一次都要重启一次，是在太麻烦了。想想 Linux 应该是很强大的，所以可以动态修改 CPU 数量才对。</p>
+<p>无意中看到 Linux 代码的 Documentation 文件夹下有个文件叫做 cpu-hotplug.txt，于是就看了一下，发现可以在 /sys/devices/system/cpu 看到代表各 CPU 的文件夹按照 cpuX 的命名方式，如 cpu0、cpu1、cpu2 等。这些文件夹里面有一个 online 文件，如果其值为0则禁用该 CPU，如果为1则启用该 CPU。注意，这里需要 root 权限哦。</p>
+<p>因为我只要在单核和多核之间切换，所以我写了两个脚本放在 /usr/local/sbin 里面：</p>
+<p>singlecore</p>
+<blockquote>
+<pre>#!/bin/bash
+cpus_dir=&quot;/sys/devices/system/cpu&quot;
+for cpu in $(ls &quot;$cpus_dir&quot; | grep &#39;cpu[0-9]\+&#39;)
+do
+	cpu_online=&quot;$cpus_dir/$cpu/online&quot;
+	if [[ -e &quot;$cpu_online&quot; &amp;&amp; $(cat $cpu_online) = 1 ]]
+	then
+		echo 0 &gt; &quot;$cpu_online&quot;
+	fi
+done</pre>
+</blockquote>
+<p>multicore</p>
+<blockquote>
+<pre>#!/bin/bash
+cpus_dir=&quot;/sys/devices/system/cpu&quot; 
+for cpu in $(ls &quot;$cpus_dir&quot; | grep &#39;cpu[0-9]\+&#39;)
+do
+	cpu_online=&quot;$cpus_dir/$cpu/online&quot;
+	if [[ -e &quot;$cpu_online&quot; &amp;&amp; $(cat $cpu_online) = 0 ]]
+	then
+		echo 1 &gt; &quot;$cpu_online&quot;
+	fi
+done</pre>
+</blockquote>
+<p>之后需要切换的时候，只要运行 sudo singlecore 或者 sudo multicore 就可以了~</p>
+<p>顺便说一句，我当时在想，如果我禁用了所有的 CPU 会怎么样呢？结果发现 cpu0 是没有 online 文件的，也就是 Linux 至少保证一个 CPU 处于可用状态。</p>
+<p>--感谢 upsuper 的投稿，原文：<a href="http://blog.upsuper.org/dynamic-modify-cpu-number/">http://blog.upsuper.org/dynamic-modify-cpu-number/</a></p>
+# 本文采用<a href="http://creativecommons.org/licenses/by/2.5/cn/">CC协议</a>进行授权，转载本文请注明<a href="http://wowubuntu.com/dynamic-cpu.html" title="Permalink">本文链接<a>。/  6  条留言
+<hr>
+- <a href="http://twitter.com/ubuntu_tips">Twitter</a> 
+/ <a href="http://t.sina.com.cn/utips">微博</a> 
+/ <a href="http://wowubuntu.com/ask">问答</a> 
+/ <a href="http://wowubuntu.com/submit">投稿</a>
+/ <a href="http://wowubuntu.com/join">加入我们</a> wow0slx6bcs721xo1udcc<br>- 高性价比 <a href="http://wowubuntu.com/vps.html">Ubuntu VPS</a> / 本站架设于<a href="http://www.photonvps.com/billing/aff.php?aff=129"> PhotonVPS </a> / 定制 <a href="http://tto.me/kfstee">Ubuntu T-Shirt</a><table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Findicator-cpufreq.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fdynamic-cpu.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Indicator-CPUfreq : 监视和改变 CPU 速率</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2F5linux-news-site.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fdynamic-cpu.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">推荐 5 个Linux新闻网站</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Flinux-market.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fdynamic-cpu.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">11 月份 Linux 市场占有率升至 5%</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Flinux-20-year.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fdynamic-cpu.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">庆祝 Linux 20 周岁</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Flinux3.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Fdynamic-cpu.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Linux Kernel 3.0, 不会有重大变化</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></a></a>

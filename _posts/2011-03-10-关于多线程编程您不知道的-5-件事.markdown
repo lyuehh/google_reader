@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "关于多线程编程您不知道的 5 件事"
+date:   2011-03-10 17:56:41
+author: 
+categories: program
+---
+
+## 关于多线程编程您不知道的 5 件事
+### by 
+### at 2011-03-10 17:56:41
+### original <http://www.ibm.com/developerworks/cn/java/j-5things15/index.html?ca=drs->
+
+多线程编程向来不容易，但是它确实有助于理解 JVM 进程如何巧妙地构建不同代码。Steven Haines 分享 5 个技巧，可以帮助您在使用同步方法、volatile 变量和原子类时做出更明智的决策。

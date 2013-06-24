@@ -1,0 +1,132 @@
+---
+layout: post
+title:  "Flash AS3.0实现下雪效果源代码"
+date:   2010-09-21 14:42:16
+author: 
+categories: program
+---
+
+## Flash AS3.0实现下雪效果源代码
+### by 
+### at 2010-09-21 14:42:16
+### original <http://www.javaeye.com/topic/769085>
+
+效果观看：
+<br><a href="http://www.flexedu.com/zuopin/huangdeqiang/flyrain.swf">http://www.flexedu.com/zuopin/huangdeqiang/flyrain.swf</a>
+<br>
+<br>源代码：
+<br><a href="http://www.flexedu.com/zixun_show.php?id=153&amp;xid=3">http://www.flexedu.com/zixun_show.php?id=153&amp;xid=3</a>
+<br>FlyRain.as:
+<br>package
+<br>{
+<br> import flash.display.MovieClip;
+<br> import flash.display.Sprite;
+<br> import flash.events.Event;
+<br> import flash.filters.BlurFilter;
+<br> 
+<br> [SWF(backgroundColor="#000000")]
+<br> public class FlyRain extends Sprite
+<br> {
+<br>  //首先要创建出一个Rain的类；
+<br>  public var rain:Rain;
+<br>  public var rains:Array;
+<br>  public var vx:Number=0;
+<br>  public var vy:Number=0;
+<br>  public var gravity:Number=0.2;
+<br>  public var ax:Number=1;
+<br>  public var count:int ;
+<br>  
+<br>  public function FlyRain()
+<br>  {
+<br>   //设置舞台；
+<br>   //stage.align=StageAlign.TOP_LEFT;
+<br>   //stage.scaleMode=StageScaleMode.NO_SCALE;
+<br>   //创建一个数组用来盛放rain元件；
+<br>   rains=new Array();
+<br>   //用一个循环体创建出200个雪花，随即放在舞台上，并增加一个模糊滤镜的效果，显得更加逼真。
+<br>   for (var i:int=1; i &lt;= 300; i++)
+<br>   {
+<br>    //随机设置雪花的大小
+<br>    rain=new Rain( 1);
+<br>    addChild(rain);
+<br>    //建立一个随机模糊的量
+<br>    //rain.filters=[new BlurFilter(Math.random() * 1 + 3, Math.random() * 1 + 3)];
+<br>    
+<br>    rain.x=Math.random() * 100 ;
+<br>    rain.y=-Math.random() * 300 ;
+<br>    
+<br>    var z:Number = Math.random() ;
+<br>    
+<br>    rain.z=Math.random() * 2000-1500 ;
+<br>    
+<br>    //rain.vx=Math.random()*2 ;
+<br>    //rain.vy=Math.random()*3 ;
+<br>    
+<br>    //rain.scaleX=rain.scaleY=z*3;
+<br>    
+<br>    //将创建出的雪花添加进数组
+<br>    rains.push(rain);
+<br>   }
+<br>   addEventListener(Event.ENTER_FRAME, K);
+<br>  }
+<br>  
+<br>  private function K(e:Event):void
+<br>  {
+<br>   count++;
+<br>   //if (count % 2)
+<br>   for (var i:int=0; i &lt; rains.length; i++)
+<br>   {
+<br>    //创建一个雪花实例，使他引用数组中的雪花
+<br>    var rain:Rain=Rain(rains[i]);
+<br>    //创建出一个变量，用来改变雪花下落的姿态；
+<br>    vx=Math.random();
+<br>    vy=Math.random() * 5 + 1 + gravity;
+<br>    //随即下落
+<br>    rain.x += (vx + 2);
+<br>    rain.y += (vy + 2);
+<br>    //rain.rotationZ +=  Math.random()*5-10
+<br>    //如果雪花超出舞台那么就重新放回舞台上方
+<br>    if (rain.y &gt; 400)
+<br>    {
+<br>     rain.x=Math.random() * 600;
+<br>     rain.y=Math.random() ;
+<br>    }
+<br>   }
+<br>  }
+<br> }
+<br>}
+<br>Rain.as:
+<br>package{
+<br>        import flash.display.Sprite;
+<br>        import flash.filters.GlowFilter;
+<br>        public class Rain extends Sprite {
+<br>                public var R:Number;
+<br>                public function Rain(_R:Number=5) {
+<br>                        R=_R;
+<br>                        drawing();
+<br>                }
+<br>                private function drawing():void {
+<br>     
+<br>     var n:Number = Math.random() ;
+<br>     
+<br>     graphics.lineStyle(0.1,0xffffff);
+<br>     graphics.lineTo(this.x + n + R, this.y+n +R+10);
+<br>                }
+<br>        }
+<br>}
+<br>源代码下载：
+<br><a href="http://www.flexedu.com/zuopin/huangdeqiang/rain.rar">http://www.flexedu.com/zuopin/huangdeqiang/rain.rar</a>
+          
+          <br><br>
+          作者: <a href="http://wangkuaigan.javaeye.com">wangkuaigan</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/769085" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,137 @@
+---
+layout: post
+title:  "rails3项目解析之1——系统架构"
+date:   2011-05-25 17:54:09
+author: 
+categories: program
+---
+
+## rails3项目解析之1——系统架构
+### by 
+### at 2011-05-25 17:54:09
+### original <http://www.iteye.com/topic/1058510>
+
+<a href="http://www.iteye.com/topic/1075604">rails3项目解析之2——rails基础</a>
+<br>
+<br>
+<br>用rails3做目前的这个网站项目，已经有半年多了。我们这个团队应该算是比较早使用rails3做项目的，3.0正式版刚发布就开始尝试了，在项目开发期间针对很多问题也做了一些探索。谈不上经验，更称不上最佳实践，只是分享出来，经学见易，道家见淫，有需要的朋友各取所需。小公司小项目，适用于初中级用户，大牛们可一笑而过。
+<br>
+<br><strong><span style="font-size:large">1、网站需求</span></strong>
+<br>
+<br>财经资讯网站，向用户提供财经金融资讯，发布和宣传公司研发的各种金融产品，引导用户注册和购买产品。当前网站的内容来源是公司的资讯平台和行情数据库，通过http接口和oracle sql获取数据并展现，可能在中短期会有用户互动和用户原创内容（UGC）的需求。
+<br>
+<br>在可预期的未来，即2到3年内，预计流量将达到10-100万PV/天。因此在进行设计时，以该流量作为本架构能够承载的上限。如果网站真的有幸活到了几百万PV以上的流量，那肯定就不缺钱了，凡是钱能解决的问题，都不是什么大问题。
+<br>
+<br><strong><span style="font-size:large">2、架构设计</span></strong>
+<br>
+<br>根据预计流量，在可预期的时间阶段，结合该项目的运营要求和预算成本，网站主要以高可用（HA）和有限的水平扩展性（scale out）为核心架构理念，采用分布式无共享架构（distributed share nothing architecture），使用rails默认的cookie_store机制来持有和处理session，消除了有可能成为性能瓶颈的集中式session的缺点。而且在架构设计时，使得系统负载尽量平均分配到每台服务器上。
+<br>
+<br>单台服务器如同XX的承诺，永远都是靠不住的。单台服务器会死机、掉电、停转、拔线，所以在架构中尽最大可能避免每个功能组的单点故障，做到在服务器集群中，任意一台服务器失效，或几台不相关服务器同时失效，网站仍可正常运行。而且无单点故障的架构，服务器可随时重启，也有利于操作系统的内核升级和安全补丁等日常维护工作。经过这几个月的连续使用，各种原因的几次单点故障均没有影响到网站正常服务。
+<br>
+<br>在数据库的使用上，考虑到传统的关系型数据库已不太适应当前互联网应用的海量数据和高负载特点，因此mysql只起到关键数据存储作用，利用事务性和成熟性，保证网站数据的完整和安全。然后加入非关系型数据库redis和mongodb，作为数据冗余存储和计算中心，承载绝大部分的高负载数据请求，可有效减小mysql的压力。这样就不必费心配置复杂难用的可扩展mysql集群，使用单台mysql服务器即可承载较高的网站流量。而redis和mongodb天生就是为互联网应用设计的，它们的集群配置和水平扩展相对更为简单方便。听说现在已经有团队只使用mongodb来作为网站数据库，向他们的前卫和勇敢，致以我们团队深深的敬意。
+<br>
+<br><img src="http://dl.iteye.com/upload/attachment/487623/d16df0cb-7349-3a25-aa46-0e2e7c6bf36c.jpg">
+<br> 
+<br><strong>2.1 软硬件平台</strong>
+<br>当前正在运行的硬件是6台dell 2U二手服务器，总价大约在1.6万，物美价廉，居家必备。目前使用良好。另外借公司发展东风，已有8台全新dell刀片进入机房，正准备把全部系统迁移至新服务器上。
+<br>
+<br>服务器操作系统使用ubuntu server 10.04.2 x64，正在测试11.04，如可用并有益，则有可能在新硬件上安装使用。11.04官方支持到2012年12月份，对人类来说已经足够。2012之后，所有服务器已不复存在。
+<br>
+<br><strong>2.2 高可用方案。</strong>核心组件采用<a href="http://www.keepalived.org/">keepalived</a>，使用master-backup机制来实施主备服务器的实时切换。
+<br>
+<br><strong>2.3 负载均衡</strong>
+<br>根据网站流量和实际需求，使用<a href="http://nginx.org/">nginx</a>作为七层交换，把前端进来的用户请求round-robin到后端的应用服务器。nginx支持容错转移，如果后端的某台应用服务器失效，nginx可把该台服务器暂时移出可用列表。
+<br>
+<br>同时，由于负载均衡服务器位于整个网站系统的最前端，一旦失效则整个网站立刻瘫痪，所以其重要性无与伦比。为保证高可用，使用keepalived实现双服务器的故障实时切换。
+<br>
+<br><strong>2.4 应用层。</strong>使用<a href="http://www.rubyenterpriseedition.com/">ree+passenger</a>+nginx作为rails web服务器，passenger易于管理维护，而且和ree配合较好。所有应用服务器地位均等，每台服务器均发布完整的项目代码，不在功能上做分布式，以利于维护。
+<br>
+<br><strong>2.5 数据库。</strong>使用2台mysql，做master-master复制，配合keepalived实现高可用。
+<br>
+<br><strong>2.6 缓存系统</strong>
+<br>缓存系统分为一级缓存和二级缓存。一级缓存用于存储数据量不大，但对速度要求高的缓存数据。二级缓存用于存储对速度要求相对较低，但存储量巨大的数据。
+<br>
+<br>一级缓存使用内存数据库<a href="http://redis.io/">redis</a>，优点是速度快，并发高。用于存储首页缓存数据，保存股票行情数据，以及配合redis-store作为rails默认页面缓存，等等。目前存储数据约2800条，使用内存100M。
+<br>
+<br>二级缓存使用文档型数据库<a href="http://www.mongodb.org/">mongodb</a>，优点是查询功能强大，支持海量存储。用于存储部分资讯内容，提高页面响应速度。目前存储数据约10万条，数据文件大小为4G。
+<br>
+<br><strong>2.7 文件系统。</strong>使用<a href="http://www.gluster.org/">glusterfs</a>，以其自身的机制可实现双机热备和单台服务器失效返回后文件的自动同步。用户上传的文件会自动地同时保存于2台glusterfs服务器上。对应用程序来说，它们只是将文件保存于本地某个指定目录，glusterfs对应用是透明的。而且任何一台服务器单独失效都不会对用户产生可察觉的影响，失效的服务器返回后，glusterfs会计算2台服务器所保存文件的差别，对改动过的文件进行同步。
+<br>
+<br><strong>2.8 异步和定时执行。</strong>使用<a href="https://github.com/defunkt/resque">resque</a>作为基础架构执行异步任务，以<a href="https://github.com/bvandenbos/resque-scheduler">resque-scheduler</a>执行定时任务。同样，也以双机互备来保证无丢失地产生和执行任务队列。经过这几个月的使用，除了解决了一些与其它系统交互时意外的队列堵塞问题，目前看来resque还是值得信任的。
+<br>
+<br><strong><span style="font-size:large">3、技术选型</span></strong>
+<br>
+<br>在技术路线上，团队拥有最大的自由度，因此我们可以按照自己的理念进行技术布局，而且可以大胆地使用最新的技术架构和解决方案，在完成公司开发任务的同时提高团队技术水平，紧跟业界技术潮流。
+<br>
+<br>3.1 网站使用rails 3开发，用到的主要组件和版本如下。未注明版本号的，为最新版本。
+<br><pre name="code">
+ree 1.8.7 rails 3.0.8    # 基础平台
+rake 0.9.2  gem 1.8.5  bundler 1.0.14    # 基础工具
+mysql2 0.2.7  ruby-oci8  activerecord-oracle_enhanced-adapter    # 数据库驱动
+nokigiri  yajl-ruby    # 解析器
+authlogic  cancan    # 权限和验证
+ckeditor  paperclip  rmagick    # 编辑器和图片
+redis-store 1.0.0.rc1  mongoid 2.0.2    # nosql
+resque  resque-scheduler  eventmachine    # 异步和定时任务
+capistrano  capistrano-ext    # 代码发布
+open-flash-chart  formtastic  rspec  spork    # 杂项
+</pre>
+<br>
+<br>3.2 数据库。使用mysql 5.1。因为5.5取消了在文件中配置replication，只能手动命令执行，个人感觉比较麻烦，不能做到服务器的无人值守。如果有同学找到了5.5自动配置的方案，还望赐教。谢谢。
+<br>
+<br>3.3 redis 2.2.8。因为官网说redis原生的cluster方案，有可能将在2011年6月才出RC版，所以目前我们使用redis的master-slave机制，自己写了一个监控脚本，配合keepalived，实现两台redis服务器之间的数据同步（replication）和容错转移（failover），以此来达成高可用。
+<br>
+<br>3.4 mongodb 1.8.1。mongodb自身有原生的replset方案来实现数据同步和容错转移，因此在mongodb的层面直接使用该方案，配置2台服务器即可实现高可用。
+<br>
+<br>3.5 glusterfs 3.2.0。使用原生的双机互备方案。
+<br>
+<br><strong><span style="font-size:large">4、项目管理</span></strong>
+<br>
+<br>第一期的开发从2010.11开始，到2011年元旦上线，大致为2个月的时间。上线后又经历了大概1个月，基本稳定达到目前的状态。纯代码约1万行。开发人员4名。开发平台有ubuntu desktop和windows 7，开发工具有aptana、netbeans、emacs等。对平台和工具不做要求，在dos下能把活干好，也行。
+<br>
+<br><strong>4.1 源码管理。</strong>使用<a href="http://git-scm.com/">git</a>，采用所谓的“稳定分支模式”。有3个主要的分支：master、alpha、production。源码合并的顺序一般情况下是master -&gt; alpha -&gt; production。master用于日常开发，alpha用于发布测试版本，production用于发布生产环境的正式版本。如果有hotfix或者feature的需求，再另开其它临时分支。每个开发人员对所有分支都拥有全部读写权限，使用公钥认证的ssh访问源码库。
+<br>
+<br><strong>4.2 发布管理。</strong>使用<a href="https://github.com/capistrano/capistrano">capistrano</a>作为发布工具，结合capistrano-ext的multistage功能对多个不同的发布环境进行管理。并且结合了bundler的capistrano模块对bundle gems进行发布时的自动安装管理，做到了测试版本和正式版本的一键化发布。在99%的情况下不需要登录服务器另外做配置或修改。
+<br>
+<br><strong>4.3 项目管理。</strong>使用<a href="https://github.com/capistrano/capistrano">redmine</a>作为项目管理平台，可以和git库有机地结合起来。
+<br>
+<br><strong>4.4 测试。</strong>由于大部分功能都是调用其它平台或访问行情数据库，逻辑比较简单，因此<a href="https://github.com/rspec/rspec/">rspec</a>用得不太多，仅在支付接口等部分商业逻辑上使用。这是项目目前的一个缺陷，以后会着意加强测试方面的代码量。
+<br>
+<br><strong><span style="font-size:large">5、未来扩展</span></strong>
+<br>
+<br>5.1 负载均衡的性能取决于接受请求的那台服务器的性能，nginx的并发还是令人放心的。即使以后性能成为瓶颈了，可以用更好的服务器，或者换硬件交换机，直至F5。
+<br>
+<br>5.2 应用层的扩展比较简单，只需增加应用服务器节点即可。负载均衡的nginx可以设置权重以平衡负载。
+<br>
+<br>5.3 mysql不太好扩展，但如前面所言，把负载尽量分散到nosql上，在百万PV级别，mysql也就无需扩展了。实在要扩展，可以尝试做读写分离等方案，或等待几年后mysql搞定更漂亮的水平扩展方案。
+<br>
+<br>5.4 redis和mongodb都比较方便水平扩展，多加服务器，做集群配置，即可分散流量提高负载。
+<br>
+<br>5.5 glusterfs也具备水平扩展能力，再与nginx结合直接输出文件，可承载较大流量。
+<br>
+<br>
+<br>项目基本架构就是如此，限于篇幅，很多地方都是一带而过。下一步我准备写如下内容，留作个人积累和公司文档，包括但不限于：
+<br>
+<br>1、keepalived的配置和使用，优缺点。
+<br>2、rails 3的优点，个性化设置，存在的缺点和临时解决方案。
+<br>3、redis和mongodb的主从复制架构，相关问题的解决方案，各自的特点和基础使用。
+<br>4、glusterfs的配置和使用。
+<br>5、resque系列组件的使用，异步和定时任务执行。
+<br>6、测试和产品多环境下的capistrano一键发布系统。
+<br>
+<br>如果有朋友对此感兴趣，我会选一些发上来。没兴趣的话我就据为己有了。
+<br>
+          
+          <br><br>
+          作者: <a href="http://seamon.iteye.com">seamon</a> 
+          <br>
+          声明: 本文系ITeye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.iteye.com/topic/1058510" style="color:red">已有 <strong>29</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,251 @@
+---
+layout: post
+title:  "贝塞尔曲线的更正和一些方法"
+date:   2011-08-19 15:35:08
+author: admin
+categories: program
+---
+
+## 贝塞尔曲线的更正和一些方法
+### by admin
+### at 2011-08-19 15:35:08
+### original <http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/648872119/6618683/1/item.html>
+
+<p>之前写过一篇关于贝塞尔曲线的文章,写的很复杂,用矩阵算出的贝塞尔,今天在使用的时候发现是有错误的.</p>
+<p>所以重新写了一个方法,比矩阵简单的多:</p>
+<p>资料:<a href="http://paulbourke.net/geometry/bezier/index2.html">http://paulbourke.net/geometry/bezier/index2.html</a></p>
+<p>前提:定义一个向量类,主要用来标识点坐标,所以叫 Point:</p>
+<pre>(function(){
+    var p=SCD.Point;
+    SCD.Point=function(x,y){
+        this.x=x||0;
+        this.y=y||0;
+    }
+
+    SCD.Point.prototype={
+        /*~!Vector*/
+        toArray:function(){
+            return [this.x,this.y]
+        },
+        add:function(v){
+            return new SCD.Point(this.x+v.x,this.y+v.y);
+        },
+        sub:function(v){
+            return new SCD.Point(this.x-v.x,this.y-v.y);
+        },
+        getMod:function(){
+            return Math.sqrt(this.x*this.x+this.y*this.y);
+        },
+        mulNum:function(num){
+            return new SCD.Point(this.x*num,this.y*num);
+        },
+        getNegative:function(){
+            return new SCD.Point(-this.x,-this.y);
+        },
+        /**
+         *返回一个常数代表b在a上的投影乘以a的长度
+         */
+        dotMul:function(v){
+            return this.x*v.x+this.y*v.y;
+        },
+        crossMul:function(v){
+            return   this.x*v.y-this.y*v.x;
+        },
+        /**
+         *获取夹角,注意返回的是角度
+         */
+        getAngle:function(v){
+            return Math.acos(this.dotMul(v)/(this.getMod()*v.getMod()))* 180/Math.PI;
+
+        },
+        /**
+         *获取夹角,返回的是弧度
+         */
+        getRadian:function(v){
+            var m1=this.getMod(),m2=v.getMod();
+            if(m1==0||m2==0){
+                return 0;
+            }
+            return Math.acos(this.dotMul(v)/(m1*m2));
+        },
+        distance:function(v){
+            return Math.sqrt((this.x-v.x)*(this.x-v.x)+(this.y-v.y)*(this.y-v.y))
+        },
+        distance2:function(v){
+            return (this.x-v.x)*(this.x-v.x)+(this.y-v.y)*(this.y-v.y)
+        },
+        /**
+         *求某向量的法向量,返回一个单位向量,其模为1,返回的向量总是指向this向量的右边
+         * @return
+         */
+        getNormal:function(){
+            return new SCD.Point(this.y/(Math.sqrt(this.x*this.x+this.y*this.y)),-this.x/(Math.sqrt(this.x*this.x+this.y*this.y)));
+        },
+        reflex:function(v){
+            var normal=v.getNormal();//先求法向量
+            var angle=this.getAngle(normal);//求与法线的夹角
+            return this.sub(normal.mulNum(2*this.dotMul(normal)));
+        },
+        mirror:function(v){
+            return this.reflex(v).getNegative();
+        },
+        isZero:function(){
+            if(this.x==0&amp;&amp;this.y==0) return true;else return false;
+        },
+        /**
+         *判断某个点是否在某个矩形区域里，如果在里面的话，并且存在第四个参数的话（true），
+         *就继续判断相对矩形中心点所在象限，最后返回象限，不存在第四个参数返回-1
+         *如果不在矩形区域里，就直接返回false
+         *
+         *@param {vector} t 矩形左上角坐标
+         *@param {vector} b 矩形右下角坐标
+         *@param {boolean} q 是否返回象限
+         *@return {number} 象限或者-1
+         */
+        isIn:function(t,b,q){
+            var r1=this.sub(t),r2=this.sub(b)
+            if(r1.x&gt;=0&amp;&amp;r1.y&gt;=0&amp;&amp;r2.x&lt;=0&amp;&amp;r2.y&lt;=0){
+                if(q){
+                    var c=t.add(b).mulNum(0.5)
+                    return this.getQ(c)
+                }else{
+                    return -1;
+                }
+            }else{
+                return false;
+            }
+        },
+        /**
+         *获取第一个点相对第二个点所在的象限
+         *
+         *@param {vector} pc 第二个点的坐标
+         */
+        getQ:function(pc){
+            var r=this.sub(pc);
+            if(r.x&gt;=0&amp;&amp;r.y&gt;=0){
+                return 4
+            }else if(r.x&lt;0 &amp;&amp;r.y&gt;=0){
+                return 3
+            }else if(r.x&lt;0&amp;&amp;r.y&lt;0){
+                return 2
+            }else if(r.x&gt;=0&amp;&amp;r.y&lt;0){
+                return 1
+            }
+        },
+        toString:function(){
+            return this.x+&quot;:&quot;+this.y;
+        }
+    /*END~!Vector*/
+    }
+})();
+</pre>
+<p>三维贝塞尔方法:</p>
+<pre>var bezier=function(begin,c1,c2,end,t){
+            var p=new SCD.Point(0,0)
+            p.x=begin.x*(1-t)*(1-t)*(1-t)+c1.x*3*t*(1-t)*(1-t)+c2.x*3*t*t*(1-t)+end.x*t*t*t
+            p.y=begin.y*(1-t)*(1-t)*(1-t)+c1.y*3*t*(1-t)*(1-t)+c2.y*3*t*t*(1-t)+end.y*t*t*t
+            return p;
+        }</pre>
+<p>最后一个参数是t,大小从0到1  ,0的时候是起点,1是终点.<br>
+附上一些方法:<br>
+包括: //判断两条线段是否相交 //检测点是否在多边形内//三维贝塞尔//二维贝塞尔//打碎三维贝塞尔 //打碎二维贝塞尔</p>
+<pre>(function(){
+    SCD.util={
+        //向量叉乘
+        crossMul:function(v1,v2){
+            return v1.x*v2.y-v1.y*v2.x;
+        },
+        //判断两条线段是否相交
+        checkCross:function(p1,p2,p3,p4){
+            var v1={
+                x:p1.x-p3.x,
+                y:p1.y-p3.y
+            },
+            v2={
+                x:p2.x-p3.x,
+                y:p2.y-p3.y
+            },
+            v3={
+                x:p4.x-p3.x,
+                y:p4.y-p3.y
+            },
+            v=this.crossMul(v1,v3)*this.crossMul(v2,v3)
+            v1={
+                x:p3.x-p1.x,
+                y:p3.y-p1.y
+            }
+            v2={
+                x:p4.x-p1.x,
+                y:p4.y-p1.y
+            }
+            v3={
+                x:p2.x-p1.x,
+                y:p2.y-p1.y
+            }
+            return (v&lt;=0&amp;&amp;this.crossMul(v1,v3)*this.crossMul(v2,v3)&lt;=0)?true:false
+        },
+        //检测点是否在多边形内
+        checkPP:function(point,polygon){
+            var p1,p2,p3,p4
+            p1=point
+            p2={
+                x:-100,
+                y:point.y
+            }
+            var count=0
+            //对每条边都和射线作对比
+            for(var i=0;i&lt;polygon.length-1;i++){
+                p3=polygon[i]
+                p4=polygon[i+1]
+                if(this.checkCross(p1,p2,p3,p4)==true){
+                    count++
+                }
+            }
+            p3=polygon[polygon.length-1]
+            p4=polygon[0]
+            if(this.checkCross(p1,p2,p3,p4)==true){
+                count++
+            }
+            //  console.log(count)
+            return (count%2==0)?false:true
+        },
+        //  //  B(u) = P0 * ( 1 - u ) 2 + P1 * 2 * u ( 1 - u ) + P2 u2
+            //P0 * ( 1 - u )3 + P1 * 3 * u * ( 1 - u )2 + P2 * 3 * u2 * ( 1 - u ) + P3 * u3
+            //三维贝塞尔
+        bezier:function(begin,c1,c2,end,t){
+            var p=new SCD.Point(0,0)
+            p.x=begin.x*(1-t)*(1-t)*(1-t)+c1.x*3*t*(1-t)*(1-t)+c2.x*3*t*t*(1-t)+end.x*t*t*t
+            p.y=begin.y*(1-t)*(1-t)*(1-t)+c1.y*3*t*(1-t)*(1-t)+c2.y*3*t*t*(1-t)+end.y*t*t*t
+            return p;
+        },
+        //二维贝塞尔
+        quadratic:function(begin,c1,end,t){
+            var p=new SCD.Point(0,0)
+            p.x=begin.x*(1-t)*(1-t)+c1.x*2*t*(1-t)+end.x*t*t
+            p.y=begin.y*(1-t)*(1-t)+c1.y*2*t*(1-t)+end.y*t*t
+            return p;
+        },
+        //打碎三维贝塞尔
+        brokenBezier:function(begin,c1,c2,end,partCount){
+            var partCount=partCount||10;
+            var points=[]
+            var t=0;
+            for(var t=0;t&lt;=1;t+=1/partCount){
+
+                points.push(this.bezier(begin,c1,c2,end,t));
+            }
+            return points;
+        },
+         //打碎二维贝塞尔
+        brokenQuadratic:function(begin,c1,end,partCount){
+            var partCount=partCount||10;
+            var points=[]
+            var t=0;
+            for(var t=0;t&lt;=1;t+=1/partCount){
+
+                points.push(this.quadratic(begin,c1,end,t));
+            }
+            return points;
+        }
+    }
+})();</pre><img src="http://www1.feedsky.com/t1/648872119/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/648872119/6618683/1/item.html" border="0" height="0" width="0">

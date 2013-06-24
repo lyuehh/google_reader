@@ -1,0 +1,121 @@
+---
+layout: post
+title:  "MongoDB 使用的一些经验"
+date:   2013-04-09 10:51:59
+author: Bruce Dou
+categories: program
+---
+
+## MongoDB 使用的一些经验
+### by Bruce Dou
+### at 2013-04-09 10:51:59
+### original <http://blog.eood.cn/mongodb>
+
+<p><img src="http://blog.eood.cn/wp-content/uploads/2013/04/201301.jpg" alt="" title="201301" width="600" height="210"><br>
+</p>
+<div style="float:right">
+      <span></span>
+    </div>
+<p>这是一篇关于 MongoDB 使用经验的一篇文章，MongoDB 相对于 MySQL 简单很多，关于 MySQL 的调优可以看另一篇博文： <a href="http://blog.eood.cn/mysql">MYSQL 调优和使用必读</a>。</p>
+<hr style="clear:both">
+<ul>
+<li><a href="http://blog.eood.cn/#process">MongoDB 的单进程，多线程模型</a></li>
+<li><a href="http://blog.eood.cn/#oplog">充分利用 MongoDB 的 oplog</a></li>
+<li><a href="http://blog.eood.cn/#mmap">MongoDB 的 MMAP 内存模型</a></li>
+<li><a href="http://blog.eood.cn/#index">MongoDB 的索引</a></li>
+<li><a href="http://blog.eood.cn/#tips">MongoDB 需要注意的几点</a>
+<ul style="margin:0em">
+<li><a href="http://blog.eood.cn/#batch">对线上库的批量操作要控制频率</a></li>
+<li><a href="http://blog.eood.cn/#sync">实时将数据同步到关系型数据库支持复杂查询和数据分析</a></li>
+<li><a href="http://blog.eood.cn/#mem">需要为 MongoDB 提供足够的内存空间</a></li>
+<li><a href="http://blog.eood.cn/#async">MongoDB 默认操作的异步特性</a>
+</li></ul>
+</li>
+<li><a href="http://blog.eood.cn/#final">总结</a>
+<li><a href="http://blog.eood.cn/#refs">一些参考</a>
+</li></li></ul>
+<hr>
+<h3>MongoDB 的单进程，多线程模型</h3>
+<p>读操作可以使用多线程，利用多核心；写操作（Global Locking）和 Map-reduce（JS 解释器的限制）只能使用单线程。</p>
+<p>从2.2 版本，MongoDB 部分解决了全局锁问题，可以在写某个库的时候同时写其他库。一般通过在多核心单机上 Sharding 数据库，使用多个 mongod instance, 通过利用多核和缓解全局锁的问题提高读写操作 ops。可以通过 mongostat 命令查看 locking 和 page fault 情况。</p>
+<p>另外，使用 htop 可以看到一个进程中的多个线程。Node.js 每个进程其实有两个线程，除了主线程外，还有一个线程池用来处理文件读写等操作。</p>
+<h3>充分利用 MongoDB 的 oplog</h3>
+<p>MongoDB 通过 oplog 实现主从同步，但是即使不启用从库，也可以查看和使用 oplog。修改配置文件打开 oplog：</p>
+<pre style="color:#d1d1d1;background:#333">/etc/mongod.conf
+<span style="color:#aeaeae"># Replication Options</span>
+<span style="color:#fbde2d">master</span> = true</pre>
+<p>这样就会在 local database 出现一个名为 oplog.$main 的 collection，（一般 MongoDB 会将这个 collection 中的数据条数保持在 5000 万以下），其中数据类似于：</p>
+<pre style="color:#d1d1d1;background:#333">{
+   <span style="color:#61ce3c">"ts"</span>: {
+     <span style="color:#61ce3c">"t"</span>: <span style="color:#d8fa3c">1000</span>,
+     <span style="color:#61ce3c">"i"</span>: <span style="color:#d8fa3c">1365409034</span>
+  },
+   <span style="color:#61ce3c">"op"</span>: <span style="color:#61ce3c">"u"</span>,
+   <span style="color:#61ce3c">"ns"</span>: <span style="color:#61ce3c">"mydb.mycoll"</span>,
+   <span style="color:#61ce3c">"o2"</span>: {
+     <span style="color:#61ce3c">"_id"</span>: ObjectId(<span style="color:#61ce3c">"50a6718e50e50b4459dcc40e"</span>)
+  },
+   <span style="color:#61ce3c">"o"</span>: {
+     <span style="color:#61ce3c">"$set"</span>: {
+       <span style="color:#61ce3c">"myfield"</span>: <span style="color:#61ce3c">"myfield_value"</span>
+    }
+  }
+}</pre>
+<p>ts 为自定义的时间戳<br>
+op 表示操作类型： insert (i), update (u), delete (d), noop (n)<br>
+ns 为操作对应的 collection<br>
+o 为操作数据，这里为 $set 操作修改记录</p>
+<h3>MongoDB 的 MMAP 内存模型</h3>
+<p>MMAP 的一个缺点很多，比如当读取数据没有在内存中，操作遇到 page fault 的时候也会发生锁操作。</p>
+<p><img title="mongodb memory" src="http://blog.eood.cn/wp-content/uploads/2013/04/mongodb-memory.png" alt="" width="600"></p>
+<h3>MongoDB 的索引</h3>
+<p>MongoDB 支持简单的 B-Tree 索引。默认情况下 _id 会自动建索引，如果需要查询其他字段可以自己手动建索引（ensureIndex() ）。另外，注意在数据导入导出的时候重建索引。<br>
+比 MySQL 好的是 MongoDB 支持多值索引，即使两个字段的顺序是相反的。比如可以支持 .sort({a:1, b:-1}) 这样按不同字段的排序。和 MySQL 类似，使用的时候同样需要避免类似于 skip(BIG_NUM).limit(N) 这样的操作。</p>
+<h3>MongoDB 需要注意的几点</h3>
+<h4>1. 对线上库的批量操作要控制频率</h4>
+<p>假如某些读写操作不断占用数据库资源，其他操作将不能很快或者正确完成。可以通过 sleep 操作降低批量操作的频率，为其他操作提供执行空隙。</p>
+<h4>2. 实时将数据同步到关系型数据库支持复杂查询和数据分析</h4>
+<p>NoSQL 不支持复杂查询，但是如果需要复杂查询和数据分析，可以将数据同步到关系型数据库中。</p>
+<p>MongoDB 原生支持 Streaming，以下 Node.js 代码可以实时获取某个 collection 的数据变化，可以同步到关系型数据库，也可以用来做 Trigger。以下是 MognoDB tail oplog 的核心代码(Node.js):</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#fbde2d">var</span> options <span style="color:#fbde2d">=</span> {
+  <span style="color:#61ce3c">'ns'</span>: self.config.mongodb.db <span style="color:#fbde2d">+</span> <span style="color:#61ce3c">'.'</span> <span style="color:#fbde2d">+</span> self.config.mongodb.collection,
+  <span style="color:#61ce3c">'ts'</span>: {<span style="color:#61ce3c">'$gt'</span>: <span style="color:#fbde2d">new</span> <span style="color:#ff6400">mongo.Timestamp</span>.fromNumber(this.last_timestamp)}
+};
+
+<span style="color:#fbde2d">var</span> stream <span style="color:#fbde2d">=</span> this.mongo.db.collection(<span style="color:#61ce3c">'oplog.$main'</span>)
+    .<span style="color:#8da6ce">find</span>(options, {tailable: <span style="color:#d8fa3c">true</span>, awaitdata: <span style="color:#d8fa3c">true</span>, numberOfRetries: <span style="color:#fbde2d">-</span><span style="color:#d8fa3c">1</span>}).stream();
+
+stream.on(<span style="color:#61ce3c">'data'</span>, <span style="color:#fbde2d">function</span>(item) {
+  <span style="color:#fbde2d">if</span> (item.op <span style="color:#fbde2d">!</span><span style="color:#fbde2d">==</span> <span style="color:#61ce3c">'n'</span> <span style="color:#fbde2d">&amp;</span><span style="color:#fbde2d">&amp;</span> item.ts.toNumber() <span style="color:#fbde2d">!</span><span style="color:#fbde2d">==</span> self.last_timestamp) {
+    <span style="color:#ff6400">console</span><span style="color:#8da6ce">.log</span>(adate() <span style="color:#fbde2d">+</span> <span style="color:#61ce3c">' '</span> <span style="color:#fbde2d">+</span> JSON.stringify(item)<span style="color:#fbde2d">+</span><span style="color:#61ce3c">'<span style="color:#d8fa3c">\r</span><span style="color:#d8fa3c">\n</span>'</span>);
+    self.process(item, <span style="color:#fbde2d">function</span>() {
+    });
+  }
+});</pre>
+<p>注意读写压力很大的情况下控制 streaming 的速度，具体情况可以见前一篇博文: <a>Node.js 调试 GC 以及内存暴涨的分析</a>。相关代码：</p>
+<pre style="color:#d1d1d1;background:#333">  <span style="color:#fbde2d">var</span> stream <span style="color:#fbde2d">=</span> this.mongo.db2.collection(self.config.mongodb.collection).<span style="color:#8da6ce">find</span>().stream();
+  stream.on(<span style="color:#61ce3c">"data"</span>, <span style="color:#fbde2d">function</span>(item) {
+    stream.pause();
+    <span style="color:#aeaeae">//console.log(JSON.stringify(item)+'\r\n');</span>
+    self.mysql.insert(item, <span style="color:#fbde2d">function</span>() {
+      stream.resume();
+    });
+  });</pre>
+<h4>3. 需要为 MongoDB 提供足够的内存空间</h4>
+<p>如果数据库的数据没有冷热之分，最好配置大于数据大小的内存，防止频繁磁盘操作。<br>
+通过将数据记录的键值改短也能明显节约空间。</p>
+<h4>4. MongoDB 默认操作的异步特性</h4>
+<p>MongoDB 写操作默认情况下是异步的，所以为了保持一致性，需要加上选项：</p>
+<pre style="color:#d1d1d1;background:#333">{
+  safe: {
+    fsync: <span style="color:#d8fa3c">true</span>
+  }
+}</pre>
+<h3>总之</h3>
+<p>MongoDB 是一个非常易用，优点和缺点都很明显的数据库。在某些场景下，可以考虑使用 TC，Redis 或者 Postgres，MySQL 替代。</p>
+<h3>一些参考</h3>
+<p><a href="http://docs.mongodb.org/manual/faq/concurrency/">http://docs.mongodb.org/manual/faq/concurrency/</a><br>
+<a href="https://github.com/mongodb/mongo/blob/master/src/mongo/db/btree.cpp">https://github.com/mongodb/mongo/blob/master/src/mongo/db/btree.cpp</a><br>
+<a href="http://blog.schmichael.com/2011/11/05/failing-with-mongodb/">http://blog.schmichael.com/2011/11/05/failing-with-mongodb/</a><br>
+<a href="http://en.wikipedia.org/wiki/Mmap">http://en.wikipedia.org/wiki/Mmap</a><br>
+<a href="http://www.polyspot.com/en/blog/2012/understanding-mongodb-storage/">http://www.polyspot.com/en/blog/2012/understanding-mongodb-storage/</a></p>

@@ -1,0 +1,80 @@
+---
+layout: post
+title:  "Go 1.1 的性能提升——第一篇"
+date:   2013-05-21 17:06:47
+author: Codefor
+categories: program
+---
+
+## Go 1.1 的性能提升——第一篇
+### by Codefor
+### at 2013-05-21 17:06:47
+### original <http://blog.jobbole.com/39728/?utm_source=rss&utm_medium=rss&utm_campaign=go-1-1-%25e7%259a%2584%25e6%2580%25a7%25e8%2583%25bd%25e6%258f%2590%25e5%258d%2587>
+
+<p><span><a href="http://www.jobbole.com" title="伯乐在线">伯乐</a></span>在线注：今天上午在微博推荐了英文原文，感谢<a href="http://weibo.com/codefor">@Codefor</a> 的热心翻译。如果其他朋友也有不错的原创或译文，可以尝试<a href="http://blog.jobbole.com/tougao/">推荐给我们</a>。</p>
+<p>——————————————————————–</p>
+<p>这是Go1.1发布后性能提升分析系列的第一篇文章。</p>
+<p>Go官方文档（<a href="http://talks.godoc.org/code.google.com/p/go.talks/2013/go1.1.slide#30">这里</a>和 <a href="http://golang.org/doc/go1.1#performance">这里</a>）报告说，用Go1.1重新编译你的代码就可以获得30%-40%的性能提升。对linux/amd64平台而言，有大量的评测可以证明上述性能提升，对linux/386和linux/arm类平台，结果甚至更让人惊讶。但是我暂时持保留意见。</p>
+<p>关于gccgo，本系列重点关注提升Go1.1性能的gc系列编译器（5g,6g和8g）。由于和gc编译器共享相同的运行时和标准库，gccgo间接受益于这些改进，但不作为本次基准测试系列的重点。</p>
+<p>Go1.1在编译器，运行时和标准库上有许多直接导致程序速度提升的特色改进，尤其是：</p>
+<ul>
+<li>代码生成优化。涵盖3个gc编译器，包括更好的寄存器分配，减少不必要的间接加载，减少代码量</li>
+<li>内联优化。包括部分内置函数调用的内联，处理接口转换时编译器生成的存根方法的内联。</li>
+<li>减少栈使用。进而减轻栈大小的压力，更少分裂栈。</li>
+<li>引入并行垃圾收集器。收集器仍然是标记-删除，但是垃圾收集期间可以使用所有的CPU。</li>
+<li>更精细的垃圾收集。减少堆的大小，进而获得更低的GC延时</li>
+<li>新的运行时调度器。在调度goroutine时做出更好的决策。</li>
+<li>调度器和net包整合的更紧密。大幅减少包处理的延时并获得更高的吞吐。</li>
+<li>部分运行时和标准库用汇编重写。利用特定的移动或密码指令的优势。</li>
+</ul>
+<p> </p>
+<h3>autobench介绍</h3>
+<p>没有事实依据的不可复现的评测比任何事情都让我不满。由于这个系列要列出大量的数字，给出一些强有力的结论，对我而言，有必要提供一个渠道，大家可以在自己机器上验证我的结果。</p>
+<p>为此，我已经建立了一个简单的基于make的工具，用于比较Go1.0和Go1.1在一系列综合基准测试中的性能。它可以运行在任何Go支持的任何平台上。虽然该项目仍处于开发阶段，它已经产生了很多有用的数据。这些数据存放在代码库中。你可以在<span><a href="http://blog.jobbole.com/6492/" title="GitHub如何运作：时间并不决定一切">GitHub</a></span>找到这个项目：</p>
+<p><a href="https://github.com/davecheney/autobench">https://github.com/davecheney/autobench</a></p>
+<p>我要感谢那些从自己机器提交基准测试结果数据的Go社区的成员，这使得我对Go1.1的相对性能做出明智的结论。</p>
+<p>如果你对参与autobench感兴趣，很快将有一个记录Go1.1性能的分支产生。</p>
+<p> </p>
+<h3>一图胜千言万语</h3>
+<p>为了更好的展示基准测试结果，<a href="https://twitter.com/ajstarks">AJ Starks</a> 已经开发了一个好用的工具。benchviz 可以将misc/benchcmp枯燥的基于文本的输出转换成漂亮的图表。你可以在AJ的博客上看到所有关于benchviz 的信息。</p>
+<p><a href="http://mindchunk.blogspot.com.au/2013/05/visualizing-go-benchmarks-with-benchviz.html">http://mindchunk.blogspot.com.au/2013/05/visualizing-go-benchmarks-with-benchviz.html</a></p>
+<p>在传统的misc/benchcmp工具之后，对所有的改进，当运行时间的减少，或者吞吐的增加，以条状图的形式向右扩展，反之，向左收缩。</p>
+<p> </p>
+<h3>Go1 在linux/amd64平台基准测试</h3>
+<p>这篇文章的剩余部分将会集中在linux/amd64的性能评测。6g编译器被认为是gc编译器包中的旗舰编译器。除了在前后端的代码生成优化，标准库和运行时的性能敏感部分已经用汇编重写以充分利用SSE2指令。 这篇文章接下来的数据来自此结果文件 <a href="https://github.com/davecheney/autobench/blob/master/linux-amd64-d5666bad617d-vs-e570c2daeaca.txt">linux-amd64-d5666bad617d-vs-e570c2daeaca.txt</a></p>
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-amd64-go1.png" rel="lightbox[39728]" title="linux-amd64-go1"><img title="linux-amd64-go1" src="http://cdn2.jobbole.com/2013/05/linux-amd64-go1.png" alt=""></a></p>
+<p>Go1基准测试包是一个综合的基准测试，它试图获取真实世界中标准库中的主要包的使用情况。总体上，这个结果支持之前30%-40%性能提升的结论。通过查看提交到autobench库中的结果，很明显GobDecode和Gzip性能有所退步，并且问题 <a href="https://code.google.com/p/go/issues/detail?id=5165">5165</a> 和 <a href="https://code.google.com/p/go/issues/detail?id=5166">5166</a> 都产生了。相对而言，后者的罪魁祸首应该至少部分归于迁移到64位int 。</p>
+<p> </p>
+<h3>net/http 基准测试</h3>
+<p>这一系列的基准测试是从net/http包中抽出来的，它展示了Brad Fitzpatrick 和Dmitry Vyukov以及许多其他人贡献到net和net/http包中的工作。</p>
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-amd64-http.png" rel="lightbox[39728]" title="linux-amd64-http"><img title="linux-amd64-http" src="http://cdn2.jobbole.com/2013/05/linux-amd64-http.png" alt=""></a></p>
+<p>这个系列的基准测试中需要指出的是，ReadRequest（用于解包一个HTTP请求）的性能提升。ClientServerParallel基准测试目前并不能在所有的amd64平台运行，因为部分amd64平台还不支持新的和net聚合的运行时。完成剩余的BSD和Windows平台的支持是1.2周期的重点。</p>
+<p> </p>
+<h3>Runtime 微基准测试</h3>
+<p>在这里展示的最后一个基准测试是从runtime包中抽取的。</p>
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-amd64-runtime.png" rel="lightbox[39728]" title="linux-amd64-runtime"><img title="linux-amd64-runtime" src="http://cdn2.jobbole.com/2013/05/linux-amd64-runtime.png" alt=""></a></p>
+<p>Runtime基准测试展示了runtime包非常低层次部分的微型基准测试。</p>
+<p>上面明显的衰退就是第一个Append基准测试。然而在实际时间中，基准测试却从36ns/op提升到100ns/op,这意味着，对于某些append使用场景是存在性能衰退的。这可能已经在建议<a href="https://codereview.appspot.com/9360043/">CL 9360043</a>中指出。</p>
+<p>Runtime基准测试中最大的赢家就是惊人的map。新的map代码由khr在<a href="https://code.google.com/p/go/issues/detail?id=3885">issue 3886</a>声明并贡献。包括Channel操作的开销减少（感谢Dmitry的新调度器），涉及complex128操作的优化，以及用64位汇编重写的hash和内存移动操作的提速。</p>
+<p> </p>
+<h3>结论</h3>
+<p>对于运行现代64位intelCPU的linux/amd64平台，6g编译器和运行时可以生成显著高校的代码。其他的amd64平台也有类似的提升，具体的提升程度会有变化。如果你有能力，我鼓励你审阅autobench代码库中的基准测试数据，并提交你自己的结果数据。</p>
+<p>在接下来的文章中，我会着重在Go1.1给386和arm平台带来的性能提升。</p>
+<p> </p>
+<p>英文原文：<a href="http://dave.cheney.net/2013/05/21/go-1-1-performance-improvements" rel="home">Dave Cheney</a>，编译：<a href="http://weibo.com/codefor">@Codefor</a></p>
+<p>译文链接：<a href="http://blog.jobbole.com/39728/">http://blog.jobbole.com/39728/</a></p>
+<p><span style="color:#ff0000">【非特殊说明，转载必须在正文中标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+<h4>相关文章</h4>
+<ul>
+<li><a href="http://blog.jobbole.com/39567/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/30.jpg" alt="Go 语言 1.1 版发布"></a><a href="http://blog.jobbole.com/39567/">Go 语言 1.1 版发布</a></li>
+<li><a href="http://blog.jobbole.com/40164/"><img width="150" height="150" src="http://cdn2.jobbole.com/2013/05/linux-386-go1-150x150.png" alt="linux-386-go1"></a><a href="http://blog.jobbole.com/40164/">Go 1.1 的性能提升——第二篇</a></li>
+<li><a href="http://blog.jobbole.com/36838/"><img width="150" height="150" src="http://cdn2.jobbole.com/2013/03/ruby-to-go-01-150x150.jpg" alt="我们是如何让服务器从30台缩减到2台的:从Ruby迁移到Go语言"></a><a href="http://blog.jobbole.com/36838/">我们是如何让服务器从30台缩减到2台的:从Ruby迁移到Go语言</a></li>
+<li><a href="http://blog.jobbole.com/10110/"><img width="150" height="135" src="http://cdn2.jobbole.com/2011/12/from-zero-to-go-launching-on-google4-150x135.png" alt="从零到 Go：24 小时内登上 Google 主页的 Go 语言应用“火鸡”doodle 开发纪实"></a><a href="http://blog.jobbole.com/10110/">从零到 Go：Google感恩节火鸡涂鸦开发纪实</a></li>
+<li><a href="http://blog.jobbole.com/35304/"><img width="150" height="150" src="http://cdn2.jobbole.com/2013/03/112-150x150.png" alt="Goroutine背后的系统知识"></a><a href="http://blog.jobbole.com/35304/">Goroutine背后的系统知识</a></li>
+<li><a href="http://blog.jobbole.com/37257/"><img src="http://cdn2.jobbole.com/2012/03/golang-logo.png" alt="Go 1.1 介绍"></a><a href="http://blog.jobbole.com/37257/">Go 1.1 介绍</a></li>
+<li><a href="http://blog.jobbole.com/14386/"><img src="http://cdn2.jobbole.com/2012/03/golang-logo.png" alt="使用Go语言一段时间的感受"></a><a href="http://blog.jobbole.com/14386/">使用Go语言一段时间的感受</a></li>
+<li><a href="http://blog.jobbole.com/36480/"><img src="http://cdn2.jobbole.com/2012/03/golang-logo.png" alt="Go在谷歌：以软件工程为目的的语言设计"></a><a href="http://blog.jobbole.com/36480/">Go在谷歌：以软件工程为目的的语言设计</a></li>
+<li><a href="http://blog.jobbole.com/22113/"><img width="150" height="150" src="http://cdn2.jobbole.com/2012/06/20120609140600_56089-150x150.gif" alt="敏捷应用生命周期管理"></a><a href="http://blog.jobbole.com/22113/">敏捷应用生命周期管理</a></li>
+<li><a href="http://blog.jobbole.com/26343/"><img width="150" height="150" src="http://cdn2.jobbole.com/2012/09/TM%E6%88%AA%E5%9B%BE%E6%9C%AA%E5%91%BD%E5%90%8D6-150x150.jpg" alt="语境驱动测试七原则"></a><a href="http://blog.jobbole.com/26343/">语境驱动测试七原则</a></li>
+</ul>
+<p><a href="http://blog.jobbole.com/39728/">Go 1.1 的性能提升——第一篇</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>

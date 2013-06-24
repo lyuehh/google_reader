@@ -1,0 +1,32 @@
+---
+layout: post
+title:  "离开了html5，面对“流体力学”，我只能旁观了..."
+date:   2010-12-21 16:14:00
+author: 岑安
+categories: program
+---
+
+## 离开了html5，面对“流体力学”，我只能旁观了...
+### by 岑安
+### at 2010-12-21 16:14:00
+### original <http://www.cnblogs.com/hongru/archive/2010/12/21/1912820.html>
+
+<p><p>今天偶见园子里有编辑推荐了一则新闻：<a href="http://news.cnblogs.com/n/85268/" style="margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px"><font color="#ff7a00">那些程序员搞的流体力学的演示</font></a> 先是一个同学用java写了个仿流体的applet，引来众人围观，然后各路神仙不甘落后，先后又有flash版本，html5的canvas版本，c++的版本都出来了。</p>
+<p>　　看了之后我也很来兴趣，想试一试，可惜html5的版本已经有了，我不能简简单单步别人后尘吧...于是咬咬牙，说同为web前端层面，你用html5，我偏偏就不用。我就要用原生的JavaScript，就用html 4和css 2,来作苦苦挣扎。</p>
+<p>　　结果，挣扎了几个小时，终于发现离开了html5，想要模拟流体运动真是困难啊。而且效率也极低，在500个元素模拟的时候，ff就表示基本跑不动了，ie8以下就更别说了...</p>
+<p>所以，最终结果是：</p>
+<p>　　只能哀叹一声，<span style="color:red">离开了了html5，面对“流体力学”，我只能旁观了... </span></p>
+<p>当然，鉴于我只是一只“小虾”，我的失败不排除有其他的“大虾”能破解这个魔咒。不过就html 4 和css 2的这点表现力在document中的话，我个人觉得是很难了.</p>
+<p>最后，虽然尝试失败了，依旧还是给各位看客看看我失败的尝试吧：<span style="color:red">（建议用chrome或其他js引擎给力的浏览器查看）：</span></p>
+
+
+
+
+
+     <div></div>
+
+
+<br>
+
+<p> ps: 看看<a href="http://jsbin.com/unovo4">http://jsbin.com/unovo4</a> 这个用canvas的源码，终于给自己的失败找了一个借口，人家用了canvas，js都写了400多行，怎么可能是自己不用canvas，仅仅100来行的代码能搞定的呢？！<img src="http://www.cnblogs.com/Emoticons/others/haha002.gif" alt=""></p>
+<img src="http://www.cnblogs.com/aggbug/1912820.html?type=0" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rss">岑安</a> 发表于 2010-12-21 16:14 <a href="http://www.cnblogs.com/hongru/archive/2010/12/21/1912820.html">原文链接</a></p><p>评论: 23　<a href="http://www.cnblogs.com/hongru/archive/2010/12/21/1912820.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/hongru/archive/2010/12/21/1912820.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/85360/">一些必看的jQuery导航插件和教程</a><span style="color:gray">(2010-12-21 23:06)</span><br>· <a href="http://news.cnblogs.com/n/85359/">庄辰超：去哪儿计划涉足在线旅游团购</a><span style="color:gray">(2010-12-21 22:54)</span><br>· <a href="http://news.cnblogs.com/n/85358/">Nexus One未来几周将升级至Android 2.3</a><span style="color:gray">(2010-12-21 22:54)</span><br>· <a href="http://news.cnblogs.com/n/85353/">2010年十大实时网络产品</a><span style="color:gray">(2010-12-21 22:54)</span><br>· <a href="http://news.cnblogs.com/n/85357/">苹果将把Mac应用下载由网站转移至应用商店</a><span style="color:gray">(2010-12-21 22:42)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/hongru/archive/2010/12/21/1912820.html">离开了HTML5，面对“流体力学”，我只能旁观了...</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

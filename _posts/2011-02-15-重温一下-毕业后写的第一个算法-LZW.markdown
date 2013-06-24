@@ -1,0 +1,67 @@
+---
+layout: post
+title:  "重温一下 毕业后写的第一个算法 LZW"
+date:   2011-02-15 14:51:43
+author: 
+categories: program
+---
+
+## 重温一下 毕业后写的第一个算法 LZW
+### by 
+### at 2011-02-15 14:51:43
+### original <http://www.javaeye.com/topic/906868>
+
+LZW压缩算法的基本原理：提取原始文本文件数据中的不同字符，基于这些字符创建一个编译表，然后用编译表中的字符的索引来替代原始文本文件数据中的相应字符，减少原始数据大小
+<br>第一次实现的时候是用C# 和js用于数据压缩 ，当时刚毕业，是根据伪码写的，当时挺痛苦的，后来想想还是挺有意思的：）
+<br>
+<br><pre name="code">
+
+#encoding = utf-8
+import string
+
+def lzw_compress(s="ababcbababaaaaaaa"):
+    """
+    进行lzw 压缩
+    """
+    dic = {}
+    for i in string.ascii_letters:
+        dic[i]=i
+    
+    result = ''
+    key = s[0]
+    #进行向后编码的起始值
+    dic_index = 129
+    for i in range(1,len(s)):
+        v = s[i]
+        key += v
+        if dic.has_key(key):
+            continue
+        else:
+            print key,
+            dic[key] = unichr(dic_index)
+            dic_index+=1
+            result += dic.get(key[0:-1])
+            #print key[0:-1],result.encode("utf-8")
+            key = v
+    return result
+
+r = lzw_compress()
+print "result is:" ,r.encode("utf-8")
+</pre>
+<br><pre name="code">ab ba abc cb bab baba aa aaa aaaa result is: ab *c*‚…*a**‡ˆ</pre>
+<br>
+<br>感兴趣的同学，可以写个解压的算法，有点像破译密码，挺有意思的。注意基于编码表
+          
+          <br><br>
+          作者: <a href="http://edisonlz.javaeye.com">edisonlz</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/906868" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,66 @@
+---
+layout: post
+title:  "rails api 有用的链接"
+date:   2011-06-22 01:52:51
+author: 
+categories: program
+---
+
+## rails api 有用的链接
+### by 
+### at 2011-06-22 01:52:51
+### original <http://hlee.iteye.com/blog/1100389>
+
+完全给自己用的
+<br>
+<br>
+<br><a href="http://api.rubyonrails.org/classes/ActiveModel/Validations/HelperMethods.html">http://api.rubyonrails.org/classes/ActiveModel/Validations/HelperMethods.html</a>
+<br>
+<br>ActiveRecord::QueryMethods
+<br>ActiveRecord::FinderMethods
+<br>ActiveRecord::NestedAttributes::ClassMethods
+<br>ActiveRecord::Observer
+<br>ActiveRecord::Migration
+<br>ActiveResource::CustomMethods
+<br>关于Query
+<br><a href="http://guides.rubyonrails.org/active_record_querying.html">http://guides.rubyonrails.org/active_record_querying.html</a>
+<br>
+<br>where boolean 不用 并列条件搜索
+<br>
+<br>
+<br>————————————————————————————————————————————————————————————————————
+<br>
+<br>官方的association部分
+<br>ActiveRecord::Associations::ClassMethods
+<br>
+<br><a href="http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html">http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html</a> 
+<br>
+<br>has_many :through
+<br>——————————————————————————————————————————————————————————————————————
+<br>
+<br>update_all 
+<br>
+<br><a href="http://api.rubyonrails.org/classes/ActiveRecord/Relation.html">http://api.rubyonrails.org/classes/ActiveRecord/Relation.html</a>
+<br>
+<br>
+<br>
+<br>—————————————————————————————————————————————————————————————————————
+<br>generate migration 
+<br>
+<br><a href="http://api.rubyonrails.org/classes/ActiveRecord/Migration.html">http://api.rubyonrails.org/classes/ActiveRecord/Migration.html</a>
+<br>
+<br>________________________________________________________________________
+<br>
+<br>form_tag
+<br>
+<br><a href="http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html">http://api.rubyonrails.org/classes/ActionView/Helpers/FormTagHelper.html</a>
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://hlee.iteye.com/blog/1100389#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

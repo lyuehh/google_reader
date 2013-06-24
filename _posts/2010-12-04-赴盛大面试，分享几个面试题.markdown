@@ -1,0 +1,49 @@
+---
+layout: post
+title:  "赴盛大面试，分享几个面试题"
+date:   2010-12-04 20:58:04
+author: 
+categories: program
+---
+
+## 赴盛大面试，分享几个面试题
+### by 
+### at 2010-12-04 20:58:04
+### original <http://www.javaeye.com/topic/833480>
+
+<p>昨日赴上海盛大面试，应聘PHP工程师。</p>
+<p> </p>
+<p>提前10分钟来到一楼大厅，大门口和门禁处都有2个门卫，俨然一副“正规军” 的样子，给人一种很严肃的感觉。<br><br>在大厅豪华访客接待座上等了几分钟，一美女拿着访客证过来带我上了4楼，把我“转交”给一位挂“红绳”的大哥。<br><br>然后进入一小会议室，开始“受审”：<br><br>首先，简单的介绍一下你自己。<br><br>叽里呱啦…叽里呱啦…<br><br>抖完家底后，开始技术问题：<br><br>1、HTTP协议中几个状态码的含义:503 500 401 200 301 302...<br><br>2、Safe_mode 打开后哪些地方受限.<br><br>3、熟悉哪些PHP开源框架，分别说说你对它们的理解。<br><br>4、熟悉jquery吗，谈谈它的选择器实现原理。<br><br>5、什么是怪异模式，标准模式，近标准模式。<br><br>6、围绕盒子模型讲一下，各浏览器在CSS渲染方面的差异。<br><br>以上都是考查基本知识<br><br>7、搭建和优化过lnmp环境吗？谈谈你是如何优化的，针对nginx、php、mysql分别讲述。<br><br>8、有一张表order(order_id,user_id,order_amount)，写一条查询语句，取出所有消费总额超过100的用户的所有订单号order_id。</p>
+<p> </p>
+<p>9、有一字符串格式如下：</p>
+<p> </p>
+<p>(A(B)(C(D)(E))F)</p>
+<p>字符串中的括号成对出现，写一函数取出第N（以左括号出现的顺序来索引）对括号里的内容。</p>
+<p> </p>
+<p>例如：</p>
+<p> </p>
+<pre name="code">function getcontent($id,$str){
+...
+}
+$str = '(A(B)(C(D)(E))F)';
+getcontent(3,$str);</pre>
+  
+<p> </p>
+<p>得到结果为(C(D)(E))</p>
+<p> </p>
+<p> </p>
+<p>恳请各位大虾谈谈最后2题的最优解答。</p>
+          
+          <br><br>
+          作者: <a href="http://jancy.javaeye.com">jancy</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/833480" style="color:red">已有 <strong>18</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

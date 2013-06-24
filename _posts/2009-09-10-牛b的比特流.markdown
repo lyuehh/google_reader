@@ -1,0 +1,96 @@
+---
+layout: post
+title:  "牛b的比特流"
+date:   2009-09-10 08:49:18
+author: 半瓶墨水
+categories: program
+---
+
+## 牛b的比特流
+### by 半瓶墨水
+### at 2009-09-10 08:49:18
+### original <http://www.2maomao.com/blog/niubi-bitwise-operations/>
+
+<p>你知道下面这段代码干了啥吗？</p>
+<blockquote><p><code>a ^= b<br>
+b ^= a<br>
+a ^= b<br>
+</code>
+</p></blockquote>
+<p>如果你碰巧知道，那么 <strong>x^-x</strong> 呢？WTF~!</p>
+<p>冯.诺依曼计算机中，程序无论编成什么样子，最终都会变成一堆堆的0和1，也是因为这样，对于bit操作的研究，一直都没有停歇，已知的很多优秀的算法实现，都用到了bit操作</p>
+<p>一般的语言，比如python或者C(++)都支持 <strong>与&amp; 或| 异或^ 反~</strong> 操作。这四种基本操作的意义这里就不说了(关于完备性，参见离散数学)，通常我们还会用到 &lt;&lt; 以及 &gt;&gt; 操作，分别表示把bits向左、右移位。另外，所有加减乘除的操作，内部同样是bit搞来搞去。</p>
+<p>你可能见过这种代码： a&gt;&gt;=1 ，这个是干嘛的，仔细想想就明白了，这是除二操作，比直接除法运算要高效一些，同理，乘以2就是a&lt;&lt;=1</p>
+<p>或许你还见过这个：(UINT)-1 ，这是啥？翻开计算机基础教材看看补码那一节就知道了。这是win32编程常用的小手段，代表0xFFFFFFFF</p>
+<p>还有<strong>异或</strong>操作，这个操作自己就可以组合出其他所有逻辑操作！因为他是完备的。它还有一个非常非常有趣的性质：<strong>a^a = 0 </strong>！</p>
+<p>回到文章开头的内容，那三行a和b异或来去的代码干了什么？</p>
+<blockquote><p><code>a ^= b //a=a^b, b=b<br>
+b ^= a //a=a^b, b=(a^b)^b=a<br>
+a ^= b //a=(a^b)^a=b, b=a<br>
+</code>
+</p></blockquote>
+<p>到最后一行，可以看到，这三行代码完成了a和b的交换(swap)。有些公司面试的时候会问：知道怎么不用中间变量实现swap(a,b)吗？ok，你会了！恭喜你，学会抢答了！面试官脸色一变，随即抛出另一道题目：</p>
+<blockquote><p>有一组数字，从1到n，中间少了一个数，顺序也被打乱，放在一个n-1的数组里，设计算法在O(n)时间O(1)空间内找出丢失的数字！</p></blockquote>
+<p>怎么办？<br>
+还好你学会了异或运算：ok，很简单，从1到n异或一遍，再从从数组里面异或一遍，最后的值就是那个丢失的数字</p>
+<p>面试官脸色再变，说数字丢失了两个，咋办？没想清楚的看<a href="http://fayaa.com/tiku/view/2/">这里</a>。</p>
+<p>插播一条广告：</p>
+<blockquote><p>欢迎订阅<a href="http://fayaa.com/tiku/">题酷发芽网</a>的两个RSS： <a href="http://feed.feedsky.com/tikutees">最新题目</a> &amp;  <a href="http://feed.feedsky.com/tikuanswers">最新回答</a>
+</p></blockquote>
+<p>好了，异或运算先说到这里就先打住，说说 x &amp; -x 这个变态的数字吧，他是啥意思？你仔细演算了一遍发现，哦，原来是一个数字最后面那个1，比如x=b111111100，x &amp; -x 就是b100 (这里的b表示binary，二进制)</p>
+<p>这有啥用？这时候下一个面试官进来了，再次抛出一道题目：<a href="http://fayaa.com/tiku/view/47/">找寻下一个“二进制1等量”数：</a></p>
+<blockquote><p>对于两个二进制数，如果他们的二进制表示中1的数目相等，我们称他们为“二进制1等量”的<br>
+给定一个数，设计一个算法F找出比它稍大的“二进制1等量”数<br>
+（稍大的意思是离它最近的那个）<br>
+比如：<br>
+<code><br>
+3 = 0011<br>
+5 = 0101<br>
+F(3) = 5</code></p>
+<p>6 = 0110<br>
+F(5) = 6<br>
+...<br>
+
+</p></blockquote>
+<p>这可咋办？别急，通常面试官放出这种题目来，是看你有没有思路，别被题目吓住就行。<br>
+不过，我最终被答案吓住了，以下是求解的算法：</p>
+<div style="font-family:Consolas,&#39;Lucida Console&#39;,&#39;Courier New&#39;;color:rgb(0,0,0);background-color:rgb(249,247,237)"> <span style="color:rgb(0,0,128);font-weight:bold">unsigned</span> <span style="color:rgb(0,0,0)">snoob</span>(<span style="color:rgb(0,0,128);font-weight:bold">unsigned</span> <span style="color:rgb(0,0,0)">x</span>) <span style="color:rgb(0,0,0)">{</span><br>   <span style="color:rgb(0,0,128);font-weight:bold">unsigned</span> <span style="color:rgb(0,0,0)">smallest</span><span style="color:rgb(0,0,0)">,</span> <span style="color:rgb(0,0,0)">ripple</span><span style="color:rgb(0,0,0)">,</span> <span style="color:rgb(0,0,0)">ones</span>;<br>   <span style="color:rgb(0,136,0);font-style:italic">// x = xxx0 1111 0000</span><br>   <span style="color:rgb(0,0,0)">smallest</span> <span style="color:rgb(0,0,0)">=</span> <span style="color:rgb(0,0,0)">x</span> <span style="color:rgb(0,0,0)">&amp;</span> <span style="color:rgb(0,0,0)">-</span><span style="color:rgb(0,0,0)">x</span>; <span style="color:rgb(0,136,0);font-style:italic">// 0000 0001 0000</span><br>   <span style="color:rgb(0,0,0)">ripple</span> <span style="color:rgb(0,0,0)">=</span> <span style="color:rgb(0,0,0)">x</span> <span style="color:rgb(0,0,0)">+</span> <span style="color:rgb(0,0,0)">smallest</span>; <span style="color:rgb(0,136,0);font-style:italic">// xxx1 0000 0000</span><br>   <span style="color:rgb(0,0,0)">ones</span> <span style="color:rgb(0,0,0)">=</span> <span style="color:rgb(0,0,0)">x</span> <span style="color:rgb(0,0,0)">^</span> <span style="color:rgb(0,0,0)">ripple</span>; <span style="color:rgb(0,136,0);font-style:italic">// 0001 1111 0000</span><br>   <span style="color:rgb(0,0,0)">ones</span> <span style="color:rgb(0,0,0)">=</span> (<span style="color:rgb(0,0,0)">ones</span> <span style="color:rgb(0,0,0)">&gt;&gt;</span> <span style="color:rgb(0,0,255)">2</span>)<span style="color:rgb(0,0,0)">/</span><span style="color:rgb(0,0,0)">smallest</span>; <span style="color:rgb(0,136,0);font-style:italic">// 0000 0000 0111</span><br>   <span style="color:rgb(0,0,128);font-weight:bold">return</span> <span style="color:rgb(0,0,0)">ripple</span> | <span style="color:rgb(0,0,0)">ones</span>; <span style="color:rgb(0,136,0);font-style:italic">// xxx1 0000 0111</span><br> <span style="color:rgb(0,0,0)">}</span></div>
+<p>感觉如何？反正我看到里面的二进制搞来搞去已经傻掉了。整个<a href="http://fayaa.com/tiku/view/47/?sorting=-vote_count#sortbox">求解过程可以参见这里</a>，里面的分析相当精彩，不容错过。</p>
+<p>说到这里，比特<strong>流</strong>，不再只是流水的那个<strong>流</strong>，已经是“迎风一刀流”这样的<strong>流</strong>了</p>
+<p>真别说，有个叫Henry S. Warren的家伙就专门研究了bit操作，还写了本书，叫做<a href="http://www.hackersdelight.org/">Hacker’s Delight</a>(翻译版叫做<a href="http://www.douban.com/subject/1159177/">《高效程序的奥秘》</a>)，其中第3章（<a href="http://www.hackersdelight.org/basics.pdf">点击下载英文pdf</a>）就详细而又完备的讲解了bit流，值得一看。上面那个找寻二进制“1”等价的问题在文章里有详细描述，他甚至指出了这个问题的现实意义 - 比如从N个数里面挑选K个，你可以从K个1开始，一直生成到K个1加上(N-K)个0为止，由于算法效率高，不需要递归，用起还是很爽的！（<a href="http://fayaa.com/tiku/view/74/?sorting=-vote_count#sortbox">参照阅读递归方式的X-Selection算法</a>）</p>
+<p>该书中还提到：</p>
+<blockquote><p>x &amp; (x-1) 可以用来确定一个数是不是2的幂<br>
+x &amp; (x+1) 可以判断一个数是不是2^n-1这种形式，也就是说，全都是1!<br>
+x | (x-1) 可以把x后面的所有0变成1，00101000 =&gt; 00101111<br>
+((x | (x-1)) + 1) &amp; x 可以把最右边那一串1给抹了，01011000 =&gt; 01000000<br>
+x | (x+1) 可以把最右边的那个0变成1，10100111 =&gt; 10101111<br>
+…
+</p></blockquote>
+<p>等等等等，还有很多，好了，就此打住，想了解更多的自己看可以<a href="http://www.hackersdelight.org/basics.pdf">免费可以下载到的pdf样章</a></p>
+<p><strong>Update</strong>：有趣的是，发文24小时之内就读到一位朋友在Google Reader上面分享的文章：<a href="http://www.catonmat.net/blog/bit-hacks-header-file/">bithacks.h - bit hacks header file</a>，里面定义了一堆的宏来做位操作：</p>
+<blockquote><p>B8(x) - turns x written in binary into decimal,<br>
+B_EVEN(x) - tests if x is even (bithack #1),<br>
+B_ODD(x) - tests if x is odd (!(bithack #1)),<br>
+B_IS_SET(x, n) - tests if n-th bit is set in x (bithack #2),<br>
+B_SET(x, n) - sets n-th bit in x (bithack #3),<br>
+B_UNSET(x, n) - unsets n-th bit in x (bithack #4),<br>
+B_TOGGLE(x, n) - toggles n-th bit in x (bithack #5),<br>
+B_TURNOFF_1(x) - turns off the right-most 1-bit in x (bithack #6),<br>
+B_ISOLATE_1(x) - isolates the right-most 1-bit in x (bithack #7),<br>
+B_PROPAGATE_1(x) - propagates the right-most 1-bit in x (bithack #8),<br>
+B_ISOLATE_0(x) - isolates the right-most 0-bit in x (bithack #9),<br>
+B_TURNON_0(x) - turn on the right-most 0-bit in x (bithack #10).
+</p></blockquote>
+<p>我也把代码转贴了一下： <a href="http://fayaa.com/code/view/5883/">Bit Hacks Header File(bithacks.h)</a> 和 <a href="http://fayaa.com/code/view/5884/">Bit Hacks Test Cases(bithacks_test.cpp)</a><br>
+<br><br>
+好了，想继续研究的，附赠两个Link：<br>
+<a href="http://graphics.stanford.edu/~seander/bithacks.html">http://graphics.stanford.edu/~seander/bithacks.html</a><br>
+<a href="http://www.cs.bris.ac.uk/Teaching/Resources/COMS21102/slides-dan/">http://www.cs.bris.ac.uk/Teaching/Resources/COMS21102/slides-dan/</a><br>
+<br></p>
+<p>呵呵文到最后，说两个关于自己的：</p>
+<p><strong>1.</strong><br>
+我的<strong>18位身份证</strong>号码，<strong>1和0占据了14个</strong>！</p>
+<p><strong>2.</strong><br>
+写这篇文章翻出两年前的旧文： <a href="http://www.2maomao.com/blog/chinese-vs-english-2-vs-10/">中文和英文哪个表达能力更强？二进制和十进制哪个更厉害？</a></p>
+<p>这篇文章是我2007年的得意之作，至今依然是，可惜很少有人感兴趣，特此自我推荐。</p>
+<a href="http://www.addtoany.com/share_save?linkurl=http%3A%2F%2Fwww.2maomao.com%2Fblog%2Fniubi-bitwise-operations%2F&amp;linkname=%E7%89%9Bb%E7%9A%84%E6%AF%94%E7%89%B9%E6%B5%81"><img src="http://www.2maomao.com/blog/wp-content/plugins/add-to-any/share_save_171_16.png" width="171" height="16" alt="Share/Bookmark"></a><img src="http://www1.feedsky.com/t1/278389986/2maomao/feedsky/s.gif?r=http://www.2maomao.com/blog/niubi-bitwise-operations/" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/2maomao/278389986/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/2maomao/278389986/art01.gif"></a></p>

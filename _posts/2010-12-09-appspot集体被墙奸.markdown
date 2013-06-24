@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "appspot集体被墙奸"
+date:   2010-12-09 21:24:42
+author: GFW BLOG 功夫网
+categories: program
+---
+
+## appspot集体被墙奸
+### by GFW BLOG 功夫网
+### at 2010-12-09 21:24:42
+### original <http://feedproxy.google.com/~r/chinagfwblog/~3/5XszBWQQ4hE/appspot.html>
+
+来源：<a href="http://maajiaa.wordpress.com/2010/12/09/appspot-blocked/">http://maajiaa.wordpress.com/2010/12/09/appspot-blocked/</a><br><br>我他喵的还真是风向标，博客搬到哪 G×W 就封到哪。这都什么人品啊…o(&gt;_&lt;)o <p>感谢国家， .<a href="http://appspot.com">appspot.com</a> 被URL敏感词屏蔽，同时还有 DNS 污染。</p> <p><strong>【解决办法】</strong></p> <p>博客、相册神马的无解，总不能叫每个访客都去改 Hosts 或者都学翻墙吧。只能弄个域名绑定，然后叫别人访问新域名。而 GAppProxy 就好办了，自己改 Hosts 然后走加密的 https ：</p> <ol><li>首先要找到一个可以 https 的 Google IP ，这个只需要 nslookup <a href="http://www.google.com">www.google.com</a> 查询到一个 IP （比如 A.B.C.D ），然后将 D 段数字随便改一改。测试 <a href="https://A.B.C.D">https://A.B.C.D</a> 是否能正常访问，正常情况下可能看到证书警告，放行后会显示 Google 主页，而被墙奸过的 IP 则只有『连接被重置』。</li><li>然后修改 Hosts 将你的 fetchserver 域名指向刚刚找到的 IP ，同时修改本地客户端的 proxy.conf ，将 fetchserver 由 http 改为 https 。</li></ol> <p>同理，Google 加密搜索不能用，也可以照这个方法改 Hosts ，把 <a href="http://encrypted.google.com">encrypted.google.com</a> 指向某 IP 。</p> <p>我再乌鸦嘴挑战 TG 的下限一次：你丫有本事就 DNS 污染 <a href="http://www.google.com">www.google.com</a> ，再把加利福尼亚州山景市谷歌公司的 IP 全部干掉，干死 Gmail 一了百了。不然再怎么折腾， Google 加密搜索和 GAppProxy 依旧情绪稳定。</p> <p>反正 TG 全面干死 Google 的游戏早已玩过多次，轻车熟路了。</p> <ul><li>就在一个月前的 11 月 8 日，�朝教育网就干掉了 Google 的域名服务器 <a href="http://ns.google.com">ns.google.com</a> ，导致包括 Gmail 在内的 Google 服务全线挂彩（<a href="https://twitter.com/felixonmars/status/1311150289461248">via</a>）。</li> <li>就在 10 天前的 11 月 29 日， G×W 阉割 Google 实时搜索，一不小心就把 Google 主页的搜索框玩没了，导致群众纷纷意念力搜索测试（<a href="http://www.guao.hk/posts/google-search-without-input-box.html">via</a>）。</li><li>……</li></ul> <p>也别光顾着杀 Google ，索性掐断海底光缆，彻底回归 Chinternet ，从此�下河蟹。反正不久前的 10 月中下旬， G×W 大杀器已经玩过一次无差别攻击了：把 EdgeCast 的 CDN 加速给墙奸了，殃及包括 QQ 在内的大片池鱼（<a href="http://blog.yians.com/?p=317">via</a>）。</p> <p>真理部怎么会有这种傻逼？用 Google 搜到批评自己的文章，就要把 Google 赶出�朝（<a href="http://www.nytimes.com/2010/12/05/world/asia/05wikileaks-china.html?_r=1">via</a>）；『长春』犯了自己的名讳，所以屁民的 QQ  群名片谁都不准用『长春』两个字（<a href="http://nf.nfdaily.cn/ynxx/content/2010-06/07/content_12613115.htm">via</a>）；照这个智商， Google  不能搜『温度』、『学习』、『李白』、『周末』……的狗屁禁令，恐怕也是奉了这位傻逼的口谕吧。</p>  <p>How can we win when fools can be kings…</p> <div>发一封标题为GFW的邮件到fanqiang70ma@gmail.com，就可获取翻墙利器赛风新地址。附《数字时代》赠阅版。被墙网站收集：http://delicious.com/GFWbookmark，请使用GFWlist为标签，帮助我们收集被墙网站的信息。敬请订阅GFW Blog：http://feeds2.feedburner.com/chinagfwblog，邮件订阅：https://groups.google.com/group/gfw-blog。更多翻墙工具介绍和下载：
+推客浏览器（http://twitbrowser.net/blog/，墙内镜像：http://tm005.nl.am/)，Sesawe（http://www.sesawwe.net/）。翻墙互助小组邮件列表: http://groups.google.com/group/bypassgfw。<img width="1" height="1" src="https://blogger.googleusercontent.com/tracker/5500297126185736776-3503764819941887825?l=www.chinagfw.org" alt=""></div><img src="http://feeds.feedburner.com/~r/chinagfwblog/~4/5XszBWQQ4hE" height="1" width="1">

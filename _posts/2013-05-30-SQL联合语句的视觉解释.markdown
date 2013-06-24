@@ -1,0 +1,16 @@
+---
+layout: post
+title:  "SQL联合语句的视觉解释"
+date:   2013-05-30 09:55:16
+author: deepfish
+categories: program
+---
+
+## SQL联合语句的视觉解释
+### by deepfish
+### at 2013-05-30 09:55:16
+### original <http://blog.jobbole.com/40443/?utm_source=rss&utm_medium=rss&utm_campaign=sql%25e8%2581%2594%25e5%2590%2588%25e8%25af%25ad%25e5%258f%25a5%25e7%259a%2584%25e8%25a7%2586%25e8%25a7%2589%25e8%25a7%25a3%25e9%2587%258a>
+
+<p>我认为Ligaya Turmelle的关于SQL联合语句的帖子对于新开发者来说是份很好的材料。SQL 联合语句好像是基于集合的，用韦恩图来解释咋一看是很自然而然的。不过正如在她的帖子的回复中所说的，在测试中我发现韦恩图并不是十分的匹配SQL联合语法。
+
+不过我还是喜欢这个观点，所以我们来看看能不能用上韦恩图。</p><p><a href="http://blog.jobbole.com/40443/">SQL联合语句的视觉解释</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>

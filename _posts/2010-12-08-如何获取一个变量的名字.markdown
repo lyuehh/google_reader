@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "如何获取一个变量的名字"
+date:   2010-12-08 12:39:26
+author: 雪候鸟
+categories: program
+---
+
+## 如何获取一个变量的名字
+### by 雪候鸟
+### at 2010-12-08 12:39:26
+### original <http://www.laruence.com/2010/12/08/1716.html>
+
+<div>
+<ul style="padding-left:1em;font-size:85%;padding-left:1em;font-size:85%">
+<li>作者: <a href="http://www.laruence.com">Laruence</a>(<a href="http://t.sina.com/laruence" title="新浪微博"><img src="http://www.laruence.com/images/ico-sina.png"></a> <a href="http://www.twitter.com/laruence" title="Twitter"><img src="http://www.laruence.com/images/ico-twitter.png"></a> <a href="http://fusion.google.com/add?feedurl=http://www.laruence.com/feed" title="Google阅读器"><img src="http://www.laruence.com/images/ico-google.png"></a> <a href="http://www.laruence.com/feed" title="Rss订阅"><img src="http://www.laruence.com/images/feedico.gif"></a> <a href="mailto:laruence@yahoo.com.cn" title="邮件"><img src="http://www.laruence.com/images/ico-mail.png"></a>)</li>
+<li>本文地址: <a href="http://www.laruence.com/2010/12/08/1716.html" title="Permanet Link to 如何获取一个变量的名字">http://www.laruence.com/2010/12/08/1716.html</a></li>
+
+<li>转载请注明出处 </li>
+</ul></div>
+<p>    比如, 我提供一个查询服务,  用户可以提交一个人的名字和年龄做为查询条件.</p>
+<p>    假设我要查询一个名字叫做”laruence”, 年龄是27的人, 我认为这个人的定义的查询token可以写做:</p>
+<pre name="code">
+   laruence=27
+</pre>
+<p>    不幸的是, 当这样的一个token做为query string提交给服务器的处理脚本的时候, 你就会发现, 诶,,我不知道用户名是什么,,,</p>
+<p>   好吧, 于是, 你就只好这么写:</p>
+<pre name="code">
+username=laruence&amp;age=27
+</pre>
+<p>   那么, 能否获取到一个变量的名字呢?</p>
+<p>   首先, 从可能性上分析, </p>
+<p>   我们知道, 在C语言中, 所有的符号在编译器都被”替换”掉了.</p>
+<p>   而在PHP中, 所有的变量都存储在称为”符号表”的HastTable结构中.  在解析执行的过程中, 依旧保留着着”符号”信息, 所以, 肯定是可以获取到的.</p>
+<p>   而在PHP中, 符号的作用域是和活动符号表相关联的. 同一时间, 只有一个活动符号表.</p>
+<p>   那么怎么理解活动符号表和符号表呢?</p>
+<p>   对于PHP来说, 当前活动的符号表是保存在全局变量EG(active_symbol_table)中的, 而于此同时, 还有个全局符号表保存在EG(symbol_table)中,  在进入一个函数调用的执行体之前, 会生成一个新的active_symbol_table, 并且会保持一个调用栈式样的符号表栈:EG(symtable_cache), 以便在退出函数调用的时候, 恢复之前的活动符号表(作用域).</p>
+<p>   同时在PHP中, 不能实现作用域继承, 也就是不能直接访问作用域外层的符号(需要加上golbal声明), 而如果加上global的声明的话, 也会在当前的活动作用域生成一个copy, 也就是说, 不存在在当前作用域可见的符号是保存在全局符号表的.</p>
+<p>  如上分析, 我们只需要在当前的活动符号表中, 就可以找到我们需要的变量的名称, </p>
+<p>  当然, 有了这些还不够, 我们如何在PHP的脚本中实现获取当前的符号表呢?</p>
+<pre name="code">
+  get_defined_vars
+ </pre>
+<p>  然而有一个问题要注意, 就是get_defined_vars返回的是当前活动符号表中定义的变量名,  也就是说, 如果你需要包装一个函数, 类似于:</p>
+<pre name="code">
+  get_variable_name($var)
+</pre>
+<p>   并且尝试在这个函数中通过get_defined_vars来获取在调用get_variable_name时刻的符号表是行不通的.</p>
+<p>   所以, 我们获取变量名字的函数, 应该是下面的这个样子:</p>
+<pre name="code">
+  get_variable_name($var, $scope)
+</pre>
+<p>  现在, 已经得到了当前活动的符号表, 接下来, 如何得到变量的名字呢?</p>
+<p>  显然, 我们需要根据变量的值去查询这个表, 找到值等于要找值的变量, 但是, 这样做又有一个问题, 那就是, 可能会有多个变量的值相等啊?</p>
+<p>  所以, 我们需要给这个变量一个唯一值. 而要是想要这个变量, 那么, 我们的这个目的函数的形式又要变一下了:</p>
+<pre name="code">
+  get_variable_name(&amp;$var, $scope)
+</pre>
+<p>  接下来完善这个函数体吧:</p>
+<pre name="code">
+function get_variable_name(&amp;$var, $scope = NULL) {
+       if (NULL == $scope) {
+          $scope = $GLOBALS;
+       }
+
+       $tmp  = $var;
+
+       $var   = &quot;tmp_exists_&quot; . mt_rand();
+
+       $name = array_search($var, $scope, TRUE);
+
+       $var   = $tmp;
+
+       return $name;
+}
+</pre>
+<p>    另外, 有一个问题就是, 如果有多个变量之间有引用, 那么这个函数只是返回最先定义的变量名.. </p>
+<p>    另外, 你也可以参考: <a href="http://php.net/manual/en/language.variables.php">http://php.net/manual/en/language.variables.php</a></p>
+<p>   关于作用域, 你也可以参看我之前的文章: <a href="http://www.laruence.com/2008/08/26/463.html">深入理解PHP原理之变量作用域(Scope in PHP)</a></p>
+<hr><h2>Comments</h2><ul style="padding-left:1em;font-size:85%;padding-left:1em;font-size:85%"><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/08</a>, jaceju writes: 請教您，如果不是 Global 的變數，那麼 $scope 該怎麼指定？</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/08</a>, jaceju writes: 忘了 get_defined_vars() 可以在 function 裡用，可以把它的結果當成 $scope 的值，就可以取得 function 裡的變數名了...</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/08</a>, <a href="http://www.laruence.com" rel="external nofollow">雪候鸟</a> writes: @jaceju :) 我忘了写个例子了</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/09</a>, <a href="http://chibaole.com" rel="external nofollow">fifsky</a> writes: 前几天写框架的时候还想过这个问题，之前的大部分框架在Controller给View传值的时候都是采用
+$this-&gt;assign(&#39;abc&#39;,$abc);
+我就想，为什么不是$this-&gt;assign($abc);然后View层自动得到变量的名称abc还原成$abc呢？
+当时找到采用遍历$GLOBALS的方式，后来打印了一下$GLOBALS，发现这个数组还是很大的，其结果得不偿失，后来就放弃了</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/09</a>, <a href="http://reeze.cn" rel="external nofollow">reeze</a> writes: @fifsky
+php里有个方法天生就是干这个的  http://php.net/extract， 一般php的模版引擎都是用这个方法实现的。
+
+BTW: 刚好前一阵也想过过获取变量名的问题，贴个链结也凑下热闹：）    http://reeze.cn/2010/10/30/php-internal-how-to-get-variables-name-an-extension-implement/</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/19</a>, rzhome writes: 菜鸟来学习了
+我想知道laruence=27做为query string提交给服务器的处理脚本
+调用get_variable_name(&amp;$var, $scope)函数时$var的值如何取得呢？</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/20</a>, <a href="http://www.laruence.com" rel="external nofollow">雪候鸟</a> writes: @rzhome 好问题,,,,哈哈,,真是好问题... 其实我是为了引出这个问题,,现在看起来,这个假设有点问题,,鸡和蛋的问题...</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/22</a>, Shiwei Hu writes: Hi,
+
+话说，我以为。。。如果你要找到那个laruence的话，是不是直接遍历$_REQUEST好一点？或者说，你设置了laruence=27，如何在服务器端就知道你要的是laruence而不是别的呢？
+可能我没有理解你的文章，再研究研究。。。</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/24</a>, <a href="http://www.penglei.net" rel="external nofollow">soulfree</a> writes: 好文章，前段时间正好研究这个问题.</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2010/12/28</a>, <a href="http://llphp.com" rel="external nofollow">wclssdn</a> writes: 我也没太理解... 你举的例子是说姓名和年龄. 那如果需要姓名年龄电话这三个, 查询字符串应该怎么写?  迷糊........</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2011/01/17</a>, <a href="http://blog.thinkinlamp.com/?p=670" rel="external nofollow">Thinking In LAMP Blog » Blog Archive » PHP每月通讯（2011年1月）</a> writes: [...] http://www.laruence.com/2010/12/08/1716.html 如何获取一个变量的名字 [...]</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2011/01/27</a>, <a href="http://www.132cc.com/727.html" rel="external nofollow">132CC.com » Blog Archive » 如何获取一个变量的名字</a> writes: [...] 本文地址: http://www.laruence.com/2010/12/08/1716.html [...]</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2011/03/20</a>, <a href="http://www.w3hacker.com/?p=323" rel="external nofollow">如何获取一个变量的名字 | 万维网黑客联盟</a> writes: [...] 本文地址: http://www.laruence.com/2010/12/08/1716.html [...]</li><li><a href="http://www.laruence.com/2010/12/08/1716.html">2011/05/03</a>, HillTop writes: 大哥，能不能给我推荐一点中高级的书籍啊！</li></ul><hr><small style="font-size:85%;font-size:85%">Copyright © 2010 <a href="http://www.laruence.com">风雪之隅</a> 版权所有, 转载务必注明. 该Feed只供个人使用, 禁止未注明的转载或商业应用. 非法应用的, 一切法律后果自负. 如有问题, 可发E-mail至my at laruence.com.(Digital Fingerprint: 73540ba0a1738d7d07d4b6038d5615e2)</small><h2>Related Posts:</h2><ul style="padding-left:1em;font-size:85%;padding-left:1em;font-size:85%"><li><a href="http://www.laruence.com/2011/06/19/2047.html" title="PLua – Lua for PHP">PLua – Lua for PHP</a></li><li><a href="http://www.laruence.com/2011/05/31/2025.html" title="在中国PHP技术高峰论坛(2011)上演讲的PPT">在中国PHP技术高峰论坛(2011)上演讲的PPT</a></li><li><a href="http://www.laruence.com/2011/03/29/1949.html" title="深入理解PHP原理之Session Gc的一个小概率Notice">深入理解PHP原理之Session Gc的一个小概率Notice</a></li><li><a href="http://www.laruence.com/2011/03/24/858.html" title="一些PHP Coding Tips[2011/04/02最后更新]">一些PHP Coding Tips[2011/04/02最后更新]</a></li><li><a href="http://www.laruence.com/2011/03/22/1929.html" title="PHP Reflection Extension的一个bug">PHP Reflection Extension的一个bug</a></li><li><a href="http://www.laruence.com/2011/03/18/1916.html" title="可序列化单例模式的遗留问题答案">可序列化单例模式的遗留问题答案</a></li><li><a href="http://www.laruence.com/2011/03/18/1909.html" title="Serialize/Unserialize破坏单例">Serialize/Unserialize破坏单例</a></li><li><a href="http://www.laruence.com/2011/03/04/1894.html" title="深入理解PHP内存管理之谁动了我的内存">深入理解PHP内存管理之谁动了我的内存</a></li><li><a href="http://www.laruence.com/2011/02/13/1870.html" title="加速PHP的ECHO">加速PHP的ECHO</a></li><li><a href="http://www.laruence.com/2011/01/27/1854.html" title="深入理解PHP内存管理之一个低概率Core的分析">深入理解PHP内存管理之一个低概率Core的分析</a></li></ul>

@@ -1,0 +1,106 @@
+---
+layout: post
+title:  "理解Git的工作流程"
+date:   2012-07-27 14:39:23
+author: 张 重骐
+categories: program
+---
+
+## 理解Git的工作流程
+### by 张 重骐
+### at 2012-07-27 14:39:23
+### original <http://blog.jobbole.com/24379/?utm_source=rss&utm_medium=rss&utm_campaign=%25e7%2590%2586%25e8%25a7%25a3git%25e7%259a%2584%25e5%25b7%25a5%25e4%25bd%259c%25e6%25b5%2581%25e7%25a8%258b>
+
+<p>如果你不理解Git的设计动机，那你就会处处碰壁。知道足够多的命令和参数后，你就会强行让Git按你想的来工作，而不是按Git自己的方式来。这就像把螺丝刀当锤子用；也能把活干完，但肯定干的差极了，花费很长时间，还会弄坏螺丝刀。</p>
+<p>想想常见的Git工作流程是怎么失效的吧。</p>
+<blockquote><p>从Master创建一个分支，写代码，<span></span>然后把这个分支合并回Master。</p></blockquote>
+<p>多数时候这样做的效果会如你所愿，因为从你创建分支到合并回去之间，Master一般都会有些变动。然后，有一天当你想把一个功能（feature）分支合并进Master的时候，而Master并没有像以往那样有变动，问题来了：这时Git不会进行合并commit，而是将Master指向功能分支上的最新commit。（<a href="http://sandofsky.com/images/fast_forward.pdf">看图</a>）</p>
+<p>不幸的是，你的功能分支有用来备份代码的commit（作者称之为checkpoint commit），这些经常进行的commit对应的代码可能处于不稳定状态！而这些commit现在没法和Master上那些稳定的commit区分开来了。当你想回滚的时候，很容易发生灾难性后果。</p>
+<p>于是你就记住了：“当合并功能分支的时候，加上 -no-ff 选项强制进行一次全新的commit。”嗯，这么做好像解决问题了，那么继续。</p>
+<p>然后一天你在线上环境中发现了一个严重bug，这时你需要追溯下这个bug是什么时候引入的。你运行了bisect命令，但却总是追溯到一些不稳定的commit。因此你不得不放弃，改用人肉检查。</p>
+<p>最后你将bug范围缩小到一个文件。你运行blame命令查看这个文件在过去48小时里的变动。然后blame告诉你这个文件已经好几周没有被修改过了——你知道根本不可能没有变动。哦，原来是因为blame计算变动是从第一次commit算起，而不是merge的时候。你在几周前的一次commit中改动了这个文件，但这个变动今天才被merge回来。</p>
+<p>用no-ff来救急，bisect又临时失效，blame的运作机制又那么模糊，所有这些现象都说明一件事儿，那就是你正在把螺丝刀当锤子用。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/07/git-logo.jpg" rel="lightbox[24379]" title="git logo"><img title="git logo" src="http://blog.jobbole.com/wp-content/uploads/2012/07/git-logo.jpg" alt="git logo" width="256" height="256"></a></p>
+<p> </p>
+<p><strong>反思版本控制</strong></p>
+<p>版本控制的存在是因为两个原因。</p>
+<p>首先，版本控制是用来辅助写代码的。因为你要和同事同步代码，并经常备份自己的代码。当然了，把文件压缩后发邮件也行，不过工程大了大概就不好办了。</p>
+<p>其次，就是辅助配置管理工作。其中就包括并行开发的管理，比如一边给线上版本修复bug，一边开发下一个版本。配置管理也可以帮助弄清楚变动发生的具体时间，在追溯bug中是一个很好的工具。</p>
+<p>一般说来，这两个原因是冲突的。</p>
+<p>在开发一个功能的时候，你应该经常做备份性的commit。然而，这些commit经常会让软件没法编译。</p>
+<p>理想情况是，你的版本更新历史中的每一次变化都是明确且稳定的，不会有备份性commit带来的噪声，也不会有超过一万行代码变动的超大commit。一个清晰的版本历史让回滚和选择性merge都变得相当容易，而且也方便以后的检查和分析。然而，要维护这样一个干净的历史版本库，也许意味着总是要等到代码完善之后才能提交变动。</p>
+<p>那么，经常性的commit和干净的历史，你选择哪一个？</p>
+<p>如果你是在刚起步的创业公司中，干净的历史没有太大帮助。你可以放心地把所有东西都往Master中提交，感觉不错的时候随时发布。</p>
+<p>如果团队规模变大或是用户规模扩大了，你就需要些工具和技巧来做约束，包括自动化测试，代码检查，以及干净的版本历史。</p>
+<p>功能分支貌似是一个不错的折中选择，能够基本的并行开发问题。当你写代码时候，可以不用怎么在意集成的问题，但它总有烦到你的时候。</p>
+<p>当你的项目规模足够大的时候，简单的branch/commit/merge工作流程就出问题了。缝缝补补已经不行了。这时你需要一个干净的版本历史库。</p>
+<p>Git之所以是革命性的，就是因为它能同时给你这两方面的好处。你可以在原型开发过程中经常备份变动，而搞定后只需要交付一个干净的版本历史。</p>
+<p> </p>
+<p><strong>工作流程</strong></p>
+<p>考虑两种分支：公共的和私有的。</p>
+<p>公共分支是项目的权威性历史库。在公共分支中，每一个commit都应该确保简洁、原子性，并且有完善的提交信息。此分支应该尽可能线性，且不能更改。公共分支包括Master和发行版的分支。</p>
+<p>私有分支是供你自己使用的，就像解决问题时的草稿纸。</p>
+<p>安全起见，把私有分支只保存在本地。如果你确实需要push到服务器的话（比如要同步你在家和办公室的电脑），最好告诉同事这是私有的，不要基于这个分支展开工作。</p>
+<p>绝不要直接用merge命令把私有分支合并到公共分支中。要先用reset、rebase、squash merges、commit amending等工具把你的分支清理一下。</p>
+<p>把你自己看做一个作者，每一次的commit视为书中的一章。作者不会出版最初的草稿，就像Michael Crichton说的，“伟大的书都不是写出来——而是改出来的”。</p>
+<p>如果你没接触过Git，那么修改历史对你来说好像是种禁忌。你习惯于认为提交过的所有东西都应该像刻在石头上一样不能抹去。但如果按这种逻辑，我们在文本处理软件器中也不应该使用“撤销”功能了。</p>
+<p>实用主义者们直到变化变为噪音的时候才关注变化。对于配置管理来说，我们关注宏观的变化。日常commit（checkpoint commits）只是备份于云端的用于“撤销”的缓冲。</p>
+<p>如果你保持公共历史版本库的简洁，那么所谓的fast-forward merge就不仅安全而且可取了，它能保证版本变更历史的线性和易于追溯。</p>
+<p>关于 -no-ff 仅剩的争论就只剩“文档证明”了。人们可能会先merge再commit，以此代表最新的线上部署版本。不过，这是反模式的。用tag吧。</p>
+<p>规则和例子</p>
+<p>根据改变的多少、持续工作时间的长短，以及分支分叉了多远，我使用三种基本的方法。</p>
+<p>1）短期工作</p>
+<p>绝大多数时间，我做清理时只用squash merge命令。</p>
+<p>假设我创建了一个功能分支，并且在接下来一个小时里进行了一系列的checkpoint commit。</p>
+<pre>git checkout -b private_feature_branch
+touch file1.txt
+git add file1.txt
+git commit -am &quot;WIP&quot;</pre>
+<p> </p>
+<p>完成开发后，我不是直接执行git merge命令，而是这样：</p>
+<pre>git checkout master
+git merge --squash private_feature_branch
+git commit -v</pre>
+<p> </p>
+<p>然后我会花一分钟时间写个详细的commit日志。</p>
+<p>2）较大的工作</p>
+<p>有时候一个功能可以延续好几天，伴有大量的小的commit。</p>
+<p>我认为这些改变应该被分解为一些更小粒度的变更，所以squash作为工具来说就有点儿太糙了。（根据经验我一般会问，“这样能让阅读代码更容易吗？”）</p>
+<p>如果我的checkpoint commits之后有合理的更新，我可以使用rebase的交互模式。</p>
+<p>交互模式很强大。你可以用它来编辑、分解、重新排序、合并以前的commit。</p>
+<p>在我的功能分支上：</p>
+<pre>git rebase --interactive master</pre>
+<p> </p>
+<p>然后会打开一个编辑器，里边是commit列表。每一行上依次是，要执行的操作、commit的SHA1值、当前commit的注释。并且提供了包含所有可用命令列表的图例。</p>
+<p>默认情况下，每个commit的操作都是“pick”，即不会修改commit。</p>
+<pre>pick ccd6e62 Work on back button
+pick 1c83feb Bug fixes
+pick f9d0c33 Start work on toolbar</pre>
+<p> </p>
+<p>我把第二行修改为“squash”，这样第二个commit就会合并到第一个上去。</p>
+<pre>pick ccd6e62 Work on back button
+squash 1c83feb Bug fixes
+pick f9d0c33 Start work on toolbar</pre>
+<p>保存并退出，会弹出一个新的编辑器窗口，让我为本次合并commit做注释。就这样。</p>
+<p> </p>
+<p><strong>舍弃分支</strong></p>
+<p>也许我的功能分支已经存在了很久很久，我不得不将好几个分支合并进这个功能分支中，以便当我写代码时这个分支是足够新的的。版本历史让人费解。最简单的办法是创建一个新的分支。</p>
+<pre>git checkout master
+git checkout -b cleaned_up_branch
+git merge --squash private_feature_branch
+git reset</pre>
+<p>现在，我就有了一个包含我所有修改且不含之前分支历史的工作目录。这样我就可以手动添加和commit我的变更了。</p>
+<p><strong>总结</strong></p>
+<p>如果你在与Git的默认设置背道而驰，先问问为什么。</p>
+<p>将公共分支历史看做不可变的、原子性的、容易追溯的。将私有分支历史看做一次性的、可编辑的。</p>
+<p>推荐的工作流程是：</p>
+<pre>基于公共分支创建一个私有分支。
+经常向这个私有分支commit代码。
+一旦你的代码完善了，就清理掉下私有分支的历史。
+将干净的私有分支merge到公共分支中。​</pre>
+<p> </p>
+<p>英文原文：<a href="http://sandofsky.com/blog/git-workflow.html">Understanding the Git workflow</a>   编译： <a href="http://blog.jobbole.com/24379/">张重骐</a></p>
+<p>本文由张重骐（<a href="http://weibo.com/candyhorse" rel="nofollow">@candyhorse</a>）投稿于<a title="伯乐" href="http://www.jobbole.com/">伯乐</a>在线，也欢迎其他朋友<a href="http://blog.jobbole.com/tougao/">投稿</a>。提示：投稿时记得留下微博账号哦 <img src="http://blog.jobbole.com/wp-includes/images/smilies/icon_smile.gif" alt=":-)"></p>
+<p><span style="color:#ff0000">【如需转载，请标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+<p> </p>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/23398/" title="阮一峰：Git分支管理策略">阮一峰：Git分支管理策略</a></li><li><a href="http://blog.jobbole.com/22647/" title="图解Git/图形化的Git参考手册">图解Git/图形化的Git参考手册</a></li><li><a href="http://blog.jobbole.com/20123/" title="趣文：那些会用 Git 的动物">趣文：那些会用 Git 的动物</a></li><li><a href="http://blog.jobbole.com/20069/" title="蒋鑫：为什么 Git 比 SVN 好">蒋鑫：为什么 Git 比 SVN 好</a></li><li><a href="http://blog.jobbole.com/17010/" title="版本控制入门简介">版本控制入门简介</a></li><li><a href="http://blog.jobbole.com/15023/" title="我痛恨 Git 的 10 个理由">我痛恨 Git 的 10 个理由</a></li><li><a href="http://blog.jobbole.com/13916/" title="Git 分支管理是一门艺术">Git 分支管理是一门艺术</a></li><li><a href="http://blog.jobbole.com/7547/" title="GitHub如何运作：创新很重要">GitHub如何运作：创新很重要</a></li><li><a href="http://blog.jobbole.com/1562/" title="Ruby开发人员应该熟悉的10个工具">Ruby开发人员应该熟悉的10个工具</a></li><li><a href="http://blog.jobbole.com/1237/" title="GoogleCode Git使用小记">GoogleCode Git使用小记</a></li></ul>

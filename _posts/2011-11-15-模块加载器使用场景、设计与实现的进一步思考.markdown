@@ -1,0 +1,88 @@
+---
+layout: post
+title:  "模块加载器使用场景、设计与实现的进一步思考"
+date:   2011-11-15 10:13:58
+author: lifesinger
+categories: program
+---
+
+## 模块加载器使用场景、设计与实现的进一步思考
+### by lifesinger
+### at 2011-11-15 10:13:58
+### original <http://lifesinger.wordpress.com/2011/11/15/thinking-more-on-module-loader/>
+
+<p>不知道上下文的，请先阅读这篇博客：<a href="http://lifesinger.wordpress.com/2011/11/11/get-url-in-module-loader/">模块加载器获取 URL 的原理</a></p>
+<h2>使用场景</h2>
+<p>为了便于讨论，先做一些约定：</p>
+<p>模块原始代码为 S(ource)<br>
+压缩打包后的模块代码为 C(ompressed)<br>
+独立文件为 F(ile)<br>
+内嵌到页面中为 P(page)<br>
+独立文件中是原始代码时，记为 SF；独立文件中是压缩打包后的代码时，记为 CF<br>
+内嵌的原始代码记为 SP；内嵌的压缩打包后的代码记为 CP</p>
+<p>压缩打包是指代码压缩、模块信息补全、编译、合并等操作。</p>
+<p>使用场景可概况为一句话：</p>
+<p><strong>SF, CF, SP 和 CP 可直接在浏览器中运行，并可同时存在。</strong></p>
+<p>几点说明：</p>
+<ol>
+<li>可直接在浏览器中运行，这点很重要。对前端开发来说，<strong>浏览器即编译器</strong>。增加一层服务端来做编译、转换等工作，是很大的诱惑，但这会增加使用者的复杂度。好想法要变成好产品，在给用户带去新功能、去除用户坏习惯的同时，还得尽可能避免剥夺用户现有的便利。</li>
+<li>允许内嵌，这是脚本代码的现有特性：<strong>模块代码与存储位置无关</strong>。可存储为文件，也可内嵌到页面。保持该特性，除了能延续旧有的便利，还可使得通过内嵌来减少 HTTP 链接数的性能优化方案继续可用。</li>
+<li>源码和压缩打包后的代码可并存。这一点的背后，是<strong>模块代码与存储形式无关</strong>。做到这一点，可以让代码调试和新功能的开发等工作更简单。</li>
+</ol>
+<p>第一点决定模块加载器的战场在浏览器端，要尽量避免增加对服务端的依赖。第二点决定不能采用 XHR + eval 等方式来实现，而需要采用包裹形式来定义模块。第三点决定模块转换格式要尽可能和模块定义格式兼容，最好的一种兼容方式是：模块转换格式就是模块定义格式。这种一致性还可以给优化打包等工具带来方便和简洁性。</p>
+<h2>模块定义格式</h2>
+<p>模块的定义格式为：</p>
+<pre>
+define(id?, dependencies?, factory)
+</pre>
+<p> <br>
+<span></span><br>
+id 是模块标识，经过解析后是唯一的。可以是：绝对路径（http://x.com/path/to/a）、系统路径（xxx/z）、相对路径（../a/c）和根路径（/root/path/to/a）。这种分法是从 id 字串的形式来分的，代表的真正路径，还需要根据所在的上下文环境来确定。比如：对于相对路径，有一种策略是，如果 define 代码在文件中，则相对的是所在文件的绝对路径；如果在页面中，则相对的是页面地址。SeaJS 1.0 目前就是这个策略，这个策略违背了<strong>“模块代码与存储位置无关”</strong>的假设，在 SeaJS 1.1 中将调整回来。</p>
+<p>为了做到“模块代码与存储位置无关”，模块可分为两种：</p>
+<ol>
+<li><strong>匿名模块</strong>：定义格式为 <code>define(dependencies?, factory)</code></li>
+<li><strong>具名模块</strong>：定义格式为 <code>define(id, dependencies?, factory)</code></li>
+</ol>
+<p>匿名模块无论放在文件里，还是内嵌在页面中，其功能都只是定义了一个匿名模块。定义在文件中的匿名模块，可以通过文件路径来引用（这是文件的特性，不是匿名模块的特性）。内嵌在页面中的匿名模块，则因为其匿名而无法调用（就如我们在 JavaScript 中定义了一个匿名函数一样，在匿名函数外面，无法调用该匿名函数）。</p>
+<p>具名模块是定义格式里有 id 的模块。从“模块代码与存储位置无关”出发，id 可分为：</p>
+<ol>
+<li><strong>页面路径</strong>：包括绝对路径、根路径、相对路径。这些路径，除了可以省略 .js 后缀，其解析规则与页面中 &lt;script src=”…”&gt; 中 src 的解析规则一致。</li>
+<li><strong>系统路径</strong>：这是相对 base 的路径，解析规则是在前面加上 base. 比如 base 如果是 <a href="http://a.tbcdn.cn/libs" rel="nofollow">http://a.tbcdn.cn/libs</a>, 则 “jquery” 会被解析成 “<a href="http://a.tbcdn.cn/libs/jquery.js&amp;#8221" rel="nofollow">http://a.tbcdn.cn/libs/jquery.js&amp;#8221</a>;</li>
+</ol>
+<p>模块定义格式中的 id 就这两种，无论代码在何处，含义都不会变化。</p>
+<p>与上下文环境相关的 id，只有 require 和 require.async 的 id 参数。require 的 id 参数是相对路径时，相对的是当前所在模块。比如：</p>
+<pre>
+// http://a.tbcdn.cn/app/x.js
+define(function(require) {
+  var a = require('./biz/a'); // 等价 require('http://a.tbcdn.cn/app/biz/a.js');
+});
+</pre>
+<p> <br>
+自然，dependencies 中的相对 id, 也是相对当前所在模块的。</p>
+<h2>理想与现实</h2>
+<p>模块书写格式和 id 解析规则确定后，对模块加载器来说，设计方案就大局已定了。由于浏览器本身有很多限制，是带着镣铐的舞蹈，在完全确定 API 前，还必须得考虑技术上是否可以实现。</p>
+<p>期望中的最佳实践是：</p>
+<ol>
+<li>开发时，文件和模块是一对一的，且模块最好是匿名模块，这样能遵守 DRY 原则，可以让名称冲突的概率理论上降为 0. </li>
+<li>压缩打包后，模块加载器能够按照预期 100% 正确的工作。在打包前，出错的概率也要尽可能小，以便在各种浏览器下调试。</li>
+<li>压缩打包规则尽可能简单，这样可以方便各种衍生工具的开发。</li>
+</ol>
+<p>要容纳的现实情况有：</p>
+<ol>
+<li>多个匿名模块存在于同一个文件中。对于这种情况，只能有所取舍，目前是最后一个匿名模块生效。</li>
+<li>具名模块可以多个并存在文件或页面中。这种情况要完全容纳，能正常运行。</li>
+<li>匿名模块存在于页面中。这种情况，除了该匿名模块无法引用，不能破坏其他模块的加载和运行。</li>
+</ol>
+<p>以上几点，对开发者的习惯有着合理的容忍，同时也能让压缩打包很简单：只需将匿名模块转化为具名模块，然后合并在一个文件就行。</p>
+<h2>技术难点</h2>
+<h3>异步回调的可靠性</h3>
+<p>对于异步操作来说，异步回调的可靠性至关重要。假设加载 t.js 时，代码执行时间是 T, onload 回调时间是 t. 理想情况下，T 应该永远先于 t. 很不幸的是，在 <a href="http://army8735.org/2011/11/10/1019.html">army 的测试</a> 中，发现 IE 下有万分之一的概率 T 会大于 t. 如果 IE 下（包括 IE9）真有这个问题，对于线上应用来说，这概率是不可接受的。如果真有这个问题，一个可能的解决方案是，在 onload 发生时，使用 setTimeout 将 callback 再排列到队列尾，然后再测试出错概率，或者用 army 说的二次幂延等算法来降低错误概率，如果概率依旧比较高，则需要通过打包部署工具来做一些去 onload 依赖的处理。进一步的测试验证还在进行中，明后天可见分晓，敬请期待。</p>
+<p>注意：目前市面上所有加载器都依赖 T &lt; t 这一特性。希望明天的测试结果，能证明 T &lt; t 的绝对可靠性。</p>
+<h3>匿名模块的URL获取方案</h3>
+<p>在这篇博客 <a href="http://lifesinger.wordpress.com/2011/11/11/get-url-in-module-loader/">模块加载器获取 URL 的原理</a> 里已详述，再次就不赘述了。希望明天的测试结果能证明 Army 方案的可靠性，这样，就可以去掉 getInteractiveScript 等针对 IE 的 hack 代码。</p>
+<p>除掉以上两个技术关键点，其他的特性，比如异步并行加载、上下文环境管理、alias 与 map 等等功能，实现上不依赖 DOM，非常可靠。</p>
+<h2>小结</h2>
+<p>好的业务产品，需要有好的愿景、理念，需要有切实可行的技术方案，要有梦想，也有要面对现实的取舍。技术产品也一样，想清楚并定位好使用场景至关重要。需求分析 – 可行性分析 – 代码实现与优化 – 推广应用，是一个螺旋式的周期，转过好几轮后，才能站得更高，做得更好。</p>
+<p><ins>2011-11-17<ins>:</ins></ins></p>
+<p>后续测试与结果，请跟进：<a href="http://lifesinger.wordpress.com/2011/11/17/reliability-test-for-module-loader/">模块加载器的可靠性测试与思考</a></p>
+<br>  <img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=lifesinger.wordpress.com&amp;blog=38365&amp;post=644&amp;subd=lifesinger&amp;ref=&amp;feed=1" width="1" height="1">

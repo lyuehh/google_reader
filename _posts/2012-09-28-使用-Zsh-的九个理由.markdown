@@ -1,0 +1,88 @@
+---
+layout: post
+title:  "使用 Zsh 的九个理由"
+date:   2012-09-28 09:15:20
+author: 
+categories: program
+---
+
+## 使用 Zsh 的九个理由
+### by 
+### at 2012-09-28 09:15:20
+### original <http://blog.jobbole.com/28829/?utm_source=rss&utm_medium=rss&utm_campaign=%25e4%25bd%25bf%25e7%2594%25a8-zsh-%25e7%259a%2584%25e4%25b9%259d%25e4%25b8%25aa%25e7%2590%2586%25e7%2594%25b1>
+
+<p><span style="color:#888888">原文：<span style="text-decoration:underline"><a href="http://lostjs.com/2012/09/27/zsh/"><span style="color:#888888;text-decoration:underline">perfectworks</span></a></span>，本文由作者（<span style="text-decoration:underline"><a href="http://weibo.com/perfectworks"><span style="color:#888888;text-decoration:underline">@__pw__</span></a></span>）投稿于<span><a href="http://www.jobbole.com" title="伯乐">伯乐</a></span>在线，也欢迎其他朋友<a href="http://blog.jobbole.com/tougao/"><span style="color:#888888">投稿</span></a>。提示：投稿时记得留下微博账号哦~</span></p>
+<p>像大部分 *nix 用户，我之前用 bash 很多年，期间也有过小的不爽，但一直都忍过来，或者是说没想过这些不爽的地方能解决，比如 <code>cd</code> 到一个深目录时得哐哐猛敲 <code>&lt;TAB&gt;</code>。这么多年里我也尝试过其他 shell。比如 ksh/tcsh 以及今天要说的 zsh，但最终都没坚持下去，因为心中始终还是认为 bash 是最正统的 shell，不愿意去主动深入学习其他 shell。直到前几天逛 <span><a href="http://blog.jobbole.com/6492/" title="GitHub如何运作：时间并不决定一切">GitHub</a></span>，发现 <a href="https://github.com/popular/forked">排名第 6 的开源项目 oh-my-zsh</a>，下来试用了一把，顿时觉得 bash 各种操作不爽到无法忍受。</p>
+<p> </p>
+<p><strong>放弃 bash 的各种内牛满面的理由</strong></p>
+<p>这里有个 youtube 上的视频，短短 4 分钟就已经抛出了几十个让 bash 用户切换到 zsh 中的理由。<a href="http://youtu.be/HGBgMX5HW_g">视频链接</a></p>
+<p> </p>
+<p><strong>理由 0：zsh 兼容 bash</strong></p>
+<p>兼容 bash 意味着我不需要太多学习成本就可以切换过来，意味着我以前在 bash 下积累的 shell 语法、基本操作都不会荒废。在我心里 bash 还是最通用和标准的 shell 环境，因此兼容 bash 让我切换到 zsh 时没有太多后顾之忧。</p>
+<p> </p>
+<p><strong>理由 1：zsh 的补全模式更方便</strong></p>
+<p>zsh 中按两下 tab 键可以触发 zsh 的补全，所有待补全项都可以通过键盘方向键或者 <code>&lt;Ctrl-n/p/f/b&gt;</code> 来选择。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh.png" rel="lightbox[28829]" title="nine reasons to use zsh"><img title="nine reasons to use zsh" src="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh.png" alt="nine reasons to use zsh" width="578" height="181"></a></p>
+<p> </p>
+<p><strong>理由 2：zsh 支持命令选项补全</strong></p>
+<p>zsh 除了支持目录的补全，还支持命令选项的补全，例如 <code>ls -&lt;TAB&gt;&lt;TAB&gt;</code> 会直接列出所有 <code>ls</code> 的参数，再也不会出现一个命令打到一半，忘记参数导致重开一个 terminal <code>man</code> 一把。</p>
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh-2.png" rel="lightbox[28829]" title="nine reasons to use zsh 2"><img title="nine reasons to use zsh 2" src="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh-2.png" alt="nine reasons to use zsh" width="601" height="166"></a></p>
+<p><strong>理由 3：zsh 支持命令参数补全</strong></p>
+<p>以前想 <code>kill</code> 掉一个进程，我的做法是 <code>ps aux | grep "进程名"</code> 然后记下 id，再 <code>kill id</code>。在 <code>zsh</code> 下，只需要 <code>kill 进程名&lt;TAB&gt;</code>，<code>zsh</code> 就会自动补全进程的 pid。</p>
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh-3.png" rel="lightbox[28829]" title="nine reasons to use zsh 3"><img title="nine reasons to use zsh 3" src="http://blog.jobbole.com/wp-content/uploads/2012/09/nine-reasons-to-use-zsh-3.png" alt="nine reasons to use zsh" width="565" height="97"></a></p>
+<p>其余我常用的补全还有：</p>
+<p><code>·ssh &lt;TAB&gt;&lt;TAB&gt;</code> 时 zsh 会自动列出你访问过的主机和用户名来补全 <code>ssh</code> 的参数。<br>
+<code>·brew install &lt;TAB&gt;&lt;TAB&gt;</code> 来补全软件包名，除了 homebrew 以外，同样支持 port/apt-get 等其他包管理器。</p>
+<div></div>
+<p><strong>理由 4：zsh 支持更加聪明的目录补全</strong></p>
+<p>以前比如想进入一个比较深的目录，比如 <code>/Users/pw/workspace/project/src/main/webapps/static/js</code>，就得在 bash 下面打半天，不停的 tab 去补全一个正确的路径出来。在 zsh 下，只需要输入每个路径的头字母然后 tab 一下： <code>cd /u/p/w/p/s/m/w/s/j&lt;TAB&gt;</code></p>
+<p> </p>
+<p><strong>理由 5：zsh 强大的快速目录切换</strong></p>
+<p>以前最苦逼的事情莫过于频繁在两个工作目录下切换，总要打一长串 <code>cd</code> 路径。也尝试过 <code>popd</code> 和 <code>pushd</code> 来解决这个问题，但往往是目录已经切换了才想起来没用 <code>pushd</code>。而 zsh 会记住你每一次切换的路径，然后通过 <code>1</code> 来切换到你上一次访问的路径，<code>2</code> 切换到上上次……一直到 <code>9</code>，还可以通过 <code>d</code> 查看目录访问历史。</p>
+<p>zsh 还可以配合 autojump 一起使用，autojump 会记录下每一个你访问过的目录，然后通过 <code>j</code> 来快速跳转。</p>
+<p> </p>
+<p><strong>理由 6：zsh 支持全局 alias 和后缀名 alias</strong></p>
+<p>bash 的 <code>alias</code> 只能做命令的缩写，而 <code>zsh</code> 更进一步，使 <code>alias</code> 可以缩写命令的一部分，例如参数或环境变量设置。</p>
+<pre>$ alias -s log=less
+$ ~/package/tomcat/log/catalina.log # 相当于 less ~/package/tomcat/log/catalina.log
+$ alias -g PR=http_proxy=127.0.0.1:8087
+$ PR curl https://twitter.com # 相当于 http_proxy=127.0.0.1:8087 curl https://twitter.com</pre>
+<p> </p>
+<p><strong>理由 7：zsh 有着丰富多彩的命令行提示符</strong></p>
+<p>bash 下通过设置 <code>$PS1</code> 已经可以实现很丰富的提示符了，而 zsh 更进一步，可以实现诸如多行提示符、提示符右对齐等功能。<code>oh-my-zsh</code> 配置文件中提供了非常丰富的提示符 theme 供选择，我使用的是 <code>gentoo</code> 主题，比较简洁，还可以显示当前 git 仓库的状态。</p>
+<p> </p>
+<p><strong>理由 8：zsh 有更多优雅的语法</strong></p>
+<p>例如修改 <code>PATH</code>，bash 下设置 <code>$PATH</code> 要求所有路径都要写在一行里，目录多了以后看起来就很难看。zsh 支持更加符合<span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span>审美观的设置方式。</p>
+<pre>path=(
+    ~/bin
+    $path
+    ~/package/smartsprites/bin
+)</pre>
+<p> </p>
+<p><strong>安装 zsh</strong></p>
+<p>Linux 用户通过各自发行版的包管理器直接安装即可。</p>
+<p>Mac 自带一个 4.x.x 版本的 zsh，可以直接使用，也可以通过 homebrew 安装最近刚刚发布的 5.0.0 版本。推荐使用最新的 5.0 版本，对多字节字符提供了完整的支持，这一点对于国内用户来说很重要。<a href="http://zsh.sourceforge.net/releases.html">详细的 release note</a></p>
+<p> </p>
+<p><strong>设置为默认 shell</strong></p>
+<p>通过命令 <code>chsh</code> 修改默认登录 shell，需要注意的是，如果通过 homebrew 安装了最新版本的 zsh，则需要 <code>sudo</code> 编辑 <code>/etc/shells</code> 加入一行 <code>/usr/local/bin/zsh</code>。然后再通过 <code>chsh</code> 来修改默认 shell，否则会提示 <code>/usr/local/bin/zsh</code> 不是合法的 shell。</p>
+<p> </p>
+<p><strong>安装 oh-my-zsh 配置</strong></p>
+<p>对于每一个像我这样的 zsh 初级用户来说，oh-my-zsh 就是救人于水火中的大杀器，强烈建议使用此配置上手 zsh。</p>
+<p>作者提供了傻瓜安装命令：</p>
+<pre>&lt;code&gt;curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh &lt;/code&gt;</pre>
+<p>也可以手工安装，<a href="https://github.com/robbyrussell/oh-my-zsh#the-manual-way">具体步骤</a>。</p>
+<p> </p>
+<p><strong>几个必备的插件</strong></p>
+<p><strong>autojump</strong></p>
+<p>帮助快速目录跳转的小工具。首先要安装 autojump，然后在 <code>.zshrc</code> 中开启 autojump 插件。它会记录下来每个你进入过的目录，随后通过 <code>j 目录名称的一部分</code>就可快速跳转到该目录。 <a href="http://youtu.be/tnNyoMGnbKg">Youtube 视频介绍</a></p>
+<p><strong>git</strong></p>
+<p>Git 命令补全，除了可以补全 git 的子命令、命令开关等常规补全项以外，还可以补全分支名等内容，用 git 必开的插件。</p>
+<p><strong>osx</strong></p>
+<p>提供一些与 Mac OSX 系统交互的命令，比如：</p>
+<p><strong>● </strong>man-preview 通过 preview 程序查看一个命令的手册，例如 <code>man-preview git</code></p>
+<p><strong>● </strong>quick-look 快速预览文件</p>
+<p><strong>● </strong>pfd 返回当前 finder 打开的文件夹的路径</p>
+<p><strong>● </strong>cdf 切换到当前 finder 所在的目录</p>
+<p> </p>
+<p> </p>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/15668/" title="写出健壮的Bash脚本">写出健壮的Bash脚本</a></li><li><a href="http://blog.jobbole.com/26209/" title="Git详解之九：Git内部原理">Git详解之九：Git内部原理</a></li><li><a href="http://blog.jobbole.com/26198/" title="Git详解之八：Git与其他系统">Git详解之八：Git与其他系统</a></li><li><a href="http://blog.jobbole.com/26131/" title="Git详解之七：自定义Git">Git详解之七：自定义Git</a></li><li><a href="http://blog.jobbole.com/26112/" title="Git详解之六：Git工具">Git详解之六：Git工具</a></li></ul>

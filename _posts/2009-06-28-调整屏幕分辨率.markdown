@@ -1,0 +1,48 @@
+---
+layout: post
+title:  "调整屏幕分辨率"
+date:   2009-06-28 15:04:06
+author: Mr. Shu
+categories: program
+---
+
+## 调整屏幕分辨率
+### by Mr. Shu
+### at 2009-06-28 15:04:06
+### original <http://www.shuax.com/?p=9>
+
+<p>到网吧去上网的时候，看着它的分辨率很不爽，难道没有人觉得变形了吗？又还故意把设置很弄没了，真是搞不懂啊……</p>
+<p>到网上搜索了一下，原来很简单的程序；</p>
+
+<div><table width="100%"><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td><pre style="font-family:monospace"> 
+<span style="color:#339933">#include &lt;windows.h&gt;</span>
+<span style="color:#339933">#include &lt;stdio.h&gt;</span>
+<span style="color:#993333">int</span> main<span style="color:#009900">(</span><span style="color:#009900">)</span>
+<span style="color:#009900">{</span>
+    DEVMODE lpDevMode<span style="color:#339933">;</span>
+    lpDevMode.<span style="color:#202020">dmBitsPerPel</span> <span style="color:#339933">=</span> <span style="color:#0000dd">32</span><span style="color:#339933">;</span>
+ 
+    <span style="color:#000066">printf</span><span style="color:#009900">(</span><span style="color:#ff0000">&quot;请输入分辨率：&quot;</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+    scanf<span style="color:#009900">(</span><span style="color:#ff0000">&quot;%d%d&quot;</span><span style="color:#339933">,</span> <span style="color:#339933">&amp;</span>lpDevMode.<span style="color:#202020">dmPelsWidth</span><span style="color:#339933">,</span> <span style="color:#339933">&amp;</span>lpDevMode.<span style="color:#202020">dmPelsHeight</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+    lpDevMode.<span style="color:#202020">dmSize</span> <span style="color:#339933">=</span> <span style="color:#993333">sizeof</span><span style="color:#009900">(</span>lpDevMode<span style="color:#009900">)</span><span style="color:#339933">;</span>
+    lpDevMode.<span style="color:#202020">dmFields</span> <span style="color:#339933">=</span> DM_PELSWIDTH <span style="color:#339933">|</span> DM_BITSPERPEL <span style="color:#339933">|</span> DM_PELSHEIGHT<span style="color:#339933">;</span>
+    ChangeDisplaySettings<span style="color:#009900">(</span><span style="color:#339933">&amp;</span>lpDevMode<span style="color:#339933">,</span> 0<span style="color:#009900">)</span><span style="color:#339933">;</span>
+    <span style="color:#b1b100">return</span> <span style="color:#0000dd">0</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span></pre></td></tr></table></div>

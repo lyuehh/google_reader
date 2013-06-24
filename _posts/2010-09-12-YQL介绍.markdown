@@ -1,0 +1,32 @@
+---
+layout: post
+title:  "YQL介绍"
+date:   2010-09-12 17:15:23
+author: swaydeng
+categories: program
+---
+
+## YQL介绍
+### by swaydeng
+### at 2010-09-12 17:15:23
+### original <http://www.aliued.cn/?p=2728>
+
+<p style="text-align:left"><img title="1-9" src="http://www.aliued.cn/wp-content/uploads/2010/09/1-92.jpg" alt="1-9"></p>
+<p>Neo是一个小公司的Web工程师，老板Morpheus需要Neo开发一个Web程序，这个程序要求：</p>
+<p style="padding-left:30px">1.用户能够根据关键词获取Flickr上的图片信息，如搜索瀑布(waterfall)就能获得与瀑布有关的图片；<br>
+2.如果图片有地理标识，根据地理标识，获取这个地方的相关信息；<br>
+3.顺便向用户显示当地最近的天气情况，说不定用户想去旅游哦。
+</p>
+<p style="padding-left:30px"><span></span></p>
+<p>Neo开始工作，首先查看和学习Flickr的API ，又针对Flickr的API编写了一套程序获取数据，再对返回数据进行处理以得到满意的格式，终于，Neo可以把图片展示到网页上了； 紧接着，为了能够根据图片地理标识获取图片拍摄地的信息，Neo又开始寻找地图服务的API并且学习使用，针对地图API再一次编写地图数据查询程序，处理返回数据的格式，然后展示到页面上；最后，要想获得当地的天气情况，Neo还必须熟悉某个天气信息提供商的API，继续编写天气数据查询程序，处理返回数据的格式，在页面上展示给用户。Neo意识到为了开发这个鬼东西，自己反反复复学了3套API，如果需求变更，还可能有更多API加进来，最可怕的是，以后Neo得长期维护这么多个API，想想真是噩梦！</p>
+<p>设想我是Neo，我会试试<a href="http://developer.yahoo.com/yql/">YQL</a>，让它帮我把工作变得轻松快乐些。也许你并不了解YQL，没关系，那我们就来认识一下吧。</p>
+<p><a href="http://developer.yahoo.com/yql/">YQL</a>(Yahoo! Query Language)是一种支持对互联网上的数据进行查询、过滤、连接、类似SQL语法的简单语言。用YQL官方的话：有了YQL，开发人员只需要使用一种简单的查询语言即可访问和操控互联网上丰富的数据，而不再需要反复学习使用各种各样的API。YQL为我们提供丰富、实时的方法来操控互联网上任意可访问的API，同时向开发者提供了一个可视化的<a href="https://developer.yahoo.com/yql/console/">Web控制台</a>，使我们在使用和调试YQL的过程中更加高效便捷。</p>
+<p style="text-align:center"><a href="http://www.flickr.com/photos/swaydeng/4974131614/in/photostream"><img src="http://farm5.static.flickr.com/4104/4974131614_6d0f4cc78f.jpg" alt="YQL Console" width="500" height="281"></a></p>
+<p>YQL就像一个超大的数据库，从理论上，这个数据库可以包含整个互联网上的信息。无论您是要基于各种API操作数据，还是从feed源(如RSS, XML,ATOM)获取数据，甚至是从指定的HTML页面上抓取结果，您所需要的就是使用YQL这种类似SQL的简单查询语言:</p>
+<p><code>SELECT something FROM table_name WHERE some_field=some_value</code>。</p>
+<p>YQL能够以规范的格式（XML/JSON）将结果返回给你。这听起来确实很酷，那我们就来看看通过YQL怎么获得与waterfall有关的Flickr图片数据吧：<a href="http://y.ahoo.it/fReCW/1Y">猛击此处</a>。当我们执行YQL语句后，控制台会打印出我们想要格式的数据，并且生成一个<a href="http://en.wikipedia.org/wiki/REST">REST </a>查询链接，有了它，我们就可以用我们熟悉的编程语言开始玩转数据了。对于前端开发人员，我们只需要在控制台选择返回数据格式为JSON，并且提供一个回调函数，这时生成的url就是一个现成的JSONP url地址，如：<br>
+ 在使用YQL的过程中，选用合适的JavaScript库加以辅助，如YUI，jQuery（准确来说YUI是一个框架）,那么开发将会变得更加方便。就在<a href="http://www.yuiblog.com/blog/2010/09/07/yui-3-2-0/">9月7日</a>发布的<a href="http://developer.yahoo.com/yui/3/">YUI 3.2.0</a>已引入了YQL查询组件。如要通过YUI来调用YQL，  最简单的方法就是向页面中引入YUI3.2.0的seed文件： <br>
+然后加载YQL模块，你就可以使用YQL语句直接查询数据了：<br>
+</p>
+<p>YQL将Yahoo!的服务封装成YQL数据表，使得我们轻松地就能够获得这些丰富资源。更重要的是，YQL不只是让我们被动地使用现有的表数据，而是提供了一个开放数据建表平台(<a href="http://developer.yahoo.com/yql/guide/yql-opentables-reference.html">Open Data Tables</a>)，我们可以基于YQL的规范构造自己的表数据。在此平台上，您可以使用标准的XML语法和服务器端JavaScript将API或各种数据源封装成自己需要的格式，这样，您就创建了一张属于自己的数据表。当然，由于YQL的表数据是托管在<a href="http://github.com/">GitHub</a>上的，你还可以通过<a href="http://github.com">GitHub</a>向YQL项目组推送你的数据表，一旦被接受，那么其他开发人员将会享受到您为他们带去的便利，也因你的贡献，YQL的数据源会更加丰富，也更加强大。</p>
+<p>前Yahoo!社交平台副总裁Neal Sample<a title="表示" href="http://developer.yahoo.net/blog/archives/2010/08/api_updates_and_changes.html">表示</a>：Yahoo!正在尽可能的将所提供的服务都转移到YQL上。由于YQL的稳定、扩展性高及易用，对于开发人员来说具有长远利益。通过提供类似SQL的语法，YQL消除了开发人员学习大量API的麻烦。他们坚信YQL是使用互联网服务的最佳方式，所以Yahoo!对YQL提供长期支持是毫无疑问的，大家可以放心使用。</p>

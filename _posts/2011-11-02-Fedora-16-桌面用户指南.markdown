@@ -1,0 +1,287 @@
+---
+layout: post
+title:  "Fedora 16 桌面用户指南"
+date:   2011-11-02 08:18:25
+author: Bentutu.com
+categories: program
+---
+
+## Fedora 16 桌面用户指南
+### by Bentutu.com
+### at 2011-11-02 08:18:25
+### original <http://wowubuntu.com/fedora16-user-guide.html>
+
+<p>最近由于笨兔兔空间不太稳定，经常不能访问，据说服务器空间遭到人家攻击，近一周将会服务器转移，提高访问稳定性。所以暂将该篇文章转移到 Wowubuntu 处，方便各位参考。感谢 wowubuntu！</p>
+<p>本文测试基于 Virtualbox + Fedora 16 Live CD 。兔兔出品，仅供各位Fedora 16桌面用户参考。如果错误，敬请指出，以便后来人查阅。这篇文章早就写好了，因笨兔兔上月流量用尽，等待了几天，方能与大家见面。</p>
+<h3>一、Fedora 16 主要特色</h3>
+<p>Fedora 16，代号“Verne”，正式版本将于2011年11月8日发布。</p>
+<p>Fedora 16的主要特性有：</p>
+<blockquote><p>​*包​括​ Aeolus Conductor、​Condor Cloud、​HekaFS、​OpenStack 以​及​ pacemaker-cloud 在​内​的​增​强​云​支​持​<br>
+*KDE Plasma workspaces 4.7<br>
+*GNOME 3.2<br>
+*包​括​ GRUB 2 和​ 移​除​ HAL 在​内​的​大​量​核​心​级​系​统​改​进​。​<br>
+*An updated libvirtd, trusted boot, guest inspection, virtual lock manager and a pvops based kernel for Xen all improve virtualization support.</p></blockquote>
+<p>具体可查看<a href="http://fedoraproject.org/wiki/Releases/16/FeatureList">Fedroa 16 Feature list</a>。</p>
+<p>Fedora 16 发行注记：<a href="http://fedorapeople.org/groups/docs/release-notes/zh-CN/index.html">click here</a></p>
+<h3>二、Fedora 15升级到Fedroa 16</h3>
+<p>推荐查看：<a href="http://www.bentutu.com/2011/05/upgrade-from-fedora-13-14-to-fedora-15/">从Fedora 13&amp;14 升级到 Fedora 15</a>。</p>
+<h3>三、安装事宜</h3>
+<p><strong>#1，Fedora 16 Beta 下载</strong></p>
+<p>下载地址：<a href="http://fedoraproject.org/zh_CN/get-prerelease">click here</a>。</p>
+<p><strong>#2，如果使用U盘来安装，Linux下推荐工具Unetbootin</strong></p>
+<blockquote><p>sudo apt-get install unetbootin</p></blockquote>
+<p>或使用Ubuntu 系统自带的“启动磁盘创建器”（usb-creator-gtk/kde）都可以。</p>
+<p><strong>#3,文件系统</strong></p>
+<p>Fedora 16 Beta 支持“Brtfs”文件系统格式；</p>
+<p>提示：在对全新硬盘布局磁盘时，要设置0～2M大小的BIOS Boot分区，否则会报错。</p>
+<p>安装具体过程略去。</p>
+<h3>四、系统基本配置</h3>
+<p><strong>#1，su </strong></p>
+<p>刚刚安装完毕的系统无法在命令直接添加 sudo 执行。可以使用 su 或 su -c ‘cmd’ 来执行需要管理员权限的命令。</p>
+<blockquote><p>su #切换到root权限下</p></blockquote>
+<p>或</p>
+<blockquote><p>su -c ‘cmd’</p></blockquote>
+<p><strong>#2,启用sudo</strong></p>
+<p>在终端下输入vi /etc/sudoers 或visudo命令：</p>
+<blockquote><p># vi /etc/sudoers</p></blockquote>
+<p>或</p>
+<blockquote><p># visudo</p></blockquote>
+<p>搜索文件，找到下面而2行内容：</p>
+<blockquote><p>## Allow root to run any commands anywhere<br>
+root ALL=(ALL) ALL</p></blockquote>
+<p>然后，在第二行下面添加如下内容</p>
+<blockquote><p>‘username’ ALL=(ALL) ALL</p></blockquote>
+<p>提示：将换成你的用户名即可。</p>
+<p><strong>#3，检查、安装系统更新</strong></p>
+<p>检查系统更新：</p>
+<blockquote><p>sudo yum check-update</p></blockquote>
+<p>安装系统更新：</p>
+<blockquote><p>sudo yum update</p></blockquote>
+<p><strong>#4,设置中文输入法</strong></p>
+<p>在应用里面查找“Input Method selector”(输入法切换器)，打开后选择“Show all”（显示所有输入法），选择“Chinese”，添加“Pinyin输入法”即可。</p>
+<p>中文输入法还有Fcitx小企鹅输入法、ibus-sunpinyin、ibus-googlepinyin、fcitx-googlepinyin、小小输入法等。</p>
+<p>Fcitx 小企鹅输入法：</p>
+<blockquote><p>sudo yum install fcitx</p></blockquote>
+<p>ibus-sunpinyin:</p>
+<blockquote><p>sudo yum install ibus-sunpinyin</p></blockquote>
+<p>ibus-googlepinyin &amp; Fcitx-googlepinyin编译：<a href="http://code.google.com/p/libgooglepinyin/wiki/INSTALL">点击查看</a></p>
+<p><strong>#5，多媒体编码 &amp; Flash 插件</strong></p>
+<p>Multi-media-codec:为了正常播放音频、视频文件格式，需安装多媒体编码</p>
+<blockquote><p>yum localinstall –nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-rawhide.noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-rawhide.noarch.rpm</p>
+<p>yum install ffmpeg ffmpeg-libs gstreamer-ffmpeg xvidcore libdvdread libdvdnav lsdvd</p>
+<p>yum install gstreamer-plugins-good gstreamer-plugins-bad gstreamer-plugins-ugly</p></blockquote>
+<p>Flash 插件：</p>
+<p>点击<a href="http://get.adobe.com/cn/flashplayer/">Adobe Flash Player官网</a>下载.rpm包，下载完成，点击安装即可。</p>
+<h3>五：GNOME 3.2 配置</h3>
+<p><strong>#1，安装Gnome-tweak-tool</strong></p>
+<blockquote><p>sudo intall gnome-tweak-tool</p></blockquote>
+<p><strong>#2,GNOME Shell Extension</strong></p>
+<p>大部分GNOME Shell Extension基本可以在源中获得。</p>
+<p>扩展列表：</p>
+<blockquote><p>gnome-shell-extension-alternate-tab.noarch<br>
+gnome-shell-extension-apps-menu.noarch<br>
+gnome-shell-extension-auto-move-windows.noarch<br>
+gnome-shell-extension-common.noarch<br>
+gnome-shell-extension-cpu-temperature.noarch<br>
+gnome-shell-extension-dock.noarch<br>
+gnome-shell-extension-drive-menu.noarch<br>
+gnome-shell-extension-gpaste.noarch<br>
+gnome-shell-extension-icon-manager.noarch<br>
+gnome-shell-extension-mediaplayers.noarch<br>
+gnome-shell-extension-noim.noarch<br>
+gnome-shell-extension-noripple.noarch<br>
+gnome-shell-extension-pidgin.i686<br>
+gnome-shell-extension-places-menu.noarch<br>
+gnome-shell-extension-pomodoro.noarch<br>
+gnome-shell-extension-presentation-mode.noarch<br>
+gnome-shell-extension-remove-volume-icon.noarch<br>
+gnome-shell-extension-righthotcorner.noarch<br>
+gnome-shell-extension-systemMonitor.noarch<br>
+gnome-shell-extension-theme-selector.noarch<br>
+gnome-shell-extension-user-theme.noarch<br>
+gnome-shell-extension-windowsNavigator.noarch<br>
+gnome-shell-extension-workspace-indicator.noarch<br>
+gnome-shell-extension-workspacesmenu.noarch<br>
+gnome-shell-extension-xrandr-indicator.noarch</p></blockquote>
+<p>各个扩展的作用通过名称基本可以辨别，也可以参考此处：<a href="http://www.bentutu.com/2011/10/ubuntu-11-10-ppa-install-gnome-3-e/">gnome3-ppa安装gnome扩展 </a></p>
+<p>GNOME Shell 主题：</p>
+<blockquote><p>gnome-shell-theme-atolm.noarch<br>
+gnome-shell-theme-dark-glass.noarch<br>
+gnome-shell-theme-gaia.noarch<br>
+gnome-shell-theme-orta.noarch<br>
+gnome-shell-theme-smooth-inset.noarch</p></blockquote>
+<p>安装举例：</p>
+<blockquote><p>sudo yum install gnome-shell-extension-theme-selector.noarch</p></blockquote>
+<p>扩展安装完毕后，需重启GNOME Shell（按住Alt+F2,输入 r） 。打开gnome-tweak-tool，激活安装的扩展即可。</p>
+<p><strong>#3，推荐阅读</strong></p>
+<p><a href="http://www.bentutu.com/2011/09/gnome-3-2-%e5%8f%91%e8%a1%8c%e6%b3%a8%e8%ae%b0%ef%bc%88%e5%ae%98%e6%96%b9%e6%96%87%e6%a1%a3%ef%bc%89/">GNOME 3.2 发行注记</a></p>
+<h3>六、集成工具与常用软件推荐</h3>
+<p><strong>#1,优秀集成工具推荐：</strong></p>
+<p>Ailurus小熊猫；Autoplus；Fedora Utils；Easy Life</p>
+<p>好工具，就要广而告之才够意思！</p>
+<p>Ailurus小熊猫:著名的系统设置、软件工具</p>
+<blockquote><p>su -c ‘wget http://homerxing.fedorapeople.org/ailurus.repo -O /etc/yum.repos.d/ailurus.repo’</p>
+<p>su -c ‘yum makecache’</p>
+<p>su -c ‘yum install ailurus’</p></blockquote>
+<p>安装完毕，从“系统工具”里面启动即可。不再赘述。</p>
+<p>Autoplus</p>
+<p>简介：可用Autoplus进行安装/卸载 Adobe Flash, codecs, Google Earth, Skype, Sun Java, VirtualBox, WinFF, Imagination, Cinelerra, Hugin Panorama Creator, Lightscribe, Dropbox等操作。</p>
+<blockquote><p>su -c ‘yum -y –nogpgcheck install http://dnmouse.org/autoplus-1.2-5.noarch.rpm’</p></blockquote>
+<p>如果有必要，可导入签名（可选项）：</p>
+<blockquote><p>su -c ‘rpm –import http://dnmouse.org/RPM-GPG-KEY-dnmouse’</p></blockquote>
+<p>目前，vbox 和 dropbox 还不支持Fedora 16。具体查看主页：<a href="http://www.dnmouse.org/autoten/">dnmouse.org/autoten/</a>。</p>
+<p>Fedora Utils</p>
+<p>应用安装与系统设置脚本，可安装Adobe Flash, codecs, Sun Java, Adobe Air, Wine, Google Earth, GTalk plugin, MS Truetype Fonts 等其他常用应用。</p>
+<p>主页 | 下载：<a href="http://fedorautils.sourceforge.net/">click here</a></p>
+<p>easyLife</p>
+<p>功能与上述几款工具类似。</p>
+<p>主页：<a href="http://easylifeproject.org/">easylife project</a></p>
+<p><strong>#2,常用应用</strong></p>
+<p>兔兔将常用应用分为邮件、文件分享、IM、图形图像、播放器、音视频编辑、系统工具、IDE、办公应用</p>
+<p>邮件</p>
+<p>Thunderbird邮件客户端(Fedora 16 默认为Evolution)</p>
+<blockquote><p>sudo yum install thunderbird</p></blockquote>
+<p>文件分享</p>
+<p>Transmission(BT客户端)</p>
+<blockquote><p>sudo yum install transmission</p></blockquote>
+<p>Filezilla(FTP客户端)：</p>
+<blockquote><p>sudo yum install filezilla</p></blockquote>
+<p>即时通讯IM</p>
+<p>Pidgin（同Empathy）：</p>
+<blockquote><p>sudo yum install pidgin</p></blockquote>
+<p>Emesene（MSN客户端）：</p>
+<blockquote><p>sudo yum install emesene</p></blockquote>
+<p>Gwibber（微博客户端）：</p>
+<blockquote><p>sudo yum install gwibber</p></blockquote>
+<p>Pino（Twitter 客户端）:</p>
+<blockquote><p>sudo yum install pino</p></blockquote>
+<p>Hotot(傲兔,Twitter客户端)：</p>
+<blockquote><p>yum install hotot</p></blockquote>
+<p>图形图像</p>
+<p>shutter(截图、截屏)：</p>
+<blockquote><p>sudo yum install shutter</p></blockquote>
+<p>Gimp：</p>
+<blockquote><p>sudo yum install gimp</p></blockquote>
+<p>Dia（流程图）:</p>
+<blockquote><p>sudo yum install dia</p></blockquote>
+<p>Inkscape（矢量做图）：</p>
+<blockquote><p>sudo yum install inkscape</p></blockquote>
+<p>Gthumb（图像浏览器）：</p>
+<blockquote><p>sudo yum install gthumb</p></blockquote>
+<p>Pinta（小Gimp）：</p>
+<blockquote><p>sudo yum install pinta</p></blockquote>
+<p>播放器</p>
+<p>vlc：</p>
+<blockquote><p>sudo yum install vlc</p></blockquote>
+<p>Banshee(音乐播放器)：</p>
+<blockquote><p>sudo yum install banshee</p></blockquote>
+<p>音视频编辑</p>
+<p>Pitivi（视频编辑）：</p>
+<blockquote><p>sudo yum install pitivi</p></blockquote>
+<p>Audacity（音频编辑）：</p>
+<blockquote><p>sudo yum install audacity</p></blockquote>
+<p>系统类工具</p>
+<p>Gnome Do（快速文件搜索）：</p>
+<blockquote><p>sudo yum install gnome-do</p></blockquote>
+<p>Compiz（特性设置器）:</p>
+<blockquote><p>sudo yum install compiz-manager</p></blockquote>
+<blockquote><p>sudo yum install ccsm</p></blockquote>
+<p>p7zip （解压缩工具）：</p>
+<blockquote><p>sudo yum install p7zip</p></blockquote>
+<p>Virtualbox（虚拟机）：</p>
+<blockquote><p>sudo yum install virtualbox-ose</p></blockquote>
+<p>Terminator（优秀命令终端）：</p>
+<blockquote><p>sudo yum install terminator</p></blockquote>
+<p>办公</p>
+<p>Stardict（星际词典）：</p>
+<blockquote><p>sudo yum install stardict</p></blockquote>
+<p>Chmsee（CHM文件阅读器）：</p>
+<blockquote><p>sudo yum install chmsee</p></blockquote>
+<p>LibreOffice（Office套件）：</p>
+<blockquote><p>sudo yum install libreoffice</p></blockquote>
+<p>Foxit（福晰PDF阅读器）：</p>
+<p>点击下载：<a href="http://www.foxitsoftware.com/downloads/">官网</a></p>
+<p>IDE</p>
+<p>Anjuta：</p>
+<blockquote><p>sudo yum install anjuta</p></blockquote>
+<p>Code::Blocks：</p>
+<blockquote><p>sudo yum install codeblocks</p></blockquote>
+<p>Eclipse:</p>
+<blockquote><p>sudo yum install eclipse-platform</p></blockquote>
+<p>版本控制</p>
+<blockquote><p>sudo yum install subversion git bzr</p></blockquote>
+<p>网络应用</p>
+<p>PPStream（PPS 网络电视）：</p>
+<p>点击下载：<a href="http://dl.pps.tv/pps_linux_download.html">官网</a></p>
+<p>OpenFetion（飞信客户端）：</p>
+<p>据作者<a href="http://basiccoder.com/new-opensource-project-hybrid-dev-note.html">@levin博客</a>介绍，openfetion已停止更新，建立新项目<a href="https://github.com/levin108/hybrid">Hybrid</a>，支持Fetion和XMPP协议,可下载帮助测试。</p>
+<p>Google Chrome（网页浏览器）：</p>
+<p>点击官网下载：<a href="http://www.google.com/chrome/index.html">click here</a></p>
+<p>其他软件，可以从Fedora 16 的“添加/删除软件”应用搜索即可。</p>
+<p><strong>推荐文章：</strong><br>
+#1，Fedora 安装软件四方法：<a href="http://www.bentutu.com/2011/07/install-app-in-fedora-4-ways/">click here</a></p>
+<p>#2,安装Fedora 15后需做的25件事情：<a href="http://www.bentutu.com/2011/06/25-things-after-installing-fedora-15/">click here</a></p>
+<p>#3，Fedora 15 安装与配置一览：<a href="http://www.bentutu.com/2011/05/fedora-15-setting-and-configure-list/">click here</a></p>
+<p><strong>声明：</strong>笨兔兔原创文章，博客文章遵循<a href="http://cn.creativecommons.org/licenses/meet-the-licenses/">CC协议</a>，转载需注明@<a href="http://www.bentutu.com/">笨兔兔</a>，本文<a href="http://www.bentutu.com/2011/11/fedora-16-desktop-configure-sheet/">链接地址</a></p>
+<p>如果有什么错误，敬请指出，欢迎批评。</p>
+# 本文采用<a href="http://creativecommons.org/licenses/by/2.5/cn/">CC协议</a>进行授权，转载本文请注明<a href="http://wowubuntu.com/fedora16-user-guide.html" title="Permalink">本文链接<a>。/  6  条留言
+<hr>
+- <a href="http://twitter.com/ubuntu_tips">Twitter</a> 
+/ <a href="http://t.sina.com.cn/utips">微博</a> 
+/ <a href="http://wowubuntu.com/ask">问答</a> 
+/ <a href="http://wowubuntu.com/submit">投稿</a>
+/ <a href="http://wowubuntu.com/join">加入我们</a> wow0slx6bcs721xo1udcc<br>- 高性价比 <a href="http://wowubuntu.com/vps.html">Ubuntu VPS</a> / 本站架设于<a href="http://www.photonvps.com/billing/aff.php?aff=129"> PhotonVPS </a> / 定制 <a href="http://tto.me/kfstee">Ubuntu T-Shirt</a><table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Ffedora-16.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Ffedora16-user-guide.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Fedora 16 抢先下载</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Ffedora14.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Ffedora16-user-guide.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Fedora 14 正式发布</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fuse-fedora15.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Ffedora16-user-guide.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Fedora 15 抢先体验及攻略</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Ffedora15-release.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Ffedora16-user-guide.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Fedora 15 正式版发布</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Ffedora15-alpha.html&amp;from=http%3A%2F%2Fwowubuntu.com%2Ffedora16-user-guide.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Fedora 15 Alpha 发布</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></a></a>

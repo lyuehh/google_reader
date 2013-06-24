@@ -1,0 +1,136 @@
+---
+layout: post
+title:  "MySQL的10件事—它们也许和你预想的不一样"
+date:   2010-11-12 14:57:01
+author: 
+categories: program
+---
+
+## MySQL的10件事—它们也许和你预想的不一样
+### by 
+### at 2010-11-12 14:57:01
+### original <http://news.cnblogs.com/n/80822/>
+
+<p><strong>#10.搜索一个“NULL”值 </strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   a.</span><span>column</span><span> = </span><span>NULL</span><span> </span></li></ol></pre>
+</blockquote>
+<p>在SQL中，NULL什么也不等于，而且NULL也不等于NULL。这个查询不会返回任何结果的，实际上，当构建那个plan的时候，优化器会把这样的语句优化掉。</p>
+<p>当搜索NULL值的时候，应该使用这样的查询：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   a.</span><span>column</span><span> </span><span>IS</span><span> </span><span>NULL</span><span> </span></li></ol></pre>
+</blockquote>
+<p><strong>#9.使用附加条件的LEFT JOIN</strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>LEFT</span><span> </span><span>JOIN</span><span> </span></li><li><span>        b  </span></li><li><span>ON</span><span>      b.a = a.id  </span></li><li><span>WHERE</span><span>   b.</span><span>column</span><span> = </span><span>'something'</span><span> </span></li></ol></pre>
+</blockquote>
+<p>除了从a返回每个记录（至少一次），当没有真正匹配的记录的时候，用NULL值代替缺失的字段之外，LEFT JOIN和INNER JOIN都是一样的。</p>
+<p>但是，在LEFT JOIN之后才会检查WHERE条件，所以，上面这个查询在连接之后才会检查column。就像我们刚才了解到的那样，非NULL值才可以满足相等条件，所以，在a的记录中，那些在b中没有对应的条目的记录不可避免地要被过滤掉。</p>
+<p>从本质上来说，这个查询是一个INNER JOIN，只是效率要低一些。</p>
+<p>为了真正地匹配满足b.column = 'something'条件的记录（这时要返回a中的全部记录，也就是说，不过滤掉那些在b中没有对应的条目的记录），这个条件应该放在ON子句中：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>LEFT</span><span> </span><span>JOIN</span><span> </span></li><li><span>        b  </span></li><li><span>ON</span><span>      b.a = a.id  </span></li><li><span>        </span><span>AND</span><span> b.</span><span>column</span><span> = </span><span>'something'</span><span> </span></li></ol></pre>
+</blockquote>
+<p><strong>#8.小于一个值，但是不为NULL</strong></p>
+<p>我经常看到这样的查询：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    b  </span></li><li><span>WHERE</span><span>   b.</span><span>column</span><span> &lt; </span><span>'something'</span><span> </span></li><li><span>       </span><span>AND</span><span> b.</span><span>column</span><span> </span><span>IS</span><span> </span><span>NOT</span><span> </span><span>NULL</span><span> </span></li></ol></pre>
+</blockquote>
+<p>实际上，这并不是一个错误：这个查询是有效的，是故意这样做的。但是，这里的IS NOT NULL是冗余的。</p>
+<p>如果b.column是NULL，那么无法满足b.column &lt; &#39;something&#39;这个条件，因为任何一个和NULL进行的比较都会被判定为布尔NULL，是不会通过过滤器的。</p>
+<p>有趣的是，这个附加的NULL检查不能和“大于”查询（例如：b.column &gt; &#39;something&#39;）一起使用。</p>
+<p>这是因为，在MySQL中，在ORDER BY的时候，NULL会排在前面，因此，一些人错误地认为NULL比任何其他的值都要小。</p>
+<p>这个查询可以被简化：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    b  </span></li><li><span>WHERE</span><span>   b.</span><span>column</span><span> &lt; </span><span>'something'</span><span> </span></li></ol></pre>
+</blockquote>
+<p>在b.column中，不可能返回NULL</p>
+<p><strong>#7.按照NULL来进行连接</strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>JOIN</span><span>    b  </span></li><li><span>ON</span><span>      a.</span><span>column</span><span> = b.</span><span>column</span><span> </span></li></ol></pre>
+</blockquote>
+<p>在两个表中，当column是nullable的时候，这个查询不会返回两个字段都是NULL的记录，原因如上所述：两个NULL并不相等。</p>
+<p>这个查询应该这样来写：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>JOIN</span><span>    b  </span></li><li><span>ON</span><span>      a.</span><span>column</span><span> = b.</span><span>column</span><span> </span></li><li><span>        </span><span>OR</span><span> (a.</span><span>column</span><span> </span><span>IS</span><span> </span><span>NULL</span><span> </span><span>AND</span><span> b.</span><span>column</span><span> </span><span>IS</span><span> </span><span>NULL</span><span>) </span></li></ol></pre>
+</blockquote>
+<p>MySQL的优化器会把这个查询当成一个“等值连接”，然后提供一个特殊的连接条件：ref_or_null</p>
+<p><strong>#6. NOT IN和NULL值</strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   a.</span><span>column</span><span> </span><span>NOT</span><span> </span><span>IN</span><span> </span></li><li><span>        ( </span></li><li><span>        </span><span>SELECT</span><span> </span><span>column</span><span> </span></li><li><span>        </span><span>FROM</span><span>    b  </span></li><li><span>        ) </span></li></ol></pre>
+</blockquote>
+<p>如果在b.column中有一个NULL值，那么这个查询是不会返回任何结果的。和其他谓词一样，IN  和 NOT IN 遇到NULL也会被判定为NULL。</p>
+<p>你应该使用NOT EXISTS重写这个查询：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   </span><span>NOT</span><span> EXISTS  </span></li><li><span>        ( </span></li><li><span>        </span><span>SELECT</span><span> </span><span>NULL</span><span> </span></li><li><span>        </span><span>FROM</span><span>    b  </span></li><li><span>       </span><span>WHERE</span><span>   b.</span><span>column</span><span> = a.</span><span>column</span><span> </span></li><li><span>       ) </span></li></ol></pre>
+</blockquote>
+<p>不像IN，EXISTS总是被判定为true或false的。</p>
+<p><strong>#5.对随机的样本进行排序</strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>ORDER</span><span> </span><span>BY</span><span> </span></li><li><span>        RAND()， </span><span>column</span><span> </span></li><li><span>LIMIT 10 </span></li></ol></pre>
+</blockquote>
+<p>这个查询试图选出10个随机的记录，按照column来排序。</p>
+<p>ORDER BY会按照自然顺序来对输出结果进行排序：这就是说，当第一个表达式的值相等的时候，这些记录才会按照第二个表达式来排序。</p>
+<p>但是，RAND()的结果是随机的。要让RAND()的值相等是行不通的，所以，按照RAND()排序以后，再按照column来排序也是没有意义的。</p>
+<p>要对随机的样本记录进行排序，可以使用这个查询：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    ( </span></li><li><span>        </span><span>SELECT</span><span>  * </span></li><li><span>        </span><span>FROM</span><span>    mytable  </span></li><li><span>        </span><span>ORDER</span><span> </span><span>BY</span><span> </span></li><li><span>                RAND() </span></li><li><span>        LIMIT 10  </span></li><li><span>       ) q  </span></li><li><span>ORDER</span><span> </span><span>BY</span><span> </span></li><li><span>       </span><span>column</span><span> </span></li></ol></pre>
+</blockquote>
+<p><strong>#4.通过一个组来选取任意的记录</strong></p>
+<p>这个查询打算通过某个组（定义为grouper来）来选出一些记录</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  </span><span>DISTINCT</span><span>(grouper)， a.* </span></span></li><li><span>FROM</span><span>    a </span></li></ol></pre>
+</blockquote>
+<p>DISTINCT不是一个函数，它是SELECT子句的一部分。它会应用到SELECT列表中的所有列，实际上，这里的括号是可以省略的。所以，这个查询可能会选出grouper中的值都相同的记录（如果在其他列中，至少有一个列的值是不同的）。</p>
+<p>有时，这个查询可以正常地使用(这主要依赖于MySQL对GROUP BY的扩展）：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>GROUP</span><span> </span><span>BY</span><span> </span></li><li><span>        grouper </span></li></ol></pre>
+</blockquote>
+<p>在某个组中返回的非聚合的列可以被任意地使用。</p>
+<p>首先，这似乎是一个很好的解决方案，但是，它存在着一个很严重的缺陷。它依赖于这样一个假设：虽然可以通过组来任意地获取，但是返回的所有值都要属于一条记录。</p>
+<p>虽然当前的实现似乎就是这样的，但是它并没有文档化，无论何时，它都有可能被改变（尤其是，当MySQL学会了在GROUP BY的后面使用index_union的时候）。所以依赖于这个行为并不安全。</p>
+<p>如果MySQL支持分析函数的话，这个查询可以很容易地用另一种更清晰的方式来重写。但是，如果这张表拥有一个PRIMARY KEY的话，即使不使用分析函数，也可以做到这一点：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    ( </span></li><li><span>        </span><span>SELECT</span><span>  </span><span>DISTINCT</span><span> grouper  </span></li><li><span>        </span><span>FROM</span><span>    a  </span></li><li><span>        ) ao  </span></li><li><span>JOIN</span><span>    a  </span></li><li><span>ON</span><span>      a.id =  </span></li><li><span>        ( </span></li><li><span>        </span><span>SELECT</span><span>  id  </span></li><li><span>       </span><span>FROM</span><span>    a ai  </span></li><li><span>        </span><span>WHERE</span><span>   ai.grouper = ao.grouper  </span></li><li><span>        LIMIT 1  </span></li><li><span>        ) </span></li></ol></pre>
+</blockquote>
+<p><strong>#3.通过一个组来选取第一条记录</strong></p>
+<p>把前面那个查询稍微变化一下：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>GROUP</span><span> </span><span>BY</span><span> </span></li><li><span>        grouper  </span></li><li><span>ORDER</span><span> </span><span>BY</span><span> </span></li><li><span>        </span><span>MIN</span><span>(id) </span><span>DESC</span><span> </span></li></ol></pre>
+</blockquote>
+<p>和前面那个查询不同，这个查询试图选出id值最小的记录。</p>
+<p>同样：无法保证通过a.*返回的非聚合的值都属于id值最小的那条记录（或者任意一条记录）</p>
+<p>这样做会更清晰一些：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.* </span></span></li><li><span>FROM</span><span>    ( </span></li><li><span>        </span><span>SELECT</span><span>  </span><span>DISTINCT</span><span> grouper  </span></li><li><span>       </span><span>FROM</span><span>    a  </span></li><li><span>        ) ao  </span></li><li><span>JOIN</span><span>    a  </span></li><li><span>ON</span><span>      a.id =  </span></li><li><span>        ( </span></li><li><span>        </span><span>SELECT</span><span>  id  </span></li><li><span>        </span><span>FROM</span><span>    a ai  </span></li><li><span>        </span><span>WHERE</span><span>   ai.grouper = ao.grouper  </span></li><li><span>        </span><span>ORDER</span><span> </span><span>BY</span><span> </span></li><li><span>                ai.grouper, ai.id  </span></li><li><span>        LIMIT 1  </span></li><li><span>        ) </span></li></ol></pre>
+</blockquote>
+<p>这个查询和前面那个查询类似，但是使用额外的ORDER BY可以确保按id来排序的第一条记录会被返回。</p>
+<p><strong>#2. IN和‘，’——值的分隔列表</strong></p>
+<p>这个查询试图让column的值匹配用‘，’分隔的字符串中的任意一个值：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   </span><span>column</span><span> </span><span>IN</span><span> (</span><span>&#39;1, 2, 3&#39;</span><span>) </span></li></ol></pre>
+</blockquote>
+<p>这不会正常发挥作用的，因为在IN列表中，那个字符串并不会被展开。</p>
+<p>如果列column是一个VARCHAR，那么它（作为一个字符串）会和整个列表（也作为一个字符串）进行比较，当然，这不可能匹配。如果 column是某个数值类型，那么这个列表会被强制转换为那种数值类型（在最好的情况下，只有第一项会匹配）</p>
+<p>处理这个查询的正确方法应该是使用合适的IN列表来重写它：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   </span><span>column</span><span> </span><span>IN</span><span> (1, 2, 3) </span></li></ol></pre>
+</blockquote>
+<p>或者，也可以使用内联：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    ( </span></li><li><span>        </span><span>SELECT</span><span>  1 </span><span>AS</span><span> id  </span></li><li><span>        </span><span>UNION</span><span> </span><span>ALL</span><span> </span></li><li><span>        </span><span>SELECT</span><span>  2 </span><span>AS</span><span> id  </span></li><li><span>        </span><span>UNION</span><span> </span><span>ALL</span><span> </span></li><li><span>        </span><span>SELECT</span><span>  3 </span><span>AS</span><span> id  </span></li><li><span>        ) q  </span></li><li><span>JOIN</span><span>    a  </span></li><li><span>ON</span><span>      a.</span><span>column</span><span> = q.id </span></li></ol></pre>
+</blockquote>
+<p>但是，有时这是不可能的。</p>
+<p>如果不想改变那个查询的参数，可以使用FIND_IN_SET：</p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  * </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>WHERE</span><span>   FIND_IN_SET(</span><span>column</span><span>, </span><span>'1,2,3'</span><span>) </span></li></ol></pre>
+</blockquote>
+<p>但是，这个函数不可以利用索引从表中检索行，会在a上执行全表扫描。</p>
+<p><strong>#1. LEFT JOIN和COUNT(*)</strong></p>
+<blockquote>
+<pre><ol><li><span><span>SELECT</span><span>  a.id, </span><span>COUNT</span><span>(*) </span></span></li><li><span>FROM</span><span>    a  </span></li><li><span>LEFT</span><span> </span><span>JOIN</span><span> </span></li><li><span>        b  </span></li><li><span>ON</span><span>      b.a = a.id  </span></li><li><span>GROUP</span><span> </span><span>BY</span><span> </span></li><li><span>        a.id </span></li></ol></pre>
+</blockquote>
+<p>这个查询试图统计出对于a中的每条记录来说，在b中匹配的记录的数目。</p>
+<p>问题是，在这样一个查询中，COUNT(*)永远不会返回一个0。对于a中某条记录来说，如果没有匹配的记录，那么那条记录还是会被返回和计数。</p>
+<p>只有需要统计b中的记录数目的时候才应该使用COUNT。既然可以使用COUNT(*)，那么我们也可以使用一个参数来调用它（忽略掉NULL），我们可以把b.a传递给它。在这个例子中，作为一个连接主键，它不可以为空，但是如果不想匹配，它也可以为空。</p>
+<p>原文标题：10 things in MySQL (that won’t work as expected)</p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/67261/">Twitter将开源MySQL/Hadoop转移工具</a><span style="color:gray">(2010-06-30)</span><br>　　· <a href="http://news.cnblogs.com/n/61527/">MySQL 5.5 M3 发布</a><span style="color:gray">(2010-04-13)</span><br>　　· <a href="http://news.cnblogs.com/n/64108/">内忧外患 MySQL已经处于消亡的边缘？</a><span style="color:gray">(2010-05-13)</span><br>　　· <a href="http://news.cnblogs.com/n/61713/">phpMyAdmin 3.3.2 正式版发布</a><span style="color:gray">(2010-04-15)</span><br>　　· <a href="http://news.cnblogs.com/n/52990/">MySQL创始人发起网络倡议 反对甲骨文收购Sun</a><span style="color:gray">(2009-12-14)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/80822/">http://news.cnblogs.com/n/80822/</a></p><p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=80822" width="1" height="1" alt="">

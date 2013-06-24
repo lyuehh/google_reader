@@ -1,0 +1,123 @@
+---
+layout: post
+title:  "10个简单有效的方法帮你改善jQuery代码与性能"
+date:   2013-02-02 13:03:36
+author: Airen
+categories: program
+---
+
+## 10个简单有效的方法帮你改善jQuery代码与性能
+### by Airen
+### at 2013-02-02 13:03:36
+### original <http://www.w3cplus.com/js/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance.html>
+
+<div><div><div><blockquote><p><strong>特别声明：</strong>此篇文章由<a href="http://weibo.com/sunnylost">Sunnylost</a>根据<a href="http://www.i3lance.co.uk/author/admin/" title="Desi Reuben-Sealey">Desi Reuben-Sealey</a>的英文文章原名《<a href="http://www.i3lance.co.uk/2012/07/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance/">10 easy and useful ways to improve your jQuery coding and performance</a>》进行翻译，整个译文带有我们自己的理解与思想，如果译得不好或不对之处还请同行朋友指点。如需转载此译文，需注明英文出处：<a href="http://www.i3lance.co.uk/2012/07/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance/">http://www.i3lance.co.uk/2012/07/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance</a>以及作者相关信息</p>
+<p style="text-align:right">——作者：<a href="http://www.i3lance.co.uk/author/admin/" title="Desi Reuben-Sealey">Desi Reuben-Sealey</a></p>
+<p style="text-align:right">——译者：<a href="http://weibo.com/sunnylost">Sunnylost</a></p>
+</blockquote>
+<p>像这样的最佳实践清单你肯定见过不止一次了，而我这里列出的是把曾经别人教会我的内容组合起来。我也通过互联网和自学，来提高自己的技术。但你需要注意，<a href="http://www.google.com" title="Google">Google</a>能成为你最好的朋友，也能变成最可怕的敌人(时刻记得分辨搜索内容的准确性！)。</p>
+<p>下面所列出的技巧非常容易掌握，不需要你有深厚的知识，也没有按照特定的顺序，它们的目的就是为了提高你的技术，让浏览器更快的解析你的代码；</p>
+<h4>
+	1、永远使用最新版本(如果可能的话)</h4>
+<p>jQuery在不断的开发与改进，为了避免重复的更新本地版本，可以使用下面的代码片段：</p>
+<pre>
+&lt;script src=&quot;//ajax.googleapis.com/ajax/libs/jquery/latest/jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;	
+</pre><p>一个好的建议是，根据你的项目环境，最终选择一个固定的版本。</p>
+<h4>
+	2、使用For来代替Each</h4>
+<p>这是Jon Banner(我的好哥们与前同事)教会我的。在帮我写了一些代码之后(大约4年多前)。</p>
+<pre>
+var array = new Array ();  
+for (var i=0; i&lt;10000; i++) {  
+  array[i] = 0;  
+}	
+</pre><p>有众多来源表明，在线上代码中，使用for循环比Each循环速度要快100%(在毫秒级)。</p>
+<h4>
+	3、使用return false</h4>
+<p>你是否遇到过为一个或多个元素绑定click事件函数，一旦点击元素后页面跳回到了顶部？当页面很长的时候，这个问题毫无疑问会变得非常烦人。你可以这样：</p>
+<pre>
+$('#element').click(function(){
+  // do something...
+  return false;
+});	
+</pre><h4>
+	4、划分你的代码</h4>
+<p>对我来说这条技巧就是大救星。如果你像我一样构建或管理大型网站，你一定不会希望每次页面(或一个特定的页面模板)触发时加载所有的JavaScript文件。</p>
+<p>这个方法与JavaScript或ActionScript语言中的switch函数类似，但与之不同的是你对哪些能够调用拥有控制权，而不是像switch方法是预先定义好的。</p>
+<p>这样一来，浏览器就不需要把JavaScript文件里的所有函数都加载并运行了。</p>
+<pre>
+var mylib =
+{
+  primary_functions :
+  {
+    init : function()
+    {
+       // 这里写方法
+    }
+  },
+  specific_template_functions :
+  {
+    init : function()
+    {
+      // 这里写方法
+    }
+  }
+}
+$(window).load(function(){
+  // 在HTML载入后再去加载通用脚本会更有效率。
+  mylib.primary_functions.init();
+});	
+</pre><p>“specific_template_functions”函数可以在特定模板或页面载入时被调用。对于5-10行代码来说，使用这种方式不会起到任何作用，但是它对于那些想要通过划分大块代码来养成良好习惯的人来说是个不错的尝试。</p>
+<h4>
+	5、合并压缩你的JavaScript</h4>
+<p>当你的网站进入测试阶段时，你可能意识到网站引用了不止一个JavaScript文件或插件。把它们合并成一个文件。合并多个文件与让浏览器加载并读取多个文件相比，始终是更快和更好的做法。</p>
+<h4>
+	6、避免操作DOM</h4>
+<p>这么做是有原因的，其中一些与网站可访问性有关。例如，当你“绝对需要”一些文字或元素被屏幕阅读软件读取时，如果浏览器禁止了脚本那你就遇到大麻烦了，就像末日来临，世界被黑暗笼罩——你肯定懂我的意思。按照我的经验，当你在做一些动态效果、为页面增加一些装饰时会这么做，但是最终你还是会尽可能的减少这样的操作。</p>
+<p>.append()，.prepend()和.after()(我认为)与.html()相比在相同时间内会消耗更多的资源。在插入前将需要插入的内容构建好会更符合逻辑。所以：</p>
+<pre>
+var yourlist = &#39;&#39;;  
+for (var i=0; i&lt;1000; i++) {  
+  yourlist += &#39;&lt;li&gt;&#39;+i+&#39;&lt;/li&gt;&#39;;  
+}  
+(&#39;#list&#39;).html(yourlist); 	
+</pre><h4>
+	7、通过正确的节点标示符来遍历HTML</h4>
+<p>通过ID查找元素比通过class要快很多。没有必要提供例子了，不过如果你真的需要一个例子，请告诉我。</p>
+<h4>
+	8、速查表</h4>
+<p>这是一个能够让你在写程序时不会忘记大多数可用函数的好办法。这里提供一些(有些是我最喜欢的)：</p>
+<ol>
+<li>
+		<a href="http://www.i3lance.co.uk/wp-content/uploads/2012/07/jquery1.7-.pdf">Oscar Otero’s API指南</a></li>
+<li>
+		<a href="http://www.i3lance.co.uk/wp-content/uploads/2012/07/jQuery-1.7-Visual-Cheat-Sheet-.pdf">Antonio Lupetti的速查表</a></li>
+</ol>
+<h4>
+	9、在页面底部加载你的jQuery文件</h4>
+<p>总之，真的应该在页面底部去加载代码。当然如果你需要在页面中调用经过划分后的代码，可以使用前面介绍过的window的load函数，但也应该放在底部。</p>
+<pre>
+$(window).load(function() {
+  // It's more efficient to load any generic scripts after the HTML has loaded.'
+});	
+</pre><h4>
+	10、返回页面中元素的个数</h4>
+<p>这是找出页面中元素个数的既简单又快捷的方法：</p>
+<pre>
+$('element').size();	
+</pre><p><strong>译者手语：</strong>初次翻译前端技术博文，整个翻译依照原文线路进行，并在翻译过程略加了个人对技术的理解。如果翻译有不对之处，还烦请同行朋友指点。谢谢！</p>
+<blockquote><h4>
+		关于Sunnylost</h4>
+<p>08年开始自学java，09年加入北漂行列，从事Java Web工作，出于对JavaScript的喜爱，在2011年以外包身份进入新浪微博从事JS开发，目前就职于一淘。由于工作关系，逐步接触CSS，开始完善自身的前端技能。欢迎随时关注我：<a href="http://weibo.com/sunnylost">新浪微博</a></p>
+</blockquote>
+<p>如需转载烦请注明出处：</p>
+<p>英文原文：<a href="http://www.i3lance.co.uk/2012/07/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance/">http://www.i3lance.co.uk/2012/07/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance/</a></p>
+<p>中文译文：<a href="http://www.w3cplus.com/js/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance.html">http://www.w3cplus.com/js/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/308.html">译文</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/81.html">jQuery</a></li><li><a href="http://www.w3cplus.com/blog/tags/305.html">performance</a></li></ul></div><div><div><div><div>
+      <div>13</div>
+                  <a href="http://www.w3cplus.com/vote/node/628/1/vote/alternate/IdK7om0eDz89Yx0SW4qa4vERJtt_MzTrSIYfgtkjX00/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/713412549/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/js/10-easy-and-useful-ways-to-improve-your-jquery-coding-and-performance.html" border="0" height="0" width="0">

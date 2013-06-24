@@ -1,0 +1,61 @@
+---
+layout: post
+title:  "一些程序员必须知道的杂项资源"
+date:   2010-12-31 13:28:57
+author: 
+categories: program
+---
+
+## 一些程序员必须知道的杂项资源
+### by 
+### at 2010-12-31 13:28:57
+### original <http://news.cnblogs.com/n/86902/>
+
+<p>　　以前给大家介绍过<a href="http://news.cnblogs.com/n/75801/">一些非常有意思的杂项资源</a>，今天再给大家介绍一些。（虽然没有上次的多，也算是一个新年礼物吧）</p>
+<ul>
+<li>首先，如果你想在你的web页上做一个小提示，你不妨到<a href="http://projects.nickstakenburg.com/tipped">http://projects.nickstakenburg.com/tipped</a>上看看，各种各样的提示风格，很不错。而且兼容于四大主流浏览器——Chrome, Firefox， IE, Safari。</li>
+</ul>
+<ul>
+<li>如果你想让Java变成一个动态语言，你可以试试这个开源项目：<a href="http://code.google.com/p/ductilej/">http://code.google.com/p/ductilej/</a></li>
+</ul>
+<ul>
+<li>如果你想把你的Windows蓝屏改成红屏或是绿屏，你可以看看这篇教程：<a href="http://blogs.technet.com/b/markrussinovich/archive/2010/12/14/3374820.aspx">http://blogs.technet.com/b/markrussinovich/archive/2010/12/14/3374820.aspx</a>，还是挺Cool的。</li>
+</ul>
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201012/2010123113273173.jpg" alt=""></p>
+<ul>
+<li>如果你想使用HTML5+Javascript做一个游戏，就像制作<a href="http://coolshell.cn/articles/2998.html">这些HTML5的小游戏</a>一样，你不妨考虑使用一下这个游戏框架：<a href="http://www.propulsionjs.com/">http://www.propulsionjs.com/</a></li>
+</ul>
+<ul>
+<li>如果你想学习Emacs，而又不害怕这样的学习曲线，那么，这里有一篇相当不错的教程供你参考：<a href="http://textmate2.com/">http://textmate2.com/</a></li>
+</ul>
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201012/2010123113280383.png" alt=""></p>
+<ul>
+<li>如果你对2010年的好莱坞电影票房和排行情况想有一个整体的了解的话，这里有一个很不错的图示：<a href="http://www.xach.com/moviecharts/2010.html">http://www.xach.com/moviecharts/2010.html</a>，阿凡达，艾丽斯梦游仙梦，钢铁侠，史端克，幕色，盗梦空间，玩具总动员，哈里波特……可能还有很多你没有看过的电影，你可以上<a href="http://www.kickasstorrents.com/">http://www.kickasstorrents.com/</a>上下载看看。</li>
+</ul>
+<ul>
+<li>如果你像我一样，对“Agile Development”在中国似“电视购物”般的的宣传和神化有一些异见的话，或者你对这个方法论起级信仰，认为他就像“共产主义”，“真主”，“耶稣”，“佛陀”一样可以普世的话，你不妨看一下下面这些文章：（注意，他们大多被墙）
+<ul>
+<li><a href="https://gist.github.com/710960">What Killed Waterfall could Kill Agile</a>.</li>
+<li><a href="https://groups.google.com/forum/#%21msg/guerrilla-capacity-planning/HR69ubukn_Q/xNgiiMeq0BkJ">Google Groups上的一个讨论</a></li>
+<li><a href="http://david.ing.name/2010/12/24/agile-plumbers/">Agile 水管工</a></li>
+<li><a href="http://mempko.wordpress.com/2010/12/30/look-like-a-capitalist-live-like-a-communist/">看上去是资本主义，用起来是共产主义，打起架来是法西斯，做起爱来是无政府主义</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>最后让我向你介绍一下2010年度top 10的关于 Spring, ExtJS和Hibernate的相关文章（同意，注意撞墙）
+<ul>
+<li><a href="http://loianegroner.com/2010/01/tutorial-getting-started-with-spring-security/">Tutorial: Getting Started with Spring Security</a></li>
+<li><a href="http://loianegroner.com/2010/03/extjs-and-spring-mvc-framework-crud-datagrid-example/">ExtJS and Spring MVC Framework: CRUD DataGrid Example</a></li>
+<li><a href="http://loianegroner.com/2010/03/ajax-file-upload-with-extjs-and-spring-framework/">Ajax File Upload with ExtJS and Spring Framework</a></li>
+<li><a href="http://loianegroner.com/2010/02/integrating-spring-security-with-extjs-login-page/">Integrating Spring Security with ExtJS Login Page</a></li>
+<li><a href="http://loianegroner.com/2010/02/spring-mvc-and-ajax-with-json/">Spring MVC and AJAX with JSON</a></li>
+<li><a href="http://loianegroner.com/2010/02/extjs-how-to-export-datagrid-to-excel/">ExtJS: How to Export DataGrid to Excel</a></li>
+<li><a href="http://loianegroner.com/2010/09/extjs-spring-mvc-3-and-hibernate-3-5-crud-datagrid-example/">ExtJS, Spring MVC 3 and Hibernate 3.5: CRUD DataGrid Example</a></li>
+<li><a href="http://loianegroner.com/2010/01/spring-security-login-and-logout-form-jsp/">Spring Security: Login and Logout Form JSP</a></li>
+<li><a href="http://loianegroner.com/2010/01/how-to-display-an-imagelink-inside-an-ext-js-gridpanels-cell/">How to Display an Image/Link Inside an Ext JS GridPanel’s Cell</a></li>
+<li><a href="http://loianegroner.com/2010/01/ext-window-panel-show-or-hide/">Ext.Window Panel: Show or Hide?</a></li>
+</ul>
+</li>
+</ul>
+<p>　　<strong>祝大家新年快乐！！</strong></p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/85094/">代码永远是罪魁祸首吗？</a><span style="color:gray">(2010-12-20)</span><br>　　· <a href="http://news.cnblogs.com/n/85366/">你是一个产品</a><span style="color:gray">(2010-12-22)</span><br>　　· <a href="http://news.cnblogs.com/n/84536/">不适合当一名开发人员的10种迹象</a><span style="color:gray">(2010-12-14)</span><br>　　· <a href="http://news.cnblogs.com/n/86001/">关于程序成本的讨论</a><span style="color:gray">(2010-12-27)</span><br>　　· <a href="http://news.cnblogs.com/n/82468/">程序员变身哈利波特 寻找自己的死亡圣器</a><span style="color:gray">(2010-11-26)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/86902/">http://news.cnblogs.com/n/86902/</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=86902" width="1" height="1" alt="">

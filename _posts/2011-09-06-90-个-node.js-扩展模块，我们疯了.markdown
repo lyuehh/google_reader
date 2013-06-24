@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "90 个 node.js 扩展模块，我们疯了"
+date:   2011-09-06 09:52:52
+author: 
+categories: program
+---
+
+## 90 个 node.js 扩展模块，我们疯了
+### by 
+### at 2011-09-06 09:52:52
+### original <http://www.oschina.net/news/21152/browserling-open-sources-90-node-modules>
+
+<table width="100%"><tr>
+			<td valign="top" width="100"><a href="http://www.oschina.net/news/21152/browserling-open-sources-90-node-modules"><img src="http://www.oschina.net/img/logo/nodejs.gif" border="0"></a></td>			<td valign="top">国外的一个网站 Browerling ，最近一口气搞了 90 个 node.js 模块，全部是从头开始编写，疯掉了。 下面是这些模块的完整列表，由于数量众多，无法一一翻译，所有的模块都可以通过 Github ( pkrumins,James Halliday,substack) 获取。所有的这些模块在文档方面都非常完善。 1. dnode DNode 是一个异步的面向对象的 RPC 系统，可用来调用远程方法，下面是简单例子： var dnode = require('dnode');
+
+var server = dnode({
+    zing : function (n, cb) { cb(n * 100) }
+});
+server.listen(5050);
+ 该代码在 5050 端口上启动了 dnode 服务...，<a href="http://www.oschina.net/news/21152/browserling-open-sources-90-node-modules?from=rss" style="font-weight:bold;color:#a00">阅读全文</a></td>
+			</tr></table>

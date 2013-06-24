@@ -1,0 +1,50 @@
+---
+layout: post
+title:  "Asp.net MVC2.0系列文章-运行Web MVC2.0 Demo"
+date:   2010-06-23 00:01:00
+author: 灵动生活
+categories: program
+---
+
+## Asp.net MVC2.0系列文章-运行Web MVC2.0 Demo
+### by 灵动生活
+### at 2010-06-23 00:01:00
+### original <http://www.cnblogs.com/ywqu/archive/2010/06/23/1763027.html>
+
+<p><a href="http://www.cnblogs.com/ywqu/"><img src="http://pic.cnblogs.com/face/u24836.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/ywqu/">灵动生活</a> 发表于 2010-06-23 00:01 <a href="http://www.cnblogs.com/ywqu/archive/2010/06/23/1763027.html">原文链接</a> 阅读: 930 评论: 10</p><h4>安装VS2010</h4>
+<p>首先安装VS2010，安装过程请参考文章：</p>
+<p><a href="http://www.cnblogs.com/ywqu/archive/2010/01/27/1657450.html">http://www.cnblogs.com/ywqu/archive/2010/01/27/1657450.html</a>。</p>
+<h4>创建第一个MVC2.0程序</h4>
+<p>新建一个asp.net MVC2.0网站程序，如下图：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image002_2.jpg"></a></p>
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_1.gif" border="0"></p>
+<p>提示是否新建单元测试工程，选择创建Unit Test Project</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image003_2.gif"></a></p>
+<h4><img height="283" alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_2.gif" width="471" border="0"></h4>
+<h4>MVC2.0网站结构图</h4>
+<p>默认新建一个Asp.net MVC2.0网站程序，结构图如下所示</p>
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_3.gif" border="0"></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image004_2.gif"></a></p>
+<p>Content文件夹：存放CSS样式文件</p>
+<p>Controllers文件夹：存放控制器文件，文件名称以Controller结尾</p>
+<p>Model文件夹：存放数据模型以及业务逻辑和规则，文件名称以Models结尾</p>
+<p>Scripts文件夹：存放Javascript文件，VS2010整合了Jquery,所以此文件夹下有Jquery类库</p>
+<p>View文件夹：存放视图文件。</p>
+<p>MvcAppDemo.Tests是默认的单元测试工程。</p>
+<h4>网站运行结果</h4>
+<p>运行默认的网站，如下图所示：</p>
+<p>首页：</p>
+<p><img height="400" alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_4.gif" width="640" border="0"></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image006_2.jpg"></a></p>
+<p>About页面</p>
+<p><img height="400" alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_5.gif" width="640" border="0"></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image008_2.jpg"></a></p>
+<p>注册页面</p>
+<p><img height="400" alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_6.gif" width="640" border="0"></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image010_2.jpg"></a></p>
+<p>登录页面</p>
+<p><img height="400" alt="" src="http://images.cnblogs.com/cnblogs_com/ywqu/MVC2.0/MVC_Default_Demo/2_7.gif" width="640" border="0"></p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ywqu/WindowsLiveWriter/Asp.netMVC2.0WebMVC2.0Demo_25/clip_image012_2.jpg"></a></p>
+<p>在此登录页面中，如果不输入任何信息，点击【Log On】按钮，会触发非空验证。</p>
+<h4>总结</h4>
+<p>此篇文章只是让初学者对 MVC2.0网站有个大概的印象，学习和创建MVC2.0网站应用程序并不是想象的那么苦难，不妨动手试一试。接下来文章，我们就使用MVC2.0的新特性创建一些实例。</p><img src="http://www.cnblogs.com/ywqu/aggbug/1763027.html?type=1" width="1" height="1" alt=""><p>评论: 10　<a href="http://www.cnblogs.com/ywqu/archive/2010/06/23/1763027.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ywqu/archive/2010/06/23/1763027.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66821/">张朝阳借微博“发飙”：中国硅谷是妄想！</a><span style="color:gray">(2010-06-23 14:04)</span><br>· <a href="http://news.cnblogs.com/n/66819/">真正的计算机之父是德国人楚泽</a><span style="color:gray">(2010-06-23 13:56)</span><br>· <a href="http://news.cnblogs.com/n/66818/">Marvell新驱动将允许用户自建混合硬盘</a><span style="color:gray">(2010-06-23 13:52)</span><br>· <a href="http://news.cnblogs.com/n/66816/">报告称20% Android应用暴露私人数据</a><span style="color:gray">(2010-06-23 13:48)</span><br>· <a href="http://news.cnblogs.com/n/66815/">Web 开发与设计语言大盘点</a><span style="color:gray">(2010-06-23 13:24)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/66804/">苹果编程语言和 API 的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

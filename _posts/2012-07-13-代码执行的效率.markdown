@@ -1,0 +1,182 @@
+---
+layout: post
+title:  "代码执行的效率"
+date:   2012-07-13 08:18:32
+author: 陈皓
+categories: program
+---
+
+## 代码执行的效率
+### by 陈皓
+### at 2012-07-13 08:18:32
+### original <http://coolshell.cn/articles/7886.html>
+
+<p>在《<a title="性能调优攻略" href="http://coolshell.cn/articles/7490.html">性能调优攻略</a>》里，我说过，要调优性需要找到程序中的Hotspot，也就是被调用最多的地方，这种地方，只要你能优化一点点，你的性能就会有质的提高。在这里我给大家举三个关于代码执行效率的例子（它们都来自于网上）</p>
+<h4><strong>第一个例子</strong></h4>
+<p><strong> PHP中Getter和Setter的效率</strong>（<a href="http://www.reddit.com/r/programming/comments/wdsgn/today_i_learned_that_creating_getters_setters_in/">来源reddit</a>）</p>
+<p>这个例子比较简单，你可以跳过。</p>
+<p>考虑下面的PHP代码：我们可看到，使用Getter/Setter的方式，性能要比直接读写成员变量要差一倍以上。</p>
+<pre>&lt;?php
+	//dog_naive.php
+
+	class dog {
+		public $name = &quot;&quot;;
+		public function setName($name) {
+			$this-&amp;gt;name = $name;
+		}
+		public function getName() {
+			return $this-&amp;gt;name;
+		}
+	}
+
+	$rover = new dog();
+        //通过Getter/Setter方式
+	for ($x=0; $x&lt;10; $x++) {
+		$t = microtime(true);
+		for ($i=0; $i&lt;1000000; $i++) {
+			$rover-&gt;setName(&quot;rover&quot;);
+			$n = $rover-&gt;getName();
+		}
+		echo microtime(true) - $t;
+		echo &quot;\n&quot;;
+	}
+        //直接存取变量方式
+        for ($x=0; $x&lt;10; $x++) {
+		$t = microtime(true);
+		for($i=0; $i&lt;1000000; $i++) {
+			$rover-&gt;name = &quot;rover&quot;;
+			$n = $rover-&gt;name;
+		}
+		echo microtime(true) - $t;
+		echo &quot;\n&quot;;
+	}
+?&gt;</pre>
+<p>这个并没有什么稀，因为有函数调用的开销，函数调用需要压栈出栈，需要传值，有时还要需要中断，要干的事太多了。所以，代码多了，效率自然就慢了。所有的语言都这个德行，这就是为什么C++要引入inline的原因。而且Java在打开优化的时候也可以优化之。但是对于动态语言来说，这个事就变得有点困难了。</p>
+<p><span></span></p>
+<p>你可能会以为使用下面的代码（Magic Function）会好一些，但实际其性能更差。</p>
+<pre>class dog {
+	private $_name = &quot;&quot;;
+	function __set($property,$value) {
+		if($property == &#39;name&#39;) $this-&gt;_name = $value;
+	}
+	function __get($property) {
+		if($property == &#39;name&#39;) return $this-&gt;_name;
+	}
+}</pre>
+<p>动态语言的效率从来都是一个问题，如果你需要PHP有更好的性能，你可能需要使用<a href="https://github.com/facebook/hiphop-php">FaceBook的HipHop</a>来把PHP编译成C语言。</p>
+<h4><strong>第二个例子</strong></h4>
+<p><strong>为什么Python程序在函数内执行得更快？</strong>（<a href="http://stackoverflow.com/questions/11241523/why-does-python-code-run-faster-in-a-function">来源StackOverflow</a>）</p>
+<p>考虑下面的代码，一个在函数体内，一个是全局的代码。</p>
+<p>函数内的代码执行效率为 1.8s</p>
+<pre>def main():
+    for i in xrange(10**8):
+        pass
+main()</pre>
+<p>函数体外的代码执行效率为 4.5s</p>
+<pre>for i in xrange(10**8):
+    pass</pre>
+<p>不用太纠结时间，只是一个示例，我们可以看到效率查得很多。为什么会这样呢？我们使用 <a href="http://docs.python.org/library/dis.html"><code>dis</code> module</a> 反汇编函数体内的bytecode 代码，使用 <a href="http://docs.python.org/library/functions.html#compile"><code>compile</code> builtin</a> 反汇编全局bytecode，我们可以看到下面的反汇编（注意我高亮的地方）</p>
+<pre>
+13 FOR_ITER                 6 (to 22)
+16 STORE_FAST               1 (i)
+19 JUMP_ABSOLUTE           13</pre>
+<pre>
+13 FOR_ITER                 6 (to 22)
+16 STORE_NAME               1 (i)
+19 JUMP_ABSOLUTE           13</pre>
+<p>我们可以看到，差别就是 <a href="http://docs.python.org/library/dis.html#opcode-STORE_FAST"><code>STORE_FAST</code></a> 和 <code><a href="http://docs.python.org/library/dis.html#opcode-STORE_NAME">STORE_NAME</a>，前者比后者快很多。所以，在全局代码中，变量i成了一个全局变量，而函数中的i是放在本地变量表中，所以在全局变量表中查找变量就慢很多。如果你在main函数中声明global i 那么效率也就下来了。</code>原因是，本地变量是存在一个数组中（直到），用一个整型常量去访问，而全局变量存在一个dictionary中，查询很慢。</p>
+<p><code>（注：在</code>C/C++中，这个不是一个问题）</p>
+<h4><strong>第三个例子</strong></h4>
+<p><strong> 为什么排好序的数据在遍历时会更快？</strong>（<a href="http://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-an-unsorted-array">来源StackOverflow</a>）</p>
+<p>参看如下C/C++的代码：</p>
+<pre> for (unsigned i = 0; i &lt; 100000; ++i) {
+   // primary loop
+    for (unsigned j = 0; j &lt; arraySize; ++j) {
+        if (data[j] &gt;= 128)
+            sum += data[j];
+    }
+}</pre>
+<p>如果你的data数组是排好序的，那么性能是1.93s，如果没有排序，性能为11.54秒。差5倍多。无论是C/C++/Java，或是别的什么语言都基本上一样。</p>
+<p>这个问题的原因是——<strong> <a href="http://en.wikipedia.org/wiki/Branch_predictor">branch prediction</a> （分支预判）</strong>伟大的stackoverflow给了一个非常不错的解释。</p>
+<p>考虑我们一个铁路分叉，当我们的列车来的时候， 扳道员知道分个分叉通往哪，但不知道这个列车要去哪儿，司机知道要去哪，但是不知道走哪条分叉。所以，我们需要让列车停下来，然后司机和扳道员沟通一下。这样的性能太差了。</p>
+<p>所以，我们可以优化一下，那就是猜，我们至少有50%的概率猜对，如果猜对了，火车行驶性能巨高，猜错了，就得让火车退回来。如果我猜对的概率高，那么，我们的性能就会高，否则老是猜错了，性能就很差。</p>
+<p><img title="muxnt" src="http://coolshell.cn/wp-content/uploads/2012/07/muxnt.jpg" alt="" width="440" height="330"></p>
+<p style="text-align:center">Image by Mecanismo, from Wikimedia Commons:<a href="http://commons.wikimedia.org/wiki/File:Entroncamento_do_Transpraia.JPG">http://commons.wikimedia.org/wiki/File:Entroncamento_do_Transpraia.JPG</a></p>
+<p>我们的if-else 就像这个铁路分叉一样，下面红箭头所指的就是搬道器。</p>
+<p><img title="pyfwC" src="http://coolshell.cn/wp-content/uploads/2012/07/pyfwC.png" alt="" width="567" height="91"></p>
+<p>那么，我们的搬道器是怎么预判的呢？就是使用过去的历史数据，如果历史数据有90%以上的走左边，那么就走左边。所以，我们排好序的数据就更容易猜得对。</p>
+<pre>T = 走分支（条件表达式为true）
+N = 不走分支(条件表达式为false)
+
+data[] = 0, 1, 2, 3, 4, ... 126, 127, 128, 129, 130, ... 250, 251, 252, ...
+branch = N  N  N  N  N  ...   N    N    T    T    T  ...   T    T    T  ...
+
+= NNNNNNNNNNNN ... NNNNNNNTTTTTTTTT ... TTTTTTTTTT  (easy to predict)</pre>
+<pre>data[] = 226, 185, 125, 158, 198, 144, 217, 79, 202, 118,  14, 150, 177, 182, 133, ...
+branch =   T,   T,   N,   T,   T,   T,   T,  N,   T,   N,   N,   T,   T,   T,   N  ...
+
+= TTNTTTTNTNNTTTN ...   (completely random - hard to predict)</pre>
+<p>从上面我们可以看到，排好序的数据更容易预测分支。</p>
+<p>对此，那我们怎么办？我们需要在这种循环中除去if-else语句。比如：</p>
+<p>我们把条件语句：</p>
+<pre>if (data[j] &gt;= 128)
+sum += data[j];
+</pre>
+<p>变成：</p>
+<pre>int t = (data[j] - 128) &gt;&gt; 31;
+sum += ~t &amp; data[j];</pre>
+<p>“没有分叉”的性能基本上和“排好序有分支”一个样，无论是C/C++，还是Java。</p>
+<blockquote><p><strong>注：</strong>在GCC下，如果你使用 <code>-O3</code> or <code>-ftree-vectorize</code> 编译参数，GCC会帮你优化分叉语句为无分叉语句。VC++2010没有这个功能。</p></blockquote>
+<p><strong>最后，推荐大家一个网站——<a href="https://developers.google.com/speed/">Google Speed</a>，网站上的有一些教程告诉你<a href="https://developers.google.com/speed/articles/">如何写出更快的Web程序</a>。</strong></p>
+<p><strong></strong>（全文完）<br>
+<hr height="1" width="100%">
+<div style="margin-top:15px;font-size:11px;color:#cc0000">
+<p align="center"><strong>（转载本站文章请注明作者和出处 <a href="http://coolshell.cn/">酷壳 – CoolShell.cn</a> ，请勿用于任何商业用途）</strong></p></div>
+<div style="text-align:center;padding:0px;font-size:11px;margin-bottom:50px">————————============ <b>感谢 <a href="http://42qu.com/">42qu.com</a> 为本站提供 <a href="http://vps.42qu.com/"> VPS</a></b> ============————————</div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="无锁队列的实现" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8239.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7886.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2012/09/07/46975537.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">无锁队列的实现</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="GCC 用 C++ 来编译" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7886.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2012/08/20/43281109.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">GCC 用 C++ 来编译</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Why C++ ? 王者归来" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F6548.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7886.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2012/02/03/14687960.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Why C++ ? 王者归来</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="如何写出无法维护的代码" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F4758.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7886.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2011/08/20/23756978.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">如何写出无法维护的代码</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Code Review中的几个提示" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1302.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7886.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2012/08/09/40094928.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Code Review中的几个提示</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><h3>相关文章</h3><ul><li>2009年11月24日 -- <a href="http://coolshell.cn/articles/1839.html" title="编程语言汽车">编程语言汽车</a></li><li>2009年10月11日 -- <a href="http://coolshell.cn/articles/1532.html" title="到处都是Unix的胎记">到处都是Unix的胎记</a></li><li>2012年09月07日 -- <a href="http://coolshell.cn/articles/8239.html" title="无锁队列的实现">无锁队列的实现</a></li><li>2012年08月20日 -- <a href="http://coolshell.cn/articles/8115.html" title="GCC 用 C++ 来编译">GCC 用 C++ 来编译</a></li><li>2012年02月02日 -- <a href="http://coolshell.cn/articles/6548.html" title="Why C++ ? 王者归来">Why C++ ? 王者归来</a></li><li>2011年09月20日 -- <a href="http://coolshell.cn/articles/5224.html" title="一些文章和各种资源">一些文章和各种资源</a></li><li>2011年06月03日 -- <a href="http://coolshell.cn/articles/4758.html" title="如何写出无法维护的代码">如何写出无法维护的代码</a></li></ul></p>

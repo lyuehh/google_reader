@@ -1,0 +1,82 @@
+---
+layout: post
+title:  "Windows下做7层软负载方案分析"
+date:   2010-06-23 23:23:00
+author: 蛙蛙王子
+categories: program
+---
+
+## Windows下做7层软负载方案分析
+### by 蛙蛙王子
+### at 2010-06-23 23:23:00
+### original <http://www.cnblogs.com/onlytiancai/archive/2010/06/23/1764024.html>
+
+<p><a href="http://www.cnblogs.com/onlytiancai/"><img src="http://pic.cnblogs.com/face/u8814.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/onlytiancai/">蛙蛙王子</a> 发表于 2010-06-23 23:23 <a href="http://www.cnblogs.com/onlytiancai/archive/2010/06/23/1764024.html">原文链接</a> 阅读: 1047 评论: 4</p><p><a name="OLE_LINK2"></a><a name="OLE_LINK1"></a>对windows下做7层软负载做了一些分析，感觉最不靠谱的就是HttpWebRequest，这玩意实现太复杂，包装太深，而且也不是设计为发送大量出站HTTP连接用的，HttpListener应该还行，就是设计为做HTTP服务器用的，实在不行Proxy和RealServer之间用Remoting传递HTTP信息，然后两边把Remoting再转换成HTTP信息。 </p>
+<p>大家有啥做7层软负载的经验可以讨论分享一下，最好是windows平台下的。 </p>
+<p> </p>
+<h3><a name="OLE_LINK1">性能分析</a></h3>
+<p>1、 对外网的连接管理和协议解析使用http.sys(HttpApi.dll,HttpListener)内置机制，http.sys在内核级别进行HTTP的连接管理和协议解析，性能应该可以保证。 </p>
+<p>2、 对内网RealServer的连接管理和拼包使用HttpWebRequest的内置机制，但有如下问题 </p>
+<p>a) 连接管理：默认Proxy向RealServer发送请求会新建立一个连接，收到应答后会拆除连接，也就是说Proxy和RealServer之间会建立大量连接，但是由于受端口（65535）限制，出站连接不可能太多。这个问题要想办法解决，可以尝试把RealServer启用KeepAlive解决。 </p>
+<p>b) 拼包：HttpListener收到包后，虽然自动已经解析成对象，但是还要把这些包重新拼成HttpWebRequest的格式发给RealServer，这里面包括拷贝Uri,HttpHeader，Cookies,Body等，这些数据量挺大的，在内存中拷贝一遍肯定损耗性能。该问题应该无法规避。 </p>
+<p>3、 如果是常规的web应用（资源访问类），Request小，Response很大，RealServer返回Response时还要经过Proxy，还要进行内存拷贝，这个也非常影响性能。然后7层又做不到LVS的那种DirectRoute机制（需要修改网络包的mac地址），实现IP隧道和TCP的状态迁移需要修改操作系统的TCP/IP协议栈。鉴于代价太大，该问题也无法规避。 </p>
+<p>4、 Http协议规定请求和应答必须成对出现，默认情况下一条连接上发送出去请求后要等到收到该请求对应的应答后才能发送下一个请求，虽然Http1.1有pipeline功能，可以成批发送请求，不必先等待应答，但是也有诸多限制，比如规定了POST不应该使用pipeline，一条连接上第一次发送请求也不可以使用pipeline机制，还有每批请求的请求数也不好定夺，批量发送请求后，如果连接断开，会有多个请求失败，等等。HTTP协议不像SIP协议那样靠CallID和Cseq来匹配请求和应答，那样可以纯异步的收发请求和应答，所以在实现Http协议栈时要同步等待应答，然后该连接上才能发送下一批请求，这必然会影响性能。 </p>
+<p>5、 HttpListener的异步接收请求和发送应答是普通的APM模式（BeginXXX,EndXXX格式），这种异步模式在频繁调用时会大量产生和销毁IAsyncRequest对象，从而增加了GC的压力，而且IAsyncRequest对象还没有提供自定义池化的接口。如果HttpListener提供了新的基于事件的异步模式(XXXAsync(eventargs)模式，参考Socket.ReceiveAsync方法)会解决这个问题。 </p>
+<p>6、 另外由于HttpLisenter是.net的包装类，在用户态执行，而HTTP.SYS是内核态运行，在接受请求，返回应答会进行两次用户态和内核态之间的切换，从而降低性能，如果能在内核态直接进行7层转发就好了，在linux下LVS（KTCPVS）可以做到内核态的基于内容的7层转发，在windows下可能需要做TDI或者NDIS开发，查了些资料，太复杂了，所以也不考虑了先。 </p>
+<h3>可靠性分析</h3>
+<p>为了容灾，提高可靠性，考虑如下方案 </p>
+<p>1. 7层软负载的前面要有4层负载设备，7层软负载多台，且共享哈希策略，4层设备按Session做随机负载，这样所有的7层软负载机器均可正确处理任何一个请求，且某台7层软负载宕机后，剩下的7层软负载可继续工作，由于4层负载有keepalive功能，可以检测出哪台7层软负载宕机了，并且不给其转发请求。 </p>
+<p>2. 7层软负载做双击热备，7层软负载直接接入外网，正常情况下由主服务器处理请求，如果主服务器宕机，备份服务器发现后，通过ARP欺骗获取主服务器原有IP，以把请求吸引到备份服务器上处理（硬件如果支持可能可以考虑主备机共享一个MAC地址），主备切换时可能会造成短时请求失败的现象。 </p>
+<p>综合考虑，第二个方案有些山寨和不保险，优先考虑第一个方案。 </p>
+<h3>单元测试</h3>
+<p><b>场景设计：</b><b> </b> </p>
+<p>比如一个获取用户头像的请求，用户的头像存放在多台DB里，并由多个web服务器（webserver1,webserver2）缓存头像并根据用户的HTTP请求返回给客户端用户头像，由于web服务器缓存了用户头像，是有状态服务，所以HTTP请求里要带userid参数，7层负载根据userid做哈希后把请求路由给缓存该userid对应用户头像的web服务器。 </p>
+<p><b>请求格式</b><b>:</b> </p>
+<p>GET /getportrait.aspx?userid={userid} </p>
+<p>其中{userid}是Int32类型，路由算法是{userid} mod 2 = 0的话路由给webserver1 ，{userid} mod 2 = 1的话路由给webserver2 </p>
+<p><b>应答格式</b><b>:</b> </p>
+<p>200 OK HTTP1.0 </p>
+<p>Content-Length:5 </p>
+<p>Content-Type:text/txt </p>
+<p>&lt;CLRF&gt; </p>
+<p>{userportrait} </p>
+<p>其中为了测试方便{userportrait}为文本格式，就是webserver本身的机器名字 </p>
+<p><b>测试用例：</b><b></b> </p>
+<p>请求GET /getportrait.aspx?userid=1111，预期返回应答webserver2 </p>
+<p>请求GET /getportrait.aspx?userid=2222，预期返回应答webserver1 </p>
+<p>具体测试userid可随机生成整数，并根据是否可被2整除对应答进行预期。 </p>
+<h3>性能测试</h3>
+<p><b>测试准备：</b><b></b> </p>
+<p>两台物理机RealServer1和RealServer2,一台软负载机器SoftProxy，两台测试机TestClient1,TestClient2。 </p>
+<p>其中SoftProxy的配置：Xeno 3.0G(16核)，16G内存，windows2003 x64, 千M网卡（先不考虑双网卡均衡）。 </p>
+<p>RealServer配置：Xeno 1.86G(4核)，8G内存，windows 2003 x86 </p>
+<p><b>部署：</b><b></b> </p>
+<p>RealServer1和RealServer2部署具有返回用户头像的服务，SoftProxy部署7层软负载，TestClient1和TestClient2部署LoadRunner及测试脚本进行测试。 </p>
+<p><b>测试模型：</b><b></b> </p>
+<p>在线用户：300个虚拟用户，每个虚拟用户模拟1000客户端，共模拟300000在线用户,每个用户每5秒获取一次头像。 </p>
+<p><b>测试预期：</b><b></b> </p>
+<p>预期SoftProxy每秒处理6w的获取头像请求，并且CPU利用率在80%以下，内存利用率在5G以下。 </p>
+<h3>其它问题</h3>
+<p>1、 客户端IP </p>
+<p>a) 因为RealServer接收的是SoftProxy的请求，不能直接知道客户端IP，所以SoftProxy需要在转发包的时候加上一个http header以告诉客户端IP </p>
+<p>2、 重定向，身份验证，临时应答,缓存等问题 </p>
+<p>a) httpRequest.ServicePoint.Expect100Continue = false; </p>
+<p>b) httpRequest.ServicePoint.UseNagleAlgorithm = false; </p>
+<p>c) httpRequest.AllowWriteStreamBuffering = false; </p>
+<p>d) httpRequest.AllowAutoRedirect = false; </p>
+<p>e) httpRequest.AuthenticationLevel = AuthenticationLevel.None; </p>
+<p>f) httpRequest.AutomaticDecompression = DecompressionMethods.None; </p>
+<p>g) HttpRequestCachePolicy noCachePolicy =  </p>
+<p>new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore); </p>
+<p>httpRequest.CachePolicy = noCachePolicy; </p>
+<p>3、 Cookies咋办？ </p>
+<p>a) HttpWebRequest并不支持直接写cookie，只能创建cookie容器，等应答回来后才会有cookies，这个比较郁闷，暂时如下这样写，收到RealServer的应答后把应答里的Cookies复制给Listenresponse并返回给客户端 </p>
+<p>httpRequest.CookieContainer = new CookieContainer(); </p>
+<p>HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse(); </p>
+<p>listenresponse.Cookies = httpResponse.Cookies; </p>
+<p>4、 超时值，不好定夺 </p>
+<p>a) httpRequest.Timeout = 20; </p>
+<p>b) httpRequest.ReadWriteTimeout = 10;</p>
+<p> </p>
+<p>参考连接</p>
+<p>通过IP隧道实现虚拟服务器（VS/TUN）<br>http://zh.linuxvirtualserver.org/node/27<br>通过直接路由实现虚拟服务器（VS/DR）<br>http://zh.linuxvirtualserver.org/node/28<br>HttpWebRequest性能问题<br>http://blog.myspace.cn/e/401154847.htm<br>内核中的基于内容请求分发<br>http://zh.linuxvirtualserver.org/node/76<br>http协议中connection头的作用<br>http://blog.csdn.net/barfoo/archive/2008/06/05/2514667.aspx<br>介绍 http1.0 和 http1.1 区别 HTTP学习笔记 转<br>http://hi.baidu.com/shengit/blog/item/06691e62ee2967690c33fa1c.html<br>How to use cookie in HttpWebRequest?<br>http://social.msdn.microsoft.com/forums/en-US/netfxcompact/thread/6da34864-7768-46de-aa5e-f56a9a619e32/<br>What is HTTP pipelining?<br>http://www.mozilla.org/projects/netlib/http/pipelining-faq.html</p><img src="http://www.cnblogs.com/onlytiancai/aggbug/1764024.html?type=1" width="1" height="1" alt=""><p>评论: 4　<a href="http://www.cnblogs.com/onlytiancai/archive/2010/06/23/1764024.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/onlytiancai/archive/2010/06/23/1764024.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66895/">马化腾和他的敌人们</a><span style="color:gray">(2010-06-24 14:09)</span><br>· <a href="http://news.cnblogs.com/n/66894/">iOS 4 的多任务究竟是怎么回事？</a><span style="color:gray">(2010-06-24 14:00)</span><br>· <a href="http://news.cnblogs.com/n/66893/">60万张废旧CD组成“海洋” 展示后将回收</a><span style="color:gray">(2010-06-24 13:53)</span><br>· <a href="http://news.cnblogs.com/n/66892/">谷歌称正研究中国网络地图新规影响</a><span style="color:gray">(2010-06-24 13:41)</span><br>· <a href="http://news.cnblogs.com/n/66891/">九城09年巨亏4亿 CEO朱骏否认将出售</a><span style="color:gray">(2010-06-24 13:23)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/66804/">苹果编程语言和 API 的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

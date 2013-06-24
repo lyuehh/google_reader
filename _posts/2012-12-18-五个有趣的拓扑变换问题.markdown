@@ -1,0 +1,133 @@
+---
+layout: post
+title:  "五个有趣的拓扑变换问题"
+date:   2012-12-18 14:46:27
+author: Matrix67
+categories: program
+---
+
+## 五个有趣的拓扑变换问题
+### by Matrix67
+### at 2012-12-18 14:46:27
+### original <http://www.udpwork.com/item/8876.html>
+
+<p>    如果你喜欢上次的<a href="http://www.matrix67.com/blog/archives/5077">空间想象能力挑战</a>，你一定会喜欢 V. V. Prasolov 的 Intuitive Topology 一书。书中的第一章有五个非常经典的“拓扑变换”类谜题，在此与大家分享。注意游戏规则：我们假设所有物体都是用橡胶做成的，可以随意地拉伸、挤压、弯曲，但不允许切断、粘连等任何改变图形本质结构的操作。</p>
+<p>    1. 能否把左图连续地变形为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212181.png"></p>
+<p> 
+<br>
+    2. 能否把左图连续地变形为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212182.png"></p>
+<p> 
+<br>
+    3. 左图所示的立体图形表面画有一个圆。能否通过连续变换，把这个圆变到右图所示的位置？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212183.png"></p>
+<p> 
+<br>
+    4. 在一个轮胎的表面上打一个洞。能否通过连续变换，把这个轮胎的内表面翻到外面来？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212184.png"></p>
+<p> 
+<br>
+    5. 能否把左图连续地变形为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212185.png"></p>
+<p> 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+ 
+<br>
+    1. 能否把左图连续地变为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212181.png"></p>
+<p> 
+<br>
+    答案是可以的，如下图所示：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212186.png"></p>
+<p> 
+<br>
+    这意味着，假如人类的身体可以像橡胶人一样任意变形，那么用两手的拇指和食指做成两个套着的圆环之后，我们可以不放开手指，把圆环给解开来。 Algorithmic and Computer Methods for Three-Manifolds 一书里画了一张非常漂亮的示意图：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212187a.png"></p>
+<p> 
+<br>
+    更加有趣的是，如果仅仅是手腕上多了一块手表，上述方案就不能得逞了：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212187b.png"></p>
+<p> 
+<br>
+    2. 能否把左图连续地变为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212182.png"></p>
+<p> 
+<br>
+    答案是可以的，如下图所示：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212188.png"></p>
+<p> 
+<br>
+    3. 左图所示的立体图形表面画有一个圆。能否通过连续变换，把这个圆变到右图所示的位置？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212183.png"></p>
+<p> 
+<br>
+    答案是可以的，如下图所示：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212189.png"></p>
+<p> 
+<br>
+    4. 在一个轮胎的表面上打一个洞。能否通过连续变换，把这个轮胎的内表面翻到外面来？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212184.png"></p>
+<p> 
+<br>
+    答案是可以的。首先，作出如下图所示的连续变换。可以看到，一个表面有洞的轮胎本质上等于两个粘在一起的纸圈！不过，注意纸圈 1 和纸圈 2 的地位不太一样：一个是白色的面（即最初轮胎的内表面）冲外，一个是阴影面（即最初轮胎的外表面）冲外。现在，把纸圈 2 当成原来的纸圈 1 ，把纸圈 1 当成原来的纸圈 2 ，倒着把它们变回轮胎形，轮胎的内外表面也就颠倒过来了。</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/2012121810.png"></p>
+<p> 
+<br>
+    有趣的是，把轮胎的内表面翻出来之后，轮胎上的“经线”和“纬线”（姑且这么叫吧）也将会颠倒过来：</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/2012121811.png"></p>
+<p> 
+<br>
+    <a href="http://en.wikipedia.org/wiki/File:Inside-out_torus_(animated,_small).gif">Wikipedia</a>上有一个巨帅无比的动画，直接展示出了把一个圆环面的内表面翻到外面来的过程。此动画看着非常上瘾，小心一看就是 10 分钟！</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/2012121812.gif"></p>
+<p> 
+<br>
+    5. 能否把左图连续地变为右图？</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/201212185.png"></p>
+<p> 
+<br>
+    答案是可以的。首先，作出如下图所示的连续变换，于是就变成了问题 1 中的图 (a) 。再利用问题 1 的办法，即可变出我们想要的形状来。</p>
+<p>      <img src="http://www.matrix67.com/blogimage_2012/2012121813.png"></p>
+<p></p>
+<img src="http://www1.feedsky.com/t1/702149055/matrix67/feedsky/s.gif?r=http://www.matrix67.com/blog/archives/5140">
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8876.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8876.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8876.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

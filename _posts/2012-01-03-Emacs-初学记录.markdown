@@ -1,0 +1,145 @@
+---
+layout: post
+title:  "Emacs 初学记录"
+date:   2012-01-03 17:00:00
+author: 笨兔兔
+categories: program
+---
+
+## Emacs 初学记录
+### by 笨兔兔
+### at 2012-01-03 17:00:00
+### original <http://www.bentutu.com/2012/01/emacs-note-1.html/>
+
+<p><em>下面内容摘自[Emacs 快速指南]</em><br>
+*************************<br>
+Emacs 键盘通常包括Control 键和Meta 键盘，为了避免每次写出全名，使用下面方法缩写：</p>
+<p>C-：表示当输入时按住Ctrl 键;<br>
+M-：表示当输入时按住Meta（或edit 或 Alt）键</p>
+<p>退出Emacs，使用 C-x C-c（两个连续的组合键）<span></span><br>
+*************************<br>
+<strong>翻页浏览：</strong></p>
+<p>C-v 向前移动一屏<br>
+M-v 向后移动一屏<br>
+C-l 重绘屏幕，并将光标所在行置于屏幕中央</p>
+<p>滚屏也可以使用 PageUp 和PageDn 两键完成操作</p>
+<p><strong>基本光标控制：</strong><br>
+上一行：C-p<br>
+下一行：C-n<br>
+左移动：C-b<br>
+右移动：C-f</p>
+<p>上面的P、N、B、F代表了四个单词：Previous\Next\Backward\Forward</p>
+<p>对比C-f、C-b和M-f、M-b 两对之间的类比关系，可知：Meta 系列组合键用来操作“由语言定义的单位，如词、句子、段落等”，Control 系列组合键用来操作与语言无关的基本单位，如字符、行等。</p>
+<p>因此，可以这样描述上面的操作：</p>
+<li>C-f 向右移动一个字符</li>
+<li>C-b 向左移动一个字符</li>
+<li>M-f 向右移动一个词，对中文是移动到下一个标点符号</li>
+<li>M-b 向左移动一个词，对中文是移动到上一个标点符号</li>
+<li>C-n 移动到下一行</li>
+<li>C-p 移动到上一行</li>
+<li>C-a 移动到行首</li>
+<li>C-e 移动到行尾</li>
+<li>M-a 移动到句首</li>
+<li>M-e 移动到句尾</li>
+<li>M-（Meta 大于号）,移动到所有文字最末尾</li>
+<p>大部分Emacs 接受数字参数，为一个命令指定数字参数（也就是重复次数）的方法是：先输入C-u，然后输入数字作为参数，最后输入命令。<br>
+EG：C-u 8 C-f 表示向前移动8个字符</p>
+<p>*************************<br>
+上面的一行，就是我使用命令C-u 5 * 画出的，令我这个普通青年眼前一亮！</p>
+<p>在Emacs 失去响应的时候，使用C-g 终止正在进行的命令。如果不小心按了Esc 一下，也可以使用C-g 取消它。</p>
+<p>窗格：Emacs 可以有多个窗格，每个窗格显示不同的文字。</p>
+<p>C-x 1 只保留一个窗格，关闭其他所有的窗格<br>
+（C-x 1，先按下Ctrl-x，然后按 1）</p>
+<p>*************************<br>
+<strong>插入与删除</strong></p>
+<p>插入，就是直接敲键盘，按下回车插入一个换行符</p>
+<p>使用Backspace，删除位于光标前的一个字符;</p>
+<p>如果一行文字过长，超出了窗格的宽度，显示不下的部分会在紧邻的下一行继续显示，这时会有一个反斜线表示接续显示；</p>
+<p><strong>小结：</strong></p>
+<li>Delback 删除光标前的一个字符</li>
+<li>C-d 删除光标后的一个字符</li>
+<li>M-Delback 移除光标前的一个词</li>
+<li>M-d 移除光标后的一个词</li>
+<li>C-k 移除从光标到“行尾”的字符</li>
+<li>M-k 移除从光标到“句尾”的字符</li>
+<p>清除大段文字：将光标移动到一段开头处，输入C-@，此时Emacs 屏幕下方显示“Mark set”的消息，然后将光标移动到你删除的文字最末尾处，输入C-w，此时中间大段文字就会被删除！</p>
+<p>恢复删除的文字：按下C-y，则会恢复刚才删除的文字，继续按C-y ，则不断复制刚才的文字，复制、复制、复制、复制……没有尽头！爽歪歪！</p>
+<p>使用M-y 可以召回最近移除的文字。</p>
+<p>*************************<br>
+<strong>undo 撤销命令： C-x u</strong><br>
+*************************<br>
+<strong>文件</strong></p>
+<p>C-x C-f：寻找文件，输入文件名称结束后回车查找，可以使用C-g 取消</p>
+<p>C-x C-s：存储文件，指南告诉我们，记得常存盘哟～</p>
+<p>*************************<br>
+<strong>缓冲区</strong></p>
+<p>C-x C-f bentutu 回车，这是建立一个名为bentutu的文件；</p>
+<p>Emacs 把每个编辑器中的文件都放在一个称之为“缓冲区”的地方；</p>
+<p>C-x C-b 列出缓冲区</p>
+<p>C-x s 保存多个缓冲区</p>
+<p>*************************<br>
+<strong>命令集扩展</strong></p>
+<p>Emacs 的命令就像天上的星星，数也数不清，哈哈。据深度勇哥言，他的Emacs 有1000多个命令，现在用起来基本都成条件反射了。</p>
+<p>Emacs 的扩展命令有2种风格：<br>
+C-x：字符扩展，C-x 之后输入另一个字符或者组合键；<br>
+M-x：命令名扩展，M-x 输入一个命令名。</p>
+<p>C-x 的扩展命令有很多，下面列出的是我们已经记录的：</p>
+<li>C-x C-f 寻找文件。</li>
+<li>C-x C-s 保存文件。</li>
+<li>C-x C-b 列出缓冲区。</li>
+<li>C-x C-c 离开 Emacs。</li>
+<li>C-x 1 关掉其它所有窗格，只保留一个。</li>
+<li>C-x u 撤销。</li>
+<p>在控制台下，C-z 可以暂时离开Emacs 一会儿。</p>
+<p>用命令名扩展的命令通常不常用，或只用在部分模式下，如replace-string（字符替换命令）：按下M-x 后，Emacs 会在屏幕低端咨询等待输入的命令，输入repl s Tab键自动补全，输入之后回车即可。</p>
+<p>*************************<br>
+<strong>搜索</strong></p>
+<p>C-s 是向前搜索，C-r 向后搜索；</p>
+<p>按下C-s 之后，回显区会有“I-search”的字样出现，可用C-g 终止搜索；<br>
+*************************<br>
+<strong>多窗格</strong></p>
+<p>C-x 2，将屏幕划分成两个窗格；<br>
+C-M-v，滚动下方的窗口，向上滚动是C-M-S-v，S 是Shift 键；<br>
+C-x 1，只显示一个窗格；<br>
+C-x o，o 指other，将光标转移到下方的窗格；<br>
+*************************<br>
+<strong>帮助</strong><br>
+C-h c C-p，就是用来查询C-p 的信息<br>
+C-h c ***，***是一个组合键，这样可以查询该命令的简要说明；<br>
+C-h f ：解释一个函数，后面接函数名；<br>
+C-h a：相关命令搜索；</p>
+<p>还有其他好玩的（<a href="http://www.gnu.org/software/emacs/tour/">Emacs 官网</a>）：<br>
+IDE：M-x gdb<br>
+比较两个文件不同，且高亮显示：M-x ediff<br>
+Emacs 可以当作文件管理器：M-x dired<br>
+Emacs 阅读新闻、邮件和RSS：M-x gnus<br>
+Emacs 可以玩游戏：M-x tetris，还有snake、Gonoku、Bubbles、Pong、Solitaire、Zone Out、5×5等。<br>
+M-x shell：开启 Shell<br>
+M-x calcaulator：简单的计算器<br>
+M-x calendar：打开日历<br>
+M-x phases-of-moon：查看月相<br>
+M-x doctor： Emacs精神治疗医师，很逗</p>
+<p>这样看起来，真的很好玩啊，继续折腾中……</p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.bentutu.com%2F2011%2F11%2Flinux-distro-fake-formula.html%2F&amp;from=http%3A%2F%2Fwww.bentutu.com%2F2012%2F01%2Femacs-note-1.html%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">笑谈“Linux 桌面发行版本伪定式”</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>

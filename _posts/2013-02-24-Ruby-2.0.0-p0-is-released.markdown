@@ -1,0 +1,209 @@
+---
+layout: post
+title:  "Ruby 2.0.0-p0 is released"
+date:   2013-02-24 17:06:22
+author: 
+categories: program
+---
+
+## Ruby 2.0.0-p0 is released
+### by 
+### at 2013-02-24 17:06:22
+### original <http://www.ruby-lang.org/en/news/2013/02/24/ruby-2-0-0-p0-is-released/>
+
+<p>We are pleased to announce the release of Ruby 2.0.0-p0.</p>
+
+<p>Ruby 2.0.0 is the first stable release of the Ruby 2.0 series, with many
+new features and improvements in response to the increasingly diverse
+and expanding demands for Ruby.</p>
+
+<p>Enjoy programming with Ruby 2.0.0!</p>
+
+<h2>Download</h2>
+
+<ul>
+  <li>
+    <p><a href="ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.tar.bz2">&lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.tar.bz2&gt;</a></p>
+
+    <pre><code>SIZE:   10814890 bytes
+MD5:    895c1c581f8d28e8b3bb02472b2ccf6a
+SHA256: c680d392ccc4901c32067576f5b474ee186def2fcd3fcbfa485739168093295f
+</code></pre>
+  </li>
+  <li>
+    <p><a href="ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.tar.gz">&lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.tar.gz&gt;</a></p>
+
+    <pre><code>SIZE:   13608925 bytes
+MD5:    50d307c4dc9297ae59952527be4e755d
+SHA256: aff85ba5ceb70303cb7fb616f5db8b95ec47a8820116198d1c866cc4fff151ed
+</code></pre>
+  </li>
+  <li>
+    <p><a href="ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.zip">&lt;URL:ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p0.zip&gt;</a></p>
+
+    <pre><code>SIZE:   15037340 bytes
+MD5:    db5af5d6034646ad194cbdf6e50f49ee
+SHA256: 0d0af6a9c8788537efd8d7d2358ce9468e6e2b7703dacba9ebd064d8b7da5f99
+</code></pre>
+  </li>
+</ul>
+
+<h2>What is Ruby 2.0.0</h2>
+
+<h3>New Features</h3>
+
+<p>Some of the highlights:</p>
+
+<ul>
+  <li>Language core features
+    <ul>
+      <li>Keyword arguments, which give flexibility to API design</li>
+      <li>Module#prepend, which is a new way to extend a class</li>
+      <li>A literal %i, which creates an array of symbols easily</li>
+      <li>__dir__, which returns the dirname of the file currently being
+executed</li>
+      <li>The UTF-8 default encoding, which make many magic comments omissible</li>
+    </ul>
+  </li>
+  <li>Built-in libraries
+    <ul>
+      <li>Enumerable#lazy and Enumerator::Lazy, for (possibly infinite) lazy
+stream</li>
+      <li>Enumerator#size and Range#size, for lazy size evaluation</li>
+      <li>#to_h, which is a new convention for conversion to Hash</li>
+      <li>Onigmo, which is a new regexp engine (a fork of Oniguruma)</li>
+      <li>Asynchronous exception handling API</li>
+    </ul>
+  </li>
+  <li>Debug support
+    <ul>
+      <li>DTrace support, which enables run-time diagnosis in production</li>
+      <li>TracePoint, which is an improved tracing API</li>
+    </ul>
+  </li>
+  <li>Performance improvements
+    <ul>
+      <li>GC optimization by bitmap marking</li>
+      <li>Kernel#require optimization which makes Rails startup very fast</li>
+      <li>VM optimization such as method dispatch</li>
+      <li>Float operation optimization</li>
+    </ul>
+  </li>
+</ul>
+
+<p>In addition, albeit as an experimental feature, 2.0.0 includes
+Refinements, which adds a new concept to Ruby's modularity.</p>
+
+<p>See also NEWS for more features, improvements and details.</p>
+
+<h3>Compatibility</h3>
+
+<p>We have also taken care with the 2.0.0 design to make it compatible with
+1.9. It will be easier to migrate from 1.9 to 2.0 than it was from 1.8
+to 1.9. (The notable incompatibilities are described later.)</p>
+
+<p>In fact, thanks to the dedicated work of third parties, some popular
+applications such as Rails and tDiary have been reported to work on the
+release candidate version of 2.0.0.</p>
+
+<h3>Documentation</h3>
+
+<p>We have also made documentation improvements which many rubyists have
+requested. We have added a huge amount of rdoc for modules and methods.
+2.0.0 will be around 75% documented while 1.9.3 was about 60%. Also, we
+have added a description of Ruby's syntax. You can see:</p>
+
+<div><pre><code>ri ruby:syntax
+</code></pre></div>
+
+<h3>Stability</h3>
+
+<p>Note that unlike 1.9.0, 2.0.0 IS a stable release, even though its TEENY
+is 0. All library authors are strongly recommended to support 2.0.0. As
+mentioned above, it will be comparatively easy to migrate from 1.9 to
+2.0.</p>
+
+<p>Ruby 2.0.0 is ready for practical use, and will absolutely improve your
+Ruby life.</p>
+
+<h2>Notes</h2>
+
+<h3>Introductory articles</h3>
+
+<p>Here are some introductory articles of 2.0.0 features by third parties:</p>
+
+<ul>
+  <li><a href="http://blog.marc-andre.ca/2013/02/23/ruby-2-by-example">&lt;URL:http://blog.marc-andre.ca/2013/02/23/ruby-2-by-example&gt;</a>
+(comprehensive, recommended)</li>
+  <li><a href="https://speakerdeck.com/shyouhei/whats-new-in-ruby-2-dot-0">&lt;URL:https://speakerdeck.com/shyouhei/whats-new-in-ruby-2-dot-0&gt;</a>
+(comprehensive, recommended)</li>
+  <li><a href="http://el.jibun.atmarkit.co.jp/rails/2012/11/ruby-20-8256.html">&lt;URL:http://el.jibun.atmarkit.co.jp/rails/2012/11/ruby-20-8256.html&gt;</a>
+(brief, in Japanese)</li>
+  <li><a href="https://speakerdeck.com/nagachika/rubyist-enumeratorlazy">&lt;URL:https://speakerdeck.com/nagachika/rubyist-enumeratorlazy&gt;</a>
+(only Enumerator::Lazy, in Japanese)</li>
+</ul>
+
+<p>The following articles are also helpful, but outdated with regards to
+refinement:</p>
+
+<ul>
+  <li><a href="http://rubysource.com/a-look-at-ruby-2-0/">&lt;URL:http://rubysource.com/a-look-at-ruby-2-0/&gt;</a></li>
+  <li><a href="https://speakerdeck.com/a_matsuda/ruby-2-dot-0-on-rails">&lt;URL:https://speakerdeck.com/a_matsuda/ruby-2-dot-0-on-rails&gt;</a></li>
+  <li><a href="http://globaldev.co.uk/2012/11/ruby-2-0-0-preview-features/">&lt;URL:http://globaldev.co.uk/2012/11/ruby-2-0-0-preview-features/&gt;</a></li>
+  <li><a href="http://www.infoq.com/news/2012/11/ruby-20-preview1">&lt;URL:http://www.infoq.com/news/2012/11/ruby-20-preview1&gt;</a></li>
+</ul>
+
+<p>Also, the recent issue of "Rubyist Magazine" includes some articles
+that were written by the feature authors themselves for introducing some
+new 2.0.0 features.</p>
+
+<ul>
+  <li><a href="http://jp.rubyist.net/magazine/?0041-200Special">&lt;URL:http://jp.rubyist.net/magazine/?0041-200Special&gt;</a></li>
+</ul>
+
+<p>Though they will be written in Japanese, English translations are
+planned for the future.</p>
+
+<h3>Incompatibility</h3>
+
+<p>There are five notable incompatibilities we know of:</p>
+
+<ul>
+  <li>The default encoding for ruby scripts is now UTF-8 [#6679]. Some
+people report that it affects existing programs, such as some
+benchmark programs becoming very slow [ruby-dev:46547].</li>
+  <li>Iconv was removed, which had already been deprecated when M17N was
+introduced in ruby 1.9. Use String#encode, etc. instead.</li>
+  <li>There is ABI breakage [ruby-core:48984]. We think that normal users
+can/should just reinstall extension libraries. You should be aware: DO
+NOT COPY .so OR .bundle FILES FROM 1.9.</li>
+  <li>#lines, #chars, #codepoints, #bytes now returns an Array instead of an
+Enumerator [#6670]. This change allows you to avoid the common idiom
+"lines.to_a". Use #each_line, etc. to get an Enumerator.</li>
+  <li>Object#inspect does always return a string like
+#&lt;ClassName:0x…&gt; instead of delegating to #to_s. [#2152]</li>
+</ul>
+
+<p>There are some comparatively small incompatibilities.
+[ruby-core:49119]</p>
+
+<h3>Status of Refinements</h3>
+
+<p>We have added a feature called Refinements, which adds a new concept to
+Ruby's modularity. However, please be aware that Refinements is still
+an experimental feature: we may change its specification in the future.
+Despite that, we would like you to play with it and give us your
+thoughts. Your feedback will help to forge this interesting feature.</p>
+
+<h2>Acknowledgment</h2>
+
+<p>A great many people contributed to 2.0.0. Even an incomplete
+acknowledgment for only a few parts of contributions became too big to
+insert here. Sorry but let me just add a link to the special thanks
+page.</p>
+
+<ul>
+  <li><a href="https://bugs.ruby-lang.org/projects/ruby/wiki/200SpecialThanks">&lt;URL:https://bugs.ruby-lang.org/projects/ruby/wiki/200SpecialThanks&gt;</a></li>
+</ul>
+
+<p>Thank you all!</p>

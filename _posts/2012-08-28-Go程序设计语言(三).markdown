@@ -1,0 +1,404 @@
+---
+layout: post
+title:  "Go程序设计语言(三)"
+date:   2012-08-28 17:21:35
+author: bigwhite
+categories: program
+---
+
+## Go程序设计语言(三)
+### by bigwhite
+### at 2012-08-28 17:21:35
+### original <http://tonybai.com/2012/08/28/the-go-programming-language-tutorial-part3/?utm_source=rss&utm_medium=rss&utm_campaign=the-go-programming-language-tutorial-part3>
+
+<p>本文译自<a href="http://en.wikipedia.org/wiki/Rob_Pike">Rob Pike</a>的<a href="http://golang.org">Go语言</a>PPT教程 – <a href="http://golang.org/doc/GoCourseDay3.pdf">&quot;The Go Programming Language Part3</a>(updated June 2011)&quot;。由于该教程的最新更新时间早于<a href="http://golang.org/doc/go1.html">Go 1</a>版本发布，因此该PPT中的一些内容与Go 1语言规范略有差异，到时我会在相应的地方做上注解。</p>
+<h2>第三部分大纲</h2>
+<ul>
+<li>并发与通信
+<ul>
+<li>Goroutines</li>
+<li>通道(Channel)</li>
+<li>并发相关话题</li>
+</ul>
+</li>
+</ul>
+<h2>并发与通信：Goroutines</h2>
+<h3>Goroutines</h3>
+<p>术语：</p>
+<p>对于&quot;并发运行的事物&quot;已经有了好多术语 – 进程、线程、协程(coroutine)、POSIX线程、NPTL线程、轻量级进程…，但这些事物都或多或少有不同。并且Go中的并发与哪种都不甚相同。</p>
+<p>因此我们介绍一个新术语：goroutine。</p>
+<h3>定义</h3>
+<p>一个Goroutine是一个与其他goroutines运行在同一地址空间的Go函数或方法。一个运行的程序由一个或更多个goroutine组成。</p>
+<p>它与线程、协程、进程等不同。它是一个goroutine。</p>
+<p>注意：Concurrency与Parallelism是不同的概念。如果你不了解它们的不同，查查相关资料吧。</p>
+<p>关于并发的问题有许多。我们后续会提及。现在就假设它能按其对外所宣称的那样正常工作吧。</p>
+<h3>启动一个Goroutine</h3>
+<p>调用一个函数或方法，然后说go：</p>
+<p><font face="Courier New">func IsReady(what string, minutes int64) {<br>
+	    time.Sleep(minutes * 60*1e9) // Unit is nanosecs.<br>
+	    fmt.Println(what, &quot;is ready&quot;)<br>
+	}<br>
+	go IsReady(&quot;tea&quot;, 6)<br>
+	go IsReady(&quot;coffee&quot;, 2)<br>
+	fmt.Println(&quot;I&#39;m waiting…&quot;)</font></p>
+<p>打印：</p>
+<p><font face="Courier New">I&#39;m waiting… (立即)<br>
+	coffee is ready (2分钟后)<br>
+	tea is ready (6分钟后)</font></p>
+<h3>一些简单的事实</h3>
+<h3 style="font-size:12px;font-weight:normal">goroutine的使用代价很低。</h3>
+<p>当从最外层函数返回，或执行到结尾处时，goroutine退出。</p>
+<p>goroutines可以并行地在不同CPU上执行，共享内存。</p>
+<p>你无需担心栈大小。</p>
+<h3>栈</h3>
+<p>在gccgo中，至少目前goroutines就是pthreads。在6g中，goroutines采用基于线程的多路复用技术，因此它们的代价更低廉。</p>
+<p>无论是上面哪个实现，栈都很小(几KB)，可以根据需要增长。因此goroutines使用很少的内存。你可以创建很多goroutines，它们还可以动态拥有很大的栈。</p>
+<p>程序员无需考虑栈大小相关话题。在Go中，这种考虑甚至不应该出现。</p>
+<h3>调度</h3>
+<p>Goroutine多路复用系统线程。当一个goroutine执行了一个阻塞的系统调用时，其他goroutine不会不阻塞。</p>
+<p>计划后续实现CPU绑定的goroutines，不过目前用6g如果你想要用户层级别的并行，你必须设置环境变量GOMAXPROCS或调用runtime.GOMAXPROCS(n)。</p>
+<p>GOMAXPROCS告诉运行时调度器有多少个用户空间goroutine即将同时执行，理想情况下在不同的CPU核上。</p>
+<p>*gccgo总是为每个goroutine单独分配一个线程执行。</p>
+<h2>并发与通信：Channels</h2>
+<h3>Go中的Channel</h3>
+<p>除非两个goroutine可以通信，否则它们无法协作。</p>
+<p>Go中有一个名为channel的类型，提供通信和同步能力。</p>
+<p>Go中还提供一些特殊的基于channel的控制结构，使得编写并发程序更加容易。</p>
+<h3>Channel类型</h3>
+<p>该类型最简单形式：<br>
+	    <font face="Courier New">chan elementType</font></p>
+<p>通过这个类型的值，你可以发送和接收elementType类型的元素。</p>
+<p>Channel是引用类型，这意味着如果你将一个chan变量赋值给另外一个，则这两个变量访问的是相同的channel。同样，这也意味着可以用make分配一个channel：</p>
+<p>   <font face="Courier New"> var c = make(chan int)</font></p>
+<h3>通信操作符：&lt;-</h3>
+<p>箭头指示数据流向。</p>
+<p>作为一个二元操作符，&lt;-将值从右侧发送到左侧的channel中：</p>
+<p><font face="Courier New">c := make(chan int)<br>
+	c &lt;- 1 // 向c发送1 </font></p>
+<p>作为前缀一元操作符，&lt;- 从一个channel中接收数据：</p>
+<p><font face="Courier New">v = &lt;-c // 从c中接收数据，赋值给v<br>
+	&lt;-c // 接收数据，丢弃<br>
+	i := &lt;-c // 接收值，用于初始化i</font></p>
+<h3>语义</h3>
+<p>默认情况下，通信是同步的。(我们后续将讨论异步通信)。这意味着：</p>
+<p>1) A在一个channel上的发送操作会阻塞，直到该channel上有一个接收者就绪。<br>
+	2) 在一个channel上到的接收操作会阻塞，直到该channel上有一个发送者就绪。</p>
+<p>因此通信是同步的一种形式：两个通过channel交换数据的goroutine在通信的时刻同步。</p>
+<h3>让我们泵一些数据吧</h3>
+<p><font face="Courier New">func pump(ch chan int) {<br>
+	    for i := 0; ; i++ { ch &lt;- i }<br>
+	}<br>
+	ch1 := make(chan int)<br>
+	go pump(ch1) // pump挂起; 我们运行<br>
+	fmt.Println(&lt;-ch1) // 打印 0</font></p>
+<p>现在我们启动一个循环接收者：</p>
+<p><font face="Courier New">func suck(ch chan int) {<br>
+	    for { fmt.Println(&lt;-ch) }<br>
+	}<br>
+	go suck(ch1) // 大量数字出现</font></p>
+<p>你仍可以溜进去，抓取一个值：</p>
+<p><font face="Courier New">fmt.Println(&lt;-ch1) // 输出：3141159</font></p>
+<h3>返回channel的函数</h3>
+<p><font face="Courier New">在前面的例子中，pump像一个生成器，喷涌出值。但在分配channel等方面做了很多工作。让我们将其打包到一个返回channel的函数中：</font></p>
+<p><font face="Courier New">func pump() chan int {<br>
+	    ch := make(chan int)<br>
+	    go func() {<br>
+	        for i := 0; ; i++ { ch &lt;- i }<br>
+	    }()<br>
+	    return ch<br>
+	}<br>
+	stream := pump()<br>
+	fmt.Println(&lt;-stream)// 打印 0</font></p>
+<p><font face="Courier New">&quot;返回channel的函数&quot;是Go中的一个重要的惯用法。</font></p>
+<h3>到处都是返回channel的函数</h3>
+<p>我这里不再重复那些你可以从其他地方找到的知名例子。这里有些可以了解一下：</p>
+<p>1) prime sieve: 在语言规范以及教程中。</p>
+<p>2) Doug McIlroy的Power系列论文：http://plan9.bell-labs.com/who/rsc/thread/squint.pdf</p>
+<p>这个程序的一个Go版本在测试套件中：http://golang.org/test/chan/powser1.go</p>
+<h3>Range和Channel</h3>
+<p>for循环的range子句接收channel作为一个操作数，在这种情况下，for循环迭代处理从channel接收到的值。我们来重写pump函数；这里是suck的重写，让它也启动一个goroutine：</p>
+<p><font face="Courier New">func suck(ch chan int) {<br>
+	    go func() {<br>
+	        for v := range ch { fmt.Println(v) }<br>
+	    }()<br>
+	}<br>
+	suck(pump()) // 现在不再阻塞</font></p>
+<h3>关闭一个Channel</h3>
+<p>range是如何知道何时channel上的数据传输结束了呢？发送者调用一个内置函数close：</p>
+<p>   <font face="Courier New"> close(ch)</font></p>
+<p>接收者使用&quot;comma ok&quot;测试发送者是否关闭了channel：</p>
+<p>    <font face="Courier New">val, ok:= &lt;- ch</font></p>
+<p>当结果为(value, true)，说明依然有数据；一旦channel关闭，数据流干，结果将会是(zero, false)。</p>
+<h3>在一个Channel上使用Range</h3>
+<p>在一个channel上使用range，诸如：</p>
+<p><font face="Courier New">for value := range &lt;-ch {<br>
+	    use(value)<br>
+	}</font></p>
+<p><font face="Courier New">等价于：</font></p>
+<p><font face="Courier New">for {<br>
+	    value, ok := &lt;-ch<br>
+	    if !ok {<br>
+	        break<br>
+	    }<br>
+	    use(value)<br>
+	}</font></p>
+<h3>Close</h3>
+<p>关键点：</p>
+<p>只有发送者可以调用close。<br>
+	只有接收者可以询问是否channel被关闭了。<br>
+	只有在获取值的同时询问(避免竞争)</p>
+<p>只有在有必要通知接收者不会再有数据的时候才调用close。</p>
+<p>大多数情况下，不需要用close；它与关闭一个文件没有可比性。</p>
+<p>不管怎样，channel是可以垃圾回收的。</p>
+<h3>Channel的方向性</h3>
+<p>一个channel变量的最简单形式是一个非缓冲(同步的)值，该值可以用于进行发送和接收。</p>
+<p>一个channel类型可以被指定为只发或只收：</p>
+<p><font face="Courier New">var recvOnly &lt;-chan int<br>
+	var sendOnly chan&lt;- int</font></p>
+<h3>Channel的方向性(2)</h3>
+<p>所有Channel创建时都是双向的，但我们可以将它们赋值给带方向性的channel变量。从类型安全性角度考虑，对于函数内的实例非常有用：</p>
+<p><font face="Courier New">func sink(ch &lt;-chan int) {<br>
+	    for { &lt;-ch }<br>
+	}<br>
+	func source(ch chan&lt;- int) {<br>
+	    for { ch &lt;- 1 }<br>
+	}<br>
+	c := make(chan int)//双向的<br>
+	go source(c)<br>
+	go sink(c)</font></p>
+<h3>同步的Channel</h3>
+<p>同步的Channel是非缓冲的。发送动作不会完成，直到一个接收者接收这个值。</p>
+<p><font face="Courier New">c := make(chan int)<br>
+	go func() {<br>
+	    time.Sleep(60*1e9)<br>
+	    x := &lt;-c<br>
+	    fmt.Println(&quot;received&quot;, x)<br>
+	}()</font></p>
+<p><font face="Courier New">fmt.Println(&quot;sending&quot;, 10)<br>
+	c &lt;- 10<br>
+	fmt.Println(&quot;sent&quot;, 10)</font></p>
+<p>输出：</p>
+<p><font face="Courier New">sending 10 (立即发生)<br>
+	sent 10 (60秒后，这两行出现)<br>
+	received 10</font></p>
+<h3>异步的Channel</h3>
+<p>通过告知make缓冲中元素的数量，我们可以创建一个带缓冲的、异步的channel。</p>
+<p><font face="Courier New">c := make(chan int, 50)<br>
+	go func() {<br>
+	    time.Sleep(60*1e9)<br>
+	    x := &lt;-c<br>
+	    fmt.Println(&quot;received&quot;, x)<br>
+	}()<br>
+	fmt.Println(&quot;sending&quot;, 10)<br>
+	c &lt;- 10<br>
+	fmt.Println(&quot;sent&quot;, 10)</font></p>
+<p>输出：</p>
+<p><font face="Courier New">sending 10 (立刻发生)<br>
+	sent 10(现在)<br>
+	received 10 (60秒后)</font></p>
+<h3>缓冲不是类型的一部分</h3>
+<p>注意缓冲的大小甚至其自身都不是channel类型的一部分，只是值的一部分。因此下面的代码虽危险，但合法：</p>
+<p><font face="Courier New">buf = make(chan int, 1)<br>
+	unbuf = make(chan int)<br>
+	buf = unbuf<br>
+	unbuf = buf</font></p>
+<p>缓冲是一个值的属性，而不是类型的。</p>
+<h3>Select</h3>
+<p>select是Go中的一个控制结构，类似于用于通信的switch语句。每个case必须是一个通信操作，要么是send要么是receive。</p>
+<p><font face="Courier New">ci, cs := make(chan int), make(chan string)<br>
+	select {<br>
+	    case v := &lt;-ci:<br>
+	        fmt.Printf(&quot;received %d from ci\n&quot;, v)<br>
+	    case v := &lt;-cs:<br>
+	        fmt.Printf(&quot;received %s from cs\n&quot;, v)<br>
+	}</font></p>
+<p>Select随机执行一个可运行的case。如果没有case可运行，它将阻塞，直到有case可运行。一个默认的子句应该总是可运行的。</p>
+<h3>Select语义</h3>
+<p>快速一览：</p>
+<p>- 每个case都必须是一个通信(可能是:=)<br>
+	- 所有channel表达式都会被求值<br>
+	- 所有被发送的表达式都会被求值<br>
+	- 如果任意某个通信可以进行，它就执行；其他被忽略。<br>
+	- 如果有多个case都可以运行，Select会随机公平地选出一个执行。其他不会执行。<br>
+	- 否则：<br>
+	    – 如果有default子句，则执行该语句。<br>
+	    – 如果没有default字句，select将阻塞，直到某个通信可以运行；Go不会重新对channel或值进行求值。</p>
+<h3>随机bit生成器</h3>
+<p>幼稚但很有说明性的例子：</p>
+<p><font face="Courier New">c := make(chan int)<br>
+	go func() {<br>
+	    for {<br>
+	        fmt.Println(&lt;-c)<br>
+	    }<br>
+	}()</font></p>
+<p><font face="Courier New">for {<br>
+	    select {<br>
+	        case c &lt;- 0: //没有语句，没有fallthrough<br>
+	        case c &lt;- 1:<br>
+	    }<br>
+	}</font></p>
+<h3>测试可通信性</h3>
+<p>一个通信是否可以进行，而不阻塞？一个带default字句的select可以告诉我们：</p>
+<p><font face="Courier New">select {<br>
+	    case v := &lt;-ch:<br>
+	        fmt.Println(&quot;received&quot;, v)<br>
+	    default:<br>
+	        fmt.Println(&quot;ch not ready for receive&quot;)<br>
+	}</font></p>
+<p>如果没有其他case可以运行，那default子句将被执行，因此这对于非阻塞接收是一个惯用法；非阻塞发送显然也可以这么做。</p>
+<h3>超时</h3>
+<p>一个通信可以在一个给定的时间内成功完成么？time包包含了after函数：</p>
+<p><font face="Courier New">func After(ns int64) &lt;-chan int64</font></p>
+<p>在指定时间段之后，它向返回的channel中传递一个值(当前时间)。</p>
+<p>在select中使用它以实现超时：</p>
+<p><font face="Courier New">select {<br>
+	case v := &lt;-ch:<br>
+	    fmt.Println(&quot;received&quot;, v)<br>
+	case &lt;-time.After(30*1e9):<br>
+	    fmt.Println(&quot;timed out after 30 seconds&quot;)<br>
+	}</font></p>
+<h3>多路复用(multiplexing)</h3>
+<p>channel是原生值，这意味着他们也能通过channel发送。这个属性使得编写一个服务类多路复用器变得十分容易，因为客户端在提交请求时可一并提供用于回复应答的channel。</p>
+<p><font face="Courier New">chanOfChans := make(chan chan int)</font></p>
+<p>或者更典型的如：</p>
+<p><font face="Courier New">type Reply struct { … }<br>
+	type Request struct {<br>
+	    arg1, arg2 someType<br>
+	    replyc chan *Reply<br>
+	}</font></p>
+<h3>多路复用服务器</h3>
+<p><font face="Courier New">type request struct {<br>
+	    a, b int<br>
+	    replyc chan int<br>
+	}</font></p>
+<p><font face="Courier New">type binOp func(a, b int) int<br>
+	func run(op binOp, req *request) {<br>
+	    req.replyc &lt;- op(req.a, req.b)<br>
+	}</font></p>
+<p><font face="Courier New">func server(op binOp, service &lt;-chan *request) {<br>
+	    for {<br>
+	        req := &lt;-service // 请求到达这里<br>
+	        go run(op, req) // 不等op<br>
+	    }<br>
+	}</font></p>
+<h3>启动服务器</h3>
+<p><font face="Courier New">使用&quot;返回channel的函数&quot;惯用法来为一个新服务器创建一个channel：</font></p>
+<p><font face="Courier New">func startServer(op binOp) chan&lt;- *request {<br>
+	    service := make(chan *request)<br>
+	    go server(op, req)<br>
+	    return service<br>
+	}</font></p>
+<p><font face="Courier New">adderChan := startServer(<br>
+	    func(a, b int) int { return a + b }<br>
+	)</font></p>
+<h3>客户端</h3>
+<p>在教程中有个例子更为详尽，但这里是一个变体：</p>
+<p><font face="Courier New">func (r *request) String() string {<br>
+	    return fmt.Sprintf(&quot;%d+%d=%d&quot;,<br>
+	    r.a, r.b, &lt;-r.replyc)<br>
+	}<br>
+	req1 := &amp;request{7, 8, make(chan int)}<br>
+	req2 := &amp;request{17, 18, make(chan int)}</font></p>
+<p>请求已经就绪，发送它们：</p>
+<p><font face="Courier New">adderChan &lt;- req1<br>
+	adderChan &lt;- req2</font></p>
+<p>可以以任何顺序获得结果；r.replyc多路分解：</p>
+<p><font face="Courier New">fmt.Println(req2, req1)</font></p>
+<h3>停掉</h3>
+<p><font face="Courier New">在多路复用的例子中，服务将永远运行下去。要将其干净地停掉，可通过一个channel发送信号。下面这个server具有相同的功能，但多了一个quit channel：</font></p>
+<p><font face="Courier New">func server(op binOp, service &lt;-chan *request,<br>
+	            quit &lt;-chan bool) {<br>
+	    for {<br>
+	        select {<br>
+	            case req := &lt;-service:<br>
+	                go run(op, req) // don&#39;t wait for it<br>
+	            case &lt;-quit:<br>
+	                return<br>
+	        }<br>
+	    }<br>
+	}</font></p>
+<h3>启动服务器</h3>
+<p><font face="Courier New">其余代码都相似，只是多了个channel：</font></p>
+<p><font face="Courier New">func startServer(op binOp) (service chan&lt;- *request,<br>
+	        quit chan&lt;- bool) {<br>
+	    service = make(chan *request)<br>
+	    quit = make(chan bool)<br>
+	    go server(op, service, quit)<br>
+	    return service, quit<br>
+	}</font></p>
+<p><font face="Courier New">adderChan, quitChan := startServer(<br>
+	    func(a, b int) int { return a + b }<br>
+	)</font></p>
+<h3>停掉：客户端</h3>
+<p><font face="Courier New">只有当准备停掉服务端的时候，客户端才会受到影响：</font></p>
+<p><font face="Courier New">req1 := &amp;request{7, 8, make(chan int)}<br>
+	req2 := &amp;request{17, 18, make(chan int)}<br>
+	adderChan &lt;- req1<br>
+	adderChan &lt;- req2<br>
+	fmt.Println(req2, req1)</font></p>
+<p><font face="Courier New">所有都完成后，向服务器发送信号，让其退出：</font></p>
+<p><font face="Courier New">quitChan &lt;- true</font></p>
+<h3>链</h3>
+<p><font face="Courier New">package main<br>
+	import (&quot;flag&quot;; &quot;fmt&quot;)<br>
+	var nGoroutine = flag.Int(&quot;n&quot;, 100000, &quot;how many&quot;)<br>
+	func f(left, right chan int) { left &lt;- 1 + &lt;-right }<br>
+	func main() {<br>
+	    flag.Parse()<br>
+	    leftmost := make(chan int)<br>
+	    var left, right chan int = nil, leftmost<br>
+	2<br>
+	    for i := 0; i &lt; *nGoroutine; i++ {<br>
+	        left, right = right, make(chan int)<br>
+	        go f(left, right)<br>
+	    }<br>
+	2<br>
+	    right &lt;- 0 // bang!<br>
+	2<br>
+	    x := &lt;-leftmost // 等待完成<br>
+	    fmt.Println(x)    // 100000<br>
+	}</font></p>
+<h3>例子：Channel作为缓存</h3>
+<p><font face="Courier New">var freeList = make(chan *Buffer, 100)<br>
+	var serverChan = make(chan *Buffer)</font></p>
+<p><font face="Courier New">func server() {<br>
+	    for {<br>
+	        b := &lt;-serverChan // 等待做work<br>
+	        process(b) // 在缓存中处理请求<br>
+	        select {<br>
+	            case freeList &lt;- b: // 如果有空间，重用缓存<br>
+	            default:             // 否则，丢弃它<br>
+	        }<br>
+	    }<br>
+	}</font></p>
+<p><font face="Courier New">func client() {<br>
+	    for {<br>
+	        var b *Buffer<br>
+	        select {<br>
+	            case b = &lt;-freeList:            // 如果就绪，抓取一个<br>
+	            default: b = new(Buffer) // 否则，分配一个<br>
+	        }<br>
+	        load(b)// 读取下一个请求放入b中<br>
+	        serverChan &lt;- b // 将请求发给server.<br>
+	    }<br>
+	}</font></p>
+<h2>并发</h2>
+<h3>并发相关话题</h3>
+<p><font face="Courier New">许多并发方面，当然，Go一直在尽力做好它们。诸如Channel发送和接收是原子的。select语句也是缜密定义和实现的等。</font></p>
+<p>但goroutine在共享内存中运行，通信网络可能死锁，多线程调试器糟糕透顶等等。</p>
+<p>接下来做什么？</p>
+<h3>Go给予你原生的</h3>
+<p>不要用你在使用C或C++或甚至是Java时的方式去编程。</p>
+<p>channel给予你同步和通信的能力，并且使得它们很强大，但也可以很容易知道你是否可以很好的使用它们。</p>
+<p>规则是：</p>
+<p>    不要通过共享内存通信，相反，通过通信共享内存。</p>
+<p>特有的通信行为保证了同步！</p>
+<h3>模型</h3>
+<p>例如，使用一个channel发送数据到一个专职服务goroutine。如果同一时刻只有一个goroutine拥有指向数据的指针，那谈不上什么并发。</p>
+<p>这是我们极力推荐的服务端编程模型，至少是对旧的&quot;每个客户端一个线程&quot;的泛化。它自从20世纪80年代就开始使用了，它工作的很好。</p>
+<p> </p>
+<h3>内存模型</h3>
+<p>那关于同步和共享内存的令人生厌的细节在：</p>
+<p>http://golang.org/doc/go_mem.html</p>
+<p>但如果你遵循我们的方法，你很少需要理解那些内容。</p>
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p><img src="http://www1.feedsky.com/t1/688958479/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/08/28/the-go-programming-language-tutorial-part3/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part3" border="0" height="0" width="0">

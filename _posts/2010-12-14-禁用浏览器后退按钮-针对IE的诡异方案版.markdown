@@ -1,0 +1,59 @@
+---
+layout: post
+title:  "禁用浏览器后退按钮 针对IE的诡异方案版"
+date:   2010-12-14 09:28:30
+author: 
+categories: program
+---
+
+## 禁用浏览器后退按钮 针对IE的诡异方案版
+### by 
+### at 2010-12-14 09:28:30
+### original <http://www.javaeye.com/topic/841423>
+
+<p>         google “禁用浏览器后退按钮”会搜到很多文章。提一个比较有意思的解决方案，下面的解决方案仅针对于IE浏览器，因为各个浏览器对后退按钮 以及历史记录的处理是不同的。</p>
+<p> </p>
+<p>       先说明问题背景： 当在IE有iframe的时候，而这个iframe的历史记录会被记录在浏览器中，当点击后退按钮的时候，会发现主窗口不进行后退，而是iframe里面进行后退，这样就可能引发之前的操作再次执行。所以就要禁用掉后退按钮。</p>
+<p> </p>
+<p>       分析下IE浏览器在有iframe的状况时，使用回退按钮的处理：</p>
+<p>           A跳转到B窗口，而B下有iframe C，而iframe C有跳转到D。如果使用后退按钮，首先是iframe C 从D回到C ，主窗 口没有变化，再继续回退的话，然后是B回到A。</p>
+<p> </p>
+<p>      <strong> 从以上就可以得知：</strong></p>
+<p>           IE会将iframe的跳转记录在历史记录中，而使用回退，其对应历史记录仅使用在iframe上，可是不会对主窗口进行回退。利用这个特性进行诡异的 禁用浏览器后退按钮。 ：）</p>
+<p>         （  firefox会回退其主窗口。）</p>
+<p> </p>
+<p> </p>
+<p>        如果在最终D的情况下不允许再回退跳转了，禁用其后退按钮，推荐下面的解决方案：</p>
+<p>          在D中引入iframe E 而E中自动跳转f。利用IE对iframe的变化也记录在历史记录的特点， 这样在每次回退的时候，都只有iframe E中在变化，而E 又自动跳转F ，这样历史记录又填回IE里面去了，就导致其D不能进行回退。</p>
+<p> </p>
+<p> <span></span><br></p>
+<p style="margin:0px"><span> </span>   在IE里面试试附件的例子。 </p>
+<p style="margin:0px"> </p>
+<p style="margin:0px">      以上方案测试中，有错误欢迎大家提出。</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/14f92a54-42cb-3555-8d1e-0303eaace8f0">IE浏览器回退按钮问题.rar</a> (1.3 KB)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://every-best.javaeye.com">every_best</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/841423" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,174 @@
+---
+layout: post
+title:  "仿淘宝星级评分效果"
+date:   2010-07-06 15:58:28
+author: 
+categories: program
+---
+
+## 仿淘宝星级评分效果
+### by 
+### at 2010-07-06 15:58:28
+### original <http://www.javaeye.com/topic/706703>
+
+最近一个小项目需要一个星级评分的效果，想去淘宝偷一个，但是还得加载YUI很不爽，还是自己动手写一个吧～
+<br>
+<br>
+<br>HTML:
+<br><pre name="code">
+&lt;!--
+	# 星级评分
+	# star:value = 分数
+--&gt;
+&lt;div class=&quot;shop-rating&quot;&gt;
+	&lt;span class=&quot;title&quot;&gt;物流公司的服务：&lt;/span&gt;
+	&lt;ul class=&quot;rating-level&quot; id=&quot;stars2&quot;&gt;
+		&lt;li&gt;&lt;a class=&quot;one-star&quot; star:value=&quot;20&quot; href=&quot;#&quot;&gt;20&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class=&quot;two-stars&quot; star:value=&quot;40&quot; href=&quot;#&quot;&gt;40&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class=&quot;three-stars&quot; star:value=&quot;60&quot; href=&quot;#&quot;&gt;60&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class=&quot;four-stars&quot; star:value=&quot;80&quot; href=&quot;#&quot;&gt;80&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class=&quot;five-stars&quot; star:value=&quot;100&quot; href=&quot;#&quot;&gt;100&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;span class=&quot;result&quot; id=&quot;stars2-tips&quot;&gt;&lt;/span&gt;
+	&lt;input type=&quot;hidden&quot; id=&quot;stars2-input&quot; name=&quot;b&quot; value=&quot;&quot; size=&quot;2&quot; /&gt;
+&lt;/div&gt;
+&lt;!-- END 星级评分 --&gt;
+</pre>
+<br>
+<br>CSS:
+<br><pre name="code">
+
+/* 星级评分 */
+.shop-rating {height: 25px;overflow: hidden;zoom: 1;padding: 2px 0px;position: relative;z-index: 999;}
+.shop-rating span {height: 23px;display: block;line-height: 23px;float: left;padding-top:2px;}
+.shop-rating span.title {width: 125px;text-align: right;margin-right: 5px;}
+.shop-rating ul {float: left;margin:0;padding:0}
+.shop-rating .result {margin-left: 20px;padding-top: 2px;}
+.shop-rating .result span {color: #ff6d02;}
+.shop-rating .result em {color: #f60;font-family: arial;font-weight: bold;}
+.shop-rating .result strong {color: #666666;font-weight: normal;}
+.rating-level,.rating-level a {background: url(http://a.tbcdn.cn/app/rc/img/star_v2.png) no-repeat scroll 1000px 1000px;}
+.rating-level {background-position: 0px 0px; width: 120px;height: 23px;position: relative;z-index: 1000;}
+.rating-level li {display: inline;}
+.rating-level a {line-height: 23px;height: 23px;position: absolute;top: 0px;left: 0px;text-indent: -999em;*zoom: 1;outline: none;}
+.rating-level a.one-star {width: 20%;z-index: 6;}
+.rating-level a.two-stars {width: 40%;z-index: 5;}
+.rating-level a.three-stars {width: 60%;z-index: 4;}
+.rating-level a.four-stars {width: 80%;z-index: 3;}
+.rating-level a.five-stars {width: 100%;z-index: 2;}
+.rating-level .current-rating,.rating-level a:hover{background-position:0 -28px;}
+.rating-level a.one-star:hover,.rating-level a.two-stars:hover,.rating-level a.one-star.current-rating,.rating-level a.two-stars.current-rating{background-position:0 -116px;}
+.rating-level .three-stars .current-rating,.rating-level .four-stars .current-rating,.rating-level .five-stars .current-rating{background-position:0 -28px;}
+</pre>
+<br>
+<br>
+<br>结构和样式是偷淘宝的！！
+<br>
+<br>
+<br>JS：
+<br><pre name="code">
+var Class = {
+	create: function() {
+		return function() { this.initialize.apply(this, arguments); }
+	}
+}
+var Extend = function(destination, source) {
+	for (var property in source) {
+		destination[property] = source[property];
+	}
+}
+function stopDefault( e ) {
+	 if ( e &amp;&amp; e.preventDefault ){
+		e.preventDefault();
+	}else{
+		window.event.returnValue = false;
+	}
+	return false;
+} 
+/**
+ * 星星打分组件
+ *
+ * @author	Yunsd
+ * @date		2010-7-5
+ */
+var Stars = Class.create();
+Stars.prototype = {
+	initialize: function(star,options) {
+		this.SetOptions(options); //默认属性
+		var flag = 999; //定义全局指针
+		var isIE = (document.all) ? true : false; //IE?
+		var starlist = document.getElementById(star).getElementsByTagName(&#39;a&#39;); //星星列表
+		var input = document.getElementById(this.options.Input) || document.getElementById(star+&quot;-input&quot;); // 输出结果
+		var tips = document.getElementById(this.options.Tips) || document.getElementById(star+&quot;-tips&quot;); // 打印提示
+		var nowClass = &quot; &quot; + this.options.nowClass; // 定义选中星星样式名
+		var tipsTxt = this.options.tipsTxt; // 定义提示文案
+		var len = starlist.length; //星星数量
+		
+
+		for(i=0;i&lt;len;i++){ // 绑定事件 点击 鼠标滑过
+			starlist[i].value = i;
+			starlist[i].onclick = function(e){
+				stopDefault(e);
+				this.className = this.className + nowClass;
+				flag = this.value;
+				input.value = this.getAttribute(&quot;star:value&quot;);
+				tips.innerHTML = tipsTxt[this.value]
+			}
+			starlist[i].onmouseover = function(){
+				if (flag&lt; 999){
+					var reg = RegExp(nowClass,&quot;g&quot;);
+					starlist[flag].className = starlist[flag].className.replace(reg,&quot;&quot;)
+				}
+			}
+			starlist[i].onmouseout = function(){
+				if (flag&lt; 999){
+					starlist[flag].className = starlist[flag].className + nowClass;
+				}
+			}
+		};
+		if (isIE){ //FIX IE下样式错误
+			var li = document.getElementById(star).getElementsByTagName(&#39;li&#39;);
+			for (var i = 0, len = li.length; i &lt; len; i++) {
+				var c = li[i];
+				if (c) {
+					c.className = c.getElementsByTagName(&#39;a&#39;)[0].className;
+				}
+			}
+		}
+	},
+	//设置默认属性
+	SetOptions: function(options) {
+		this.options = {//默认值
+			Input:			&quot;&quot;,//设置触保存分数的INPUT
+			Tips:			&quot;&quot;,//设置提示文案容器
+			nowClass:	&quot;current-rating&quot;,//选中的样式名
+			tipsTxt:		[&quot;1分-严重不合格&quot;,&quot;2分-不合格&quot;,&quot;3分-合格&quot;,&quot;4分-优秀&quot;,&quot;5分-完美&quot;]//提示文案
+		};
+		Extend(this.options, options || {});
+	}
+}
+</pre>
+<br>基本上注释里已经写的很清楚了！我没什么可说的了！欢迎大家继续改进！！
+<br>演示请看附件！
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/3d03b6a8-42d6-3052-8412-89588838ed2b">Satrs.rar</a> (2.5 KB)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://yunsudong.javaeye.com">yunsudong</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/706703" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

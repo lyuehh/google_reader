@@ -1,0 +1,419 @@
+---
+layout: post
+title:  "Node.js / JavaScript 后端开发指引"
+date:   2013-02-01 18:25:00
+author: Bruce Dou
+categories: program
+---
+
+## Node.js / JavaScript 后端开发指引
+### by Bruce Dou
+### at 2013-02-01 18:25:00
+### original <http://blog.eood.cn/nodejs_dev>
+
+<p><strong><span style="color:#888888">这是一篇关于后端 JavaScript 开发的指引，如果你对 JavaScript 的认识仍然停留在前端开发的话，你需要更新自己的知识体系了。</span></strong></p>
+<hr>
+<ul>
+<li><a href="http://blog.eood.cn/#npm">用 NPM 来做项目管理和包维护</a></li>
+<li><a href="http://blog.eood.cn/#grunt">用 Grunt 来做代码格式修整、Lint 和其他自动化任务</a></li>
+<li><a href="http://blog.eood.cn/#coffeescript">用 CoffeeScript 方言写更友好的 JavaScript</a></li>
+<li><a href="http://blog.eood.cn/#libs">必不可少的几个库</a>
+<ul style="margin:0em">
+<li><a href="http://blog.eood.cn/#underscore">underscore</a></li>
+<li><a href="http://blog.eood.cn/#async">Async</a></li>
+</ul>
+</li>
+<li><a href="http://blog.eood.cn/#addons">开发 C++ addons 增强和扩展 Node.js</a></li>
+<li><a href="http://blog.eood.cn/#config">Node.js 配置管理方式</a></li>
+<li><a href="http://blog.eood.cn/#service">开发内部 Service 推荐的部件</a></li>
+<li><a href="http://blog.eood.cn/#forever">Forever: Daemon 管理工具</a></li>
+<li><a href="http://blog.eood.cn/#cluster">Node.js Cluster</a></li>
+<li><a href="http://blog.eood.cn/#faq">JavaScript 开发常见问题</a>
+<ul style="margin:0em">
+<li><a href="http://blog.eood.cn/#pass">JavaScript 是传值还是传引用?</a></li>
+<li><a href="http://blog.eood.cn/#gdb">如何用 GDB 调试自己开发的 Node.js C++ addons?</a></li>
+<li><a href="http://blog.eood.cn/#catch">如何捕获 uncaughtException 并打印详细错误信息？</a></li>
+<li><a href="http://blog.eood.cn/#shutdown">如何优雅结束进程？</a></li>
+<li><a href="http://blog.eood.cn/#array">如何选择使用 Array 和 Object?</a></li>
+<li><a href="http://blog.eood.cn/#sla">如何聚合多个后端服务并提供 SLA ?</a></li>
+<li><a href="http://blog.eood.cn/#nexttick">什么时候使用 process.nextTick() ?</a></li>
+</ul>
+</li>
+<li><a href="http://blog.eood.cn/#ref">更多相关参考</a></li>
+</ul>
+<hr>Web 开发框架从以前流行的 LAMP/LEMP  架构逐渐转移到 Ruby on Rails 和 Python Django 架构之上。但最近有另外几种的架构变得成熟了：比如 Golang, Clojure/leiningen,  Node.js 。这三者之中我更关注 Node.js。原因是它的生态更加完善。所以最近的几个项目都是用它来实现的。Node.js 既适合做后端 API 的粘合，也适合给终端用户提供 API 。
+<h3>用 NPM 来做项目管理和包维护</h3>
+<p>Node.js 的每个项目都应该有一个 package.json 配置文件。其中包含了这个项目或者库的信息和所依赖的库。一个相对完成的 package.json 文件像这样：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#b060b0">{</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">name</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">my-app</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">version</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">0.1.0</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">private</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">description</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">My app and service</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">main</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">app.js</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">scripts</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">start</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">forever start app.js</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">test</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">mocha test</span><span style="color:#02d045">"</span>
+  <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">dependencies</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">coffee-script</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">=1.4.0</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">express</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">=3.0.6</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">mocha</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">=1.7.4</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">underscore</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">=1.4.3</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">forever</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">=0.10.0</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">async</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+    <span style="color:#02d045">"</span><span style="color:#00c4c4">grunt-beautify</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#02d045">"</span>
+  <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">repository</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">author</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">Bruce Dou</span><span style="color:#02d045">"</span><span style="color:#d2cd86">,</span>
+  <span style="color:#02d045">"</span><span style="color:#00c4c4">license</span><span style="color:#02d045">"</span><span style="color:#b060b0">:</span> <span style="color:#02d045">"</span><span style="color:#00c4c4">BSD</span><span style="color:#02d045">"</span>
+<span style="color:#b060b0">}</span>
+</pre>
+<pre>{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "My app and service",
+  "main": "app.js",
+  "scripts": {
+    "start": "forever start app.js",
+    "test": "mocha test"
+  },
+  "dependencies": {
+    "coffee-script": "=1.4.0",
+    "express": "=3.0.6",
+    "mocha": "=1.7.4",
+    "underscore": "=1.4.3",
+    "forever": "=0.10.0",
+    "async": "",
+    "grunt-beautify": ""
+  },
+  "repository": "",
+  "author": "Bruce Dou",
+  "license": "BSD"
+}</pre>
+<p>这个文件可以在你的项目目录下执行 npm init 来按指引创建。注意其中的 scripts 部分，这里可以创建很多自定义命令。比如如此配置之后，npm start 会执行 forever start app.js 命令。</p>
+<h3>用 Grunt 来做代码格式修整、Lint 和其他自动化任务</h3>
+<p>Grunt 是一个命令行任务自动化工具。它包含了很多有用的插件。可以实现代码美化、自动化部署、自动生成 sprit、自动创建项目模板、自动压缩前端代码、自动编译 coffescript 等等你能想到的任务。假如你找不到自己需要的功能，还可以自己开发 Grunt 插件来实现。它的配置文件是位于项目根目录的 grunt.js 。一般项目都需要的功能是代码美化和 Lint，配置文件象这样：</p>
+<pre style="color:#d1d1d1;background:#333">module<span style="color:#d2cd86">.</span>exports <span style="color:#d2cd86">=</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span>grunt<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  <span style="color:#9999a9">// Project configuration.</span>
+  grunt<span style="color:#d2cd86">.</span>initConfig<span style="color:#d2cd86">(</span><span style="color:#b060b0">{</span>
+    beautify<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+      files<span style="color:#b060b0">:</span> <span style="color:#d2cd86">[</span><span style="color:#00c4c4">'grunt.js'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'*.js'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'lib/*.js'</span><span style="color:#d2cd86">]</span>
+    <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+    lint<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+      files<span style="color:#b060b0">:</span> <span style="color:#d2cd86">[</span><span style="color:#00c4c4">'grunt.js'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'*.js'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'lib/*.js'</span><span style="color:#d2cd86">]</span>
+    <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+    beautifier<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+      options<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+        indentSize<span style="color:#b060b0">:</span> <span style="color:#008c00">2</span>
+      <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+      tests<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+        options<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+          indentSize<span style="color:#b060b0">:</span> <span style="color:#008c00">4</span>
+        <span style="color:#b060b0">}</span>
+      <span style="color:#b060b0">}</span>
+    <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+    jshint<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+      options<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+        curly<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        eqeqeq<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        immed<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        latedef<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        newcap<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        noarg<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        <span style="color:#e66170;font-weight:bold">sub</span><span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        undef<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        boss<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        eqnull<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        browser<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span>
+      <span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span>
+      globals<span style="color:#b060b0">:</span> <span style="color:#b060b0">{</span>
+        jQuery<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        Drupal<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        Backbone<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        _<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span><span style="color:#d2cd86">,</span>
+        app<span style="color:#b060b0">:</span> <span style="color:#0f4d75">true</span>
+      <span style="color:#b060b0">}</span>
+    <span style="color:#b060b0">}</span>
+  <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  grunt<span style="color:#d2cd86">.</span>loadNpmTasks<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'grunt-beautify'</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  <span style="color:#9999a9">//grunt.loadNpmTasks('grunt-contrib-uglify');</span>
+  grunt<span style="color:#d2cd86">.</span>registerTask<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'default'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'beautify'</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>module.exports = function (grunt) {
+  // Project configuration.
+  grunt.initConfig({
+    beautify: {
+      files: ['grunt.js', '*.js', 'lib/*.js']
+    },
+    lint: {
+      files: ['grunt.js', '*.js', 'lib/*.js']
+    },
+    beautifier: {
+      options: {
+        indentSize: 2
+      },
+      tests: {
+        options: {
+          indentSize: 4
+        }
+      }
+    },
+    jshint: {
+      options: {
+        curly: true,
+        eqeqeq: true,
+        immed: true,
+        latedef: true,
+        newcap: true,
+        noarg: true,
+        sub: true,
+        undef: true,
+        boss: true,
+        eqnull: true,
+        browser: true
+      },
+      globals: {
+        jQuery: true,
+        Drupal: true,
+        Backbone: true,
+        _: true,
+        app: true
+      }
+    }
+  });
+  grunt.loadNpmTasks('grunt-beautify');
+  //grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.registerTask('default', 'beautify');
+};</pre>
+<p>添加了配置文件之后可以在项目目录运行 grunt 命令自动执行任务串。grunt beautify 可以执行子任务。</p>
+<h3>用 CoffeeScript 方言写更友好的 JavaScript</h3>
+<p>CoffeeScript 提供了类似于 Ruby 的语法，简化了 JavaScript 的书写，简化了 JavaScript 中实现类和类的继承的实现。你不必再自己繁琐得通过 prototype 和 constructor，call，apply  实现类的继承。 无论用 VIM 还是 Sublime Text 都可以找到对应的实时转换工具，在写 CoffeeScript 的同时就能看到对应的 JavaScript。</p>
+<h3>必不可少的几个库</h3>
+<h4>underscore</h4>
+<p>underscore 是写 JavaScript 必不可少的库。提供了一些非常常用的方法，这些方法不仅使用方便，而且提高了代码的可读性。：</p>
+<p>用 _.each 代替 for 循环，比如：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#e66170;font-weight:bold">var</span> contents <span style="color:#d2cd86">=</span> <span style="color:#d2cd86">[</span><span style="color:#d2cd86">]</span><span style="color:#b060b0">;</span>
+<span style="color:#e66170;font-weight:bold">for</span><span style="color:#d2cd86">(</span><span style="color:#e66170;font-weight:bold">var</span> i <span style="color:#e66170;font-weight:bold">in</span> msgs<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  contents<span style="color:#d2cd86">.</span>push<span style="color:#d2cd86">(</span>msgs<span style="color:#d2cd86">[</span>i<span style="color:#d2cd86">]</span><span style="color:#d2cd86">.</span>content<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span>
+</pre>
+<pre>var contents = [];
+for(var i in msgs) {
+  contents.push(msgs[i].content);
+}</pre>
+<p>可以改写为：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#e66170;font-weight:bold">var</span> contents <span style="color:#d2cd86">=</span> <span style="color:#d2cd86">[</span><span style="color:#d2cd86">]</span><span style="color:#b060b0">;</span>
+_<span style="color:#d2cd86">.</span>each<span style="color:#d2cd86">(</span>msgs<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>el<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  contents<span style="color:#d2cd86">.</span>push<span style="color:#d2cd86">(</span>el<span style="color:#d2cd86">.</span>content<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>var contents = [];
+_.each(msgs, function(el) {
+  contents.push(el.content);
+});</pre>
+<p>其他常用的方法还有:</p>
+<p>_.map 用来对数组元素进行批量转换</p>
+<p>_.reduce 用来将数组元素合并为结果</p>
+<p>_.pluck 用来取对象数组中的子元素，返回包含对应子元素的新数组</p>
+<p>_.filter 用来有选择性的取数组中的某些值，返回包含符合条件的值的新数组</p>
+<p>_.mixin 用来增加自定义函数</p>
+<p>_.chain 用来实现函数式编程:</p>
+<pre style="color:#d1d1d1;background:#333">_<span style="color:#d2cd86">.</span>chain<span style="color:#d2cd86">(</span><span style="color:#d2cd86">[</span><span style="color:#008c00">1</span><span style="color:#d2cd86">,</span><span style="color:#008c00">2</span><span style="color:#d2cd86">,</span><span style="color:#008c00">3</span><span style="color:#d2cd86">]</span><span style="color:#d2cd86">)</span>
+ <span style="color:#d2cd86">.</span>map<span style="color:#d2cd86">(</span><span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>v<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span><span style="color:#e66170;font-weight:bold">return</span> v <span style="color:#d2cd86">*</span> <span style="color:#008c00">2</span><span style="color:#b060b0">;</span><span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span>
+ <span style="color:#d2cd86">.</span>reduce<span style="color:#d2cd86">(</span><span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>total<span style="color:#d2cd86">,</span> v<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span> total <span style="color:#d2cd86">+=</span> v<span style="color:#b060b0">}</span><span style="color:#d2cd86">,</span> <span style="color:#008c00">0</span><span style="color:#d2cd86">)</span>
+ <span style="color:#d2cd86">.</span>value<span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>_.chain([1,2,3])
+ .map(function(v) {return v * 2;})
+ .reduce(function(total, v) { total += v}, 0)
+ .value();</pre>
+<h4>Async</h4>
+<p>Async.js 对常用的流程控制模式进行了封装，比如并行处理、Pipeline等等：</p>
+<p>async.parallel 并行处理，整体等待最慢的函数返回，常用作多个后端请求的聚合或者并行处理：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span>
+<span style="color:#9999a9">// construct call functions</span>
+<span style="color:#e66170;font-weight:bold">var</span> callItems <span style="color:#d2cd86">=</span> <span style="color:#d2cd86">[</span><span style="color:#d2cd86">]</span><span style="color:#b060b0">;</span>
+<span style="color:#e66170;font-weight:bold">function</span> make_query_func<span style="color:#d2cd86">(</span>json<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  <span style="color:#e66170;font-weight:bold">return</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span>callback<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+    callBackService<span style="color:#d2cd86">(</span>json<span style="color:#d2cd86">,</span> callback<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  <span style="color:#b060b0">}</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span>
+_<span style="color:#d2cd86">.</span>each<span style="color:#d2cd86">(</span>messages<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span>el<span style="color:#d2cd86">,</span> i<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  callItems<span style="color:#d2cd86">.</span>push<span style="color:#d2cd86">(</span>make_query_func<span style="color:#d2cd86">(</span><span style="color:#b060b0">{</span>
+    vmsg<span style="color:#b060b0">:</span> messages<span style="color:#d2cd86">[</span>i<span style="color:#d2cd86">]</span><span style="color:#d2cd86">.</span>vmsg<span style="color:#d2cd86">,</span>
+    cmsg<span style="color:#b060b0">:</span> messages<span style="color:#d2cd86">[</span>i<span style="color:#d2cd86">]</span><span style="color:#d2cd86">.</span>cmsg
+   <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#9999a9">// execute the call functions parallelly</span>
+async<span style="color:#d2cd86">.</span>parallel<span style="color:#d2cd86">(</span>callItems<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span>err<span style="color:#d2cd86">,</span> results<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  main_cb<span style="color:#d2cd86">(</span>results<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>...
+// construct call functions
+var callItems = [];
+function make_query_func(json) {
+  return function (callback) {
+    callBackService(json, callback);
+  };
+}
+_.each(messages, function (el, i) {
+  callItems.push(make_query_func({
+    vmsg: messages[i].vmsg,
+    cmsg: messages[i].cmsg
+   }));
+});
+// execute the call functions parallelly
+async.parallel(callItems, function (err, results) {
+  main_cb(results);
+});</pre>
+<p>async.waterfall 可以用来将大量嵌套的函数顺序执行，前一个函数的结果作为下一个函数的参数。用它之后你的代码里将不会再出现过深的 callback 嵌套:</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#9999a9">// old way</span>
+<span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span>
+<span style="color:#e66170;font-weight:bold">var</span> result <span style="color:#d2cd86">=</span> <span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>uid<span style="color:#d2cd86">,</span> callback<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  get_user_ids<span style="color:#d2cd86">(</span>uid<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>err<span style="color:#d2cd86">,</span> user_ids<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+    get_content<span style="color:#d2cd86">(</span>user_ids<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>err<span style="color:#d2cd86">,</span> content<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+      content_clean<span style="color:#d2cd86">(</span>content<span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span>err<span style="color:#d2cd86">,</span> clean_content<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+        callback<span style="color:#d2cd86">(</span>err<span style="color:#d2cd86">,</span> clean_content<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+      <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+    <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span>
+<span style="color:#9999a9">// new way</span>
+<span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span><span style="color:#d2cd86">.</span>
+async<span style="color:#d2cd86">.</span>waterfall<span style="color:#d2cd86">(</span><span style="color:#d2cd86">[</span>get_user_ids<span style="color:#d2cd86">,</span> get_content<span style="color:#d2cd86">,</span> content_clean<span style="color:#d2cd86">]</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>// old way
+...
+var result = function(uid, callback) {
+  get_user_ids(uid, function(err, user_ids) {
+    get_content(user_ids, function(err, content) {
+      content_clean(content, function(err, clean_content) {
+        callback(err, clean_content);
+      });
+    });
+  });
+}
+// new way
+...
+async.waterfall([get_user_ids, get_content, content_clean]);</pre>
+<h3>开发 C++ addons 增强和扩展 Node.js</h3>
+<p>这意味着你不必担心某些逻辑的性能，也不必担心和其他框架的继承。因为所有语言或者开发栈都会提供 C/C++ 的接口。</p>
+<h3>Node.js 配置管理方式</h3>
+<p>有两种配置方式，config.js 或者 config.json 假如以 config.js 作为配置文件：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#9999a9">// config.js</span>
+exports<span style="color:#d2cd86">.</span>config <span style="color:#d2cd86">=</span> <span style="color:#b060b0">{</span><span style="color:#00c4c4">'a'</span><span style="color:#b060b0">:</span><span style="color:#00c4c4">'a val'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'b'</span><span style="color:#b060b0">:</span> <span style="color:#00c4c4">'b val'</span><span style="color:#b060b0">}</span><span style="color:#b060b0">;</span>
+<span style="color:#9999a9">// app.js</span>
+<span style="color:#e66170;font-weight:bold">var</span> config <span style="color:#d2cd86">=</span> require<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'./config'</span><span style="color:#d2cd86">)</span><span style="color:#d2cd86">.</span>config<span style="color:#b060b0">;</span>
+</pre>
+<pre>// config.js
+exports.config = {'a':'a val', 'b': 'b val'};
+// app.js
+var config = require('./config').config;</pre>
+<p>如果以 config.json 作为配置文件：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#9999a9">// config.json</span>
+<span style="color:#b060b0">{</span><span style="color:#00c4c4">'a'</span><span style="color:#b060b0">:</span> <span style="color:#00c4c4">'a val'</span><span style="color:#d2cd86">,</span> <span style="color:#00c4c4">'b'</span><span style="color:#b060b0">:</span> <span style="color:#00c4c4">'b val'</span><span style="color:#b060b0">}</span>
+<span style="color:#9999a9">// app.js</span>
+<span style="color:#e66170;font-weight:bold">var</span> config <span style="color:#d2cd86">=</span> JSON<span style="color:#d2cd86">.</span><span style="color:#e66170;font-weight:bold">parse</span><span style="color:#d2cd86">(</span>fs<span style="color:#d2cd86">.</span>readFileSync<span style="color:#d2cd86">(</span>process<span style="color:#d2cd86">.</span>cwd<span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span> <span style="color:#d2cd86">+</span> <span style="color:#00c4c4">'/config.json'</span><span style="color:#d2cd86">)</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>// config.json
+{'a': 'a val', 'b': 'b val'}
+// app.js
+var config = JSON.parse(fs.readFileSync(process.cwd() + '/config.json'));</pre>
+<h3>开发内部 Service 推荐的部件</h3>
+<ul>
+<li>进程统计信息，比如 uptime, memory usage, heap size, connection number, 处理的请求数量等等。这样便于和监控系统对接</li>
+<li>RESTful apis，推荐以 RESTful JSON 格式作为内部通信协议，这其实对大部分应用完全足够，而且容易调试。</li>
+<li>配置文件。将可能会发生变化的变量放到配置文件里。</li>
+<li>Service Level Agreement。比如超过 100ms 的请求报错而不是继续等待返回信息。</li>
+</ul>
+<h3>Forever: Daemon 管理工具</h3>
+<p>既然 Node.js 是长时间运行的后台进程，缺不了进程管理工具。Forever 就是为了实现对 Node.js 的 daemon 进程进行管理的工具。常用命令：</p>
+<p><span style="color:#008000">forever start app.js</span> 启动进程<br>
+<span style="color:#008000"> forever restart app.js</span> 重启进程<br>
+<span style="color:#008000"> forever list</span> 列出后台进程，并且列出 log 文件，可以方便的及时查看 log 文件内容。</p>
+<h3>Node.js Cluster</h3>
+<p>Node.js Cluster 是为了利用多核 CPU 的计算能力, 并且子进程可以共用同一个端口：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#e66170;font-weight:bold">var</span> cluster <span style="color:#d2cd86">=</span> require<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'cluster'</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#e66170;font-weight:bold">if</span> <span style="color:#d2cd86">(</span>cluster<span style="color:#d2cd86">.</span>isMaster<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+    <span style="color:#9999a9">//start up workers for each cpu</span>
+    require<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'os'</span><span style="color:#d2cd86">)</span><span style="color:#d2cd86">.</span>cpus<span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span><span style="color:#d2cd86">.</span>forEach<span style="color:#d2cd86">(</span><span style="color:#e66170;font-weight:bold">function</span><span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+        cluster<span style="color:#d2cd86">.</span>fork<span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+    <span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+
+<span style="color:#b060b0">}</span> <span style="color:#e66170;font-weight:bold">else</span> <span style="color:#b060b0">{</span>
+    <span style="color:#9999a9">//load up your application as a worker</span>
+    require<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'./app.js'</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span>
+</pre>
+<pre>var cluster = require('cluster');
+if (cluster.isMaster) {
+    //start up workers for each cpu
+    require('os').cpus().forEach(function() {
+        cluster.fork();
+    });
+
+} else {
+    //load up your application as a worker
+    require('./app.js');
+}</pre>
+<h3>JavaScript 开发常见问题：</h3>
+<h4>JavaScript 是传值还是传引用?</h4>
+<p>简单说：如果参数为一个对象则为传引用，如果参数为变量或者函数则为传值。</p>
+<h4>如何用 GDB 调试自己开发的 Node.js C++ addons？</h4>
+<p><span style="color:#008000">gdb –args nodejs script.js</span></p>
+<h4>如何捕获 uncaughtException 并打印详细错误信息？</h4>
+<p>在进程级别捕获异常:</p>
+<pre style="color:#d1d1d1;background:#333">process<span style="color:#d2cd86">.</span>on<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'uncaughtException'</span><span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span>e<span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  console<span style="color:#d2cd86">.</span>trace<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'Error: '</span><span style="color:#d2cd86">.</span>red <span style="color:#d2cd86">+</span> e<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  console<span style="color:#d2cd86">.</span>trace<span style="color:#d2cd86">(</span>e<span style="color:#d2cd86">.</span>stack<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  <span style="color:#9999a9">//process.exit();</span>
+<span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>process.on('uncaughtException', function (e) {
+  console.trace('Error: '.red + e);
+  console.trace(e.stack);
+  //process.exit();
+});</pre>
+<h4>如何优雅结束进程？</h4>
+<p>Node.js 中对接收的 POSIX 信号做自定义操作很方便，进行进程结束前的清理工作：</p>
+<pre style="color:#d1d1d1;background:#333">process<span style="color:#d2cd86">.</span>on<span style="color:#d2cd86">(</span><span style="color:#00c4c4">'SIGINT'</span><span style="color:#d2cd86">,</span> <span style="color:#e66170;font-weight:bold">function</span> <span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span> <span style="color:#b060b0">{</span>
+  <span style="color:#9999a9">// wait connections to close</span>
+  process<span style="color:#d2cd86">.</span>exit<span style="color:#d2cd86">(</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+  console<span style="color:#d2cd86">.</span><span style="color:#e66170;font-weight:bold">log</span><span style="color:#d2cd86">(</span><span style="color:#02d045">"</span><span style="color:#00c4c4">gracefully shutting down from  SIGINT (Crtl-C)</span><span style="color:#02d045">"</span><span style="color:#d2cd86">.</span>yellow<span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+<span style="color:#b060b0">}</span><span style="color:#d2cd86">)</span><span style="color:#b060b0">;</span>
+</pre>
+<pre>process.on('SIGINT', function () {
+  // wait connections to close
+  process.exit();
+  console.log("gracefully shutting down from  SIGINT (Crtl-C)".yellow);
+});</pre>
+<h4>如何使用 Array 和 Object</h4>
+<p>对于列表类的信息，比如用户列表推荐使用 Object 而不是 Array：</p>
+<pre style="color:#d1d1d1;background:#333"><span style="color:#e66170;font-weight:bold">var</span> a <span style="color:#d2cd86">=</span> <span style="color:#d2cd86">[</span><span style="color:#d2cd86">]</span><span style="color:#b060b0">;</span>
+a<span style="color:#d2cd86">[</span><span style="color:#008c00">1000</span><span style="color:#d2cd86">]</span> <span style="color:#d2cd86">=</span> <span style="color:#008c00">1</span><span style="color:#b060b0">;</span>
+<span style="color:#9999a9">//a is an Array which length is 1001</span>
+</pre>
+<pre>var a = [];
+a[1000] = 1;
+//a is an Array which length is 1001</pre>
+<h4>如何聚合多个后端服务并提供 SLA ?</h4>
+<p>用 Node.js 可以非常简单的实现对返回所用时间进行控制。比如在之前例子代码 async.parallel 的请求中设置超时定时器。对多个处理进程并发请求取其中时间最短的结果，这样可以保证返回时间都保持很短。</p>
+<h4>什么时候使用 process.nextTick() ?</h4>
+<ol>
+<li>重量使用 CPU 的函数中释放 CPU 给其他任务</li>
+<li>将执行放到下一个 tick ，等待初始化</li>
+</ol>
+<h3>更多相关参考：</h3>
+<p><a href="http://nodejs.org/">http://nodejs.org/</a><br>
+<a href="https://npmjs.org/">https://npmjs.org/</a><br>
+<a href="http://coffeescript.org/">http://coffeescript.org/</a><br>
+<a href="http://underscorejs.org/">http://underscorejs.org/</a><br>
+<a href="http://nodejs.org/api/addons.html">http://nodejs.org/api/addons.html</a><br>
+<a href="http://expressjs.com/">http://expressjs.com/</a><br>
+<a href="https://github.com/caolan/async">https://github.com/caolan/async</a><br>
+<a href="http://howtonode.org/understanding-process-next-tick">http://howtonode.org/understanding-process-next-tick</a><br>
+<a href="http://book.mixu.net/ch7.html">http://book.mixu.net/ch7.html</a><br>
+<a href="http://gruntjs.com/">http://gruntjs.com/</a></p>

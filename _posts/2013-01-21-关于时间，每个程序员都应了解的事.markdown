@@ -1,0 +1,76 @@
+---
+layout: post
+title:  "关于时间，每个程序员都应了解的事"
+date:   2013-01-21 02:04:51
+author: 
+categories: program
+---
+
+## 关于时间，每个程序员都应了解的事
+### by 
+### at 2013-01-21 02:04:51
+### original <http://blog.jobbole.com/32534/?utm_source=rss&utm_medium=rss&utm_campaign=%25e5%2585%25b3%25e4%25ba%258e%25e6%2597%25b6%25e9%2597%25b4%25ef%25bc%258c%25e6%25af%258f%25e4%25b8%25aa%25e7%25a8%258b%25e5%25ba%258f%25e5%2591%2598%25e9%2583%25bd%25e5%25ba%2594%25e4%25ba%2586%25e8%25a7%25a3%25e7%259a%2584%25e4%25ba%258b>
+
+<p><span style="color:#ff0000"><strong>注：</strong></span>英文原文由<a href="http://weibo.com/u/2093492691">@程序员的那些事</a> 在微博推荐，感谢<a href="http://weibo.com/dotkrnl">@泉州一中-刘家昌</a> 编译完成初稿。在译文基础上，<span><a href="http://www.jobbole.com" title="伯乐">伯乐</a></span>在线根据维基百科等资料有补充和改动。也感谢@<a title="周金宇Jered" href="http://weibo.com/u/2362764763">周金宇Jered</a> 的翻译。<em><span style="color:#808080">（如需转载，请保留本段说明。）</span></em></p>
+<p><strong><span style="color:#008000">一些关于时间的注解:</span></strong></p>
+<p><strong>●UTC</strong>/<strong>协调世界时：</strong>又称“世界标准时间”或“世界协调时间”，简称<strong>UTC</strong>（从英文“<strong>C</strong>oordinated <strong>U</strong>niversal <strong>T</strong>ime”／法文“<strong>T</strong>emps <strong>U</strong>niversel <strong>C</strong>ordonné”而来），是最主要的世界时间标准，其以原子时秒长为基础，在时刻上尽量接近于格林尼治平时。中国大陆称之为“协调世界时”。台湾称之为“世界統一時間”。</p>
+<p><strong>●GMT（Greenwich Mean Time）：</strong>是指位于英国伦敦郊区的皇家格林尼治天文台的标准时间，因为本初子午线被定义在通过那里的经线。格林尼治时间（GMT）曾经作为标准时间使用，但因地球自转不规则的原因，GMT 已不再作为现在的标准时间，现在的标准时间是由原子钟报时的协调世界时（UTC）。</p>
+<p style="text-align:center"><a href="http://zh.wikipedia.org/wiki/File:Greenwich_clock.jpg" rel="lightbox[32534]" title="关于时间，每个程序员都应了解的事"><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Greenwich_clock.jpg/200px-Greenwich_clock.jpg" alt="" width="200" height="373"></a><br>
+<span style="color:#808080">设于英国<span style="color:#808080">格林尼治皇家天文台</span>大门外的24小时制电子大钟，显示格林尼治标准时间。</span></p>
+<p> </p>
+<p>●其他时区都可写为与 UTC 时间的偏移量。北京时间是 UTC+8（俗称“东八区”）。例如某日的 UTC 00:00  是同日的北京时间 08:00。</p>
+<p><strong>●夏令时</strong> 并不影响 UTC。它只是当地政府关于改变其时区（与 UTC 的偏移量）的决定。 例如，GMT 在冬季是英国的国家时区，而夏季则选用英国夏令时（BST）。</p>
+<p><strong>●<a title="闰秒" href="http://zh.wikipedia.org/wiki/%E9%96%8F%E7%A7%92">闰秒</a>：</strong> 根据国际惯例，通过在每个 UTC 年的十二月，或者六月的最后一秒，引入一秒闰秒，来使 UTC 与物理现实（UT1，天文时间量度）保持 0.9 秒以内的差距。（UTC 完全是人类武断的定义，而平均太阳日的长度正以非常缓慢的速度增加中）</p>
+<p>●闰秒并不需提前六个月宣布。这对于时长超过六个月的精密时间计划是重大的问题。</p>
+<p><strong>●<a href="http://zh.wikipedia.org/wiki/UNIX%E6%97%B6%E9%97%B4">Unix 时间</a>：</strong>亦或称 <strong>POSIX时间</strong>，以 Unix 纪元初（1970年1月1日0时0分0秒）至今的总秒数度量，不包括闰秒。 Unix 时间不受时区和夏令时的影响。</p>
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/Year_2038_problem.gif" rel="lightbox[32534]" title="Year_2038_problem"><img title="Year_2038_problem" src="http://blog.jobbole.com/wp-content/uploads/2013/01/Year_2038_problem.gif" alt="Year_2038_problem 2038年问题" width="300" height="98"></a></p>
+<p style="text-align:center"><span style="color:#ff0000"><span style="color:#ff0000">2038年</span><span style="color:#ff0000">1月19日</span>3时14分07秒，32位系统的UNIX时间将会被重置。</span></p>
+<p> </p>
+<p>●根据 <a href="http://zh.wikipedia.org/zh-cn/POSIX">POSIX.1 标准</a>，Unix 时间应该通过重复前一秒处理闰秒。例如:</p>
+<pre>59.00
+59.25
+59.50
+59.75
+59.00 ← 重复
+59.25
+59.50
+59.75
+00.00 ← 增加
+00.25</pre>
+<p>这一方法有利有弊：你无法重现一个闰秒，而且时间可能会倒退；但从另一个角度来说，每天的时间却确切为 86,400 秒长，输出人类可读的时分秒之时，你并不需要列出一个过去和未来的所有闰秒表。</p>
+<p>●<a href="http://en.wikipedia.org/wiki/Ntpd"><code>ntpd</code></a> （Network Time Protocol daemon）在从上流服务器处接收到“闰秒位（leap bits）”后，应当完成这次时间重复。 但我也曾见过它违背这一标准：系统进入到未来的一秒，然后缓慢地偏移回正确的时间。</p>
+<p> </p>
+<p><strong style="color:#008000">每个<span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span>都应了解的关于时间的事:</strong></p>
+<p><strong style="color:#008000"></strong><strong>●时区是一个表示层的问题!  </strong>你多数的代码不应处理时区或本地时问题，请总使用 Unix 时间。</p>
+<p>●使用 Unix 时间作为度量，它是 UTC 时间 —— 易于获取，而且没有时区、夏令时（和闰秒）。</p>
+<p>●保存时间时使用 Unix 时间，它是一个整数。</p>
+<p>●如果你希望保存人类可读的时间（例如在日志中），考虑将其<em>与</em> Unix 时间共同保存， 而不是<em>取代</em> Unix 时间。</p>
+<p>●显示时间时，同时显示所在时区——一个未知时区偏移量的时间是无用的。</p>
+<p>●系统时钟并不精确。</p>
+<p>●你在一个网络中？ 那么请注意所有系统的时钟都有不同的不精确性。</p>
+<p>●系统时钟可以——或者会——因你所控制外的事情向后或向前跳跃。你的程序必须能够处理这一问题。</p>
+<p>●每[实际]秒的[时钟]滴答并不精确且易变。多数情况它会随温度而变化。</p>
+<p>●不要盲目地使用 <code>gettimeofday()</code>。如果你需要一个单调递增的时钟，选择<code>clock_gettime()</code>.</p>
+<p>●<code>ntpd</code> 可以通过以下两种方式改变系统时间:</p>
+<p>+跳跃: 直接将系统时钟即时地向前或向后调整为正确时间。</p>
+<p>+转换: 修改系统时钟的频率，使系统时间慢慢地偏移为正确时间。</p>
+<p>转换这一方法破坏性较小，因而它较受欢迎。但只当修复小的时间误差时此方法才有效。</p>
+<p> </p>
+<p><span style="color:#008000"><strong>值得一提的:</strong></span></p>
+<p>●根据相对论，每个“观察者”的“一秒钟”都是不同的。远程时钟频率相对一个“观察者”来说，受到相对速度和重力的影响。GPS 卫星中的时间已根据相对论效应调整。</p>
+<p>●MySQL（高于 4.x 和 5.x 的版本）将 <tt>DATETIME</tt> 类型保存为一个 “YYYY-MM-DD HH:MM:SS” 串的二进制编码。其本身并不保存时差，使用时根据<code>@@session.time_zone</code> 指示时区解释。</p>
+<pre>mysql&gt; insert into times values(now());
+mysql&gt; select unix_timestamp(t) from times;
+1310128044
+mysql&gt; SET SESSION time_zone=&#39;+0:00&#39;;
+mysql&gt; select unix_timestamp(t) from times;
+1310164044</pre>
+<p>如果你很介意这件事，那么使用 <tt>UNIX_TIMESTAMP()</tt> 和 <tt>FROM_UNIXTIME()</tt> 函数，将时间保存为数字。（UNIX_TIMESTAMP() 将参数时间串使用当前 time_zone 的设定解释，并转换为 Unix 时间数字，如果当地规定了夏令时，也将按夏令时解释）</p>
+<p>还有 <tt>TIMESTAMP</tt> 类型，将时间保存为 Unix 时间。它有不同的<a href="http://dev.mysql.com/doc/refman/4.1/en/timestamp.html">用法</a>。</p>
+<p> </p>
+<p>英文原文：<a href="http://unix4lyfe.org/time/?v=1">unix4lyfe</a>，编译：<a href="http://weibo.com/dotkrnl">@泉州一中-刘家昌</a>  、<a title="周金宇Jered" href="http://blog.csdn.net/zhoujinyu0713/article/details/8523088">周金宇Jered</a>的译文</p>
+<p>译文链接：<a href="http://blog.jobbole.com/32534/">http://blog.jobbole.com/32534/</a></p>
+<p><span style="color:#ff0000">【如需转载，请在正文中标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+<p> </p>
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+<h2>相关文章</h2><ul><li><a href="http://blog.jobbole.com/22714/">陈皓：关于闰秒（leap second）的小知识</a></li><li><a href="http://blog.jobbole.com/23256/">从千年虫，闰年虫，闰秒虫看测试数据设计</a></li><li><a href="http://blog.jobbole.com/1178/">陈皓：你确信你了解时间吗？</a></li><li><a href="http://blog.jobbole.com/602/">为自己找到更多时间的6种方法</a></li><li><a href="http://blog.jobbole.com/7002/">如何才能更加有效率</a></li><li><a href="http://blog.jobbole.com/24498/">如何有效管理项目会议</a></li><li><a href="http://blog.jobbole.com/84/">自由职业者，你如何挤出时间？</a></li><li><a href="http://blog.jobbole.com/649/">是什么浪费了我的上网时间？</a></li><li><a href="http://blog.jobbole.com/1514/">10个时间管理的小技巧</a></li><li><a href="http://blog.jobbole.com/140/">如何投资自己的未来时间</a></li></ul>

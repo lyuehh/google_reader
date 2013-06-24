@@ -1,0 +1,136 @@
+---
+layout: post
+title:  "一步一步教你使用AgileEAS.NET基础类库进行应用开发-基础篇-演示ORM的批量删除与更新"
+date:   2010-10-04 11:32:00
+author: 魏琼东
+categories: program
+---
+
+## 一步一步教你使用AgileEAS.NET基础类库进行应用开发-基础篇-演示ORM的批量删除与更新
+### by 魏琼东
+### at 2010-10-04 11:32:00
+### original <http://www.cnblogs.com/eastjade/archive/2010/10/04/1841861.html>
+
+<p><a href="http://www.cnblogs.com/eastjade/"><img src="http://pic.cnblogs.com/face/u19020.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/eastjade/">魏琼东</a> 发表于 2010-10-04 11:32 <a href="http://www.cnblogs.com/eastjade/archive/2010/10/04/1841861.html">原文链接</a> 阅读: 577 评论: 2</p><h4><strong>系列回顾</strong></h4>
+<p>          前面的文章一步一步教你使用AgileEAS.NET基础类库进行应用开发-基础篇-演示ORM的基本操作和一步一步教你使用AgileEAS.NET基础类库进行应用开发-基础篇-演示ORM的条件查询两篇文章我演示了ORM的基本使用并引申到开发中最常见的条件查询业务，今天我基于前一篇文章的条件查询的基础演示根据条件的批量删除与更新。</p>
+<h4><strong>问题提出</strong></h4>
+<p>          在演示ORM的基于操作一文中我们演示了基于单记录（实体）的删除(Update)和更新（处理），但是没有提到指量记录的更新与删除，本文旨在提出一种ORM应用中的解决方案并演示他的用法。</p>
+<h4><strong>如果解决</strong></h4>
+<p>          批量更新与删除数据记录的本质是执行带批量查询条件的Update和Delete语句，ORM组件要完成这样的功能，所实现的思想就是根据条件生成批量更新的SQL语句，批量删除的SQL语句新式： delete +数据库表名+ where + 条件表达式,批量更新的SQL语句新式：update+数据库表名+set+（列名=？[,…]）+ where + 条件表达式。</p>
+<p>          既然我们知道了这样的处理方法，那么我们就可以转换为ORM组件的表示方式进行处理，在ORM组件的ITable接口中存在着以下三个方法：</p>
+<div>
+<div><pre>    <span style="color:#808080">/// &lt;summary&gt;</span>
+    <span style="color:#808080">/// 从数据库中删除数据表记录。</span>
+    <span style="color:#808080">/// &lt;/summary&gt;</span>
+    <span style="color:#808080">/// &lt;param name=&quot;condition&quot;&gt;数据查询条件。&lt;/param&gt;</span>
+    <span style="color:#808080">/// &lt;remarks&gt;删除操作所影响的数据行数。&lt;/remarks&gt;</span>
+    <span style="color:#0000ff">void</span> Delete(Condition condition);
+
+    <span style="color:#808080">/// &lt;summary&gt;</span>
+    <span style="color:#808080">/// 根据条件更新数据库表中的指定列的值。</span>
+    <span style="color:#808080">/// &lt;/summary&gt;</span>
+    <span style="color:#808080">/// &lt;param name=&quot;colValues&quot;&gt;要更新的列及指定的值。&lt;/param&gt;</span>
+    <span style="color:#808080">/// &lt;param name=&quot;condition&quot;&gt;数据查询条件。&lt;/param&gt;</span>
+    <span style="color:#808080">/// &lt;remarks&gt;更新操作所影响的数据行数。&lt;/remarks&gt;</span>
+    <span style="color:#0000ff">void</span> Update(ColumnCollection colValues,Condition condition);
+
+    <span style="color:#808080">/// &lt;summary&gt;</span>
+    <span style="color:#808080">/// 根据条件更新数据库表中的指定列的值。</span>
+    <span style="color:#808080">/// &lt;/summary&gt;</span>
+    <span style="color:#808080">/// &lt;param name=&quot;colValues&quot;&gt;要更新的列及指定的值。&lt;/param&gt;</span>
+    <span style="color:#808080">/// &lt;param name=&quot;condition&quot;&gt;数据查询条件。&lt;/param&gt;</span>
+    <span style="color:#808080">/// &lt;remarks&gt;更新操作所影响的数据行数。&lt;/remarks&gt;</span>
+    <span style="color:#0000ff">void</span> Update(IDictionary&lt;<span style="color:#0000ff">string</span>, <span style="color:#0000ff">object</span>&gt; colValues,Condition condition);</pre></div></div>
+<p>          Delete方法使用很简单，带上删除记录的条件对象即可，Update方法的使用则复杂一些，除了设置更新记录的条件，还得设置更新列的内容，提供两种表示形式，ColumnCollection 集合与字典集合，其目的是完成字典名=？(值)的表示形式。</p>
+<h4><strong>演示简介</strong></h4>
+<p>          关于条件查询以及条件的构造的知识差不多也就是这些，讲起来也没有什么讲头，重点才于如何组合这些条件实现复杂的业务，在今天的案例中我选择性的演示几个条件的用法，所使用的数据还是商品字典，达到以下的功能：</p>
+<p>           1.删除记录ID从100到500的记录并且单位为“1*瓶/瓶”的所有商品。</p>
+<p>           2.更新商品编码前2位为“1a”并且单位为“1*袋/袋”的所有商品的商品说明为“垃圾货”，本演示使用update的两种重载。</p>
+<p>          实现，在ClassLibDemo.DAL.SQLServer项目的类ProductList增加以下代码：</p>
+<div>
+<div>
+<div><pre>    <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> DeleteProduct(<span style="color:#0000ff">int</span> iStart, <span style="color:#0000ff">int</span> iEnd, <span style="color:#0000ff">string</span> unit)
+    {
+        Condition condition = <span style="color:#0000ff">this</span>.CreateCondition();
+        List&lt;<span style="color:#0000ff">int</span>&gt; values = <span style="color:#0000ff">new</span> List&lt;<span style="color:#0000ff">int</span>&gt;(2);
+        values.Add(iStart);
+        values.Add(iEnd);
+        condition.AddElement(&quot;<span style="color:#8b0000">IDN</span>", values, ElementType.BetWeen);
+        condition.AddElement("<span style="color:#8b0000">UNIT</span>", unit);
+
+        <span style="color:#0000ff">this</span>.Delete(condition);
+    }
+
+    <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> UpdateProductDescription(<span style="color:#0000ff">string</span> code, <span style="color:#0000ff">string</span> unit,<span style="color:#0000ff">string</span> desc)
+    {
+        Condition condition = <span style="color:#0000ff">this</span>.CreateCondition();
+        condition.AddElement("<span style="color:#8b0000">CODE</span>", code, ElementType.MatchPrefix);
+        condition.AddElement("<span style="color:#8b0000">UNIT</span>&quot;, unit);
+
+        Dictionary&lt;<span style="color:#0000ff">string</span>, <span style="color:#0000ff">object</span>&gt; values = <span style="color:#0000ff">new</span> Dictionary&lt;<span style="color:#0000ff">string</span>, <span style="color:#0000ff">object</span>&gt;();
+        values.Add(&quot;<span style="color:#8b0000">DESCRIPTION</span>", desc);
+        <span style="color:#0000ff">this</span>.Update(values,condition);
+    }        
+
+    <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> UpdateProductDescription2(<span style="color:#0000ff">string</span> code, <span style="color:#0000ff">string</span> unit,<span style="color:#0000ff">string</span> desc)
+    {
+        Condition condition = <span style="color:#0000ff">this</span>.CreateCondition();
+        condition.AddElement("<span style="color:#8b0000">CODE</span>", code, ElementType.MatchPrefix);
+        condition.AddElement("<span style="color:#8b0000">UNIT</span>", unit);
+
+        ColumnCollection values = <span style="color:#0000ff">new</span> ColumnCollection(<span style="color:#0000ff">this</span>);
+        values.AddColumn("<span style="color:#8b0000">DESCRIPTION</span>",DbType.String,desc);
+        <span style="color:#0000ff">this</span>.Update(values,condition);
+    }        </pre></div></div></div><br>
+<p>         我们在控制台演示项目中使用这些查询：</p>
+<div>
+<div><pre>    <span style="color:#0000ff">class</span> ConditionUpdate
+    {
+        <span style="color:#808080">/// &lt;summary&gt;</span>
+        <span style="color:#808080">/// 删除记录ID从到的记录并且单位为“*瓶/瓶”的所有商品。</span>
+        <span style="color:#808080">/// &lt;/summary&gt;</span>
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> DemoConditionDelete()
+        {
+            ProductList table = <span style="color:#0000ff">new</span> ProductList();
+            table.OrmAccessor = OrmContext.OrmAccessor;
+            table.DeleteProduct(100, 500, "<span style="color:#8b0000">1*瓶/瓶</span>");
+
+            System.Console.WriteLine("<span style="color:#8b0000">删除完成</span>");
+        }
+
+        <span style="color:#808080">/// &lt;summary&gt;</span>
+        <span style="color:#808080">/// 更更新商品编码前2位为“1a”并且单位为“1*袋/袋”的所有商品的商品说明为“垃圾货”。</span>
+        <span style="color:#808080">/// &lt;/summary&gt;</span>
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> DemoConditionUpdate()
+        {
+            ProductList table = <span style="color:#0000ff">new</span> ProductList();
+            table.OrmAccessor = OrmContext.OrmAccessor;
+            table.UpdateProductDescription("<span style="color:#8b0000">1a</span>", "<span style="color:#8b0000">1*袋/袋</span>", "<span style="color:#8b0000">垃圾货</span>");
+
+            System.Console.WriteLine("<span style="color:#8b0000">更新完成</span>");
+        }
+
+        <span style="color:#808080">/// &lt;summary&gt;</span>
+        <span style="color:#808080">/// 删更新商品编码前2位为“1a”并且单位为“1*袋/袋”的所有商品的商品说明为“垃圾货”。</span>
+        <span style="color:#808080">/// &lt;/summary&gt;</span>
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">void</span> DemoConditionUpdate2()
+        {
+            ProductList table = <span style="color:#0000ff">new</span> ProductList();
+            table.OrmAccessor = OrmContext.OrmAccessor;
+            table.UpdateProductDescription2("<span style="color:#8b0000">1a</span>", "<span style="color:#8b0000">1*袋/袋</span>", "<span style="color:#8b0000">垃圾货</span>");
+
+            System.Console.WriteLine("<span style="color:#8b0000">更新完成</span>");
+        }</pre></div><br></div>
+<p>          案例输出结果：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/eastjade/WindowsLiveWriter/AgileEAS.NETORM_F2B4/image_2.png"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/eastjade/WindowsLiveWriter/AgileEAS.NETORM_F2B4/image_thumb.png" width="562" height="369"></a></p>
+<p>SQL事件探查：</p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/eastjade/WindowsLiveWriter/AgileEAS.NETORM_F2B4/7E%7B66WJJRR%5BX9%5D%7DX)Q88V49_2.jpg"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="7E{66WJJRR[X9]}X)Q88V49" border="0" alt="7E{66WJJRR[X9]}X)Q88V49" src="http://images.cnblogs.com/cnblogs_com/eastjade/WindowsLiveWriter/AgileEAS.NETORM_F2B4/7E%7B66WJJRR%5BX9%5D%7DX)Q88V49_thumb.jpg" width="554" height="261"></a></p>
+<p>         有关本例子所涉及的数据表结构请参考<a href="http://www.cnblogs.com/eastjade/archive/2010/09/17/1829441.html">基于AgileEAS.NET平台基础类库进行应用开发-总体说明及数据定义</a>一文，有关数据对象模型定义文件、文档、DDL脚本请下载：<a href="http://files.cnblogs.com/eastjade/demo.db.doc.sql.rar">http://files.cnblogs.com/eastjade/demo.db.doc.sql.rar</a>，本文代码下载：<a href="http://files.cnblogs.com/eastjade/ORM.Demo3.rar">ORM.Demo3.rar</a>。  </p>
+<p><strong>链接</strong></p>
+<p><a href="http://www.cnblogs.com/eastjade/archive/2010/09/19/1830812.html">一步一步教你使用AgileEAS.NET基础类库进行应用开发-系列目录</a></p>
+<p><a href="http://www.cnblogs.com/eastjade/archive/2010/09/12/1824405.html">AgileEAS.NET平台开发指南-系列目录</a></p>
+<p><a href="http://www.cnblogs.com/eastjade/archive/2010/09/09/1822530.html">AgileEAS.NET应用开发平台介绍-文章索引</a></p>
+<p><a href="http://www.cnblogs.com/eastjade/archive/2010/09/15/1826870.html">AgileEAS.NET平台应用开发教程-案例计划</a></p>
+<p><a href="http://www.smarteas.net/">AgileEAS.NET官方网站</a></p>
+<p><a href="http://www.agilelab.cn/">敏捷软件工程实验室</a></p>
+<p>QQ群：116773358</p><img src="http://www.cnblogs.com/eastjade/aggbug/1841861.html?type=1" width="1" height="1" alt=""><p>评论: 2　<a href="http://www.cnblogs.com/eastjade/archive/2010/10/04/1841861.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/eastjade/archive/2010/10/04/1841861.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76407/">Facebook逾10%员工来自谷歌 硅谷重心或转移</a><span style="color:gray">(2010-10-05 22:17)</span><br>· <a href="http://news.cnblogs.com/n/76406/">履历和成就证明新任CEO为Twitter最佳掌舵人</a><span style="color:gray">(2010-10-05 22:15)</span><br>· <a href="http://news.cnblogs.com/n/76405/">分析称平板电脑危及硬盘厂商</a><span style="color:gray">(2010-10-05 22:09)</span><br>· <a href="http://news.cnblogs.com/n/76404/">鲍尔默称Windows平板电脑今年圣诞前上市</a><span style="color:gray">(2010-10-05 22:08)</span><br>· <a href="http://news.cnblogs.com/n/76403/">甲骨文收购安全解决方案供应商Passlogix</a><span style="color:gray">(2010-10-05 22:06)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76302/">2010年10月编程语言排行榜：Java的混乱之治</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

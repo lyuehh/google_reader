@@ -1,0 +1,77 @@
+---
+layout: post
+title:  "HTML5终极指南：2012年的14个预测"
+date:   2011-12-25 08:01:57
+author: 
+categories: program
+---
+
+## HTML5终极指南：2012年的14个预测
+### by 
+### at 2011-12-25 08:01:57
+### original <http://www.cnbeta.com/articles/166897.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/138.htm"><img src="http://img.cnbeta.com/topics/communication.png" alt="通信技术" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://nvnv.in">淘宝返现</a>的投递</b><br>
+无论是当红科技企业如 Zynga、Facebook、Google 和 Apple，还是刚刚诞生的初创企业，2012年都是决胜 HTML5 的一年。以下是关于 HTML5 在 2012 发展趋势的大胆预测：</p>
+		<p><strong>一、欢迎来到更加互联的 Web</strong><strong>世界</strong><br>
+<br>
+2012年，html5 将增加更多有用的开放接口 API，供开发人员使用，让网站之间的连接更加紧密。<br>
+<br>
+例如，Facebook 上的 Zynga 游戏在 iFrames 里运行。通过调用最新的 PostMessage API，这些游戏能在 Facebook 包容框架内互相之间通讯。在 HTML5 之前，不同窗口之间的通讯需要依赖远程服务器――或者使用不稳定的破解方法。<br>
+<br>
+另外一个让人兴奋的新功能是 CORS (Cross Origin Resource Sharing)。这是不同网站之间分享信息变得非常容易。例如，CORS 将允许初创企业开发出一种能够编辑 facebook 图片的编辑服务，允许你修改之后再上传，无需通过糟心的破解途径。<br>
+<br>
+基于 HTML5 的的语义信息（例如 Semantics 和 Microdata）创建提取 web 页面信息的 web 工具变得更加容易。因此，将有大量的 Mashup 混搭服务出现，出色的浏览模式也将越来越多（例如 readers 阅读器和 translators）<br>
+<br>
+<img title="HTML5终极指南：2012年的 14 个预测" src="http://img.cnbeta.com/newsimg/111225/0801580344704278.jpg" height="197" width="580"><br>
+<br>
+<strong>二、Web</strong><strong>浏览器看上去更像 iPhone</strong><br>
+<br>
+每个人都喜欢苹果的 iOS 操作系统。现在你可以在 HTML5 上看到了。2012年你的右脸其将开始支持 push notifications 通知服务，geolocation 地理位置服务，以及可以离线使用的应用程序。有些浏览器可能会采用更加类似 iOS 的用户界面。<br>
+<br>
+<strong>三、越来越多的应用程序将基于 HTML5</strong><strong>创建，而不是以可下载应用程序的方式出现（例如金融时报的客户端）</strong><br>
+<br>
+你可能已经在使用电子邮件、日程和图片分享等 web 应用程序，2012年将有更多类型的程序推出 HTML5 版本。你将看到类似 Inkscape 和 Illustrator 这样的内容创建程序也开始支持 HTML5。<br>
+<br>
+<strong>四、IE</strong><strong>浏览器和微软将变得“酷”很多</strong><br>
+<br>
+微软对浏览器 IE 已经投入了巨资，并且很多资金用于提升 html5 的性能，未来将在 IE10 上有所体现。IE10凭借 Canvas 硬件加速功能将在速度测试上击败所有其他浏览器竞争对手。此外微软还在 HTML5 页面与桌面电脑的功能整合方面别具匠心，并最终推动 HTML5 应用的开发热情。<br>
+<br>
+<strong>五、浏览器厂商将推出应用程序商店业务</strong><br>
+<br>
+看到苹果公司的移动应用商店 App Store 的巨大成功，并且结合 html5 的日渐成熟，未来浏览器厂商将会构建自己的网络应用商店 Web App Store，从而对苹果公司应用商店可能构成冲击。其实，谷歌公司的谷歌浏览器 Google Chrome 已经推出了网络应用商店。这个趋势对于 HTML5 应用开发者来说是个好事――这意味着程序将有更多的销售机会，尽管不同平台的支付平台和分账机制还未就绪。<br>
+<br>
+<strong>六、至少有一个基于 WebGL</strong><strong>的重量级主机游戏会发布（再发布）</strong><br>
+<br>
+2012年至少有一个 AAA 级别的主机游戏公司会迈出这一步，发布一款基于 WebGL 的，无需客户端的 3D web 游戏。也可能采用重新发布一部游戏大作的方式（例如团队要塞 2 或者刺客信条），或者是一款流行的多人在线游戏如魔兽世界，当然也有可能直接发布一款全新游戏。<br>
+<br>
+<strong>七、多数应用都将通过离线缓存来支持离线工作</strong><br>
+<br>
+离线缓存技术将会迅速提高 html5 的可用性和应用范围。基于缓存而不需要联网，就可以查询本地数据库和服务，这一方面能提高 HTML5 应用的运行速度，提供类似传统桌面应用的流畅性，同时也能带来一些安全性话题，例如你可能在清理计算机缓存的时候不小心擦除掉你正在处理的文档或者工作进 度，或者为恶意软件远程访问你电脑上的私密数据打开方便之门。<br>
+<br>
+<strong>八、HTML5</strong><strong>广告将取代 Flash</strong><strong>广告变得无处不在</strong><br>
+<br>
+html5 广告可以兼容 Flash 广告，随着致力于基于 html5 提供各方面技术和工具以及各种服务的创业公司不断涌现，HTML5广告面临的沙盒问题、安全问题以及认证工具等问题都将得到解决。<br>
+<br>
+<strong>九、JavaScript </strong><strong>随着内存管理和数据类型的改进而提高运行速度</strong><br>
+<br>
+JavaScript 已经是世界上运行最快的脚本语言之一了，但还是有提高空间。Google Chrome 已经开始着手推动更好的内存管理和垃圾收集算法。加之更优秀的数据类型管理，Javascript 将获得与 Java 等成熟语言较为接近的性能表现。<br>
+<br>
+<strong>十、Canvas</strong><strong>硬件加速技术将被应用于多种浏览器（但不会是主流浏览器）</strong><br>
+<br>
+其他浏览器厂商都会学习微软引入硬件加速技术，不这么做就会显得落伍。火狐浏览器面临的形式最为严峻，如若不引入硬件加速将可能重演 IE 悲剧――迟钝、肿胀并被遗留代码活活拖跨。2012年主流移动浏览器还不会支持硬件加速，这估计要等到 2013 年。<br>
+<br>
+<strong>十一、人们将能在移动设备上玩到 Zynga</strong><strong>等公司的 HTML5</strong><strong>流行游戏，但限于一些较为简单的游戏</strong><br>
+<br>
+你也许能看到有人玩纯 HTML5 版本的 Zynga 扑克、字谜、Mafia Wars 等游戏，这些游戏可以在网页里，也可以在 facebook 原生应用里运行。但这些都会是写基于菜单的游戏、棋牌游戏或者角色扮演游戏，更复杂的富有视觉冲击的游戏例如 Ville 还需要等待一段时间。<br>
+<br>
+<strong>十二、Facebook</strong><strong>将发布改进的 HTML5 API</strong><strong>，允许与其他网站更加无缝集成</strong><br>
+<br>
+<strong>十三、Facebook</strong><strong>将于桌面更加无缝集成</strong><br>
+<br>
+想想吧，任意拖放、文件系统访问、照片同步以及桌面 Widgets。这些功能将模糊桌面与浏览器之间的界限，让社交图谱与桌面体验紧密结合。<br>
+<br>
+<strong>十四、苹果依然不会在移动版 Safari</strong><strong>上支持 HTML5</strong><strong>的声音功能</strong><br>
+<br>
+iOS3时代，html5 的声音功能在移动 Safari 上一切正常，但是苹果在 iOS4 和 5 版本中禁用了大多数的 API 调用，因为这可能会冲击 iTune 业务。2012年，苹果依然不会放松对苹果生态系统的绝对控制权，并拒绝向 html5 提供声音接口 API。<br></p></div>

@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "解决Xcode使用git时要求输入密码问题"
+date:   2012-08-23 00:46:48
+author: 枯藤昏鸦
+categories: program
+---
+
+## 解决Xcode使用git时要求输入密码问题
+### by 枯藤昏鸦
+### at 2012-08-23 00:46:48
+### original <http://ioio.name/xcode-git-password-required.html>
+
+<p>我本地Xcode直接连接的是github来开发，每次要push代码的时候都会弹出一个用户名密码输入框要求输入帐号密码。有时候会使用github的官方客户端更新却没有提示要输入密码，总是感觉怪怪的。</p>
+<p>检查了一下~/.ssh文件夹，相关的ras文件都在，这就奇怪了？莫非没有使用ssh认证，果断Terminal切换到项目目录，输入</p>
+
+<div><table><tr><td><pre style="font-family:monospace">git remote -v</pre></td></tr></table></div>
+
+<p>原来真是使用的https协议</p>
+
+<div><table><tr><td><pre style="font-family:monospace">origin	https://github.com/darcyliu/SampleCode.git (fetch)
+origin	https://github.com/darcyliu/SampleCode.git (push)</pre></td></tr></table></div>
+
+<p>删掉现有的仓库地址</p>
+
+<div><table><tr><td><pre style="font-family:monospace">git remote rm origin</pre></td></tr></table></div>
+
+<p>然后添加ssh协议的地址</p>
+
+<div><table><tr><td><pre style="font-family:monospace">git remote add origin git@github.com:darcyliu/SampleCode.git</pre></td></tr></table></div>
+
+<p>再次在Xcode中尝试更新，不再需要提供密码，问题解决。<br>
+－EOF-</p>
+<hr><h2>Related posts:</h2><ul><li><a href="http://ioio.name/xcode-startup.html" rel="bookmark" title="Permanent Link: 找回xCode的StartUp窗口">找回xCode的StartUp窗口</a></li><li><a href="http://ioio.name/how-to-uninstall-xcode.html" rel="bookmark" title="Permanent Link: 如何卸载Xcode">如何卸载Xcode</a></li><li><a href="http://ioio.name/how-to-transfer-a-domain-from-google-apps-to-other-registrant.html" rel="bookmark" title="Permanent Link: How to Transfer a domain from Google Apps to other registrant">How to Transfer a domain from Google Apps to other registrant</a></li><li><a href="http://ioio.name/plink-ssh.html" rel="bookmark" title="Permanent Link: Plink+SSH">Plink+SSH</a></li><li><a href="http://ioio.name/ie-input-text-password-not-the-same.html" rel="bookmark" title="Permanent Link: IE下input类型为text和password的长度不一致问题">IE下input类型为text和password的长度不一致问题</a></li></ul><hr><small>Copyright © 2005~2011 | <a href="http://ioio.name/xcode-git-password-required.html" title="Permalink">Permalink</a> | <a href="http://ioio.name/xcode-git-password-required.html#comments">2 Comments</a> | <a href="http://closetou.com" title="Close To U">Close To U</a> <br>
+<a href="http://feeds.feedburner.com/miss">订阅</a> <a href="https://twitter.com/tearnon">Twitter</a> <a href="http://www.linode.com/?r=8dd6ddd391fc320d9f55ad101e051bde767df599">Linode VPS</a>
+</small> )

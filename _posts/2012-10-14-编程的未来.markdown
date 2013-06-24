@@ -1,0 +1,102 @@
+---
+layout: post
+title:  "编程的未来"
+date:   2012-10-14 23:34:37
+author: 四火
+categories: program
+---
+
+## 编程的未来
+### by 四火
+### at 2012-10-14 23:34:37
+### original <http://www.udpwork.com/item/8404.html>
+
+<p><a href="http://www.raychase.net/wp-content/uploads/2012/10/13.jpg"><img src="http://www.raychase.net/wp-content/uploads/2012/10/1_thumb3.jpg" alt="编程的未来"></a>最近在看一本书，加来道雄（Michio Kaku）的《物理学的未来》，第一、第二章是程序员更加关心的，对于下一个100年计算机和人工智能未来的预测。想想计算机发展短暂的历史，这些发生了的翻天覆地的变化，似乎都在弹指一挥间。谁的大胆预测可以那么准确？无论如何，书中对其这样几个猜想令我记忆深刻：</p>
+<ul><li>因特网眼镜和隐形镜片</li>
+<li>无人驾驶汽车</li>
+<li>摩尔定律结束</li>
+<li>通用翻译器</li>
+<li>全息摄影和三维影像</li>
+<li>意识识别</li>
+<li>有意识情感的机器人</li>
+<li>模拟大脑</li>
+</ul>
+<p>这是物理学家眼中的世界（另外推荐他的另一本书《平行宇宙》），激动人心；另一方面，我回想起小时候无比痴迷的机器猫，小小四维空间袋，寄托了孩子多少纯真的梦想，有多少神奇的道具已经成为现实……</p>
+<p>但是程序员要说的看法，尤其在自己熟知的领域，我们不谈语言的发展和趋势，这些留给专家去做吧——不妨把目光放长远一点，100年后的程序员，他们都在做怎样的事情？100年后的编程，会是怎样的一种劳动？</p>
+<p><strong>人人都会编程</strong>
+</p>
+<p><a href="http://weibo.com/2484701382/yE5L9Cp8o">微博</a>上，有朋友对于HTML5实现的web操作系统评论道“断网就是废物一个”，但是他并没有意识到，很快网络就将如同现在的水、电这样一样，是人正常生活不可缺少的基础设施。</p>
+<p>类似的，编程，也将是未来人们日常生活的必备技能，如同写字、阅读一样。编程并不非得指写那些非程序员看不懂的奇形怪状的代码。你把衣服放到洗衣机里，设定好水量中等，浸泡20分钟，洗涤20分钟，漂洗3次共15分钟，再甩干3分钟——这，就是编程，你做的仅仅是按几个按键，把这几项工作组合起来。</p>
+<p>再如<a href="https://ifttt.com/">ifttt</a>这样的网站，你都可以实现编程的分支功能了——如果明天天晴的话，就发给你一条短信，去爬山。完成这样的功能，你根本不需要是程序员，你只要会操作电脑，会上网就可以了。</p>
+<p>互联网的资源，将被得到更好地组织和获取，以YQL（Yahoo! Query Language）为例，你可以体会到这一点：</p>
+<pre>select * from html
+where url=&#39;http://www.dangdang.com/&#39;
+and xpath=&#39;//ul[@id=&quot;homepage_promotion_count_ul&quot;]/li/p[@class=&quot;name&quot;]/a&#39;</pre><p>它做了这样一件事：从当当网的页面去获取数据，而数据的路径通过XPath表达式给出。如此一来，你可以感受到，整个互联网就变成了一个超级大型的数据库。当然，这样的语法还是不够简单，希望能看到类似ifttt的应用出现，目的却是让不会编程的人也可以轻松从互联网这个大型数据库中查询自己需要的东西。</p>
+<p>另外，未来需要普通人掌握的编程技能也不尽相同，就如同现在年轻人和老人的阅读技能大不相同一样。但是可以确定的是，生活中会充满编程的行为，让机器替代自己做更多的事。</p>
+<p><strong>所见即所得</strong>
+</p>
+<p>好吧，在这里我谈这个话题也和我的启蒙编程语言是VB有关。你也许和我一样，谈到所见即所得的时候，想到很多编程语言、IDE，甚至包括FCKeditor这样的富文本编辑组件。Google已经做了这样的尝试，App Inventor就是这样的东西，它是为手机端准备的编程软件，你可以看看这样的宣传视频：</p>
+<p><iframe src="http://reader.googleusercontent.com/reader/embediframe?src=http://player.youku.com/player.php/sid/XMTg5MjAwOTQ4/v.swf&amp;width=480&amp;height=400" width="480" height="400"></iframe>
+</p>
+<p>上面这则视频似乎只是针对非专业程序员的傻瓜式工具，那么再来看看这个在网上已经广为流传的Bret Victor的神一般的演讲，题为《Inventing on Principle》，第一次看的时候，你一定会像我一样惊讶地合不拢嘴：</p>
+<p><iframe src="http://reader.googleusercontent.com/reader/embediframe?src=http://player.youku.com/player.php/sid/XMzUyOTIyNzg0/v.swf&amp;width=480&amp;height=400" width="480" height="400"></iframe>
+</p>
+<p>所见即所得使得编程的过程更贴近人最自然的思维，而一张丰富画面所传递的内容远远大过枯燥的代码行语义和数值。</p>
+<p><strong>编程范型的进化</strong>
+</p>
+<p>相较于硬件的摩尔定律，软件的发展似乎真的是“太慢了”，相较于硬件淘汰的速率，几十年历史的编程语言却可以长盛不衰地存活下去。好在软件的发展也是有驱动力的，软件的复杂性就是直接驱动力之一。想想现在做一个普通网站的代价，和十五年前比较，我们能省做多少功。</p>
+<p>很多时候程序员会觉得，算法还是不容易转变成代码，即便是简单的算法，思路简单的纸上实现，变成代码却比较冗长。我觉得大部分情况下这不是你编码技巧的问题，而是编程语言的问题——换句话说，如果你使用一种合适范型的编程语言，兴许就可以轻松解决这个问题——即便这样的语言并不一定好找，并不一定容易设计。</p>
+<p>我们都知道从过程式编程到面向对象编程的进化，可是如今常用的编程范型已经远远超出这两者了，例如声明式编程、面向方面编程、基于规则的编程等等，我们的固有思维模式一次有一次遭到挑战。</p>
+<p>以Prolog语言为例，它是由事实和规则组成的，我们先告知程序这些已知的事实和规则，再去询问程序一个需要推断的问题，让它给出推断的结果。比如：</p>
+<pre>love(you, dog).
+love(he, dog).
+love(she, cat).
+friend(PA, PB) :- \+(PA=PB), love(PA,Animal), love(PB,Animal).</pre><p>我来解释一下：</p>
+<ol><li>给定了三个事实：你爱狗，他爱狗，她爱猫；</li>
+<li>给定一条规则：对于人物A（PA）和人物B（PB），如果人物A和人物B不是同一个人（“\+”表示取反），人物A爱动物Animal，并且人物B也爱同一种动物Animal，那么人物A和人物B就是朋友（friend）。</li>
+</ol>
+<p>好，现在来询问程序一个问题：</p>
+<pre>| ?- friend(you, he).</pre><p>你和他是朋友吗？程序判断你爱狗，他也爱狗，就给出结论：</p>
+<pre>yes</pre><p>这只是基于规则的编程范型的一个例子，不同范型的语言适用于解决特定的问题。我们在未来能看到更多范型的语言，目的就是让对特定问题的表述和解决更见简单和易于理解。</p>
+<p><strong>创造性的工作在哪</strong>
+</p>
+<p>既然编程会成为一件几乎人人都能够做的事情，那么程序员，你的价值在哪？</p>
+<p>好，先来看看为什么越来越多的人可以编程呢？因为编程的门槛更低了。即便是现在，编程的门槛已经比二十年前低得多了：不明白网络协议？好，已经有现成的类库可以使用；不懂平台差异？好，你只需要在无差别的虚拟机上写程序；不理解内存管理？好，让程序来自动帮你完成这件事情……</p>
+<p>所以，如果你还在为了解语言的不良设计、历史原因等等遗留下来的陷阱，或者为知道某个提高语言表达的语法糖而沾沾自喜的时候，你想过没有，这样的优势很可能太不值钱了。</p>
+<p>程序员最有价值的部分不应在“翻译”上，即不应在将思考的结果翻译到代码这一层面上。编程的未来一定是让编程工作越发贴近人本质的思考，这样的“翻译”工作导致的歧义、错误、陷阱会越来越少，把清晰的思考变成代码是一件越来越简单的工作，以至于某天可以让能够读懂人脑的计算机来完成。</p>
+<p>另一方面，很多公司的老大们却都不懂程序员，在他们心目中，“程序员”只是高成本的劳动力，只会在一台搞不懂的机器上干一些更搞不懂的事情。</p>
+<p>看到这里，你是不是也发现，程序员本质上应该和音乐家、画家类似，往往也让许多人无法理解，而且艺术的价值，常常也都来源于思考？</p>
+<p>音乐家有了更先进的乐器，画家有了更丰富的画笔，情感的抒发都可以更加自由。甚至有一天，拿掉乐器和画笔这些传统物理实体，给大脑接上两根线，思考之后的乐谱和画册就诞生在电脑里了。</p>
+<p>可是，即便计算机可以帮助人思考，它却不能全面代替人思考，尤其对于艺术的创作。即便到了100年以后，程序员创造性的工作，还是无从替代的。</p>
+<p>最后，放开枷锁去想象吧，100年以后，编程会是什么样子，程序员又会是什么样子，我期待你的答案。</p>
+<p><strong>文章系本人原创，转载请注明作者和出处（<a href="http://www.raychase.net/">http://www.raychase.net</a></strong>
+<strong>）</strong>
+</p>
+<div>分享到：<a href="http://www.raychase.net//javascript:void(0);" title="分享到新浪"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到腾讯微博"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到QQ空间"></a><a href="javascript:void(0);" title="分享到Google Reader"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到人人网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到豆瓣"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到鲜果"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到开心"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到Follow5"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到同学网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到嘀咕"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到饭否"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到做啥"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到百度收藏"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到twitter"></a><a href="http://www.raychase.net//javascript:void(0);" title="添加到收藏夹"></a></div>
+<div>你可能也喜欢：</div>
+<ul><li><a href="http://www.raychase.net/723" title="Dart，你凭什么挑战JavaScript？"><img src="http://www.raychase.net/wp-content/uploads/2012/09/dart1-150x150.jpg" alt="编程的未来"></a><a href="http://www.raychase.net/723" title="Dart，你凭什么挑战JavaScript？">Dart，你凭什么挑战JavaScript？</a></li>
+<li><a href="http://www.raychase.net/711" title="Dart：JavaScript的未来"><img src="http://www.raychase.net/wp-content/uploads/2012/09/dart-150x150.jpg" alt="编程的未来"></a><a href="http://www.raychase.net/711" title="Dart：JavaScript的未来">Dart：JavaScript的未来</a></li>
+<li><a href="http://www.raychase.net/707" title="致那些自嘲码农的苦逼程序员"><img src="http://www.raychase.net/wp-content/uploads/2012/09/1-150x150.jpg" alt="编程的未来"></a><a href="http://www.raychase.net/707" title="致那些自嘲码农的苦逼程序员">致那些自嘲码农的苦逼程序员</a></li>
+<li><a href="http://www.raychase.net/652" title="解雇专业的运维人员吧"><img src="http://www.raychase.net/wp-content/uploads/2012/08/mt-150x150.jpg" alt="编程的未来"></a><a href="http://www.raychase.net/652" title="解雇专业的运维人员吧">解雇专业的运维人员吧</a></li>
+<li><a href="http://www.raychase.net/648" title="我十年学习编程的历史"><img src="http://www.raychase.net/wp-content/uploads/2012/08/vb6-145x150.jpg" alt="编程的未来"></a><a href="http://www.raychase.net/648" title="我十年学习编程的历史">我十年学习编程的历史</a></li>
+</ul>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8404.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8404.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8404.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

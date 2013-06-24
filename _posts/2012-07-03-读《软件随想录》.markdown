@@ -1,0 +1,25 @@
+---
+layout: post
+title:  "读《软件随想录》"
+date:   2012-07-03 12:26:46
+author: ytzong
+categories: program
+---
+
+## 读《软件随想录》
+### by ytzong
+### at 2012-07-03 12:26:46
+### original <http://www.99css.com/archives/1187>
+
+<p>由于最近在卖app，看到了这篇文章 <a href="http://www.joelonsoftware.com/articles/CamelsandRubberDuckies.html">Camels and Rubber Duckies</a>，后来发现被翻译后收录在了《<a href="http://book.douban.com/subject/4163938/">软件随想录</a>》中（软件定价一节），网上也经常看到有人推荐，遂拜了一本。</p>
+<p>这本书节选自Joel的博客 <a href="http://www.joelonsoftware.com">http://www.joelonsoftware.com</a>（也有好心人翻译了一部分 <a href="http://local.joelonsoftware.com/wiki/Chinese_(Simplified)">简体</a>，<a href="http://local.joelonsoftware.com/wiki/%E9%A6%96%E9%A0%81">繁体</a>），观点比较碎，但篇篇精华，值得每个码农用心体会。</p>
+<p>比如关于性能优化的，随着硬件的发展，花6个月去优化程序和去玩6个月没有什么差别，你的程序在6个月后都会更快，所以长期来看，不关心性能、不关心代码是否臃肿，一个劲添加新功能的码农会获得更好的发展。详见 <a href="http://www.ruanyifeng.com/blog/2009/03/strategy_letter_vi.html">http://www.ruanyifeng.com/blog/2009/03/strategy_letter_vi.html</a></p>
+<p>再比如是否要雇佣最优秀的人，答案当然是肯定的，赤壁之战的档口，三个臭皮匠再怎么搅基也无法料到风是从那边吹的。详见 <a href="http://www.ruanyifeng.com/blog/2009/07/hitting_the_high_notes.html">http://www.ruanyifeng.com/blog/2009/07/hitting_the_high_notes.html</a></p>
+<p>再比如软件开发存在两派，现实派和理想派，哪个占上风绝定了产品的方向，例如IE8默认是IE8标准是理想派胜利的结果。为什么IE会发展成现在的样子？（强烈建议每个前端人员都看一下《<a href="http://www.blueidea.com/tech/web/2008/5580.asp">火星人的耳机</a>》）</p>
+<p>关于跨平台的编程语言，比如HTML，JS，CSS，初衷是写一次到处运行，但什么时候开发者能做到只调试一个浏览器呢？这一天会非常遥远，即便每个人用最新版IE，最新版SAFARI，CHROME，最新版FIREFOX，你是不是还是要每个浏览器都过一遍？</p>
+<p>关于代码重写，在现实中，改善比改革更适合，老代码梳理一下（揉一揉，搓一搓）远比重写获得的收益更高</p>
+<p>不要被某个客户牵着鼻子走，从而走上“定制软件”的不归路，而是要考虑市场上的大部分使用者，这点我做的还算可以，CssGaga被我据掉了不少建议</p>
+<p>用户想要更多的功能，并愿意为此买单。对此张小龙总结为佛教中的贪嗔痴，每个人都贪婪（想要更多功能）、嫉妒（别人多少级多少钻了我也眼红）、执着（卖肾什么的）。当然要做的时候必须确立发布日期，梳理功能优先级等等</p>
+<p>软件定价是门复杂的学问，作者分析了各个方面，虽然最后没有定论</p>
+<p>人员管理、招聘也很好，写到了码农的心坎里，IT管理者，HR向着这个方向努力能招到不少好码农的，不过国内出现这样的公司也许比跨平台的理想还要遥远</p>
+<p>另外，作为码农，不应该只会编程，还需要有良好的表达和写作能力（就职场而言，虽然也许你很不齿，但现实是会做事的不如会写PPT的，会写PPT的不如会发Email的，不写PPT和Email写写博客也好）；最好还懂点微观经济学，对卖软件，过生活也是很有帮助的</p>

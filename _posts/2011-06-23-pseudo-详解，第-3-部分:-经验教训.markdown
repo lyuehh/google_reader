@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "pseudo 详解，第 3 部分: 经验教训"
+date:   2011-06-23 09:59:19
+author: 
+categories: program
+---
+
+## pseudo 详解，第 3 部分: 经验教训
+### by 
+### at 2011-06-23 09:59:19
+### original <http://www.ibm.com/developerworks/cn/opensource/os-aapseudo3/index.html?ca=drs->
+
+本文是本系列的第 3 部分，在本文中 Peter Seebach 查看了他开发 pseudo 时所犯的众多错误中的一些错误。这不仅是一个学习机会，还是取笑别人的错误而不用感到内疚的一个大好机会。

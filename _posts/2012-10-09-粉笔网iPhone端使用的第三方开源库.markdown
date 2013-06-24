@@ -1,0 +1,155 @@
+---
+layout: post
+title:  "粉笔网iPhone端使用的第三方开源库"
+date:   2012-10-09 15:30:00
+author: 
+categories: program
+---
+
+## 粉笔网iPhone端使用的第三方开源库
+### by 
+### at 2012-10-09 15:30:00
+### original <http://blog.devtang.com/blog/2012/10/09/3rd-libs-used-in-fenbi-app/>
+
+<h2>前言</h2>
+
+<p>最近有朋友问我粉笔网iPhone端使用了哪些第三方的开源库。我在这儿整理了一下，分享给大家。</p>
+
+<p><img src="http://blog.devtang.com/images/fenbi_libs.png"></p>
+
+
+
+
+<h3>ASIHttpRequest</h3>
+
+<p><a href="http://allseeing-i.com/ASIHTTPRequest/">ASIHttpRequest</a> 是一个被广泛使用的第三方网络访问开源库。用于提供更加友好的网络访问接口。相信很多搞iOS开发的朋友都用过它。
+ASIHttpRequest 的主要使用文档可以<a href="http://allseeing-i.com/ASIHTTPRequest/How-to-use">参考这里</a>。</p>
+
+<p>另外，由于ASIHTTPRequest的作者已经公开说明不再维护这个开源项目，并且该项目已经一年多没有更新了，所以我一直在寻找替代的开源库。不过现在暂时还没有找到更好的。</p>
+
+<h3>RegexKit</h3>
+
+<p><a href="http://regexkit.sourceforge.net/">RegexKit</a>是一个正则表达式工具类。提供强大的正则表达式匹配和替换功能。我们主要使用它来对类似微博的正文替换工作。例如将 @某某 换成带链接的，将图片的URL换成img标签等。</p>
+
+<p>同时，开源库MGTemplateEngine也依赖于此库。附上<a href="http://regexkit.sourceforge.net/Documentation/index.html">RegexKit4.0的官方文档教程</a>。</p>
+
+<h3>MGTemplateEngine</h3>
+
+<p><a href="http://svn.cocoasourcecode.com/MGTemplateEngine">MGTemplateEngine</a>是一个模版引擎。我们主要使用它来生成单条微博页的内容。我们的单条微博页打算用UIWebView来显示，所以内容需要用模版渲染成HTML格式。MGTemplateEngine的模版语言比较象：Smarty, FreeMarker 和 Django的模版语言。</p>
+
+<p>MGTemplateEngine的作者官方博客在<a href="http://mattgemmell.com/2008/05/20/mgtemplateengine-templates-with-cocoa/">这里</a>。</p>
+
+<p>我们在使用时，对此开源库的Filter类进行了修改，主要增加了3个自定义的filter，用于提供我们的格式化时间，转义html和过滤空头象的用户的方式。</p>
+
+<h3>JSONKit</h3>
+
+<p><a href="https://github.com/johnezang/JSONKit">JSONKit</a>是一个比较高效的JSON解析库。我之前比较过各大JSON解析库的性能（<a href="http://blog.devtang.com/blog/2012/05/05/do-not-use-sbjson/">文章在此</a>），JSONKit算是非常不错的，大概的使用示例如下：</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+</pre></td><td><pre><code><span><span>#import &quot;JSONKit.h&quot;</span>
+</span><span>
+</span><span><span>NSString</span> <span>*</span><span>path</span> <span>=</span> <span>[[</span><span>NSBundle</span> <span>mainBundle</span><span>]</span> <span>pathForResource:</span><span>@&quot;data&quot;</span> <span>ofType:</span><span>@&quot;json&quot;</span><span>];</span>
+</span><span><span>NSData</span> <span>*</span><span>content</span> <span>=</span> <span>[</span><span>NSData</span> <span>dataWithContentsOfFile:</span><span>path</span><span>];</span>
+</span><span><span>NSDictionary</span> <span>*</span><span>kitData</span> <span>=</span> <span>[</span><span>content</span> <span>objectFromJSONData</span><span>];</span>
+</span><span><span>NSString</span> <span>*</span><span>kitString</span> <span>=</span> <span>[</span><span>kitData</span> <span>JSONString</span><span>];</span>
+</span></code></pre></td></tr></table></div>
+
+
+<h3>GTMNSString</h3>
+
+<p><a href="https://code.google.com/p/google-toolbox-for-mac/">GTMNSString</a>主要用于转义HTML中的特殊字符。以防止XSS攻击。</p>
+
+<h3>FMDB</h3>
+
+<p><a href="https://github.com/ccgus/fmdb">FMDB</a>是一个sqlite数据库封装类，需要加入 libsqlite3.dylib 依赖以及引入 sqlite3.h 头文件即可。在使用上非常简单。如下是一个例子：</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+</pre></td><td><pre><code><span><span>NSString</span> <span>*</span> <span>docsdir</span> <span>=</span> <span>[</span><span>NSSearchPathForDirectoriesInDomains</span><span>(</span><span>NSDocumentDirectory</span><span>,</span> <span>NSUserDomainMask</span><span>,</span> <span>YES</span><span>)</span> <span>lastObject</span><span>];</span>
+</span><span><span>NSString</span> <span>*</span> <span>dbpath</span> <span>=</span> <span>[</span><span>docsdir</span> <span>stringByAppendingPathComponent:</span><span>@&quot;user.sqlite&quot;</span><span>];</span>
+</span><span><span>FMDatabase</span> <span>*</span> <span>db</span> <span>=</span> <span>[</span><span>FMDatabase</span> <span>databaseWithPath:</span><span>dbpath</span><span>];</span>
+</span><span><span>[</span><span>db</span> <span>open</span><span>];</span>
+</span><span><span>FMResultSet</span> <span>*</span> <span>rs</span> <span>=</span> <span>[</span><span>db</span> <span>executeQuery:</span><span>@&quot;select * from People&quot;</span><span>];</span>
+</span><span><span>while</span> <span>([</span><span>rs</span> <span>next</span><span>])</span> <span>{</span>
+</span><span>    <span>NSLog</span><span>(</span><span>@&quot;%@ %@&quot;</span><span>,</span>
+</span><span>    <span>[</span><span>rs</span> <span>stringForColumn:</span><span>@&quot;firstname&quot;</span><span>],</span>
+</span><span>    <span>[</span><span>rs</span> <span>stringForColumn:</span><span>@&quot;lastname&quot;</span><span>]);</span>
+</span><span><span>}</span>
+</span><span><span>[</span><span>db</span> <span>close</span><span>];</span>
+</span></code></pre></td></tr></table></div>
+
+
+<h3>BBCustomBackButtonViewController</h3>
+
+<p><a href="https://github.com/typeoneerror/BBCustomBackButtonViewController">BBCustomBackButtonViewController</a> 是用于在ios4上提供自定义的NavigationBar按钮的开源库。使用上异常简单，只需要让自己的ViewController继承它就可以了。</p>
+
+<p>我对BBCustomBackButtonViewController进行了修改，主要是改动它的自定义的按钮的样式，使其和我们的风格一致。</p>
+
+<h3>MTStatusBarOverlay</h3>
+
+<p><a href="https://github.com/myell0w/MTStatusBarOverlay">MTStatusBarOverlay</a> 是一个在iphone的顶部status bar显示消息的开源库。示例代码如下：</p>
+
+<span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+</pre></td><td><pre><code><span><span>+</span> <span>(</span><span>void</span><span>)</span><span>showCompletedTextOnStatusBar:</span><span>(</span><span>NSString</span> <span>*</span><span>)</span><span>text</span> <span>{</span>
+</span><span>    <span>NSString</span> <span>*</span> <span>message</span> <span>=</span> <span>[</span><span>NSString</span> <span>stringWithFormat:</span><span>@&quot;%@成功&quot;</span><span>,</span> <span>text</span><span>];</span>
+</span><span>    <span>MTStatusBarOverlay</span> <span>*</span><span>overlay</span> <span>=</span> <span>[</span><span>MTStatusBarOverlay</span> <span>sharedInstance</span><span>];</span>
+</span><span>    <span>overlay</span><span>.</span><span>animation</span> <span>=</span> <span>MTStatusBarOverlayAnimationFallDown</span><span>;</span>
+</span><span>    <span>overlay</span><span>.</span><span>detailViewMode</span> <span>=</span> <span>MTDetailViewModeHistory</span><span>;</span>
+</span><span>    <span>[</span><span>overlay</span> <span>postImmediateFinishMessage:</span><span>message</span> <span>duration:</span><span>2.0</span> <span>animated:</span><span>YES</span><span>];</span>
+</span><span>    <span>overlay</span><span>.</span><span>progress</span> <span>=</span> <span>1.0</span><span>;</span>
+</span><span><span>}</span>
+</span></code></pre></td></tr></table></div>
+
+
+<p>但是stackoverflow上说，有项目因为这个审核被拒，但是新浪微博明显采用了此UI方案，所以我们还是大胆用了这个库。后来，我们也顺利通过了审核。</p>
+
+<h3>MBProgressHUD</h3>
+
+<p><a href="https://github.com/jdg/MBProgressHUD">MBProgressHUD</a> 是一个用于显示灰色的加载进度或结果的类。与系统自带的UIAlertView相比，MBProgressHUD由于背影是黑色的，所以视觉上不是那么强烈。我们主要用它来显示一些加载中的提示，以及一些自已会消失的操作结果（例如网络失败等）。</p>
+
+<h3>NSStringWrapper</h3>
+
+<p>因为自己有多年Java开发的经历，我还是不太习惯Objective-C连基本的字符串操作都要查文档，而我自己又记不住老长的方法名，所以我把Objective-C的字符串基本操作都封装成了Java风格的方法调用。这部分是很早前拿周末时间在家里写的，所以是开源的，<a href="https://github.com/tangqiaoboy/xcode_tool/tree/master/NSStringWrappeer">源代码地址</a>。</p>
+
+<h3>EGOTableViewPullRefresh</h3>
+
+<p><a href="https://github.com/enormego/EGOTableViewPullRefresh">EGOTableViewPullRefresh</a> 一个开源的下拉刷新组件。我对它进行了改进，增加了强制刷新功能。</p>
+
+<h3>LoadMoreTableFooterView</h3>
+
+<p><a href="https://github.com/sishen/LoadMoreTableFooterView">LoadMoreTableFooterView</a> 一个开源的上拉加载更多的组件。我做了少量修改，以便让它支持iPhone5的分辨率。</p>
+
+<h3>zepto.js</h3>
+
+<p><a href="http://zeptojs.com/">zepto</a>是一个类似JQuery的javascript开源库，用于实现css选择器和一些dom操作。它的api几乎和JQuery完全一样，优点是体积小巧。</p>
+
+<h3>ejs</h3>
+
+<p><a href="http://embeddedjs.com/getting_started.html">ejs</a>一个js端的模版库。我们主要用于渲染一些UIWebview中异步加载的内容。例如笔记的评论，问题的答案。</p>
+
+<h2>总结</h2>
+
+<p>希望上面的开源库能对你有用。最后分享一张粉笔网全站用到的所有开源项目的图片。</p>
+
+<p><img src="http://blog.devtang.com/images/opensource.jpg"></p>

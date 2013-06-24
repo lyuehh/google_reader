@@ -1,0 +1,69 @@
+---
+layout: post
+title:  "Android反编译方法的总结"
+date:   2010-08-24 12:38:00
+author: stulife
+categories: program
+---
+
+## Android反编译方法的总结
+### by stulife
+### at 2010-08-24 12:38:00
+### original <http://www.cnblogs.com/stulife/archive/2010/08/24/1807143.html>
+
+<p><a href="http://www.cnblogs.com/stulife/"><img src="http://pic.cnblogs.com/face/u118120.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/stulife/">stulife</a> 发表于 2010-08-24 12:38 <a href="http://www.cnblogs.com/stulife/archive/2010/08/24/1807143.html">原文链接</a> 阅读: 0 评论: 0</p><p>ps：对于软件开发人员来说，保护代码安全也是比较重要的因素之一，不过目前来说Google Android平台选择了Java Dalvik VM的方式使其程序很容易破解和被修改，首先APK文件其实就是一个MIME为ZIP的压缩包，我们修改ZIP后缀名方式可以看到内部的文件结构，类似Sun JavaMe的Jar压缩格式一样，不过比较去别的是Android上的二进制代码被编译成为Dex的字节码，所有的Java文件最终会编译进该文件中去，作为托管代码既然虚拟机可以识别，那么我们就可以很轻松的反编译。所有的类调用、涉及到的方法都在里面体现到，至于逻辑的执行可以通过实时调试的方法来查看，当然这需要借助一些我们自己编写的跟踪程序。Google最然在Android Market上设置了权限保护app-private文件夹的安全，但是最终我们使用修改定值的系统仍然可以获取到需要的文件。
+</p>
+<p>    总结反编译主要的目的在于学习。利用反编译进行相关的汉化或修改，还是尽量不要吧，毕竟人家写个程序不容易啊！</p>
+<p>具体方法如下：</p>
+<p>  一：<strong>所需工具(点击各自连接进入下载页面)：</strong></p>
+<p><a href="http://code.google.com/p/android4me/downloads/list">AXMLPrinter2.jar</a></p>
+<p><a href="http://code.google.com/p/dex2jar/downloads/list">dex2jar：</a></p>
+<p><a href="http://java.decompiler.free.fr/?q=jdgui">查看Jar包的GUI工具</a></p>
+<p>二，开始行动</p>
+<p style="padding:0px;margin:1em 0px 0.5em"><strong>1.用AXMLPrinter2.jar查看apk中的布局xml文件:</strong></p>
+<p style="padding:0px;margin:1em 0px 0.5em">将apk文件(为了方便起见放到tools目录里)用WinRAR等工具打开，将res/layout/main.xml解压出来(也还是放在tools目录里哦)</p>
+<p style="padding:0px;margin:1em 0px 0.5em">打开main.xml文件，内容如下(一堆天文):</p>
+<p style="padding:0px;margin:1em 0px 0.5em"><img src="http://pic002.cnblogs.com/img/stulife/201008/2010082412295148.jpg"></p>
+<p style="padding:0px;margin:1em 0px 0.5em">这时候AXMLPrinter2.jar派上用场了，打开cmd终端，一直进入到tools目录下，输入如下命令:</p>
+<p style="padding:0px;margin:1em 0px 0.5em"><strong>java -jar AXMLPrinter2.jar main.xml &gt; main.txt.</strong> (如下图所示)</p>
+<p style="padding:0px;margin:1em 0px 0.5em"><img src="http://pic002.cnblogs.com/img/stulife/201008/2010082412305098.jpg"></p>
+<p><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px">打开main.txt代码如下：</span></p>
+<p><br><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px"><ol>
+<li><span><span>&lt;?xml version=</span><span>"1.0"</span><span> encoding=</span><span>"utf-8"</span><span>?&gt;  </span></span></li>
+<li><span>&lt;LinearLayout  </span></li>
+<li><span>    xmlns:android=<span>"http://schemas.android.com/apk/res/android"</span><span>  </span></span></li>
+<li><span>    android:orientation=<span>"1"</span><span>  </span></span></li>
+<li><span>    android:layout_width=<span>"-1"</span><span>  </span></span></li>
+<li><span>    android:layout_height=<span>"-1"</span><span>  </span></span></li>
+<li><span>    &gt;  </span></li>
+<li><span>    &lt;WebView  </span></li>
+<li><span>        android:id=<span>"@7F050000"</span><span>  </span></span></li>
+<li><span>        android:layout_width=<span>"-1"</span><span>  </span></span></li>
+<li><span>        android:layout_height=<span>"-2"</span><span>  </span></span></li>
+<li><span>        &gt;  </span></li>
+<li><span>    &lt;/WebView&gt;  </span></li>
+<li><span>&lt;/LinearLayout&gt;</span><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px"></span></li>
+</ol></span></p>
+<p><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px"><span> </span><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px">为了比对打开源程序中的main.xml代码如下(大家比对一下吧):</span></span></p>
+<p><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px"><ol>
+<li><span><span>&lt;?xml version=</span><span>"1.0"</span><span> encoding=</span><span>"utf-8"</span><span>?&gt;  </span></span></li>
+<li><span>&lt;LinearLayout xmlns:android=<span>"http://schemas.android.com/apk/res/android"</span><span>  </span></span></li>
+<li><span>    android:orientation=<span>"vertical"</span><span>  </span></span></li>
+<li><span>    android:layout_width=<span>"fill_parent"</span><span>  </span></span></li>
+<li><span>    android:layout_height=<span>"fill_parent"</span><span>  </span></span></li>
+<li><span>    &gt;  </span></li>
+<li><span>&lt;WebView  </span></li>
+<li><span>    android:id=<span>"@+id/apk_web"</span><span>  </span></span></li>
+<li><span>    android:layout_height=<span>"wrap_content"</span><span>  </span></span></li>
+<li><span>    android:layout_width=<span>"fill_parent"</span><span>  </span></span></li>
+<li><span>      </span></li>
+<li><span>/&gt;  </span></li>
+<li><span>&lt;/LinearLayout&gt;  <br></span></li>
+</ol></span></p>
+<p>2：通过dex2jar工具进行反编译。</p>
+<p>把apk中的class.dex拷贝到dex2jar.bat所在目录。运行dex2jar.bat   class.dex，将会在其文件夹下生成classes.dex.dex2jar.jar。</p>
+<p> </p>
+<p><img src="http://pic002.cnblogs.com/img/stulife/201008/2010082412353811.png"></p>
+<p>3、可以将jar文件重新命名后拷贝到GUI文件夹下，运行JD-GUI工具（它是绿色无须安装的），打开上面的jar文件，即可看到源代码。</p>
+<p><img src="http://pic002.cnblogs.com/img/stulife/201008/2010082412371013.png"></p>
+<p><span style="font-family:verdana,sans-serif;line-height:18px;font-size:12px"></span></p><img src="http://www.cnblogs.com/stulife/aggbug/1807143.html?type=1" width="1" height="1" alt=""><p>评论: 0　<a href="http://www.cnblogs.com/stulife/archive/2010/08/24/1807143.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/stulife/archive/2010/08/24/1807143.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/71818/">被收编的康盛与被消解的梦想</a><span style="color:gray">(2010-08-24 11:53)</span><br>· <a href="http://news.cnblogs.com/n/71817/">IBM与微软合作：硬软件，还是软硬件？</a><span style="color:gray">(2010-08-24 11:53)</span><br>· <a href="http://news.cnblogs.com/n/71815/">连线：iPhone秘史</a><span style="color:gray">(2010-08-24 11:50)</span><br>· <a href="http://news.cnblogs.com/n/71814/">HTML5提出安全新问题</a><span style="color:gray">(2010-08-24 11:45)</span><br>· <a href="http://news.cnblogs.com/n/71813/">李开复：团购在中国血拼后只剩下10家</a><span style="color:gray">(2010-08-24 11:39)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/71661/">热点新闻：腾讯收购康盛创想</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

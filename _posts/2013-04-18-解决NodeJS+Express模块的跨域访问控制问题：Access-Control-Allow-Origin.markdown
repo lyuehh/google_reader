@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "解决NodeJS+Express模块的跨域访问控制问题：Access-Control-Allow-Origin"
+date:   2013-04-18 16:06:19
+author: 董 龙飞
+categories: program
+---
+
+## 解决NodeJS+Express模块的跨域访问控制问题：Access-Control-Allow-Origin
+### by 董 龙飞
+### at 2013-04-18 16:06:19
+### original <http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/?utm_source=rss&utm_medium=rss&utm_campaign=nodejsaccess-control-allow-origin>
+
+<p>在一个项目上想用NodeJS，所以边学边练。第一个遇到的问题就是跨域访问控制问题。很多初学者会遇到同样问题。 问题 在前端的JS（http://localhost/xxx）中ajax访问后端RestAPI(http://localhost:3000/….)时(Chrome)报错： XMLHttpRequest cannot load http://localhost:3000/auth/xxx/xxx. Origin http://localhost is not allowed by Access-Control-Allow-Origin. 方案 解决代码如下： var express = require(&#39;express&#39;); var app = express(); //设置跨域访问 app.all(&#39;*&#39;, function(req, res, next) { res.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;); res.header(&quot;Access-Control-Allow-Headers&quot;, &quot;X-Requested-With&quot;); res.header(&quot;Access-Control-Allow-Methods&quot;,&quot;PUT,POST,GET,DELETE,OPTIONS&quot;); res.header(&quot;X-Powered-By&quot;,&#39; 3.2.1&#39;) res.header(&quot;Content-Type&quot;, &quot;application/json;charset=utf-8&quot;); next(); … <a href="http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/">Continue reading <span>→</span></a></p><p>The post <a href="http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/">解决NodeJS+Express模块的跨域访问控制问题：Access-Control-Allow-Origin</a> appeared first on <a href="http://www.donglongfei.com">RIA Coder</a>.</p><br><br><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/ico-tag.png" border="0"> Tags:  <br><br><div style="width:80%"><table align="left" width="50%" cellspacing="0" cellpadding="0" bgcolor="#f1f1f1" border="0px;">
+				<tbody>
+				<tr bgcolor="#ffffff"><td align="center" width="17%" valign="top">
+						<span>Del.icio.us</span><br>
+						<a href="http://del.icio.us/post?url=http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/&amp;title=%E8%A7%A3%E5%86%B3NodeJS+Express%E6%A8%A1%E5%9D%97%E7%9A%84%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E9%97%AE%E9%A2%98%EF%BC%9AAccess-Control-Allow-Origin">
+						<img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/delicious.gif" border="0">
+						</a>  
+						</td><td align="center" width="17%" valign="top">
+						<span>Facebook</span><br>
+						<a href="http://www.facebook.com/share.php?u=http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/facebook_icon.png" border="0"></a>  
+						</td><td align="center" width="17%" valign="top">
+						<span>TweetThis</span><br>
+						<a href="http://twitthis.com/twit?url=http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/&amp;title=%E8%A7%A3%E5%86%B3NodeJS+Express%E6%A8%A1%E5%9D%97%E7%9A%84%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E9%97%AE%E9%A2%98%EF%BC%9AAccess-Control-Allow-Origin"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tweet.png" border="0"></a>  					</td><td align="center" width="17%" valign="top">
+						<span>Digg</span><br>
+						<a href="http://digg.com/submit?phase=2&amp;url=http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/&amp;title=%E8%A7%A3%E5%86%B3NodeJS+Express%E6%A8%A1%E5%9D%97%E7%9A%84%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E9%97%AE%E9%A2%98%EF%BC%9AAccess-Control-Allow-Origin"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/digg.png" border="0"></a>  
+						</td><td align="center" width="17%" valign="top">
+						<span>StumbleUpon</span><br>
+						<a href="http://www.stumbleupon.com/submit?url=http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/&amp;title=%E8%A7%A3%E5%86%B3NodeJS+Express%E6%A8%A1%E5%9D%97%E7%9A%84%E8%B7%A8%E5%9F%9F%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E9%97%AE%E9%A2%98%EF%BC%9AAccess-Control-Allow-Origin"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/stumble.gif" border="0"></a>  
+						</td></tr>
+				</tbody></table></div><br><div style="background:#eeeeee;padding:0px 0px 0px 15px;margin:10px 0px 0px 0px"><div style="padding:5px 0px 5px 0px"><b>Comments:</b>  <a href="http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/#respond">0 (Zero),  Be the first to leave a reply!</a></div><div style="padding:13px 0px 5px 0px"><span style="border-bottom:1px dashed #003399;padding-bottom:4px"><strong>You might be interested in this:</strong></span>  <br><ul style="margin:0;padding:0;padding-top:10px;padding-bottom:5px"><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2013/03/edge-animate-1-5-javascript-api-cn-1/">Edge Animate 1.5 JavaScript API手册（中文）《一》</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2012/10/test-the-web-forwards-ppt/">Test the web forward活动演讲PPT</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2011/05/adobe-webinar%e4%bd%bf%e7%94%a8flex4-5%e5%bc%80%e5%8f%91%e8%b7%a8%e7%b3%bb%e7%bb%9f%e7%a7%bb%e5%8a%a8%e5%ba%94%e7%94%a8%ef%bc%9aios-blackberry-android/">Adobe Webinar:使用Flex4.5开发跨系统移动应用：IOS + BlackBerry + Android</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2011/08/customize-wordpress-post-url-permalinks/">Blog SEO: 设置Wordpress Blog的自定义URL</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2011/03/%e5%ae%9a%e5%88%b6itemrenderer/">定制IconItemRenderer</a></li></ul></div></div><hr style="color:#ebebeb"><small>Copyright © <a href="http://www.donglongfei.com">RIA Coder</a> [<a href="http://www.donglongfei.com/2013/04/nodejsaccess-control-allow-origin/">解决NodeJS+Express模块的跨域访问控制问题：Access-Control-Allow-Origin</a>], All Right Reserved. 2013.</small><br>

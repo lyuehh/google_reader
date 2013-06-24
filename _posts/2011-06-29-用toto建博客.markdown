@@ -1,0 +1,67 @@
+---
+layout: post
+title:  "用toto建博客"
+date:   2011-06-29 16:01:42
+author: wanglian
+categories: program
+---
+
+## 用toto建博客
+### by wanglian
+### at 2011-06-29 16:01:42
+### original <http://wanglian.iteye.com/blog/1109485>
+
+<p>对于程序员或创业团队来说，还是有必要拥有一个属于自己的博客。Wordpress 曾经让个人或企业搭建博客变得非常容易。但是我们觉得 Wordpress 还是有些重量级，所以选择了一个非常轻便的工具 toto，一段只有200多行代码的Ruby应用程序。</p>
+<h2>前提条件</h2>
+<p>toto之所以简单，是因为它利用一些很好的工具和服务。要使用toto，必须要对这些有所了解。<br><br>
+1 Ruby on Rails <br>
+对于互联网创业项目来说，Rails是最理想的开发工具。它适合敏捷开发，可以快速地开发应用。<br><br>
+2 Git <br>
+git是一个高效的版本管理工具，你一定会爱上她，别无选择。<br><br>
+3 Heroku <br>
+你需要注册一个Heroku帐号，并在本地安装Heroku工具。<br>
+Heroku是一个Rails应用托管平台，toto理想的部署平台就是Heroku。有了Heroku，你可以专注于Rails应用开发，将服务器环境和部署备份等问题都交给Heroku。</p>
+<h2>一分钟建博客</h2>
+<p>环境准备好了，我们就可以开始了。按照toto的安装文档，只需要4个命令即可搭建一个博客。（把myblog换成你自定义的名字）</p>
+<p> </p>
+<pre name="code">$ git clone git://github.com/cloudhead/dorothy.git myblog
+$ cd myblog
+$ heroku create myblog
+$ git push heroku master</pre>
+<p> </p>
+<p>这样就可以访问你的博客了： http://myblog.heroku.com。</p>
+<h2>如何更新博客？</h2>
+<p>我们来看一下toto的目录结构</p>
+<p><img src="http://workxp.info/images/blog/toto-structure.png" alt=""><br><br>
+每一篇博客就是一个文件，放在articles目录下。写一篇博客就是在该目录下新建一个文件。<br>
+toto提供了一个命令可以帮我们新建一篇博客，</p>
+<pre name="code">rake new</pre>
+ 
+<p>遇到提示时输入标题：Hello World<br>
+你可能注意到了文件的命名规则，生成文件名是2011-06-07-hello-world.txt。toto默认使用这种规则来建立链接。这对中文来说可能是一个问题，因为我们一般不希望用中文做文件名。<br>
+解决的办法是这样的。比如，博客标题为“世界你好“，那么文件名还可以是2011-06-07-hello-world.txt。只需要在文件里面加上一行：</p>
+<pre name="code">---
+title: 世界你好
+date: 07/06/2011
+slug: hello-world # 加上这一行</pre>
+ 
+<p>toto使用Markdown标记语法来定义文章格式。详细的语法规则请参考：http://en.wikipedia.org/wiki/Markdown。<br><br>
+文章编辑好之后，提交到Heroku，</p>
+<pre name="code">rake publish</pre>
+ 
+<p>刷新一下就可以看到更新了。</p>
+<p> </p>
+<p>这是toto建的博客 <a href="http://workxp.info/blog/2011/6/5/toto-tutorial">http://blog.workxp.info/2011/6/5/toto-tutorial</a>
+<br><br>
+上面我们简单介绍了如何用toto来建博客。后面我们将继续探讨稍微复杂一点的主题，比如，个性化配置，模板定义，如何与Rails应用集成等。</p>
+<p> </p>
+          
+          <br><br>
+          <span style="color:red">
+            <a href="http://wanglian.iteye.com/blog/1109485#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

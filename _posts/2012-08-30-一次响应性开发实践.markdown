@@ -1,0 +1,168 @@
+---
+layout: post
+title:  "一次响应性开发实践"
+date:   2012-08-30 20:01:48
+author: Kejun
+categories: program
+---
+
+## 一次响应性开发实践
+### by Kejun
+### at 2012-08-30 20:01:48
+### original <http://hikejun.com/blog/2012/08/30/%e4%b8%80%e6%ac%a1%e5%93%8d%e5%ba%94%e6%80%a7%e5%bc%80%e5%8f%91%e5%ae%9e%e8%b7%b5/>
+
+<p>响应性开发的概念不做细述，一年前曾做过一次分享”<a href="http://hikejun.com/blog/2011/06/24/%E8%81%8A%E8%81%8A%E5%93%8D%E5%BA%94%E6%80%A7%E8%AE%BE%E8%AE%A1%E5%92%8C%E5%BC%80%E5%8F%91/">聊聊响应性设计和开发</a>“。<br>
+仅仅利用media query适配样式是远远不够的，并没有考虑触屏下的行为和特有的内容组织方式的不同。简单在桌面版基础上叠加mobile版的代码，会带来请求增多、流量、性能、代码冗余等诸多方面问题。有统计说86%的手机站看起来small其实体积比桌面版还大。</p>
+<p>我们这次充分发挥“响应”的灵活性，实现one web。</p>
+<p><a href="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group.png"><img title="figure-mb-group" src="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group.png" alt="" width="500" height="299"></a>响应式开发就为了实现one web:</p>
+<p style="text-align:center"><a href="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-1.png"><img title="figure-mb-group-1" src="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-1.png" alt="" width="500"></a></p>
+<p> </p>
+<p><strong>1. 响应性的模块</strong><br>
+原本网站的模块化程度越高越便于做响应性开发。一个page例如是这样组织的:<br>
+&lt;%include file=”path/mod1.html” args=”data=data” /&gt;<br>
+&lt;%include file=”path/mod2.html” args=”data=data” /&gt;<br>
+如果在手机下访问，模板系统在生成这个页面时，会在path/下找mobile.mod1.html，有则加之，否则加mod1.html。也就是说在同一目录下，会存在多个版本的模块，当前只有2种：mod1.html（桌面版），mobile.mod1.html（mobile版）</p>
+<p>响应部分的代码，跟主站代码是放在一起的，这样更便于维护。一个页面模板的结构是这样的：</p>
+<p>page1.html:</p>
+<p>&lt;%inherit file=”/base.html” /&gt;</p>
+<p>&lt;%def name=”main”&gt;</p>
+<p>桌面版主要内容</p>
+<p>&lt;%include file=”path/mod1.html” args=”data=data” /&gt;</p>
+<p>&lt;/%def&gt;</p>
+<p>&lt;%def name=”sidebar”&gt;</p>
+<p>桌面版边栏内容</p>
+<p>&lt;/%def&gt;</p>
+<p>&lt;%def name=”mobile_main”&gt;</p>
+<p>&lt;%block filter=”collect_css”&gt;</p>
+<p>mobile版css</p>
+<p>&lt;/%block&gt;</p>
+<p>mobile版主要内容。如果可以复用，直接调${self.main()}</p>
+<p>很多情况下内容是不同的，比如去掉不必要的模块。</p>
+<p>&lt;/%def&gt;</p>
+<p>&lt;%def name=”mobile_sidebar”&gt;</p>
+<p>mobile版底部内容</p>
+<p>&lt;/%def&gt;</p>
+<p>这意味可以同时开发/维护两个版本。（同样，设计师在设计一个页面，也需要秉承mobile first的原则）<br>
+在同一目录、同一文件维护比分布在不同的仓库中要方便的多。</p>
+<p> </p>
+<p> </p>
+<p><strong>2. 响应性的css/js</strong><br>
+mobile版的变化很大，在样式上并不是桌面版css+mobile版css的关系。这得益于我们之前对静态文件管理系统的改造。传统的css的组织方式是集中式的，集中在几个通用文件中，形如base.css + product.css。而我们现在的方式是base.css + mod_1.css(inline) + mod_2.css(inline) + mod_3.css(inline) … 是按需组合的形式。</p>
+<p>这样，加上设备判断后就可以轻易变成：<br>
+mobile.base.css + mobile.mod_1.css(inline) + mobile.mod_2.css(inline) + mobile.mod_3.css(inline) …</p>
+<p>css/js文件跟模板一样，在同一目录下分别有桌面版和mobile版。根据访问端的情况，自动适配、按需组合。这样可以得到一个更优化的mobile站。</p>
+<p> </p>
+<p> </p>
+<p><strong>3. 增强触屏行为和兼容桌面事件</strong><br>
+前者是指附加触屏上特有的事件：touchstart/touchmove/touchend以及手势swip/pinch/rotate/shake。这个不是难点。</p>
+<p>mobile浏览器和桌面浏览器的事件模型有明显差异，为了完全复用桌面版的各种js组件，首要问题是设法兼容桌面事件（click和mouse事件）。</p>
+<p>mobile上的click和mouse事件有几个需要注意的地方：<br>
+a. click和mouse事件不会发生在不可点击的元素上，意味绑在document上的事件代理完全失效<br>
+b. mouse事件是发生在手指离开屏幕后，且顺序是mouseover &gt; mousemove &gt; mousedown &gt; mouseup<br>
+c. click事件最后触发。从手指离开屏幕起，有约300多毫秒延迟，而且有可能不会被触发</p>
+<p>见下图：</p>
+<div><img src="http://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariWebContent/Art/events_1_finger.jpg" alt=""></div>
+<p>“If the user taps a clickable element, events arrive in this order: mouseover, mousemove, mousedown, mouseup, and click. The mouseout event occurs only if the user taps on another clickable item. Also, if the contents of the page changes on the mousemove event, no subsequent events in the sequence are sent.”(<a href="http://developer.apple.com/library/safari/#documentation/AppleApplications/Reference/SafariWebContent/HandlingEvents/HandlingEvents.html">出处</a>)</p>
+<p>android/ios不支持beforeunload事件，对unload事件的支持有些怪异，需要用pageshow/pagehide事件替代。</p>
+<p>以上事件的差异都是要尽力消除的。解决思路是利用jQuery的special event机制覆盖掉原本的事件绑定。即：node.click(fn)，mobile上转向node.touchend(fn) 。实现的代码：<a href="https://gist.github.com/3358036">https://gist.github.com/3358036</a></p>
+<p> </p>
+<p> </p>
+<p><strong>4. 优化和用户体验</strong></p>
+<p>a.去掉了apple-mobile-web-app-capable声明。单页应用要加上，用响应式开发的加上这句体验反而不好，跳转的链接会弹出窗口打开。<br>
+<code><br>
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no&quot;&gt;<br>
+&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;/&gt;<br>
+## &lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;<br>
+</code></p>
+<p>b. “If the user taps a nonclickable element, no events are generated.”(引自Apple Dev Center)，所以：<br>
+<code><br>
+body {<br>
+cursor:pointer;<br>
+}<br>
+</code></p>
+<p>c. 设定内容中图片的最大宽：<br>
+<code><br>
+.topic-content img {<br>
+max-width:100%;<br>
+}<br>
+</code></p>
+<p>d. 加载提示，感觉像异步加载。</p>
+<p>e. application cache本身是为web app设计的，在响应式开发中的应用是不同的。<br>
+把大文件在手机端cache起来:<br>
+<code><br>
+CACHE MANIFEST<br>
+# version 0.0.1<br>
+CACHE:<br>
+${static('/js/jquery.min.js')}<br>
+${static('/js/do.js')}<br>
+${static('/css/mobile/base.css')}<br>
+${image_url('/pics/icon/dou.png')}<br>
+${static('/css/ui/dialog.css')}<br>
+${static('/js/ui/dialog.js')}<br>
+${static('/js/mobile/jquery.mobile.events.js')}<br>
+</code><br>
+这个文件是动态生成的，好处是当文件更新后，文件名中的签名会跟着变，也就会触发手机端app cache的更新。</p>
+<p>判断cache更新：<br>
+<code><br>
+if (window.applicationCache) {<br>
+window.applicationCache.addEventListener('updateready',function(){<br>
+window.applicationCache.swapCache();<br>
+}, false);<br>
+}<br>
+</code><br>
+为了避免动态页面被cache<del>，在一个隐藏的iframe里指定它。(更改，还需要进一步测试)</del></p>
+<p>f. mobile上的UI库，比桌面版更有必要。</p>
+<p> </p>
+<p> </p>
+<p><strong>5. 调试和监测</strong></p>
+<p>用了两个工具adobe shadow和自带的tcpdump，对android/ios均适用。</p>
+<p>a. adobe shadow 出了一段时间了。原来的问题是它要走adobe的weinre server，慢！终于<a href="http://labs.adobe.com/technologies/shadow/">最新版4</a>已经可以指定本地的weinre server了。怎么启用本地weinre server是另外话题自己去搜吧，我是用jar启动的，作者网站提供各种版本：<a href="http://www.douban.com/link2?url=http%3A//people.apache.org/%7Epmuellr/weinre/builds/1.x/" rel="nofollow">http://people.apache.org/~pmuellr/weinre/builds/1.x/</a><br>
+&gt;java -jar ~/weinre-jar/weinre.jar –boundHost 10.0.2.48  (ifconfig查具体ip是什么)<br>
+weinre server启动参数：</p>
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="middle">–httpPort [portNumber]</td>
+<td valign="middle">改变HTTP服务器的端口号</td>
+<td valign="middle">8080</td>
+</tr>
+<tr>
+<td valign="middle">–boundHost [hostname | ip address | -all-]</td>
+<td valign="middle">改变主机名。如果使用默认的localhost，将无法从另一台机器访问该服务器</td>
+<td valign="middle">localhost</td>
+</tr>
+<tr>
+<td valign="middle">–verbose [true | false]</td>
+<td valign="middle">记录标准输出行为</td>
+<td valign="middle">false</td>
+</tr>
+<tr>
+<td valign="middle">–debug [true | false]</td>
+<td valign="middle">详细的操作日志输出到标准输出</td>
+<td valign="middle">false</td>
+</tr>
+<tr>
+<td valign="middle">–deathTimeout [seconds]</td>
+<td valign="middle">指定超时</td>
+<td valign="middle">3</td>
+</tr>
+</tbody>
+</table>
+<p>安装shadow，同时手机上安装shadow client。</p>
+<p>指定本地server:<br>
+<a href="http://hikejun.com/blog/wp-content/uploads/2012/08/32488001-1.jpeg"><img title="32488001-1" src="http://hikejun.com/blog/wp-content/uploads/2012/08/32488001-1.jpeg" alt="" width="225" height="185"></a><a href="http://hikejun.com/blog/wp-content/uploads/2012/08/32488001-2.jpeg"><img title="32488001-2" src="http://hikejun.com/blog/wp-content/uploads/2012/08/32488001-2.jpeg" alt="" width="498" height="262"></a> 手机打开shadow client直接找ip。shadow其实就是对weinre包装了一层，它的inspector其实就是weinre调web inspector调试。</p>
+<p> </p>
+<p>b. 用tcpdump监测http请求（<a href="http://code.google.com/p/pcaphar/wiki/CaptureMobileTraffics">参考这里</a>）。步骤：</p>
+<p>step 1: 建一个wifi热点<br>
+step 2: 用tcpdump命令捕获tcp的traffic，命令：<br>
+sudo tcpdump -i en1 -n -s 0 -w group.pcap tcp or port 53<br>
+(参考tcpdump用法<a href="http://www.tcpdump.org/tcpdump_man.html">http://www.tcpdump.org/tcpdump_man.html</a>)<br>
+step 3: 手机联上热点，打开网站（先清cache）<br>
+step 4: Ctrl+c停掉tcpdump，log保存到指定的group.pcap文件中。pcap(packet capture)<br>
+step 5: pcap转成har文件浏览，<a href="http://pcapperf.appspot.com/">http://pcapperf.appspot.com</a> 或导入到charles里查看也很方便，分别看下图：</p>
+<p><a href="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-2.png"><img title="figure-mb-group-2" src="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-2.png" alt="" width="500" height="333"><br>
+</a><a href="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-3.png"><img title="figure-mb-group-3" src="http://hikejun.com/blog/wp-content/uploads/2012/08/figure-mb-group-3.png" alt="" width="500" height="329"></a></p>
+<p>c. 在线工具：<a href="http://mobitest.akamai.com/">mobitest.akamai.com</a> (说是开源了)</p>
+<p> </p>
+<p>响应式开发最大的优点是投入产出比高。可以高效的把产品向各种终端设备上部署，而且使用体验也可以做到不错。这只是探索的开始。<br>
+用手机访问：<a href="http://group.douban.com">http://group.douban.com</a></p>

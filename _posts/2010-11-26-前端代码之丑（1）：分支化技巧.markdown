@@ -1,0 +1,97 @@
+---
+layout: post
+title:  "前端代码之丑（1）：分支化技巧"
+date:   2010-11-26 22:47:32
+author: lifesinger
+categories: program
+---
+
+## 前端代码之丑（1）：分支化技巧
+### by lifesinger
+### at 2010-11-26 22:47:32
+### original <http://lifesinger.org/blog/2010/11/fed-ugly-code-1/>
+
+<p>看了 InfoQ 的 <a href="http://www.infoq.com/cn/news/2010/11/ugly-code-1">代码之丑</a> 专栏，心痒痒忍不住，前端也来一个系列吧。</p>
+<p>分析的代码片段大都来自实际项目。还希望代码主人多多包容，让我们一起共同研究探讨，互助学习提高。</p>
+<h3>实际代码</h3>
+<p>今天要分析的是获取邮费目的地的一段代码（做了部分简化，整体保持原貌）：</p>
+<pre>
+var DEST_MAP = {
+    '1': '全国',
+    '110000': '北京',
+    '230000': '黑龙江'
+};
+// 注：精简了数据。真实代码中，有 36 个键值对，表示全国各个省份。
+var DEST_MAP_UTF8 = {
+    '1': '全國',
+    '110000': '北京',
+    '230000': '黑龍江'
+};
+var doc = document, EMPTY = '';
+var charset = doc.charset || doc['characterSet'] || 'gb2312';
+var isUTF8 = charset.toLowerCase().indexOf('utf-8') != -1;
+var getDestNameByCode = (function() {
+    if (isUTF8) {
+        return function(destCode) {
+            return DEST_MAP_UTF8[destCode] || EMPTY;
+        }
+    }
+    else {
+        return function(destCode) {
+            return DEST_MAP[destCode] || EMPTY;
+        }
+    }
+})();
+</pre>
+<p>淘宝的页面，有简体版和繁体版，简体版采用 GB 编码，繁体版用 UTF-8 编码。上面的代码，根据 charset 来判断是否繁体版。然后根据是否繁体版，来决定 <code>getDestNameByCode</code> 的定义。<br>
+<span></span></p>
+<h3>冗余闭包</h3>
+<p>在 JavaScript 里，可以用闭包来封存数据。上面的代码，闭包中并没有需要封存的数据。很显然可以去掉闭包，用条件表达式来实现分支化即可：</p>
+<pre>
+var getDestNameByCode = isUTF8 ?
+    function(destCode) {
+        return DEST_MAP_UTF8[destCode] || EMPTY;
+    } :
+    function(destCode) {
+        return DEST_MAP[destCode] || EMPTY;
+    };
+</pre>
+<p>去掉一层冗余闭包，胃里舒服多了，但上面的代码依旧让人感觉很雷同。两个分支函数里，只有 <code>DEST_MAP</code> 不同。进一步优化：</p>
+<pre>
+var MAP = isUTF8 ? DEST_MAP_UTF8 : DEST_MAP;
+function getDestNameByCode(destCode) {
+    return MAP[destCode] || EMPTY;
+}
+</pre>
+<h3>差异化数据</h3>
+<p>代码越来越少，可阅读性也没降低，心情逐渐愉快起来。但一看到 <code>DEST_MAP</code> 和 <code>DEST_MAP_UTF8</code> 两大段数据，心情还是糟糟的。这两个数据对象，key 值是一样的，只有部分 val 值有繁简区别。很快想到下面的改进方式：</p>
+<pre>
+var doc = document,
+    charset = doc.charset || doc['characterSet'] || 'gb2312',
+    DEST_MAP = {
+    '1': '全国',
+    '110000': '北京',
+    '230000': '黑龙江'
+};
+if (charset.toLowerCase() === 'utf-8') {
+    DEST_MAP['1'] = '全國';
+    DEST_MAP['230000'] = '黑龍江';
+}
+function getDestNameByCode(destCode) {
+    return DEST_MAP[destCode] || '';
+}
+</pre>
+<p><code>doc</code> 和 <code>charset</code> 变量在其它代码中还需要用到，保留定义。<code>isUTF8</code> 仅用来分支化繁简数据，直接内联化处理。</p>
+<p>上面的代码，和原始代码相比，代码量减少了不少，可阅读性也还不错，很清晰。这样折腾后，胃里舒服多了，哈哈。</p>
+<h3>过犹不及</h3>
+<p>代码优化，要时刻权衡性能与可维护性，权衡时间和空间。从空间占用上讲，上面的数据对象还可以进一步缩减：</p>
+<pre>
+var DEST_MAP = {
+    '1': ['全国', '全國'],
+    '110000': '北京',
+    '230000': ['黑龙江', '黑龍江']
+};
+</pre>
+<p>然后在 <code>getDestNameByCode</code> 方法里，根据 <code>isUTF8</code> 决定获取哪一个值。这样能让整体代码更小，但增加了 <code>getDestNameByCode</code> 的复杂性，可阅读性也降低了，感觉过犹不及。</p>
+<h3>结语</h3>
+<p>好了，第一期前端代码之丑结束。各位朋友，谈谈你的想法？</p>

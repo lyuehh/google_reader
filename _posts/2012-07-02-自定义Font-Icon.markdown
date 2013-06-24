@@ -1,0 +1,125 @@
+---
+layout: post
+title:  "自定义Font Icon"
+date:   2012-07-02 23:33:22
+author: Airen
+categories: program
+---
+
+## 自定义Font Icon
+### by Airen
+### at 2012-07-02 23:33:22
+### original <http://www.w3cplus.com/css3/font-icon-with-fontomas>
+
+<div><div><div><p>前段时间在《<a href="http://www.w3cplus.com/css3/web-icon-with-font-face">@font-face制作Web Icon</a>》一文收集了三种webfont通过<a href="http://www.w3cplus.com/css3">CSS3</a>的<a href="http://www.w3cplus.com/content/css3-font-face">@font-face</a>来制作Icon图标。现在在网上最为流行的是<a href="http://twitter.com/robmadole/">@robmadole</a>和<a href="http://twitter.com/supercodepoet/">@supercodepoet</a>两位大师制作的<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>：</p>
+<p><a href="http://fortawesome.github.com/Font-Awesome/"><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/webfonticon-5.jpg"></a></p>
+<p>两位大师给大家准备近两百种不同的Icon图标，都是使用@font-face应用自定义的字体实现的。但有一个不足之处，有很多图标，我们无法使用字符或者实体符来识别，如果需要使用，只能把所有标签都应用，有时我们只需要一两个，而使用这么一个庞大的字符系统，好像有点不太划算。那么今天我要给大家介绍的是使用网络工具<a href="http://nodeca.github.com/fontomas/">Fontomas</a>自定义需要的font icon图标。</p>
+<p><a href="http://nodeca.github.com/fontomas/">Fontomas</a>为我们提供了四种不同的字体来制作Icon图标：</p>
+<ol><li><a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas/index.html">Entypo</a></li>
+<li><a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas/demo2.html">IconicFill</a></li>
+<li><a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas/demo3.html">IconicStroke</a></li>
+<li><a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas/demo4.html">WebSymbolsRegular</a></li>
+</ol><p><a href="http://nodeca.github.com/fontomas/">Fontomas</a>为大家提供的四种字体都是以svg的格式，我们可以下载所需的字体，通过<a href="http://www.fontsquirrel.com/fontface/generator">FontSquirrel</a>或者<a href="http://onlinefontconverter.com/">OnlineFontconverter</a>工具来帮助我们转换成所需的字体。下面我们就一起来看看如何得到所需的svg字体，并如何转换成字体。</p>
+<h4>第一步：打开<a href="http://nodeca.github.com/fontomas/">Fontomas</a></h4>
+<p>要制作，必须要保证你那连网了，并且能正常登录到<a href="http://nodeca.github.com/fontomas/">Fontomas</a>网站。进入后你能看到下面这样的页面：</p>
+<p><a href="http://nodeca.github.com/fontomas/"><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-1.jpg"></a></p>
+<p>上面显示的是其中一种字体，下面还有其他三种字体，这些我们并不是非常关心，因为知道一种的做法，就知道其他的做法。我们关键来看上面的两个部分：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-2.jpg" width="400"></p>
+<p>我们要用到的就是上图的两个部分，第一个部分告诉我们要先做什么，后做什么。而第二部分可以帮助我们设置icon的大小，如果你有font icon字体，你也可以上传，并定制。那么我们就按现成的来做吧。</p>
+<h4>第二步：选择需要的Icon</h4>
+<p>这步其实很简单，你可以在所需要的字体范围内选择你需要的icon。</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-3.jpg" width="400"></p>
+<p>你选中后，第二步的“Rearrange”会告诉你选中多少个icon，如上图所示。</p>
+<h4>第三步：获取字符号或实体符编辑</h4>
+<p>接下来点击蓝色导航中的“Rearrange”，我们就可以获取刚才选择的“14”个Icon相对应的“字符号”或者“实体符编码”：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-4.jpg" width="400"></p>
+<h4>第四步：获取svg字体以及字符号的编码</h4>
+<p>接下来这一步是关键的一步，点击“Save Font”我们就可以得到刚才选中的字符的svg字体以及对应的字符编码，并且需要下载到本地来：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-5.jpg" width="400"></p>
+<p>并把对应的编码copy下来：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-6.jpg"></p>
+<h4>第五步：转换字体</h4>
+<p>这一步也是关键的一步，刚才我们得到的仅是“svg”字体，但有些浏览器并不支持这种字体(详细的参见<a href="http://www.w3cplus.com/content/css3-font-face">@font-face</a>),所以我们还需要借助工具将其转换成所需的字体，我习惯使用<a href="http://www.fontsquirrel.com/fontface/generator">FontSquirrel</a>工具。详细的转换请参考<a href="http://www.w3cplus.com/content/css3-font-face">@font-face</a>。此处我们只看看几张截图，帮助大家理解如何得到自己需的字体：</p>
+<p>打开工个界面：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/font-face-kit-generator.png" style="width:400px;height:293px"></p>
+<p>添加字体：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/add-fonts.jpg" style="width:373px;height:180px"></p>
+<p>转换字体：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/font-download.png" style="width:400px;height:299px"></p>
+<p>字体转换过来了，我们就可以正常使用了。下面提供这四种字体的全部代码：</p>
+<p><strong>@font-face调用转用的字体：</strong></p>
+<pre>	/*Entypo font*/
+@font-face {
+    font-family: 'FontomasEmtypo';
+    src: url('entypo/fontomas-webfont.eot');
+    src: url('entypo/fontomas-webfont.eot?#iefix') format('embedded-opentype'),
+         url('entypo/fontomas-webfont.woff') format('woff'),
+         url('entypo/fontomas-webfont.ttf') format('truetype'),
+         url('entypo/fontomas-webfont.svg#FontomasCustomRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*IconicFill font*/
+@font-face {
+    font-family: 'FontomasIconicFill';
+    src: url('iconicfill/fontomas-webfont.eot');
+    src: url('iconicfill/fontomas-webfont.eot?#iefix') format('embedded-opentype'),
+         url('iconicfill/fontomas-webfont.woff') format('woff'),
+         url('iconicfill/fontomas-webfont.ttf') format('truetype'),
+         url('iconicfill/fontomas-webfont.svg#FontomasCustomRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*IconicStroke Font*/
+@font-face {
+    font-family: 'FontomasIconicStroke';
+    src: url('iconicstroke/fontomas-webfont.eot');
+    src: url('iconicstroke/fontomas-webfont.eot?#iefix') format('embedded-opentype'),
+         url('iconicstroke/fontomas-webfont.woff') format('woff'),
+         url('iconicstroke/fontomas-webfont.ttf') format('truetype'),
+         url('iconicstroke/fontomas-webfont.svg#FontomasCustomRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/*WebSymbolsRegular Font*/
+@font-face {
+    font-family: 'FontomasWebSymbolsRegular';
+    src: url('websymbolsregular/fontomas-webfont.eot');
+    src: url('websymbolsregular/fontomas-webfont.eot?#iefix') format('embedded-opentype'),
+         url('websymbolsregular/fontomas-webfont.woff') format('woff'),
+         url('websymbolsregular/fontomas-webfont.ttf') format('truetype'),
+         url('websymbolsregular/fontomas-webfont.svg#FontomasCustomRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+	</pre><p>下面我们来看一个简单的详细运用：</p>
+<p><strong>HTML Markup</strong></p>
+<pre>&lt;div class=&quot;box&quot;&gt;
+  &lt;span class=&quot;key&quot;&gt;!&lt;/span&gt;
+  &lt;span class=&quot;fontomas&quot;&gt; ! &lt;/span&gt;
+  &lt;span class=&quot;hex&quot;&gt; &amp;#x21; &lt;/span&gt;
+  &lt;span class=&quot;cssContent&quot;&gt;content:&#39;&amp;#x21;&#39;&lt;/span&gt;
+&lt;/div&gt;
+	</pre><p>在“.fontomas”上调用上面定义的font：</p>
+<pre>.fontomas {
+  font-family: 'FontomasEmtypo';	
+}
+	</pre><p>此时将显示为：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-7.jpg"></p>
+<p>上面只是简单的介绍了其中几种字符的icon的调用，你可以按上面的方法尝试其他的字符制作，我在这里整理了他们四种字符的所有icon的demo，有兴趣的同学可以点击<a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas.html">这里</a>。并且可以点击<a href="http://www.w3cplus.com/w3cplusDemo/demos/demoZip/fontomas.zip">下载</a>，获取相应的字体以及对应的就用编码。</p>
+<p>下面附上对应字符的编码：</p>
+<p style="margin-bottom:0"><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-8.jpg" width="400"></p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/201202/fontomas-9.jpg" width="400"></p>
+<p>更详细的编码对照表可以点击<a href="http://www.w3cplus.com/w3cplusDemo/demos/fontomas/index.html">这里</a>。</p>
+<p>上面介绍的只是如何自定义自己所需的字体来制作字符icon，当然大家得到自己的font icon后，完全可以对其进行更多的扩展制作，比如说类似于<a href="http://fortawesome.github.com/Font-Awesome/">Font Awesome</a>。有兴趣的同学自己可以去一试。</p>
+<p>那么有关于自定义font icon就说到这里了，希望上面的方法对大家有所帮助。如果你有更好的方法或更好的资源可以一起分享。</p>
+<p>如需转载烦请注明出处：<strong><a href="http://www.w3cplus.com">W3CPLUS</a></strong></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blogclassify/11.html">css3</a></li></ul></div><div><div><div><div>
+      <div>0</div>
+                  <a href="http://www.w3cplus.com/vote/node/295/1/vote/alternate/d1gfvOEUDh4RG8zevKnhdBjMz5mWHYXvxtVe1YNvkFs/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/654894283/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css3/font-icon-with-fontomas" border="0" height="0" width="0">

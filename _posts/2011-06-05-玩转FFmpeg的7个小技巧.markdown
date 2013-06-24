@@ -1,0 +1,153 @@
+---
+layout: post
+title:  "玩转FFmpeg的7个小技巧"
+date:   2011-06-05 22:18:30
+author: freetstar
+categories: program
+---
+
+## 玩转FFmpeg的7个小技巧
+### by freetstar
+### at 2011-06-05 22:18:30
+### original <http://wowubuntu.com/7-tricks-with-ffmpeg.html>
+
+<p><a href="http://www.ffmpeg.org/">FFmpeg</a>堪称音频和视频应用程序的瑞士军刀,提供了丰富的选项和灵活性.很多时候用户为了看视频和听音乐都安装了ffmeg.更多关于ffmeg的详细介绍:<a href="http://zh.wikipedia.org/wiki/FFmpeg">here</a>,可以通过ffmpeg -formats查看FFmpeg支持的视音频格式,左侧若是E表明可以编码,D表明可以解码</p>
+<p>本文着重介绍命令行下ffmeg的7个技巧:<span></span></p>
+<p><strong>1 音频转换</strong></p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -i my_audio.wav  my_audio.mp3</pre>
+</blockquote>
+</div>
+</div>
+<p>-i 后为要转换的音频文件,my_audio.mp3为目的音频文件</p>
+<p><strong>2 视频转换</strong></p>
+<blockquote>
+<pre lang="bash&gt;&gt;ffmpeg -i my_video.mpeg  my_video.flv&lt;/pre&gt; &lt;p&gt;This will convert my_video.mpeg file to my_video.flv, but it&#39;s also possible to change the size fo a video:&lt;/p&gt; &lt;pre lang=">ffmpeg -i my_video.mpeg -s 500×500 my_video.flv</pre>
+</blockquote>
+<p>-i 后为源视频文件, -s 表示设置目标视频文件的分辨率   <span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">my_video.flv为目的视频文件</span></p>
+<p><strong><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">3 从视频中截取图片</span></strong></p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -i test.mpg image%d.jpg</pre>
+</blockquote>
+</div>
+</div>
+<p>默认1s截取25张图片,可以通过-r设置每秒截取的图片数量</p>
+<p>-r fps 设置帧率,也就是每秒截取图片的数量(默认25)</p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -i test.mpg -r 1 image%d.jpg</pre>
+</blockquote>
+</div>
+</div>
+<p>这样子每1s截取1张图片</p>
+<p><strong>还可以设置截取间隔,起止</strong></p>
+<p><strong>-</strong>ss 设定时间位置,语法:hh:mm:ss[.xxx]</p>
+<p>-t 时长:限制转码/捕获视频的时间,语法:hh:mm:ss[.xxx]</p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -i test.mpg -r 25 -ss 00:00:10 -t 00:00:05 images%05d.png</pre>
+</blockquote>
+</div>
+</div>
+<p>在第10秒开始,以每秒截取25张图片的速度,截取5秒时长的图片</p>
+<p><strong>4 从视频中采集音频</strong></p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -i video.avi -f mp3 audio.mp3</pre>
+</blockquote>
+</div>
+</div>
+<p>-f 强制选择格式</p>
+<blockquote>
+<pre>ffmpeg -i video.avi -vn audio.mp3</pre>
+</blockquote>
+<p>-vn 取消截取视频(也就是只输出音频文件)</p>
+<p><strong>5 创建截屏视频</strong></p>
+<div>
+<div>
+<blockquote>
+<pre>ffmpeg -f x11grab -r 25 -s wxga -i :0.0 /tmp/outputFile.mpg</pre>
+</blockquote>
+</div>
+</div>
+<p>0.0 是你X11 server的屏幕显示号吗,和DISPLAY一样样的.</p>
+<p>此条命令以每秒25帧的速率来截取<a href="http://en.wikipedia.org/wiki/WXGA">wxga</a>屏幕视频,当然这里可以用-s 来设置视频分辨率,输出文件是<span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">/tmp/outputFile.mpg</span></p>
+<p><strong><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">6 用图片制作视频</span></strong></p>
+<blockquote><p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">ffmpeg -f image2 -i img%d.jpg /tmp/a.mpg</span></p></blockquote>
+<p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">将`img001.jpg’, `img002.jpg'这种顺序排列的图片文件转制作为视频</span></p>
+<p><strong><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">7 从webcam中截取视频</span></strong></p>
+<blockquote><p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">ffmpeg -f video4linux2 -s 320x240 -i /dev/video0 out.mpg</span></p></blockquote>
+<p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">同时截取音频和视频:</span></p>
+<blockquote><p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">ffmpeg -f oss -i /dev/dsp -f video4linux2 -s 320x240 -i /dev/video0 out.mpg</span></p></blockquote>
+<p>/dev/video0<span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">为视频设备 /dev/dsp为音频设备</span></p>
+<p><span style="font-family:Consolas,Monaco,&#39;Courier New&#39;,Courier,monospace;font-size:12px;line-height:18px;white-space:pre">原文:<a href="http://www.linuxaria.com/howto/tricks-ffmpeg?lang=en">here</a></span></p>
+<p> </p>
+# 本文采用<a href="http://creativecommons.org/licenses/by/2.5/cn/">CC协议</a>进行授权，转载本文请注明<a href="http://wowubuntu.com/7-tricks-with-ffmpeg.html" title="Permalink">本文链接<a>。/  8  条留言
+<hr>
+- <a href="http://twitter.com/ubuntu_tips">Twitter</a> 
+/ <a href="https://www.google.com/profiles/wowubuntucom">Buzz</a>
+/ <a href="http://t.sina.com.cn/utips">微博</a> 
+/ <a href="http://ask.wowubuntu.com">问答</a> 
+/ <a href="http://wowubuntu.com/submit">投稿</a>
+/ <a href="http://wowubuntu.com/join">加入我们</a> wow0slx6bcs721xo1udcc<br>- 高性价比 <a href="http://wowubuntu.com/vps.html">Ubuntu VPS</a> / 本站架设于<a href="http://www.photonvps.com/billing/aff.php?aff=129"> PhotonVPS </a> / 定制 <a href="http://tto.me/kfstee">Ubuntu T-Shirt</a><table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fketech.me%2F1265%2Fiphone-tips-and-tricks%2F&amp;from=http%3A%2F%2Fwowubuntu.com%2F7-tricks-with-ffmpeg.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">献给 iPhone 新手的小技巧 (@ketech)</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fketech.me%2F770%2Fkindle-tips%2F&amp;from=http%3A%2F%2Fwowubuntu.com%2F7-tricks-with-ffmpeg.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">官方手册里没有的实用Kindle DX/2小技巧 (@ketech)</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Ffix-grub.html&amp;from=http%3A%2F%2Fwowubuntu.com%2F7-tricks-with-ffmpeg.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Ubuntu 10.10+Win7 双系统重装 Win7 后恢复 Ubuntu 引导方法</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fubuntu-tips-applet-%25E9%259A%258F%25E6%259C%25BA%25E6%2598%25BE%25E7%25A4%25BA-linux-%25E6%258A%2580%25E5%25B7%25A7.html&amp;from=http%3A%2F%2Fwowubuntu.com%2F7-tricks-with-ffmpeg.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">Ubuntu Tips Applet : 随机显示 Linux 技巧</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fwinff.html&amp;from=http%3A%2F%2Fwowubuntu.com%2F7-tricks-with-ffmpeg.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important">WinFF:  FFmpeg 视频转换功能的前端 GUI 界面</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></a></a>

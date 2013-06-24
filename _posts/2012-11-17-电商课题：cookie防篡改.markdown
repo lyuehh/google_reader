@@ -1,0 +1,161 @@
+---
+layout: post
+title:  "电商课题：cookie防篡改"
+date:   2012-11-17 22:24:00
+author: 旁观者
+categories: program
+---
+
+## 电商课题：cookie防篡改
+### by 旁观者
+### at 2012-11-17 22:24:00
+### original <http://www.udpwork.com/item/8682.html>
+
+<p><strong><strong><strong><a href="http://weibo.com/yunzheng/">@郑昀</a>汇总</strong>
+</strong>
+</strong>
+ </p>
+<div>关键词： cookie poisoning</div>
+<div><strong>概述：</strong>
+</div>
+<div>除了 session 外，一般不会在客户端的 cookies 里保存过于重要的凭据，但电商应用有时候不可避免地存储了一些敏感数据到客户端，当然不希望被篡改。</div>
+<div>
+<br>
+<div><strong>目的：</strong>
+</div>
+<div>让服务器端能识别cookie值被篡改了。</div>
+<div> </div>
+<div><strong>手法：</strong>
+</div>
+<div>set-cookie时加上防篡改验证码。</div>
+<div>如：</div>
+<div>user_name=alex|bj95ef23cc6daecc475de</div>
+<div> </div>
+<div>防篡改验证码的生成规则可以很简单：md5(cookieValue+key)或sha1(cookieValue+key)，key可以是服务器端掌握的一个固定字符串，也可以很复杂（如后面的LTPA示例）。</div>
+<div> </div>
+<div><a href="http://www.cnblogs.com/zhengyun_ustc/archive/2012/11/17/topic3.html">核对规则是</a>：</div>
+<div>服务器端得到客户端送上来的cookie后，重新计算一下验证码，如一致，则未篡改。</div>
+<div> </div>
+<div><strong>示例2：IBM LTPA 的 cookie 签名</strong>
+</div>
+<div>Lightweight Third-Party Authentication (LTPA)是IBM Websphere和Domino产品中使用的单点登录技术。</div>
+<div>当服务器配置好LTPA认证方式，用户通过浏览器成功登录后，服务器会自动发送一个 session cookie 给浏览器；此 Cookie 中包含一个 LTPA Token。</div>
+<div>一个有效的 LTPA Cookie 能够在同一个认证域中被所有服务器自动认证。此 Cookie 中包含认证信息和时间戳。这些信息通过共享的 3DES Key 进行了 bis  加密。使用公共密钥/私有密钥进行签名。</div>
+<div> </div>
+<div><strong>1）大致介绍：</strong>
+</div>
+<div><div>LTPA Cookie 原始值 通过 <strong>3DES密钥</strong>
+ 使用 DESede/ECB/PKCS5P 进行加密。</div>
+<div>此 <strong>3DES密钥</strong>
+  也是采用 DESede/ECB/PKCS5P 进行加密，加密后再使用事先提供的 <strong>密钥密码</strong>
+ 进行SHA-1 Hash，生成24个字节的密钥，再进行Base64编码。</div>
+<div> </div>
+<div>如 Dmonio 里， LTPA Cookie 值为以下公式组成：</div>
+<div><div><strong>SHA-1=LTPA版本号+创建时间+过期时间+用户名+Domino LTPA 密钥</strong>
+</div>
+<div><strong>LTPA Cookie= Base64(LTPA版本号+创建时间+过期时间+用户名+SHA-1)</strong>
+</div>
+</div>
+<div><strong> </strong>
+</div>
+<div>如要解析 LTPA Token，先得使用 <strong>密钥密码</strong>
+，生成 <strong>3DES密钥</strong>
+；再使用 <strong>3DES密钥</strong>
+ 解密 Token Cookie。也可以使用公共/私有密钥来签名或验证LTPA Cookie。</div>
+</div>
+<div><p><strong>2）<a href="http://www.cnblogs.com/zhengyun_ustc/archive/2012/11/17/topic3.html">WebSphere LTPA 生成原理</a></strong>
+</p>
+<div>首先，这个 cookie 由以下部分组成，以%进行分隔：</div>
+<ul><li><strong>用户信息</strong>
+，格式为u:user\:&lt;RealmName&gt;/&lt;UserDN&gt;，如：u:user\:VGOLiveRealm/CN=squallzhong,O=VGOLive Technology</li>
+<li><strong>过期时间</strong>
+</li>
+<li><strong>签名信息，</strong>
+如：
+<br>
+u:user\:VGOLiveRealm/CN=squallzhong,O=VGOLive Technology%1301558320666%Cy2CAeru5kEElGj0hrvYsKW2ZVsvvcu6Un573aeX55OO4G3EMYWc0e/ZbqDp1z7MS+dLzniuUH4sYWCMpnKdm7ZGabwmV+WcraBl+y+yzwcl722gHVMOnDZAW7U3jEay9Tk2yG4yXkMWU+617xndpVxke2jtS5wIyVVM3q7UDPw=</li>
+</ul>
+</div>
+<div><p><strong>3）WebSphere LTPA Cookie 的解析</strong>
+</p>
+<p>以下代码为解析从 WebSphere 或 Domino 发送过来的 LTPAToken Cookie。以Java为例：</p>
+<div><div><div>01…</div>
+<div>02        // LTPA 3DES 密钥</div>
+<div>03        String ltpa3DESKey = &quot;7dH4i81YepbVe+gF9XVUzE4C1Ca5g6A4Q69OFobJV9g=&quot;;</div>
+<div>04        // LTPA 密钥密码</div>
+<div>05        String ltpaPassword = &quot;Passw0rd&quot;;</div>
+<div>06        try {</div>
+<div>07            // 第一步，获得加密key</div>
+<div>08            byte[] secretKey = getSecretKey(ltpa3DESKey, ltpaPassword);</div>
+<div>09            // 第二步，使用加密key解密ltpa Cookie</div>
+<div>10            String ltpaPlaintext = new String(decryptLtpaToken(tokenCipher,</div>
+<div>11                    secretKey));</div>
+<div>12            displayTokenData(ltpaPlaintext);</div>
+<div>13        } catch (Exception e) {</div>
+<div>14            System.out.println(&quot;Caught inner: &quot; + e);</div>
+<div>15        }</div>
+<div>16…</div>
+<div>17    //获得安全Key</div>
+<div>18    private static byte[] getSecretKey(String ltpa3DESKey, String password)</div>
+<div>19            throws Exception {</div>
+<div>20        // 使用SHA获得key密码的hash值</div>
+<div>21        MessageDigest md = MessageDigest.getInstance(&quot;SHA&quot;);</div>
+<div>22        md.update(password.getBytes());</div>
+<div>23        byte[] hash3DES = new byte[24];</div>
+<div>24        System.arraycopy(md.digest(), 0, hash3DES, 0, 20);</div>
+<div>25        // 使用0替换后4个字节</div>
+<div>26        Arrays.fill(hash3DES, 20, 24, (byte) 0);</div>
+<div>27        // BASE64解码 ltpa3DESKey</div>
+<div>28        byte[] decode3DES = Base64.decodeBase64(ltpa3DESKey.getBytes());</div>
+<div>29        // 使用key密码hash值解密已Base64解码的ltpa3DESKey</div>
+<div>30        return decrypt(decode3DES, hash3DES);</div>
+<div>31    }</div>
+<div>32    //解密LtpaToken</div>
+<div>33    public static byte[] decryptLtpaToken(String encryptedLtpaToken, byte[] key)</div>
+<div>34            throws Exception {</div>
+<div>35        // Base64解码LTPAToken</div>
+<div>36        final byte[] ltpaByteArray = Base64.decodeBase64(encryptedLtpaToken</div>
+<div>37                .getBytes());</div>
+<div>38        // 使用key解密已Base64解码的LTPAToken</div>
+<div>39        return decrypt(ltpaByteArray, key);</div>
+<div>40    }</div>
+<div>41    // DESede/ECB/PKC5Padding解方法</div>
+<div>42    public static byte[] decrypt(byte[] ciphertext, byte[] key)</div>
+<div>43            throws Exception {</div>
+<div>44        final Cipher cipher = Cipher.getInstance(&quot;DESede/ECB/PKCS5Padding&quot;);</div>
+<div>45        final KeySpec keySpec = new DESedeKeySpec(key);</div>
+<div>46        final Key secretKey = SecretKeyFactory.getInstance(&quot;TripleDES&quot;)</div>
+<div>47                .generateSecret(keySpec);</div>
+<div>48        cipher.init(Cipher.DECRYPT_MODE, secretKey);</div>
+<div>49        return cipher.doFinal(ciphertext);</div>
+<div>50    }</div>
+<div>51…</div>
+</div>
+</div>
+<p>解析出来的LTPAToken信息以%分隔。</p>
+</div>
+<div> </div>
+<div>参考资源：</div>
+<div>1）hannover，<a href="http://www.cnblogs.com/hannover/archive/2011/05/29/2061798.html">LTPA Cookie原理</a></div>
+</div>
+<img src="http://www.cnblogs.com/zhengyun_ustc/aggbug/2775410.html?type=1"><p><a href="http://www.cnblogs.com/zhengyun_ustc/archive/2012/11/17/topic3.html">本文链接</a></p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8682.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8682.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8682.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

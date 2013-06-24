@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "ES3和ES5关于计算顺序的问题(ES5先计算函数ES3则是参数)"
+date:   2012-11-19 10:04:00
+author: snandy
+categories: program
+---
+
+## ES3和ES5关于计算顺序的问题(ES5先计算函数ES3则是参数)
+### by snandy
+### at 2012-11-19 10:04:00
+### original <http://www.cnblogs.com/snandy/archive/2012/11/19/2775739.html>
+
+<p>从<a href="http://cmc3.cn/n/281.html">cmc</a>那看到的，分享给园友。以下是一个怪异的代码，谁放在面试题会很坑爹的，如下</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">a =  { <br>    m: function() { <br>        this.n = function(x) {<br>        alert(x+2)<br>        }<br>        return 1                <br>    }, <br>    n: function(x) { <br>        alert(x+1) <br>    }<br>}<br>a.n(a.m())<br></div><p>定义一个对象a，有个方法m，n。n很简单参数x加1后打印。重点在m，它执行时会修改方法n，把x加2后打印。当执行a.n(a.m())是结果是什么呢，2还是3？</p><p>测试结果如下</p><p>IE6/7/8/Chrome23：3</p><p>IE9/10/Firefox/Safari/Opera: 2 </p><p> </p><p>说明在IE6/7/8/Chrome23中会先执行a.m()，此时a.n被改变了，因此输出的是3。IE9/10/Firefox/Safari/Opera则是先计算a.n(此时a.n尚未被修改)，再计算参数a.m()，因此输出的是2。其实最后a.n都被修改了，如果在后面加一句alert(a.n)就能看见了。</p><p> </p><p>代码可以简化一下</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function m() {<br>    n = function(x) {<br>        alert(x+2)<br>    }<br>    return 1<br>}<br>function n(x) {<br>    alert(x+1)<br>}<br>n(m())<br></div><p> </p><p>这些浏览器谁遵循标准处理呢？<span>查阅ecma262文档，到11.2.3章节， v3版本与v5版本 有2句话顺序是颠倒的： </span><br><br><span>v5: </span><br><span style="color:#999999"><em>...</em></span><br><span style="color:#999999"><em>2. Let func be GetValue(ref).  </em></span><br><span style="color:#999999"><em>3. Let argList be the result of evaluating Arguments, producing an internal list of argument values (see 11.2.4). </em></span><br><span style="color:#999999"><em>...</em></span><br><br><span>v3:</span></p><p><span style="color:#999999"><em>... </em></span><br><span style="color:#999999"><em>2. Evaluate Arguments, producing an internal list of argument values (see 11.2.4). </em></span><br><span style="color:#999999"><em>3. Call GetValue(Result(1)).</em></span></p><p><span style="color:#999999"><em>...</em></span></p><p> </p><p>只有Chrome没有遵循最新的ES5标准，IE的后续版本都遵循了。O(∩_∩)O~</p><p> </p><img src="http://www.cnblogs.com/snandy/aggbug/2775739.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2012/11/19/2775739.html">本文链接</a></p>

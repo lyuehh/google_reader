@@ -1,0 +1,151 @@
+---
+layout: post
+title:  "url 映射问题"
+date:   2011-11-07 21:52:52
+author: 
+categories: program
+---
+
+## url 映射问题
+### by 
+### at 2011-11-07 21:52:52
+### original <http://yiminghe.iteye.com/blog/1240759>
+
+<h1>背景
+</h1>
+<p> </p>
+<p>url mapping 我最早知道是作为 java web 容器的一个功能点，遵从 <a href="http://javapapers.com/servlet/what-is-servlet-mapping/">servlet 规范</a>
+，大致的形式是通过在配置文件中配置 url 路径和指定 servlet 的对应关系，当请求过来时根据 url 路径来调用相应的服务器端逻辑。</p>
+<p> </p>
+<p>例如：</p>
+<p> </p>
+<pre name="code">&lt;servlet-mapping&gt;
+&lt;servlet-name&gt;milk&lt;/servlet-name&gt;
+&lt;url-pattern&gt;/drink/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+<p> </p>
+<p>那么凡是以 /drink/ 开头的 url 路径代表的请求都会被名为 milk 的servlet 处理，可以说 url 路径就是 web 上的方法名称。 </p>
+<p> </p>
+<p>后来出现了 jsp ，asp 简化了用户配置，基本上是约定优先配置，将 url 路径对应到文件系统的层次关系，url 请求转交给对应的 jsp、asp 代码文件执行。</p>
+<p> </p>
+<p>如请求</p>
+<p> </p>
+<p> </p>
+<pre name="code">/x/z/y.jsp</pre>
+<p> </p>
+<p> </p>
+<p>则该请求封装后会转交给 x 应用所在目录下 z 目录的 y.jsp 程序代码执行。</p>
+<p> </p>
+<p>再往后出现了 struts ,spring 等 web 框架，可以更灵活的做路径分发（支持路径参数），更方便得支持 restful (这里根据 《restful 实战》特指超媒体服务成熟程度模型的第一层： restful url ).，例如 spring3 mvc 可以用注解实现请求路径和函数的对应：</p>
+<p> </p>
+<p> </p>
+<pre name="code">@RequestMapping("/x/y/{id}") 
+public  String  z(@PathParam String id,
+@RequestParam String q
+) {
+}</pre>
+ 
+<p>那么当请求</p>
+<p> </p>
+<pre name="code">/x/y/1?q=2</pre>
+<p> </p>
+<p>路径以及查询部分的参数会注入到对应的函数中，相对于早期的 servlet 规范开发效率以及可维护性/可读性都有很大的提升。</p>
+<p> </p>
+<p> </p>
+<h1>
+前端 mvc
+</h1>
+<p> </p>
+<p>随着单页面应用的日益普遍，mvc 分层在前端也越来越多得出现，而其中一点就是：在单页面应用中如何 bookmark，可以像多页面时一样随时记录当前的状态，早期一般用 url hash 来记录，而 <a href="http://www.w3.org/TR/html5/history.html">html5 history api</a>
+ 则提供了更优雅的解决方案，而这也就不可避免得要将传统由服务器端实现的 router 也要在客户端实现一边，甚至服务器端完全不需要 router，只提供统一数据访问入口（但不符合 http 协议的初衷）。</p>
+<p> </p>
+<h2>
+功能需求
+</h2>
+<p> </p>
+<p>router 一般要能达到：</p>
+<p> </p>
+<h2>
+1. 路由功能
+</h2>
+<p> </p>
+<p>可以根据指定的规则，将对应的客户端 hash/url 映射到指定的函数</p>
+<p> </p>
+<p>例如片段匹配：</p>
+<p> </p>
+<pre name="code">/x/y/:id : fn</pre>
+<p> </p>
+<p>可以匹配 /x/y/z 以及 /x/y/a 到 fn 函数上，但不能匹配 /x/y/z/a</p>
+<p> </p>
+<p>再如整段路径匹配</p>
+<p> </p>
+<pre name="code">/x/y/*path : fn</pre>
+ 
+<p>可以匹配 /x/y/z 以及 /x/y/z/a 到 fn 函数，即凡是以 /x/y/ 开头的都可匹配。</p>
+<p> </p>
+<p>更进一步，规则可以达到最优匹配，譬如请求：</p>
+<p> </p>
+<pre name="code">/x/y</pre>
+<p> </p>
+<p>既可以匹配规则1：</p>
+<p> </p>
+<pre name="code">/x/:id</pre>
+<p> </p>
+<p>又可以匹配规则2：</p>
+<p> </p>
+<pre name="code">/*path</pre>
+<p> </p>
+<p>那么最优匹配的结果应该是模糊信息最少的匹配（规则1），而后一种通常作为一种异常处理机制（404）。</p>
+<p> </p>
+<h2>
+2.参数抽取功能
+</h2>
+<p> </p>
+<p>将路径匹配到对应的路由规则是第一步，第二步则是根据规则抽取路径上附带的用户信息，交给对应处理逻辑，用户信息可以由两种方式传递给用户</p>
+<p> </p>
+<p>2.1 路径参数（path param）</p>
+<p> </p>
+<p>指包含在查询标记（？）之前的参数，如 /x/:id 可以匹配到 /x/y?q=1 那么 id 即为 y</p>
+<p> </p>
+<p>2.2 请求/查询参数（request param）</p>
+<p> </p>
+<p>即通常服务端通过 request.getParameter 以及客户端通过 location.query 获取到的查询信息.</p>
+<p> </p>
+<p>然后同样可以通过参数注入到指定的处理函数，但由于客户端 js 代码会经过压缩，变量名和规则配置名部署阶段会有不一致情况，虽然也可以根据参数位置进行匹配：</p>
+<p> </p>
+<pre name="code">/x/:id - &gt; fn(id)</pre>
+ 
+<p> </p>
+<p>但这种情况下，规则参数配置的变化会连带需要处理函数参数位置的调整。</p>
+<p> </p>
+<p>更好的做法则是将参数与参数值作为键值对传递给对应的处理函数</p>
+<p> </p>
+<p> </p>
+<pre name="code">/x/:id -&gt; fn(pathParam,queryPatam) // pathParam =&gt; { id: xx }</pre>
+ 
+<p> </p>
+<p>最终在客户端实现router功能后，用户可以随时将单页面应用当前的状态作为地址保存下来，随后再输入地址经过客户端router 后还原对应的应用状态，达到和多页面时类似的效果，只不过这时 router 的功能从后端转移到了前端。</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<h1>
+Refer :</h1>
+<p> </p>
+<p><a href="http://docs.kissyui.com/docs/html/api/component/mvc/">KISSY MVC</a>
+</p>
+<p> </p>
+<p><a href="http://static.springsource.org/spring/docs/current/spring-framework-reference/html/mvc.html">spring3 mvc</a>
+</p>
+<p> </p>
+<p> </p>
+<p> </p>
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://yiminghe.iteye.com/blog/1240759#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">ITeye推荐</span>
+<br>
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,135 @@
+---
+layout: post
+title:  "纯洁的 IO 与 自由的 Monad"
+date:   2012-08-28 15:00:00
+author: 
+categories: program
+---
+
+## 纯洁的 IO 与 自由的 Monad
+### by 
+### at 2012-08-28 15:00:00
+### original <http://blog.pmonad.com/2012/08/28/io-and-monad.html>
+
+<h2>Myths and Legends</h2>
+
+<p>Haskell 里 IO 操作也是纯函数，这多多少少会让初学者感情上难以接受。前几年 TopLanguage 就有几个哥们为 IO 是不是纯的争得面红耳赤，不欢而散。</p>
+
+<p>在 Haskell 里面 IO 操作时是用 Monad 来建模的，一般的 IO 教程上会使用这样的模型来帮助理解：</p>
+
+<pre><code>data IO a = IO (RealWorld -&gt; (RealWorld, a))
+</code></pre>
+
+<p>这个模型的好处是易于理解。</p>
+
+<h2>实现 IO Monad</h2>
+
+<p>真正要理解一个概念，最好的办法就是实现它。在实现它的时候，为啥这个概念要这么设计，很多取舍你才会更深刻的理解它。</p>
+
+<p>下面我们自己来实现一个 IO 库好了。</p>
+
+<p>首先是 import, 先用 NoImplicitPrelude 防止自动引入 Prelude 里面预定义的 IO(我们要自己实现).</p>
+
+<pre><code>{-# LANGUAGE DeriveFunctor, NoImplicitPrelude #-}
+import Data.Function
+import Data.Functor
+import Data.String
+import Control.Monad
+import Prelude(Show(..), (++))
+import qualified System.IO
+import qualified System.Exit
+</code></pre>
+
+<p>定义三个基本的 IO 操作: GetLine, PutStr, Stop.</p>
+
+<pre><code>data BasicIO next = GetLine (String -&gt; next) | PutStr String next | Stop
+    deriving (Functor)
+</code></pre>
+
+<p>定义一个 Helper 函数：</p>
+
+<pre><code>class FunctorTrans t where
+    liftF :: Functor f =&gt; f a -&gt; t f a
+
+instance FunctorTrans Free where
+    liftF = Free . fmap Pure
+</code></pre>
+
+<p>定义三个 IO 函数: putStr, getLine, exit: 这是我们最经常用(如果不是唯一用的)的三个 IO 函数.</p>
+
+<pre><code>putStr :: String -&gt; IO ()
+putStr s = liftF $ PutStr s ()
+
+getLine :: IO String
+getLine = liftF $ GetLine id
+
+exit :: IO a
+exit = liftF Stop
+</code></pre>
+
+<p>print 和 putStrLn 也是常用的， 当然需要定义一下:</p>
+
+<pre><code>putStrLn :: String -&gt; IO ()
+putStrLn = putStr . (++ &quot;\n&quot;)
+
+print :: Show a =&gt; a -&gt; IO ()
+print = putStrLn . show
+</code></pre>
+
+<p>那上面的 IO 又是什么呢？ 下面我们就来定义一下：</p>
+
+<pre><code>data Free f a = Pure a | Free (f (Free f a)) deriving (Functor)
+type IO = Free BasicIO
+</code></pre>
+
+<p>IO 是一个 Monad, 我们当然要实现：</p>
+
+<pre><code>instance Functor f =&gt; Monad (Free f) where
+    return = Pure
+    Pure a &gt;&gt;= f = f a
+    (Free x) &gt;&gt;= f = Free $ fmap (&gt;&gt;= f) x
+</code></pre>
+
+<p>现在这个 IO 就可用了，不信的话，下面用上面定义的 IO 来写一段代码吧：</p>
+
+<pre><code>freeMain = do
+    x &lt;- getLine
+    y &lt;- getLine
+    putStrLn $ x ++ y
+    exit
+    putStrLn $ x ++ y
+</code></pre>
+
+<p>到此为止，我们定义的 IO， 就算写完了。 这个 IO 是纯洁的吗？是。至少上面我们用到的都是纯函数。</p>
+
+<p>那 IO Monad 真的是纯的吗？ 下面把我们自己当做 Haskell 的运行时。看一下 IO Monad 到底是怎么运行的：</p>
+
+<pre><code>runIO :: IO a -&gt; System.IO.IO a
+runIO (Pure a) = return a
+runIO (Free (GetLine f)) = System.IO.getLine &gt;&gt;= runIO . f
+runIO (Free (PutStr s next)) = System.IO.putStr s &gt;&gt; runIO next
+runIO (Free Stop) = System.Exit.exitSuccess
+</code></pre>
+
+<p>给个 main 函数运行一下：</p>
+
+<pre><code>main = runIO freeMain
+</code></pre>
+
+<h2>小结</h2>
+
+<p>Monad 是纯洁的吗？ 虽然在 IO Monad 执行的时候会用到不纯的 Syste.IO 里面的函数, 我们应该还是应该把 IO Monad 看成纯函数。 不能因为 runIO 的不纯就说 IO Monad 不纯。这件事我们应该从语义上去看，不应该从实现的手段去看。 比如我们用 C 语言写一个 Haskell 的解释器，C 语言里面都是副作用，那么在这个解释器里运行的 Haskell 代码是不纯的吗？</p>
+
+<h2>从控制反转的角度来看 IO Monad</h2>
+
+<p>上面的代码,  虽然用在 Haskell 中用纯函数实现了一个 IO Monad。但是还是不太直观。换个角度来看： 我们的 IO Monad 只是提供了一些 IO 操作的步骤，并没有真正的进行 IO，真正的 IO 操作是在 runIO 里面才被执行的。这个有点 IOC 的意思，熟悉数据库的老大可能就笑了，这个 IO Monad 不就是的 redo log 或 commit log 吗。先记下操作步骤，具体把数据写入 B-Tree 是等另一个进程 (runIO) 去做的。</p>
+
+<h2>一点说明</h2>
+
+<p>上面的 Free Monad 是代数中的<a href="http://www.haskell.org/haskellwiki/Free_structure">Free Structure</a> 在 Haskell 中的对应物。其实简单的理解 Free BasicIO 就是 BasicIO 的一个列表 : <code>[BasicIO]</code>.</p>
+
+<p>PS: Haskell 里面的这伙人真是变态，一个个仗着自己的医生(Doctor)头衔，写个代码都是各种抽象代数，范畴学的，绕到云里雾里。 最让人生气的是还能运行。。。</p>
+
+<h2>参考文献</h2>
+
+<p>1.<a href="http://www.haskellforall.com/2012/07/purify-code-using-free-monads.html">Haskell for all: Purify code using free monads</a></p>

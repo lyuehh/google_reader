@@ -1,0 +1,32 @@
+---
+layout: post
+title:  "用canvas实现的红黑树"
+date:   2011-04-10 14:34:27
+author: 
+categories: program
+---
+
+## 用canvas实现的红黑树
+### by 
+### at 2011-04-10 14:34:27
+### original <http://www.iteye.com/topic/996073>
+
+之前我写了个js版的图形化显示排序，反响和效果还不错。（<a href="http://www.zlong.org/js-practice/imgswap.html">http://www.zlong.org/js-practice/imgswap.html</a>）
+<br>我一个同事看见了，就要我弄个红黑树的，他提供树的节点数据，我负责在页面上展示。
+<br>我搜到canvas可以用画图，看了看，然后就琢磨用这东西画树了，最开始就是画圆和线，然后画二叉树。我的第一个版本的红黑树效果如图1，但高度比较高但没有子节点的相邻节点之间的距离太大，所以图看着很别扭。最后和同事探讨了一下算法，总算弄的好看了，效果如图2。页面地址：<a href="http://www.zlong.org/js-practice/red_black_tree.html">http://www.zlong.org/js-practice/red_black_tree.html</a>（只能用chrome/firefox/opera/safari/IE9看）。
+<br><img src="http://dl.iteye.com/upload/attachment/457444/084d0852-49cf-3bcb-a8d5-e6a2fcea4cab.jpg">
+<br><img src="http://dl.iteye.com/upload/attachment/457602/3cffdd65-083c-3c67-9c15-c5bab8a5207e.png">
+          
+          <br><br>
+          作者: <a href="http://aaronlong31.iteye.com">Aaronlong31</a> 
+          <br>
+          声明: 本文系ItEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.iteye.com/topic/996073" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">ItEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

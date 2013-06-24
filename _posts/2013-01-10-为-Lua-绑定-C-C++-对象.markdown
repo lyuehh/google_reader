@@ -1,0 +1,104 @@
+---
+layout: post
+title:  "为 Lua 绑定 C/C++ 对象"
+date:   2013-01-10 11:58:20
+author: 云风
+categories: program
+---
+
+## 为 Lua 绑定 C/C++ 对象
+### by 云风
+### at 2013-01-10 11:58:20
+### original <http://blog.codingnow.com/2013/01/binding_c_object_for_lua.html>
+
+<p>如何绑定 C/C++ 对象到 Lua 里？通常是创建一个 userdata ，存放 C/C++ 对象指针，然后给 userdata 添加元表，用 index 元方法映射 C/C++ 中的对象方法。</p>
+
+<p>也有另一个手段，直接用 lightuserdata 保存 C/C++ 对象指针放到 Lua 中，在 Lua 中创建一个 table 附加元表来来包装这个指针，效果是类似的。区别在于对象生命期的管理方式有所不同。就这个问题，几年前我<a href="http://blog.codingnow.com/2009/03/lua_c_wrapper.html">写过一篇 blog</a> 。</p>
+
+<p>绑定 C/C++ 对象到 Lua 里的设计难点往往在这个正确的生命期管理上。因为 C/C++ 没有 GC 系统，依赖手工管理资源；而 Lua 则是利用 GC 做自动回收。这两者的差异容易导致在 Lua 中的对象对应的 C/C++ 对象已经销毁而 Lua 层不自知，或 Lua 层中已无对象之引用，而 C/C++ 层中却未能及时回收资源而造成内存泄露。</p>
+
+<p>理清这个问题，首先你要确定，你打算以 Lua 为主干来维护对象的生命期，还是以 C/C++ 层为主干 Lua 部分只是做一些对这些对象的行为控制。</p>
+
+<p>我个人主张围绕 Lua 来开发，C/C++ 只是写一些性能相关的库供 Lua 调用，即框架层在 Lua 中。这样，C/C++ 层只提供对象的创建和销毁函数，不要用 C 指针做对象的相互引用。Lua 中对象被回收时，销毁对应的 C 对象即可。</p>
+
+<p>但是，也有相当多的项目做不到这点。Lua 是在后期引入的，之前 C/C++ 框架层中已做好了相当之复杂的对象管理。或者构架师不希望把脚本层过多的侵入引擎的设计。</p>
+
+<p>那么，下面给出另一个方案。</p>
+
+<p>我们将包装进 Lua 的 C 对象称为 script object ，那么只需要提供三个函数即可。</p>
+
+        <pre>
+int
+script_pushobject(lua_State *L, void * object) {
+    void **ud;
+    if (luaL_newmetatable(L, "script")) {
+        // 在注册表中创建一个表存放所有的 object 指针到 userdata 的关系。
+        // 这个表应该是一个 weak table ，当 Lua 中不再存在对 C 对象的引用会删除对应的记录。
+        lua_newtable(L);
+        lua_pushliteral(L, "kv");
+        lua_setfield(L, -2, "__mode");
+        lua_setmetatable(L, -2);
+    }
+    lua_rawgetp(L,-1,object);
+    if (lua_type(L,-1)==LUA_TUSERDATA) {
+        ud = (void **)lua_touserdata(L,-1);
+        if (*ud == object) {
+            lua_replace(L, -2);
+            return 0;
+        }
+        // C 对象指针被释放后，有可能地址被重用。
+        // 这个时候，可能取到曾经保存起来的 userdata ，里面的指针必然为空。
+        assert(*ud == NULL);
+    }
+    ud = (void **)lua_newuserdata(L, sizeof(void*));
+    *ud = object;
+    lua_pushvalue(L, -1);
+    lua_rawsetp(L, -4, object);
+    lua_replace(L, -3);
+    lua_pop(L,1);
+    return 1;
+}
+</pre>
+
+<p>这个函数把一个 C 对象指针置入对应的 userdata ，如果是第一次 push 则创建出新的 userdata ，否则复用曾经创建过的。</p>
+
+<pre>
+void *
+script_toobject(lua_State *L, int index) {
+    void **ud = (void **)lua_touserdata(L,index);
+    if (ud == NULL)
+        return NULL;
+    // 如果 object 已在 C 代码中销毁，*ud 为 NULL 。
+    return *ud;
+}
+</pre>
+
+<p>这个函数把 index 处的 userdata 转换为一个 C 对象。如果对象已经销毁，则返回 NULL 指针。
+在给这个对象绑定 C 方法时，应注意在 toobject 调用后，全部对指针做检查，空指针应该被正确处理。</p>
+
+<pre>
+void
+script_deleteobject(lua_State *L, void *object) {
+    luaL_getmetatable(L, "script");
+    if (lua_istable(L,-1)) {
+        lua_rawgetp(L, -1, object);
+        if (lua_type(L,-1) == LUA_TUSERDATA) {
+            void **ud = (void **)lua_touserdata(L,-1);
+            // 这个 assert 防止 deleteobject 被重复调用。
+            assert(*ud == object);
+            // 销毁一个被 Lua 引用住的对象，只需要把 *ud 置为 NULL 。
+            *ud = NULL;
+        }
+        lua_pop(L,2);
+    } else {
+        // 有可能从未调用过 pushobject ，此时注册表中 script 项尚未建立。
+        lua_pop(L,1);
+    }
+}
+</pre>
+
+<p>这个函数会解除 C 对象在 Lua 中的引用，后续在 Lua 中对这个对象的访问，都将得到 NULL 指针。</p>
+
+<hr>
+
+<p>这些代码是在我写这篇 blog 的同时随手写的，并未经过严格测试。它们也有许多改进空间，比如给 C 对象加入类型，对 userdata 做更严格的检查，等等。</p>

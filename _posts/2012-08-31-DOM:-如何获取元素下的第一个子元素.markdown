@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "DOM: 如何获取元素下的第一个子元素"
+date:   2012-08-31 21:33:49
+author: sofish
+categories: program
+---
+
+## DOM: 如何获取元素下的第一个子元素
+### by sofish
+### at 2012-08-31 21:33:49
+### original <http://sofish.de/2116>
+
+<p>Hmmm… <code>Element.firstChild</code> ?，是的，这是第一种方法，当然，通常来说支持 W3C 规范的浏览器，如 Firefox 等取到的应该是 <code>TEXT_NODE</code>。很早之前，或者说现在最流行的方法可能是：</p>
+<pre>
+// 让我们假设要将它抽象出来，变成一个 util 对象的方法
+var util = {};
+
+util.first = function(element) {
+  if(!element) return;
+
+var first= element.firstChild;
+  // 处理 w3c 浏览器中第一个子元素是 TEXT_NODE
+  // 并且需要考虑到有没有 COMMENT_NODE 的情况
+  while(first &amp;&amp; first.nodeType !==1) first = first.nextSibling;
+  return first;
+}
+</pre>
+<p><span></span></p>
+<p><a href="http://www.amzbook.com/">兵兵</a>（一位前端实习生）说查了文档现在浏览器支持一个叫 <code>Element.firstElementChild</code> 的属性，可以获取到第一个为元素的子节点。那么，我们的 API 可以变得更简单：</p>
+<pre>
+util.first = function(element) {
+  if(!element) return;
+
+// 刚好 IE8 以下支持直接拿 firstChild
+  return element[element.firstElementChild ? 'firstElementChild' : 'firstChild'];
+}
+</pre>
+<p>其实实现的方法有很多。特别是每次我几乎都是问如何取到 body 下的第一个子元素。随便找了个时间发上 twitter，问问大家是如何写的，讨论结果如下：</p>
+<p><a href="https://gist.github.com/3549460">https://gist.github.com/3549460</a></p>
+<p>另外的两个实现方法：</p>
+<pre>
+// 通过 HTML5 的 querySelector，及 getElementsByTagName
+util.first = function(element, tag) {
+  if(!element) return;
+  tag = tag || &#39;*&#39;;;
+  return element.querySelector ? element.querySelector(tag) : element.getElementsByTagName(tag)[0];
+}
+
+// IE6 也支持的 children
+util.first = function(element) {
+  return element &amp;&amp; element.children[0];
+}
+</pre>
+<p>总是喜欢记录一下，并发出来大家讨论。几乎每次讨论总会有一些惊喜。技术就是这样的，永远都不可能一本书看完，永远都不可能记住所有技巧。虽然使用方法论可以解决很多问题，但如果能积累，养成“条件反射”，那么请别放过这样的机会。</p>
+<p>当然，期待更多 hack。</p>

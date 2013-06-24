@@ -1,0 +1,38 @@
+---
+layout: post
+title:  "腾讯/新浪/搜狐IP地址API"
+date:   2010-09-16 20:27:12
+author: 枯藤昏鸦
+categories: program
+---
+
+## 腾讯/新浪/搜狐IP地址API
+### by 枯藤昏鸦
+### at 2010-09-16 20:27:12
+### original <http://ioio.name/ip-api.html>
+
+<p>腾讯的IP地址API接口地址：<a href="http://fw.qq.com/ipaddress">http://fw.qq.com/ipaddress</a><br>
+返回的是数据格式为：</p>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> IPData <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> Array<span style="color:#009900">(</span>“58.218.198.205″<span style="color:#339933">,</span>”<span style="color:#3366cc">&quot;,”江苏省”,”徐州市”);</span></pre></td></tr></table></div>
+
+<p>使用JS代码进行调取：</p>
+
+<div><table><tr><td><pre>1
+2
+</pre></td><td><pre style="font-family:monospace">&lt;script language=&quot;javascript&quot; type=&quot;text/javascript&quot; src=&quot;http://fw.qq.com/ipaddress&quot;&gt;&lt;/script&gt;
+&lt;script&gt;document.write(&quot;你的IP是：&quot;+IPData[0]+&quot;，来自：&quot;+IPData[2]);&lt;/script&gt;</pre></td></tr></table></div>
+
+<p>新浪的IP地址查询接口：<a href="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js">http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js</a><br>
+新浪多地域测试方法：<a href="http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&amp;ip=12.130.132.30">http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&amp;ip=12.130.132.30</a><br>
+搜狐IP地址查询接口（默认GBK）：<a href="http://pv.sohu.com/cityjson">http://pv.sohu.com/cityjson</a><br>
+搜狐IP地址查询接口（可设置编码）：<a href="http://pv.sohu.com/cityjson?ie=utf-8">http://pv.sohu.com/cityjson?ie=utf-8</a><br>
+搜狐另外的IP地址查询接口：<a href="http://txt.go.sohu.com/ip/soip">http://txt.go.sohu.com/ip/soip</a><br>
+-EOF-</p>
+<hr><small>Copyright © 2005~2009 | <a href="http://ioio.name/ip-api.html" title="Permalink">Permalink</a> | <a href="http://ioio.name/ip-api.html#comments">3 Comments</a> | <a href="http://closetou.com" title="Close To U">Close To U</a> <br>
+<a href="http://feeds.feedburner.com/miss">订阅</a> <a href="https://twitter.com/tearnon">Twitter</a> <a href="http://ioio.name/godaddy">域名优惠码</a> <a href="http://ioio.name/mt">Media Temple空间</a>
+<a href="http://shortener.ioio.name/">Google URL Shortener</a> 
+<a href="http://750m.com/">Hot Topics New!</a>
+<a href="http://affiliate.godaddy.com/redirect/3FA34877354E42FE78E82878FE3CAE7C45E1074DB489803F8705676166D4FFE0" title="Domain Sale! $6.89 .com at GoDaddy">Domain Sale! $6.89 .com at GoDaddy</a>
+</small> )

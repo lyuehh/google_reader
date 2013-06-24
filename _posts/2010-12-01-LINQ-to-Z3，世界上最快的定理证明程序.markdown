@@ -1,0 +1,21 @@
+---
+layout: post
+title:  "LINQ to Z3，世界上最快的定理证明程序"
+date:   2010-12-01 18:15:21
+author: 
+categories: program
+---
+
+## LINQ to Z3，世界上最快的定理证明程序
+### by 
+### at 2010-12-01 18:15:21
+### original <http://news.cnblogs.com/n/83052/>
+
+<p>　　微软研究院宣称，Z3是世界上最快的定理证明程序。Z3被设计作为其他应用程序的底层工具，它不适合单独使用。而嵌入到定理证明程序中的时候，在大量的项目中都有应用，包括<a href="http://research.microsoft.com/specsharp/">Spec#/Boogie</a>、<a href="http://research.microsoft.com/Pex/">Pex</a>、<a href="http://research.microsoft.com/en-us/projects/yogi">Yogi</a>、 <a href="http://research.microsoft.com/en-us/projects/vigilante">Vigilante</a>、<a href="http://research.microsoft.com/slam">SLAM</a>、<a href="http://research.microsoft.com/research/downloads/Details/1f119615-03be-4f3e-b788-f89f6d8acf68/Details.aspx">F7</a>、<a href="http://channel9.msdn.com/posts/Peli/Automated-Whitebox-Fuzz-Testing-with-SAGE/">SAGE</a>、<a href="http://research.microsoft.com/en-us/um/people/sumitg/pubs/vs3.html">VS3</a>、<a href="http://research.microsoft.com/en-us/um/people/ejackson/formula.aspx">FORMULA</a>和<a href="http://research.microsoft.com/projects/HAVOC">HAVOC</a>。</p>
+<p>　　通过使用Z3的.NET的API，你可以使用面向对象的风格来编码定理。不过，在<a href="http://research.microsoft.com/en-us/um/redmond/projects/z3/tutorial.pdf">Z3练习指导</a>中演示的一个非常小的问题，都用到了非常多的代码。Bart De Smet编写了名为<a href="http://community.bartdesmet.net/blogs/bart/archive/2009/04/19/linq-to-z3-theorem-solving-on-steroids-part-0.aspx">LINQ to Z3</a>的包装器，把OO风格的API包装为查询风格的API，极大地简化了Z3的使用。下面是<a href="http://channel9.msdn.com/Shows/Going+Deep/Bart-De-Smet-LINQ-to-Z3">Bart De Smet在做Channel 9访谈</a>的时候演示的一个例子：
+</p>
+<blockquote>
+<pre> var theorem = from t in ctx.NewTheorem&lt;Symbols&lt;int, int, int, int, int&gt;&gt;()<br>  where t.X1 - t.X2 &gt;= 1<br>  where t.X1 - t.X2 &lt;= 3<br>  where t.X1 == (2 * t.X3)+ t.X5<br>  where t.X3 == t.X5<br>  where t.X2 == 6 * t.X4<br>   select t; <br> var solution = theorem.Solve();<br>  Console.WriteLine("X1 = {0}， X2 = {1}， X3 = {2}， X4 = {3}， X5 = {4}",</pre>
+</blockquote>
+<p>　　Z3起初只提供了Windows平台的支持，不过现在也有<a href="http://research.microsoft.com/en-us/um/redmond/projects/z3/faq.html">Linux的版本</a>。Z3基于“微软研究院许可协议”发布，不能用于商业目的。你可以通过<a href="http://rise4fun.com/Z3">Z3 on RiSE4Fun</a>来尝试一下在线版本。</p>
+<p>　　<strong>查看英文原文：</strong><a href="http://www.infoq.com/news/2010/11/LINQ-Z3">LINQ to Z3, The World’s Fasted Theorem Prover</a></p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/82919/">讨论：“Mono是个跨平台的.NET”是否是个正确的说法</a><span style="color:gray">(2010-11-30)</span><br>　　· <a href="http://news.cnblogs.com/n/79149/">.NET消息服务器Laharsub简介</a><span style="color:gray">(2010-10-31)</span><br>　　· <a href="http://news.cnblogs.com/n/78214/">从高司令到Ray Ozzie,技术大牛们的冬天来了？</a><span style="color:gray">(2010-10-22)</span><br>　　· <a href="http://news.cnblogs.com/n/83018/">采访开源Web框架SimpleFramework开发团队</a><span style="color:gray">(2010-12-01)</span><br>　　· <a href="http://news.cnblogs.com/n/78774/">Mono向Mac OS应用程序开发示好</a><span style="color:gray">(2010-10-27)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/83052/">http://news.cnblogs.com/n/83052/</a></p><p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=83052" width="1" height="1" alt="">

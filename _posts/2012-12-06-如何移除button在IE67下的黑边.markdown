@@ -1,0 +1,66 @@
+---
+layout: post
+title:  "如何移除button在IE67下的黑边"
+date:   2012-12-06 17:36:49
+author: Airen
+categories: program
+---
+
+## 如何移除button在IE67下的黑边
+### by Airen
+### at 2012-12-06 17:36:49
+### original <http://www.w3cplus.com/css/remove-black-border-around-input-buttons-in-ie.html>
+
+<div><div><div><p>好久没有处理过IE6下的兼容问题了，今天有朋友碰到过input[type="submit"]和button[type="submit"]在IE6-7下会出现黑边，就算是你在样式中重置了一个border属性也是如此。真是蛋疼的很。后来经过查找相关的资料，终于找到了解决方法，放上来与大家分享一下，这个问题有可能不只一个人会碰到。(^_^)</p>
+<p>在介绍如何处理这个bug之间我们一起来回顾一下，在IE6-7下，input[type="submit"]和button[type="submit"]存在的问题还不仅是这个，常见的有：<a href="http://www.w3cplus.com/blog/30.html">button在IE67下的宽度兼容问题</a>、<a href="http://www.w3cplus.com/css/input-button-line-height-bug">button的行高问题</a>（各浏览器下解析不一样）、<a href="http://www.w3cplus.com/css/clear-outline-for-buttons">button的outline问题</a>，甚至<a href="http://www.w3cplus.com/css3/style-submit-buttons-for-iphone-safari">submit在ios下也存在问题</a>。这么多烦人的事，苦逼了前端人员，（具体解决方案可以点击<a href="http://www.w3cplus.com/blog/tags/99.html">这里</a>查看）。今天就在为大家增加一个问题的解决方案——<strong>如何去除IE67下按钮的黑边框</strong></p>
+<h4>
+	问题</h4>
+<p>问题是这样的，你的登录表单中有一个登录按钮，当登录按钮得到焦点，并且消失焦点后，登录按钮会有一个1px的黑色边框，这样直接影响了页面的效果，但是这样的问题是怎么来的，我也不知道（希望有知道朋友能帮忙解释一下）。而且这样的bug将出现在下面两个元素上：</p>
+<ol><li>
+		button按钮使用了【type="submit"】会产生这样的bug;</li>
+<li>
+		input使用了【type="submit"】也会产生这样的bug。</li>
+</ol><p>一起来看这个问题的截图：</p>
+<p><img alt="如何移除button在IE67下的黑边" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/css/problem.png"></p>
+<h4>
+	解决方案</h4>
+<p>要解决这样的bug最好的方法就是在button和input的标签外添加一个标签，然后将样式写在这个标签上，并且把button和input的默认样式都去除掉，相信不少同学是这样使用的，简单了事。但有的情况下我们是无法为这两个元素添加标签的，那么我们就需要别的方法来解决。</p>
+<p>正常的解决方案是没了，只有使用滤镜来解决：</p>
+<pre>
+&lt;!--[if IE]&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+  input {
+    filter:chroma(color=#000000);
+  }
+&lt;/style&gt;
+&lt;![endif]--&gt;
+	</pre><p>因为这个问题，存在所有按钮上，为了一劳永逸，建议在reset.css样式中加入：</p>
+<pre>
+input[type=submit],
+input[type=reset],
+input[type=button]{
+  filter:chroma(color=#000000);
+}
+</pre><p>属性选择器在IE下没有得到较好的支持，可以使用类名来代替，比如说“form-text”。</p>
+<p>就是这么一句代码，把黑色边框去掉了。</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/css/solution.png"></p>
+<p>顺便介绍一个IE6-7解决焦点点状线去除的技巧，我们有时候在ie6-7下使用</p>
+<pre>
+a:focus, *:focus {outline:none;}
+</pre><p>无法除点状线，但有时候又需要去掉这样的点状线，那么有也有一个比较BT的解决方法，代码就一句：</p>
+<pre>
+a:focus, *:focus {
+  noFocusLine: expression(this.onFocus=this.blur());
+}
+</pre><p>看个对比图吧：</p>
+<p><img alt="" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/css/remove-dotted-border.jpg"></p>
+<p>问题是解决了，但你要问我这个问题为什么会这样，又为什么这样能解决？说实话，我也不知道，我只想告诉大家的是，这么做能解决你需要解决的问题，希望对大家有所帮助。如果您知道怎么来的，记得告诉我哟。谢谢！</p>
+<p>如需转载，烦请注明出处：<a href="http://www.w3cplus.com/css/remove-black-border-around-input-buttons-in-ie.html">http://www.w3cplus.com/css/remove-black-border-around-input-buttons-in-ie.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/8.html">css</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/99.html">submit</a></li><li><a href="http://www.w3cplus.com/blog/tags/105.html">form</a></li><li><a href="http://www.w3cplus.com/blog/tags/96.html">button</a></li></ul></div><div><div><div><div>
+      <div>8</div>
+                  <a href="http://www.w3cplus.com/vote/node/552/1/vote/alternate/vcU1Qh40jEh-SkQRCTI7oOjt5r_X-EltOp2jyaZmuIk/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/699106188/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css/remove-black-border-around-input-buttons-in-ie.html" border="0" height="0" width="0">

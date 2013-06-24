@@ -1,0 +1,47 @@
+---
+layout: post
+title:  "优化CouchDB的读性能"
+date:   2012-03-16 09:46:59
+author: nosqlfan
+categories: program
+---
+
+## 优化CouchDB的读性能
+### by nosqlfan
+### at 2012-03-16 09:46:59
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/623558058/6253001/1/item.html>
+
+<p><span><a href="http://blog.nosqlfan.com/tags/couchdb" title="查看 CouchDB 的全部文章">CouchDB</a></span>可能是我见过最有创意的NoSQL产品。它通过append only的方式去组织数据，这样就能够通过对增量数据执行MapReduce的方法来生成数据视图。这一套方法背后是一个完整的体系。</p>
+<p>当然，这也会引发一些问题，因为CouchDB默认是在读时合并修改的，也就是说，在数据读取时，CouchDB会先判断上次视图更新后又有多少新的写操作，然后将这些写操作通过MapReduce方法合并到视图中。并记录这一次更新的操作点。</p>
+<p>很显然，这样每次进行合并更新可能降低读性能。特别是当遇到两次读之间的间隔过大时。可能会导致大量的写操作需要合并进视图，从而让读操作变得很慢。</p>
+<p>那有什么方法可能解决这个问题。下面是一些具体的做法，你是否能接受这些做法可能还得看你的业务情况。</p>
+<h3>1.使用旧的视图</h3>
+<p>CouchDB在视图时，默认会进行写操作合并工作，这是我们上面讲过的。但是这里也说了，这只是一个默认，实际上你完全可以通过设置让其不更新视图，直接返回数据。当然，不更新，也就意味着你的数据不是最新的。所以说这需要你的业务能够接受。具体做法如下：</p>
+<pre>GET http://couchbase:5984/recipes/_design/recipes/_view/by_recipe?stale=ok</pre>
+<p>说白了就是添加一个<span><a href="http://blog.nosqlfan.com/tags/stale" title="查看 stale 的全部文章">stale</a></span>=ok的参数。</p>
+<h3>2.延迟合并</h3>
+<p>如果我们一直使用上面的方法。那么我们的数据可能就再也不会进行合并更新了。相信这是任何业务都难以忍受的。所以CouchDB还提供另一个stale的设置值，你可以设置它在读操作中返回旧的数据。然后CouchDB在返回数据后再自己执行合并工作。具体做法：</p>
+<pre>GET http://couchbase:5984/recipes/_design/recipes/_view/by_recipe?stale=update_after</pre>
+<p>跟上面的很像，只是stale参数值变成了update_after，也就是随后更新。</p>
+<h3>3.定时更新</h3>
+<p>如果上面两种方式都不能让你满意，我们来看一下下面一个。CouchDB支持一个叫<span><a href="http://blog.nosqlfan.com/tags/_change-feed" title="查看 _change feed 的全部文章">_change feed</a></span>的特性，它像是订阅一样，会将所有变更操作推给订阅了此消息的客户端。于是我们就可以通过脚本去订阅变更。并且在变更时主动更新视图了。这里使用python客户端为例，具体做法如下：</p>
+<pre>from couchdb import
+Server                                                                                                                
+
+cdbs = Server(&#39;http://localhost:5984/&#39;)
+db = cdbs[&#39;recipes&#39;]
+# the since parameter defaults to &#39;last_seq&#39; when using continuous feed
+ch = db.changes(feed=&#39;continuous&#39;,heartbeat=&#39;1000&#39;)                                                                                       
+
+counter = 0                                                                                                                               
+
+for line in ch:
+    counter=counter+1
+    if (counter &gt; 10):
+       db.view(&#39;recipes/by_name&#39;)
+       counter = 0</pre>
+<p>上面例子中有一个counter计数，每当有更新时，将counter加1，当counter达到10时，就去主动更新视图。也就是制定每10次写操作就更新一次视图。这样读客户端就可以永远使用stale=ok的方式来读取数据就行了。</p>
+<p>实际上，如果你设定counter为1时就更新视图，那么CouchDB就退化成为我们通常使用的写时更新索引的存储系统了。比如MongoDB或者MySQL。</p>
+<p>来源：<a href="http://blog.safaribooksonline.com/2012/03/14/improving-couchdb-performance/">blog.safaribooksonline.com</a></p>
+<p style="margin:0;padding:0;height:1px;overflow:hidden">
+    <a href="http://www.wumii.com/widget/relatedItems.htm" style="border:0"><img src="http://static.wumii.com/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0"></a></p><img src="http://www1.feedsky.com/t1/623558058/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/623558058/6253001/1/item.html" border="0" height="0" width="0">

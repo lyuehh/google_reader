@@ -1,0 +1,62 @@
+---
+layout: post
+title:  "扩展文件属性"
+date:   2012-01-19 10:52:55
+author: 王 聪
+categories: program
+---
+
+## 扩展文件属性
+### by 王 聪
+### at 2012-01-19 10:52:55
+### original <http://wangcong.org/blog/archives/1871>
+
+<p>我们知道，在 Linux 上最基本的文件属性是，</p>
+<pre>
+# ls -l foo
+-rw-r--r--. 1 root root 0 Jan 19 00:03 foo
+</pre>
+<p>可以通过chmod 命令来更改，ls -l 来查看。</p>
+<p>除此之外，一些文件系统上还提供额外的属性，比如 ext4 提供了额外的属性，比如 append only (a), compressed (c), immutable (i) 等属性，这些属性可以通过 e2fsprogs 软件包提供的 chattr(1) 来改变，lsattr(1) 来查看。更多属性也可参考 chattr(1)。比如：</p>
+<pre>
+# chattr +i foo
+# lsattr foo
+----i--------e- foo
+</pre>
+
+<p>这个是和文件系统密切相关的，一是因为 chattr 来自 e2fsprogs，二是因为它调用的系统调用也是和文件系统相关的一个 ioctl，可以看下面 strace 的输出：</p>
+<pre>
+open("foo", O_RDONLY|O_NONBLOCK|O_LARGEFILE) = 3
+ioctl(3, EXT2_IOC_SETFLAGS or EXT3_IOC_SETFLAGS or FIONCLEX, 0xfffc347335c) = 0
+close(3)                                = 0
+</pre>
+
+<p>
+还有一种文件属性叫扩展文件属性，<a href="http://en.wikipedia.org/wiki/Extended_file_attributes">eXtended ATTRibutes</a>，也就是通常所说的 xattr。和前一种相比，这个就不那么和文件系统密切相关了，但是仍然需要文件系统的支持。这个是通过系统调用 getxattr(2) 和 setxattr(2) 来实现的，对应的命令是 getfattr(1) 和 setfattr(1)，来自 <a href="http://acl.bestbits.at/">attr 软件包</a>。看例子：</p>
+<pre>
+# mount -o remount,acl,user_xattr /home
+# touch bar
+# setfattr -n user.comment -v "this is a comment" bar
+# getfattr bar
+# file: bar
+user.comment
+
+# getfattr bar -n user.comment
+# file: bar
+user.comment="this is a comment"
+</pre>
+<p>需要注意两点：一，挂载时需要加 "user_xattr" 选项；二，name 是有命名空间的，并不是任何命名空间都可以，比如，</p>
+<pre>
+# setfattr -n my.comment -v "this is my comment" bar
+setfattr: bar: Operation not supported
+</pre>
+<p>用户只能用 user.* 名字，而后面的 ACL 则会用 system.posix_acl_access。当然了，SELinux 也会用到 xattr，security.*。
+</p>
+<p>
+基于此，ACL 实现了访问控制列表，也就是说，设置某些用户的文件权限不再依赖于用户所在的组了，省去了不少麻烦。对应的命令是 setfacl(1) 和 getfacl(1) ，来自 <a href="http://acl.bestbits.at/">acl 软件包</a>。从下面 strace 的输出，也可以看出它们确实是基于 xattr 的：</p>
+<pre>
+getxattr("foo", "system.posix_acl_access", 0xfffe455cca0, 132) = -1 ENODATA (No data available)
+stat("foo", {st_mode=S_IFREG|0644, st_size=0, ...}) = 0
+setxattr("foo", "system.posix_acl_access", "\x02\x00\x00\x00\x01\x00\x06\x00\xff\xff\xff\xff\x02\x00\x06\x00\x00\x00\x00\x00\x04\x00\x04\x00\xff\xff\xff\xff\x10\x00\x06\x00\xff\xff\xff\xff \x00\x04\x00\xff\xff\xff\xff", 44, 0) = -1 EPERM (Operation not permitted)
+</pre>
+<p>之所以出现 ENODATA 是因为挂载文件系统时我没有指定"acl"，需要重新挂载：mount -o remount,acl /home 然后重新创建文件，因为旧的文件依旧是没有 ACL的。</p>

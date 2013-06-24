@@ -1,0 +1,33 @@
+---
+layout: post
+title:  "JavaScript游戏之是男人就飞10000米"
+date:   2010-10-28 18:17:00
+author: Floyd
+categories: program
+---
+
+## JavaScript游戏之是男人就飞10000米
+### by Floyd
+### at 2010-10-28 18:17:00
+### original <http://www.cnblogs.com/floyd/archive/2010/10/28/1863787.html>
+
+<p><p>相信这个游戏大家都玩过了吧。。。我还是重复一下玩法吧</p>
+<p><span style="color:red">游戏玩法：控制游戏中的鸟飞，当你按空格的时候，鸟就会往上飞，否则鸟会掉下去。在飞的过程中，不可以碰到黄色的障碍物，以及上层与下层，否则游戏结束。</span></p>
+<p>
+
+</p>
+<div style="width:600px;height:300px">
+<div>
+<div>
+<p>分数：<span>0</span>米</p>
+</div>
+<div></div>
+</div>
+</div>
+<p>游戏的设计思路：</p>
+<p>1：飞鸟，它其实只是一直在上下飞，并不会左右飞的。一个setInterval来控制飞鸟一直往下飞，每飞一下，速度就递增；当用户按下空格时，另一个setInterval</p>
+<p>执行，控制飞鸟往上飞，也是速度递增的。当空格被释放的时候，飞鸟又继续往下飞。飞鸟在飞的过程中，还会不断检测是碰到上下的边缘。</p>
+<p>2：障碍物， 障碍物，就是一直往左飞，飞出边界了，就消失，在飞的过程中，会判断是否撞到飞鸟。</p>
+<p>大致原理如上，具体看源码。。。设计得比较简单。。。 希望大家拍砖。。</p>
+<p><span style="color:red"><a href="http://files.cnblogs.com/floyd/FlyDodge.zip"><span style="font-size:14pt;color:red">完整源码&gt;&gt; </span></a></span></p>
+<img src="http://www.cnblogs.com/floyd/aggbug/1863787.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/floyd/">Floyd</a> 发表于 2010-10-28 18:17 <a href="http://www.cnblogs.com/floyd/archive/2010/10/28/1863787.html">原文链接</a></p><p>评论: 22　<a href="http://www.cnblogs.com/floyd/archive/2010/10/28/1863787.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/floyd/archive/2010/10/28/1863787.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/79022/">微软IE9测试版下载量突破1000万</a><span style="color:gray">(2010-10-29 13:01)</span><br>· <a href="http://news.cnblogs.com/n/79021/">微软讲述Win7个性化的秘密 主题大奉送</a><span style="color:gray">(2010-10-29 12:57)</span><br>· <a href="http://news.cnblogs.com/n/79019/">浅谈苹果的中国营销观</a><span style="color:gray">(2010-10-29 12:14)</span><br>· <a href="http://news.cnblogs.com/n/79018/">传Facebook测试基于位置功能Deals激励用户签到</a><span style="color:gray">(2010-10-29 12:07)</span><br>· <a href="http://news.cnblogs.com/n/79017/">Verizon版Iphone 对于 Android来说意味着什么？</a><span style="color:gray">(2010-10-29 11:50)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/msdnchina/archive/2010/10/29/1864083.html">PDC主题演讲直播笔录</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

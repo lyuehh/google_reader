@@ -1,0 +1,32 @@
+---
+layout: post
+title:  "sizeof  我的一个误区"
+date:   2011-03-21 17:38:00
+author: 付翔
+categories: program
+---
+
+## sizeof  我的一个误区
+### by 付翔
+### at 2011-03-21 17:38:00
+### original <http://www.cppblog.com/397993401/archive/2011/03/21/142389.html>
+
+<pre># include&lt;stdio.h&gt;
+
+<span>int</span> main()
+{
+    <span>char</span> *p;
+    <span>int</span> a,b,c;
+    printf(<span>"%d"</span>,<span>sizeof</span> a);
+    printf(<span>"%d\n"</span>,<span>sizeof</span> (a));
+    printf(<span>"%d\n"</span>,<span>sizeof</span> *p);
+    printf(<span>"%d\n"</span>,<span>sizeof</span> p);
+    printf(<span>"%d\n"</span>,4 * <span>sizeof</span> *p);
+
+    <span>///  sizeof  的操作数 是类型名时 必须加上括号 这个让很多人以为sizeof 是个函数 </span>
+    a = -1;
+    <span>if</span>(a &gt; <span>sizeof</span>(10 * <span>sizeof</span>(<span>int</span> ))) <span>// sizeof 是返回 unsigned int 的 当 int 和 unsigned int 遇上 会升级至 unsigned </span>
+            printf(<span>"%ud 这个你也会很郁闷\n"</span>,a);    <span>//-1 就变成一个很大的数</span>
+    <span>return</span> 0;
+}</pre>
+<img src="http://www.cppblog.com/397993401/aggbug/142389.html" width="1" height="1"><br><br><div align="right"><a style="text-decoration:none" href="http://www.cppblog.com/397993401/">付翔</a> 2011-03-21 17:38 <a href="http://www.cppblog.com/397993401/archive/2011/03/21/142389.html#Feedback" style="text-decoration:none">发表评论</a></div>

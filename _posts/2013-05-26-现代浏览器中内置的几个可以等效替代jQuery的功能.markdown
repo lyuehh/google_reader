@@ -1,0 +1,132 @@
+---
+layout: post
+title:  "现代浏览器中内置的几个可以等效替代jQuery的功能"
+date:   2013-05-26 22:40:46
+author: Aqee
+categories: program
+---
+
+## 现代浏览器中内置的几个可以等效替代jQuery的功能
+### by Aqee
+### at 2013-05-26 22:40:46
+### original <http://www.aqee.net/native-methods-jquery/>
+
+<img src="http://ittopic.gotoip1.com/qee/wordpress/wp-content/uploads/2013/05/modern-browser.jpg" alt="jquery"><br><p>jQuery的体积在不断的增大。新功能要不断增加，这是必然结果。虽然从版本1.8.3开始的瘦身效果明显，但不可否认的是，对于移动手机端的网页开发，它仍然是不可接受的。当然，jQuery不是铁板一块，你可以对它进行定制，只打包进你想要的组件，但其中的一些用来兼容老式浏览器的代码你无法去除。</p><p>就我的个人习惯来说，不管开发什么项目，即使是一个很简单的demo，我做的第一件事就是引入jQuery，这样做主要是想使用它提供的DOM选择器功能。对于一些像IE6/IE7这样的老式浏览器，这种做法是显而易见的，但是，如今现代浏览器里已经内置了完整的DOM选择器功能，能让你使用原生的浏览器提供的方法来实现jQuery的功能。</p><h3>document.queryselector</h3><p>这里说的现代浏览器是指火狐、谷歌、Opera、Safri等新生代浏览器，如果是IE，你需要至少是IE8或以上。你可以简单的将document.querySelector()函数映射为<code>$</code>，它能返回在DOM中找到的第一个匹配选择条件的元素。任何的CSS选择符都可以作为它的参数。</p><p><em>注意：IE 8只支持 CSS2.1标准的选择器</em></p><pre>&lt;div class=&quot;container&quot;&gt;
+  &lt;ul&gt;
+    &lt;li id=&quot;pink&quot;&gt;Pink&lt;/li&gt;
+    &lt;li id=&quot;salmon&quot;&gt;Salmon&lt;/li&gt;
+
+    &lt;li id=&quot;blue&quot;&gt;Blue&lt;/li&gt;
+    &lt;li id=&quot;green&quot;&gt;Green&lt;/li&gt;
+    &lt;li id=&quot;red&quot;&gt;Red&lt;/li&gt;
+  &lt;/ul&gt;  
+
+&lt;/div&gt;
+
+&lt;script&gt;
+
+  // 创建全局的 &#39;$&#39; 变量
+  window.$ = function(selector) {
+    return document.querySelector(selector);
+  };
+
+  (function() {
+    // 通过id查找item1，将它的背景颜色修改为浅红
+    var item = $(&quot;#salmon&quot;).style.backgroundColor=&quot;salmon&quot;;
+    console.log(item);
+  }());  
+&lt;/script&gt;</pre><p>你需要使用原生的“style”方法，而且这里不能使用jQuery里的链式调用。console.log()输出的将会是backgroundColor方法返回的“salmon”。</p><p>原生DOM节点有时候会比封装后的jQuery对象更好用。例如，如果你想修改一个图片的src属性，比较一下下面使用jQuery的做法和直接使用DOM节点的做法。</p><pre>// jQuery方式
+$("#picture").attr("src", "http://placekitten.com/200/200");
+
+//使用将querySelector映射为$的原生js方式
+$("#picture").src = "http://placekitten.com/200/200";</pre><p>DOM对象能让你直接访问图片的src属性，相反，所有的jQuery对象都需要你通过attr函数来操作。</p><p>document.querySelector方法只返回一个元素。如果你的选择目标是一堆元素，它只会返回符合条件的第一个节点。要想返回所有节点，你需要使用document.querySelectorAll方法。</p><h3>document.queryselectorall</h3><p>一个很巧妙的做法是将querySelector映射为$，而将querySelectorAll函数映射为$$。但它返回的是一个节点列表，不如jQuery里返回的Array格式好用，我们可以使用Array.prototype.slice.call(nodeList)方法加工一下，让它更方便。</p><pre>&lt;div class=&quot;container&quot;&gt;
+  &lt;ul&gt;
+    &lt;li id=&quot;pink&quot;&gt;Pink&lt;/li&gt;
+
+    &lt;li id=&quot;salmon&quot;&gt;Salmon&lt;/li&gt;
+
+    &lt;li id=&quot;blue&quot;&gt;Blue&lt;/li&gt;
+    &lt;li id=&quot;green&quot;&gt;Green&lt;/li&gt;
+    &lt;li id=&quot;red&quot;&gt;Red&lt;/li&gt;
+
+  &lt;/ul&gt;  
+
+&lt;/div&gt;
+
+&lt;script&gt;
+
+  window.$ = function(selector) {
+    return document.querySelector(selector);
+  };
+
+  window.$$ = function(selector) {
+    var items = {},
+    results = [],
+    length = 0,
+    i = 0;
+
+    // 注意，IE8不支持这种做法
+    results = Array.prototype.slice.call(document.querySelectorAll(selector));
+
+    length = results.length;
+
+    // add the results to the items object
+    for ( ; i &lt; length; ) {
+      items[i] = results[i];
+      i++;
+    }
+
+    // 添加一些额外的属性，让它更像一个Array
+    items.length = length;
+    items.splice = [].splice();
+
+    // 添加 &#39;each&#39; 方法
+    items.each = function(callback) {
+      var i = 0;
+      for ( ; i &lt; length; ) {
+        callback.call(items[i]);
+        i++;
+      }
+    }
+
+    return items;
+  };
+
+  (function() {
+
+    // 查找green项，修改字体大小
+    $(&quot;#green&quot;).style.fontSize = &quot;2em&quot;;
+
+    // 通过id查找，修改背景色
+    $$(&quot;li&quot;).each(function() {
+      this.style.backgroundColor = this.id;
+    });
+  }());
+
+&lt;/script&gt;</pre><p>注意，IE8是不支持将一个nodeList转换为Array的。</p><h3>classList</h3><p>使用jQuery对CSS类操作十分方便，幸运的是，现代浏览器里也内置了一下方法能够很方便的操作它们，主要用到了classList对象。下面是一些基本操作两种方式的对比。</p><pre>  window.$ = function(selector) {
+    return document.querySelector(selector);
+  };
+
+  //----增加CSS类------
+
+  /* jQuery */
+  $(".main-content").addClass("someClass");
+
+  /* 等效内置方法 */
+  $(".main-content").classList.add("someClass");
+
+  //----删除一个CSS类-----
+
+  /* jQuery */
+  $(".main-content").removeClass("someClass");
+
+  /* 等效内置方法 */
+  $(".main-content").classList.remove("someClass");
+
+  //----判断是否存在一个CSS类---
+
+  /* jQuery */
+  if($(".main-content").hasClass("someClass"))
+
+  /* 等效内置方法 */
+  if($(".main-content").classList.contains("someClass"))</pre><p>相对于jQuery提供大量丰富的方法，上面说的这几个现代浏览器里内置的功能显得很简单，但如果项目中的要求不高，这些替代方法能大大的减少你的应用依赖。</p><p>最后要提醒的是，这些内置方法在不同的浏览器和不同的版本中支持程度不一样，下面是它们的支持程度参考表。</p><h3>附图1：各种浏览器对querySelector/querySelectorAll的兼容支持</h3><p><img alt="各种浏览器对querySelector/querySelectorAll的兼容支持" src="http://ittopic.gotoip1.com/qee/wordpress/wp-content/uploads/2013/05/query-selector.jpg" width="680"></p><h3>附图1：各种浏览器对classlist的兼容支持</h3><p><img alt="各种浏览器对classlist的兼容支持" src="http://ittopic.gotoip1.com/qee/wordpress/wp-content/uploads/2013/05/classlist.jpg" width="680"></p><p>参考资料：</p><ol><li><a href="http://flippinawesome.org/2013/05/06/5-things-you-should-stop-doing-with-jquery/">5 Things You Should Stop Doing With jQuery</a></li><li><a href="http://www.leebrimelow.com/native-methods-jquery/">Native equivalents of jQuery functions</a></li><li>http://caniuse.com</li></ol><p><a href="http://t.cn/zTcmcnC"><img src="http://ww1.sinaimg.cn/mw690/54cde3bdjw1e4wb9j3xelj209c09rwfk.jpg"></a></p><hr>本文由<a href="http://www.aqee.net">外刊IT评论网</a>(<a href="http://www.aqee.net">www.aqee.net</a>)原创发表，文章地址：<a href="http://www.aqee.net/native-methods-jquery/">现代浏览器中内置的几个可以等效替代jQuery的功能</a>，<br><br><br><br><br><br><br><br><img src="http://www1.feedsky.com/t1/727559963/aqee-net/feedsky/s.gif?r=http://www.aqee.net/native-methods-jquery/" border="0" height="0" width="0">

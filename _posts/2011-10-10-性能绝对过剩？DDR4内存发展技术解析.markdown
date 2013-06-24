@@ -1,0 +1,73 @@
+---
+layout: post
+title:  "性能绝对过剩？DDR4内存发展技术解析"
+date:   2011-10-10 14:46:57
+author: 
+categories: program
+---
+
+## 性能绝对过剩？DDR4内存发展技术解析
+### by 
+### at 2011-10-10 14:46:57
+### original <http://www.cnbeta.com/articles/157828.htm>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/70.htm"><img src="http://img.cnbeta.com/topics/hardware.gif" alt="cnBeta 硬件新闻" name="sign" align="right"></a>
+        <p>我们知道现在DDR3内存逐步发展，已经成为目前主流的选择，而且现在性能最高也达到了DDR3-2133，明年
+DDR4内存将会出现，预计数据传输率将会从1600起跳，可以达到4266的水平，是DDR3的两倍。<span style="font-weight:bold">在很多人看来，内存已经很少给电脑性能带来太大帮
+助，DDR4内存是否性能过剩，成为末路黄花？目前还不好说，不管怎么样，技术总是要向前发展的。</span></p>
+		<p><p align="left"></p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446570592125476.jpg"></p>
+<p align="left">今天我们就看到国外媒体有讨论DDR4内存的发展。有兴趣的朋友可以通过下面的文档进行了解。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446571542882079.jpg"></p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446582106304918.jpg"><br>
+现在Intel平台内存规格</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446583542113128.jpg"><br>
+DDR内存的发展趋势</p>
+<p align="left">此前JEDEC固态技术协会就正式宣布未来DDR4内存标准的关键技术，预计将会在2012年中，DDR4内存将会具备更高的性能，并且功耗方面更低。</p>
+<p align="left"><strong>DDR4技术特性全面展示</strong></p>
+<p align="left">D-DR4针对未来服务器、笔记本、台式机、消费电子产品进行创新设计，并且具备诸多新的技术特性，首先传输率方
+面，DDR4将会有1.6 GT/s到3.2 GT/s的速度，而目前DDR3是是1.6 GT/s。同时DDR4还包括在DQ bus、更高的2667
+ Mhz数据传输率、Bank群组结构以及集成VrefDQ和增强的训练模式等等。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446584933705110.jpg"><br>
+DDR4标准的技术规格</p>
+<p align="left">Bank群组结构是个8n预取群组结构，它可以使用两个或者四个Bank组，这允许DDR4内存在每个Bank群组单独被激活、读取、写入或刷新操作，这样可以带来更高的内存小了和带宽。</p>
+<p align="left">同时在电压方面，DDR4也进行了调整，预计它的VDDQ电压将会在1.2V，未来还会进一步下调。</p>
+<p align="left">除此之外还有以下特性将会被采用：</p>
+<p align="left"><strong>・提供三种数据宽度：x4, x8和x16</strong></p>
+<p align="left"><strong>・新的JEDEC POD12接口标准（工作电压1.2V）</strong></p>
+<p align="left"><strong>・DifferentialSignaling( 差分信号技术）</strong></p>
+<p align="left"><strong>・新的终止调度：在DDR4中DQ bus可以转移终止到VDDQ，这样可以即时VDD电压降低的情况下也能保证稳定</strong></p>
+<p align="left"><strong>・正常和动态的ODT：改进ODT协议，并且采用新的Park Mode模式可以允许正常终结和动态吸入终结，而不需要去驱动ODT Pin。</strong></p>
+<p align="left"><strong>・突发长度和突发停止长度分别为8和4</strong></p>
+<p align="left"><strong>・ 数据遮掩</strong></p>
+<p align="left"><strong>・DBI：可以降低功耗并且提升数据信号完整性</strong></p>
+<p align="left"><strong>・新的数据总线CRC技术，可以进行传输过程中的错误侦测，特别对非ECC内存进行写入操作时有帮助。</strong></p>
+<p align="left"><strong>・针对命令和地址总线的新的CA奇偶校验</strong></p>
+<p align="left"><strong>・DLL关闭模式支持</strong></p>
+<p align="left">为进一步推广和采用DDR4标准，JEDEC打算在公布标准以后，举办DDR4 Technical Workshop会议，更多信息将会在以后正式公布。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/14465851210730531.jpg"><br>
+DDR4和DDR3内存结构对比</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446586324176379.jpg"><br>
+DDR4内存预计将在2012年发布，2015年取代DDR3</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446587526271745.jpg"><br>
+内存速度发展方向</p>
+<p align="left"><strong>DDR4内存功耗控制更合理</strong></p>
+<p align="left">DDR4虽然性能提升了，不过在功耗方面，依然控制的比较理想，这给以后的笔记本等方案可以带来更长的电池续航时间。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446588618326804.jpg"><br>
+DDR3、DDR4内存功耗对比DDR内存数据</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/1446589290364356.jpg"></p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/14465810687849261.jpg"><br>
+DDR4通过相应技术降低待机和工作电流提供更长的电池续航时间</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/144658111921687180.jpg"></p>
+<p><strong>展望DDR4内存发展契机</strong></p>
+<p align="left">那么回到最初的话题，DDR4能够给我们带来真正的好处和实惠呢？</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/14465912644867471.jpg"><br>
+主流DRAM发展蓝图</p>
+<p align="left">很明显，未来AMD“Graphics Core 
+Next”GPU将具备X86内存寻址特性，换句话说就是可以和CPU一样调用系统内存，CPU通过MMU内存控制器访问内存，而GPU则是通过
+IOMMU实现内存调用。这种新技术允许系统设备在虚拟内存中进行寻址，也就是将虚拟内存地址映射为物理内存地址，让实体设备可以在虚拟的内存环境中工
+作，这样可以帮助系统扩充内存容量，提升性能。所以未来将会受益于DDR4内存的高带宽特性。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/144659131083947655.jpg"></p>
+<p align="left">同时AMD下一代GPU还具备64bit x86指针、Page fault、地址转换缓存、分配内存的功能，操作系统将会同时为CPU、GPU内存调用全面服务。这样高速内存就显得尤为重要了，否则就会给系统性能带来很大瓶颈。</p>
+<p style="text-align:center"><img alt="性能绝对过剩？DDR4内存发展技术解析" style="border-bottom:black 1px solid;border-left:black 1px solid;border-top:black 1px solid;border-right:black 1px solid" src="http://img.cnbeta.com/newsimg/111010/144659141889183704.jpg"></p>
+<p align="left">总的来看，DDR4内存还是有它未来发展空间的，它的发展有赖于处理器、显卡新技术的出现，否则目前DDR3内存已经足够使用。（文/<span>硬派网</span>）</p></p></div>

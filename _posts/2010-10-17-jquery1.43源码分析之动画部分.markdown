@@ -1,0 +1,858 @@
+---
+layout: post
+title:  "jquery1.43源码分析之动画部分"
+date:   2010-10-17 22:17:31
+author: 
+categories: program
+---
+
+## jquery1.43源码分析之动画部分
+### by 
+### at 2010-10-17 22:17:31
+### original <http://www.javaeye.com/topic/786984>
+
+最近坛子上jquery游戏挺多的. 这一章主要讲跟jquery动画有关的源码实现. 提供了pdf下载.
+<br>这篇文章耗费了不少时间和心思, 请投新手帖的同学三思而后行啦.
+<br>
+<br>
+<br>---------------------------分割线-------------------------------------------------
+<br>
+<br>                         jQuery动画
+<br>Zengtan
+<br>Email: zengtan1021@gmail.com
+<br>QQ  520521086
+<br>
+<br>js实现动画的原理跟动画片的制作一样.动画片是把一些差距不大的原画以一定帧数播放.js动画是靠连续改变元素的某个css属性值,比如left, top.达到视觉的动画效果.
+<br>
+<br>这几年出现了不少优秀的js游戏, 比如前段时间的《js版植物大战僵尸》.其实js游戏主要就是这4个部分组成. 绘图, 移动, 碰撞检测, 逻辑设定.如果用jquery来做的话, 前三项都会变得相当容易.
+<br>
+<br>去年我也用jquery写了2个小游戏(jquery坦克大战和jquery泡泡堂).也写了自己的动画类.不过当时限于水平,没有深入分析jQuery.fx类的实现. 这几天读过源码之后, 感受很多. jquery的fx类虽然只有600多行代码.也没有牵涉到太高深的js知识.里面的逻辑却比较复杂,很多处理也很精妙.当真正披荆斩棘弄懂这一部分之后,相信对javascript的理解都会新上一层,当然也会更加喜欢jquery.
+<br>
+<br>闲话少说, 在看源码之前, 先大概了解一下fx类的实现思想.
+<br>首先fx类非常依赖jquery的队列机制,没有这个东西的话,一切都无从谈起.有关jquery队列机制, 见http://www.javaeye.com/topic/783260 .
+<br>回忆一下这句代码
+<br>$(‘div’).show(1000).hide(1000);
+<br>让这个div在1000ms内渐渐显示,然后再渐渐隐藏. 这2个动画是按次序执行的.在javascript的单线程异步模式下,管理异步的函数是很难的.在时间戳上, 既无法知道它准确的开始时间,又不能得到它准确的结束时间. 由于可能发生线程阻塞, 这些时间并不精确. 而让它们有序的执行, 最好的办法就是把元素上所有的动画都放入队列. 当第一个动画结束后, 在回调函数里通知第二个动画执行.
+<br>
+<br>好比有个公司招聘, 只有一个面试官,而有很多应聘者在排队等候, 一个人面试完之后,出门的时候顺便告诉第二个人进去面试.以此反复. 而作为面试官, 只需要通知第一个面试者.
+<br>
+<br>对于jquery, 当你使用animate函数执行动画的时候,这个动画并没有马上被执行, 它会先存入元素的队列缓存里. 然后看是不是已经有正在执行的动画. 如果没有, 就取出队列里的第一个动画并且执行(此时队伍里可能还有别人, 只是被stop函数暂停了), 如果有,那么要等到队列前面的所有动画执行完之后才会被通知执行.
+<br>
+<br>就好像, 现在来了一位应聘者, 他先看看是不是已经有人在里面面试. 如果没有, 那么他可以直接进去面试. 如果有, 他必须得加入到队伍的最后一个. 等前面的人全部面试完了才轮到他. 
+<br>
+<br>animate函数的主要功能并不是执行动画. 它只作为api的入口,修正参数.然后把参数扔给fx类去执行动画. jquery的动画模块也并没有细化得太离谱, 有几个方法是比较重要的.
+<br>jQuery.fn.animate  修正参数
+<br>jQuery.speed    静态方法, 帮助animate修正参数, 并且重写回调函数.重写回调函数大概就是
+<br>	callback = function(){
+<br>	callback();
+<br>	$(this.dequeue());
+<br>	}
+<br>jQuery.fx   构造函数, 跟动画有关的具体操作都在这个构造函数的原型方法里.
+<br>jQuery.fx.tick  静态方法, 作为定时器的方法, 监控所有动画的执行情况.
+<br>
+<br>我们最好先抛开复杂的参数修正等枝枝叶叶.直接从主干部分下手.先分析一下这个要使得这个动画类基本够用, 需要一些什么条件.
+<br>1  至少需要一个定时器来执行动画, 而且最好只有一个,即使有多个动画需要同时执行. 毕竟setTimeout和setInterval的开销是巨大的.
+<br>2  需要一个队列机制来管理动画顺序, jquery已经提供了queue和dequeue.
+<br>3  需要一种算法来计算属性的当前值.比如当前位置,当前大小.
+<br>4  需要一个具体执行动画的函数.
+<br>对于1, 我们制造一个tick函数来设置定时器, 并且在定时器中观察动画的执行情况.
+<br>对于2  直接用jquery的队列机制就可以了
+<br>对于3  jquery提供了默认的swing和liner. 我们还可以用一些别的算法, 比如tween.
+<br>对于4  这个函数得自己构建.怎么构建随意.不过它最好还带上停止动画等功能.
+<br>
+<br>好吧, 现在正式开始.我们不在一开始就钻进jquery的源码里去.先模仿jquery的思想. 自己实现一个动画fx类. 通过这个简化了的fx类, 再来反过头来了解jquery.
+<br>
+<br><span style="color:#ff0000">
+<br>实现原理是这样, 修正参数后为每个属性的动画都生成一个动画对象fx.比如一个元素要改变left和top, 那么为left和top分别创建一个动画fx对象, 然后把这些fx对象都push到全局timers数组.在定时器里循环这些fx对象, 每隔一段时间把他们对应的元素属性重新绘制一帧.直到达到指定的动画持续时间.这时触发这次animate的callback函数.并且从全局timer数组把元素的这些fx对象都清除出去.直到timers里没有fx对象,表示页面的动画全部结束,此时清空定时器.当然这中间少不了队列控制.
+<br></span> 
+<br>
+<br>先定义一个数组和一个定时器. 数组用来装载页面上所有动画. 当数组里没有动画时, 表示所有动画执行完毕, 这时清掉定时器.
+<br>var timers = [];
+<br>var timerId;
+<br>
+<br>然后是animate函数. 我们叫它myAnimate. 它传入4个参数. 分别是{"left":500}这样的property-value对象,动画持续时间, 动画算法, 回调函数.
+<br>myAnimate里调用一个getOpt函数. getOpt的作用是把参数组装成对象返回. 并且在回调函数里加上通知下一个动画执行的动作. 即.dequeue()
+<br><pre name="code">
+$.fn.extend({
+	myAnimate: function(property, duration, easing, callback){
+		var operate = jQuery.getOpt(duration, easing, callback);
+	//得到一个包含了duration， easing， callback等参数的对象.并且callback已经被修正.
+		$(this).queue(function(){
+	//把具体执行动画的函数放入队列, 注意这里如果队列中没有动画函数, 就直接执行这个匿名function了.
+			var elem = this;
+			$.each(property, function(name, value){
+          //遍历每个属性, 为每个属性的动画都生成一个fx对象.
+					var fx = new FX(elem, operate, name);
+					var start = parseInt($(elem).css(name));
+              //计算属性开始的值
+					var end = value;
+              //属性结束的值
+					fx.custom(elem, start, end);
+              //转交给FX的prototype方法cunstom执行动画
+			})
+		})
+		return this;
+      //返回this, 以便链式操作.
+	}
+})
+</pre>
+<br>FX构造函数
+<br><pre name="code">
+function FX(elem, options, name){
+	this.elem = elem;
+	this.options = options;
+	this.name = name;
+}
+</pre>
+<br>FX构造函数里只初始化3个实例属性.比如 
+<br>this.elem =  elem.
+<br>this.options={"duration": 500, "easing":"swing", callback:fn}
+<br>this.name = "left"
+<br>其他属性留在后面动态生成.
+<br>
+<br>custom 方法
+<br>custom方法的任务主要是把当前fx对象放入全局的timer,并且启动定时器来观察动画执行情况.
+<br><pre name="code">
+FX.prototype.custom = function(from, to){
+	this.startTime = jQuery.now();
+   //开始的时间, 和当前时间一起就可以计算已消耗时间.
+   //再用已消耗时间和持续时间相比就知道动画是否结束. 
+	this.start = from;
+	//属性初始的值
+	this.end = to;
+	//属性动画后的值
+	timers.push(this);
+   //把每个fx对象都push进全局的动画堆栈.
+	FX.tick（);
+   //启动定时器.
+}
+</pre>
+<br>FX.tick
+<br>用来监控动画执行情况
+<br><pre name="code">
+FX.tick = function(){
+		if (timerId) return;
+  //只需要一个定时器,所以如果该定时器已经存在了,直接return
+		timerId = setInterval(function(){
+			for (var i = 0, c; c = timers[i++];){
+  //每隔13ms, 遍历timerId里的每个动画对象fx, 让它们执行下一步.
+				c.step();
+			}
+			if (!timers.length){
+//如果timers没有元素, 说明页面的所有动画都执行完毕, 清除定时器.
+//这个全局定时器就像一个总考官, 它会每隔一段时间巡视每个考生, 
+//督促他们赶紧答题.
+//如果考生全部考试完毕交卷了, 他会进入休息状态.
+//这时如果又进来了考生, 他又进入工作状态.
+				FX.stop();
+			}
+		}, 13);
+	}
+</pre>
+<br>FX.stop
+<br>清空定时器
+<br><pre name="code">
+FX.stop = function(){
+	clearInterval(timerId);	
+	timerId = null
+}
+</pre>
+<br>
+<br>FX.prototype.step
+<br>执行每一步动画
+<br><pre name="code">
+FX.prototype.step = function(){
+		var t = jQuery.now();
+	//当前时间
+		var nowPos;
+	//当前属性值
+		if (t &gt; this.startTime + this.options.duration){
+//如果现在时间超过了开始时间 + 持续时间, 说明动画应该结束了
+			nowPos = this.end;
+//动画的确切执行时间总是13ms的倍数, 很难刚好等于要求的动画持续时间,所以一般可能会有小小的误差, 修正下动画最后的属性值.
+			this.options.callback.call(this.elem);
+//执行回调函数
+			this.stop();
+//把已经完成动画的任务fx对象从全局timer中删除.
+		}else{
+			var n = t - this.startTime;
+ //动画已消耗的时间
+			var state = n / this.options.duration;		
+	var pos = jQuery.easing[this.options.easing](state, n, 0, 1, this.options.duration);
+			nowPos = this.start + ((this.end - this.start) * pos);
+		}
+   //根据时间比和easing算法, 算出属性的当前值
+			this.update(nowPos, this.name);
+   //给属性设置值
+	}
+</pre>
+<br>	FX.prototype.stop
+<br>
+<br>	从全局timer中删除一个已经完成动画任务的fx对象.
+<br><pre name="code">
+	FX.prototype.stop = function(){
+		for ( var i = timers.length - 1; i &gt;= 0; i--){
+			if (timers[i] === this){
+				timers.splice(i, 1);
+			}
+		}
+	}
+</pre>
+<br>	FX.prototype.update
+<br>	给属性设置值
+<br><pre name="code">	
+FX.prototype.update = function(value, name){
+		this.elem.style[name] = value;
+	}
+</pre>
+<br>注意FX.stop和FX.prototype.stop是不同的. 前者是取消定时器, 这样页面的所有动画都会结束. 后者是停止某个fx对象的动画.比如left, opacity.
+<br>
+<br>下面是可供测试的全部代码
+<br><pre name="code">
+&lt;style type=&quot;text/css&quot;&gt;
+
+#div1 {
+	background:#aaa;
+	width:188px;
+	height:188px;
+	position:absolute;
+	top:10px;
+	left: 110px;
+}
+
+#div2 {
+	background:#aaa;
+	width:188px;
+	height:188px;
+	position:absolute;
+	top:310px;
+	left: 110px;
+}
+
+&lt;/style&gt; 
+
+&lt;body&gt; 
+&lt;/body&gt;
+
+&lt;div id=&quot;div1&quot;&gt;我是一个div&lt;/div&gt;
+&lt;div id=&quot;div2&quot;&gt;我是另一个div&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot; src=&quot;jquery1.43.js&quot;&gt;&lt;/script&gt; 
+&lt;script type=&quot;text/javascript&quot;&gt;
+	
+
+var timers = [];
+var timerId;
+
+
+$.fn.extend({
+	myAnimate: function(property, duration, easing, callback){
+		var operate = jQuery.getOpt(duration, easing, callback);
+		$(this).queue(function(){
+			var elem = this;
+			$.each(property, function(name, value){
+					var fx = new FX(elem, operate, name);
+					var start = parseInt($(elem).css(name));
+					var end = value;
+					fx.custom(start, end);
+			})
+		})
+		return this;
+	}
+})
+
+function FX(elem, options, name){
+	this.elem = elem;
+	this.options = options;
+	this.name = name;
+}
+	
+FX.prototype.custom = function(from, to){
+	this.startTime = jQuery.now();
+	this.start = from;
+	this.end = to;
+	timers.push(this);
+	FX.tick();
+}
+
+FX.prototype.step = function(){
+		var t = jQuery.now();
+		var nowPos;
+		if (t &gt; this.startTime + this.options.duration){
+			nowPos = this.end;
+			this.options.callback.call(this.elem);
+			this.stop();
+		}else{
+			var n = t - this.startTime;
+			var state = n / this.options.duration;
+			var pos = jQuery.easing[this.options.easing](state, n, 0, 1, this.options.duration);
+			nowPos = this.start + ((this.end - this.start) * pos);
+		}
+			this.update(nowPos, this.name);
+	}
+
+	FX.prototype.stop = function(){
+		for ( var i = timers.length - 1; i &gt;= 0; i--){
+			if (timers[i] === this){
+				timers.splice(i, 1);
+			}
+		}
+	}
+
+	FX.prototype.update = function(value, name){
+		this.elem.style[name] = value;
+	}
+
+
+	FX.tick = function(){
+		if (timerId) return;
+		var self = this;
+		timerId = setInterval(function(){
+			for (var i = 0, c; c = timers[i++];){
+				c.step();
+			}
+			if (!timers.length){
+				FX.stop();
+			}
+		}, 13);
+	}
+	
+	FX.stop = function(){
+		clearInterval(timerId);	
+		timerId = null
+	}
+
+jQuery.getOpt = function(duration, easing, callback){
+	
+	var obj = {
+		&quot;duration&quot;: duration,
+		&quot;easing&quot;: easing
+	}
+  
+	obj.callback = function(){
+		callback &amp;&amp; callback();
+		$(this).dequeue();	
+	}
+	
+	return obj;
+}
+
+$.fn.stop = function(){
+	for ( var i = timers.length - 1; i &gt;= 0; i-- ) {
+		if (timers[i].elem === this[0]){
+			timers[i].stop();	
+		}		
+	}
+}
+
+
+
+$(&quot;#div1&quot;).myAnimate({&quot;top&quot;:500}, 1000, &quot;swing&quot;).myAnimate({&quot;top&quot;:100}, 500, &quot;swing&quot;).myAnimate({&quot;left&quot;:500}, 500, &quot;swing&quot;).myAnimate({&quot;top&quot;:500}, 500, &quot;swing&quot;);
+
+$(&quot;#div2&quot;).myAnimate({&quot;left&quot;:1000}, 1000, &quot;swing&quot;)
+
+
+function stop(){
+	$(&quot;#div1&quot;).stop();	
+}
+
+function cont(){
+	$(&quot;#div1&quot;).dequeue();	
+}
+
+&lt;/script&gt; 
+&lt;button onclick=&quot;stop()&quot;&gt;停止&lt;/button&gt;
+&lt;button onclick=&quot;cont()&quot;&gt;继续后面的动画&lt;/button&gt;
+</pre>
+<br>--------------------分割线---------------------------------
+<br>
+<br>上面的代码跟jquery有少许不同, 因为我写的时候有的地方忘记jquery是怎么搞的了.不过思路还是一样的.
+<br>尽管这样, jquery的做法要麻烦很多. 毕竟作为一个库, 要考虑的东西是非常非常多的.
+<br>
+<br>一行一行来看代码.
+<br>首先定义一个常量	
+<br><pre name="code">
+fxAttrs = [
+		// height animations
+		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
+		// width animations
+		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
+		// opacity animations
+		[ "opacity" ]
+	]
+</pre>
+<br>这个东西是为了得到当用动画形式执行show,hide,slideDown, slideUp时,所需要改变的属性值.比如show,需要改变的并不仅仅是width和height.还包括marginLeft,paddingLeft等属性.
+<br>
+<br>jQuery.prototype.show
+<br>show和hide这两个常用的方法实现都比较简单. show和hide可以直接隐藏/显示元素,也可以以动画渐变的方式来达到效果.直接隐藏和显示就是设置display属性,动画效果则要用animate函数改变width,height,marginLeft等.不过设置display的时候还要考虑css属性对元素可见性的影响,以及尽量避免reflow回流.留在css部分讨论.
+<br>
+<br>jQuery.prototype.toggle
+<br>切换元素的可见状态, 就是show和hide这两个操作集中到一起.
+<br>toggle有好几种调用方式,
+<br>1  不传递任何参数, 这时仅仅只切换元素的可见状态
+<br>2  只有一个boolean类型的参数. 这个参数实际是一个返回值为boolean的表达式. 当这个表达式结果为true的时候显示元素, 反之隐藏. 即toggle(switch)形式. 比如
+<br>var flip = 0;    
+<br>$("button").click(function () {
+<br>        $(&quot;p&quot;).toggle( flip++ % 3 == 0 );    
+<br>});
+<br>3  传入一些函数, 当点击元素的时候, 按顺序执行这些函数的某一个.
+<br>
+<br>4  可以传入3个参数, 分别为speed, easing, callback. 即以动画的形式切换可见性. 
+<br>
+<br>这几个方法的源码都跟动画的核心机制关系不大, 反而是和css, evnet模块联系比较密切. 就不放在这里讨论了.
+<br>
+<br>现在看看关键的animate函数.前面讲过, animate的作用主要是修正参数, 把参数传递给fx类去实现动画.
+<br><pre name="code">
+animate: function( prop, speed, easing, callback ) {
+		//prop是{&quot;left&quot;:&quot;100px&quot;, &quot;paddingLeft&quot;: &quot;show&quot;}这种形式,可以由用户自己传进来, 在show,   hide等方法里, 是由genfx
+//函数转化而来. 
+		var optall = jQuery.speed(speed, easing, callback);
+		//optall是一个包含了修正后的动画执行时间, 动画算法, 回调函数的对象.
+//speed方法把animate函数的参数包装成一个对象方便以后调用，
+//并且修正callback回调函数, 加上dequeue的功能.
+	
+		if ( jQuery.isEmptyObject( prop ) ) {
+		//prop 是个空对象.不需要执行动画,直接调用回调函数.
+			return this.each( optall.complete );
+		}
+		return this[ optall.queue === false ? &quot;each&quot; : &quot;queue&quot; ](function() {
+			//如果参数里指定了queue 为false, 单独执行这次动画,   
+         //而不是默认的加入队列.
+			var opt = jQuery.extend({}, optall), p,
+			//复制一下optall对象.
+			isElement = this.nodeType === 1,
+			//是否是有效dom节点.
+			hidden = isElement &amp;&amp; jQuery(this).is(&quot;:hidden&quot;),
+			//元素的可见性
+			self = this;
+	     //保存this的引用, 在下面的闭包中this指向会被改变
+			for ( p in prop ) {
+			//遍历&quot;left&quot;, &quot;top&quot;等需要执行动画的属性.
+				var name = jQuery.camelCase( p );
+			//把margin-left之类的属性转换成marginLeft
+				if ( p !== name ) {
+					prop[ name ] = prop[ p ];
+				//把值复制给camelCase转化后的属性
+					delete prop[ p ];
+				//删除已经无用的属性
+					p = name;
+				}
+				if ( prop[p] === &quot;hide&quot; &amp;&amp; hidden || prop[p] === &quot;show&quot; &amp;&amp; !hidden ) {
+				//元素在hidden状态下再隐藏或者show状态下再显示
+					return opt.complete.call(this);
+				//不需要任何操作, 直接调用回调函数.
+				}
+
+				if ( isElement &amp;&amp; ( p === &quot;height&quot; || p === &quot;width&quot; ) ) {
+				//如果是改变元素的height或者width
+					opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
+					if ( jQuery.css( this, &quot;display&quot; ) === &quot;inline&quot; &amp;&amp;
+							jQuery.css( this, &quot;float&quot; ) === &quot;none&quot; ) {
+						if ( !jQuery.support.inlineBlockNeedsLayout ) {
+     //对于不支持inline-block的浏览器,可以加上zoom:1 来hack  //http://www.planabc.net/2007/03/11/display_inline-block/ 
+		this.style.display = &quot;inline-block&quot;;  
+						} else {
+				var display = defaultDisplay(this.nodeName);
+							if ( display === &quot;inline&quot; ) {
+								this.style.display = &quot;inline-block&quot;;
+							} else {
+								this.style.display = &quot;inline&quot;;
+								this.style.zoom = 1;
+							}
+						}
+					}
+				}
+				if ( jQuery.isArray( prop[p] ) ) {
+	(opt.specialEasing = opt.specialEasing || {})[p] = prop[p][1];
+	// 可以给某个属性单独定制动画算法.
+//例如$(&quot;#div1&quot;).animate({&quot;left&quot;:[&quot;+=100px&quot;, &quot;swing&quot;], 1000}, 
+					prop[p] = prop[p][0];
+              //修正prop[p]
+				}
+			}
+
+			if ( opt.overflow != null ) {
+				this.style.overflow = &quot;hidden&quot;;
+				//动画改变元素大小时, overflow设置为hidden, 避免滚动条也跟着不停改变
+			}
+			opt.curAnim = jQuery.extend({}, prop);
+//又复制一次prop, opt.curAnim用来记录某个元素中已经完成动画的属性, 比如left和marginLeft的动画并不是同一时间完成的,而只有全部属性的动画都完成之后, 才能触发这个元素的这次动画的callback函数.			
+jQuery.each( prop, function( name, val ) {
+			 //进入重点, 遍历属性.
+				var e = new jQuery.fx( self, opt, name );
+			 //fx是个辅助工具类. 为每个属性的动画操作都生成一个fx对象.
+			 //得到一个具有elem(被操作对象), options(包括speed, callback等属性), prop(elem待变化的属性, 比如left, top), 
+//orig为{}， 用来保存属性的原始值
+				if ( rfxtypes.test(val) ) {
+					e[ val === &quot;toggle&quot; ? hidden ? &quot;show&quot; : &quot;hide&quot; : val ]( prop );
+	//动画方式进行show. hide和toggle.   
+//比如$(&quot;#div1&quot;).animate({&quot;width&quot;:&quot;hide&quot;}, 1000)	 			
+//这里进入是fx.prototype.show，fx.prototype.hide方法
+ //并不是jQuery.fn.show, jQueyr.fn.hide
+           } else {
+					var parts = rfxnum.exec(val),
+						start = e.cur(true) || 0;  
+						//修正开始的位置, 如果是一个太大的负数，把它                          
+                  //修正为0
+					if ( parts ) {
+						var end = parseFloat( parts[2] ),
+							//结束的位置
+							unit = parts[3] || &quot;px&quot;;  //修正单位
+						// We need to compute starting value
+						if ( unit !== &quot;px&quot; ) {
+							self.style[ name ] = (end || 1) + unit;
+							start = ((end || 1) / e.cur(true)) * start;
+							self.style[ name ] = start + unit;
+						}
+						//修正开始的位置,unit可能为%.
+	
+						if ( parts[1] ) {
+							end = ((parts[1] === &quot;-=&quot; ? -1 : 1) * end) + start;
+						//做相对变化时, 计算结束的位置, 比如
+          //{&quot;left&quot;:&quot;+=100px&quot;}， 表示元素右移100个像素        
+						}
+						e.custom( start, end, unit );
+			   //调用fx类的prototype方法custom, 真正开始动画
+					} else {
+						e.custom( start, val, &quot;&quot; );
+					}
+				}
+			});
+
+			// For JS strict compliance
+			return true;
+		});
+	}
+</pre>
+<br>看看animate里的speed函数. 前面说过speed函数是把animate的参数都包装为一个对象. 然后把dequeue加入回调函数.如果animate的第二个参数是object类型,直接复制一次就可以了, 如果不是, 要自己手动包装.
+<br><pre name="code">	
+  speed: function( speed, easing, fn ) {
+		var opt = speed &amp;&amp; typeof speed === &quot;object&quot; ? jQuery.extend({}, speed) : {
+			complete: fn || !fn &amp;&amp; easing ||
+			jQuery.isFunction( speed ) &amp;&amp; speed,
+			duration: speed,
+			easing: fn &amp;&amp; easing || easing &amp;&amp; !jQuery.isFunction(easing) &amp;&amp; easing
+		};
+		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === 
+&quot;number&quot; ? opt.duration : opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
+		  //jQuery.fx.off为true时,禁止执行动画,此时任何animate      
+        //的speed都为0
+        //如果speed为&quot;fast&quot;,&quot;slow&quot;等, 从jQuery.fx.speeds里取
+        //值, 分别为600,200.
+		opt.old = opt.complete;
+		opt.complete = function() {
+			//重写回调函数, 把dequeue操作加入回调函数.
+			//让动画按顺序执行
+			if ( opt.queue !== false ) {
+		  //前面的animate方法里已经说过, queue参数为false时,
+        // 是直接执行此次动画, 不必加入队列.
+		jQuery(this).dequeue();
+			}
+			if ( jQuery.isFunction( opt.old ) ) {
+				opt.old.call( this );
+			}
+		};
+		return opt;
+         //返回包装后的对象
+	}
+</pre>
+<br>jQuery.fx
+<br>再看看fx类的实现. 它的构造方法接受3个从animate函数里传来的参数. 每个实例在构造函数里初始化的时候都会被加上3个属性. 分别是
+<br>options（{“duration”：1000，“easing”：“swing”，“callback”：fn}）
+<br>elem (元素本身)
+<br>prop ({"left": 500, "width": 500})
+<br>这几种形式
+<br><pre name="code">
+fx: function( elem, options, prop ) {
+		this.options = options;
+		this.elem = elem;
+		this.prop = prop;
+
+		if ( !options.orig ) {
+			options.orig = {};
+		}
+	}
+})</pre>
+<br>另外, 还会给每个对象实例绑定orig属性, 默认是一个空对象{}.用来储存元素的属性原始值, 有了这个值, 可以让动画进行回退.
+<br>
+<br>现在终于到了custom函数. 前面的这么多代码都只是铺垫, 这个函数里才开始真正的进入执行动画. 它主要作用是创建定时器.
+<br><pre name="code">
+// Start an animation from one number to another
+	custom: function( from, to, unit ) {
+		this.startTime = jQuery.now();
+		this.start = from;
+		this.end = to;
+		this.unit = unit || this.unit || &quot;px&quot;;
+		this.now = this.start;
+		this.pos = this.state = 0;
+
+		var self = this, fx = jQuery.fx;
+		function t( gotoEnd ) {
+			return self.step(gotoEnd);
+		}
+     //一个包裹动画具体执行函数的闭包, 之所以要用闭包包裹起来,
+     //是因为执行动画的动作并不一定是发生在当前.
+		t.elem = this.elem;  
+		//保存一个元素的引用. 删除和判断is:animated的时候用到, 
+     //把timer和元素联系起来
+		if ( t() &amp;&amp; jQuery.timers.push(t) &amp;&amp; !timerId ) {---（1）
+			timerId = setInterval(fx.tick, fx.interval);
+		}
+	}
+ </pre>
+<br>1处这个if语句里包含了很多内容
+<br>首先t()进入.step函数, step函数可以看成动画的某一帧.
+<br>而custom函数至多只负责执行动画的第一帧（其它帧都是在全局定时器里执行的）,然后判断t()的返回值, 即self.step(gotoEnd)的返回值, 如果为false, 表示这个fx动画已经执行完.所以当它为true,也就是还需要继续执行动画的情况下,要把这个包含self.step(gotoEnd)语句的闭包, 存入全局的timers数组. 以便在定时器里循环执行.我在前面的模拟fx类的实现中, 选择的存入fx对象,把判断fx对象执行完毕的操作放在fx.step里面. 效果是一样.不过觉得存fx对象的话, 没有这么难理解.而timerId就是那个全局计时器,用来不停的执行timer数组里残余的动画.只有所有的动画都执行完毕后, 才会关闭timerId定时器.当然如果t()返回false和timerId定时器已经存在的情况下,都不需要再启动定时器.
+<br>
+<br>定时器里的调用的函数是fx.tick. 看看fx.tick的实现.
+<br><pre name="code">
+tick: function() {
+		var timers = jQuery.timers;
+		//timer里面包括所有当前所有在执行动画的函数.
+		for ( var i = 0; i &lt; timers.length; i++ ) {
+			if ( !timers[i]() ) {
+		//timers[i]()就是上面的t()，也就是fx.step(gotoEnd);
+	//动画如果完成了,fx.step(gotoEnd)是返回false的. 所以这里 
+	//是当某个动画完成之后, 就在全局的timer中删除它
+				timers.splice(i--, 1);
+			}
+		}
+
+		if ( !timers.length ) {
+		//当全部动画完成之后, 清空定时器
+			jQuery.fx.stop();
+		}
+	}
+</pre>
+<br>jQuery.fx.stop方法很简单
+<br><pre name="code">
+stop: function() {
+		clearInterval( timerId );
+		timerId = null;
+	}
+</pre>
+<br>再看下fx的一些原型方法,最重要的就是fx.prototype.step.
+<br>认真分析下这个函数的实现.
+<br>step函数用来执行动画的某一帧, 它有一个可选的参数gotoEnd.
+<br>当gotoEnd为true时,直接让元素转到动画完成的状态.主要用在$('div').stop的时候. 
+<br>step函数每次被调用的时候都会根据gotoEnd参数和当前时间跟开始时间加上持续的时间的比值,来判断动画是否结束.如果还未结束就返回false. 在定时器下一次的循环里继续执行.
+<br>否则, 会算出元素在这一帧上面的状态, 调用fx.prototype.update来在页面上绘制这一帧.并且返回true,在定时器下一次开始循环timer数组的时候, 把包含这个step函数的闭包给删除掉.
+<br><pre name="code">
+// Each step of an animation
+	step: function( gotoEnd ) {
+		var t = jQuery.now(), done = true;
+
+		if ( gotoEnd || t &gt;= this.options.duration + this.startTime ) {
+			//如果gotoEnd为true或者已到了动画完成的时间.
+			this.now = this.end;
+			this.pos = this.state = 1;
+        //动画的确切执行时间总是一个指定的number的倍数, 很难刚好等于要求的动画持续时间,所以一般可能会有小小的误差, 修正下动画最后的属性值.
+			this.update();
+			//进入uptate，重新绘制元素的最后状态.
+			this.options.curAnim[ this.prop ] = true;
+			//某个属性的动画已经完成.
+			for ( var i in this.options.curAnim ) {
+				if ( this.options.curAnim[i] !== true ) {
+			//如果有一个属性的动画没有完成,都不认为该次animate操 
+         //作完成, 其实这里完全可以事先用一个number计算出有多  
+       //少个需要执行动画的属性.每次step完成就减1, 直到等于0.
+        //效率明显会高一点.
+       			done = false;
+				}
+			}
+
+			if ( done ) {
+				// 恢复元素的overflow
+				if ( this.options.overflow != null &amp;&amp; !jQuery.support.shrinkWrapBlocks ) {
+					var elem = this.elem, options = this.options;
+					jQuery.each( [ &quot;&quot;, &quot;X&quot;, &quot;Y&quot; ], function (index, value) {
+						elem.style[ &quot;overflow&quot; + value ] = options.overflow[index];
+					} );
+				}
+				// Hide the element if the &quot;hide&quot; operation was done
+				if ( this.options.hide ) {
+					jQuery(this.elem).hide();
+				//如果要求hide, 动画完成后,通过设置display真正隐
+            //藏元素.动画的最后只是设置width,height等为0.
+				}
+				if ( this.options.hide || this.options.show ) {
+					for ( var p in this.options.curAnim ) {
+						jQuery.style( this.elem, p, this.options.orig[p] );
+					}
+				}
+				//hide,show操作完成后,修正属性值. 通过hide/show动 
+	//画开始前记录的原始属性值
+				//执行回调函数
+				this.options.complete.call( this.elem );
+			}
+			return false;
+	//动画完成, 返回false
+		} else {
+			//动画还没执行完.
+			var n = t - this.startTime;
+			//动画执行完还需要的时间
+			this.state = n / this.options.duration;
+			//还需要时间的比例
+			// Perform the easing function, defaults to swing
+			var specialEasing = this.options.specialEasing &amp;&amp; this.options.specialEasing[this.prop];
+			//某个属性如果指定了额外的动画算法.
+			var defaultEasing = this.options.easing || (jQuery.easing.swing ? &quot;swing&quot; : &quot;linear&quot;);
+			//所有属性公用的动画算法, 如果没有指定. 默认为&quot;swing&quot;或者&quot;linear&quot;
+			this.pos=jQuery.easing[specialEasing|| defaultEasing](this.state, n, 0, 1, this.options.duration);
+			//通过动画算法, 计算属性现在的位置.
+			this.now = this.start + ((this.end - this.start) * this.pos);
+			this.update(); //重新绘制元素在这一帧的状态
+		}
+		return true;   //此fx动画还未结束, 返回true.
+	}
+};
+</pre>
+<br>jQuery.fx.update
+<br><pre name="code">
+update: function() {
+		if ( this.options.step ) { ------------------（1）
+			this.options.step.call( this.elem, this.now, this );
+		}
+	(jQuery.fx.step[this.prop]||jQuery.fx.step._default)( this )
+   ------------------（2）
+	}
+</pre>
+<br>从update方法的（1）处可以看到, 当animate的第二个object类型参数有step 属性, 并且值是一个函数的话,在每一帧动画结束后, 都会执行这个callback函数.
+<br>(2)处绘制元素是调用的jQuery.fx.step, 不是刚才一直在讨论的fx.prototype.step. 看看jQuery.fx.step的代码.
+<br><pre name="code">
+step: {
+		opacity: function( fx ) {
+			jQuery.style( fx.elem, &quot;opacity&quot;, fx.now );
+		//	opacity的操作不一样.IE要用filter:alpha .拿出来单独处理.
+	},
+		_default: function( fx ) {
+			if ( fx.elem.style &amp;&amp; fx.elem.style[ fx.prop ] != null ) {
+				fx.elem.style[ fx.prop ] = (fx.prop === &quot;width&quot; || fx.prop === &quot;height&quot; ? Math.max(0, fx.now) : fx.now) + fx.unit;
+			} else {
+				fx.elem[ fx.prop ] = fx.now;
+			}
+		}
+	}
+</pre>
+<br>
+<br>-----------------------分割线-------------------------------
+<br>到这里, fx类的中心实现就基本差不多了. 最后看看另外一些用到过的方法.
+<br>
+<br>jQuery.fn.stop
+<br>这个方法让元素停止动画, 可以传入2个boolean类型的参数, clearQueue和gotoEnd. 作用分别是在stop的同时, 清空元素队列里的动画, 和让元素立即转换到动画结束后应该处在的状态（默认是动画执行一半的时候stop的话, 元素会停留在那个状态）.
+<br><pre name="code">
+stop: function( clearQueue, gotoEnd ) {
+		var timers = jQuery.timers;
+		if ( clearQueue ) {
+			this.queue([]);
+       //清空元素的队列
+		}
+		this.each(function() {
+			for ( var i = timers.length - 1; i &gt;= 0; i-- ) {
+				//循环全局timers
+            if ( timers[i].elem === this ) {
+					//找到timers中的跟这个元素对应的fx闭包,
+               //可能有N个.
+              if (gotoEnd) {
+						timers[i](true);
+             //调用一次fx.step(true),转到动画执完成的状态
+					}
+					timers.splice(i, 1);
+             //timers数组里删掉这个fx闭包
+				}
+			}
+		});
+		if ( !gotoEnd ) {
+			this.dequeue();
+		}
+		return this;
+	}
+})
+</pre>
+<br>fx.prototype.show和fx.prototype.hide
+<br><pre name="code">
+show: function() {
+		 //Remember where we started, so that we can go back to it later
+		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
+		this.options.show = true;
+
+		this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur());
+//把width和height设置为一个很小的值, 防止屏幕闪烁.
+		// Start by showing the element
+		jQuery( this.elem ).show();
+	},
+
+	// Simple 'hide' function
+	hide: function() {
+		// Remember where we started, so that we can go back to it later
+		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
+		this.options.hide = true;
+
+		// Begin the animation
+		this.custom(this.cur(), 0);
+	}
+</pre>
+<br>这2个方法是用于
+<br>$("#div1").animate({"width":"hide"},{duration:1000}).animate({"width":"show"}, 1000)这种情况.
+<br>当元素hide之前, 需要记录一下原来的width, 以便在接下来的show操作的时候, 回到原来的width.
+<br>
+<br>
+<br>然后是一些常用快捷方法.
+<br><pre name="code">
+jQuery.each({
+	slideDown: genFx("show", 1),
+	slideUp: genFx("hide", 1),
+	slideToggle: genFx("toggle", 1),
+	fadeIn: { opacity: "show" },
+	fadeOut: { opacity: "hide" }
+}, function( name, props ) {
+	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		return this.animate( props, speed, easing, callback );
+	};
+})
+</pre>
+<br>可以看到, 都是调用的animate函数.
+<br><pre name="code">
+genFx
+	fxAttrs = [
+		// height animations
+		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
+		// width animations
+		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
+		// opacity animations
+		[ "opacity" ]
+	]
+
+function genFx( type, num ) {
+	var obj = {};
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
+		obj[ this ] = type;
+	});
+
+	return obj;
+}
+</pre>
+<br>这个方法就是取得进行一些特殊的动画操作时， 元素需要改变的属性.返回的是一个{key: value}类型的对象.
+<br> 
+          
+  <br><br>
+  <ul>
+    本文附件下载:
+    
+      <li><a href="http://dl.javaeye.com/topics/download/e165576d-923e-3d7c-970c-b92fc28c50ae">fx.pdf</a> (245.2 KB)</li>
+    
+  </ul>
+
+          <br><br>
+          作者: <a href="http://gengzhelun619-163-com.javaeye.com">__游乐场</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/786984" style="color:red">已有 <strong>15</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,74 @@
+---
+layout: post
+title:  "使用QOAuth来进行新浪/腾讯微博验证（一）"
+date:   2011-01-16 17:21:00
+author: 风雷云雪电
+categories: program
+---
+
+## 使用QOAuth来进行新浪/腾讯微博验证（一）
+### by 风雷云雪电
+### at 2011-01-16 17:21:00
+### original <http://www.cnblogs.com/rockhawk/archive/2011/01/16/1936770.html>
+
+<p><p>在上篇文章<a href="http://www.cnblogs.com/rockhawk/archive/2010/12/15/1906956.html">Qt简介以及如何配置Qt使用VS2010进行开发</a>以及<a href="http://www.cnblogs.com/rockhawk/archive/2011/01/08/1930983.html">微博是个大金矿，使用VS2010编译QOAuth支持微博通用认证OAuth实现SINA微博登陆</a>中向大家介绍了如何编译Qt及QOauth，在这篇文章中我会用实例的方式来介绍如何使用QOAuth来通过新浪或者腾讯微博验证。</p>  <p> </p>  <p>由于边写代码别写博文，进度会比较慢，会以多篇文档的方式来完成整个文章。由于OAuth基本上分为3个部分</p>  <ul>   <li>requestToken </li>    <li>各个网站自定义验证 </li>    <li>accessToken </li> </ul>  <p> </p>  <p>这篇文章作为该系列的第一篇，主要介绍下如何完成Api的申请和项目的搭建以及接口的部分设计。</p>  <p> </p>  <p>1. 为了创建新浪/腾讯微博的应用程序，首先要注册成为开发者。</p>  <blockquote>   <p>新浪API的注册地址： <a href="http://open.t.sina.com.cn/">http://open.t.sina.com.cn/</a></p> </blockquote>  <blockquote>   <p>腾讯API的注册地址：<a href="http://open.t.qq.com/">http://open.t.qq.com/</a></p> </blockquote>  <p>进行注册之后会获得App Key和App Secret:这个是OAuth验证用来通过requestToken的必备参数，下图是我注册后的新浪和腾讯微博的截图</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719017959.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/2011011617193754.png" width="644" height="436"></a></p>  <p>新浪微博应用截图</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/20110116171937926.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719378168.png" width="382" height="234"></a></p>    <p>腾讯微博应用截图</p>  <p>2. 在获得了调用资格后我们正式开始我的微博验证之旅。首先我们先创建一个Qt的应用程序，选择File-New-Project</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719386598.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/20110116171940384.png" width="644" height="89"></a></p>  <p>选择Qt4Project，输入项目名称“MyMicro-blog”</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719426537.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719514081.png" width="644" height="444"></a></p>  <p>选择OK，连续选择两次Next，到以下界面，Base class：选择QDialog，Class name：输入LoginMicroblog， 选择Finish结束创建向导</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161719541347.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720079112.png" width="572" height="484"></a></p>  <p>3. 设计</p>  <p>由于我们想在程序中支持新浪和腾讯的微博登陆，而且除第二步执行方式不同外，第一步和第三步执行方式相同，所有首先我们定义一个接口，为了让程序有更好的结构，我们创建一个静态库来放置接口及后面的实现。</p>  <p>在解决方案上点击右键，选择Add-New Project…</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720113969.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720203597.png" width="644" height="440"></a></p>  <p>选择Qt Library，并输入名字MyMicro-blogLib</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720277355.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720338015.png" width="644" height="446"></a></p>  <p>选择OK，在下一个界面选中Create Static Library(.lib),选中Next</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720424762.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720534556.png" width="574" height="484"></a></p>  <p>在Class name:中输入IMicroblog，点Finish</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161720587036.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161721053892.png" width="571" height="484"></a></p>  <p>首先我们定义接口成下面这个样子</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161721068974.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161721072944.png" width="165" height="177"></a></p>  <pre><span style="color:blue">virtual bool </span>requestToken();
+<span style="color:blue">virtual bool </span>customAouth(<span style="color:blue">const </span>QString &amp; userName,<span style="color:blue">const </span>QString &amp; password) = 0;
+<span style="color:blue">virtual bool </span>accessToken();
+<span style="color:blue">virtual int </span>error() <span style="color:blue">const</span>;</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>可以看到前三个函数对于OAuth认证的三个通用方法，都是bool型的，最后面是一个error函数，如果认证出错返回具体出错代码</p>
+
+<p>下一步就要定义属性了，从前面知道我们需要知道App Key和App Secret这两个属性，由于这两个属性是可修改的，该属性是可读可写</p>
+
+<p>经过进一步查看OAuth的实现，我们可以看到在requestToken后，服务器会返回oauth_token和oauth_token_secret两个参数，这两个参数在后面有大用处，所以需要增加这两个属性，由于这两个属性是服务器给的，所以只要只读就可以了</p>
+
+<p>由于C++不支持属性，修改后成为这个样子</p>
+
+<p><a href="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161721075518.png"><img style="background-image:none;border-bottom:0px;border-left:0px;padding-left:0px;padding-right:0px;display:inline;border-top:0px;border-right:0px;padding-top:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/rockhawk/201101/201101161721108847.png" width="210" height="386"></a></p>
+
+<pre><span style="color:blue">class </span>IMicroblog
+{
+<span style="color:blue">public</span>:
+
+    <span style="color:blue">virtual bool </span>requestToken();
+    <span style="color:blue">virtual bool </span>customAouth(<span style="color:blue">const </span>QString &amp; userName,<span style="color:blue">const </span>QString &amp; password) = 0;
+    <span style="color:blue">virtual bool </span>accessToken();
+    <span style="color:blue">virtual int </span>error() <span style="color:blue">const</span>;
+
+    QString appKey() <span style="color:blue">const</span>;
+    <span style="color:blue">void </span>setAppKey(<span style="color:blue">const </span>QString &amp; appkey); 
+    QString appSecret() <span style="color:blue">const</span>;
+    <span style="color:blue">void </span>setAppSecret(<span style="color:blue">const </span>QString &amp; appsecret);
+    QString oauthToken() <span style="color:blue">const</span>;
+    QString oauthTokenSecret() <span style="color:blue">const</span>;
+
+<span style="color:blue">protected</span>:
+    QString _appKey;
+    QString _appSecret;
+    QString _oauthToken;
+    QString _oauthTokenSecret;
+};</pre>
+
+
+<p> </p>
+
+<p>不知不觉写了一下午，好累啊，下一篇咱们继续，先闪！</p><img src="http://www.cnblogs.com/rockhawk/aggbug/1936770.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rockhawk/">风雷云雪电</a> 发表于 2011-01-16 17:21 <a href="http://www.cnblogs.com/rockhawk/archive/2011/01/16/1936770.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/rockhawk/archive/2011/01/16/1936770.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/rockhawk/archive/2011/01/16/1936770.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/88571/">百度文库涉嫌泄露隐私：存5万家单位联系方式</a><span style="color:gray">(2011-01-17 10:45)</span><br>· <a href="http://news.cnblogs.com/n/88570/">小灵通暂未进入退网程序：上海仍有数万用户</a><span style="color:gray">(2011-01-17 10:40)</span><br>· <a href="http://news.cnblogs.com/n/88569/">WebOS爆发？惠普平板机、上网本一个不落</a><span style="color:gray">(2011-01-17 10:37)</span><br>· <a href="http://news.cnblogs.com/n/88568/">iPad 2 分辨率：2048 x 1536 ？</a><span style="color:gray">(2011-01-17 10:31)</span><br>· <a href="http://news.cnblogs.com/n/88567/">传亚马逊将控制自建Android应用商店定价权</a><span style="color:gray">(2011-01-17 10:29)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2011/01/17/1937047.html">上周热点回顾（1.10-1.16）</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

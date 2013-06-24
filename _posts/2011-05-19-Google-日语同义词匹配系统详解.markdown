@@ -1,0 +1,37 @@
+---
+layout: post
+title:  "Google 日语同义词匹配系统详解"
+date:   2011-05-19 15:32:24
+author: xslidian
+categories: program
+---
+
+## Google 日语同义词匹配系统详解
+### by xslidian
+### at 2011-05-19 15:32:24
+### original <http://www.guao.hk/posts/improved-synonym-matching-system-in-google-japanese-search.html>
+
+<p><em>感谢谷奥热心读者及哆啦迷 <a href="http://hi.baidu.com/dorafans">Binary</a> 的翻译与投递！</em></p>
+<p>Google为了使搜索更加简单易用，每天都在不停地进行着改进。去年一年中，包括<a title="Google 官方解释为什么这样设计 Google 搜索的新界面和新 logo" href="http://www.guao.hk/posts/why-the-new-google-design.html">搜索结果页面更新</a>、<a title="Google 日本新增烹饪搜索，再一次向 Bing 致敬" href="http://www.guao.hk/posts/google-japan-adds-recipes-search.html">菜谱搜索</a>这些用户看得见的功能在内，共实施了500多项改进措施。今天介绍的是<strong>不易察觉</strong>的改进措施之一：“<strong>同义词系统</strong>”。</p>
+<p>在日语中，平假名、片假名、汉字和拉丁字母等多种文字混用，对于同一个词有时会有多种不同的书写方式。Google 支持不同种文字之间及跨语言的<a title="Google 解释自己对同义词的搜索方式" href="http://www.guao.hk/posts/google-search-changes-hot-it-handles-synonyms.html">同义词匹配</a>。这是一个看似简单实则深奥的问题，初看之下似乎只要有一套类似日语输入法所使用的词库即可，但实际上想要在非人工干预的情况下正确的找到同义词并非易事。</p>
+<p>举例来说，「しょうぶ」可能对应着“胜负”、“菖蒲”、“尚武”等多个不同的汉字词组，它们各自有着不同的意思，想要搜索的信息也各不相同。因此 Google 在您搜索“<a title="しょうぶ こどもの日" href="http://www.google.co.jp/search?hl=ja&amp;q=%E3%81%97%E3%82%87%E3%81%86%E3%81%B6+%E3%81%93%E3%81%A9%E3%82%82%E3%81%AE%E6%97%A5">しょうぶ  儿童节</a>”时候会显示与“菖蒲”相关的结果（日本儿童节有插菖蒲、洗菖蒲浴、喝菖蒲酒等习俗），搜索“<a title="しょうぶ めんこ" href="http://www.google.co.jp/search?hl=ja&amp;q=%E3%81%97%E3%82%87%E3%81%86%E3%81%B6+%E3%82%81%E3%82%93%E3%81%93">しょうぶ  拍洋画</a>”时候则会显示与“胜负”相关的结果。</p>
+<p style="text-align:center"><a href="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-shoubu1.png"><img src="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-shoubu1-300x270.png" alt="" width="300" height="270"></a><a href="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-shoubu2.png"><img src="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-shoubu2-300x247.png" alt="" width="300" height="247"></a></p>
+<p>涉及到外语的时候，其读音会因为习惯或语言的种类不同而出现多种不同的可能性，情况会更复杂一些。举例来说，以“-or”结尾的单词，如 Vector、Mirror 等，Vector 一词有「ベクトル」、「ベクタ」、「ベクター」等多种读法，而 Mirror 一词并非读作「ミロル」或「ミラ」，「ミラー」才是正确的读法。对于人名“Plato”（柏拉图），初看之下似乎是应该读作「プラト」或「プレート」，但实际上日语中最常见的读法是「プラトン」，其来源是希腊语的发音，由此可见词汇拼写所对应的读法的不规则性。</p>
+<p><a href="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-plato.png"><img src="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-plato-550x243.png" alt="" width="550" height="243"></a></p>
+<p>上面的截图就是“<a title="Plato 著書" href="http://www.google.co.jp/search?hl=ja&amp;q=Plato+%E8%91%97%E6%9B%B8">Plato 著作</a>”的搜索结果。第一条就是关于「プラトン」的搜索结果，并将「プラトン」一词加粗显示，可见 Google 已经将“Plato”一词作为「プラトン」的相关内容来识别。</p>
+<p>Google 在对大量网络数据进行了自动学习后，将获取到的知识用于实现这些复杂的书写变换。这些知识会随着新词的不断出现、新算法的不断开发而逐渐更新，使得 Google 可以更好的根据使用者的意图来筛选并返回结果。</p>
+<p>同义词系统正在努力不断地改进，让搜索更加便捷。今后也欢迎您继续使用不断进步中的 Google 搜索。</p>
+<p><em>作者：Google 日本软件工程师 山内 知昭、中島 貴裕</em><br>
+<em>译者：<a href="http://hi.baidu.com/dorafans">Binary</a></em></p>
+<p>via <a title="異なる「しょうぶ」 を見分けるGoogle の同義語システム" href="http://googlejapan.blogspot.com/2011/05/google.html">Google Japan Blog</a></p>
+<p>小编试了下，「<a title="どらやき" href="http://www.google.co.jp/search?hl=ja&amp;q=%E3%81%A9%E3%82%89%E3%82%84%E3%81%8D">どらやき</a>」的结果中确实包含了“铜锣烧”的各种写法，而且全部加粗显示了：</p>
+<p><a href="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-dorayaki.png"><img src="http://www.guao.hk/wp-content/uploads/2011/05/googlejpsearch-dorayaki-300x272.png" alt="" width="300" height="272"></a></p>
+<hr>
+<p><small>© xslidian 发表于 <a href="http://www.guao.hk">谷奥——探寻谷歌的奥秘 ( http://www.guao.hk )</a>, 2011.  |
+<a href="http://www.guao.hk/posts/improved-synonym-matching-system-in-google-japanese-search.html#comments">4 条评论</a> |
+<a href="http://www.guao.hk/posts/improved-synonym-matching-system-in-google-japanese-search.html">永久链接</a> |
+<a href="http://google.org.cn/about/">关于谷奥</a> |
+<a href="http://google.org.cn/submit/">投稿/爆料</a><br>
+Post tags: <a href="http://www.guao.hk/tag/google-search" rel="tag">Google Search</a>, <a href="http://www.guao.hk/tag/japan" rel="tag">japan</a>
+</small></p>
+<img src="http://img.tongji.linezing.com/1105192/tongji.php" border="0" width="0" height="0">

@@ -1,0 +1,85 @@
+---
+layout: post
+title:  "淘宝资深php码工电面流水帐 经验、教训"
+date:   2010-11-21 09:51:10
+author: 
+categories: program
+---
+
+## 淘宝资深php码工电面流水帐 经验、教训
+### by 
+### at 2010-11-21 09:51:10
+### original <http://www.javaeye.com/topic/818376>
+
+面试没有很针对性，我说熟什么就聊什么。
+<br>
+<br>1、php,java,c的区别
+<br>    php动态，java,c静态。php,java有垃圾回收、异常机制,c没有。php弱类型，java，c强类型，不过php跟java运行时也有类型，c只有在编译时有类型。php没有多线程，c，java有。php，java程序天然跨平台，c要关心很多平台相关的东西。php，java面向对象，c不是。php，java更高层，c低层。
+<br>2、php的变量在c里如何表示？
+<br>struct zval_struct {
+<br>   is_ref
+<br>   ref_count
+<br>   type
+<br>   zend_value
+<br>}
+<br>union zend_value{
+<br>   null,long,double,bool,string,hashtable,object
+<br>}
+<br>3、php的引用是怎么回事？
+<br>    常规变量对应的值是有真实地址的，引用变量只是对常规变量的一个引用，被引用的常规变量的refcount+1
+<br>4、php的引用有什么优势？
+<br>    省内存。只有对作为引用的变量所对应的值进行修改时，才会去分配新的空间出来给这个变量所对应的值。
+<br>5、php的垃圾回收机制是怎么样的？
+<br>   根据purple,black,white,gray,black等颜色来标记的。把那些对象去遍历一遍把refcount-1。。然后再标记成不同颜色进行处理。
+<br>  回收过程中最难处理的问题？
+<br>   cycle reference的问题。
+<br>6、 memcached是单进程单线程、多进程单线程、多进程多线程还是。。。？
+<br>    单进程多线程，默认4个线程。
+<br>    master/slave进（线）程模式有什么好处？
+<br>     并行处理上有优势。master进（线）程专门监听并接受socket请求，然后均匀的分给slave进（线）程，memcached用的是取摸的方式。可以通过master进程对slave进程的来进行管理，是父进程与子的关系。
+<br>7、memcached的内存管理有什么优势？
+<br>    一开始就分配很大的内存块，等用完后再倍数增长。而且客户端delete命令过来时也没有把存储的东西删除掉，没有将响应内存free掉。减少malloc，free的调用次数，减少系统调用、cpu时间、内存碎片。
+<br>
+<br>
+<br>总结：这次面试真是死的很惨，最后一着急竟然把书名都搬出来了（unix环境高级编程）。“unix环境高级编程上有的”，“我上半年看的代码，现在忘了，哎”，最后差不多被面的气都透不出了。
+<br>
+<br>从各方面来说，因为我也是第一次被问到类似问题，平常面试都没有这点深度，面试经验太少，没有对这些问题形成快速条件反射，有些问题其实一个人想时、和同事讨论时是知道答案的，但就在这种需即问即答的电面中答不出；
+<br>面试官的问题也真的很经典，xxx有什么优势？ 这种问题，一定要在心中提前有一个总结，要对其他参照物进行过比较，并且知道面试官想要的答案，这样就能快速答出来的，能给面试官“资深”的感觉，而如果提前只是知道它们是那么回事，没有总结过、不知他心里的参照物是什么、不知对方想要什么答案，结果是往往自己把自己给吓倒了，在他的连续问中败下来。
+<br>
+<br>这次也是因为我在家里休息了3、4个月，没有工作的节奏了，人都懒散了，如果不是复习了几天php代码，连第2题都快忘差不多了。
+<br>
+<br>上面大部分问题都不是如上回答的，竟然一开始就跟他在c跟java上耗上了：
+<br>
+<br>我：XX是先编译后解释的，XX是需要你显示编译的，XX是不需要你显示编译的。。。。哎，垃圾一大堆，因为看过SICP，所以逢上技术人就喜欢往这方面扯。受unix影响，个人也较喜欢简单的东西。 
+<br>
+<br>我：c可以把函数指针作为参数来传递，java没这么灵活；java在速度上是没有c快的;底层是非c莫属的。
+<br>他：java在速度上是没有c快的，你确定吗？
+<br>我：编译器优化一下应该差不多
+<br>他：底层是非c莫属，那么在底层架构上java跟c有什么区别？
+<br>我：（我指的底层是指驱动等，直到事后我才明白他所谓的底层是指taobao网站类似的底层）java的变量都是有严格约束的，c的变量约束比较。。
+<br>他：看来你对java还不是。。。
+<br>我：（（事后。。。）看来他是个java粉丝 <img src="http://www.iteye.com/images/smiles/icon_biggrin.gif">  ） 
+<br>
+<br>（我以前也是非常喜欢java，离不开eclipse，瞧不起zend studio，现在我也想开了，已转向更primitive的vi和geany。）
+<br>
+<br>
+<br>在第一题就回答的一踏糊涂，后来就越来越挡不住了。睡了一晚才回过神来，以前看了那么多源代码，竟然在面试中没发挥好。电面啊电面，我面功还不行。以后遇到类似有什么优势的问题，不妨问面试官，“这个，您能不能提供给我一个参照物，比方说它跟什么东西比有什么优势，就它一个东西我还真说不出来。”
+<br>
+<br>比方说nginx跟apache比有什么优势，我还能说出大部分，但就单单某个东西有什么优势，我实在不知面试官在问时的潜在比照对象是什么，不知他的期望答案，在没接触过这类问题前，实在是有点高深
+<br>
+<br>好不容易才盼来的taobao面试，就这样迷迷糊糊地过去了；不过以我的身体素质，进taobao可能也直的进去，横的出来，呵呵。不过taobao技术氛围好，怎么说呢，有时真是人算不如天算，技术还是没身体重要。
+<br>
+          
+          <br><br>
+          作者: <a href="http://abcd1f.javaeye.com">abcd1f</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/818376" style="color:red">已有 <strong>3</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

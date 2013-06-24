@@ -1,0 +1,99 @@
+---
+layout: post
+title:  "给实习生们谈谈CSS"
+date:   2012-07-10 14:22:14
+author: 
+categories: program
+---
+
+## 给实习生们谈谈CSS
+### by 
+### at 2012-07-10 14:22:14
+### original <http://linlis.me/post/26890531352>
+
+<p>因为招聘的实习生们搞 Rails 比较多，对 CSS 可能不是最熟，想给他们稍微培训一下，稍微整理了一下一些 CSS 的基础知识，其实 CSS 很简单，没有任何技术难度，需要的只是经验而已。</p>
+
+<h3>为什么要会 CSS</h3>
+
+<p>首先 CSS 很重要，CSS 将内容和显示拆分开来，HTML决定了内容( content )，CSS决定了外观( presentation )。</p>
+
+<p>有不少程序员会对 CSS 缺乏兴趣，这让我一开始不是很理解，我认为一个想捣鼓点东西出来的 web 程序员必须要熟练掌握 CSS，不会 CSS 你怎么捣鼓出一个有“外观”的产品呢？</p>
+
+<p>我觉得可能是因为他们过于缺乏一些对“美”的认知，当用 CSS 无论如何都调不出让人看着舒服的 UI 时，逐渐地，就会对 CSS 丧失了兴趣。</p>
+
+<p>电影《社交网络》里面最让人看得热血沸腾的一段就是扎克伯格一个人在宿舍里面画网站原型并一步一步把 facebook 实现了出来，我事后经常会对别人提起我看这一段的感受，我觉得扎克伯格的超强执行力基于他全面的知识和技能，他是一个前后端都通吃的人，并且对“美”有一定的认知，这是他可以一个人搞出一个让大家喜欢的、用户体验好的网站的基础。缺少了任一部分，他就做不出 facebook。</p>
+
+<p>另外一个例子就在国内的 Ruby 界，李华顺。 他搞了 <a href="http://ruby-china.org">Ruby China</a>，还有<a href="http://720p.so">720P.so</a>，算是 Ruby 界很高产的一个人物，他也是什么都会，才会做得出这两个作品。</p>
+
+<p>所以我也希望拿他们的例子来激励我们团队里的每一名程序员，你希望在 web 上有所作为，那你不仅仅需要熟练掌握 CSS，还要掌握 js，更需要逐步培养起自己对“美”的认知。</p>
+
+<h3>CSS 的主要运用</h3>
+
+<ul><li>Layout - 布局 ( 常用属性有：position, float, margin, padding )</li>
+<li>Decoration - 装饰 ( 常用属性有：color, background-color, font, list-style, border )</li>
+</ul><h3>CSS 的选择器</h3>
+
+<p>选择器有不少<a href="http://www.w3.org/TR/css3-selectors/">写法</a>，这里只罗列几种最常用的，E和F表示HTML元素、.class或者#id：</p>
+
+<ul><li>E</li>
+<li>E F</li>
+<li>E &gt; F</li>
+<li>E: first-child</li>
+</ul><h3>CSS 的层叠、唯一和继承原则</h3>
+
+<h4>CSS的层叠原则（Cascading）</h4>
+
+<p>样式表一般会来源于三个地方：</p>
+
+<ul><li>User agent ( 浏览器默认 )</li>
+<li>User ( 用户自定义 )</li>
+<li>Author ( 作者 )</li>
+</ul><p>来自这三者的样式表，一定会有些部分是重叠的，它们遵循层叠原则，层叠原的优先级从高至低：</p>
+
+<ol><li>user !important declarations （用户自定义的 !important 样式）</li>
+<li>author !important declarations （作者 !important 样式）</li>
+<li>author normal declarations （作者样式）</li>
+<li>user normal declarations （用户自定义样式）</li>
+<li>user agent declarations （浏览器默认）</li>
+</ol><h4>CSS的唯一原则（Specifity）</h4>
+
+<p>当在一个层叠中出现多个样式时，需要一个权重计算方法来解决冲突，最终采用一种样式，这个计算方法非常特别，它基于4种不同的类别来计算，为了方便说明，我们分别用 a,b,c,d 来表示它们，它们的默认值都是0：</p>
+
+<ul><li>a，如果一个 inline 的样式，则将 a 的值等于1</li>
+<li>b，如果选择器中有 ID 属性，则将 b 的值等于 ID 的数量</li>
+<li>c，如果选择器中有 其他属性和 CSS伪类，则 c 的值等于其他属性和伪类的数量</li>
+<li>d，如果选择器中有 elements 和 伪elements，则 d 的值等于 elements 和 伪 elements 的数量</li>
+</ul><p>唯一原则就是基于 a-b-c-d 这样的权重来最终确定实现哪一个样式，数值越大，则权重越大，会优先使用。</p>
+
+<p>下面是一些例子:</p>
+
+<pre><code>*             {}  /* a=0 b=0 c=0 d=0 -&gt; specificity = 0,0,0,0 */
+li            {}  /* a=0 b=0 c=0 d=1 -&gt; specificity = 0,0,0,1 */
+li:first-line {}  /* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */
+ul li         {}  /* a=0 b=0 c=0 d=2 -&gt; specificity = 0,0,0,2 */
+ul ol+li      {}  /* a=0 b=0 c=0 d=3 -&gt; specificity = 0,0,0,3 */
+h1 + *[rel=up]{}  /* a=0 b=0 c=1 d=1 -&gt; specificity = 0,0,1,1 */
+ul ol li.red  {}  /* a=0 b=0 c=1 d=3 -&gt; specificity = 0,0,1,3 */
+li.red.level  {}  /* a=0 b=0 c=2 d=1 -&gt; specificity = 0,0,2,1 */
+#x34y         {}  /* a=0 b=1 c=0 d=0 -&gt; specificity = 0,1,0,0 */
+style=&quot;&quot;          /* a=1 b=0 c=0 d=0 -&gt; specificity = 1,0,0,0 */
+</code></pre>
+
+<h4>CSS 的继承原则</h4>
+
+<p>这个相对简单，根据 DOM 树来向上继承，大多数情况下都是继承的。可以通过 inherit 的值来确定是否继承。</p>
+
+<h3>CSS 的盒子模型</h3>
+
+<p>CSS 的两大主要作用之一的“布局”，主要就是基于这个盒子模型打造的。理解了这个盒子模型，你就理解了 margin 和 padding 这两个最主要的属性，熟练使用这两个属性是 CSS 布局的关键，而这两个属性也许是你写得最多的两个属性。
+<img src="https://developer.mozilla.org/@api/deki/files/2835/=boxmodel_%2525281%252529.png" alt=""></p>
+
+<h3>CSS 的内容堆叠</h3>
+
+<p>用 CSS 布局，在一个盒子中内容出现堆叠情况的时候，就需要使用 position 和 z-index 来进行摆放盒子中的元素。</p>
+
+<p>比较常用的用法是把一个盒子的 position 设置为 relative，然后把盒子里面的元素的 position 设置为 absolute ，然后通过 top left bottom right 进行定位。这个技巧很常用。</p>
+
+<h2>以上</h2>
+
+<p>我感觉需要给实习生普及一下的比较重要而基础的知识点就是这些了，其他的属性就不多介绍了，都可以在实践中熟悉。改天再给实习生介绍一下 Bootstrap。</p>

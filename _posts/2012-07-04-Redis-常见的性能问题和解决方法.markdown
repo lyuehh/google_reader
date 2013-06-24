@@ -1,0 +1,104 @@
+---
+layout: post
+title:  "Redis 常见的性能问题和解决方法"
+date:   2012-07-04 20:07:59
+author: nosqlfan
+categories: program
+---
+
+## Redis 常见的性能问题和解决方法
+### by nosqlfan
+### at 2012-07-04 20:07:59
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/706989118/6253001/1/item.html>
+
+<p>本文来自<a href="http://zhupan.iteye.com/">温柔一刀</a>的分享，介绍了他在实际工作中遇到的一些<span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>问题以及对应的规避和解决方案，如果你也在用Redis，那么可能其中有一些经验可供参考。</p>
+<p>原文链接：<a href="http://zhupan.iteye.com/blog/1576108">http://zhupan.iteye.com/blog/1576108</a></p>
+<h3>1.Master写内存快照</h3>
+<p>save命令调度rdbSave函数，会阻塞主线程的工作，当快照比较大时对性能影响是非常大的，会间断性暂停服务，所以Master最好不要写内存快照。</p>
+<h3>2.Master AOF持久化</h3>
+<p>如果不重写AOF文件，这个持久化方式对性能的影响是最小的，但是AOF文件会不断增大，AOF文件过大会影响Master重启的恢复速度。</p>
+<h3>3.Master调用BGREWRITEAOF</h3>
+<p>Master调用BGREWRITEAOF重写AOF文件，AOF在重写的时候会占大量的CPU和内存资源，导致服务load过高，出现短暂服务暂停现象。</p>
+<p>下面是我的一个实际项目的情况，大概情况是这样的：一个Master，4个Slave，没有Sharding机制，仅是读写分离，Master负责写入操作和AOF日志备份，AOF文件大概5G，Slave负责读操作，当Master调用BGREWRITEAOF时，Master和Slave负载会突然陡增，Master的写入请求基本上都不响应了，持续了大概5分钟，Slave的读请求过也半无法及时响应，Master和Slave的服务器负载图如下：</p>
+<p>Master Server load：</p>
+<p><img src="http://pic.yupoo.com/iammutex/C5z5nPmO/BM8Eh.jpg" alt="" width="320" height="129"></p>
+<p>Slave server load：</p>
+<p><img src="http://pic.yupoo.com/iammutex/C5z5nHXb/rQWUi.jpg" alt="" width="320" height="129"></p>
+<p>上面的情况本来不会也不应该发生的，是因为以前Master的这个机器是Slave，在上面有一个shell定时任务在每天的上午10点调用BGREWRITEAOF重写AOF文件，后来由于Master机器down了，就把备份的这个Slave切成Master了，但是这个定时任务忘记删除了，就导致了上面悲剧情况的发生，原因还是找了几天才找到的。</p>
+<p>将no-appendfsync-on-rewrite的配置设为yes可以缓解这个问题，设置为yes表示rewrite期间对新写操作不fsync，暂时存在内存中，等rewrite完成后再写入。最好是不开启Master的AOF备份功能。</p>
+<h3>4.Redis主从复制的性能问题</h3>
+<p>第一次Slave向Master同步的实现是：Slave向Master发出同步请求，Master先dump出rdb文件，然后将rdb文件全量传输给slave，然后Master把缓存的命令转发给Slave，初次同步完成。第二次以及以后的同步实现是：Master将变量的快照直接实时依次发送给各个Slave。不管什么原因导致Slave和Master断开重连都会重复以上过程。Redis的主从复制是建立在内存快照的持久化基础上，只要有Slave就一定会有内存快照发生。虽然Redis宣称主从复制无阻塞，但由于Redis使用单线程服务，如果Master快照文件比较大，那么第一次全量传输会耗费比较长时间，且文件传输过程中Master可能无法提供服务，也就是说服务会中断，对于关键服务，这个后果也是很可怕的。</p>
+<p>以上1.2.3.4根本问题的原因都离不开系统io瓶颈问题，也就是硬盘读写速度不够快，主进程 fsync()/write() 操作被阻塞。</p>
+<h3>5.单点故障问题</h3>
+<p>由于目前Redis的主从复制还不够成熟，所以存在明显的单点故障问题，这个目前只能自己做方案解决，如：主动复制，Proxy实现Slave对Master的替换等，这个也是Redis作者目前比较优先的任务之一，作者的解决方案思路简单优雅，详情可见 Redis Sentinel design draft <a href="http://redis.io/topics/sentinel-spec">http://redis.io/topics/sentinel-spec</a>。</p>
+<h3>总结</h3>
+<ol>
+<li>Master最好不要做任何持久化工作，包括内存快照和AOF日志文件，特别是不要启用内存快照做持久化。</li>
+<li>如果数据比较关键，某个Slave开启AOF备份数据，策略为每秒同步一次。</li>
+<li>为了主从复制的速度和连接的稳定性，Slave和Master最好在同一个局域网内。</li>
+<li>尽量避免在压力较大的主库上增加从库</li>
+<li>为了Master的稳定性，主从复制不要用图状结构，用单向链表结构更稳定，即主从关系为：Master&lt;–Slave1&lt;–Slave2&lt;–Slave3…….，这样的结构也方便解决单点故障问题，实现Slave对Master的替换，也即，如果Master挂了，可以立马启用Slave1做Master，其他不变。</li>
+</ol>
+<div style="margin-top:20px;margin-left:70px;line-height:24px;border:1px solid #ccc;text-align:center;width:545px;background:#fff">
+<div style="font-size:16px;font-family:Verdana;background:#d20;color:#fff;float:left;border-radius:10px 0 10px 0;padding:3px 12px 4px;line-height:32px;margin-top:14px">42区 VPS</div>
+<div>
+42qu.com 云主机 , 卖给创业的你 。 <a href="http://vps.42qu.com/by/iammutex/rss" style="text-decoration:none;background:none;color:#02d">点击这里 , 查看详情</a>
+</div>
+</div>
+<p style="margin:0;padding:0;height:1px;overflow:hidden">
+    <a href="http://www.wumii.com/widget/relatedItems.htm" style="border:0"><img src="http://static.wumii.com/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0"></a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2785.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">redis_warp、redis_graph、redis_queue － Python下的Redis二次开发</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F113.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis教程一篇</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F718.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis Logo 你喜欢哪一个？</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F79.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">libredis-Redis PHP扩展</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F538.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis并发性能测试benchmark</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/706989118/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/706989118/6253001/1/item.html" border="0" height="0" width="0">

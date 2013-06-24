@@ -1,0 +1,124 @@
+---
+layout: post
+title:  "毫秒级百万数据分页存储过程[欢迎转载]"
+date:   2010-11-26 11:11:00
+author: im531
+categories: program
+---
+
+## 毫秒级百万数据分页存储过程[欢迎转载]
+### by im531
+### at 2010-11-26 11:11:00
+### original <http://www.cnblogs.com/im531/archive/2010/11/26/1888490.html>
+
+<p><p>数据分页一直是一个经久不衰的话题,在园子里看到了N多高手,都比我厉害,</p>
+<p>今天把我使用的分页代码继续分享;请高手手下留情,少拍砖啦...哈哈;</p>
+<p>欢迎大家转载!!!!</p>
+<p>首先参考园子里的高手方法生成一个百万数据表; 耗时 33 秒;</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112610493862.jpg" alt=""></p>
+<p>然后创建分页存储过程;这个是基于SQL 2005 的ROW_NUMBER的, SQL 2000 不适用; SQL 2008 我没有安装,所以也没有测试过!估计应该可以运行.</p>
+<p> 2种算法可以选择 1. 使用  BETWEEN   ;  2.  TOP  ; 代码中已经注释了.</p>
+<p>我测试了一下2种方法基本没有什么区别;代码如下:</p>
+<p> </p>
+<div>
+<pre>USE [DATA_TEMP]
+GO
+/****** 对象:  StoredProcedure [dbo].[im531_Page]    脚本日期: 11/26/2010 10:52:35 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		im531 
+-- Create date: 2010-10-25
+-- Description: SQL 2005 ROW_NUMBER 分页
+-- Modify Date: 2010-10-26
+-- =============================================
+
+CREATE PROCEDURE [dbo].[im531_Page]
+	@TabeName AS NVARCHAR(50),
+	@Fields AS NVARCHAR(1024),
+	@SearchWhere AS NVARCHAR(1024),
+	@OrderFields AS NVARCHAR(1024),
+	@pageNumber AS INT,
+	@page AS INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @sqlType AS TINYINT
+	SET @sqlType = 0  -- 0 BETWEEN   1 TOP
+	DECLARE @sql AS NVARCHAR(MAX)
+	IF @SearchWhere &lt;&gt; &#39;&#39; SET @SearchWhere = &#39; WHERE &#39; + @SearchWhere
+	IF @page &lt; 2 SET @page = 1
+	IF @page = 1
+		BEGIN
+			SET @sql = &#39;SELECT TOP &#39; + CONVERT(NVARCHAR(20),@pageNumber) + &#39; &#39; + @Fields
+				+ &#39;FROM [&#39; + @TabeName + &#39;][a] WITH(NOLOCK) &#39; + @SearchWhere + &#39; ORDER BY &#39; + @OrderFields
+		END
+	ELSE
+		BEGIN
+			--临时表
+			SET @sql = &#39;;WITH [Page_____Table] AS(&#39;
+				+ &#39;SELECT ROW_NUMBER() OVER(ORDER BY &#39; + @OrderFields + &#39;) AS [RowNow],&#39; + @Fields
+				+ &#39;FROM [&#39;+ @TabeName +&#39; ][a] WITH(NOLOCK) &#39; + @SearchWhere
+				+ &#39;)&#39;
+			--查找当前页面记录
+			IF @sqlType = 0
+				BEGIN
+				-- A USE BETWEEN
+					SET @sql = @sql + &#39;SELECT *&#39;
+						+ &#39;FROM [Page_____Table] WITH(NOLOCK)&#39;
+						+ &#39;WHERE [RowNow] BETWEEN &#39; + CONVERT(NVARCHAR(20),(@page - 1) * @pageNumber + 1) + &#39; AND &#39; + CONVERT(NVARCHAR(20),@page * @pageNumber)
+						+ &#39;ORDER BY [RowNow]&#39;
+				END
+			ELSE
+				BEGIN
+				-- B USE TOP
+					SET @sql = @sql + &#39;SELECT TOP &#39; + CONVERT(NVARCHAR(20),@pageNumber) + &#39; *&#39;
+						+ &#39;FROM [Page_____Table] WITH(NOLOCK)&#39;
+						+ &#39;WHERE [RowNow] &gt; &#39; + CONVERT(NVARCHAR(20),(@page - 1) * @pageNumber)
+						+ &#39;ORDER BY [RowNow]&#39;
+				END
+		END
+	EXEC(@sql)
+END
+
+</pre>
+</div>
+<p> </p>
+<p> </p>
+<p>然后测试分页性能;每页显示20条记录, 百万数据最大50000页,当前页采用随机数取值;</p>
+<p> </p>
+<div>
+<pre>DECLARE @d DATETIME
+SET @d = GETDATE()
+
+DECLARE @M AS INT;DECLARE @N AS INT;DECLARE @cPage AS INT
+SET @M = 50000;SET @N = 1
+SET @cPage = CAST((rand()*(@M-@N)+@N) AS INT)
+
+EXECUTE [im531_Page]
+	@TabeName = &#39;Table_1&#39;,
+	@Fields = &#39;[a],[b]&#39;,
+	@SearchWhere = &#39;[a] &gt; 0&#39;,
+	@OrderFields = &#39;[a] DESC&#39;,
+	@pageNumber = 20,
+	@page = @cPage
+
+
+SELECT [当前页] = @cPage,[分页执行耗时间(毫秒)] = DATEDIFF(ms,@d,GETDATE())
+</pre>
+</div>
+<p> </p>
+<p>在我的机器上面测试均为毫秒级!!!!</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112611031627.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112611051893.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112611053880.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112611055422.jpg" alt=""></p>
+<p>园子里的高手若有更好的方法欢迎分享一下!!!!!!!!!!!!!!!</p>
+<p>--------------------------------------- 我是华丽的分割线 ---------------------------------------</p>
+<p>回复10楼园友 ★金★ :</p>
+<p>加上数据统计结果后稍慢了一丁点儿,估计在实际运用中可以忽略不计;</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112615451313.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2010/214486/2010112615453075.jpg" alt=""></p><img src="http://www.cnblogs.com/im531/aggbug/1888490.html?type=0" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/im531/">im531</a> 发表于 2010-11-26 11:11 <a href="http://www.cnblogs.com/im531/archive/2010/11/26/1888490.html">原文链接</a></p><p>评论: 23　<a href="http://www.cnblogs.com/im531/archive/2010/11/26/1888490.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/im531/archive/2010/11/26/1888490.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/82505/">Twitter CEO：公司缺少清晰的长远目标</a><span style="color:gray">(2010-11-27 07:39)</span><br>· <a href="http://news.cnblogs.com/n/82504/">新型机器人具备阅读能力 可独立“生活”</a><span style="color:gray">(2010-11-27 07:36)</span><br>· <a href="http://news.cnblogs.com/n/82496/">Android手机统治美国《消费者报告》杂志智能手机推荐榜</a><span style="color:gray">(2010-11-26 22:27)</span><br>· <a href="http://news.cnblogs.com/n/82495/">苹果紧急叫停中国制造恶搞乔布斯玩偶</a><span style="color:gray">(2010-11-26 22:09)</span><br>· <a href="http://news.cnblogs.com/n/82494/">百度线下首开实体店</a><span style="color:gray">(2010-11-26 22:07)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/82363/">网站开发人员应该知道的61件事</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

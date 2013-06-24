@@ -1,0 +1,165 @@
+---
+layout: post
+title:  "Clojure的宏"
+date:   2013-05-19 23:52:43
+author: isnowfy
+categories: program
+---
+
+## Clojure的宏
+### by isnowfy
+### at 2013-05-19 23:52:43
+### original <http://www.udpwork.com/item/9864.html>
+
+<p><a href="http://www.isnowfy.com/wp-content/uploads/2013/05/clojure.png"><img src="http://www.isnowfy.com/wp-content/uploads/2013/05/clojure-300x87.png" alt="clojure"></a></p>
+<p>Clojure是运行在java虚拟机上的一种lisp的方言。说道lisp的话最先想到的应该是函数式编程，括号之类的词语，话说大家在读了《黑客与画家》这本书后肯定都会觉得lisp很厉害，都想来试试。而clojure作为lisp的一种方言，当然是包含了lisp的各种强大特点，而lisp的很强大很灵活的一个原因要归功于他的宏。说道宏的话，c里也是有宏的概念的，而lisp的宏其实本质和c里的宏都是一样的，都是做代码替换，但是lisp的宏应用起来更加强大。
+<br>
+</p>
+<p>先来感受下clojure宏的方便之处。比如有很多地方我们需要print代码和变量内容来差错，于是我们可以写这样一个宏。</p>
+<div><ol><li><div>(defmacrodbg[x]`(let[x# ~x](println &#39;~x&quot;=&quot;x#)x#))</div>
+</li>
+</ol>
+</div>
+<p>当我们需要检查这段代码的时候</p>
+<div><ol><li><div>(defn tt[x](+x1))</div>
+</li>
+</ol>
+</div>
+<p>我们可以这样写</p>
+<div><ol><li><div>(defn tt[x](dbg(+x1)))</div>
+</li>
+</ol>
+</div>
+<p>当我们运行代码的时候我们能得到相应的显示结果</p>
+<div><ol><li><div>user=&gt; (tt 1)</div>
+</li>
+<li><div>(+ x 1) = 2</div>
+</li>
+<li><div>2</div>
+</li>
+</ol>
+</div>
+<p>看到我们用defmacro定义了一个dbg的宏，这个宏的作用就是现实代码段和代码执行的结果，并将结果返回回去。在clojure的宏里我们主要会用到这么几个符号，首先是`表示syntax quote，'表示quote，~表示unquote，~@表示unquote splicing，详细说明下。如果某段代码前面加了'就表示这段代码被quote而不会去求值了，而`的syntax quote则表示会把相应的变量变成有namespace的形式，比如</p>
+<div><ol><li><div>user=&gt; &#39;x</div>
+</li>
+<li><div>x</div>
+</li>
+<li><div>user=&gt; `x</div>
+</li>
+<li><div>user/x</div>
+</li>
+</ol>
+</div>
+<p>因为默认的namespace是user，所以写clojure的宏时会和自己开头定义的ns不同，要注意变化。而~和`是搭配使用的，~必须在`的后面，并且~的数量不能超过`的数量，~是用来将变量的值替换到相应位置，比如</p>
+<div><ol><li><div>user=&gt; (def a 123)</div>
+</li>
+<li><div>#'user/a</div>
+</li>
+<li><div>user=&gt; `(def b ~a)</div>
+</li>
+<li><div>(def user/b 123)</div>
+</li>
+</ol>
+</div>
+<p>可以看到~a被替换为a的值123了，而~@的作用和~类似，不过~@不但会替换掉值并且会把括号去掉，比如</p>
+<div><ol><li><div>ser=&gt; (def c [1 2 3])</div>
+</li>
+<li><div>#'user/c</div>
+</li>
+<li><div>user=&gt; `(def d [~@c])</div>
+</li>
+<li><div>(def user/d [1 2 3])</div>
+</li>
+</ol>
+</div>
+<p>那么几个符号我们都说清楚了，再说defmacro的作用就是在代码编译的时候，会把defmacro当作是函数运行一次，并且把这个的返回结果替换到原有的位置上去，就像这样</p>
+<div><ol><li><div>user=&gt; (defmacro t1 [] (let [a1 (+ 1 1)] `(defn cc [] println ~a1)))</div>
+</li>
+<li><div>#'user/t1</div>
+</li>
+<li><div>user=&gt; (t1)</div>
+</li>
+<li><div>#'user/cc</div>
+</li>
+<li><div>user=&gt; (cc)</div>
+</li>
+<li><div>2</div>
+</li>
+</ol>
+</div>
+<p>看上去宏和函数还是很相似的，为什么需要有宏这么个东西呢，首先我们需要注意的是，传给宏的代码是不会求值的，这点和函数非常不同，函数传的参数都是先求值再去做函数运算，看下面的例子</p>
+<div><ol><li><div>user=&gt; (defn aa [] (println &quot;aa&quot;) 1)</div>
+</li>
+<li><div>#'user/aa</div>
+</li>
+<li><div>user=&gt; (defn bb [] (println &quot;bb&quot;) 2)</div>
+</li>
+<li><div>#'user/bb</div>
+</li>
+<li><div>user=&gt; (defn cc [c a b] (if c a b))</div>
+</li>
+<li><div>#'user/cc</div>
+</li>
+<li><div>user=&gt; (defmacro dd [c a b] (if c a b))</div>
+</li>
+<li><div>#'user/dd</div>
+</li>
+<li><div>user=&gt; (cc true (aa) (bb))</div>
+</li>
+<li><div>aa</div>
+</li>
+<li><div>bb</div>
+</li>
+<li><div>1</div>
+</li>
+<li><div>user=&gt; (dd true (aa) (bb))</div>
+</li>
+<li><div>aa</div>
+</li>
+<li><div>1</div>
+</li>
+</ol>
+</div>
+<p>因为函数的参数是先求值的，所以调用cc的时候bb也被运行，这不是我们所希望的，我们所希望的是像dd那样只去执行aa，而不去执行bb，所以这里就需要用宏了。</p>
+<p>还有一个宏和函数的重要的不同是宏是在编译代码的时候运行的，运行一次之后就会把宏的返回值替换到代码的相应位置了。所以宏的话其实更像是元编程一类的东西，用代码去生成代码。</p>
+<p>参考资料：
+<br>
+<a href="http://www.learningclojure.com/2010/09/clojure-macro-tutorial-part-ii-syntax.html">http://www.learningclojure.com/2010/09/clojure-macro-tutorial-part-ii-syntax.html</a>
+<br>
+<a href="http://orbbyrp.com/2012/06/lisp_first_step_macro.html">http://orbbyrp.com/2012/06/lisp_first_step_macro.html</a>
+<br>
+<a href="http://www.cnblogs.com/me-sa/archive/2013/03/18/clojure-macro.html">http://www.cnblogs.com/me-sa/archive/2013/03/18/clojure-macro.html</a>
+<br>
+<a href="http://clojure.org/cheatsheet">http://clojure.org/cheatsheet</a>
+<br>
+<strong>我猜您可能还会喜欢:</strong>
+</p>
+<ul><li><a href="http://www.isnowfy.com/collaborative-filtering-and-pearson-correlation-coefficient/" title="2012 年 11 月 05 日">基于用户的协同过滤和皮尔逊相关系数</a></li>
+<li><a href="http://www.isnowfy.com/download-doubanfm-songs/" title="2011 年 11 月 13 日">自动下载豆瓣FM的加心歌曲</a></li>
+<li><a href="http://www.isnowfy.com/understand-oauth/" title="2012 年 01 月 16 日">理解OAuth</a></li>
+<li><a href="http://www.isnowfy.com/code-highlight/" title="2011 年 08 月 20 日">换用新的代码高亮插件</a></li>
+<li><a href="http://www.isnowfy.com/web-paint/" title="2011 年 10 月 03 日">网络涂鸦板</a></li>
+<li><a href="http://www.isnowfy.com/introduction-to-char-coding/" title="2012 年 05 月 25 日">字符编码和中文乱码小叙</a></li>
+<li><a href="http://www.isnowfy.com/spell-correct/" title="2011 年 08 月 14 日">拼写纠正</a></li>
+</ul>
+<p></p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/9864.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/9864.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/9864.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

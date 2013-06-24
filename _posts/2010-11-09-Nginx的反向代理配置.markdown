@@ -1,0 +1,80 @@
+---
+layout: post
+title:  "Nginx的反向代理配置"
+date:   2010-11-09 09:49:49
+author: iGFW
+categories: program
+---
+
+## Nginx的反向代理配置
+### by iGFW
+### at 2010-11-09 09:49:49
+### original <http://igfw.tk/archives/1449>
+
+<div>
+<p>最近一直在折腾VPS，凭借着以前用Ubuntu的经验，现在使用CentOS 5，上手感觉还是挺快的，最少不会很不知所措。</p>
+<p>用VPS也大半年了，感觉VPS确实是一个很耐折腾的玩意儿，但是如果你网站需要很严格的在线率而你又对数据很看重的话还是不要用VPS来做站，即便是使用了VPS来做站也要时刻注意备份！！！当然如果你的网站不是流量很大那种，还是推荐使用成熟主机商提供的虚拟主机，<a href="http://www.dreamhost.com/">DreamHost</a>就是非常不错的选择，本身对中国访问就非常友好，第一年使用优惠也比较多。另外它的SSH还非常快，平时拿来翻个小强是很不错。</p>
+<p>扯远了。这里主要记录下折腾Nginx的反向代理的一些经验。</p>
+<p>当然，你得安装Nginx。如果你不想直接在源里安装旧版的Nginx的话，可以直接去<a href="http://nginx.org/en/download.html">Nginx</a>官网下载最新版的Nginx编译安装。</p>
+<p>编译过程，请善用Google。<span></span></p>
+<p>第一个就是做Google GHS的反向代理。这个主要是用来帮助你正常使用Google App及其他服务的域名绑定功能。</p>
+<pre><code>upstream ghs {
+server ghs.google.com:80;
+}
+
+server {
+listen 80;
+server_name ghs.xx.com *.a.com *.b.com;
+
+location / {
+proxy_redirect off;
+proxy_set_header Host $host;
+proxy_pass http://ghs;
+proxy_set_header  x-real-IP  $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+}</code></pre>
+<p>替换你要修改的你需要绑定的域名。</p>
+<p>接着就是伟大的Twitter。很简单。</p>
+<pre><code>server {
+listen 80;
+server_name api.xxx.com;
+
+location / {
+proxy_redirect off;
+proxy_pass https://twitter.com;
+proxy_set_header  x-real-IP  $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+}</code></pre>
+<p>还有位置服务方块4.</p>
+<pre><code>server {
+listen 80;
+server_name 4sq.xxx.com;
+
+location / {
+proxy_redirect off;
+proxy_pass http://api.foursquare.com/;
+proxy_set_header  x-real-IP  $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+}</code></pre>
+<p>然后就是域名绑定到一些你要使用的别的端口。</p>
+<p>比如安装基于Ruby的Wiki程序 <a href="http://www.instiki.org/show/HomePage">instiki</a>，就需要使用到2500端口。</p>
+<pre><code>server{
+listen       80;
+server_name xx.xx.com;
+location / {
+proxy_pass http://xx.xx.com:2500;
+}
+}</code></pre>
+<p>比如安装基于Ruby的nanoc，安装使用需要用的3000端口。</p>
+<pre><code>server{
+listen       80;
+server_name xx.xx.com;
+location / {
+proxy_pass http://xx.xx.com:3000;
+}
+}</code></pre>
+</div>
+<p>来源：<a href="http://www.hebine.net/">何必呢 </a> 原文：<a href="http://www.hebine.net/blog/archives/1296.html">Nginx的反向代理配置</a><a rel="tag" href="http://www.hebine.net/blog/archives/tag/%e5%8f%8d%e5%90%91%e4%bb%a3%e7%90%86"></a></p>

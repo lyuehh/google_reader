@@ -1,0 +1,211 @@
+---
+layout: post
+title:  "git——简易指南"
+date:   2013-05-22 10:30:07
+author: Airen
+categories: program
+---
+
+## git——简易指南
+### by Airen
+### at 2013-05-22 10:30:07
+### original <http://www.w3cplus.com/tool/git-guide.html>
+
+<div><div><div><p>Git对于我来说，只知道是一个版本控制器，类似于乌龟的svn。其中也仅仅会几个常的命令，比如说“更新git pull”、“提交git push”等等，因为记得当初使用的时候，师傅告诉我，对于你不懂这个不要紧，记住几个常用的命令就足够使用了。</p>
+<p>师傅的话没有错，有这些命令是足够使用了，但往有时候还是很难完成我们工作中的需求，比如如何安装、分别何创建库等，这就几个命令无法实现的了。只可惜自己太懒，以致于每次使用的时候都需要去查找相关的资料，真是无颜面对江东父老呀。</p>
+<p>今天邮件中收到一个有关于git指南的资源，真是清新悦目呀，几句话就把git说的清清楚楚，可谓是应该讲的都讲了，而且是简单明了。并且发现其有中文版本，特意将其中文版本搬到小站上，与大家分享。</p>
+<blockquote>
+	<h2>
+		git简易指南中文</h2>
+	<p>助你开始使用 git 的简易指南，木有高深内容，;)。</p>
+	<p>地址：<a href="http://rogerdudler.github.io/git-guide/index.zh.html">http://rogerdudler.github.io/git-guide/index.zh.html</a></p>
+	<p>作者：<a href="http://www.twitter.com/rogerdudler">罗杰·杜德勒</a></p>
+	<p>特别感谢：<a href="http://www.twitter.com/tfnico">@tfnico</a>，<a href="http://www.twitter.com/fhd">@fhd</a>和<a href="http://www.namics.com">Namics</a></p>
+	<p>英文版本，以及其他语言版本，烦请查阅：<a href="http://rogerdudler.github.io/git-guide/">git - the simple guide</a></p>
+</blockquote>
+<p>接下来进入主题，我直接将中文版本内容移到这里：</p>
+<h2>
+	安装</h2>
+<p>安装前先下载所需要的文件：</p>
+<p><a href="http://code.google.com/p/git-osx-installer/downloads/list?can=3">下载 git OSX 版</a><a href="http://code.google.com/p/msysgit/downloads/list?can=3">下载 git Windows 版</a><a href="http://book.git-scm.com/2_installing_git.html">下载 git Linux 版</a></p>
+<h2>
+	创建新仓库</h2>
+<p>创建新文夹，打开，然后执行：</p>
+<pre>
+git init		
+</pre>
+<p>以创建新的git仓库。</p>
+<h2>
+	检出仓库</h2>
+<p>执行如下命令以创建一个本地仓库的克隆版本：</p>
+<pre>
+git clone /path/to/repository	
+</pre>
+<p>如果是远端服务器上的仓库，你的命令会是这个样子：</p>
+<pre>
+git clone username@host:/path/to/repository	
+</pre>
+<h2>
+	工作流</h2>
+<p>你的本地仓库由 git 维护的三棵“树”组成。第一个是你的<strong style="background-color:#00a3cf;color:#fff">工作目录</strong>，它持有实际文件；第二个是 <strong style="background-color:#00a3cf;color:#fff">缓存区（Index）</strong>，它像个缓存区域，临时保存你的改动；最后是 <strong style="background-color:#00a3cf;color:#fff">HEAD</strong>，指向你最近一次提交后的结果。</p>
+<p><img alt="git——简易指南" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/git-1.jpg" style="padding:2px;border:1px solid #ccc;width:560px"></p>
+<h2>
+	添加与提交</h2>
+<p>你可以计划改动（把它们添加到缓存区），使用如下命令：</p>
+<pre>
+ git add &lt;filename&gt;
+ git add *	
+ </pre>
+<p>这是 git 基本工作流程的第一步；使用如下命令以实际提交改动：</p>
+<pre>
+ git commit -m "代码提交信息"	
+ </pre>
+<p>现在，你的改动已经提交到了<strong>HEAD</strong>，但是还没到你的远端仓库。</p>
+<h2>
+	推送改动</h2>
+<p>你的改动现在已经在本地仓库的<strong>HEAD</strong>中了。执行如下命令以将这些改动提交到远端仓库：</p>
+<pre>
+ git push origin master	
+ </pre>
+<p>可以把 master 换成你想要推送的任何分支。</p>
+<p>如果你还没有克隆现有仓库，并欲将你的仓库连接到某个远程服务器，你可以使用如下命令添加：</p>
+<pre>
+ git remote add origin &lt;server&gt;	
+ </pre>
+<p>如此你就能够将你的改动推送到所添加的服务器上去了。</p>
+<h2>
+	分支</h2>
+<p>分支是用来将特性开发绝缘开来的。在你创建仓库的时候，master 是“默认的”。在其他分支上进行开发，完成后再将它们合并到主分支上。</p>
+<p><img alt="git——简易指南" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/git-2.jpg" style="padding:2px;border:1px solid #ccc;width:560px"></p>
+<p>创建一个叫做“feature_x”的分支，并切换过去：</p>
+<pre>
+ git checkout -b feature_x	
+ </pre>
+<p>切换回主分支：</p>
+<pre>
+ git checkout master	
+ </pre>
+<p>再把新建的分支删掉：</p>
+<pre>
+ git branch -d feature_x	
+ </pre>
+<p>除非你将分支推送到远端仓库，不然该分支就是 不为他人所见的：</p>
+<pre>
+ git push origin &lt;branch&gt;	
+ </pre>
+<h2>
+	更新与合并</h2>
+<p>要更新你的本地仓库至最新改动，执行：</p>
+<pre>
+ git pull	
+ </pre>
+<p>以在你的工作目录中 获取（fetch） 并 合并（merge） 远端的改动。 要合并其他分支到你的当前分支（例如 master），执行：</p>
+<pre>
+git merge &lt;branch&gt;	
+</pre>
+<p>两种情况下，git 都会尝试去自动合并改动。不幸的是，自动合并并非次次都能成功，并可能导致 冲突（conflicts）。 这时候就需要你修改这些文件来人肉合并这些 冲突（conflicts） 了。改完之后，你需要执行如下命令以将它们标记为合并成功：</p>
+<pre>
+git add &lt;filename&gt;	
+</pre>
+<p>在合并改动之前，也可以使用如下命令查看：</p>
+<pre>
+git diff &lt;source_branch&gt; &lt;target_branch&gt;	
+</pre>
+<h2>
+	标签</h2>
+<p>在软件发布时创建标签，是被推荐的。这是个旧有概念，在 SVN 中也有。可以执行如下命令以创建一个叫做 1.0.0 的标签：</p>
+<pre>
+git tag 1.0.0 1b2e1d63ff	
+</pre>
+<p>1b2e1d63ff 是你想要标记的提交 ID 的前 10 位字符。使用如下命令获取提交 ID：</p>
+<pre>
+git log	
+</pre>
+<p>你也可以用该提交 ID 的少一些的前几位，只要它是唯一的。</p>
+<h2>
+	替换本地改动</h2>
+<p>假如你做错事（自然，这是不可能的），你可以使用如下命令替换掉本地改动：</p>
+<pre>
+git checkout -- &lt;filename&gt;	
+</pre>
+<p>此命令会使用 HEAD 中的最新内容替换掉你的工作目录中的文件。已添加到缓存区的改动，以及新文件，都不受影响。</p>
+<p>假如你想要丢弃你所有的本地改动与提交，可以到服务器上获取最新的版本并将你本地主分支指向到它：</p>
+<pre>
+git fetch origin
+git reset --hard origin/master	
+</pre>
+<h2>
+	有用的贴士</h2>
+<p>内建的图形化 git：</p>
+<pre>
+gitk	
+</pre>
+<p>彩色的 git 输出：</p>
+<pre>
+git config color.ui true	
+</pre>
+<p>显示历史记录时，只显示一行注释信息：</p>
+<pre>
+git config format.pretty oneline	
+</pre>
+<p>交互地添加文件至缓存区：</p>
+<pre>
+git add -i	
+</pre>
+<h2>
+	链接与资源</h2>
+<h3>
+	图形化界面:</h3>
+<ul><li>
+		<a href="http://gitx.laullon.com/">GitX (L) (OSX, open source)</a></li>
+	<li>
+		<a href="http://www.git-tower.com/">Tower (OSX)</a></li>
+	<li>
+		<a href="http://www.sourcetreeapp.com/">Source Tree (OSX, free)</a></li>
+	<li>
+		<a href="http://mac.github.com/">GitHub for Mac (OSX, free)</a></li>
+	<li>
+		<a href="https://itunes.apple.com/gb/app/gitbox/id403388357?mt=12">GitBox (OSX)</a></li>
+</ul><h3>
+	指南与手册</h3>
+<ul><li>
+		<a href="http://book.git-scm.com/">Git 社区参考书</a></li>
+	<li>
+		<a href="http://progit.org/book/">专业 Git</a></li>
+	<li>
+		<a href="http://think-like-a-git.net/">如 git 思考</a></li>
+	<li>
+		<a href="http://help.github.com/">GitHub 帮助</a></li>
+	<li>
+		<a href="http://marklodato.github.com/visual-git-guide/index-en.html">图形化的 Git 指南一则</a></li>
+</ul><blockquote>
+	<h2>
+		扩展阅读</h2>
+	<ol><li>
+			<a href="http://www.phptogether.com/archives/tag/github%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B">Github使用教程</a></li>
+		<li>
+			<a href="http://net.tutsplus.com/tutorials/tools-and-tips/git-on-windows-for-newbs/">Git on Windows for Newbs</a></li>
+		<li>
+			<a href="https://netbeans.org/kb/docs/ide/git.html">Git User Guide</a></li>
+		<li>
+			<a href="http://sixrevisions.com/resources/git-tutorials-beginners/">Top 10 Git Tutorials for Beginners</a></li>
+		<li>
+			<a href="http://git-scm.com/documentation">git verything is local</a></li>
+		<li>
+			<a href="http://git-scm.com/doc">git fast version control</a></li>
+		<li>
+			<a href="http://www.w3cplus.com/blog/74.html">图解WinXP系统下安装Git</a></li>
+	</ol></blockquote>
+<p>如需转载，请注明出处：</p>
+<p>英文版本出处：<a href="http://rogerdudler.github.io/git-guide/">http://rogerdudler.github.io/git-guide/</a></p>
+<p>中文版本出处：</p>
+<p><a href="http://rogerdudler.github.io/git-guide/index.zh.html">http://rogerdudler.github.io/git-guide/index.zh.html</a></p>
+<p><a href="http://www.w3cplus.com/tool/git-guide.html">http://www.w3cplus.com/tool/git-guide.html</a></p>
+</div></div></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/25.html">tools</a></li></ul></div><div><ul><li><a href="http://www.w3cplus.com/blog/tags/311.html">git</a></li></ul></div><div><div><div><div>
+      <div>8</div>
+                  <a href="http://www.w3cplus.com/vote/node/762/1/vote/alternate/GR8th81w0H500Vx-O2RljUisAtrZ9-FSgKiy6nC0mXw/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div><img src="http://www1.feedsky.com/t1/738847750/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/tool/git-guide.html" border="0" height="0" width="0">

@@ -1,0 +1,136 @@
+---
+layout: post
+title:  "乱谈，和我做 lofn 时候的一点想法，以及 lofn 的异步库"
+date:   2010-12-08 21:59:14
+author: Belleve Invis
+categories: program
+---
+
+## 乱谈，和我做 lofn 时候的一点想法，以及 lofn 的异步库
+### by Belleve Invis
+### at 2010-12-08 21:59:14
+### original <http://typeof.net/2010/12/ideas-about-lofn-et-asynchorous-lib-for-lof/>
+
+<p>一直想写这文章有段时间了，自己了解不少语言（自然的 &amp; 程序的），也做过编译器，随便说说，应该还是可以的罢。如果说的不对请回复指正，谢谢。</p>
+
+<p>很多人都在说语言的好坏，比如 Perl 和 Python 社区间持续的争论、<a href="http://blog.csdn.net/turingbook/archive/2007/09/07/1775488.aspx">Linus 炮轰 C++</a>、<a href="http://blog.zhaojie.me/2010/04/why-java-sucks-and-csharp-rocks-slides-final-version.html">老赵力挺 C# 等等</a>。除开骂人时的快感，这些嘴仗没有什么意义：即是 Linus Towards 也无法说服 MS 扔掉 C++ 改用纯 C，也不能让一个有了 N 年 Java 经验的人改用 C#（倒是可能改用 Scala）。在这，我也不想让任何人改用其他语言（那会杀了他们），只是想让你们能多有些了解，此外，如果以后有再次选择的机会，能选择一个称手的语言。</p>
+
+<p>在说程序语言之前，先来乱扯下自然语言。我不研究语言学（我有个同学是），我的很多理解都是基于数理逻辑，而非语言学。自然语言的语系众多，有些语言“好学”、有些“难学”。比如说，拉丁语和古希腊语的语序是一种修辞——句子部分间的关系完全由屈折变化决定。因此，他们都是很美、很有表现力的语言（因为可以用很短的句子表示复杂而精确的语义），也是很难学的语言。古汉语也是如此：当我们阅读文言文的时候，都会感叹怎么那么一点点字就有那么多意思！</p>
+
+<p>与此相反，现代英语和现代汉语则更加“分析化”（Analytic），几乎所有能表现复杂语义的东西都用介词明示出来了。结果呢，原来很有韵味的话突然没了感觉，像是 “Cogito ergo sum” 变成 “I think, therefore I am”，没了韵味。现在的语言多了简易性，而少了美感和厚重感。</p>
+<span></span>
+<p>当然，我这里不会去扯所谓“美学”，自然语言的讨论也基本上到此为止。和自然语言不同，程序语言背后是坚硬的数理逻辑而非人文，每一句话的意思（至少在运行时）唯一而精确。数学家（特别是研究离散数学的）会喜欢这种一切尽在掌握中的快感。</p>
+
+<p>因此，他们创造的语言一定会有“数学的美感”（注意我的用词）。例如 lisp 根本没有句法，程序就是用 AST 直接写成，数学家肯定是爱到极点。但普通人肯定会觉得，<code>(+ 1 2)</code> 别扭，还不是一般的别扭。</p>
+
+<p>除开数学家，另一些会创造程序语言的则是工程师——他们会为他们的机器创造语言。著名的 C 就是一群工程师为写 UNIX 专门设计的。用这些语言创作的程序都非常快，但有非常长的程序员等待时间。各位应该都有因为 C 指针错误而头疼的经历吧！</p>
+
+<p>这两者，要么高深莫测，要么——同样高深莫测（机器可不好对付）——肯定不是多数人认为的“好语言”，所以，两群人之间一定会出现一个人，一个很厉害的人，把数学高深的美感和机器的复杂精密摆平，给大众一个简单易用的接口，这是第三种，也是真正的“高级语言”。做这个工作的人很多，从 Wirth、Gosling 到 Hejlsberg、Matsumodo。</p>
+
+<p>在我的概念里，程序语言有两个“面向”，几乎互相排斥：</p>
+
+<ul>
+<li>面向数学</li>
+<li>面向机器</li>
+</ul>
+
+<p>第一个面向的是程序的本质——递归函数论、离散数学、类型论、范畴论、形式语言论，等等等等。第二个面向的是机械——指令、内存、IO界面、网络等等。</p>
+
+<p>我前面不是说了“面向人”么？因为他和“面向数学”和“面向机器”并不排斥。数学的高深和机器的精密显然不是一个“普通程序员”能应付得来的。把阳春白雪送给下里巴人，还得让他们能看懂这“阳春白雪”，才真本事。</p>
+
+<p>故，我划分程序语言有两个标度：</p>
+
+<ol>
+<li>这个语言是偏向数学还是工程？</li>
+<li>这个语言的复杂度如何？换言之，实现相同的功能，有多少写法？代码会有多长？</li>
+</ol>
+
+<p>第一个标度和个人喜好有关，一个用惯 LISP、Haskell 的人肯定对 C 很反感，反之亦然。但第二个则可以来度量语言（对某人来说）是否是个好语言。这里还加了定语，因为是否容易也因人而异。Perl 和 Python 的嘴仗就是因为这个：Perl 用户陶醉在复杂与多样性中，Python 用户则喜欢简单明了的东西。</p>
+
+<p>就我看来，语言太简单和太复杂都不是好事。太简单会烦，太复杂则会弄得晦涩难读。类比自然语言，太简单的还真不好找——就算有，用它写成的文章肯定是无聊的可以；复杂的例子，比如拉丁语，说同一句话的方法可多，真多，但是如果没有“痛苦地学习过”，根本看不懂。</p>
+
+<p>“烦”和“难”正是要避免的，前者造就了无数的 IT 民工；后造就了一堆根本让人看不懂的代码。显然，两者都是极端，而且其中之一——“烦”甚至变成了所谓“好语言”的必备要素之一。我简直无法理解——如果程序员用你的“好”语言写程序却天天哭天喊地嫌烦，这还能叫“好语言”吗？</p>
+
+<p>这里不能不提 Ruby，他是为数不多几个能把复杂度控制得恰到好处的语言之一。写 Ruby 代码非常舒服，语言具备多样性，但又不致复杂晦涩。Matz 不愧是个牛人，能让大多数对函数式编程陌生的程序员接受代码块而且用得很舒服，这就是明证。Ruby 本身不允许孤立的代码块，代码块必须附加在函数调用后面，<code>yield</code> 处理代码块调用和返回值（而不是像支持函数式语言里面用括弧调用），这些虽然对懂函数式语言的人（比如在下）来说可能是障碍。然而，有没有想过，很多人并不懂函数式语言，他们对“把动作抽象成函数”还很吃惊呢？最近突然火起来的 Scala 也有相似性。语言设计很容易导向两个极端，要么是语法很“简单”，毫无变化，导致烦；或者变化太多，导致晦涩难懂。</p>
+
+<p>相比语法烦人或者晦涩，更严重的问题是很多语言（或者平台）能力不足——例如，直到今天 ECMA-262 里面都没有加入协同例程（Coroutine），导致异步程序极难创作。又例如受到 JVM 的限制，Java 至今没有真正的泛型。如果这是发生在自然语言身上，前者好似句子出来冗长或者过于简短，而后者就是完全无法表达了。你肯定遇到过想说某个意思却发现言语无法表达的窘境。</p>
+
+<p>当时我在写 JavaScript 的时候就有这种感觉：或许接口适配写几个 <code>if</code> 就能搞定，但是更有趣的东西——比如协同例程呢？JavaScript 做不到。哦，这不是做不到，而是能用一种非常蹩脚的手法做到，我以后有机会说。当时是各种新仇旧恨和稀奇古怪的想法充满了我的大脑：我要做个新语言，基于 JavaScript 的，做一个 Web 上的 Alternative，做 Web App 的“控制语言”（如 Lua 之于 C++ 游戏），让那些“Bad Parts”消失，让人们写出漂亮的代码。</p>
+
+<p>所以，在我设计 Lofn 的时候，我列出的要求是：</p>
+
+<ul>
+<li>语义要完备。所以，原型系统和函数是一定有的，此外我加入了 JavaScript 不提供的 <code>yield</code> 迭代器来简化异步程序。</li>
+<li>语法要大，但不要大到晦涩难懂。</li>
+<li>（这条个人因素）让花括弧出现在“应该出现的地方”——函数和对象直接量</li>
+<li>不考虑向 JavaScript 某个子集兼容的问题</li>
+<li>Lofn 程序运行时速度要至少达到等价 JavaScript 代码的 1/4
+
+<br>//现在看来我要求定的有点低了，但后来发现并不低：因为编译时间还是很客观的。
+</li>
+</ul>
+
+<p>Lofn 中创建函数有很多语法，从 Lambda 表达式到最完整的 <code>function: ... end</code> 块，还有借鉴自 Ruby 的 <code>{|args| statements}</code> 块。只有一个表达式的函数会自动加入 <code>return</code>，减少关键字用量。函数调用可以省掉括弧（唯一的问题或许是调用无参数函数的时候括弧还得打上，因为必须区分“一个函数”和“函数调用后的返回值”）、自动识别 JSON 对象直接量和函数、名称参数，等等，这些特性都至少是我认为的“Good parts”。而对于那些可能会出问题的特性（比如单语句 <code>if</code>），我设置了开关，如果担心的话，可以拨动开关，关闭那些可能出问题的特性。</p>
+
+<p><code>yield</code> 这个东西则提供了 JavaScript 没有的功能：简洁的异步编码。在原来，我们如何编写异步程序呢？下面应该是个最简单的例子：逐个打印 <code>1 2 3</code>，间隔一秒。</p>
+
+<p>以前，我们要写出这样的代码：</p>
+
+<pre><span>trace</span><span>(</span><span>1</span><span>)</span><span>;</span>
+<span>setTimeout</span><span>(</span><span>function</span><span>(</span><span>)</span><span>{</span>
+    <span>trace</span><span>(</span><span>2</span><span>)</span><span>;</span>
+    <span>setTimeout</span><span>(</span><span>function</span><span>(</span><span>)</span><span>{</span>
+        <span>trace</span><span>(</span><span>3</span><span>)</span>
+    <span>}</span><span>,</span> <span>1000</span><span>)</span>
+<span>}</span><span>,</span> <span>1000</span><span>)</span><span>;</span></pre>
+
+<p>看看，原来“顺序”的三个步骤活生生地给拆成了三个函数。要是叫输入 n，依次打印 1 ~ n 呢？估计就要用各种复杂的回调了吧！</p>
+
+<p>现在，通过是使用 Lofn 的异步库，上面的例子就会非常简单：</p>
+
+<pre><span>// with asynchoronous library imported</span>
+<span>var</span> <span>flow</span> <span>=</span> <span>async</span> <span>{</span>
+    <span>trace</span> <span>1</span><span>;</span>
+    <span>wait</span><span>:</span> <span>sleep</span> <span>1000</span><span>;</span>
+    <span>trace</span> <span>2</span><span>;</span>
+    <span>wait</span><span>:</span> <span>sleep</span> <span>1000</span><span>;</span>
+    <span>trace</span> <span>3</span>
+<span>}</span><span>;</span>
+<span>flow</span><span>(</span><span>)</span><span>.</span><span>start</span><span>(</span><span>)</span><span>;</span></pre>
+
+<p>不定个数的也一样简单：</p>
+
+<pre><span>var</span> <span>flow</span> <span>=</span> <span>async</span> <span>function</span><span>(</span><span>n</span><span>)</span><span>:</span>
+    <span>trace</span> <span>1</span><span>;</span>
+    <span>for</span><span>(</span><span>var</span> <span>i</span> <span>=</span> <span>2</span><span>;</span> <span>i</span> <span>&lt;=</span> <span>n</span><span>;</span> <span>i</span> <span>+=</span> <span>1</span><span>)</span><span>:</span>
+        <span>wait</span><span>:</span> <span>sleep</span> <span>1000</span><span>;</span>
+        <span>trace</span> <span>i</span><span>;</span>
+    <span>end</span>
+<span>end</span><span>;</span>
+
+<span>flow</span><span>(</span><span>10</span><span>)</span><span>.</span><span>start</span><span>(</span><span>)</span><span>;</span></pre>
+
+<p>这里我使用了一些不同的语法。Lofn 里花括弧专用于函数和对象直接量，语句控制流是用冒号和 <code>end</code>。这些记法可以让程序更清晰，也保证了一致性。</p>
+
+<p>Lofn 的 <code>yield</code> 加上一些回调管理能让异步功能出奇的强大，下面是一个递归的流程，一步步地显示 Hanoi 塔的解法：</p>
+
+<pre><span>var</span> <span>show</span> <span>=</span> <span>async</span> <span>function</span><span>(</span><span>n</span><span>)</span><span>:</span>
+    <span>wait</span><span>:</span> <span>hanoi</span> <span>n</span><span>,</span> <span>'A'</span><span>,</span> <span>'B'</span><span>,</span> <span>'C'</span><span>;</span>
+    <span>tracel</span> <span>'(・ω・) Kira ~'</span>
+<span>end</span>
+<span>var</span> <span>hanoi</span> <span>=</span> <span>async</span> <span>function</span><span>(</span><span>n</span><span>,</span> <span>a</span><span>,</span> <span>b</span><span>,</span> <span>c</span><span>)</span><span>:</span>
+    <span>if</span><span>(</span><span>n</span> <span>&gt;</span> <span>1</span><span>)</span><span>,</span>
+        <span>wait</span><span>:</span> <span>hanoi</span> <span>n</span> <span>-</span> <span>1</span><span>,</span> <span>a</span><span>,</span> <span>c</span><span>,</span> <span>b</span><span>;</span>
+    <span>tracel</span> <span>'Move disk#'</span> <span>+</span> <span>n</span> <span>+</span> <span>' from '</span> <span>+</span> <span>a</span> <span>+</span> <span>' to '</span> <span>+</span> <span>b</span><span>;</span>
+    <span>wait</span><span>:</span> <span>sleep</span> <span>100</span><span>;</span>
+    <span>if</span><span>(</span><span>n</span> <span>&gt;</span> <span>1</span><span>)</span><span>,</span>
+        <span>wait</span><span>:</span> <span>hanoi</span> <span>n</span> <span>-</span> <span>1</span><span>,</span> <span>c</span><span>,</span> <span>b</span><span>,</span> <span>a</span><span>;</span>
+<span>end</span>
+
+<span>show</span><span>(</span><span>3</span><span>)</span> <span>|</span><span>.</span><span>start</span></pre>
+
+<p>现在异步库只做了很少的内容（大概只有 50 行），它开放了一个 <code>Task</code> 原型，你可以派生他，定制 Task 行为。比如，现在异步库只会处理 <code>Task</code> 的 <code>ondone</code> 回调，但是很容易扩展成监测所有回调，或者监测 DOM 元素的事件。</p>
+
+<p>假设监测 DOM、监测AJAX 做完而且很完备的话，这将是个革命：从此不再需要把业务流程拆成 N 多个细碎的回调函数了，只要用 <code>async</code>，然后像往常那样写代码即可。</p>
+
+<p>现在 Lofn 只是起步，只有个语言，什么库都没做。不过按我说的话，语言以后就不用反复折腾了：Lofn 在我目前的实验中显得异常强大，只要写出了相应的库。这不难。尤其是在有 ECMAScript V5 支持的地方，Lofn 会更加神奇。</p>

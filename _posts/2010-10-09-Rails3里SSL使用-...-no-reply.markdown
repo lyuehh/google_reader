@@ -1,0 +1,48 @@
+---
+layout: post
+title:  "Rails3里SSL使用 ... no reply"
+date:   2010-10-09 08:56:10
+author: Latest from ChinaonRails
+categories: program
+---
+
+## Rails3里SSL使用 ... no reply
+### by Latest from ChinaonRails
+### at 2010-10-09 08:56:10
+### original <http://feedproxy.google.com/~r/LatestFromChinaonrails/~3/T6ezE_TsJpg/4520.html>
+
+<a href="http://themomorohoax.com/2010/10/08/using-ssl-in-rails-3" rel="nofollow external">http://themomorohoax.com/2010/10/08/using-ssl-in-rails-3</a><br>
+<br>
+<img src="http://t0.gstatic.com/images?q=tbn:ANd9GcSpxSrFeaDmSyetginemUpc0jUtjosSCtIiYYYU99ibC_T-z94&amp;t=1&amp;usg=__uect0q7TG1_ZSElSJc_bO4Gsu7w=" border="0"><br>
+<br>
+文章总结出几种实施的方式<br>
+1.Forcing SSL in a scope<br>
+<br>
+2.An SSL constraints class<br>
+<br>
+3.Rack SSL middleware<br>
+<br>
+同时还有个插件ssl_requirement<br>
+<br>
+<a href="http://github.com/bartt/ssl_requirement" rel="nofollow external">http://github.com/bartt/ssl_requirement</a><br>
+<br>
+可以这么用<br>
+<div>class ApplicationController &lt; ActionController::Base<br>
+      include SslRequirement<br>
+    end<br>
+</div>
+<br>
+不过希望未来能<br>
+<div>resources :secrets, :ssl =&gt; {:only =&gt; [:new, :create]}<br>
+<br>
+resources :secrets, :ssl =&gt; :required<br>
+<br>
+resources :secrets, :ssl =&gt; :allowed<br>
+<br>
+scope :constraints =&gt; [{:protocol =&gt; :ssl, :redirect =&gt; true}] do<br>
+<br>
+  resources :secrets<br>
+<br>
+end</div>
+<p><a href="http://feedads.g.doubleclick.net/~a/_4LJPAAUoSJgpRQ75fZceCvlBFs/0/da"><img src="http://feedads.g.doubleclick.net/~a/_4LJPAAUoSJgpRQ75fZceCvlBFs/0/di" border="0" ismap></a><br>
+<a href="http://feedads.g.doubleclick.net/~a/_4LJPAAUoSJgpRQ75fZceCvlBFs/1/da"><img src="http://feedads.g.doubleclick.net/~a/_4LJPAAUoSJgpRQ75fZceCvlBFs/1/di" border="0" ismap></a></p><img src="http://feeds.feedburner.com/~r/LatestFromChinaonrails/~4/T6ezE_TsJpg" height="1" width="1"><img src="http://www1.feedsky.com/t1/421444111/RubyonRails_q5tb/feedsky/s.gif?r=http://feedproxy.google.com/~r/LatestFromChinaonrails/~3/T6ezE_TsJpg/4520.html" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/RubyonRails_q5tb/421444111/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/RubyonRails_q5tb/421444111/art01.gif"></a></p>

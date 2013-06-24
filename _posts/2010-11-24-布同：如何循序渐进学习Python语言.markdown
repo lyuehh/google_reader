@@ -1,0 +1,86 @@
+---
+layout: post
+title:  "布同：如何循序渐进学习Python语言"
+date:   2010-11-24 11:39:00
+author: 布同
+categories: program
+---
+
+## 布同：如何循序渐进学习Python语言
+### by 布同
+### at 2010-11-24 11:39:00
+### original <http://www.cnblogs.com/Hiker/archive/2010/11/24/Python.html>
+
+<p><p>      大家都知道Python语言是一种新兴的编程语言。1989年，Python就由Guido van Rossum发明。Python一直发展态势很好。</p>
+<p>      原因有几点：1、跨平台性好。Linux、Windows、MacOS、塞班……。2、快速易学。3、模块齐全。</p>
+<p>      Python本身是一种面向对象的脚本语言。功能涉及到应用程序开发、网络编程、网站设计、图形界面编程等等，基本囊括众多应用。手机应用开发，电脑PC程序开发，连Google也开始使用python作为其开发语言。很多编程比赛也开始接受python语言。</p>
+<p>      既然这么有用，那怎么学习呢？废话少说，马上解答。</p>
+<p><strong>      </strong><span style="text-decoration:underline"><strong>《征服Python——语言基础与典型应用》</strong></span></p>
+<p>      这本书中的ppt部分简单介绍了Python的相关知识。其源代码部分涉及到常见的数据结构和算法、语法的应用实例，完全可以用来进行模仿学习。这本书的源代码可以帮助你了解部分Python语言的应用和掌握几个简单的应用。</p>
+<p>      <span style="text-decoration:underline"><strong>Python视频讲座-台湾辅仁大学教学视频</strong></span></p>
+<p>　　这个教学视频可以帮助你从一定程度上了解Python的一些属性，但是不能够帮助你入门。如果你简单看过Python的入门级别的语法教程，再看看这个是有好处的，毕竟这个视频不长，几个小时就看完了。当然，里面的老师的普通话带一点台湾腔，程序说成是程式，字符串说成是字串或者序列sequence……还有很多与大陆称呼的不同之处，不过这个不影响你的理解。</p>
+<p>　　<span style="text-decoration:underline"><strong>[Python教程].Game.Development.Tutorial</strong></span></p>
+<p>　　这个教程共19集，每集约10分钟，一共大概190分钟，三个小时。其中是一个老外Bucky Roberts的关于利用pygame模块进行小游戏编写的讲解，讲的非常细致，即使没有Python基础也可以看，你可以从中了解到Python编写10-30行代码时的一些情形。他并不致力于讲解Python语法，而是讲解如何使用模块中的方法来快速编写小游戏。Bucky的英文不知道为什么，听起来特别的顺，不像那些高深的系统专家的视频讲解那样枯燥。</p>
+<p>　　<span style="text-decoration:underline"><strong>[Python教程].Python.Programming.Tutorial</strong></span></p>
+<p>　　与之前那个视频比起来，这个视频就是Bucky Roberts讲解Python基本语法的视频。讲解非常细致。我相信大学英语四级水平完全可以看懂（PS:我知道四级什么水平，自信一点，相信我）。其中完全是用示例来进行解释。很好懂。每集10分钟，一共43集，看完我估计你会跃跃欲试想要用Python编写自己的程序了。这个真的很不错的。用来在学习python基础的时候间插着学习很好。</p>
+<p>　　<strong><span style="text-decoration:underline">c经典100例Python语言实现</span></strong></p>
+<p>　　这本书是帮助那些有c或者c++数据结构基础的人，如何平滑过渡到Python语言上来。其中讲解了很多如何用Python解决实际的小型数学问题。很不错的。看完你就知道Python用来替代c或者c++还是挺可能的。本书适合那种学完Python基础之后不知道如何下手写程序的人。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python参考手册2004年3月22日版</strong></span></p>
+<p>　　共97页。这个版本是我看见的最新的版本了。如果你有更新的版本，请留言告诉我，谢谢了。其中用中英文对照的方式讲解了很多Python的特性和语法知识。这本书不长，但是并不是一个全面的讲解Python知识的书籍。其中很多地道的实例可以教会你很多东西，这就是它的一个很好的价值所在。示例好是很难得的。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python Tutorial Python 入门指南Release 2.5b2</strong></span></p>
+<p>　　共137页。这本书是上面那本书的“升级版”，相似，而且更全面。很不错的示例，强力推荐。</p>
+<p>　　<span style="text-decoration:underline"><strong>《Python核心编程》第二版</strong></span></p>
+<p>　　好吧。我承认，这本书才是介绍语法知识最全面，涵盖面最广的书籍。用来为你构建一个完整的Python知识构架实在是太合适了。但是我推荐不要一开始就看着本书。先了解Python的一些大概之后再来从这本书中吸取全面的营养会更加合适。如何了解大概呢？下面会给你介绍的，先别急。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python技术参考大全</strong></span></p>
+<p>　　这本书，书如其名。非常厚实，非常全面。从语法知识到应用编程都包含了。完全是同上面这本书一个样子的。可以把这两本书结合起来看看。非常好。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python学习笔记——皮大庆</strong></span></p>
+<p>　　这本书对于Python相当于《易学c++》对于C++。浅显而易懂，完全适合没有太多语言基础，甚至刚刚开始学习编程的人。这本书就是你学习Python的对好的第一本书。其中谈到了很多作者的个人理解，挺地道的，对你学习Python有很大帮助。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python与Tkinter编程</strong></span></p>
+<p>　　这本书适合那种，学好了Python语法知识，需要进行应用程序设计的人。或者有MFC基础，了解了部分Python语法，急于用于编程的人。（笔者是第二种）这本书讲到了如何利用Tkinter模块进行界面开发和应用开发。因为Python2.5已经包含了Tkinter模块，所以你不需要安装和额外的导入就可以用Tkinter来编程了。你安装好Python就默认安装了Tkinter模块。</p>
+<p>　　<strong><span style="text-decoration:underline">Python语言入门Learning Language</span></strong></p>
+<p>　　其实这本书用来学习Python语法和基础知识也是不错的，还可以简单了解一点应用编程的知识。但是由于国内好像还没有电子版的，只有影印版的，不利于你拷贝示例程序进行练习……如果你愿意自己一个个字母的敲打示例程序的话还是很不错的。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python源码剖析</strong></span></p>
+<p>　　个人感觉这个书从整体和一些关键点去研究Python，比较高度。如果是有Python基础来看这本书比较好。其中有很多示例程序值得学习。也是一本好书，如果学好基础了，一定要过来看看这本书。</p>
+<p>　　<span style="text-decoration:underline"><strong>Tkinter编程代码示例</strong></span></p>
+<p>　　如果你有一些Python语法基础了，想要马上学习应用编程，又觉得学习Tkinter入手比较好，那么这本书很不错。其中的很多示例浅显易懂，帮助你快速的搞出个widget在你的程序里易如反掌。要是学习Tkinter的widget，先读读这个书是很有好处的。帮你入门吧。由于这本书的很多代码直接可以拷贝使用，所以这本书的作者提到还是尽量自己敲打示例程序比较好。我选择性的接受这个意见。</p>
+<p>　　<span style="text-decoration:underline"><strong>派森标准库Python standard library</strong></span></p>
+<p>　　如果你学完语法知识，感觉很好。但是开始变成后却发现Python的模块实在是太诡异了，到底有什么模块，都是干什么用的，如果你提出这个问题，这本书很好的解决你的疑问。其中讲解了大量的模块，你肯定很受用的。</p>
+<p>　　<span style="text-decoration:underline"><strong>深入Python (Dive Into Python)</strong></span></p>
+<p>　　这本书也是学习Python的最好的第一本书之一。浅显易懂，有选择性的为你展示Python的特点，这本书很好，而且厚度还可以接受。太厚的书笔者不推荐用来作为学习的第一本。你可以试试看。这个东西还分为多个版本，不一定新版本就更加全面而易懂。笔者手中就有2001年版和2004年版。自己看看就知道差别了。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python document</strong></span></p>
+<p>　　这个是Python官方介绍Python的一个英文文档，系统的涉及到诸多Python的东西。但不像MSDN，它并不是一个全面而细致的文档库，毕竟只有几兆大小。他还是会推荐你要看进一步详细的东西应该去看看“Python作者的书”。这句话不知道在其中提到多少次。这个document不能当MSDN一样用，虽然都是英文的。还是可以查到部分信息。</p>
+<p>　　<span style="text-decoration:underline"><strong>Python bible</strong></span></p>
+<p>　　笔者感觉这个书就是把Python document整理之后形成的一本书。你想想圣经，代表神的旨意，这个书估计代表Python的作者的意图。挺强大的书，如果你有什么不懂的东西，也许你可以从中搜索到相关的解释和示例程序。所以一并推荐。</p>
+<p>　　</p>
+<p>　　介绍了这么多书，我到底适合先读那本呢？？下面介绍一下：</p>
+<p>　　深入Python。阅读这个东西很轻松愉快。读到正则表达式的时候比较纠结。呵呵，你不一定要从一本书中学会Python基础。</p>
+<p>　　Python核心编程。再学习这本书，你就轻松加愉快了。这本书的Tkinter部分之前你可以插读一下其他Tkinter入门更好的书。</p>
+<p>　　下面介绍如何Tkinter入门：</p>
+<p>　　Tkinter编程代码示例。这个读起来轻松愉快。我可不想把你搞的特别郁闷。这个作为开始点再合适不过了。其中作者还有很多东西没有在书中解决，呵呵，你多学两天也许就能够搞定这些书中遗留下来的问题，你会很有成就感的。</p>
+<p>　　Python与Tkinter编程。这本书就稍微系统和周全的为你讲解Tkinter的知识了。</p>
+<p>　　Python核心编程。又回到这本书了。</p>
+<p> </p>
+<p>　　当然，你可以参考上面的简介自行选择一套学习路线的方案。请多参考上面的简介部分。</p>
+<p> </p>
+<p>　　<span style="text-decoration:underline"><strong>如何开始编写自己的第一个Python程序?</strong></span></p>
+<p>　　这个问题很重要。</p>
+<p>　　1、安装IDLE。这个东西的名字叫做pywin32-214.win32-py3.0.exe。</p>
+<p>　　字面解释。其中py：Python；</p>
+<p>　　　　　　　　win32：Windows下的安装程序。</p>
+<p>　　　　　　　　3.0：版本号。笔者使用的是2.5.4其实入门都可以用。</p>
+<p>　　下载连接：<a href="http://www.python.org/download/">http://www.python.org/download/</a>。打开这个页面之后选择一款Windows下的安装程序。即可。</p>
+<p>　　2、安装完成之后进入：开始/程序/Python*.*/DIE(Python GUI )。打开界面，输入print ‘Hello World’，回车，查看是否能够正常工作即可。</p>
+<p>　　如何显示Hello World，那么就是正确可用的。这个是命令行方法，还有源代码编辑方法。要是需要进一步信息请发送邮件到<a href="mailto:wuqiangxx@126.com">wuqiangxx@126.com</a>，我一定给你详细的解释，如何开始进行编程。</p>
+<p> </p>
+<p>　　笔者的一点建议：</p>
+<p>　　1、一棵树上吊死我不推荐你，你应该多试几棵。</p>
+<p>　　2、每本书都有自己讲解的好的地方和不好的地方，你应该花几分钟体验一下，然后从最好入门的地方入手。</p>
+<p>　　3、学习东西的过程是有一个加速度的。刚开始的时候是线形的速度，之后便是一个快速的上升期，然后又回到线形的速度。如果选择好书，一开始也可以处于有加速度的状态，那就是越学越开心，越来越感兴趣，好书常常能够让你做到这样子。</p>
+<p>　　4、尽信书不如无书。有的示例程序看上去显而易见，但是你不拿过去运行一下，自己调试一下，你始终掌握不到其精髓和灵活运用的方法。自己动手改改，你会心悦诚服很多。</p>
+<p>　　5、要善于总结。如果你光学不练，这是不好的，如果你不善于总结，这也是不好的。语言都是用不上的时候开始学习。都是用的上的时候开始复习。要是用得上的时候开始学习，除非你抗压能力一流，不然我想你心情烦躁，效果会很不好的。学习的时候多总结一下，复习的时候可以翻出来看看，这样就不至于完全荒废了，并且恢复相当快速。</p>
+<p>　　6、学习编程不要太排斥英文。如果让你直接从英文开始学习，我想这个很难，但是如果用英文版本开始复习，这个就很好了。</p>
+<p>　　笔者个人经验，不知道在你身上适不适用，如果你有收获，我就开心了。</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p><span style="text-decoration:underline"><strong> </strong></span></p><img src="http://www.cnblogs.com/Hiker/aggbug/1886349.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/Hiker/">布同</a> 发表于 2010-11-24 11:39 <a href="http://www.cnblogs.com/Hiker/archive/2010/11/24/Python.html">原文链接</a></p><p>评论: 9　<a href="http://www.cnblogs.com/Hiker/archive/2010/11/24/Python.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/Hiker/archive/2010/11/24/Python.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/82238/">外媒盘点2010年全球科技产业：Android最惹眼</a><span style="color:gray">(2010-11-24 22:48)</span><br>· <a href="http://news.cnblogs.com/n/82237/">多位苹果分析师因涉嫌内幕交易遭调查</a><span style="color:gray">(2010-11-24 21:33)</span><br>· <a href="http://news.cnblogs.com/n/82236/">eWeek：从Google辞职加盟Facebook的10位高管</a><span style="color:gray">(2010-11-24 21:28)</span><br>· <a href="http://news.cnblogs.com/n/82235/">Apache 可能会出手接盘 Google Wave</a><span style="color:gray">(2010-11-24 21:21)</span><br>· <a href="http://news.cnblogs.com/n/82234/">下一代 Windows Home Server 取消“驱动器扩展”技术，引来用户不满</a><span style="color:gray">(2010-11-24 20:57)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/82194/">3Q之战背后的商业逻辑</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

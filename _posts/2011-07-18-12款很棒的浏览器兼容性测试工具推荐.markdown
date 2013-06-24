@@ -1,0 +1,68 @@
+---
+layout: post
+title:  "12款很棒的浏览器兼容性测试工具推荐"
+date:   2011-07-18 09:05:00
+author: 梦想天空（山边小溪）
+categories: program
+---
+
+## 12款很棒的浏览器兼容性测试工具推荐
+### by 梦想天空（山边小溪）
+### at 2011-07-18 09:05:00
+### original <http://www.cnblogs.com/lhb25/archive/2011/07/18/testing-cross-browser-compatability-tools.html>
+
+<p><p>　　对于前端开发工程师来说，确保代码在各种主流浏览器的各个版本中都能正常工作是件很费时的事情，幸运的是，有很多优秀的工具可以帮助测试浏览器的兼容性，让我们一起看看这些很棒的工具。</p>
+<p><strong><a href="http://spoon.net/browsers/">Spoon Browser Sandbox</a></strong></p>
+<p>点击你需要测试的浏览器环境，安装插件就可以进行测试了。帮助你测试网页在Safari、Chrome、Firefox和Opera浏览器中是否正常，IE以前也有的，网站上说应微软的要求去掉了。</p>
+<div><a href="http://spoon.net/browsers/"><img src="http://pic002.cnblogs.com/images/2011/36987/2011071717182743.jpg" alt=""></a></div>
+<div>
+<p><strong><a href="http://expression.microsoft.com/en-us/dd565874.aspx">Superpreview</a></strong></p>
+<p>这是为微软自己发布的跨浏览器测试工具，您可以同时查看您的网页在多个浏览器的呈现情况，对页面排版进行直观的比较。</p>
+<p><a href="http://expression.microsoft.com/en-us/dd565874.aspx"><img title="10_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/10_crossbrowser.png" alt="" width="561" height="387"></a></p>
+</div>
+<p><strong><a href="http://www.my-debugbar.com/wiki/IETester/HomePage">IETester</a></strong></p>
+<p>专门用于测试网页在IE浏览器各个版本中兼容性的工具，版本包含IE5.5至IE9的各个版本，很不错的一款工具，推荐。</p>
+<div><a href="http://www.my-debugbar.com/wiki/IETester/HomePage"><img title="02_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/02_crossbrowser.jpg" alt="" width="570" height="331"></a></div>
+<div>
+<p><strong><a href="http://browsershots.org/">BrowserShots</a></strong></p>
+<p>BrowserShots 是一款免费的跨浏览器测试工具，捕捉网站在不同浏览器中的截图。这是最有名，也是最古老的浏览器兼容性测试工具。</p>
+<div><a href="http://browsershots.org/"><img title="01_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/01_crossbrowser.jpg" alt="" width="570" height="350"></a></div>
+</div>
+<p><strong><a href="http://multipleies.en.softonic.com/">Multiple IEs</a></strong></p>
+<p>这款工具同样用于测试网页在IE浏览器各个版本的兼容性。</p>
+<div><dl><dt><a href="http://multipleies.en.softonic.com/"><img title="11_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/11_crossbrowser.jpg" alt="" width="570" height="456"></a></dt></dl></div>
+<p><strong><a href="http://ipinfo.info/netrenderer/">IE netrenderer</a></strong></p>
+<p>Netrenderer 也是用于检查你的网站在IE浏览器中的呈现情况，包括各个常用版本的检测。</p>
+<div><a href="http://designtutorials4u.com/wp-content/uploads/2011/02/03_crossbrowser1.jpghttp://ipinfo.info/netrenderer/"><img title="03_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/03_crossbrowser1.jpg" alt="" width="540" height="400"></a></div>
+<p><strong><a href="http://viewlike.us/">Viewlike.Us!</a></strong></p>
+<p>Viewlike 是一款新推出的工具，帮助你检查浏览器在不同分辨率下得呈现情况。</p>
+<div><a href="http://viewlike.us/"><img title="05_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/05_crossbrowser.jpg" alt="" width="540" height="400"></a></div>
+<p><strong><a href="http://www.browserseal.com/">BrowserSeal</a></strong></p>
+<p>这款工具的两个主要特色是独立的浏览器支持和带有自动化脚本的命令行界面。</p>
+<div><a href="http://www.browserseal.com/"><img title="06_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/06_crossbrowser.jpg" alt="" width="500" height="388"></a></div>
+<p><strong><a href="http://www.browsera.com/">Browsera</a></strong></p>
+<p>Browsera 是一个可测试您的网站的跨浏览器布局的工具，您会看到您网站上存在的兼容性错误。</p>
+<div><a href="http://www.browsera.com/features"><img title="07_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/07_crossbrowser.jpg" alt="" width="576" height="288"></a></div>
+<p><strong><a href="http://www.browsrcamp.com/">WebDevLab</a></strong></p>
+<p>这款工具专门用于测试你的网站在苹果Safari浏览器中是什么样子的。</p>
+<div><a href="http://www.webdevlab.com/app/screenshots"><img title="08_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/08_crossbrowser.jpg" alt="" width="542" height="286"></a></div>
+<p><strong><a href="http://litmusapp.com/browser-testing">Litmus</a></strong></p>
+<p>这个工具可以帮助你检查你的网站在多个浏览器中的呈现情况，跟踪Bug并创建报告。</p>
+<div><a href="http://litmusapp.com/browser-testing"><img title="09_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/09_crossbrowser.jpg" alt="" width="540" height="354"></a></div>
+<p><a href="http://expression.microsoft.com/en-us/dd565874.aspx"></a><strong><a href="http://www.browsercam.com/Default2.aspx">Browsercam</a></strong></p>
+<p>最后这款工具是要付费的，可以帮助你检查 Javascript 和 DHTML，提供不同的测试环境平台。</p>
+<div><a href="http://www.browsercam.com/Default2.aspx"><img title="12_crossbrowser" src="http://designtutorials4u.com/wp-content/uploads/2011/02/12_crossbrowser.jpg" alt="" width="540" height="400"></a>
+<p></p>
+</div>
+<h3>您可能还喜欢</h3>
+<br>
+<ul>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/03/09/1964344.html">24款非常实用的CSS3工具终极收藏</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2010/12/28/1918491.html">推荐25个提高网站可用性和转化率的工具</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/04/02/1997255.html">推荐20款非常好的网站可用性测试工具</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/05/11/2040071.html">分享15款很棒的 JavaScript 开发工具</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/05/25/2020817.html">最新20款Web设计和开发工具推荐</a></li>
+</ul>
+<br>
+<p>英文来源：<a href="http://designtutorials4u.com/useful-resources-for-testing-cross-browser-compatability/">Tools for Testing Cross Browser Compatibility</a></p>
+<p>编译来源：<a href="http://www.cnblogs.com/lhb25/">梦想天空 ◆ 关注前端开发技术 ◆ 分享网页设计资源</a></p><img src="http://www.cnblogs.com/lhb25/aggbug/2107198.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lhb25/">梦想天空（山边小溪）</a> 发表于 2011-07-18 09:05 <a href="http://www.cnblogs.com/lhb25/archive/2011/07/18/testing-cross-browser-compatability-tools.html">原文链接</a></p><p>评论: 10　<a href="http://www.cnblogs.com/lhb25/archive/2011/07/18/testing-cross-browser-compatability-tools.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lhb25/archive/2011/07/18/testing-cross-browser-compatability-tools.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/108886/">马化腾谈IM两个成功：平台化与社交化</a><span style="color:gray">(2011-07-18 15:28)</span><br>· <a href="http://news.cnblogs.com/n/108885/">ITC裁定致HTC股价创6个月新低</a><span style="color:gray">(2011-07-18 15:20)</span><br>· <a href="http://news.cnblogs.com/n/108884/">微软等30家公司被指侵犯印度厂商Kootol专利</a><span style="color:gray">(2011-07-18 15:13)</span><br>· <a href="http://news.cnblogs.com/n/108882/">Android 3.2 SDK 现已提供下载</a><span style="color:gray">(2011-07-18 15:02)</span><br>· <a href="http://news.cnblogs.com/n/108880/">WiFi Gallery：让Android与PC亲密无间</a><span style="color:gray">(2011-07-18 15:01)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/XmNotes/archive/2011/07/18/2109114.html">后互联网时代，Windows的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

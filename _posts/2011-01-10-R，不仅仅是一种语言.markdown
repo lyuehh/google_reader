@@ -1,0 +1,184 @@
+---
+layout: post
+title:  "R，不仅仅是一种语言"
+date:   2011-01-10 20:01:08
+author: wentrue
+categories: program
+---
+
+## R，不仅仅是一种语言
+### by wentrue
+### at 2011-01-10 20:01:08
+### original <http://www.wentrue.net/blog/?p=1083>
+
+<p>本文原载于《程序员》杂志2010年第8期，因篇幅所限，有所删减，这里刊登的是全文。</p>
+<h3><strong>简介：R是什么</strong></h3>
+<p>工欲善其事，必先利其器，作为一个战斗在IT界第一线的工程师，C/C++、java、perl、python、ruby、php、javascript、erlang等等等等，你手中总有一把使用自如的刀，帮助你披荆斩棘。</p>
+<p>应用场景决定知识的储备与工具的选择，反过来，无论你选择了什么样的工具，你一定会努力地把它改造成符合自己应用场景所需的那个样子。从这个道理来说，我选择了R[1]作为数据挖掘人员手中攻城陷池的那把云梯，并努力地把它改造成自己希望的那个样子。</p>
+<p>关于R的一个比较准确的描述是：R是一门用于统计计算和作图的语言，它不单是一门语言，更是一个数据计算与分析的环境。统计计算领域有三大工具：SAS、SPSS、S，R正是受S语言和Scheme语言影响发展而来。其最主要的特点是免费、开源、各种各样的模块十分齐全，在R的综合档案网络CRAN中，提供了大量的第三方功能包，其内容涵盖了从统计计算到机器学习，从金融分析到生物信息，从社会网络分析到自然语言处理，从各种数据库各种语言接口到高性能计算模型，可以说无所不包，无所不容，这也是为什么R正在获得越来越多各行各业的从业人员喜爱的一个重要原因。</p>
+<p>从R的普及来看，国外的普及度要明显好于国内，跟盗版windows的泛滥会影响linux在中国的普及一样的道理，破解的matlab与SPSS的存在也影响了R在中国的使用人群。但在国外高校的统计系，R几乎是一门必修的语言，具有统治性的地位。在工业界，作为互联网公司翘楚的google内部也有不少的工程使用R进行数据分析工作，这里[2]有一个google campus的讲课视频，内容就是用R作为工具来讲述数据挖掘的概念与算法。</p>
+<p>随着近年来R使用者的增加，关于R的报道也屡有见于报端，如2009年初美国纽约时报就有一篇很好的报道：Data Analysts Captivated by R’s Power[3]。报道中述说了R的发展历史以及由于数据挖掘需求的增长而日益普及的现状，它虽源于S但其发展却远远地超过了S，已经成为高校毕业学生所选用的第二大工具语言，google与Pfizer的员工也介绍了R在自己公司中的应用。此外，报道中google首席经济学家Hal Varian说：R的最让人惊艳之处在于你可以通过修改它来做所有的事情，而你已经拥有大量可用的工具包，这无疑让你是站在巨人的肩膀上工作。</p>
+<p>以下就R的几个主要应用场景以及我在实践中的经验对这个并不算主流的编程语言作一些介绍。</p>
+<h3><strong>统计计算：R之最强项</strong></h3>
+<p>R从它出生的第一天就是为了做统计计算的，那时它被定义为一个统计计算与作图的工具，虽然发展到现在它已经被赋予了越来越强大的功能，但现在R的开发人员里，还是以各个高校统计系的老师与学生为主，他们自然最了解自己最需要的是什么。</p>
+<p>在统计计算中，我们常常需要根据样本数据作线性回归，得到一定的规律性，R中实现这个功能十分简单，以下是一个一元线性回归的例子：</p>
+<p>x &lt;- 1:10<br>
+y &lt;- x+rnorm(10, 0, 1)<br>
+fit &lt;- lm(y ~ x)<br>
+summary(fit)</p>
+<p>注明一下，R里的“&lt;-”符号意义为赋值，大多数情况下它可以用“=”号来代替，但某些特殊的场合不可以，本文会遵循“&lt;-”这种官方使用的写法。这个例子的前两行准备了两列数据：自变量x与因变量y，第三行的函数lm即根据提供的样本数据进行线性回归计算，得到的模型结果可以用第四行打印出来。函数lm除了可以做这种简单的一元线性回归，还可以做多元线性回归，同时返回模型的各种统计量。</p>
+<p>做统计的往往免不了要做各种各样的图形，R的另一个基本特点就是对图形的强大支持，以下代码展示了一个箱线图的作法，代码来自boxplot函数的manual，该图显示了几列数据的分位数、中值、均值、奇异点等信息及其对比位置。更详细的关于R的作图功能可以参看[4]。</p>
+<p>boxplot(mpg~cyl,data=mtcars, main=”Car Milage Data”, xlab=”Number of Cylinders”, ylab=”Miles Per Gallon”)</p>
+<p><a rel="attachment wp-att-1085" href="http://www.wentrue.net/blog/?attachment_id=1085"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/01/boxplot.png" alt="" width="480" height="480"></a></p>
+<h3>机器学习：让你的数据发挥它应有的作用</h3>
+<p>机器学习、数据挖掘领域面临着一些抽象自大量现实生活的问题，比如关联规则挖掘、聚类、分类这三大问题。作为一个完备的工程计算包，R毫无疑问对它们都提供了足够的支持。</p>
+<p>关联规则问题源于“买了这件商品的顾客还买了什么”这个问题，现在已经广泛应用于客户行为分析以及互联网用户行为分析中。关联规则挖掘领域最经典的算法为apriori，R的第三方包arules[5]，就是专门用于做关联规则挖掘的。以下例子需要你已经安装了arules包。</p>
+<p>library(arules)<br>
+data &lt;- paste(“item1,item2″,”item1″,”item2,item3″, sep=”\n”)<br>
+write(data, file = “demo_basket”)<br>
+tr &lt;- read.transactions(“demo_basket”, format = “basket”, sep=”,”)<br>
+data(“Adult”)<br>
+rules &lt;- apriori(Adult, parameter = list(supp = 0.5, conf = 0.9, target = “rules”))</p>
+<p>最后一行的apriori函数接受一个transaction对象的输入，输出关联规则对象rules，为方便起见，这里用于计算的transaction对象Adult是通过第5行从arules包中现成载入进来的，第2~4行说明了怎么从一个文本文件中读入数据并生成一个transaction对象。</p>
+<p>聚类算法使用最广泛的高效算法无疑是kmeans，R在其默认载入的stats包中就包含了这个函数，以下是一个来自kmean说明文档的例子：</p>
+<p>x &lt;- rbind(matrix(rnorm(100, sd = 0.3), ncol = 2), matrix(rnorm(100, mean = 1, sd = 0.3), ncol = 2))<br>
+cl &lt;- kmeans(x, 2)<br>
+plot(x, col = cl$cluster)<br>
+points(cl$centers, col = 1:2, pch = 8, cex=2)</p>
+<p>代码第1行生成两组两维的正态分布的数据，第一组均值为0，第二组均值为1，两组数据方差都为0.3。第2行对该数据进行聚类，第3和第4行把聚类结果画出来。</p>
+<p>分类器是模式识别领域的研究主题，也是人类认知活动的中心。多年来的学术研究积累下来很多种类型的分类器，而其中比较靠谱的分类器基本都能在R中找到对应的实现。诸多分类器中以svm最为著名，它也被一些人称为是单分类器的王道。以下是一个利用svm对著名的iris数据集进行分类的过程，运行该例子需要你已经安装了e1071这个包[6]。</p>
+<p>library(e1071)<br>
+data(iris)<br>
+x &lt;- subset(iris, select = -Species)<br>
+y &lt;- iris$Species<br>
+model &lt;- svm(x, y)<br>
+summary(model)<br>
+pred &lt;- predict(model, x)<br>
+table(pred, y)</p>
+<p>第5行代码调用svm函数，计算由x作为特征y作为类别标签的分类器模型，第7行把模型应用于原数据进行预测。</p>
+<p>以上例子的演示并非想让各位读者当场学会各个不同领域中这些功能函数的用法，而是一方面展示一些实际的R代码以及它解决问题的方式，另一方面说明了R在这些常见的机器学习领域的积累。在R帮助下去解决这些或许不是我们专业的问题，可以省去我们大量重复造轮子的精力，写出来的代码也足够的短小精悍，节省时间之余也让你对自己算法逻辑的全局一览无余。</p>
+<h3>高性能计算：向量化与并行/分布计算</h3>
+<p>作为现代数据挖掘人员从业者，可能第一个需要关心的是所使用工具的可伸缩性（scalability），具体来说就是在面对大数据量场景时的计算能力。</p>
+<p>一个拥有高性能计算能力的计算包，首先它必须能充分利用历史上积累下来的那些著名的数值计算包，比如blas、lapack；另一方面，它必须具有良好的可扩展性，即它必须方便开发人员并行化自己的算法，很幸运这些特性R都具备了。</p>
+<p>类似于R、scilab与matlab那样的工程计算包，通常都会以向量化计算（Vectorization）作为其基本的计算特点（即使python的numpy包也是如此），因为向量化的处理方式是现代大型计算机的基本特性，在计算机领域，无论硬件还是软件，都提供了对向量化的支持，硬件上如Intel的MMX, SSE等指令集都提供了对向量化的支持，更多可以看到wikipedia上的介绍[7]。软件上如blas等著名的计算包，天然地就可以对向量化的命令自动实施并行计算。</p>
+<p>所谓向量化，是一种特殊的并行计算的方式，相比于一般程序在同一时间只执行一个操作的方式，它可以在同一时间执行多次操作，通常是对不同的数据执行同样的一个或一批指令，或者说把指令应用于一个数组/向量。以下列出R中经常使用几种向量化运算，都是十分稀松平常的操作，但它们本质上都是同时对一批数据应用相同的操作，所以都可以经过向量化处理方式的改造：</p>
+<ul>
+<li> 向量取值，如：V[1:10]</li>
+<li> 向量赋值，如：V[1:10] &lt;- seq(1,10)</li>
+<li> lapply，类似于python里的map函数：lapply(A, mean)</li>
+<li> 矩阵运算：A + B；A %*% B</li>
+</ul>
+<p>向量化因其在计算过程中数据的前后不依赖的特点，是并行计算的天然先驱，一个用向量化实现的算法，必定是一个可以高度并行化的算法。正因为这个原因，在利用R写脚本的时候，都要尽量利用向量化的思想来设计自己的算法，尽可能少地使用循环结构。一旦你的程序都是或大都是基于向量化的，除了当时获得来自于计算机软硬件上的优化外，将来某一天数据量膨胀使得计算成为瓶颈时，你就可以极为方便地把原来的算法并行化。</p>
+<p>正如我们所知，CRAN包括了各种你能想像得到的工具包，当然也有不少并行计算的包，这些包被归纳在R高性能计算相关的包列表中[8]。</p>
+<p>关于R的向量化及并行计算更详细的内容可以参考我的一篇博客[9]。</p>
+<h3>编写接口与工具包：最有用的包必定是你写的那一个</h3>
+<p>一个开源软件的最强大之处在于大量从业人员的贡献，R最让人激奋，进而选择它作为工作平台的一个重要原因则是庞大而无所不包的的CRAN，在那里几乎能找到所有你能想像得到的与分析研究相关的工具包，可以说丝毫不逊色于perl的CPAN。之所以拥有一个如此强大的第三方支持，一方面在于R本身在统计计算与计算能力方面的支持，另一方面则在于开发一个R扩展是如此地容易，以致于每一个使用R作为自己常用工具的人，都会按捺不住强烈的冲动要写一个自己的包，以满足工作需要。如果自己的这个包感觉写得不错，又为很多人所需要，就可以提交到CRAN。这是造成CRAN如此庞大的原因，但同时也造成了CRAN的软件包良萎不全。但大多数情况下，这些包都会是你的得力助手，特别是那些著名而广为使用的包，如果觉得它们不满足你的需要，那么放心地对它们进行修改吧，因为它们都是开源的。</p>
+<p>下面展示一个简单的R扩展包的制作过程：</p>
+<p>1、生成包结构：新建一个目录mypkg，同时作为包名，在mypkg中新建几个目录与文件，mypkg的目录结构如下图所示。R自带的函数package.skeleton可以自动帮你生成这些目录，但它需要一些现成的函数对象或文件作启动，为了顺序说明整个过程，这里没有使用。</p>
+<p><a rel="attachment wp-att-1084" href="http://www.wentrue.net/blog/?attachment_id=1084"><img src="http://www.wentrue.net/blog/wp-content/uploads/2011/01/mypkg.png" alt="" width="420" height="270"></a></p>
+<p>2、目录说明：必需的是DESCRIPTION文件、man目录和R目录，剩下的都是可选的。DESCRIPTION文件描述包的meta信息；R目录下面存放R脚本文件，里面的函数可导出作为包函数库提供给外部使用；如果要在包里放一些试验数据，可以放在data目录里，常用是以csv格式存放，在R终端里data(***)可以载入，这里留空；man目录是R的帮助文档，有一定的格式要求，这里也留空，生成包时会有一些警告，可以不用管；src存放c/c++/fortran源代码，必须同时放置Makefile或Makevars文件指导编译程序工作，这里留空；zzz.R可以在载入包时做一些事情，这里也留空。</p>
+<p>3、添加功能：DESCRIPTION文件的内容可以参考任意一个R包对应文件的写法，依样把信息修改成自己相应的信息即可。以下只写一个简单的R函数作为说明，在R目录下添加一个名为helloword.R的文件，文件内容如下：<br>
+helloword &lt;- function(x, y)<br>
+{<br>
+return(x*y)<br>
+}</p>
+<p>4、安装：在命令行中运行R CMD build mypkg，会编译生成一个mypkg_0.1.tar.gz安装包，其中的数字是我在DESCRIPTION里写的版本号；运行R CMD INSTALL mypkg，就可以把包安装到系统里。</p>
+<p>5、试验：运行R，进入R终端；library(mypkg)，载入刚制作的包；search()，可以看到mypkg包已经被载入；在R终端运行helloworld(2,3)，返回6，试验成功。</p>
+<p>一个具有一定功能的包就这样做好了，是不是很简单。如果有其它需要，只要往R目录或src目录添加文件，然后重新生成并安装就可以了。R与c/c++之间的接口调用也十分方便，限于篇幅，无法更仔细地说明，更详细的内容可以参考我的几篇博客[10-13]。</p>
+<h3>R在中国的发展</h3>
+<p>R在中国的普及现在并不十分地广泛，主要还是学校及研究机构在使用，但近年来随着R的声名鹊起，也已经有越来越多各个领域的工业界从业人员选择R作为自己的工作平台，其中统计之都[14]是一个国内R用户的聚焦地。今年的6月份在人民大学举行了第3届R语言会议，从前三届会议的人员组成来看，R的中国用户群一直呈现较大的增长趋势，用户分布的领域也越来越丰富。第三届R语言会议参会者人来源可以从会议纪要中看到[15]。相信随着数据挖掘广为各个公司接受，R也会走近工业界的各行各业中。</p>
+<h3>R在豆瓣中的应用</h3>
+<p>有一段时间，我一直在寻找介乎于matlab与系统语言（如C, Fortran）的中间物，希望它既能拥有系统语言的高性能，又能方便数据挖掘人员的日常工作，于是我找到了R，这不仅是一门语言，它更是一个理想的计算环境。它一方面方便我对新算法原型的构建、调试、评测，另一方面并没有让我失去系统级语言的计算优势，甚至在实现并行计算方面拥有了更多的选择。现在我使用R编写我们自己的工具包，进行算法原型构造、矩阵运算、并行算法等离线应用，为相似性计算、推荐系统等上层应用提供底层的支持。</p>
+<h3>一个R写的协同过滤推荐的例子</h3>
+<p>最后用一个R实现的协同过滤推荐的例子来结束本文，协同过滤是推荐系统中一个基本的算法，详细内容可以参考这里[16]。由于大量地采用了向量化的计算方式（包括各种矩阵运算），所以算法的实现相当简洁，有可能是史上代码最少的协同过滤推荐引擎 <img src="http://www.wentrue.net/blog/wp-includes/images/smilies/icon_smile.gif" alt=":-)"> </p>
+<p>data &lt;- read.table(‘data.dat’, sep=’,&#39;, header=TRUE)<br>
+user &lt;- unique(data$user_id)<br>
+subject &lt;- unique(data$subject)<br>
+uidx &lt;- match(data$user, user)<br>
+iidx &lt;- match(data$subject, subject)<br>
+M &lt;- matrix(0, length(user), length(subject))<br>
+i &lt;- cbind(uidx, iidx)<br>
+M[i] &lt;- 1<br>
+mod &lt;- colSums(M^2)^0.5<br>
+MM &lt;- M %*% diag(1/mod)<br>
+S &lt;- crossprod(MM)<br>
+R &lt;- M %*% S<br>
+R &lt;- apply(R, 1, FUN=sort, decreasing=TRUE, index.return=TRUE)<br>
+k &lt;- 5<br>
+res &lt;- lapply(R, FUN=function(r)return(subject[r$ix[1:k]]))<br>
+write.table(paste(user, res, sep=’:&#39;), file=’result.dat’,<br>
+quote=FALSE, row.name=FALSE, col.name=FALSE)</p>
+<p>代码我就不细加注释了，有兴趣了解其原理的同学可以看这里[16]。</p>
+<h3>参考：</h3>
+<p>[1] <a href="http://www.r-project.org/">R官方网站</a><br>
+[2] Youtube上的GoogleTechTalks，通过R来教学数据挖掘：Statistical Aspects of Data Mining (Stats 202)<br>
+[3] <a href="http://www.nytimes.com/2009/01/07/technology/business-computing/07program.html">纽约时报的报道Data Analysts Captivated by R’s Power</a><br>
+[4] <a href="http://www.stat.auckland.ac.nz/~paul/RGraphics/rgraphics.html">R Graphics</a><br>
+[5] <a href="http://cran.r-project.org/web/packages/arules/index.html">arules package</a><br>
+[6] <a href="http://cran.r-project.org/web/packages/e1071/index.html">e1072 package</a><br>
+[7] <a href="http://en.wikipedia.org/wiki/Vectorization_(computer_science)">向量化</a><br>
+[8] <a href="http://cran.r-project.org/web/views/HighPerformanceComputing.html">R高性能计算相关的包</a><br>
+[9] <a href="http://www.wentrue.net/blog/?p=945">向量化与并行计算</a><br>
+[10] <a href="http://www.wentrue.net/blog/?p=395">R package的最简单制作</a><br>
+[11] <a href="http://www.wentrue.net/blog/?p=72">R与C的接口：从R调用C的共享库</a><br>
+[12] <a href="http://www.wentrue.net/blog/?p=593">R对象结构，用.Call的调用方式更灵活地写R-package</a><br>
+[13] <a href="http://www.wentrue.net/blog/?p=715">编写R包C扩展的核心指引</a><br>
+[14] <a href="http://cos.name/">统计之都</a><br>
+[15] <a href="http://cos.name/2010/06/3rd-china-r-beijing-summary/">第三届R语言会议（北京会场）会议纪要</a><br>
+[16] <a href="http://www.wentrue.net/blog/?p=970">可能是史上代码最少的协同过滤推荐引擎</a></p>
+<div style="border:1px solid #ccc;font-size:14px;margin:27px auto">
+<div style="padding:7px 10px;border-bottom:1px dotted #ccc">关于作者</div>
+<div style="height:129px;overflow:hidden"><a href="http://42qu.com/-10000217" style="color:#000;text-decoration:none;float:right"><img src="http://i.42qu.net/pic_show/219/b0/b6/187.jpg" style="padding:3px;width:219px;height:123px;margin:0;background:transparent;border:0;border-left:1px dotted #ccc"></a>
+<div style="text-align:left;line-height:23px;margin-right:226px">
+<div style="padding:5px 10px">
+<div style="overflow:hidden;margin:2px 0;float:left;font-size:14px"><a href="http://42qu.com/-10000217" style="text-decoration:none">阿稳</a>, 豆瓣, 算法工程师</div>
+<div style="clear:left">推荐系统；数据挖掘；算法架构及实现的可扩展性；R环境编程  如果你的问题已经能从我的博客中得到解答，就最好不过了：http://www.wentrue.net/blog/</div>
+</div>
+</div>
+</div>
+<div style="text-align:right;border-top:1px dotted #ccc;padding:10px">
+<div style="float:left"><a href="http://www.douban.com/people/wentrue/" style="margin-right:7px;text-decoration:none">豆瓣</a> <a href="https://twitter.com/wentrue" style="margin-right:7px;text-decoration:none">Twitter</a> <a href="http://www.wentrue.net/blog/" style="margin-right:7px;text-decoration:none">blog</a> <a href="http://www.linkedin.com/profile?viewProfile=&amp;key=76007067&amp;locale=en_US&amp;trk=tab_pro" style="margin-right:7px;text-decoration:none">LinkedIn</a> <a href="http://www.slideshare.net/wentrue/edit_my_uploads" style="margin-right:7px;text-decoration:none">SlideShare</a> <a href="http://t.sina.com.cn/wentrue" style="margin-right:7px;text-decoration:none">新浪微博</a> </div>
+<div><a href="http://42qu.com/-10000217/pay?title=R%EF%BC%8C%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF%E4%B8%80%E7%A7%8D%E8%AF%AD%E8%A8%80&amp;url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083&amp;rel=blog" style="text-decoration:none;margin-right:17px">向文章付费</a> <a href="http://42qu.com/-10000217/pay?title=R%EF%BC%8C%E4%B8%8D%E4%BB%85%E4%BB%85%E6%98%AF%E4%B8%80%E7%A7%8D%E8%AF%AD%E8%A8%80&amp;url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083&amp;cid=1&amp;rel=blog" style="text-decoration:none;margin-right:16px">请作者吃饭</a></div>
+</div>
+</div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="2011，无雪的寒意" style="text-decoration:none!important;cursor:pointer!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1056&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/01/03/1780438.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">2011，无雪的寒意</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="雍正王朝：承前启后的十三年" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D542&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/27/1608392.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">雍正王朝：承前启后的十三年</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="subversion使用历程" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D16&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">subversion使用历程</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="少数人的智慧(The Wisdom of the Few)" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1034&amp;from=http%3A%2F%2Fwww.wentrue.net%2Fblog%2F%3Fp%3D1083">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/27/1608337.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">少数人的智慧(The Wisdom of the Few)</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>

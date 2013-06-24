@@ -1,0 +1,372 @@
+---
+layout: post
+title:  "sqlite3 学习 记录"
+date:   2011-03-04 16:18:35
+author: 
+categories: program
+---
+
+## sqlite3 学习 记录
+### by 
+### at 2011-03-04 16:18:35
+### original <http://www.javaeye.com/topic/940980>
+
+创建数据库
+<br>在cmd下面调用sqlite3.exe，创建数据命令如下：
+<br>sqlite3 db_name.xx;
+<br>数据库名称任意，创建后直接进入数据库；如果文件存在，则直接打开；
+<br>
+<br>SQL的指令格式
+<br>所有的SQL的指令都是以分号（；）结尾的，为增加可读性，允许一个指令多行编辑，直到遇到分号结束指令；
+<br>sqlite3中两个减号（--)代表注释，sqlite会忽略。
+<br>
+<br>创建表
+<br>键入以下指令即可创建一个tab_name表：
+<br>create table tab_name (field1, field2, field3...);
+<br>sqlite3对字段没有严格要求，字段可以存储任何类型数据，它会适时的自动转换，当然，你也可以创建表的时候对数据类型进行定义。
+<br>
+<br>数据类型
+<br>NULL
+<br>INTEGER
+<br>REAL
+<br>TEXT
+<br>BLOB
+<br>但实际上，sqlite3也接受如下的数据类型：
+<br>smallint 16 位元的整数。
+<br>interger 32 位元的整数。
+<br>decimal(p,s) p 精确值和 s 大小的十进位整数，精确值p是指全部有几个数(digits)大小值，s是指小数点後有几位数。如果没有特别指定，则系
+<br>
+<br>统会设为 p=5; s=0 。
+<br>float   32位元的实数。
+<br>double   64位元的实数。
+<br>char(n)   n 长度的字串，n不能超过 254。
+<br>varchar(n) 长度不固定且其最大长度为 n 的字串，n不能超过 4000。
+<br>graphic(n) 和 char(n) 一样，不过其单位是两个字元 double-bytes， n不能超过127。这个形态是为了支援两个字元长度的字体，例如中文字。
+<br>vargraphic(n) 可变长度且其最大长度为 n 的双字元字串，n不能超过 2000
+<br>date   包含了 年份、月份、日期。
+<br>time   包含了 小时、分钟、秒。
+<br>timestamp 包含了 年、月、日、时、分、秒、千分之一秒。
+<br>
+<br>
+<br>查看
+<br>.database 显示数据库信息；
+<br>.tables 显示表名称；（好像.table也可以）
+<br>.schema 命令可以查看创建数据表时的SQL命令；
+<br>.schema table_name 查看创建表table_name时的SQL的命令；
+<br>
+<br>插入记录
+<br>insert into table_name values (field1, field2, field3...);
+<br>
+<br>查询
+<br>select * from table_name;查看table_name表中所有记录；
+<br>select * from table_name where field1='xxxxx'; 查询符合指定条件的记录；
+<br>
+<br>删除
+<br>drop table_name;     删除表；
+<br>drop index_name;     删除索引；
+<br>
+<br>改变输出格式
+<br>
+<br>.mode list|column|insert|line|tabs|tcl|csv
+<br>.separator "X" 更改分界符号为X
+<br>
+<br>更改输出
+<br>.output file_name|stdout 
+<br>输出到文件或者标准输出（默认终端）
+<br>
+<br>
+<br>.databases               列出数据库文件名 
+<br>.tables ?PATTERN?        列出?PATTERN?匹配的表名 
+<br>.import FILE TABLE       将文件中的数据导入的文件中 
+<br>.dump ?TABLE?            生成形成数据库表的SQL脚本 
+<br>.output FILENAME         将输出导入到指定的文件中 
+<br>.output stdout           将输出打印到屏幕 
+<br>.mode MODE ?TABLE?       设置数据输出模式(csv,html,tcl… 
+<br>.nullvalue STRING        用指定的串代替输出的NULL串 
+<br>.read FILENAME           执行指定文件中的SQL语句 
+<br>.schema ?TABLE?          打印创建数据库表的SQL语句 
+<br>.separator STRING        用指定的字符串代替字段分隔符 
+<br>.show                    打印所有SQLite环境变量的设置 
+<br>.quit                    退出命令行接口
+<br>
+<br>
+<br>1.存储类别
+<br>
+<br>第二版把所有列的值都存储成ASCII文本格式。第三版则可以把数据存储成整数和实数,还可以存储BLOB数据.
+<br>
+<br>Each value stored in an SQLite数据库中存储的每个值都有一个属性,都属于下面所列类中的一种,(被数据库引擎所控制)
+<br>
+<br>NULL: 这个值为空值
+<br>INTEGER: 值被标识为整数,依据值的大小可以依次被存储为1,2,3,4,5,6,7,8.
+<br>REAL: 所有值都是浮动的数值,被存储为8字节的IEEE浮动标记序号.
+<br>TEXT: 文本. 值为文本字符串,使用数据库编码存储(TUTF-8, UTF-16BE or UTF-16-LE).
+<br>BLOB: 值是BLOB数据,如何输入就如何存储,不改变格式.
+<br>
+<br>像SQLite2.0版一样,在3.0版中,除了INTEGER PRIMARY KEY,数据库中的任何列都可以存储任何类型的数据. 这一规则也有例外,在下面的"严格相似
+<br>
+<br>模式"中将描述.
+<br>
+<br>输入SQLite的所有值,不管它是嵌入 SQL语句中的文字还是提前编译好的绑定在SQL语句中的值, 在SQL语句执行前都被存储为一个类.在下面所描述
+<br>
+<br>的情况下,数据库引擎将在执行时检查并把值 在数字存储类(整数和实数)和文本类间转换.
+<br>
+<br>存储的类别最初被分类为如下:
+<br>
+<br>具体的值比如SQL语句部分的带双引号或单引号的文字被定义为文本,如果文字没带引号并没有小数点或指数则被定义为整数,如果文字没带引号但有
+<br>
+<br>小数点或指数则被定义为实数, 如果值是空则被定义为空值.BLOB数据使用符号X'ABCD'来标识.
+<br>
+<br>Values supplied using the 被输入的值使用sqlite3_bind_* APIs的被分类一个存储等级, 这等级是和原来的类基本相一致的. (比如
+<br>
+<br>qlite3_bind_blob()绑定一个BLOB的值).
+<br>
+<br>值的分类是SQL分等级操作的结果,决定于最远的操作表达式.用户定义的功能也许会把值返回任意的类.在编译的时候来确定表达式的存储类基本是
+<br>
+<br>不可能的.
+<br>
+<br>2. 列之间的亲和性
+<br>
+<br>在SQLite3.0版中,值被定义为什么类型只和值自身有关,和列没有关系,和变量也没有关系. (这有时被称作 弱类型.)所有其它的我们所使用的数据
+<br>
+<br>库引擎都受静态类型系统的限制, 其中的所有值的类是由其所属列的属性决定的,而和值无关.
+<br>
+<br>为了最大限度的增加SQLite数据库和其他数据库的兼容性,SQLite支持列的"类型亲和性".
+<br>列的亲和性是为该列所存储的数据建议一个类型.我们要注意是建议而不是强迫. 在理论上来讲,任何列依然是可以存储任何类型的数据的. 只是针
+<br>
+<br>对某些列,如果给建议类型的话,数据库将按所建议的类型存储.这个被优先使用的数据类型则被称为"亲和类型".
+<br>
+<br>在SQLite3.0版中,数据库中的每一列都被定义为以下亲和类型中的一种:
+<br>
+<br>TEXT
+<br>NUMERIC
+<br>INTEGER
+<br>REAL
+<br>NONE
+<br>
+<br>一个具有类型亲和性的列按照无类型,文本,或BLOB存储所有的数据.如果数字数据被插入一个 具有文本类型亲和性的列,在存储之前数字将被转换成
+<br>
+<br>文本.
+<br>
+<br>一个具有数字类型亲和性的列也许使用所有的五个存储类型存储值.当文本数据被插入一个数字列时, 在存储之前,数据库将尝试着把文本转换成整
+<br>
+<br>数或实数.如果能成功转换的话,值将按证书活实数的类型被存储. 如果不能成功转换的话,值则只能按文本类型存储了,而不会被转换成无类型或
+<br>
+<br>BLOB类型来存储.
+<br>
+<br>一个具有整数亲和力的列在转换方面和具有数字亲和力的列是一样的,但也有些区别 , 比如没有浮动量的实值(文本值转换的值)被插入具有整数亲
+<br>
+<br>和力的列时,它将被转换成整数并按整数类型存储.
+<br>
+<br>一个具有无类型亲和力的列不会优先选择使用哪个类型.在数据被输入前它不会强迫数据转换类型.
+<br>
+<br>2.1 列的亲和性的决定
+<br>
+<br>一个列的亲和类型是由该列所宣称的类型决定的.遵守以下规则:
+<br>
+<br>a. 如果数据类型包括字符串"INT"那么它被定义成具有整数亲和性.
+<br>b. 如果列中的数据类型包括以下任何的字符串 "CHAR", "CLOB", or "TEXT" 那么这个列则具有文本亲和性.要注意VARCHAR类型包括字符串"CHAR"
+<br>
+<br>因此也具有文本类型亲和性.
+<br>c. 如果一个列的数据类型包括字符串"BLOB"或者如果数据类型被具体化了,
+<br>   那么这个列具有无类型亲和性.
+<br>d. 否则就具有数字类型亲和性.
+<br>
+<br>如果表格使用If "CREATE TABLE AS SELECT..."语句生成的,那么所有的列则都没有具体的数据类型,则没有类型亲和性.
+<br>
+<br>2.2 列的亲和性的例子
+<br>
+<br>    CREATE TABLE t1(
+<br>        t TEXT,
+<br>        nu NUMERIC, 
+<br>        i INTEGER,
+<br>        no BLOB
+<br>    );
+<br>
+<br>    -- Storage classes for the following row:
+<br>    -- TEXT, REAL, INTEGER, TEXT
+<br>    INSERT INTO t1 VALUES(&#39;500.0&#39;, &#39;500.0&#39;, &#39;500.0&#39;, &#39;500.0&#39;);
+<br>
+<br>    -- Storage classes for the following row:
+<br>    -- TEXT, REAL, INTEGER, REAL
+<br>    INSERT INTO t1 VALUES(500.0, 500.0, 500.0, 500.0);
+<br>
+<br>3. 比较表达式
+<br>
+<br>像SQLite2.0版一样,3.0版的一个特性是二进制比较符&#39;=&#39;, &#39;&lt;&#39;, &#39;&lt;=&#39;, &#39;&gt;=&#39; and &#39;!=&#39;, 一个操作&#39;IN&#39;可以测试固定的成员资格, 三重的比较操作
+<br>
+<br>符'BETWEEN'.
+<br>比较的结果决定于被比较的两个值的存储类型。遵循以下规则：
+<br>
+<br>一个具有空存储类型的值被认为小于任何值（包括另外一个具有空存储类型的值）。
+<br>一个整数值或实数值小于任何文本值和BLOB值。 当一个整数或实数和另一个整数或实数相比较的时候，则按照实际数值来比较。
+<br>一个文本值小于BLOB值。当两个文本值相比较的时候，则用C语言类库中的memcmp()函数来比较。 然而，有时候也不是这样的，比如在下面所描述
+<br>
+<br>的“用户定义的整理顺序”情况下。
+<br>当两个BLOB文本被比较的时候，结果决定于memcmp()函数。
+<br>在开始比较前，SQLite尝试着把值在数字存储级（整数和实数）和文本之间相互转换。下面列举了关于如何比较二进制值的例子。在着重号below中
+<br>
+<br>使用的表达式可以表示SQL标量表达式或是文本但不是一个列值。
+<br>
+<br>当一个列值被比拟为表达式结果的时候，在比较开始前，列的亲和性将被应用在表达结果中。
+<br>当两个列值比较的时候，如果一个列有整数或数字亲和性的时候，而另外一列却没有， 那么数字亲和性适用于从非数字列提取的任何具有文本存储
+<br>
+<br>类型的值. P&gt;
+<br>当比较两个表达式的结果时,不发生任何转换,直接比较结果.如果一个字符串和一个数字比较, 数字总是小于字符串.
+<br>在SQLite中, 表达式&quot;a BETWEEN b AND c&quot;等于表达式 &quot;a &gt;= b AND a &lt;= c&quot;,在比较表达式时,a可以是具有任何亲和性.
+<br>
+<br>表达式 "a IN (SELECT b ....)" 在比较时遵循上面所提到的三条规则,是二进制比较.(例如, 在一个相似的样式 "a = b"). 例如,如果'b'是一个
+<br>
+<br>列值, 'a' 是一个表达式,那么,在开始比较前,'b'的亲和性就被转换为'a'的亲和性了.
+<br>
+<br>SQLite把表达式 "a IN (x, y, z)" 和 "a = z OR a = y OR a = z"视为相等.
+<br>
+<br>3.1 比较例子
+<br>
+<br>    CREATE TABLE t1(
+<br>        a TEXT,
+<br>        b NUMERIC,
+<br>        c BLOB
+<br>    );
+<br>
+<br>    -- Storage classes for the following row:
+<br>    -- TEXT, REAL, TEXT
+<br>    INSERT INTO t1 VALUES(&#39;500&#39;, &#39;500&#39;, &#39;500&#39;);
+<br>
+<br>    -- 60 and 40 are converted to &#39;60&#39; and &#39;40&#39; and values are compared as TEX
+<br>T.
+<br>    SELECT a &lt; 60, a &lt; 40 FROM t1;
+<br>    1|0
+<br>
+<br>    -- Comparisons are numeric. No conversions are required.
+<br>    SELECT b &lt; 60, b &lt; 600 FROM t1;
+<br>    0|1
+<br>
+<br>    -- Both 60 and 600 (storage class NUMERIC) are less than &#39;500&#39;
+<br>    -- (storage class TEXT).
+<br>    SELECT c &lt; 60, c &lt; 600 FROM t1;
+<br>    0|0
+<br>
+<br>4. 运算符
+<br>
+<br>所有的数学运算符(所有的运算符而不是连锁作用标记符"||")运算对象首先具有数字亲和性, 如果一个或是两个都不能被转换为数字那么操作的结
+<br>
+<br>果将是空值。
+<br>对于连接作用操作符，所有操作符将首先具有文本亲和性。如果其中任何一个操作符不能被转换为文本 （因为它是空值或是BLOB）连接作用操作符
+<br>
+<br>将是空值。
+<br>
+<br>5. 分类，排序，混合挑选
+<br>
+<br>当用子句ORDER挑选值时，空值首先被挑选出来, 然后是整数和实数按顺序被挑选出来, 然后是文本值按memcmp()顺序被挑选出来, 最后是BLOB值按
+<br>
+<br>memcmp()顺序被挑选出来. 在挑选之前, 没有存储类型的值都被转换了.
+<br>When grouping values with the 当用GROUP BY子句给值分组时,具有不同存储类型的值被认为是不同的, 但也有例外, 比如,一个整数值和一个实
+<br>
+<br>数值从数字角度来说是相等的,那么它们则是相等的. 用GROUP by 子句比较完后,值不具有任何亲和性.
+<br>
+<br>混合挑选操作符UNION, INTERSECT and EXCEPT 在值之间实行绝对的比较,同样的亲和性将被应用于所有的值, 这些值将被存储在一个单独的具有混
+<br>
+<br>合SELECT的结果组的列中. 被赋予的亲和性是该列的亲和性, 这个亲和性是由剩下的大部分的混合SELECTS返回的,这些混合SELECTS在那个位置上有
+<br>
+<br>列值(而不是其它类型的表达式). 如果一个给定的混合SELECT列没有SELECTS的量, 那么在比较前,该列的值将不具有任何亲和性.
+<br>
+<br>6. 其它亲和性模式
+<br>
+<br>以上的部分所描述的都是数据库引擎在正常亲和性模式下所进行的操作, SQLite将描述其它两种亲和性模式,如下:
+<br>
+<br>严格亲和性模式.在这种模式下,如果需要值之间相互转换数据存储类型的话,数据库引擎将发送错误报告,当前语句也将会重新运行.
+<br>无亲和性模式.在这种模式下,值的数据存储类型不发生转换.具有不同存储类型的值之间不能比较,但整数和实数之间可以比较.
+<br>7.用户定义的校对顺序
+<br>By default, when 当SQLite比较两个文本值的时候,通过系统设定,不管字符串的编码是什么,用memcmp()来比较. SQLite第三版允许用户提供任意
+<br>
+<br>的函数来代替memcmp(),也就是用户定义的比较顺序.
+<br>除了系统预设的BINARY比较顺序,它是用memcmp()函数比较,SQLite还包含了两个额外的内置比较顺序函数, NOCASE和REVERSE:
+<br>
+<br>
+<br>BINARY -使用memcmp()比较字符串数据, 不考虑文本编码.
+<br>NOCASE - 和二进制一样,但在比较之前,26位的大写字母盘要被折合成相应的小写字母盘.
+<br>
+<br>7.1 分配比较顺序
+<br>每个表格中的每个列都有一个预设的比较类型.如果一个比较类型不是二进制所要求的, 比较的子句将被具体化为 列的定义 来定义该列.
+<br>当用SQLite比较两个文本值时,比较顺序将按照以下的规则来决定比较的结果. 文档的第三部分和第五部分描述在何种场合下发生这种比较.
+<br>
+<br>对于二进制比较符(=, &lt;, &gt;, &lt;= and &gt;=),如果每个操作数是一列的话, 那么该列的默认比较类型决定于所使用的比较顺序. 如果两个操作数都是列
+<br>
+<br>的话,那么左边的操作数的比较类
+<br>型决定了所要使用的比较顺序.如果两个操作数都不是一列, 将使用二进制来比较.
+<br>
+<br>表达式&quot;x BETWEEN y and z&quot;和 &quot;x &gt;= y AND x &lt;= z&quot;是相同的. 表达式&quot;x IN (SELECT y ...)&quot; 和表达式 &quot;x = y&quot; 使用同样的方法来操作,这是为
+<br>
+<br>了决定所要使用的比较顺序.如果X是一列或者二进制的,则"x IN (y, z ...)" 形式的表达式所使用的比较顺序是X的默认的比较类型.
+<br>
+<br>ORDER BY clause that is part of a SELECT statement may be assigned a collation sequence to be used for the sort operation
+<br>
+<br>explicitly. In this case the explicit collation sequence is always used. Otherwise, if the expression sorted by an ORDER BY
+<br>
+<br>clause is a column, then the default collation type of the column is used to determine sort order. If the expression is not a
+<br>
+<br>column, then the BINARY collation sequence is used.
+<br>
+<br>7.2 比较顺序的例子
+<br>
+<br>下面的例子介绍了The examples below identify the collation sequences that would be used to determine the results of text
+<br>
+<br>comparisons that may be performed by various SQL statements. Note that a text comparison may not be required, and no collation
+<br>
+<br>sequence used, in the case of numeric, blob or NULL values.
+<br>
+<br>    CREATE TABLE t1(
+<br>        a,                 -- default collation type BINARY
+<br>        b COLLATE BINARY, -- default collation type BINARY
+<br>        c COLLATE REVERSE, -- default collation type REVERSE
+<br>        d COLLATE NOCASE   -- default collation type NOCASE
+<br>    );
+<br>
+<br>    -- Text comparison is performed using the BINARY collation sequence.
+<br>    SELECT (a = b) FROM t1;
+<br>
+<br>    -- Text comparison is performed using the NOCASE collation sequence.
+<br>    SELECT (d = a) FROM t1;
+<br>
+<br>    -- Text comparison is performed using the BINARY collation sequence.
+<br>    SELECT (a = d) FROM t1;
+<br>
+<br>    -- Text comparison is performed using the REVERSE collation sequence.
+<br>    SELECT (&#39;abc&#39; = c) FROM t1;
+<br>
+<br>    -- Text comparison is performed using the REVERSE collation sequence.
+<br>    SELECT (c = &#39;abc&#39;) FROM t1;
+<br>
+<br>    -- Grouping is performed using the NOCASE collation sequence (i.e. values
+<br>
+<br>    -- &#39;abc&#39; and &#39;ABC&#39; are placed in the same group).
+<br>    SELECT count(*) GROUP BY d FROM t1;
+<br>
+<br>    -- Grouping is performed using the BINARY collation sequence.
+<br>    SELECT count(*) GROUP BY (d || &#39;&#39;) FROM t1;
+<br>
+<br>    -- Sorting is performed using the REVERSE collation sequence.
+<br>    SELECT * FROM t1 ORDER BY c;
+<br>
+<br>    -- Sorting is performed using the BINARY collation sequence.
+<br>    SELECT * FROM t1 ORDER BY (c || &#39;&#39;);
+<br>
+<br>    -- Sorting is performed using the NOCASE collation sequence.
+<br>    SELECT * FROM t1 ORDER BY c COLLATE NOCASE;
+<br>
+<br>
+<br>
+          
+          <br><br>
+          作者: <a href="http://hehez.javaeye.com">hehez</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/940980" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

@@ -1,0 +1,94 @@
+---
+layout: post
+title:  "C语言的最小整数问题"
+date:   2011-09-12 22:03:00
+author: yuanyi
+categories: program
+---
+
+## C语言的最小整数问题
+### by yuanyi
+### at 2011-09-12 22:03:00
+### original <http://item.feedsky.com/~feedsky/heikezhi/~8608072/564698634/6713895/1/item.html>
+
+<p>当我尝试向<a href="http://wcrt.sf.net/">WCRT</a>（一个针对VC++的轻量级C运行库）中添加几个头文件时，我发现了一个很有趣的事情。</p>
+<p>&lt;limits.h&gt;中定义了一个表示int类型的最小值的宏INT_MIN，在我目前使用的32位编译器中，它的定义如下：</p>
+<pre name="code">
+#define INT_MIN     (-2147483647 - 1)
+</pre>
+<p>为什么不直接定义成-2147483648吗？</p>
+<p>首先，我们需要明确，-2147483648并不是一个常量，让我们来看看标准是怎么说的：</p>
+<blockquote><p>“一个整数常量是指以数字开始，并且不包含小数点或是指数部分，它可能会包含一个表示进制的前缀以及一个表示类型的后缀“</p></blockquote>
+<p>你应该注意到，这里没有提到符号，所以 -2147483648实际上是一个由一个一元减号运算符和一个整数常量2147483648构成的常量表达式。</p>
+<p>但是这依然没有解释为什么宏不直接使用这个表达式，要明白这个原因，我们需要来重新看看关于整形的类型定义。</p>
+<p>一个没有后缀的整形常量会按照下面顺序进行匹配：</p>
+<p>C89: int, long int, unsigned long int<br>
+C99: int, long int, long long int<br>
+C++: int, long int, long long int</p>
+<p>问题就在这里，2147483648超出了32位有符号整数的表示范围，所以它要么被当成一个无符号长整数（unsigned long int）或者就变成一个有符号的超长整数（long long int）。</p>
+<p>因此这里我们使用了一点小技巧来表示-2147483648，这也就是为什么它会被定义成(-2147483647 – 1)了，这样，INT_MIN就能确保它返回的是一个32位的有符号整数（32-bit signed integer）。</p>
+<p>但是如果你去标准中查找INT_MIN的定义，你会看到，它是这样定义的：</p>
+<p>INT_MIN                 -32767</p>
+<p>问题来了，为什么不是 (-32767 – 1)呢？</p>
+<p>这是因为虽然当今的大部分电脑都使用<a href="http://en.wikipedia.org/wiki/Two%27s_complement">2进制</a>来表示有符号数，但是情况<a href="http://en.wikipedia.org/wiki/Signed_number_representations">并不总是这样</a>。</p>
+<p>因为C语言的设计宗旨是在各种架构上都能高效的运行，所以标准出于支持其它表示的考虑对limit做了如上定义。</p>
+<p>最后让我用一个例子来作为这篇帖的结束，试试编译下面的C程序，并告诉我它在你机器上的执行结果，是不是不可思议？</p>
+<pre name="code">
+#include &lt;stdio.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;float.h&gt;
+
+int main(void)
+{
+    if (-2147483648 &gt; 0)     printf(&quot;positive\n&quot;);
+    if (-2147483647-1 &lt; 0)   printf(&quot;negative\n&quot;);
+    if (INT_MIN == -INT_MIN) printf(&quot;equal\n&quot;);
+    if (FLT_MIN &gt; 0)         printf(&quot;floating\n&quot;);
+
+    return 0;
+}
+</pre>
+<p>-------<br>
+本文来自"<a href="http://www.hardtoc.com/archives/119">Hard to C</a>"</p>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Traceur: 体验下一代Javascript语言" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F06%2Ftraceur-compiler-next-to-javascript-of-today%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F09%2F12%2Fint-min-in-c%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Traceur: 体验下一代Javascript语言</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="最快的编程语言是？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F09%2F12%2Fint-min-in-c%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/05/02/7327586.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">最快的编程语言是？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="你在解决错误的问题" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F01%2Fyou-are-solving-the-wrong-problem%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F09%2F12%2Fint-min-in-c%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/02/10605827.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">你在解决错误的问题</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="想去MongoDB工作？解决这个问题" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F24%2Fwant-a-job-working-on-mongodb-your-first-online-interview-is-in-this-post%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F09%2F12%2Fint-min-in-c%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">想去MongoDB工作？解决这个问题</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/564698634/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/564698634/6713895/1/item.html" border="0" height="0" width="0">

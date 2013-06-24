@@ -1,0 +1,27 @@
+---
+layout: post
+title:  "IE iframe文档模式继承关系"
+date:   2012-11-20 09:25:42
+author: 枯藤昏鸦
+categories: program
+---
+
+## IE iframe文档模式继承关系
+### by 枯藤昏鸦
+### at 2012-11-20 09:25:42
+### original <http://ioio.name/ie-and-iframe-compatibility-mode-inheritance.html>
+
+<p>上周人肉探测了一份不同浏览器(IE 8/9/10)下iframe页面与父页面文档模式关系表。</p>
+<p>大致结论是：</p>
+<p>1.在父窗口文档模式小于9的情况下：iframe中的页面可以指定自己的文档模式，但是最高不超过8。</p>
+<p>2.在文档模式为9/10的情况下：iframe中的页面自己指定文档模式无效，直接继承自父页面文档模式。</p>
+<p>3.不指定iframe中页面的文档模式的情况下：若父页面文档模式小于9，则iframe中页面的文档模式为8；若父页面文档模式大于8，iframe中页面的文档模式继承自父页面文档模式（第2条）。</p>
+<p>4.若父页面文档模式指定为7，iframe中页面不指定文档模式，iframe中页面的文档模式为8。</p>
+<p>具体测试页面：<a href="http://ioio.jit.su/base">http://ioio.jit.su/base</a></p>
+<p>综上，这里的建议是，若页面仅在iframe中存在，不需要明确指定页面的文档模式。</p>
+<p><a href="http://ioio.name/wp-content/uploads/2012/11/documentMode.png"><img src="http://ioio.name/wp-content/uploads/2012/11/documentMode-512x384.png" alt="" title="documentMode" width="512" height="384"></a></p>
+<p>下载：<a href="http://ioio.name/downloads/53" title=" 已下载 202 次">documentMode Excel表 (202)</a></p>
+<p>-EOF-</p>
+<hr><h2>Related posts:</h2><ul><li><a href="http://ioio.name/lan-with-the-virus-trojan-arp.html" rel="bookmark" title="Permanent Link: 局域网染毒，被ARP挂马">局域网染毒，被ARP挂马</a></li><li><a href="http://ioio.name/how-to-uninstall-xcode.html" rel="bookmark" title="Permanent Link: 如何卸载Xcode">如何卸载Xcode</a></li><li><a href="http://ioio.name/forbid-iframe.html" rel="bookmark" title="Permanent Link: 禁止页面被iframe包含">禁止页面被iframe包含</a></li><li><a href="http://ioio.name/the-main-points-of-web-compatibility.html" rel="bookmark" title="Permanent Link: 网页兼容性制作要点">网页兼容性制作要点</a></li><li><a href="http://ioio.name/getprocesstimes.html" rel="bookmark" title="Permanent Link: Win32API之GetProcessTimes范例">Win32API之GetProcessTimes范例</a></li></ul><hr><small>Copyright © 2005~2011 | <a href="http://ioio.name/ie-and-iframe-compatibility-mode-inheritance.html" title="Permalink">Permalink</a> | <a href="http://ioio.name/ie-and-iframe-compatibility-mode-inheritance.html#comments">5 Comments</a> | <a href="http://closetou.com" title="Close To U">Close To U</a> <br>
+<a href="http://feeds.feedburner.com/miss">订阅</a> <a href="https://twitter.com/tearnon">Twitter</a> <a href="http://www.linode.com/?r=8dd6ddd391fc320d9f55ad101e051bde767df599">Linode VPS</a>
+</small> )

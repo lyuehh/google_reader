@@ -1,0 +1,170 @@
+---
+layout: post
+title:  "云平台服务商一览"
+date:   2011-08-20 20:35:20
+author: 
+categories: program
+---
+
+## 云平台服务商一览
+### by 
+### at 2011-08-20 20:35:20
+### original <http://www.ruanyifeng.com/blog/2011/08/list_of_cloud_platforms.html>
+
+<p>2007年6月，三个美国年轻人决定成立一家新型的网络主机公司。</p><p>他们----James Lindenbaum，Adam Wiggins和Orion Henry----认为，现在的主机服务太复杂，无法做到"快速搭建，灵活扩展"。</p>
+
+<p><img src="http://image.beekka.com/blog/201108/bg2011082001.jpg"></p>
+
+<p>在他们心目中，下一代主机应该提供对程序员非常友好的开发环境，使得程序员可以快速做出网站原型，并且具备弹性配置，即网站的硬件配置可以随访问量的变化灵活变动，从而做到按资源消耗量计费，"用多少资源，付多少钱"。</p>
+
+<p>他们为这个项目起名<a href="http://www.heroku.com">Heroku</a>。</p>
+
+<p><a href="http://www.heroku.com"><img src="http://image.beekka.com/blog/201108/bg2011082004.jpg"></a></p>
+
+<p>2008年，这个项目从YC创业训练营毕业后，拿到了300万美元风投，引起业界关注。上线后，它的业务呈现爆炸式增长，被认为代表了未来的趋势。二年后的2010年12月8日，Heroku被Salesforce.com收购，价格是惊人的2.12亿美元。</p>
+
+<p>这种可以快速搭建、灵活扩展、按资源消耗量计费的主机，正式名称就叫做"<a href="http://en.wikipedia.org/wiki/Cloud_computing">云平台</a>"（cloud platform），它代表了"平台即服务"（Platform as a Service，缩写PaaS）的商业模式。</p>
+
+<p><img src="http://image.beekka.com/blog/201108/bg2011082005.jpg"></p>
+
+<p>被Heroku的成功激励，许多公司纷纷推出"云平台"产品。下面，就是现有服务商一览表，由<a href="http://blog.huchunhao.com/current-and-upcoming-cloud-platforms">ANDYLAND</a>总结。</p>
+
+<p>这种"云平台"是创业公司当前开发网站的首选，未来必将取代传统主机。下面的列表中，许多公司都提供免费套餐，非常值得尝试。</p>
+
+<p>======================================</p>
+
+<p><strong>多语言平台</strong></p>
+
+<p>　　* Heroku (<a href="http://www.heroku.com/">http://www.heroku.com/</a>)<br>
+　　 - Ruby, Node.js, Clojure</p>
+
+<p>　　* Redhat Openshift (<a href="https://openshift.redhat.com/app/">https://openshift.redhat.com/app/</a>)<br>
+　　  - Java, PHP, Ruby, Python,Perl</p>
+
+<p>　　* Microsoft Azure (<a href="http://www.microsoft.com/windowsazure/">http://www.microsoft.com/windowsazure/</a>)<br>
+　　 - .NET, Java, PHP, Ruby</p>
+
+<p>　　* Dotcloud - (<a href="http://www.dotcloud.com/">http://www.dotcloud.com/</a>)<br>
+　　 - Java, Perl, PHP, Python, Ruby, Node.js</p>
+
+<p>　　* DeployFu (<a href="http://www.deployfu.com/">http://www.deployfu.com/</a>)<br>
+　　 - node.js, Manos, ASP.NET, Pylons</p>
+
+<p>　　* Stackato (<a href="http://www.activestate.com/cloud">http://www.activestate.com/cloud</a>)<br>
+　　 - Python, Perl, Node.js, Ruby, Java</p>
+
+<p>　　* BitNami Cloud (<a href="http://bitnami.org/cloud">http://bitnami.org/cloud</a>)<br>
+　　 - Perl, PHP, Ruby, Java</p>
+
+<p>　　* Cloud Foundry (<a href="http://www.cloudfoundry.com/">http://www.cloudfoundry.com/</a>)<br>
+　　  - Java, Ruby, Node.js</p>
+
+<p>　　* Brightbox Cloud (<a href="http://beta.brightbox.com/">http://beta.brightbox.com/</a>)<br>
+　　  - 自选操作系统</p>
+
+<p>　　* AppFog (<a href="http://appfog.com/">http://appfog.com/</a>)<br>
+　　  - Java, Ruby, Node.js, PHP</p>
+
+<p><strong>PHP</strong></p>
+
+<p>　　* Orchestra (<a href="http://orchestra.io/">http://orchestra.io/</a>)</p>
+
+<p>　　* Cloud Control (<a href="http://cloudcontrol.com/">http://cloudcontrol.com/</a>)</p>
+
+<p>　　* Relbit (<a href="http://relbit.com/">http://relbit.com/</a>)</p>
+
+<p>　　* PHP Fog (<a href="https://www.phpfog.com/">https://www.phpfog.com/</a>) </p>
+
+<p>　　* Pagoda Box (<a href="http://www.pagodabox.com/">http://www.pagodabox.com/</a>) </p>
+
+<p><strong>Python</strong></p>
+
+<p>　　* App Engine (<a href="http://code.google.com/appengine/">http://code.google.com/appengine/</a>)</p>
+
+<p>　　* PiCloud (<a href="http://www.picloud.com/">http://www.picloud.com/</a>)</p>
+
+<p>　　* DjangoZoom (<a href="http://djangozoom.com/">http://djangozoom.com/</a>) </p>
+
+<p>　　* Nuage (<a href="http://www.nuagehq.com/">http://www.nuagehq.com/</a>) </p>
+
+<p>　　* ep.io (<a href="http://www.ep.io/">http://www.ep.io/</a>)</p>
+
+<p>　　* AppHosted (<a href="https://apphosted.com/">https://apphosted.com/</a>) </p>
+
+<p>　　* Gondor (<a href="https://gondor.io/">https://gondor.io/</a>) </p>
+
+<p>　　* 30loops (<a href="http://30loops.net/">http://30loops.net/</a>) </p>
+
+<p>　　* Stable.io (<a href="http://stable.io/">http://stable.io/</a>)</p>
+
+<p>　　* Pydra (<a href="http://www.pydra.com/">http://www.pydra.com/</a>) </p>
+
+<p><strong>Ruby</strong></p>
+
+<p>　　* EngineYard (<a href="http://www.engineyard.com/">http://www.engineyard.com/</a>)</p>
+
+<p>　　* Railscloud (<a href="https://www.railscloud.de/">https://www.railscloud.de/</a>) </p>
+
+<p><strong>Java</strong></p>
+
+<p>　　* App Engine (<a href="http://code.google.com/appengine/">http://code.google.com/appengine/</a>)</p>
+
+<p>　　* CloudBees (<a href="http://www.cloudbees.com/">http://www.cloudbees.com/</a>)</p>
+
+<p>　　* VMForce (<a href="http://www.vmforce.com/">http://www.vmforce.com/</a>) </p>
+
+<p>　　* Amazon Elastic Beanstalk (<a href="http://aws.amazon.com/elasticbeanstalk/">http://aws.amazon.com/elasticbeanstalk/</a>)</p>
+
+<p>　　* CumuLogic (<a href="http://www.cumulogic.com/">http://www.cumulogic.com/</a>)</p>
+
+<p>　　* JRapid (<a href="http://www.jrapid.com/">http://www.jrapid.com/</a>)</p>
+
+<p><strong>Node.js</strong></p>
+
+<p>　　* JoyentCloud (<a href="https://no.de/">https://no.de/</a>)</p>
+
+<p>　　* Nodester (<a href="http://nodester.com/">http://nodester.com/</a>)</p>
+
+<p>　　* Nodejitsu (<a href="http://www.nodejitsu.com/">http://www.nodejitsu.com/</a>) </p>
+
+<p>　　* NodeSocket (<a href="http://www.nodesocket.com/">http://www.nodesocket.com/</a>) </p>
+
+<p>　　* Cloudnode (<a href="http://cloudno.de/">http://cloudno.de/</a>)</p>
+
+<p><strong>.NET</strong></p>
+
+<p>　　* AppHarbor (<a href="https://appharbor.com/">https://appharbor.com/</a>)</p>
+
+<p>　　* Moncai (<a href="http://moncai.com/">http://moncai.com/</a>)</p>
+
+<p><strong>Perl</strong></p>
+
+<p>　　* Phenona (<a href="http://www.phenona.com/">http://www.phenona.com/</a>) </p>
+
+<p><strong>Ringo.js</strong></p>
+
+<p>　　* Erbix (<a href="http://www.erbix.com/">http://www.erbix.com/</a>)</p>
+
+<p><strong>Javascript</strong></p>
+
+<p>　　* Akshell (<a href="http://www.akshell.com/">http://www.akshell.com/</a>)</p>
+
+<p>=================================</p>
+
+<p>P.S.</p>
+
+<p>我还想宣布一件事情。</p>
+
+<p>为了给我的下一个网络项目筹资，我正式出售这个网络日志的<a href="http://www.ruanyifeng.com/ads.html">广告位</a>，欢迎感兴趣的朋友投放广告。</p>
+
+<p>谢谢。</p>
+
+<p>（完）<br>
+</p><div style="color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#aad2f0;border-radius:10px"><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2011/08/list_of_cloud_platforms.html">http://www.ruanyifeng.com/blog/2011/08/list_of_cloud_platforms.html</a></li>
+<li>最后修改时间：2011年9月 8日 11:06</li>
+<li>付费支持（<a href="http://www.ruanyifeng.com/blog/2011/05/my_google_adsense_is_disabled.html" style="text-decoration:underline">说明</a>）：<a href="https://lab.alipay.com/p.htm?id=2011081500435188"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" alt="支付宝担保交易" style="border:none;vertical-align:middle"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.3&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="paypal" style="border:none;vertical-align:middle"></a> </li>
+</ul></div><div style="color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;border-radius:10px"><p><a href="http://www.nanrenwa.com/click/go/ruanyifeng.banner.feed.yfblogfeed/gift"><img src="http://nanrenwa.com/_img/a/2011/yfblog_feed.png"></a></p>
+</div>

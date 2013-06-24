@@ -1,0 +1,65 @@
+---
+layout: post
+title:  "CSS历史及有关动态CSS的123"
+date:   2011-10-13 15:10:02
+author: iwege
+categories: program
+---
+
+## CSS历史及有关动态CSS的123
+### by iwege
+### at 2011-10-13 15:10:02
+### original <http://www.iwege.com/archives/63.html>
+
+<p>
+<h2>1. Preface</h2>
+<p>如果只是要写程序，那的确是不需要这么麻烦，上来直接看Syntax，动手写上至少300行代码，做上3个应用程序，这门语言你也就差不多会用了，接下来不过就是模式，特殊的地方以及记住一些函数而已。但是如果你想更深刻的了解这门语言为什么这么设计，想知根知底的时候，那么回顾历史是最好的选择。而且经过这么多年对于学习本身的研究，如果想要精通一样东西，研究促使它诞生的问题会更加准确的明白它的缺点和优点，以及理解它为什么会是这个逻辑，怎么改善等等。而研究历史的时候，有时候也会发现，因为当年某些限制条件无法实现的更好的解决方案，现在正是实施的时候。</p>
+<br>
+<h2>2. Style Sheets' History</h2>
+<p>在很久很久以前(当然，是在有了HTML之后)，大家都是做学术的，因此大部分人只是用HTML来传递文档，浏览器也只是要让文档能解析的好看一些就好了。一开始的时候，也只是读者自己调节网页的显示方式，而不是作者。慢慢的，作者也想集中控制，这个时候的浏览器厂商为了讨好作者，就设置了很多属性让作者能定义自己的样式，比如JSSS。
+先让我们来看一段代码:</p>
+<pre style="font-family:monospace"><span style="color:#66cc66">(</span>define *heading-font* <span style="color:#ff0000">&quot;Times New Roman&quot;</span><span style="color:#66cc66">)</span>
+<span style="color:#66cc66">(</span>define *heading-weight* 'bold<span style="color:#66cc66">)</span>
+<span style="color:#66cc66">(</span>define *heading-posture* 'italic<span style="color:#66cc66">)</span>
+ 
+<span style="color:#66cc66">(</span>element H1
+  <span style="color:#66cc66">(</span><span style="color:#b1b100">make</span> paragraph
+        font-family-<span style="color:#b1b100">name</span><span style="color:#66cc66">:</span> *heading-font*
+        font-weight<span style="color:#66cc66">:</span> *heading-weight*
+        font-posture<span style="color:#66cc66">:</span> *heading-posture*
+        font-size<span style="color:#66cc66">:</span> 20pt
+        quadding<span style="color:#66cc66">:</span> 'center<span style="color:#66cc66">)</span><span style="color:#66cc66">)</span>
+ 
+<span style="color:#66cc66">(</span>element H2
+  <span style="color:#66cc66">(</span><span style="color:#b1b100">make</span> paragraph
+        font-family-<span style="color:#b1b100">name</span><span style="color:#66cc66">:</span> *heading-font*
+        font-weight<span style="color:#66cc66">:</span> *heading-weight*
+        font-posture<span style="color:#66cc66">:</span> *heading-posture*
+        font-size<span style="color:#66cc66">:</span> 18pt
+        quadding<span style="color:#66cc66">:</span> 'left<span style="color:#66cc66">)</span><span style="color:#66cc66">)</span></pre>
+<p>这段代码是Lisp格式的，但是如果你熟悉CSS的话，就会有一种感觉:"嘿，老兄，这看起来好像是定义样式用的。"没错，在CSS尚未成型的时候，和它算是齐名的DSSSL［ISO标准］的的样式。如果你更加熟悉LESS和SASS的话，就会更有感觉，因为它有更加强大的语法表达式以及变量定义。假想当时人们接受的是DSSSL而不是CSS的话，现在要再去区分黑客和设计师就会有点困难。但是当然，从历史上来看，DSSSL应该是XSL的先辈，而不应该拿来和CSS相互比较。</p><p>JSSS，则是Netscape的提案，死的悄无声息，但是有传闻说Netscape4内部是将CSS解析成JSSS来执行的，因为如果禁用JS的话，CSS也不会出现。</p><p>如果再仔细看看 Cascading HTML style sheets 和Stream－based StyleSheet Proposal这两个 Style Sheet Proposal，就会发现很大程度上CSS是综合了两个提案的优点。</p><p>最终的胜利，依旧还是使用者(设计师)的胜利，因为他们获得了更加简单的语言实现。无怪乎 Jakob Nielsen 来了一句:"Hopefully, future Web innovations will emulate the example set by the Web Consortium in its work on CSS."</p>
+<h3>2.1 相关资料</h3>
+<ul>
+<li><a href="http://virtuelvis.com/archives/2005/01/css-history">CSS History</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Cascading_Style_Sheets#History">Wikipedia:CSS History</a></li>
+<li><a href="http://www.w3.org/Style/">Web Style Sheets</a></li>
+<li><a href="http://www.w3.org/Style/951106_Workshop/">W3C Workshop on Style Sheets  1995</a></li>
+<li><a href="http://www.w3.org/Style/History/">Historical Style Sheet proposals</a></li>
+<li><a href="http://www.useit.com/alertbox/9707a.html">Effective Use of Style Sheets</a></li>
+</ul>
+<p><br><h2>3. Why no "variables" in CSS ?</h2><p>如果需要将当时其他的Style Sheet Language拿来和CSS相互比较的话，你必须去翻翻当年的会议记录和讨论，当中对于CSS起源以及语言的设计都很有帮助。 尤其是从设计上来看，CSS实质上是吸收了众家之长并简化的非常彻底的语法。如果注意到其他类似Lisp的Style Sheet Language的实现，就不难看出早期的大家设计的时候是有变量描述的，在draft1里面对“CSS变量和计算”描述的注释是：“very interesting, but potentially complex issue"，但是CSS在最终实现的时候摒弃了表达式以及参数的设计。我相信这也是经过了博弈的结果。</p><p>当然，程序员作为懒人的代表，以及类似想将mail加入任何程序的心情，08年Webkit在CSS工作组里面的两个人继续提出了<a href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables</a>的文档(当中提到98年在开发界就已经提到想定义动态变量的事情)，增加变量的方法用的是At-rule方式。从改动上来说不算太大，之后有人用PHP实现了一个版本(<a href="http://interfacelab.com/variables-in-css-via-php/">variables in css via php</a>)，以及到现在的LESS和SASS，对于现有的开发人员做CSS的组织和架构都是很有帮助的。
+但是Bert Bos(published Stream-based Stylesheet Proposal ，W3C Style Sheets Activity Lead)认为，增加任何动态内容不仅仅是多余，而且会使得CSS复杂，将Varible直接引入CSS是不适合的，对CSS是有害的。详细的看过它的全文之后，我比较认可他的说法:</p><br><ol>
+<li>增加了浏览器内核编码的复杂度，如果增加了动态接口，浏览器需要增加更多的代码。</li>
+<li>增加了CSS编码的难度，因为除了ID，Class之后，你还要再重新定义Function，Variable的名字，这个在本来就复杂的ID，Class命名之上还增加了两个命名规则，想名字又要想到疯掉去。而且后期的话你还要记住这些名称，避免重名出现，OMG。</li>
+<li>如果这个不是你自己写的，嘿哥们，想想那些让你心情不爽每一天的面条代码吧，也许有一天，连你自己都不知道哪里定义了什么Function和Variable，于是这个时候你就会抱怨为啥上个程序员没有写出更多的CSS Doc。</li>
+<li>Bos类比了C，认为没必要学习CTags再增加一个CSSTags，在现有的CSS里面，你只需要记住它最后一次出现在哪里，是什么，然后Search and/or Replace 即可。这个时候，你仅仅只是需要一个简单的编辑器(例如ed)，你就可以很自在的修改内容了。</li>
+<li>Bos再次类比了C，认为根本就没必要增加CSS变量的另外一个原因就是CSS本身就非常短，90%的CSS文件少于163行，一半的文件少于7行，只有0.6%超过了500行，最大的一个超过了4872行(最早的FrameMaker创建的)，最大的手写样式只有1462行，平均每个非空样式表才54行</li>
+<li>如果再考虑到使用Variable分离CSS，每次修改一个小值的时候你需要开启两个窗口，这实在是不舒服。</li>
+    <li>如果你考虑到学习JS，HTML，CSS的途径，那么最好的方式就是直接看别人的源代码，将好的代码直接拿来用即可，如果增加了Varibles和Function，那么使得CSS的代码根本没办法直接复用，也不能用简单的COPY来直接使用它，你需要分析Function，找到Varibles如何定义的以及可能的Expression分析，这恰恰和使用CSS Varibles的初衷背离，加大了CSS的学习难度。作者推测说:宏是个非常好的，但是如果CSS增加了宏，那么是否会有更多的人不会使用CSS?他觉得非常有可能。</li>
+    <li>Web本身是非常模块的化的东西，举例说一下links并非是在HTML里面定义的，但是通过URLs可以链接到其他的应用程序。同样的，样式本身不在HTML里面编码，而是在CSS里面，两者相互独立。再看看img标签，这个标签仅仅只是告诉HTML引擎要使用这个图片，但是并不是直接定义这些图片里面的内容。因此，不增加Varible可以有效的减少冲突，使得开发CSS更加容易，让文档更加少。</li>
+
+</ol><p>可以发现，Bert Bos的思考非常谨慎，不愧写了<a href="http://www.w3.org/People/Bos/DesignGuide/introduction">What is a good standard?</a>的人，从我们这一辈如何学习HTML+CSS+JS来看，的确和他考虑的一样。而且我检查了下我写的代码，如果将每个Selector对应的声明一行化之后，是不会超过500行的。如果使用import的话，大部分的代码可以更加简单，修改起来和实际的情况没啥两样。不愧是从Style Sheet混战时代过来的人，果然对于复杂度非常敏感。而且给出的理由非常值得思考，难怪 Jakob Nielsen 能认为 CSS 是标准的一个标杆了。</p><p>然而这不意味着你就完全放弃使用LESS和Sass了，你大可以使用他们编写了之后再转成CSS，然后引用到页面里面去。但是如果从Bert Bos的角度而言，Sass显然已经失去了入选的资格，复杂而且不灵活。LESS虽然更倾向于简单，怎么debug依旧还是一个比较大的问题。同时语法嵌套基本上使得CSS权重计算不能在编写的时候就体现出来，复用性可能会很差，如果学Twitter开放可能会更好一些。应当如何解决这个事情，我觉得应该取决于你的项目是如何规划的。</p><h3>3.1 相关资料</h3><br><ul>
+<li><a href="http://www.w3.org/People/Bos/">Bert Bos</a></li>
+<li><a href="http://www.w3.org/People/Bos/CSS-variables">Why ‘variables’ in CSS are harmful.</a></li>
+<li><a href="http://disruptive-innovations.com/zoo/cssvariables/">CSS Variables Proposal</a></li>
+</ul></p></p>

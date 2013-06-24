@@ -1,0 +1,42 @@
+---
+layout: post
+title:  "Jscex正式发布至npm"
+date:   2011-12-28 12:26:31
+author: jeffz@live.com (老赵)
+categories: program
+---
+
+## Jscex正式发布至npm
+### by jeffz@live.com (老赵)
+### at 2011-12-28 12:26:31
+### original <http://blog.zhaojie.me/2011/12/jscex-officially-released-to-npm.html>
+
+<p>之前一直不敢将<a href="https://github.com/JeffreyZhao/jscex">Jscex</a>发布至<a href="http://npmjs.org/">npm</a>上，因为有些问题还没有完全拿定主意，例如“取消”任务的模型。一个异步任务一定是需要取消功能，尽管这个模型<a href="http://www.cnblogs.com/iamzhanglei/archive/2011/11/17/2253253.html">不一定需要直接定义在Jscex里</a>。但是我还是为Jscex提供了一个统一的标准化的取消模型，一是易于使用，二是提供模型这个之后，API在设计时可以有更多表现力（例如，现在的task的status可能是canceled了）。上周末我实现这个模型（其实也就十几二十行代码），昨天我又修改了模块的加载方式，使其支持<a href="http://www.commonjs.org/">CommonJS</a>规范。在发布到npm之后，现在可以说Jscex已经正式对外公开了！</p>
+
+<p>在加载Jscex代码之后，全局环境里会出现一个Jscex对象，这是所有Jscex功能的入口（根对象）。但对于<a href="http://nodejs.org/">Node.js</a>来说，相同的模块（无论版本是否一致）有可能还会被加载多次，因此这种方式并不适合Node.js。昨天的修改主要就是为了迎合Node.js的包管理机制（类似CommonJS），避免对全局环境造成污染。自然，如果脚本执行环境里没有实现CommonJS规范（例如浏览器），则Jscex的行为依然和之前保持不变。</p>
+
+<p>目前Jscex的核心部分已经发布到npm里，版本为0.5.0，分为两个互不依赖的三个部分：</p>
+
+<ul>
+  <li><strong>jscex：</strong>提供了Jscex的基础功能，作为Jscex的根对象。 </li>
+  <li><strong>jscex-jit：</strong>提供了Jscex的JIT编译器，以“插件”形式为Jscex根对象进行扩展，一般仅作为开发工具使用。 </li>
+
+  <li><strong>jscex-async：</strong>Jscex的异步支持，以“插件”形式为Jscex根对象进行扩展。在Node.js中一般与JIT编译器同时使用，但理论上可以在AOT编译之后摆脱对JIT编译器的依赖。 </li>
+</ul>
+
+<p>您可以使用npm安装这三个模块：</p>
+
+<pre>$ <strong>npm install jscex jscex-jit jscex-async</strong>
+jscex@0.5.0 ./node_modules/jscex
+jscex-jit@0.5.0 ./node_modules/jscex-jit
+jscex-async@0.5.0 ./node_modules/jscex-async</pre>
+
+<p>然后即可在脚本里使用：</p>
+
+<pre><span style="color:blue">var </span>Jscex = require(<span style="color:maroon">"jscex"</span>);
+require(<span style="color:maroon">"jscex-jit"</span>).init(Jscex);
+require(<span style="color:maroon">"jscex-async"</span>).init(Jscex);</pre>
+
+<p>然后便可以像以前那样正常使用Jscex了。请注意，由于Jscex的实现方式所限，一定要在上下文里存在名为Jscex的根对象。此外，目前发布在npm上只有JIT编译器及其异步支持的核心功能，并没有包含如sleep或parallel方法那样的核心类库。这部分代码已经被剥离至jscex-async-powerpack模块内，将在合适的时候发布至npm上。</p>
+
+<p>目前使用Jscex的人依旧不多，有同学将Jscex配合HTML 5的绘图使用，进行了<a href="http://www.cnblogs.com/iamzhanglei/">进行了许多尝试</a>，<a href="http://game.mhtml5.com/game/works/ztTnYEvyFrEbguW6/">颇为有趣</a>。如果您对Jscex有什么意见或建议，也请及时告知。</p>

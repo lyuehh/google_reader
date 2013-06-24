@@ -1,0 +1,84 @@
+---
+layout: post
+title:  "最快的编程语言是？"
+date:   2011-05-02 22:16:27
+author: yuanyi
+categories: program
+---
+
+## 最快的编程语言是？
+### by yuanyi
+### at 2011-05-02 22:16:27
+### original <http://heikezhi.com/2011/05/02/which-programming-languages-are-fastest/>
+
+<p>“<a href="http://shootout.alioth.debian.org/">Computer Language Benchmarks Game</a>”项目旨在提供一套基准测试工具来比较各个编程语言的性能，但是就像项目帮助中提到的，这个项目其中的一个目的就是展示”<a href="http://shootout.alioth.debian.org/help.php">要针对编程语言的性能进行有意义的比较是多么困难</a>”，因此该项目到目前为止<a href="http://shootout.alioth.debian.org/dont-jump-to-conclusions.php">还没有产生结论</a>，下图是当前的基准测试在一台基于ubuntu的Intel®Q6600®单核处理器上运行的结果：</p>
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/05/chartbox-simple.png" alt="" title="chartbox-simple" width="480" height="300"></p>
+<p>测试使用每种语言执行10个小任务，每个任务的执行程序由用户贡献，数量不等，图中的结果为程序实际运行时间除以最快的程序运行时间，中间的块状图为性能居中的5个程序运行时间除以最快的程序运行时间，中间的那条横线为程序平均运行时间除以最快程序运行时间，你还可以去<a href="http://shootout.alioth.debian.org/u32/which-programming-languages-are-fastest.php">这个页面自定义语言以及测试进行比较</a>。</p>
+<p>下面是源码中一段用来计算词频的ruby实现，觉得你用的语言性能不理想？<a href="http://shootout.alioth.debian.org/help.php#contribute">可以去这里贡献你的实现</a>。</p>
+<pre name="code">
+#!/usr/bin/ruby
+# -*- mode: ruby -*-
+# $Id: wordfreq.ruby,v 1.2 2004-07-03 05:36:11 bfulgham Exp $
+# http://shootout.alioth.debian.org/
+
+freq = Hash.new(0)
+loop {
+    data = (STDIN.read(4095) or break) &lt;&lt; (STDIN.gets || &quot;&quot;)
+    for word in data.downcase.tr_s(&#39;^A-Za-z&#39;,&#39; &#39;).split(&#39; &#39;)
+	freq[word] += 1
+    end
+}
+freq.delete(&quot;&quot;)
+
+lines = Array.new
+freq.each{|w,c| lines &lt;&lt; sprintf(&quot;%7d %s\n&quot;, c, w) }
+print lines.sort.reverse
+</pre>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F06%2Ftraceur-compiler-next-to-javascript-of-today%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">Traceur: 体验下一代Javascript语言</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fnowjs%25E7%25AE%2580%25E5%258D%2595%25E4%25BB%258B%25E7%25BB%258D%25E5%2592%258C%25E5%25AE%259E%25E4%25BE%258B%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">NowJS简单介绍和实例</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F17%2F%25E5%2588%259B%25E4%25B8%259A%25E5%2585%25AC%25E5%258F%25B8%25E5%258A%259E%25E5%2585%25AC%25E5%25AE%25A4%25E6%2597%25B6%25E9%2597%25B4%25EF%25BC%259F%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">创业公司办公室时间？</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F11%2Fworld-are-you-ready%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:12px!important">世界，你准备好了吗？</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/510344383/heikezhi/feedsky/s.gif?r=http://heikezhi.com/2011/05/02/which-programming-languages-are-fastest/" border="0" height="0" width="0">

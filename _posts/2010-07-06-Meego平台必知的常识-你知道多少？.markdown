@@ -1,0 +1,65 @@
+---
+layout: post
+title:  "Meego平台必知的常识 你知道多少？"
+date:   2010-07-06 22:16:10
+author: 
+categories: program
+---
+
+## Meego平台必知的常识 你知道多少？
+### by 
+### at 2010-07-06 22:16:10
+### original <http://news.cnblogs.com/n/67697/>
+
+<p>　　说到Meego，这是一个最新推出的应用于多种设备的开发平台。随着移动互联网核嵌入式互联时代的到来，设备厂商很难靠单一的设备稳固市场地位，因此Meego的出现增强了厂商的可选性。
+</p>
+<p>　　我们从中不难读出诺基亚和英特尔合作的最终目的，Meego给处在下滑状态的诺基亚增添了信心，为此诺基亚甚至调整了Meego和Symbian平台的市场战略，今后的N系列<span>手机</span>全部采用更加先进的Meego，来争夺高端智能<span>手机</span>市场份额，对抗谷歌和苹果。</p>
+<p>　　而得益于终端设备的多样化，英特尔将扩大移动嵌入式市场芯片的销售，这才是芯片厂商的真正意图所在。</p>
+<p>　　有了芯片老大和<span>手机</span>老大的共同推进，Meego的前景到底有多可观呢?你不妨先了解一下Meego平台的基本常识，然后依据你的经验进行一下判断，看看Meego到底能够走多远。</p>
+<p>　<strong>　1、 什么是Meego</strong></p>
+<p>　　在巴塞罗那2010 世界移动大会上，Linux 智能<span>操作系统</span>家族两股势力合并，即英特尔的 Moblin 与诺基亚的 Maemo，合并后启用新名 MeeGo，并交由 Linux 基金会管理。其目的是专门为<span>上网本</span>和智能<span>手机</span>等便携设备提供类似便携电脑的用户体验。</p>
+<p>　　<strong>2、Meego的开发工具</strong></p>
+<p>　　MeeGo汇集了最好的应用和平台开发工具，MeeGo SDK中提供了全套一致的、跨平台的API。这使得许多MeeGo大多数的应用程序开发可以在Linux，Windows或Mac的<span>工作站</span>上进行。</p>
+<p>　　Meego为开发人员提供了一整套工具，以便于开发人员能够轻松、迅速的创建各种新的应用。Meego的开源工具包含：Meego*ImageCreator，能够启动创建各种格式的自定义系统镜像。GNU*工具(gcc，gdb，……)。PowerTOP*(IAonly)，属于平台级的功耗分析和优化工具。非开源的工具为英特商业开发工具(英特尔架构专用)，其中包括：英特尔C/C++编译工具，英特尔JTAG和应用程序调试工具，英特尔集成性能基元(英特尔IPP)以及Vtune性能分析器。</p>
+<p>　　Meego的开发工具有开源和非开源之分，其中开源工具包含：Meego*ImageCreator，能够启动创建各种格式的自定义系统镜像。GNU*工具(gcc，gdb，·······)。PowerTOP*(IAonly)，属于平台级的功耗分析和优化工具。非开源的工具为英特商业开发工具(英特尔架构专用)，其中包括：英特尔C/C++编译工具，英特尔JTAG和应用程序调试工具，英特尔集成性能基元(英特尔IPP)以及Vtune性能分析器。</p>
+<p>　　<strong>3、Meego的框架</strong></p>
+<p>　　Meego的框架涵盖Qt和WRT(web runtime)两种。</p>
+<p>　　Meego的架构分为三层：最底层为Meego base层，包括：软件、硬件适配层和Meegokernel层。上面一层是中间层，涵盖了各种服务包括：通信服务层、网络服务层、可视化服务层、多媒体服务层、数据管理层、硬件服务层、私人服务层。最上层为不同设备的用户体验层，包括：MeeGo UI Toolkit、MeeGo Handheld UX、MeeGo Netbook UX。</p>
+<p>　<strong>　4、Meego的主要特性</strong></p>
+<p>　　Meego的主要特性包含四个部分：1、性能优化和功能，以支持图形和计算密集的软件和服务开发。2.互联网标准的完整支持，提供最佳Web体验。3. 基于Qt的易用、灵活和强大的UI/应用开发环境。4.最新的Linux组合，为各种小资源平台和移动设备进行优化，保证广泛的兼容性。</p>
+<p>　<strong>　5、Meego的版本升级过程</strong></p>
+<p>　　3月底，英特尔和诺基亚的MeeGo测试版提前放出，测试版本没有图形用户界面，可直接通过USB或CD来启动，启动之后将进入终端控制台界面。</p>
+<p>　　5月27日，MeeGo 1.0发布，支持基于Intel Atom处理器的<span>上网本</span>，这标志着移动互联设备有了一个普适通用的Linux<span>操作系统</span>(GNU /Linux发行版)。</p>
+<p>　　Meego项目组7月1日发布一个名为针对手持设备名为”Day 1″的用户体验项目,其源码已经提交给开发社区,开发人员,设备制造商和运营商可以从其官方网站下载.“Day 1″ 项目是基于meego 1.1之上. MeeGo最终将会出现在诺基亚的高端N系列智能<span>手机</span>上，而据MeeGo的官方博客透露，这款<span>操作系统</span>将会在今年10月份发布。</p>
+<p>　　同时还发布了MeeGo 编程接口,包括QT 4.7 和MeeGo多点触摸界面框架(MeeGo Touch UI Framework 简称MTF)。</p>
+<p>　　另外，英特尔开源战略官表示每隔6个月会进行一次升级。</p>
+<p>　<strong>　6、Meego的应用商店</strong></p>
+<p>　　Meego的应用商店有两个部分组成，其中包括英特尔的AppUp中心和诺基亚的Ovi商店，用户可以从这两个商店中下载相应的应用软件。</p>
+<p>　<strong>　7、Meego当前的开发者数量</strong></p>
+<p>　　自MeeGo 1.0发布之后，该项目发展很快，目前已有千余名专职技术人员集中起来参与开发，还有数百名自愿开发人员参与，MeeGo开发社区注册人数已经多达8,000余人。</p>
+<p>　<strong>　8、Meego的工作模式</strong></p>
+<p>　　关于Meego的工作模式分为几大模块，包括上游的开源项目，Meego开源项目，而中间则是有编译环境、Meego核心、netbook参考框架、IVI参考框架、MID参考框架，逐步推送到<span>操作系统</span>厂商，<span>操作系统</span>厂商结合不同的解决方案设计构成的商业方案，最终研发出不同的设备。</p>
+<p>　　<strong>9、Meego支持哪些设备</strong></p>
+<p>　　MeeGo是一种自生(Live)系统，具有从USB端口自启动的能力，适用于<span>上网本</span>、简易台式机、手持计算和通信设备、车载信息娱乐设备、上网电视、多媒体电话。这款智能<span>操作系统</span>可以同时支持英特尔Atom Z600智能<span>手机</span>和ARM架构智能<span>手机</span>，比如诺基亚N900，Intel Moorestown<span>手机</span>等。</p>
+<p><strong>　　10、当前的Meego产品：</strong></p>
+<p>　　诺基亚N900智能<span>手机</span>。</p>
+<p>　　诺基亚这款平板电脑将采用MeeGo<span>操作系统</span>，基于ARM架构，将于今年第四季度推出平板电脑。这款产品的屏幕在7英寸至9英寸之间。未来将交由富士康代工厂生产。</p>
+<p>　　日前举办的第八届中国国际软件和信息服务交易会上,中标软件国际合作部总监李斌介绍了该公司即将推出的为平板电脑定制的<span>操作系统</span>,航天科技和拓思林软件有限公司也推出了车载信息系统。这几款产品都是依托Meego。</p>
+<p>　　<strong>11、Meego是否支持Intel的竞争对手ARM</strong></p>
+<p>　　Meego本身除了支持Intel的IA架构之外同样也支持ARM架构。</p>
+<p>　<strong>　12、Meego的生态系统</strong></p>
+<p>　　Meego由诺基亚和Intel合作开发 但是控制权交给Linux基金会。</p>
+<p>　　Meego社区中包含业内领先的设备制造商、<span>操作系统</span>厂商(OSV)、芯片组制造商、独立软件开发商(ISV)以及开发社区等。已获发表声明表示支持的厂商包括：宏基、Amino、华硕、宝马集团、中标软件、DeviceVM、Gameloft、Hancom、Linpus、Maemo社区委员会、Mandriva、Metasys、Miracle、MontaVista、Novell、PixArt、红旗软件、ST-爱立信、腾讯、TurboLinux、VietSoftware、风河、WTEC以及Xandros。</p>
+<p>　<strong>　13、Meego的主要竞争平台</strong></p>
+<p>　　智能<span>手机</span>平台：微软windows phone 7，谷歌android，苹果iPhone，诺基亚Symbian，嵌入式Linux，RIM的blackberry</p>
+<p>　　<span>上网本</span>及平板电脑领域：微软windows 7，谷歌android以及Chrome，苹果iOS，Symbian，Palm的WebOS</p>
+<p>　　<strong>14、Meego对开发人员的价值</strong></p>
+<p>　　1、开放式标准：开放式架构，支持通过添加代码创造全新用途和推动软件平台发展。2、市场机遇：已经部署在各类计算设备上，其中包括便携式<span>笔记本</span>电脑、<span>上网本</span>、平板电脑和车载信息娱乐设备等。3、上市速度更快：适用于应用程序开发的Qt(面向本地C++)和Webruntime面向web(支持跨平台应用开发，使得应用程序能够应用于多个领域)4、开发工具：一整套面向开发人员的工具(适用于本地标准 web开发工具插件的Qt creator)，支持开发人员轻松快速的创建新型应用程序。5、商机：通过多家英特尔AppUpCenter店面和诺基亚Ovi商店赚取收益。</p>
+<p>　<strong>　15、Meego相比其他平台的优势</strong></p>
+<p>　　Meego是由英特尔的Moblin与诺基亚的Meamo整合而成、基于Linux系统的软件开发平台，它支持不同的硬件架构的最广泛设备种类。第一、对于用户而言，Meego可以运行在多种设备类型上，从而丰富了消费者的选择。即使更换设备或是进行硬件升级，人们也可以不受限制的保留自己喜爱的应用程序。第二、对于开发者来讲，只需要编写一次程序，Meego便可以让应用程序运行在不同的设备或平台上，这极大地扩展了开发者的市场机会。</p>
+<p>　<strong>　16、Meego生态系统的建设策略</strong></p>
+<p>　　Meego的生态系统同样是一个组合体，这些包括Qt原有的生态系统，Moblin的生态系统。现在有近千个应用是在Moblin平台上。Adobe的 runtime，或者是Javaruntime，后台都有近千个应用都可以在Meego平台上使用。另外还有凌动的开发计划，上面有一个应用程序中心。再就是跟厂商合作。另外应用商店中心可以在网上拿到一个标准。</p>
+<p>　　<strong>17、Meego的AppUp对于应用程序的要求</strong></p>
+<p>　　在Meego上会有对于application的要求，但是好像对于icon没有特别具体的要求，比如说一定要想Apple那样严格，在AppUp中应该会相对比较宽松一些。实际上对于Meego的stack中我们唯一定义的比较严格的是在applicationframework上需要compatible，如果是Meego的话会需要JDKcreator，可以保证大家为Meego创建出来的应用程序能够在所有的Meegodevice上运行，而不会出现任何的错误，但是对于其他方面相对时比较宽松的。</p>
+<p>　　<strong>18、Meego的官方网站</strong></p>
+<p>　　Meego的官方网站是：http://meego.com/，上面会有workinggroup 定期的发布产品，更多Meego的信息请参照官网。</p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/61843/">英特尔展示多种设备运行MeeGo系统</a><span style="color:gray">(2010-04-16)</span><br>　　· <a href="http://news.cnblogs.com/n/66681/">meego也疯狂：MeeGo下试玩QQ</a><span style="color:gray">(2010-06-21)</span><br>　　· <a href="http://news.cnblogs.com/n/61498/">英特尔证实基于MeeGo系统产品下半年推出</a><span style="color:gray">(2010-04-13)</span><br>　　· <a href="http://news.cnblogs.com/n/66659/">Intel集合众家之长 看MeeGo的六大特点</a><span style="color:gray">(2010-06-21)</span><br>　　· <a href="http://news.cnblogs.com/n/66887/">诺基亚推出一系列最新措施促进 Ovi 商店增长</a><span style="color:gray">(2010-06-24)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/67697/">http://news.cnblogs.com/n/67697/</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=67697" width="1" height="1" alt="">

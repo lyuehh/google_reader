@@ -1,0 +1,56 @@
+---
+layout: post
+title:  "嗨，Node.js"
+date:   2011-03-19 10:21:00
+author: 子非鱼
+categories: program
+---
+
+## 嗨，Node.js
+### by 子非鱼
+### at 2011-03-19 10:21:00
+### original <http://ilstar.blogbus.com/logs/109689156.html>
+
+<p><strong>什么是Node.js</strong><br>  简单来讲，通过Node.js，我们可以像使用Ruby, Python一样编写Server端的程序。</p>
+<p><strong>安装</strong><br>  brew install node # mac<br>  或者可以在 <a href="http://nodejs.org/#download">http://nodejs.org/#download</a> 下载源代码进行安装</p>
+<p><strong>安装npm</strong><br>  curl <a style="color:#3465a4" href="http://npmjs.org/install.sh">http://npmjs.org/install.sh</a> | sudo sh<br>  不是很精确的说，npm相对于Node.js就像gem相对于Ruby一样，使用它可以安装很多的插件，这里有一个站点可以搜索 <a href="http://search.npmjs.org/">http://search.npmjs.org/</a></p>
+<p><strong>Hello World</strong></p>
+<table border="0">
+<tbody>
+<tr>
+<td title="click to toggle">
+<pre>1<tt>
+</tt>2<tt>
+</tt>3<tt>
+</tt>4<tt>
+</tt>5<tt>
+</tt>6<tt>
+</tt></pre>
+</td>
+<td>
+<pre><span style="color:#080;font-weight:bold">var</span> http = require(<span style="background-color:#fff0f0;color:#d20"><span style="color:#710">'</span><span>http</span><span style="color:#710">'</span></span>);<tt>
+</tt><tt>
+</tt>http.createServer(<span style="color:#080;font-weight:bold">function</span>(req, res) {<tt>
+</tt>  res.writeHead(<span style="color:#00d;font-weight:bold">200</span>, {<span style="color:#808"><span style="color:#606">'</span>Content-type<span style="color:#606">'</span></span>: <span style="background-color:#fff0f0;color:#d20"><span style="color:#710">'</span><span>text/plain</span><span style="color:#710">'</span></span>});<tt>
+</tt>  res.end(<span style="background-color:#fff0f0;color:#d20"><span style="color:#710">'</span><span>Hello world!</span><span>\n</span><span style="color:#710">'</span></span>);<tt>
+</tt>}).listen(<span style="color:#00d;font-weight:bold">8124</span>, <span style="background-color:#fff0f0;color:#d20"><span style="color:#710">'</span><span>127.0.0.1</span><span style="color:#710">'</span></span>);</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<p>  将上面代码写入到文件hello.js中，通过如下命令启动服务</p>
+<p>    node hello.js</p>
+<p>  用浏览器打开 <a href="http://127.0.0.1:8124">http://127.0.0.1:8124</a> 即可看到输出的 Hello World!</p>
+<p><strong>其他资源</strong></p>
+<p>下面分别是两个博客里的文章系列，写的不错，值得参考一下。</p>
+<ul>
+<li>hello node.js  <a style="color:#3465a4" href="http://dreamhead.blogbus.com/logs/105599686.html">http://dreamhead.blogbus.com/logs/105599686.html</a></li>
+<li>npm  <a style="color:#3465a4" href="http://dreamhead.blogbus.com/logs/106188588.html">http://dreamhead.blogbus.com/logs/106188588.html</a></li>
+<li>require  <a style="color:#3465a4" href="http://dreamhead.blogbus.com/logs/106592931.html">http://dreamhead.blogbus.com/logs/106592931.html</a></li>
+</ul>
+<ul>
+<li><a style="color:#3465a4" href="http://blog.carbonfive.com/2011/03/09/node-js-overview/">http://blog.carbonfive.com/2011/03/09/node-js-overview/</a></li>
+<li><a style="color:#3465a4" href="http://blog.carbonfive.com/2011/03/14/node-js-part-ii-spelunking-in-the-code/">http://blog.carbonfive.com/2011/03/14/node-js-part-ii-spelunking-in-the-code/</a></li>
+<li><a style="color:#3465a4" href="http://blog.carbonfive.com/2011/03/18/node-js-part-iii-full-stack-application/">http://blog.carbonfive.com/2011/03/18/node-js-part-iii-full-stack-application/</a></li>
+<li><a href="https://github.com/mperham/chrono.js">https://github.com/mperham/chrono.js</a>  这是一个使用Node.js写的小应用，可以参考上个链接。</li>
+</ul><br><br><div><b><a href="http://www.blogbus.com">博客大巴，你的个人传媒早班车</a></b></div><br><br><div>收藏到：<span><a href="http://delicious.com/save?url=http%3A%2F%2Filstar.blogbus.com%2Flogs%2F109689156.html&amp;title=%E5%97%A8%EF%BC%8CNode.js">Del.icio.us</a></span></div><img src="http://www1.feedsky.com/t1/732797162/ilstar_blogbus_com/blogbus.com/s.gif?r=http://ilstar.blogbus.com/logs/109689156.html" border="0" height="0" width="0">

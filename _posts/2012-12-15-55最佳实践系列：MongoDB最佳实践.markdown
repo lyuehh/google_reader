@@ -1,0 +1,213 @@
+---
+layout: post
+title:  "55最佳实践系列：MongoDB最佳实践"
+date:   2012-12-15 15:48:00
+author: 旁观者
+categories: program
+---
+
+## 55最佳实践系列：MongoDB最佳实践
+### by 旁观者
+### at 2012-12-15 15:48:00
+### original <http://www.udpwork.com/item/8863.html>
+
+<div><a href="http://www.cnblogs.com/zhengyun_ustc/">@郑昀</a>汇总 创建日期：2012/9</div>
+<div> </div>
+<div><strong>Application Design：</strong>
+</div>
+<div><strong>1）</strong>
+<strong>如果发现query没使用你预期的索引，请用hint强制使用指定索引</strong>
+</div>
+<div>主站商品中心所使用的文档字段很多，各种索引建得也不少。在沙创排查慢查询时，曾百思不得其解，为什么明明建的有联合索引，查询起来还是非常慢呢，直到显式指定使用该联合索引。</div>
+<div>hint的例子：</div>
+<div>    db.collection.find({&quot;age&quot; : 18, &quot;username&quot; : /.*/}).hint({&quot;username&quot; : 1, &quot;age&quot; : 1})</div>
+<div> </div>
+<div><div><strong>2）</strong>
+<strong>Design documents to be self-sufficient，</strong>
+<strong>设计</strong>
+<strong>自给自足的文档</strong>
+</div>
+<div>MongoDB 应该是一个大的、无声的数据存储（big, dumb data store）。它几乎不需做任何处理，只是负责存储和读取数据。你应该坚持这个目的，避免强迫 MongoDB 做一些客户端可以进行的计算工作。</div>
+</div>
+<div>如果真的想算一些文档里没有显式存储的数据，你有两个选择：</div>
+<div>——招致严重的性能惩罚（让 MongoDB 用JavaScript 做运算）；</div>
+<div>——在文档中显式存储这些数据。</div>
+<div> </div>
+<div><strong>Implementation：</strong>
+</div>
+<div><div><strong>3）</strong>
+<strong>Override _id when you have your own simple, unique id</strong>
+</div>
+<div>如果你的文档自己有明确的唯一键值，不需要 ObjectId 属性，那么请覆盖默认的 _id 字段，反正你也要在自己的 unique id 上建唯一索引。</div>
+</div>
+<div> </div>
+<div><strong>Optimization：</strong>
+</div>
+<div><strong>4）数据量很大时，建联合索引时，不妨对比下索引升序和降序的查询效率</strong>
+</div>
+<div><div>db.collection.ensureIndex({&quot;store_id&quot;:- 1, &quot;shop_id&quot;: 1})</div>
+<div>上面的1代表ascending升序，-1代表descending降序。</div>
+<div>单个字段建索引时，不需要考虑索引升序还是降序，都行。</div>
+<div>但联合索引下的排序或范围查询（包括$in, $gt, $lt 等），需要重视索引设为升序还是降序。孙国玺认为，最好用大数据模拟一下业务场景，商户中心曾发现设-1比1快10倍以上。</div>
+</div>
+<div> </div>
+<div><div><strong>5）如需在联合索引下排序，索引的建立方法</strong>
+</div>
+<div><div>MongoDB 和 MySQL 都是B-Tree结构索引，所以一般来说，联合索引都可以这么建：</div>
+</div>
+</div>
+<div>查询语句是：</div>
+<div>    db.collection.find({x : 1,y : 2}).sort({z : 1})</div>
+<div>那么，索引可以是：</div>
+<div>    db.collection.ensureIndex({x : 1, y : 1,z : 1})//即x+y+z</div>
+<div>也可以是：</div>
+<div>    db.collection.ensureIndex({y : 1, x : 1,z : 1})//即y+x+z</div>
+<div>排序字段总在联合索引的最后。</div>
+<div>尽量把能过滤数据量多的字段放在前面。</div>
+<div>但如果涉及范围查询（Range Queries），就要小心了。</div>
+<div>查询语句是：</div>
+<div>    db.collection.find({&quot;country&quot;: {&quot;$in&quot;: [&quot;ZH&quot;, &quot;EN&quot;]}}).sort({&quot;cars&quot;: 1})</div>
+<div>那么较好的索引是：</div>
+<div>    db.collection.ensureIndex({&quot;cars&quot;: 1,&quot;country&quot;: 1})</div>
+<div>即，在范围查询（包括$in, $gt, $lt 等）时，其实刻意在后面追加排序索引通常是没有效果的。因为在进行范围查询的过程中，我们得到的结果集本身并不是按追加的这个字段来排的，还需要进行一次额外的排序才行。而在这种情况下，可能反序建立索引（排序字段在前、范围查询字段在后）反而会是一个比较优的选择。当然，是否更优也和具体的数据集有关，还是要实测。</div>
+<div>再举一个例子：</div>
+<div>查询语句是：</div>
+<div>    db.collection.find({x : 1,y : {$in:[1,2]}}).sort({z : 1})</div>
+<div><div>那么较好的索引是：</div>
+<div>    db.collection.ensureIndex({x : 1, z : 1,y : 1})//即x+z+y</div>
+</div>
+<div> </div>
+<div><div><strong>6）养成用 explain 确认是否充分利用了索引的</strong>
+<strong>习惯</strong>
+</div>
+<div>请确认你的查询是否充分利用到了索引，用explain命令查看一下查询执行的情况，添加必要的索引，避免扫表操作。</div>
+</div>
+<div> </div>
+<div><strong>7）查询尽量采用分页，并且尽快释放游标</strong>
+</div>
+<div> </div>
+<div><strong>8）</strong>
+<strong>避免使用不会命中索引的语法，如 $nin</strong>
+</div>
+<div> </div>
+<div><strong>Data Safety and Consistency：</strong>
+</div>
+<p><strong>9）总是使用 Replica Sets （复制群集，副本集）：</strong>
+</p>
+<div>背景：<a href="http://www.mongodb.org/display/DOCS/Replica+Sets">Replica Sets</a> 通过自动 failover 机制提供MongoDB的高可用性。Replica sets are a form of asynchronous <a href="http://www.mongodb.org/display/DOCS/Master+Slave" title="Master Slave">master/slave replication</a>, adding automatic failover and automatic recovery of member nodes</div>
+<div>应用点：在应用中，如 primary 机器出现故障，那么某一台 secondary 机器就会通 过选举成为新的 primary ，整个集群仍然能够提供正常服务。我们的服务不会支持无同步机制的 MongoDB 部署方案。</div>
+<div>图例：
+<br>
+<a href="http://www.cnblogs.com/zhengyun_ustc/"><img src="http://images.cnblogs.com/cnblogs_com/zhengyun_ustc/255879/o_clipboard%20-011%20%E5%89%AF%E6%9C%AC.png" alt="http://images.cnblogs.com/cnblogs_com/zhengyun_ustc/255879/o_clipboard%20-011%20%E5%89%AF%E6%9C%AC.png"></a>
+<br>
+<div><div>另，使用 Replica Sets 时，最好加1台仲裁服务器。</div>
+</div>
+<div> </div>
+<div> </div>
+<div><strong>10）</strong>
+<strong>默认开启 journaling 日志：</strong>
+</div>
+<div>背景：64-bitMongoDB 1.9.2+以上默认开启 <a href="http://www.mongodb.org/display/DOCS/Journaling">Journaling</a> 功能。32-bit或1.9.2以下版本，则需在命令行启动时加上 --journal 。</div>
+<div>Journaling 的出现归因于某用户在单机使用 MongoDB 时执行了 kill -9 操作，导致数据不可用后提出的。</div>
+<div>开启该功能时，变更会先写入 Journaling 日志，​定期集中提交​，然后在真实数据上进行这些变更。如果服务器安全关闭，日志会被清除。在服务器启动时，如果存在 Journaling 日志​，则会进行回放。这保证了那些已写入、但在服务器崩溃前还没有回放的​日志能在用户连接前​被执行。​ </div>
+<div>应用点：<a href="http://www.cnblogs.com/zhengyun_ustc/">郑昀</a>强烈建议你在部署时开启 Journaling 日志。注意数据文件的存放位置。在使用时，请确认你的数据文件处于一个持久化存储中（比如/data /mongodb目录）。也可以使用非持久化的设备进行数据文件存储，不过你最好小心再小心，因为这可能会对你的集群架构造成影响。</div>
+<div>热数据最好能放在内存中。能够保持热数据（以及索引数据）一直放在内存中，这一点非常重要，它将对整个集群的性能造成影响。如果通过监控发现 page fault 的数量增加，那么很可能就是热数据量超出了可用内存大小。当热数据量超出了可用内存量时，通常有两种解决方法：增加内存和数据分片。建议先增加内存，再考虑通过数据分片的方式解决。</div>
+<div> </div>
+<div><strong>Administration：</strong>
+</div>
+<div><div><strong>11）</strong>
+<strong>保持版本更新：</strong>
+</div>
+<div>应用点：保持版本更新很重要，10gen 在每个版本中都会修复一些问题，使 MongoDB 的运行更出色。比如在 2.0.x版本中，MongoDB 的存储性能和并发性能就有极大提高，同时还包括索引优化、Bug修复以及 compaction 命令等一系列改进。</div>
+<div> </div>
+<div><strong>12）</strong>
+<strong>不要在32位系统上使用MongoDB：</strong>
+</div>
+<div>背景：在32位机器上，MongoDB只能存储约2.5GB的数据。因为 MongoDB在内部实现上是通过内存映射的方式来提高性能的，所以在32位机器上其内存地址本身就限制了数据容量。</div>
+</div>
+<div> </div>
+<div><strong>13）</strong>
+<strong>压力过大升级服务器配置：</strong>
+</div>
+<div>应用点：如果机器负载达到65%，那么应该考虑升级机器配置。在日常使用中，最好保持负载低于65%。同时这也对数据恢复和纵向扩展有影响。</div>
+<div> </div>
+<div><div><strong>14）</strong>
+<strong>确定热数据大小：</strong>
+</div>
+<div>使用MongoDB，你最好保证你的热数据在你机器的内存大小之下，保证内存能容纳所有热数据。</div>
+</div>
+<div> </div>
+<div><div><strong>15）</strong>
+<strong>选择正确的文件系统：</strong>
+</div>
+<div><div>MongoDB 的数据文件是采用的预分配模式，并且在 Replication 里面，Master 和 Replica Sets 的非 Arbiter 节点都是会预先创建足够的空文件用以存储操作日志。</div>
+<div>这些文件分配操作在一些文件系统上可能会非常慢，导致进程被 Block 。所以我们应该选择那些空间分配快速的文件系统。这里的结论是尽量不要用ext3，用ext4或者xfs。</div>
+</div>
+</div>
+<div> </div>
+<div><div><strong>16）</strong>
+<strong>选用合适的raid和磁盘：</strong>
+</div>
+<div><div>尽量使用raid10，避免使用raid5，经济条件允许的情况下最好使用ssd硬盘。</div>
+</div>
+</div>
+<div> </div>
+<div><div><strong>17）如何</strong>
+<strong>关闭 MongoDB：</strong>
+</div>
+<div><div><div>MongoDB 数据库在关闭的时候使用 kill -2 &lt;mongo-pid&gt;，</div>
+<div>或者在 mongo 终端中使用  </div>
+<div>use admin</div>
+<div>db.shutdownServer()</div>
+</div>
+</div>
+</div>
+<div> </div>
+<div><strong>18）</strong>
+<strong>分片（</strong>
+<strong>sharding）</strong>
+<strong>需谨慎：</strong>
+</div>
+<div>应用点：分片策略会受数据访问特点的影响，所以在进行数据分片前，最好先理清楚数据的访问模式，并想明白是否确实需要分片。</div>
+<div>由于 Shard Key 对性能的影响非常大，所以<a href="http://www.mongodb.org/display/DOCS/Choosing+a+Shard+Key">选择一个好的 Sharding Key </a>是非常重要的。对于 Shard Key 的选定直接决定了集群中数据分布是否均衡、集群性能是否合理。选择 Shard Key 的一个非常重要因素是万一某一个分片彻底不可访问了，受到影响的Chunk有多大（即使是用 Replica Set）。</div>
+<div><a href="http://www.cnblogs.com/zhengyun_ustc/"><img src="http://images.cnblogs.com/cnblogs_com/zhengyun_ustc/255879/o_clipboard%20-%20012%E5%89%AF%E6%9C%AC.png" alt="http://images.cnblogs.com/cnblogs_com/zhengyun_ustc/255879/o_clipboard%20-%20012%E5%89%AF%E6%9C%AC.png"></a></div>
+<div>Config Server 对整个集群的健康运行是至关重要的，所以一旦你选择使用 分片机制，就一定要保证生产环境里有3个 Config Servers 。</div>
+<div>永远不要删除 Config Servers 的数据，要确保频繁地对这些数据进行日常备份。如果可能，通过域名来指定节 点的地址，比如在/etc/hosts文件中指定相应的本地域名，这能让你在集群配置上更灵活。Config Servers 的压力很小，但还是必须运行在 64-bit instances 上。</div>
+<div>千万不要把3个 Config Servers 都放在同一个 instance 上！</div>
+<div> </div>
+<div> 本文首发于<a href="http://www.cnblogs.com/zhengyun_ustc/">旁观者-郑昀</a>的<a href="http://www.cnblogs.com/zhengyun_ustc/category/438091.html">55最佳实践系列</a>，链接：<a href="http://www.cnblogs.com/zhengyun_ustc/archive/2012/12/15/mongodb_bp.html">http://www.cnblogs.com/zhengyun_ustc/archive/2012/12/15/mongodb_bp.html</a></div>
+<div> </div>
+<div>参考资源：</div>
+<div>1）程序员杂志：<a href="http://www.programmer.com.cn/9999/">Engine Yard眼中的MongoDB最佳实践</a></div>
+<div>英文原文：<a href="http://www.engineyard.com/blog/2011/mongodb-best-practices/"> http://www.engineyard.com/blog/2011/mongodb-best-practices/</a> </div>
+<div>2）Kristina Chodorow，<a href="http://my.safaribooksonline.com/book/databases/9781449306779/50-tips-and-tricks-for-mongodb-developers/id2844584" title="50 Tips and Tricks for MongoDB Developers">50 Tips and Tricks for MongoDB Developers</a></div>
+</div>
+<div>3）部分内容来自宋涛，刘奎波和孙国玺</div>
+<div>4）nosqlfan，<a href="http://blog.nosqlfan.com/html/3548.html">mongodb资料汇总专题</a></div>
+<div></div>
+<div>赠图几枚：</div>
+<div><a href="http://weibo.com/1894238970/z9Q0tlWxT"><img src="http://ww4.sinaimg.cn/bmiddle/70e7cafagw1dzu7kaec4fg.gif" alt="70e7cafagw1dzu7kaec4fg.gif (440×570)"></a></div>
+<div><a href="http://weibo.com/1641287674/xriIcrQfC"><img src="http://ww1.sinaimg.cn/bmiddle/61d40ffatw1dlsxs3ux51j.jpg" alt="61d40ffatw1dlsxs3ux51j.jpg (320×240)"></a></div>
+<div><a href="http://weibo.com/1743757504/z9Pil88cX"><img src="http://ww4.sinaimg.cn/bmiddle/67efa0c0gw1dzu4ghfrl9j.jpg" alt="67efa0c0gw1dzu4ghfrl9j.jpg (440×316)"></a></div>
+<div> </div>
+<img src="http://www.cnblogs.com/zhengyun_ustc/aggbug/2819392.html?type=1"><p><a href="http://www.cnblogs.com/zhengyun_ustc/archive/2012/12/15/mongodb_bp.html">本文链接</a></p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/8863.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/8863.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/8863.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

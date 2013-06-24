@@ -1,0 +1,306 @@
+---
+layout: post
+title:  "Css选择器命名规则"
+date:   2011-10-04 23:30:57
+author: Sky_志刚
+categories: program
+---
+
+## Css选择器命名规则
+### by Sky_志刚
+### at 2011-10-04 23:30:57
+### original <http://www.qianduan.net/css-selectors-naming-2.html>
+
+<p>操作系统版本：Windows 7</p>
+<p>浏览器版本：IE6,IE7,IE8,Firefox 3.6.2,Safari 4.0.4,Chrome 5.0.356.2 dev</p>
+<p>受影响的浏览器：所有浏览器.</p>
+<p>经常讲到css选择器命名规则，其实不只是在团队合作基础上来讲这个，每个浏览器,IE产品，火狐，苹果，谷歌，都会因为命名不规范会产生不同样式..</p>
+<h3>一、关于选择器的命名</h3>
+<p style="background:#fffaa2;padding:5px">W3C CSS2.1的 4.1.3 节中提到：标识符（包括选择器中的元素名，类和ID）只能包含字符[a- zA-Z0-9]和ISO 10646字符编码U+00A1及以上，再加连字号（-）和下划线（_）；它们不能以 数字，或一个连字号后跟数字为开头。它们还可以包含转义字符加任何ISO 10646字符作为一个数 字编码。</p>
+<p>由于设计到的字符很多，本文只针对字符[a-zA-Z0-9]，再加连字号（-）和下划线（_）进行讨论。 关于CSS中允许使用的字符和大小写信息，请参考W3C CSS2.1的4.1.3节</p>
+<h3 style="text-align:left" align="center">二、差异及可能产生的问题</h3>
+<p style="background:#fffaa2;padding:5px">在W3C CSS2.1说明文档中，只提到选择器标识符不能以数字，或一个连字号后跟数字为开头。除 此之外，没有相关的说明。那么各浏览器下的表现是否遵循这一规则呢？</p>
+<h4>请观察如下代码：</h4>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+</pre></td><td><pre style="font-family:monospace"> 
+div<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">width</span><span style="color:#00aa00">:</span><span style="color:#933">160px</span><span style="color:#00aa00">;</span>height<span style="color:#00aa00">:</span><span style="color:#933">20px</span><span style="color:#00aa00">;</span>font-<span style="color:#000000;font-weight:bold">size</span><span style="color:#00aa00">:</span><span style="color:#933">12px</span><span style="color:#00aa00">;</span>line-<span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">20px</span><span style="color:#00aa00">;</span>background- <span style="color:#000000;font-weight:bold">color</span><span style="color:#00aa00">:</span><span style="color:#993333">yellow</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.f-1_f_</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.1<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.123456<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.2demo<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.2-demo <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.2_demo <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.-demo</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.-2demo <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+._demo <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+._2demo <span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.-<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.---<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">._</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.——<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+._-<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.-_</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+.-<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.---_</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.---123</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+ 
+<span style="color:#6666ff">.__123</span><span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">background-color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#A8A8A8</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;f-1_f_&quot;</span>&gt;</span>字母开头<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;1&quot;</span>&gt;</span>单个数字<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;123456&quot;</span>&gt;</span>多个数字<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;2demo&quot;</span>&gt;</span>数字开头 + [a-z][A-Z]<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;2-demo&quot;</span>&gt;</span>数字 + &quot;-&quot; 开头<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;2_demo&quot;</span>&gt;</span>数字 + &quot;_&quot; 开头<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;-demo&quot;</span>&gt;</span>连字符(-)开头 + [a-z][A-Z]<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;-2demo&quot;</span>&gt;</span>连字符(-) + 数字 开头<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;_demo&quot;</span>&gt;</span>下划线(_)开头 + [a-z][A-Z]<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;_2demo&quot;</span>&gt;</span>下划线(_) + 数字 开头<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;-&quot;</span>&gt;</span>单个连字符(-)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;---&quot;</span>&gt;</span>多个连字符(-)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;_&quot;</span>&gt;</span>单个下划线(_)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot; 	&quot;</span>&gt;</span>多个下划线(_)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;_-&quot;</span>&gt;</span>下划线(_) + 连字符(-)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;-_&quot;</span>&gt;</span>连字符(-) + 下划线(_)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot; 	-&quot;</span>&gt;</span>多个下划线(_) + 连字符(-)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;---_&quot;</span>&gt;</span>多个连字符(-) + 下划线(_)<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;---123&quot;</span>&gt;</span>多个连字符(-) + 数字<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span>
+<span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot; 	123&quot;</span>&gt;</span>多个下划线(_) + 数字<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+<p>看看各浏览器下面的结果</p>
+<p><a href="http://www.qianduan.net/css-selectors-naming-2.html/qq-e6-88-aa-e5-9b-be20111004223132-2-2" rel="attachment wp-att-12771"><img src="http://www.qianduan.net/wp-content/uploads/2011/10/QQ%E6%88%AA%E5%9B%BE201110042231322-300x26.png" alt="" width="300" height="26"></a></p>
+<p> </p>
+<p> </p>
+<p><a href="http://www.qianduan.net/css-selectors-naming-2.html/qq-e6-88-aa-e5-9b-be20111004223247-2" rel="attachment wp-att-12773"><img src="http://www.qianduan.net/wp-content/uploads/2011/10/QQ%E6%88%AA%E5%9B%BE201110042232471-300x180.png" alt="" width="300" height="180"></a></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>观察上表，分析各浏览器下的表现，总结如下</p>
+<p><a href="http://www.qianduan.net/css-selectors-naming-2.html/qq-e6-88-aa-e5-9b-be20111004223601" rel="attachment wp-att-12772"><img src="http://www.qianduan.net/wp-content/uploads/2011/10/QQ%E6%88%AA%E5%9B%BE20111004223601-300x101.png" alt="" width="300" height="101"></a></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>从上面看到，我们可以直观的了解到选择器的命名在各浏览器下的支持情况有所不同。因此，如果选择器的命名不规范，将影响各浏览器下，样式渲染不一致。比如如下代码：</p>
+
+<div><table><tr><td><pre>1
+2
+</pre></td><td><pre style="font-family:monospace">div<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">font-size</span><span style="color:#00aa00">:</span><span style="color:#933">12px</span><span style="color:#00aa00">;</span>background-<span style="color:#000000;font-weight:bold">color</span><span style="color:#00aa00">:</span><span style="color:#993333">yellow</span><span style="color:#00aa00">;</span>width<span style="color:#00aa00">:</span><span style="color:#933">150px</span><span style="color:#00aa00">;</span>height<span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span>line- <span style="color:#000000;font-weight:bold">height</span><span style="color:#00aa00">:</span><span style="color:#933">30px</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span>
+.20fontsize<span style="color:#00aa00">{</span><span style="color:#000000;font-weight:bold">font-size</span><span style="color:#00aa00">:</span><span style="color:#933">18px</span><span style="color:#00aa00">;</span>background-<span style="color:#000000;font-weight:bold">color</span><span style="color:#00aa00">:</span><span style="color:#cc00cc">#d4d4d4</span><span style="color:#00aa00">;</span><span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#009900">&lt;<span style="color:#000000;font-weight:bold">div</span> <span style="color:#000066">class</span><span style="color:#66cc66">=</span><span style="color:#ff0000">&quot;20fontsize&quot;</span>&gt;</span>以数字开头的类名<span style="color:#009900">&lt;<span style="color:#66cc66">/</span><span style="color:#000000;font-weight:bold">div</span>&gt;</span></pre></td></tr></table></div>
+
+<p>以数字开始的类名仅在IE6(Q)/IE7(Q)/IE8(Q)下被识别，而其它浏览器下则不识别（忽略该规则）</p>
+<h3>三、如何避免受此问题影响</h3>
+<p>坚持<span style="text-decoration:underline">以字母开头</span>命名选择器，这样可保证在所有浏览器下都能兼容。</p>
+<h3>四、关于团队合作的css命名规范</h3>
+<p>常用的css命名规则</p>
+<p>头：header</p>
+<p>内容：content/container</p>
+<p>尾：footer</p>
+<p>导航：nav</p>
+<p>侧栏：sidebar</p>
+<p>栏目：column</p>
+<p>页面外围控制整体布局宽度：wrapper</p>
+<p>左右中：left right center</p>
+<p>登录条：loginbar</p>
+<p>标志：logo</p>
+<p>广告：banner</p>
+<p>页面主体：main</p>
+<p>热点：hot</p>
+<p>新闻：news</p>
+<p>下载：download</p>
+<p>子导航：subnav</p>
+<p>菜单：menu</p>
+<p>子菜单：submenu</p>
+<p>搜索：search</p>
+<p>友情链接：friendlink</p>
+<p>页脚：footer</p>
+<p>版权：copyright</p>
+<p>滚动：scroll</p>
+<p>内容：content</p>
+<p>标签页：tab</p>
+<p>文章列表：list</p>
+<p>提示信息：msg</p>
+<p>小技巧：tips</p>
+<p>栏目标题：title</p>
+<p>加入：joinus</p>
+<p>指南：guild</p>
+<p>服务：service</p>
+<p>注册：regsiter</p>
+<p>状态：status</p>
+<p>投票：vote</p>
+<p>合作伙伴：partner</p>
+<p>(二)注释的写法:</p>
+<p>/* Footer */</p>
+<p>内容区</p>
+<p>/* End Footer */</p>
+<p>(三)id的命名:</p>
+<p>(1)页面结构</p>
+<p>容器: container</p>
+<p>页头：header</p>
+<p>内容：content/container</p>
+<p>页面主体：main</p>
+<p>页尾：footer</p>
+<p>导航：nav</p>
+<p>侧栏：sidebar</p>
+<p>栏目：column</p>
+<p>页面外围控制整体布局宽度：wrapper</p>
+<p>左右中：left right center</p>
+<p>(2)导航</p>
+<p>导航：nav</p>
+<p>主导航：mainbav</p>
+<p>子导航：subnav</p>
+<p>顶导航：topnav</p>
+<p>边导航：sidebar</p>
+<p>左导航：leftsidebar</p>
+<p>右导航：rightsidebar</p>
+<p>菜单：menu</p>
+<p>子菜单：submenu</p>
+<p>标题: title</p>
+<p>摘要: summary</p>
+<p>(3)功能</p>
+<p>标志：logo</p>
+<p>广告：banner</p>
+<p>登陆：login</p>
+<p>登录条：loginbar</p>
+<p>注册：regsiter</p>
+<p>搜索：search</p>
+<p>功能区：shop</p>
+<p>标题：title</p>
+<p>加入：joinus</p>
+<p>状态：status</p>
+<p>按钮：btn</p>
+<p>滚动：scroll</p>
+<p>标签页：tab</p>
+<p>文章列表：list</p>
+<p>提示信息：msg</p>
+<p>当前的: current</p>
+<p>小技巧：tips</p>
+<p>图标: icon</p>
+<p>注释：note</p>
+<p>指南：guild</p>
+<p>服务：service</p>
+<p>热点：hot</p>
+<p>新闻：news</p>
+<p>下载：download</p>
+<p>投票：vote</p>
+<p>合作伙伴：partner</p>
+<p>友情链接：link</p>
+<p>版权：copyright</p>
+<p>(四)class的命名:</p>
+<p>(1)颜色:使用颜色的名称或者16进制代码,如</p>
+<p>.red { color: red; }</p>
+<p>.f60 { color: #f60; }</p>
+<p>.ff8600 { color: #ff8600; }</p>
+<p>（2）字体大小,直接使用”font+字体大小”作为名称,如</p>
+<p>.font12px { font-size: 12px; }</p>
+<p>.font9pt {font-size: 9pt; }</p>
+<p>(3)对齐样式,使用对齐目标的英文名称,如</p>
+<p>.left { float:left; }</p>
+<p>.bottom { float:bottom; }</p>
+<p>(4)标题栏样式,使用”类别+功能”的方式命名,如</p>
+<p>.barnews { }</p>
+<p>.barproduct { }</p>
+<p>注意事项::</p>
+<p>1.一律小写;</p>
+<p>2.尽量用英文;</p>
+<p>3.不加中杠和下划线;</p>
+<p>4.尽量不缩写，除非一看就明白的单词.</p>
+<p>主要的 master.css</p>
+<p>模块 module.css</p>
+<p>基本共用 base.css</p>
+<p>布局，版面 layout.css</p>
+<p>主题 themes.css</p>
+<p>专栏 columns.css</p>
+<p>文字 font.css</p>
+<p>表单 forms.css</p>
+<p>补丁 mend.css</p>
+<p>打印 print.css</p>

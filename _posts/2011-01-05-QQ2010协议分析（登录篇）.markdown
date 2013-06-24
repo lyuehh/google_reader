@@ -1,0 +1,125 @@
+---
+layout: post
+title:  "QQ2010协议分析（登录篇）"
+date:   2011-01-05 22:52:00
+author: shiqishe
+categories: program
+---
+
+## QQ2010协议分析（登录篇）
+### by shiqishe
+### at 2011-01-05 22:52:00
+### original <http://www.cnblogs.com/83008911/archive/2011/01/05/1926878.html>
+
+<p><p>七月份的时候突然对QQ协议产生了些兴趣，于是这几个月有空就研究研究QQ协议，目前对QQ2010的协议已经分析得差不多了。现在跟大家分享一下我的成果。</p>
+<p>QQ登录分为UDP和TCP登录，还支持代理登录。默认是UDP登录。UDP登录端口服务器为8000，本地端口一般是从4000开始选择，如果该端口已经被占用，则加1再测试，一直测试到一个没有被占用的端口。</p>
+<p><span style="color:#000000">TCP登录服务器一般是80或者443端口，本地端口选择方式和UDP一样。</span></p>
+<p><span style="color:#000000">这些登录方式登录设置里面可以自由选择。但是无论哪种方式登录，其登录流程和数据包格式都是一样。QQ登录时需要进行6次与服务器的交互，每次交互均伴随着登录相关信息的搅浑。QQ登录主要分6步。</span></p>
+<p><span style="color:#000000"><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic002.cnblogs.com/images/2011/138145/2011010521460421.jpg" alt=""></span></p>
+<p><strong><span style="color:#ff0000">1.0x0091 Touch包</span></strong><br>该数据包是QQ客户端登录时发送的第一个包，它的作用在于测试远程服务器是否能够正常响应，根据我们的抓包分析，对于不同的QQ号码段，提供服务的QQ服务器是不相同的，对于QQ会员有专门的QQ会员服务器。在对QQ客户端的回应包中，如果连接的服务器不对该QQ号码提供服务，它会返回另外一个服务器地址，让客户端重新连接该地址。</p>
+<p>     0x0091<span style="font-family:黑体;font-size:13px">发送包：</span></p>
+<p>　　<span style="font-family:黑体;font-size:13px">02 1E 07 00 91 5B B8 04 EE D4 E9 02 00 00 00 01</span><br><span style="font-family:黑体;font-size:13px">　　01 01 00 00 64 2F 6A 84 FA 78 CC 16 51 86 A7 B8</span><br><span style="font-family:黑体;font-size:13px">　　1C 55 E8 29 6B C8 50 95 FB 5A CE E8 6C 89 0A C9</span><br><span style="font-family:黑体;font-size:13px">　　83 D0 68 51 DB 6E D1 93 C1 32 11 9B 84 13 EF 7D</span><br><span style="font-family:黑体;font-size:13px">　　4B 55 8C 08 6C F3 F0 5F 11 16 26 E4 00 68 0D 98</span><br><span style="font-family:黑体;font-size:13px">　　02 BC 06 B9 4E E2 03</span><br>　　<span style="font-family:黑体;color:#ff0000">[</span><br><span style="font-family:黑体;color:#ff0000">　　02 //包头</span><br><span style="font-family:黑体;color:#ff0000">　　1E 07 //版本号</span><br><span style="font-family:黑体;color:#ff0000">　　00 91 //命令</span><br><span style="font-family:黑体;color:#ff0000">　　5B B8 //包序号</span><br><span style="font-family:黑体;color:#ff0000">　　04 EE D4 E9 //QQ号码:82760937</span><br><span style="font-family:黑体;color:#ff0000">　　02 00 00 00 01 01 01 00 00 64 2F //固定，QQ版本号不同则不同</span><br><span style="font-family:黑体;color:#ff0000">　　6A 84 FA 78 CC 16 51 86 A7 B8 1C 55 E8 29 6B C8 //0x91密钥</span><br><span style="font-family:黑体;color:#ff0000">　　00 01 //固定两字节</span><br><span style="font-family:黑体;color:#ff0000">　　00 00 08 04 01 E0 //0091Data01（在后面的命令里面要用到的）</span><br><span style="font-family:黑体;color:#ff0000">　　00 00 03 20 00 00 00 01 00 00 0B BF //0091Data02（在后面的命令里面要用到的）</span><br><span style="font-family:黑体;color:#ff0000">　　00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 //首次发送为15字节0</span><br><span style="font-family:黑体;color:#ff0000">　　03 //包尾</span><br><span style="font-family:黑体;color:#ff0000">　　] </span></p>
+<p><span style="font-family:黑体;color:#ff0000"> <span>  </span></span><span style="font-family:黑体;color:#000000;font-size:13px"> 0x0091接收包：</span></p>
+<p><span style="color:#000000;font-size:13px">     <span style="font-family:黑体">02 1E 07 00 91 5B B8 04 EE D4 E9 00 00 00 C0 EB</span><br><span style="font-family:黑体">　　D0 BF C5 F9 E1 F2 C9 51 9D 3B 26 07 B5 AD 46 49</span><br><span style="font-family:黑体">　　49 C4 49 D7 69 36 9E 11 8E 24 2E A1 B3 AB 90 CE</span><br><span style="font-family:黑体">　　CA 38 C9 99 94 8E 0A 41 03 EB AC E7 C6 BA 34 FD</span><br><span style="font-family:黑体">　　64 9E E7 4B 3D 24 6F 44 0A 77 80 69 96 91 0C 00</span><br><span style="font-family:黑体">　　87 6B 51 25 E5 15 9F E3 54 6E B8 C6 1D 5F DE 40</span><br><span style="font-family:黑体">　　54 BB D8 0C 36 8D 03</span><br>　　<span style="font-family:黑体;color:#ff0000">[</span><br><span style="font-family:黑体;color:#ff0000">　　02 //包头</span><br><span style="font-family:黑体;color:#ff0000">　　1E 07 //版本号</span><br><span style="font-family:黑体;color:#ff0000">　　00 91 //命令</span><br><span style="font-family:黑体;color:#ff0000">　　5B B8 //包序号</span><br><span style="font-family:黑体;color:#ff0000">　　04 EE D4 E9 //QQ号码:82760937</span><br><span style="font-family:黑体;color:#ff0000">　　00 00 00 //固定全为0</span><br><span style="font-family:黑体;color:#ff0000">　　00 //接触成功</span><br><span style="font-family:黑体;color:#ff0000">　　4D 16 07 CC //登录时间:2010-12-25 23:03:40</span><br><span style="font-family:黑体;color:#ff0000">　　7D 47 C8 04 //登录IP地址:125.71.200.4</span><br><span style="font-family:黑体;color:#ff0000">　　00 00 00 00 00 00 00 00 //固定8字节0</span><br><span style="font-family:黑体;color:#ff0000">　　00 38 //0091_Token长度：56字节</span><br><span style="font-family:黑体;color:#ff0000">　　6E F0 FB 35 5F 8E 65 0F 77 E7 A7 D0 AE 69 8C 4D</span><br><span style="font-family:黑体;color:#ff0000">　　EF 43 41 89 BB 79 9C B9 B5 0C 4C 86 5E 8D A0 CB</span><br><span style="font-family:黑体;color:#ff0000">　　84 D7 66 69 CF 63 E9 0D 80 48 F4 E6 C1 30 A7 88</span><br><span style="font-family:黑体;color:#ff0000">　　7E B0 68 0A E6 8C FC D4</span><br><span style="font-family:黑体;color:#ff0000">　　00 //接触成功</span><br><span style="font-family:黑体;color:#ff0000">　　03 //包尾</span><br><span style="font-family:黑体;color:#ff0000">　　]</span></span></p>
+<p><strong><span style="color:#ff0000">2 0x00BA获取验证码</span></strong><br>因为部分QQ号码可能存在异地登录，或者QQ号码被盗发送大量垃圾信息，或者用了挂机软件或者挂机网站挂机，腾讯服务器检验到这些非正常的QQ情况时即会要求输入验证码。<strong><span style="color:#ff0000">以下分析我都直接截取QQAnalyzer的分析图片。贴分析代码比较麻烦，关于QQAn</span></strong><strong><span style="color:#ff0000">alyzer的介绍和下载请看这篇博客：<a href="http://www.cnblogs.com/83008911/archive/2010/10/09/QQAnalyzer.html">http://www.cnblogs.com/83008911/archive/2010/10/09/QQAnalyzer.html</a>。</span></strong></p>
+<p><strong>0x00BA发送包</strong></p>
+<p> <img src="http://pic002.cnblogs.com/images/2011/138145/2011010522024626.jpg" alt=""></p>
+<p><strong>0x00BA接收包</strong></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522034463.jpg" alt=""></p>
+<p><strong><span style="color:#ff0000">3 0x00DD密码验证</span></strong></p>
+<p>该数据包的作用是将本地QQ的密码发送给服务器端进行验证。</p>
+<p><strong>0x00DD发送包</strong></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522081591.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522083177.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522091579.jpg" alt=""></p>
+<p><strong>0x00DD接收包</strong></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522102747.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522103817.jpg" alt=""></p>
+<p><strong><strong><span style="color:#ff0000">4 0x00E5数据校验</span></strong></strong></p>
+<p><strong><strong></strong></strong>该数据包主要用于校验前几个数据包的Token数据，如果通过验证，服务器端会返回本次登录的时间和IP地址等信息。 </p>
+<p> </p>
+<p><strong>0x00E5发送包</strong></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522145558.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522150946.jpg" alt=""></p>
+<p><strong>0x00E5接收包</strong></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522162310.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522162946.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522383552.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522163487.jpg" alt=""></p>
+<p><strong><strong><span style="color:#ff0000">5 0x00E3数据校验</span></strong></strong></p>
+<p><strong><strong></strong></strong><strong>0x00E3发送包</strong> </p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522381944.jpg" alt=""></p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522392688.jpg" alt=""></p>
+<p> </p>
+<p><strong><strong></strong></strong><strong>0x00E3接收包</strong> </p>
+<p><img src="http://pic002.cnblogs.com/images/2011/138145/2011010522401461.jpg" alt=""></p>
+<p><strong><strong><span style="color:#ff0000">6 0x0030获取会话密钥</span></strong></strong></p>
+<p><span style="color:#000000">该数据包是QQ登录流程的最后一个数据包，主要用于向QQ客户端返回会话密钥（Session  Key），该会话密钥由服务器端生成，目前不知道其生成算法。但是估计和QQ号码，登录IP，登录时间以及QQ密码有关。</span></p>
+<p><strong>0x0030发送包</strong></p>
+<p><img style="float:left" src="http://pic002.cnblogs.com/images/2011/138145/2011010522452996.jpg" alt=""></p>
+<p><img style="float:left" src="http://pic002.cnblogs.com/images/2011/138145/2011010522454157.jpg" alt=""></p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong></strong> </p>
+<p><strong>0x0030接收包</strong><span style="color:#ff0000"> </span></p>
+<p><span style="color:#ff0000"><img style="float:left" src="http://pic002.cnblogs.com/images/2011/138145/2011010522455382.jpg" alt=""></span></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p><span style="color:#000000"><strong>以上就是一个完整的QQ登录流程，我们可以看到，腾讯对于登录的设计是相当巧妙而安全的，既能安全的将客户端密码账户传递到服务器端验证，又能保证</strong></span></p>
+<p><span style="color:#000000"><strong>数据即使被截获也无法获取太多有用的信息，不过个人觉得部分登录过程有些冗余，一些数据包可以整合为一个直接发送至服务器端。</strong></span></p>
+<p><span style="color:#000000"><strong>下一篇博客即将为大家 </strong></span><span style="color:#000000"><strong>带来QQ 2010的消息发送和接收分析，还有QQ的右下角广告弹出窗口的分析，目前发现这个弹出窗口存在一些漏洞我们可以利用从而轻易</strong></span></p>
+<p><span style="color:#000000"><strong>获取QQ的账号和密码。</strong></span></p>
+<p><span style="color:#000000"><strong>腾讯。。。啦啦啦。。。</strong></span></p>
+<p><span style="color:#000000"><strong>对QQ协议有兴趣的可以加这个群：62596902</strong></span></p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p> </p><img src="http://www.cnblogs.com/83008911/aggbug/1926878.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/83008911/">shiqishe</a> 发表于 2011-01-05 22:52 <a href="http://www.cnblogs.com/83008911/archive/2011/01/05/1926878.html">原文链接</a></p><p>评论: 46　<a href="http://www.cnblogs.com/83008911/archive/2011/01/05/1926878.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/83008911/archive/2011/01/05/1926878.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/87472/">&quot;一个扫地老太太&quot;成2011网络第一&quot;红人&quot;</a><span style="color:gray">(2011-01-06 20:55)</span><br>· <a href="http://news.cnblogs.com/n/87471/">淘宝宣布B2C商城业务一年增长4倍</a><span style="color:gray">(2011-01-06 20:42)</span><br>· <a href="http://news.cnblogs.com/n/87470/">韩国警方称谷歌街景非法收集WiFi用户信息</a><span style="color:gray">(2011-01-06 20:34)</span><br>· <a href="http://news.cnblogs.com/n/87469/">支持AirPlay技术 新齐柏林飞艇惊现CES</a><span style="color:gray">(2011-01-06 20:28)</span><br>· <a href="http://news.cnblogs.com/n/87468/">手机QQ1.0(Android)Beta4发布：支持离线图片</a><span style="color:gray">(2011-01-06 20:16)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/87347/">让能者不多得</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

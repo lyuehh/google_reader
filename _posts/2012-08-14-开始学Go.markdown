@@ -1,0 +1,154 @@
+---
+layout: post
+title:  "开始学Go"
+date:   2012-08-14 21:36:10
+author: bigwhite
+categories: program
+---
+
+## 开始学Go
+### by bigwhite
+### at 2012-08-14 21:36:10
+### original <http://tonybai.com/2012/08/14/getting-going-with-go/?utm_source=rss&utm_medium=rss&utm_campaign=getting-going-with-go>
+
+<p>本文翻译自<a href="http://www.drdobbs.com/">Dr.Dobb&#39;s</a>的&quot;<a href="http://www.drdobbs.com/open-source/getting-going-with-go/240004971">Getting Going with Go</a>&quot;。</p>
+<p><b>本文是有关Google新的系统原生语言的五周教程的第一部分，这里将先向大家展示如何建立<a href="http://golang.org">Go语言</a>开发环境以及构建程序，然后带领大家浏览 一些代码范例来着重了解一下这门语言的一些有趣的特性。</b></p>
+<p><i>这个教程系列将连续刊登五周。在今天这一部分中，Go语言专家Mark Summerfield将讲解如何建立Go语言开发环境，提供两个Go语言范例并给予深度解析。这些样例程序会向大家局部地展示了Go语言的一些关键特性 以及包。接下来几周将展示其余的关键特性，并特别为C、C++和Java程序员们深入研究那些Go语言独有的特性。</i></p>
+<p><i>正如本周<a href="http://tonybai.com/2012/08/08/why-not-go/">主编文章</a>中所解释的那样，Go语言拥有许多独一无二的特性，因此它也许可以被称为二十一世纪的<a href="http://tonybai.com/tag/c">C语言</a>。而且考虑到Ken Thompson也是该语言的设计者之一，这两种语言的确是有共同的祖先。</i></p>
+<p><b>开始</b></p>
+<p>Go是编译型语言，而不是解释型的。Go的编译速度非常快– 甚至远远快过其他同类语言- 知名的如C和C++。</p>
+<p>标准Go语言编译器被称为gc，与其相关的工具链包括用于编译的5g、6g和8g；用于链接的5l、6l和8l以及用于查看Go语言文档的 godoc(在Windows平台上这些程序为5g.exe、6g.exe等等诸如此类)。这些奇怪的名字遵循了Plan 9操作系统编译器的命名方式，即用数字表示处理器体系(&quot;5&quot;代表ARM，&quot;6&quot;代表AMD64-包括Intel 64位处理器- &quot;8&quot;代表Intel 386)。幸运的是，我们无需对此产生忧虑，Go语言提供了一个更高级别的Go语言构建工具，这个工具可以为我们处理编译和链接任务。</p>
+<p>本文中的所有代码使用的都是Go 1版本语法，并在Linux、Mac OS X以及Windows上用gc测试通过了。Go语言的开发者计划让随后所有Go 1.x版本支持Go 1向后兼容，因此这里的代码和例子将适用于所有1.x系列版本。</p>
+<p>要下载和安装Go，请访问<i>golang.org/doc/install.html</i>，那里提供了下载链接与安装指令。Go 1为FreeBSD 7+、Linux 2.6+、Mac OS X (Snow Leopard和Lion)以及Windows 2000+提供源码包以及二进制形式安装包，可以支持所有Intel 32位和AMD 64位处理器体系。Go还支持ARM处理器版本的Linux，为Ubuntu Linux发布版提供预建go包。当你读到这里时，也许已经有其他Linux发布版的Go安装包了。</p>
+<p>使用gc编译器的程序使用了一种特定的调用惯例(call convention)。这意味着使用gc编译的程序只可以与使用同样调用惯例编译的外部库进行链接 – 除非使用某适合的工具消除这些差异。使用cgo工具Go可以支持在Go程序中使用外部C代码，并且至少在Linux和BSD系统上，通过SWIG工具我们 可以将C和C++代码用于Go程序中。</p>
+<p>除了gc，还有一种编译器称为gccgo。它是Gcc的一个Go特定前端，Gcc 4.6及以后版本才能支持。像gc一样，gccgo也许内建在一些Linux发行版中。构建和安装gccgo的指令在Go主站点上可以找到。</p>
+<p><b>Go文档</b></p>
+<p>Go的官方站点上维护着一份最新的Go文档。&quot;Packages&quot;链接提供了有关所有Go标准库包的访问方式- 以及它们的源码，这些源码在文档还很稀缺时十分有用。通过&quot;Commands&quot;链接你可以找到与Go一起发布的相关程序的文档(诸如编译器，构建工具 等)。通过&quot;Specification&quot;链接，你可以找到一份非正式，但很全面的Go语言规范。通过&quot;Effective Go&quot;链接，你可以找到一份介绍Go最佳实践的文档。</p>
+<p>该站点还提供了一个沙箱特性，用于在线编写、编译以及运行Go小程序(稍有限制)。这个特性十分有用，便于初学者试验一些古怪的语法。Go站点上 的搜索框只能用于在Go文档中搜索；如果要对Go的资源进行全面搜索，请访问<a href="http://go-lang.cat-v.org/go">http://go-lang.cat-v.org/go</a>- search。</p>
+<p>Go的文档也可以在本地浏览，例如在Web浏览器中。如果要这样做，可运行Go的godoc工具，并通过传入命令行参数告知它以一个web服务器 的方式运行。下面是在一个Unix或Windows控制台中进行这个操作的方法，假设PATH环境变量中已经设置了godoc：</p>
+<p><span style="font-family:courier new,courier,monospace">$ godoc -http=:8000</span></p>
+<p>这个例子中的端口号可以是任意的- 如果它与一个已存在的服务器端口冲突，可以使用其他任一个端口号。</p>
+<p>要想查看文档，打开一个浏览器，输入地址http://localhost:8000。一个类似golang.org首页的页面将会呈现在你的面 前。&quot;Package&quot;链接将指向Go标准库以及安装在GOROOT环境变量下的第三方包的文档。如果你定义了GOPATH环境变量(比如，为本 地程序和包)，一个链接将会出现在&quot;Packages&quot;链接旁，通过这个链接你可以访问其他相关文档。(本文后续会讨论GOROOT和 GOPATH环境变量)</p>
+<p><b>编辑，编译和运行</b></p>
+<p>Go程序用UTF-8编码的普通的Unicode文本编写。绝大多数现代文本编辑器都可以自动处理这些代码，并且一些最流行的编辑器可以支持Go 源码的语法色彩高亮以及自动缩进。如果你的编辑器不支持Go，可以尝试在Go搜索引擎中输入你的编辑器的名字，查看一下是否有合适的插件。作为编 辑惯例，Go所有的关键字和操作符都使用ASCII字母；然而，Go的标识符可以以任意Unicode字母作为起始，后面可以跟着任意 Unicode字母或数字，因此Go开发者可以自由使用他们的母语。</p>
+<p>为了掌握如何编辑、编译以及运行一个Go程序，我开始会用经典的&quot;Hello World&quot;程序作为例子- 然而我编写这个程序比寻常的稍复杂些。</p>
+<p>如果你已经用二进制包或通过源码安装了Go，并且是以root或管理员权限安装的，你应该至少设置一个环境变量：GOROOT，该变量指示Go的 安装路径信息，你的PATH变量现在应该包含$GOROOT/bin或%GOROOT%\bin。为了检查Go安装地是否正确，可在控制台下输入 下面命令：</p>
+<p><span style="font-family:courier new,courier,monospace">$ go version</span></p>
+<p>如果你得到&quot;command not found&quot;或&quot;&#39;go&#39; is not recognized…&quot;的错误信息，那就意味着在PATH变量配置的路径下没有Go。</p>
+<p><b>编译与链接</b></p>
+<p>构建一个Go程序需要两步：编译和链接。(由于我们假设使用gc编译器，使用gccgo编译器的读者需要遵循golang.org/doc /gccgo_install.html中描述的编译和链接过程，同样，使用其他编译器的读者需要根据其编译器的指令进行编译和链接)。编译和链 接过程都由工具go处理，它不仅可以构建本地程序和包，还能够获取、构建以及安装第三方程序和包。</p>
+<p>要想go能够编译本地程序和包，有三个要求。第一，Go的bin目录($GOROOT/bin或%GOROOT%\bin)必须在PATH环境变 量下。第二，必须存在一个目录，该目录下包含一个src目录，本地程序和包的源码就驻留在src目录下。例如，例子代码会解包到goeg/src /hello、goeg/src/bigdigits下等。最后，包含src的那个目录必须在GOPATH环境变量中设置。例如，要使用go工具 构建hello这个例子，我们必须这么做：</p>
+<p><span style="font-family:courier new,courier,monospace">$ export GOPATH=$HOME/goeg<br>
+	$ cd $GOPATH/src/hello<br>
+	$ go build</span></p>
+<p>两个例子中，我们都假设PATH环境变量中包含了$GOROOT/bin或%GOROOT%\bin。一旦go编译程序完毕，我们就可以运行这个 程序了。默认情况下，go会用可执行文件所在目录的名字来命名该文件(例如，在类Unix系统上是hello，而在Windows上为 hello.exe)。一旦构建完毕，我们就可以按常规方式运行它。</p>
+<p><span style="font-family:courier new,courier,monospace">$ ./hello<br>
+	Hello World!</span></p>
+<p>注意，我们不需要编译或显式地链接其他包(即便后续我们将看到，hello.go使用了三个标准库的包)。这也是Go程序编译如此之快的一个原 因。</p>
+<p>如果我们有多个Go程序，若他们的可执行文件能够放在同一个目录下将会非常方便，后续只需将这个目录加入到PATH环境变量中。幸运地是go支持 这样的情况：</p>
+<p><span style="font-family:courier new,courier,monospace">$ export  GOPATH=$HOME/goeg<br>
+	$ cd  $GOPATH/src/hello<br>
+	$ go install</span></p>
+<p>go install命令除了做了go build所做的事情之外，还将可执行文件放在标准位置($GOPATH/bin或%GOPATH%\bin)。这意味着将一个单一路径($GOPATH /bin或%GOPATH&gt;%\bin)加入到PATH环境变量中，我们安装的所有Go程序就可以方便地被加入到PATH中。</p>
+<p>除了这里给出的例子外，我们很可能想要在我们自己的目录下开发我们自己的Go程序和包。通过为GOPATH环境变量设置两个(或更多)冒号分隔的 路径(在Windows上用分号分隔)我们可以很容易解决这个问题。</p>
+<p>虽然Go使用go工具作为标准构建工具，但你仍然可以使用make或其他现代构建工具，或使用其他Go专用的构建工具，或一些流行IDE的插件。</p>
+<p><b>和谁打招呼(Hello)?</b></p>
+<p>既然我们已经看到了如何构建一个Hello程序，接下来我们来看看其源代码。下面是hello程序的完整源码(在文件 hello/hello.go中)：</p>
+<p><span style="font-family:courier new,courier,monospace">// hello.go<br>
+	package main<br>
+	import (<br>
+	    &quot;fmt&quot;<br>
+	    &quot;os&quot;<br>
+	    &quot;strings&quot;<br>
+	)<br>
+	func main() {<br>
+	    who := &quot;World!&quot;<br>
+	    if len(os.Args) &gt; 1 { /* os.Args[0] is &quot;hello&quot; or &quot;hello.exe&quot; */<br>
+	        who = strings.Join(os.Args[1:], &quot; &quot;)<br>
+	    }<br>
+	    fmt.Println(&quot;Hello&quot;, who)<br>
+	}</span></p>
+<p>Go用C++风格的注释符号//作为单行注释，用/* … */作为多行注释符号。依照惯例，Go中多使用单行注释，多行注释常用于在开发中注释掉代码块。</p>
+<p>每段Go代码都存在于一个包内，并且每个Go程序必须具有一个包含main()函数的main包，其中main函数会作为程序执行的入口点，即这 个函数首先执行。事实上，Go包也可以定义在main函数之前执行的init函数。值得注意的是包名和函数名之间不会存在冲突的情况。</p>
+<p>Go的操作是以包为单位的，而不是文件。这意味着我们可以根据需要任意地将一个包拆分到多个文件中。如果多个文件具有相同的包声明，Go语言认为 这些文件都是同一个包的组成部分，与所有内容在单一文件中无异。当然，我们也可以将应用的功能分解到许多本地包中，这样可以保持代码整洁地模块 化。</p>
+<p>import语句从标准库导入三个包。fmt包提供格式化文本以及读取格式化文本的函数；os包提供平台无关的操作系统变量以及函 数；strings包提供操作字符串的函数。</p>
+<p>Go的基本类型支持普通操作符(例如，+可用于数值加法以及字符串连接)，Go的标准库通过提供操作基本类型的函数包补充功能，例如这里导入的 strings包。我们可以在基本类型的基础上创建我们自定义的类型并为它们定义相关方法- 自定义操作特性类型的函数。</p>
+<p>读者也许已经注意到了Go源码中没有分号、import的包无需逗号分隔以及if条件语句不需要括号。在Go中，块(block)，包括函数体以 及控制结构体(如for、if语句以及for循环)，使用括号界定。缩进只是单纯用于提高代码的可读性。技术上而言，Go语句是用分号分隔的，但 这些分号由编译器插入，我们自己无需关心，除非我们要将多个语句放在同一行中时。没有分号、很少的逗号以及括号让Go程序看起来更简洁，需要的输 入也更少。</p>
+<p>Go使用func关键字定义函数(function)和方法(method)。main包的main()函数总是具有相同的函数签名 – 没有参数、没有返回值。当main.main()结束时，程序将终止并返回0给操作系统。当然，我们可以在任意时刻返回并选择我们自己的返回值。</p>
+<p>main()函数中的第一个语句(使用:=操作符)在Go的术语里被称为一个短变量声明。这个语句在同一时间声明并初始化一个变量。此外，我们无 需指定变量的类型，因为Go可根据初始值推导出变量的类型。因此在这个例子中，我们声明了一个string类型的变量who，感谢Go的强类型机 制，我们只需将字符串赋值给who即可。</p>
+<p>os.Args变量是字符串的一个slice(片段)。Go使用array(数组)、slice和其他集合数据类型，但在这些例子中，知道下面这 些即可：使用内置的len()函数获取一个slice的长度以及通过[]下标操作符访问其中的元素。特别是，slice[n]返回slice的第 n个元素(从0起始)，slice[:n]返回另外一个slice，这个新slice由原slice的第n个到最后一个之间的元素组成。在集合一 章，我们将看到有关这方面的一般性的Go语法。就这里的os.Args来说，这个slice总是应该至少在位置0处具有一个字符串(程序的名 字)。(所有Go的下标索引都是从0开始)</p>
+<p>如果输入一个或更多命令行参数，if条件将被满足，我们将所有参数拼接成一个单一的字符串并赋值给who。在这里例子中，我们使用赋值操作符 (=)，如果我们使用:=，我们将声明和初始化一个新的who变量，其影响范围将局限在if语句块中。strings.Join函数接受一个字符 串slice和一个分割符(可以为空，即&quot;&quot;)作为参数，并返回一个由所有slice的字符串元素组成的，由分隔符分隔的单一字符串。这里我们用 空格分隔这些字符串。</p>
+<p>最后，在最后一个语句中，我们输出Hello，一个空格，who变量中的字符串以及一个新行(newline)。fmt包中拥有许多不同的打印输 出变体，一些像fmt.Println()的将整齐地输出任何传入的值，其他的诸如fmt.Printf将使用占位符以提供更佳的格式控制。</p>
+<p><b>另外一个例子 – 二维slices</b></p>
+<p>下一个例子bigdigits程序从命令行(以一个字符串形式)读取一个数，并在控制台上使用&quot;大号字体&quot;输出这个数。早在二十世纪，在很多用户 共享一台高速行打印机的场合，按惯例将使用这种技术在每个用户的打印工作之前放置一个封面，该封面可以展示用于识别的细节，诸如用户名以及将被打 印的文件的名字。</p>
+<p>我将分三段回顾这个程序的代码：首先是import部分，然后是静态数据，最后是处理过程。不过现在让我们来看看一个样例，了解一下这个程序是如 何工作的吧：</p>
+<p><span style="font-family:courier new,courier,monospace">$ ./bigdigits  290175493</span></p>
+<p><img alt="" src="http://tonybai.com/wp-content/uploads/bigdigits.gif" style="width:425px;height:98px"></p>
+<p>每位数字都由一个字符串slice表示，所有数字一起由一个元素为字符串slice的slice表示。在查看数据之前，这里我们展示一下如何声明 和初始化一个一维的字符串和数字slice：</p>
+<p><span style="font-family:courier new,courier,monospace">longWeekend := []string{&quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;, &quot;Monday&quot;}<br>
+	var lowPrimes = []int{2, 3, 5, 7, 11, 13, 17, 19}</span></p>
+<p>slice用[]Type表示，如果我们要初始化它们，我们可以直接在后面跟上一个用大括号包裹、逗号分隔的对应类型的元素列表。我们本可以用同 样的变量声明语法来声明这两个变量，但在这里我们为展示两种语法的差异以及一个稍后即将说明的原因，lowPrimes slice使用了一个更长形式的声明。由于slice类型可以作为slice类型的元素类型，因此我们可以很容易地创建多维集合（slice的slice 等）。</p>
+<p>bigdigits程序只需要导入四个包。</p>
+<p><span style="font-family:courier new,courier,monospace">import (<br>
+	    &quot;fmt&quot;<br>
+	    &quot;log&quot;<br>
+	    &quot;os&quot;<br>
+	    &quot;path/filepath&quot;<br>
+	)</span></p>
+<p>fmt包提供了用于文本格式化和读取格式化文本的函数。log包提供了日志记录函数。os包提供了平台无关的操作系统变量以及函数，其中就包括持 有命令行参数值的[]string类型的os.Args变量。path包下面的filepath包提供跨平台操作文件名和路径的相关函数。注意对 于逻辑上存在包含关系的包(译注：如path/filepath)来说，我们在代码中使用时只指明其名字的最后部分（这里是filepath）。</p>
+<p>对于bigdigits这个程序，我们需要一个二维的数据(一个字符串slice的slice)。下面就是创建它的方法，通过代表数字0的字符串 布局我们可以看出这个数字对应的字符串在输出时相应的行。3到8的数字对应的字符串这里省略了。</p>
+<p><span style="font-family:courier new,courier,monospace">var bigDigits = [][]string{<br>
+	   {&quot;  000  &quot;,<br>
+	    &quot; 0   0 &quot;,<br>
+	    &quot;0     0&quot;,<br>
+	    &quot;0     0&quot;,<br>
+	    &quot;0     0&quot;,<br>
+	     &quot;0  0&quot;,<br>
+	     &quot; 000 &quot;},<br>
+	    {&quot; 1 &quot;, &quot;11 &quot;, &quot; 1 &quot;, &quot; 1 &quot;, &quot; 1 &quot;, &quot; 1 &quot;, &quot;111&quot;},<br>
+	    {&quot;222&quot;,&quot;2  2&quot;,&quot;  2&quot;,&quot;  2 &quot;,&quot;2  &quot;,&quot;2  &quot;,&quot;22222&quot;},<br>
+	    // … 3 to 8 …<br>
+	    {&quot; 9999&quot;, &quot;9  9&quot;, &quot;9  9&quot;, &quot; 9999&quot;, &quot;  9&quot;, &quot;  9&quot;, &quot;  9&quot;},</span></p>
+<p>在函数或方法外面声明的变量不可以使用:=操作符，但我们可以使用长声明形式(使用关键字var)以及赋值操作符(=)来得到同样的效果，就如我 们这里为bigDigits程序中的变量所做的那样(前面对lowPrime变量的声明)。我们仍然无需指定bigDigits变量的类型，Go 可以从赋值中推断出其类型。</p>
+<p>我们把计算工作留给了Go编译器，因此也没有必要指出slice的维数。Go的一个方便之处就是它对使用了括号的符合字面值的良好支持，这样我们 无需在一个地方声明一个数据变量，然后在另外一个地方用数据给它赋值了。</p>
+<p>main()函数读取命令行，并使用这些数据产生输出，这个函数只有20行。</p>
+<p><span style="font-family:courier new,courier,monospace">func main() {<br>
+	    if len(os.Args) == 1 {<br>
+	        fmt.Printf(&quot;usage: %s &lt;whole-number&gt;\n&quot;, filepath.Base(os.Args[0]))<br>
+	        os.Exit(1)<br>
+	    }<br>
+	 <br>
+	    stringOfDigits := os.Args[1]<br>
+	    for row := range bigDigits[0] {<br>
+	        line := &quot;&quot;<br>
+	        for column := range stringOfDigits {<br>
+	            digit := stringOfDigits[column] – &#39;0&#39;<br>
+	            if 0 &lt;= digit &amp;&amp; digit &lt;= 9 {<br>
+	                line += bigDigits[digit][row] + &quot; &quot;<br>
+	            } else {<br>
+	                log.Fatal(&quot;invalid whole number&quot;)<br>
+	            }<br>
+	        }<br>
+	        fmt.Println(line)<br>
+	    }<br>
+	}</span></p>
+<p>程序一开始检查是否有任何命令行参数。如果没有，len(os.Args)的值将为1(回忆一下，os.Args[0]中存放的是程序名，因此这 个slice的长度至少是1)。如果这个if语句条件成立，我们将使用fmt.Printf输出一条适当程序用法信息，该Printf函数使用类 似C/C++中printf()或Python中%操作符的%占位符。</p>
+<p>path/filepath包提供路径操作函数- 比如，filepath.Base()函数返回给定路径的基本名(basename，即文件名)。在输出这条信息后，程序使用os.Exit()函数结束 程序，并返回1给操作系统。在类Unix系统中，一个值为0的返回值用于表示成功，非0值标识用法错误或失败。</p>
+<p>filepath.Base()函数的使用向我们说明了Go的一个美妙的特性：当一个包被导入时，无论它是顶层的包还是逻辑上内置于其他包中的包 (例如：path/filepath)，我们总是可以只通过其名字的最后部分(即filepath)来引用它。我们还可以给包赋予本地名字以避免 名字冲突。</p>
+<p>如果至少传入了一个命令行参数，第一个参数将被拷贝到stringOfDigits变量(string类型)中。要想将用户输入的数字转换成大数 字，我们必须迭代处理bigDigits slice的每一行，即每个数字的第一行(最上面的一行)，接下来第二行，依次类推。我们假设所有bigDigits的slice都具有相同数量的行，这 样我们可以从第一个slice那里得到行数。Go的for循环对不同场景有不同的应对语法；在这个例子中，for…range循环返回 slice中每个元素的索引位置信息。</p>
+<p>行和列的循环部分的代码可以这样来写：</p>
+<p>for row := 0; row &lt; len(bigDigits[0]); row++ {<br>
+	    line := &quot;&quot;<br>
+	    for column := 0; column &lt; len(stringOfDigits); column++ {<br>
+	        …</p>
+<p>这是一个C、C++和Java程序员都熟悉的语法形式，在Go中它也是有效的。(与C、C++和Java不同在于，在Go中，++和–操作符只 能用作语句，而不能用作表达式。此外，它们只能被用作后缀操作符，而不能作为前缀操作符。这意味着求值顺序导致的相关问题在Go中不会发生- 谢天谢地，像f(i++)和a[i] = b[++i]这样的表达式在Go中是非法的。) 然而，for…range语法更加短小，也更加方便。</p>
+<p>在每次行迭代时，代码会将行的line赋值为空字符串。接下来，我们做迭代处理从用户那里获取的stringOFDigits中的列(即，字 符)。Go的字符串使用UTF-8字符，因此本质上一个字符很可能用两个或更多字节表示。但这不是这里要讨论的话题，因为我们只关心数值0、 1、…、9，这些数值用UTF-8字符表示时只需一个字节，与用7比特ASCII字符表示所使用的字节值相同。</p>
+<p>当我们索引字符串中的某个特定位置时，我们获取了那个位置的字节值。(在Go中byte类型是uint8类型的同义词。)因此我们获取到命令行字 符串特定列上的字节值，减去数字0的字节值后，得到它表示的数字。在UTF-8(以及7比特ASCII)中，字符&#39;0&#39;是码点(字符)十进制值 48，字符&#39;1&#39;是码点十进制值49，依次类推。这样举例，如果我们有字符&#39;3&#39;（码点1），我们可以通过做减法&#39;3&#39; – &#39;0&#39;(即51-48)的结果得到其整型值3。</p>
+<p>Go使用单引号表示字符字面值，一个字符字面值是一个与Go任何整型类型都兼容的整数。Go的强类型意味着如果不进行显式转型，我们无法将一个 int32类型的数与一个int16类型的数相加，不过，Go中的数值常量和字面值自适应于其上下文，这样一来，这里的&#39;0&#39;被认为是一个字节。</p>
+<p>如果这个数字(byte类型)在范围内，我们会将对应的字符串加到line变量中。(在if语句中，常量0和9被认为是byte类型，因为它们是 数值类型，但如果数值是一个不同的类型，比如说，int，它们将会被当作新类型对待。)虽然Go中的字符串是不可改变的，Go仍然支持+=附加操 作符以提供一个便于使用的语法。(它通过在后台替换掉原先的字符串。)Go同样支持+字符串连接操作符，该操作将返回一个由左右字符串操作数连接 而成的新字符串。</p>
+<p>为了获取对应的字符串，我们根据这个数值访问bigDigits slice，然后访问其中我们需要的行(字符串)。</p>
+<p>如果数值超出了范围(比如，由于stringOfDigits包含了一个非数值)，我们调用log.Fatal()函数记录一条错误信息。如果没有显式指 定其他日志输出目标，这个函数会在os.Stderr中记录下日期、时间和错误信息。然后该函数调用os.Exit(1)结束程序。还有 一个名为log.Fatalf()的函数可以做同样的事情，但它接受%占位符。我们没有在第一个if语句中使用log.Fatal()函数，因为 我们想输出程序的使用方法信息，但不要log.Fatal()默认输出的日期和时间信息。</p>
+<p>一旦给定行的所有数字的字符串都累加完毕，完整的一行就被输出。在这里，我们输出了7行，因为每个bigDigits slice中的数字由七个字符串表示。</p>
+<p>最后一点是声明和定义的顺序无关紧要。因此在bigdigits/bigdigits.go文件中，我们可在main()函数前声明bigDigits变 量，也可在后面声明。在这个例子里，我们将main()函数放在前面，对于这篇文章中的例子，我们通常更倾向于自顶向下的排序。</p>
+<p>这里的两个例子已经涵盖了大量特性，但它们所展示的资料与其他主流语言甚为相似，即便语法稍有不同。下周的文章将检视Go语言的其余特性，包含一些高级方面的特性。</p>
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p><img src="http://www1.feedsky.com/t1/681632816/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/08/14/getting-going-with-go/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=getting-going-with-go" border="0" height="0" width="0">

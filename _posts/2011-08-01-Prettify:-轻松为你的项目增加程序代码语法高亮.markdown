@@ -1,0 +1,112 @@
+---
+layout: post
+title:  "Prettify: 轻松为你的项目增加程序代码语法高亮"
+date:   2011-08-01 21:21:56
+author: Slacken
+categories: program
+---
+
+## Prettify: 轻松为你的项目增加程序代码语法高亮
+### by Slacken
+### at 2011-08-01 21:21:56
+### original <http://item.feedsky.com/~feedsky/heikezhi/~8608072/547688281/6713895/1/item.html>
+
+<p><strong>一、下载源代码</strong></p>
+<p>你可以在<a href="http://code.google.com/p/google-code-prettify/">这里</a>下载实现语法高亮的源文件.</p>
+<p><strong>二、将src目录放到你的项目目录中</strong></p>
+<p>我一般把这个目录重命名为highlighter。不要删除里面的任何东西，除非你确信以后不会使用到支持特定语言的JavaScript文件。</p>
+<p><strong>三、导入必要的文件</strong></p>
+<p>在你的HTML中，导入这两个文件：prettify.css和prettify.js。</p>
+<pre name="code">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+   &lt;meta charset=&quot;utf&amp;mdash;8&quot;&gt;
+   &lt;title&gt;untitled&lt;/title&gt;
+   &lt;link rel=&quot;stylesheet&quot; href=&quot;highlighter/prettify.css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;script src=&quot;highlighter/prettify.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>注意我们是把脚本文件放在页面的底部，恰好在body标签关闭之前。这通常是很巧妙的办法，因为这样做能提高性能。<br>
+接下来就是使其运行。语法高亮插件会搜索class为prettyprint的pre或者code标签。</p>
+<pre name="code">&lt;pre class=&quot;prettyprint&quot;&gt;
+(function() {
+   var jsSyntaxHighlighting = &#39;rocks&#39;;
+})();
+&lt;/pre&gt;</pre>
+<p><strong>四、调用prettyPrint()函数</strong></p>
+<p>最后一步就是执行prettyPrint()函数。我们将&lt;script&gt;prettyPrint();&lt;/script&gt;同样放在页面底部。</p>
+<pre name="code">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+   &lt;meta charset=&quot;utf-8&quot;&gt;
+   &lt;title&gt;untitled&lt;/title&gt;
+   &lt;link rel=&quot;stylesheet&quot; href=&quot;highlighter/prettify.css&quot; /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+(function() {
+   var jsSyntaxHighlighting = &#39;rocks&#39;;
+})();
+&lt;/pre&gt;
+&lt;script src=&quot;highlighter/prettify.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;prettyPrint();&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+<p>如果在浏览器中看到如下页面（就说明成功了）。</p>
+<p><img title="highlight" src="http://heikezhi.com/wp-content/uploads/2011/08/highlight-300x225.jpg" alt="" width="300" height="225"></p>
+<p>就是这样简单。但是，如果你想更改语法高亮的主题，还有最后额外的一个步骤。你还得编辑CSS文件。庆幸的是，在<a href="http://google-code-prettify.googlecode.com/svn/trunk/styles/index.html">主题库</a>有很多CSS主题可供你免费使用。个人而言我喜欢用<a href="http://code.google.com/p/google-code-prettify/source/browse/trunk/styles/desert.css">Desert主题</a>。要应用它，要把上面链接页面的CSS复制下来，新建一个样式表，再粘贴到里面去。然后在HTML的head中引入这个样式表。</p>
+<pre name="code">&lt;head&gt;
+   &lt;meta charset=&quot;utf-8&quot;&gt;
+   &lt;title&gt;untitled&lt;/title&gt;
+   &lt;link rel=&quot;stylesheet&quot; href=&quot;highlighter/dessert.css&quot; /&gt;
+&lt;/head&gt;</pre>
+<pre><a href="http://heikezhi.com/wp-content/uploads/2011/08/desert-theme.jpg"><img title="desert-theme" src="http://heikezhi.com/wp-content/uploads/2011/08/desert-theme.jpg" alt="" width="514" height="386"></a></pre>
+<p>老实说，有比这还简单的吗？<br>
+—————————<br>
+译自：<a href="http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-how-to-add-syntax-highlighting-to-any-project/">http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-how-to-add-syntax-highlighting-to-any-project/</a></p>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="GitHub:改变开发者的工作方式，让代码分享更简单" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F21%2Fgithub-simplifies-sharing-code-to-change-how-developers-work%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F01%2Fquick-tip-how-to-add-syntax-highlighting-to-any-project%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/07/21/18364162.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">GitHub:改变开发者的工作方式，让代码分享更简单</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="代码中最重要的并不是代码" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F09%2Fthe-most-important-code-isnt-code%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F01%2Fquick-tip-how-to-add-syntax-highlighting-to-any-project%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/10/11657980.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">代码中最重要的并不是代码</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="不喜欢8小时外写代码的就不是好开发？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F23%2Fi-dont-program-in-my-spare-time-does-that-make-me-a-bad-developer%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F01%2Fquick-tip-how-to-add-syntax-highlighting-to-any-project%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/24/14154347.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">不喜欢8小时外写代码的就不是好开发？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="GNU/Linux中有多少GNU的代码？" style="text-decoration:none!important;cursor:pointer!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F06%2F02%2Fhow-much-gnu-in-gnu-linux%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F01%2Fquick-tip-how-to-add-syntax-highlighting-to-any-project%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/03/10756654.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">GNU/Linux中有多少GNU的代码？</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/547688281/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/547688281/6713895/1/item.html" border="0" height="0" width="0">

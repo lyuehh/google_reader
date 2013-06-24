@@ -1,0 +1,43 @@
+---
+layout: post
+title:  "Asp.net MVC2.0系列1-基础知识"
+date:   2010-06-24 15:41:00
+author: 你听海是不是在笑
+categories: program
+---
+
+## Asp.net MVC2.0系列1-基础知识
+### by 你听海是不是在笑
+### at 2010-06-24 15:41:00
+### original <http://www.cnblogs.com/nuaalfm/archive/2010/06/24/1764458.html>
+
+<p><a href="http://www.cnblogs.com/nuaalfm/"><img src="http://pic.cnblogs.com/face/u6998.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/nuaalfm/">你听海是不是在笑</a> 发表于 2010-06-24 15:41 <a href="http://www.cnblogs.com/nuaalfm/archive/2010/06/24/1764458.html">原文链接</a> 阅读: 799 评论: 3</p><p>一、MVC基础介绍</p>
+<p>模型-视图-控制器（MVC）可能是近年来网络编程圈子里最常被提及的模式之一，微软推出Asp.net mvc后更是推波助澜，但由于在.net上MVC起步比较晚所以在.net平台上使用MVC架构做项目的并不是很多，绝大多数项目还是沿用着WebForm方案，当然这里并不是想说WebForm方案就不好，微软也一再强调Asp.net mvc并不是用来替代WebForm的，Asp.net mvc只是为开发者提供了新的选择，本系列希望可以帮助大家快速了解Asp.net mvc。</p>
+<p>1、历史</p>
+<p>MVC不是一种设计模式（design pattern），它是一种架构模式（Architectural pattern），用以描述应用程序的结构以及结构中各部分的职责和交互方式。最早由Trygve Reenskaug在1974年提出，是施乐帕罗奥多研究中心（Xerox PARC）在20世纪80年代为程序语言Smalltalk发明的一种软件设计模式。MVC模式的目的是实现一种动态的程式设计，使后续对程序的修改和扩展简化，并且使程序某一部分的重复利用成为可能。除此之外此模式通过对复杂度的简化使程序结构更加直观。软件系统通过对自身基本部份分离的同时也赋予了各个基本部分应有的功能。目前我们在网络开发中所采用的这种模式实际上是原版模式的一个改编版。这种改编版架构模式的疯狂流行是由于两个极其流行的开发框架将这种模式包含了进来，它们是：Struts 和 Ruby on Rails。这两个开发框架给稍后诞生的数百框架打上了深深的烙印。Asp.net mvc也深受其影响。</p>
+<p>2、MVC各层次职责分解：</p>
+<p>模型-视图-控制器架构模式背后的思想非常简单：我们的应用程序中必须区分下面这些职责：</p>
+<p><img src="http://pic002.cnblogs.com/img/nuaalfm/201006/2010062414392187.png"></p>
+<p>模型（Model）：</p>
+<p>模型是指运用于数据之上的数据规则和数据内容，它一般对应于应用程序所要管理的对象。在软件系统中，任何事物都可以被抽象成可以对其以某种方式进行处理的数据模型。应用程序中的用户，信息以及图书是什么？它们只是一堆必须按照对应规则处理的数据（日期不能是未来的日期，电子邮件有特定的格式，名字的长度不能超过多少字符等等）模型给控制器提供了一个用户请求内容对应的数据表达（比如信息，书，相册）。不管我们如何向用户展示，这个数据模型都不会变。这也是我们为什么可以随意选择使用哪个视图来展示数据的原因。模型包含我们应用程序逻辑中最重要的组成部分，这些逻辑运用于我们要处理的问题过程中。控制器更多的是包含应用程序自身的内部组织逻辑（更像管家）。</p>
+<p>视图（View）：</p>
+<p>视图提供了展示模型数据的不同方式。它可能是数据填充的模板。视图可以有多个，而控制器则决定使用哪个视图。一个网络应用通常由许多控制器，模型和视图组成。控制器可以被看成是一个主控制器，用于接收用户的所有请求，然后在调用特定的控制器来处理不同的情况。</p>
+<p>控制器（Controller）：</p>
+<p>控制器掌管着用户的请求（当用户点击图形用户界面（GUI）上的元素执行操作时，控制器会收到HTTP GET或者POST请求）。它的主要功能就是调用并协调需要的资源/对象来执行用户请求。通常控制器会为任务调用合适的模型，以及选择合适的视图。</p>
+<p>3、各层间调用关系：</p>
+<p>我们先来看一下当用户访问mvc框架站点时的序列图</p>
+<p><img src="http://pic002.cnblogs.com/img/nuaalfm/201006/2010062415001961.jpg"></p>
+<p>现在我们假设正在开发一个人事系统的员工展示业务，首先Controller收集用户提交过来的条件信息，根据条件信息调用Model，在Model中会把条件传给业务逻辑层，业务逻辑层会根据条件从数据库中获得相应的数据，然后将数据返回给Model，在Model中会将数据进行封装后传给Controller，然后Controller再根据需要显示的格式将相应的数据传给View，在View中执行显示逻辑，最后Controller将所要的View传给用户。</p>
+<p>这里还要注意mvc各层的依赖关系：</p>
+<p><img src="http://pic002.cnblogs.com/img/nuaalfm/201006/2010062415085849.png"></p>
+<p>Controller可以直接控制View和Model，View中可以直接控制Model，但Model中不要强依赖View中的内容只能通过弱依赖，比方说可以有些Model是专门为某些View而设计的，但不能在Model中直接调用View逻辑，从Model中应该看不到任何Controller的逻辑。</p>
+<p>二、WEB Form  VS  ASP.NET MVC</p>
+<p><img src="http://pic002.cnblogs.com/img/nuaalfm/201006/2010062415325218.png"> </p>
+<p>三、<span style="text-decoration:underline">如何下载ASP.NET MVC 2</span></p>
+<p>ASP.NET MVC 2是设计来可在VS 2008 / .NET 3.5，以及VS 2010 / .NET 4下工作的。同时支持2个版本意味着你今天就可以开始使用，而不必等着升级到VS2010 / .NET 4才用。</p>
+<p><a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=3b537c55-0948-4e6a-bf8c-aa1a78878da0&amp;displaylang=en">点击这里</a>下载针对 .NET 3.5 和 VS 2008的 ASP.NET MVC 2的RC版，可在同个机器上与ASP.NET MVC 1.0并列安装。</p>
+<p>ASP.NET MVC 2是 VS 2010 / .NET 4的内置组件，这意味着，在你安装Visual Studio 2010的任意一个版本之后，你不用下载或安装别的就可以得到ASP.NET MVC 2。目前的公开VS 2010 Beta 2版包含了ASP.NET MVC 2 的第二个预览版。下个月将发布的<a href="http://blog.joycode.com/scottgu/archive/2009/12/18/115816.joy">VS 2010 RC版</a>将会有一个比较新的ASP.NET MVC 2 RC版本。</p>
+<p>四、参考：</p>
+<p><a href="http://www.cnbeta.com/articles/107924.htm">http://www.cnbeta.com/articles/107924.htm</a></p>
+<p><a href="http://www.cnblogs.com/ywqu/archive/2010/06/21/1762264.html">http://www.cnblogs.com/ywqu/archive/2010/06/21/1762264.html</a></p>
+<p><a href="http://blog.joycode.com/scottgu/archive/2010/01/17/115853.joy">http://blog.joycode.com/scottgu/archive/2010/01/17/115853.joy</a></p><img src="http://www.cnblogs.com/nuaalfm/aggbug/1764458.html?type=1" width="1" height="1" alt=""><p>评论: 3　<a href="http://www.cnblogs.com/nuaalfm/archive/2010/06/24/1764458.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/nuaalfm/archive/2010/06/24/1764458.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66927/">把 PC 装进口袋？</a><span style="color:gray">(2010-06-24 20:39)</span><br>· <a href="http://news.cnblogs.com/n/66926/">诺基亚宣布N系列智能手机改用MeeGo系统</a><span style="color:gray">(2010-06-24 20:36)</span><br>· <a href="http://news.cnblogs.com/n/66925/">微软推广Office 2010的六张牌</a><span style="color:gray">(2010-06-24 20:30)</span><br>· <a href="http://news.cnblogs.com/n/66924/">18 个在线地图服务商已经拿到良民证，还不包括百度和谷歌</a><span style="color:gray">(2010-06-24 20:22)</span><br>· <a href="http://news.cnblogs.com/n/66923/">Opera成立15周年</a><span style="color:gray">(2010-06-24 20:21)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/06/24/1764597.html">C#会重蹈覆辙吗？反射及元数据的性能问题</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

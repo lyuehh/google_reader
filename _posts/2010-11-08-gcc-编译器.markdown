@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "gcc 编译器"
+date:   2010-11-08 09:46:45
+author: 
+categories: program
+---
+
+## gcc 编译器
+### by 
+### at 2010-11-08 09:46:45
+### original <http://my.oschina.net/coffeewu/blog/9640>
+
+1. gcc 编译器的介绍 Linux 中最重要的软件开发工具是 GCC。GCC 是 GNU 的 C 和 C++ 编译器。实际上，GCC 能够编译三种语言：C、C++ 和 Object C（C 语言的一种面向对象扩展）。利用 gcc 命令可同时编译并连接 C 和 C++ 源程序。 2. gcc 编译全过程   hello.c        源程序 gcc -E hello.c -o hello.i      ...

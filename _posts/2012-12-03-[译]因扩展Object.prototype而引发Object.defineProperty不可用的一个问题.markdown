@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "[译]因扩展Object.prototype而引发Object.defineProperty不可用的一个问题"
+date:   2012-12-03 21:52:00
+author: 紫云飞
+categories: program
+---
+
+## [译]因扩展Object.prototype而引发Object.defineProperty不可用的一个问题
+### by 紫云飞
+### at 2012-12-03 21:52:00
+### original <http://www.cnblogs.com/ziyunfei/archive/2012/12/03/2799984.html>
+
+<p>原文:<a href="http://d.hatena.ne.jp/teramako/20121129/p1">http://d.hatena.ne.jp/teramako/20121129/p1</a></p><hr><p>从<a title="Object.prototype.get &amp; bye bye Object.defineProperty" href="https://mail.mozilla.org/pipermail/es-discuss/2012-November/026705.html">ES-Discuss</a>邮件列表中看到的.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">Object.prototype.get = <span style="color:#0000ff">function</span><span style="color:#000000">(){};<br></span><span style="color:#0000ff">var</span> o =<span style="color:#000000"> {};<br>Object.defineProperty(o, </span>"hoge", { value: "OK"<span style="color:#000000"> });<br></span><span style="color:#008000">//</span><span style="color:#008000"> TypeError: property descriptors must not specify a value or be writable when a getter or setter has been specified</span></div><p><code>问题描述就是:如果在Object.prototype上添加了名为</code><code>get</code>,<code>set之类的属性的话,再执行</code><code>Object.defineProperty()的时候就很有可能发生问题.为什么?</code></p><p><strong>不应该在Object.prototype上添加的属性</strong></p><p>下面给出的属性名最不应该添加在Object.prototype上</p><ul><li>get</li><li>set</li><li>value</li><li>writable</li></ul><p><strong>为什么?</strong></p><p><code>Object.defineProperty的第三个参数Descriptor是个对象,指定了所定义属性的属性描述符.属性描述符一共有两种.</code>数据属性描述符(DataDescriptor)和访问器属性描述(AccessorDescriptor).</p><p><dfn></dfn>数据属性描述符对象上不能有<code>get</code>,<code>set属性,</code>访问器属性描述符对象上不能有<code>value</code>,<code>writable属性.</code></p><p>执行defineProperty的时候,在判断属性描述符对象中某个属性是否存在时使用的内部方法是[[HasProperty]].[[HasProperty]]会在[[Prototype]]上寻找属性,也就找到了Object.prototype上定义的那些属性.如果使用[[GetOwnProperty]]来判断的话就不会有这样的问题了.</p><p>上例中的问题就是,get和value两个属性不能同时存在,否则会报错.</p><p><strong>解决办法</strong></p><p>创建一个没有原型的属性描述符对象:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> des = Object.create(<span style="color:#0000ff">null</span><span style="color:#000000">);<br>des.value </span>= 123<span style="color:#000000">;<br>Object.defineProperty(obj,</span>"key",des);</div><p>也可以使用非标准的魔法属性__proto__:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">Object.defineProperty(obj, "key"<span style="color:#000000">, {<br>  __proto__: </span><span style="color:#0000ff">null</span>,<br>  value: 123 <br>});</div><p>同样,<code>Object.defineProperties()以及<code>Object.create()的第二个参数中也有属性描述符对象,也有可能出现同样的问题</code>.</code></p><img src="http://www.cnblogs.com/ziyunfei/aggbug/2799984.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/12/03/2799984.html">本文链接</a></p>

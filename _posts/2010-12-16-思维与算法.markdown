@@ -1,0 +1,110 @@
+---
+layout: post
+title:  "思维与算法"
+date:   2010-12-16 00:57:00
+author: my blog
+categories: program
+---
+
+## 思维与算法
+### by my blog
+### at 2010-12-16 00:57:00
+### original <http://www.cnblogs.com/zhangdongsheng/archive/2010/12/16/1907464.html>
+
+<p><p>很多时候，写程序都是思维变算法，算法变代码的过程，其中很关键的步就是思维变算法。</p>
+<p> </p>
+<p>这里所说的思维就是，你眼睛能看出来规律。</p>
+<p>再简单明了就是比如一个题目：<span style="color:#008080">统计一个英文字符串中的英文单词个数，﻿如字符串“I am a student.”中的英文单词个数为4。</span></p>
+<p><span style="color:#000000">如果给你一个字符串 I am a student 。你一数就得到了答案4 ，这是很自然的事，被看作常识。可是关键，怎样转变为算法。</span></p>
+<p><span style="color:#000000"> </span></p>
+<p><span style="color:#000000">唉，这就是一个思维变算法的过程。这还得由简入繁追溯到大脑的底层数据。你大脑是怎么得到的4呢，因为你数了，你是怎么数的呢？噢是这样，出现了字母后面一个空格则这个就是一个单词，如果这个字母后面仍然是字母，则它还是同一个单词，这就是一个找非字母的把字母分开的过程然后统计数目的过程。</span></p>
+<p><span style="color:#000000">这就是一种机制，这种机制就是算法的皱形。</span></p>
+<p><span style="color:#000000">然后就可以通过这个画个流程，然后成了算法。</span></p>
+<p><span style="color:#000000"> </span></p>
+<p><span style="color:#000000">很多时候我们都是在进行如上所述的这个过程，而且这个要思维清晰。考虑很多事，诸如 如果有例外情况等等。</span></p>
+<p><span style="color:#000000">矩阵题就是这样：</span></p>
+<p><span style="color:#000000">
+<div>
+<pre>/*               C++奋斗乐园|C++论坛|算法论坛|ACM/ICPC论坛
+
+                82   81   80   79   78   77   76   75   74   73
+
+                83   50   49   48   47   46   45   44   43   72
+
+                84   51   26   25   24   23   22   21   42   71
+
+                85   52   27   10    9    8    7   20   41   70
+
+                86   53   28   11    2    1    6   19   40   69
+
+                87   54   29   12    3    4    5   18   39   68
+
+                88   55   30   13   14   15   16   17   38   67
+
+                89   56   31   32   33   34   35   36   37   66
+
+                90   57   58   59   60   61   62   63   64   65
+
+                91   92   93   94   95   96   97   98   99  100*/
+
+
+//看到这个方阵，一想到的就是找规律。这个题目规律只有两个 转圈 自加
+//转圈就要给数组元素定位，主要做的工作就是找规律然后根据规律用for简化,然后再赋值。
+//如果把一圈当作一个循环的话，那整体循环N/2次
+
+#include &lt;iostream&gt;
+using namespace std;
+int main()
+{
+        const int N=10;//这个就不说了
+        
+        //先建立一个二维数组
+        int a[N][N];
+        
+        //为了观察运行出的错，先把数组各个元素通通赋为0吧，这样一来，有什么错误在运行时候，一看就能看出来。
+        for(int i=0;i&lt;N;i++)
+                for(int j=0;j&lt;N;j++)
+                {
+                        a[i][j]=0;
+                }
+        
+        
+        
+        //试了一下从1赋值，感觉很费事，还是从后往前推吧，最后一个数字是N*N
+        int last=N*N;
+        int n=N;    
+        int i=n-1,j;//第一个循环要用到i(第54行)，所以赋个初值
+        for(int k=0;k&lt;N/2;k++)//如果把一圈当作一个循环的话，那整体循环N/2次
+        {
+                
+                for(j=n-1;j&gt;k;j--)//给100-92赋值
+                        a[i][j]=last--;
+                for(i=n-1;i&gt;k;i--)//给91-83赋值
+                        a[i][j]=last--;
+                for(;j&lt;n-1;j++)   //给82-74赋值
+                        a[i][j]=last--;
+                for(;i&lt;n-1;i++)   //给73-65
+                        a[i][j]=last--;
+                //最外面的一圈赋值完成了，进行下一圈。
+                n--;i--;
+        }
+        
+        //显示数组各个元素
+        for(int i=0;i&lt;N;i++)
+        for(int j=0;j&lt;N;j++)
+        {
+                cout&lt;&lt;a[i][j]&lt;&lt;&quot;\t&quot;;
+                if(j==N-1)         //这要注意换行。
+                        cout&lt;&lt;endl&lt;&lt;endl;
+        }
+        return 0;
+}
+</pre>
+<pre></pre>
+<pre></pre>
+<pre>我觉得新手应该致力于培养我的这种思维变算法的方法，因为我觉得有了这些，你才能去优化，才能谈去简化代码，才能去看效率等等。这就需要发掘一些细节问题，把人的思维意识放到最底层，就像I am a student.”中的英文单词个数为4这个我们大脑是怎样得到的一样。</pre>
+<pre>以上只是我个人的一点观点，写了下来，以便自己慢慢体会~</pre>
+<pre></pre>
+</div>
+</span></p>
+<p><span style="color:#000000"> </span></p><img src="http://www.cnblogs.com/zhangdongsheng/aggbug/1907464.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/zhangdongsheng/">my blog</a> 发表于 2010-12-16 00:57 <a href="http://www.cnblogs.com/zhangdongsheng/archive/2010/12/16/1907464.html">原文链接</a></p><p>评论: 20　<a href="http://www.cnblogs.com/zhangdongsheng/archive/2010/12/16/1907464.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/zhangdongsheng/archive/2010/12/16/1907464.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/84850/">京东大战当当</a><span style="color:gray">(2010-12-16 21:05)</span><br>· <a href="http://news.cnblogs.com/n/84849/">Groupon拒绝谷歌后计划融资数亿美元</a><span style="color:gray">(2010-12-16 20:27)</span><br>· <a href="http://news.cnblogs.com/n/84848/">微软升级必应搜索引擎 美国市场份额增至11.8%</a><span style="color:gray">(2010-12-16 19:10)</span><br>· <a href="http://news.cnblogs.com/n/84847/">SAP宣布将收购cundus信息发布管理解决方案</a><span style="color:gray">(2010-12-16 19:03)</span><br>· <a href="http://news.cnblogs.com/n/84846/">Mozilla再许诺:揪火狐等服务漏洞送钱</a><span style="color:gray">(2010-12-16 18:22)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/84788/">软件开发中的11个系统思维定律</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

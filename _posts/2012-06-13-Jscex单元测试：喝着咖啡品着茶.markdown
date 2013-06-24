@@ -1,0 +1,241 @@
+---
+layout: post
+title:  "Jscex单元测试：喝着咖啡品着茶"
+date:   2012-06-13 10:49:24
+author: jeffz@live.com (老赵)
+categories: program
+---
+
+## Jscex单元测试：喝着咖啡品着茶
+### by jeffz@live.com (老赵)
+### at 2012-06-13 10:49:24
+### original <http://blog.zhaojie.me/2012/06/jscex-unit-tests-with-mocha-chai.html>
+
+<p>这段时间在香港出差，跟高帅富们一起工作。高帅富的办公室免费供应咖啡，放在壶里随你倒。茶叶也一样，立顿普洱茉莉自取。于是乎我每天也会喝一两杯提提神，尤其是午饭后，感觉还不错。技术人员似乎都挺热衷于这些饮料，也喜欢拿饮料来为项目取名，这方面最让人想到的例子估计就是Java了。这几天我为<a href="http://jscex.info/zh-cn/">Jscex</a>整理代码，准备发布其0.6.5版本，并为0.7.0做准备。这方面的主要工作之一便是为Jscex补充尽可能完整的单元测试。</p>
+
+<h1>Jscex的单元测试</h1>
+
+<p>我很喜欢单元测试，在目前工作的项目里，绝大部分的单元测试都是我写的，几乎每提交一个功能或修改一个Bug都会补上配套的单元测试。有人说编写单元测试会降低开发的速度，但我倒觉得，如果没有单元测试这种可以验证程序正确性的代码片段，难道每次都要起一个完整的系统才能观察修改效果？更别说单元测试可以减少以后来回返工的可能了，有了单元测试，无论是进行修改和提交都令人放心地很。</p>
+
+<p>而且作为程序员来说，看到这样的界面难道不会让您感到心旷神怡吗？</p>
+
+<p><a href="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/0.png"><img src="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/0.png" width="450"></a></p>
+
+<p>而Jscex作为一个可以同时在浏览器和Node.js里运行的JavaScript类库，自然也是需要<a title="Jscex单元测试" href="http://repository.jscex.info/master/tests/jscex/runner.html">在浏览器里运行单元测试的</a>。当然Jscex单元测试不光如此，还有一些“高级模式”用来测试不同加载环境下的支持情况。</p>
+
+<h1>咖啡和茶</h1>
+
+<p>虽然理论上不一定，但既然要同时在Node.js和浏览器里进行测试，那么很自然的选择便是使用同时支持两者的单元测试工具。Jscex使用<a href="http://visionmedia.github.com/mocha/">Mocha</a>作为单元测试框架，并使用<a href="http://chaijs.com/">Chai</a>作为断言类库——真可谓一边喝咖啡一边品茶。之前我用过一段时间的<a href="https://github.com/visionmedia/should.js">should.js</a>，但它不支持浏览器，更重要的是它的作者说“<a href="https://github.com/visionmedia/should.js/issues/26#issuecomment-3386344">有Chai所以就不做浏览器支持了</a>”让我稍觉不爽，因此全面切换为Chai。不过平心而论，should.js相比Chai还是有其优势，例如它对于错误的描述更为详细，而Chai的优势主要是<a href="http://chaijs.com/api/">支持各种断言形式</a>，而should.js显然只支持一种。</p>
+
+<p>Mocha可以搭配任何断言类库使用，它只关注测试过程中有没有抛出异常，而Chai只关注各种断言API，并再断言失败的时候抛出异常。在Node.js中使用这两个组件基本只需require进来：</p>
+
+<pre>require(<span style="color:maroon">&quot;chai&quot;</span>).should();
+
+describe(<span style="color:maroon">&quot;Jscex&quot;</span>, <span style="color:blue">function </span>() {
+    it(<span style="color:maroon">&quot;should be powerful for asynchronous programming&quot;</span>, <span style="color:blue">function </span>() {
+        ...
+    });
+
+    ... more tests ...
+});
+
+... more tests ...</pre>
+
+<p>这里连Mocha的组件就不需要，因为在Node.js环境下，Mocha更像是一个“执行环境”，我们在安装了Mocha之后，会使用mocha命令，而不是node命令执行测试脚本：</p>
+
+<pre>$ [sudo] npm install -g mocha
+...
+
+$ mocha your-tests.js</pre>
+
+<p>这样Mocha就会执行脚本里定义的所有测试，并告诉我们执行结果。Mocha支持许多输出模式，例如上图便使用了spec模式，它的输出就好像一份规约文档。不过一般开发时我会使用默认的“简约”模式，它只会告诉我们哪些单元测试没有通过。</p>
+
+<p>而在浏览器里使用Mocha和Chai就略显麻烦一些了：</p>
+
+<pre><span style="color:blue">&lt;</span><span style="color:maroon">html</span><span style="color:blue">&gt;
+&lt;</span><span style="color:maroon">head</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">meta </span><span style="color:red">charset</span><span style="color:blue">=&quot;utf-8&quot;&gt;
+    &lt;</span><span style="color:maroon">title</span><span style="color:blue">&gt;</span>Unit Testing with Mocha and Chai<span style="color:blue">&lt;/</span><span style="color:maroon">title</span><span style="color:blue">&gt;
+    
+    </span><span style="color:#006400">&lt;!-- Mocha --&gt;
+    </span><span style="color:blue">&lt;</span><span style="color:maroon">link </span><span style="color:red">rel</span><span style="color:blue">=&quot;stylesheet&quot; </span><span style="color:red">href</span><span style="color:blue">=&quot;mocha.css&quot; /&gt;
+    &lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;mocha.js&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">script</span><span style="color:blue">&gt;</span>mocha.setup(<span style="color:maroon">'bdd'</span>);<span style="color:blue">&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+    
+    </span><span style="color:#006400">&lt;!-- Chai --&gt;
+    </span><span style="color:blue">&lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;chai.js&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">script</span><span style="color:blue">&gt;</span>chai.Should();<span style="color:blue">&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">head</span><span style="color:blue">&gt;
+&lt;</span><span style="color:maroon">body</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;mocha&quot;&gt;&lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+
+    &lt;</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+        </span>describe(<span style="color:maroon">&quot;Jscex&quot;</span>, <span style="color:blue">function </span>() {
+            it(<span style="color:maroon">&quot;should be powerful for asynchronous programming&quot;</span>, <span style="color:blue">function </span>() {
+                ...
+            });
+
+            ... more tests ...
+        });
+
+        ... more tests ...
+    <span style="color:blue">&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+
+    &lt;</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+        </span>mocha.run();
+    <span style="color:blue">&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">body</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">html</span><span style="color:blue">&gt;
+</span></pre>
+
+<p>在浏览器里使用Mocha时需要额外引入一个CSS文件，并在页面上放置一个id为mocha的div。同时，我们还需要使用代码设置Mocha的单元测试模式（例如上面是BDD模式），以及Chai的断言模式（例如上面是Should模式）。使用这种方式，便能得到一张漂亮的单元测试页面，它甚至可以查看当前测试的代码：</p>
+
+<p><a href="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/1.png"><img src="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/1.png" width="450"></a></p>
+
+<p>真是多亏了JavaScript函数上的toString方法，才能出现像Mocha和Jscex这种酷到爆的东西。</p>
+
+<h1>测试代码结构</h1>
+
+<p>可以发现，两种环境里单元测试的定义方式是一样的，唯一的区别只是两个不同的执行方式，因此我们需要将所有的单元测试定义独立出来。例如在Jscex里，单元测试就是定义在独立的tests.js里的：</p>
+
+<pre><span style="color:blue">var </span>exports = (<span style="color:blue">typeof </span>window === <span style="color:maroon">&quot;undefined&quot;</span>) ? module.exports : window;
+
+exports.setupTests = <span style="color:blue">function </span>(Jscex) {
+
+    describe(<span style="color:maroon">&quot;underscore&quot;</span>, <span style="color:blue">function </span>() {
+
+        <span style="color:blue">var </span>_ = Jscex._;
+
+        describe(<span style="color:maroon">&quot;isArray&quot;</span>, <span style="color:blue">function </span>() {
+        
+            it(<span style="color:maroon">&quot;should return true for array&quot;</span>, <span style="color:blue">function </span>() {
+                _.isArray([]).should.equal(<span style="color:blue">true</span>);
+            });
+            
+            it(<span style="color:maroon">&quot;should return false for others&quot;</span>, <span style="color:blue">function </span>() {
+                _.isArray(<span style="color:maroon">&quot;&quot;</span>).should.equal(<span style="color:blue">false</span>);
+                _.isArray(1).should.equal(<span style="color:blue">false</span>);
+                _.isArray({}).should.equal(<span style="color:blue">false</span>);
+            }); 
+        });
+
+        ... more tests ...
+    });
+
+    ... more tests ...
+});</pre>
+
+<p>这个文件会根据环境将setupTests方法定义在window对象或是exports对象上，于是就可以共享给Node.js和浏览器执行。例如在Node.js里：</p>
+
+<pre><span style="color:blue">var </span>Jscex = require(<span style="color:maroon">&quot;../../src/jscex&quot;</span>);
+require(<span style="color:maroon">&quot;chai&quot;</span>).should();
+require(<span style="color:maroon">&quot;./tests&quot;</span>).setupTests(Jscex);</pre>
+
+<p>而在浏览器里便可以：</p>
+
+<pre><span style="color:blue">&lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;../../src/jscex.js&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+&lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;tests.js&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+
+&lt;</span><span style="color:maroon">script</span><span style="color:blue">&gt;
+    </span>window.setupTests(Jscex);
+    mocha.run();
+<span style="color:blue">&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;</span></pre>
+
+<p>于是乎，我就能随时知道两个环境里单元测试的执行情况了。</p>
+
+<h1>高级单元测试模式</h1>
+
+<p>Jscex的单元测试的时候还有一些特殊需求：Jscex内置对某些包加载器的支持，这部分代码需要在不同环境里测试，例如“<a title="普通浏览器" href="http://repository.jscex.info/master/tests/jscex/env/browser.html">普通浏览器环境</a>”以及“<a title="AMD" href="http://repository.jscex.info/master/tests/jscex/env/amd.html">AMD环境</a>”。</p>
+
+<p>测试包加载器有个特别的地方，因为无论是在哪个环境，在使用过程中脚本都只会加载一次，都只会产生一个Jscex对象。如果不同的测试用例都针对同一个Jscex对象则容易相互影响，这便是副作用的麻烦之处。在一个标准的单元测试框架中，总有机会可以设置SetUp和TearDown函数，会在每个测试用例执行前后调用，Mocha也不例外。例如在<a href="https://github.com/JeffreyZhao/jscex/blob/master/tests/jscex/env/browser.html">普通浏览器的测试</a>中，我便定义了这样一个beforeEach操作：</p>
+
+<pre><span style="color:blue">var </span>Jscex;
+
+beforeEach(<span style="color:blue">function </span>(done) {
+    <span style="color:blue">delete </span>Jscex;
+    loadScript(<span style="color:maroon">&quot;../../../src/jscex.js&quot;</span>, done);
+});</pre>
+
+<p>beforeEach操作会在每个测试案例执行之前运行，这是一个异步操作——JavaScript是一门离不开异步的语言，因此Mocha对于异步的单元测试有很好的支持，例如我们可以选择性地调用done函数来表示测试结束。一不小心忘了调用done也没有关系，因为Mocha会为每个操作设定一个超时时间，十分友好。在上面的beforeEach里，我们删除Jscex根对象，并重新加载Jscex脚本（这里用到我写的一个简单的<a href="https://github.com/JeffreyZhao/jscex/blob/master/tools/script-loader.js">loadScript辅助方法</a>）。加载Jscex之后则又会在window上出现一个全新的Jscex根对象。</p>
+
+<p>不过问题又来了，Jscex是我写的，出现哪些根对象我自然清楚明白，但如果是第三方的脚本，难道要完全解读其实现，了解它在window上定义了哪些成员才行吗？事实上，我们有个十分容易的“探测”方法，这里又得为伟大的Mocha框架记下一功。</p>
+
+<p>Mocha框架为开发人员考虑了很多，例如在开发JavaScript程序时，一个拼写错误很容易在根对象上留下一个成员（这种情况在<a href="http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/">ECMAScript 5的Strict Mode</a>下会有所好转）。此时程序可能执行也很正常，但一旦出现问题便会很难找出原因。但Mocha有一个很贴心的功能便是在测试用例执行前后比较根对象上是否出现了额外的成员，一旦出现这种情况便会告诉我们出现了“泄露”。例如：</p>
+
+<pre>beforeEach(<span style="color:blue">function </span>(done) {
+    loadScript(<span style="color:maroon">&quot;require.js&quot;</span>, done);
+});
+
+it(<span style="color:maroon">&quot;should tell us the global members&quot;</span>, <span style="color:blue">function </span>() { });</pre>
+
+<p>这个beforeEach操作会加载<a href="http://requirejs.org/">RequreJS</a>的脚本，它会在根对象上添加多个成员，而执行后会告诉我们检测到哪些泄露：</p>
+
+<p><a href="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/2.png"><img src="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/2.png" width="450"></a></p>
+
+<p>例如这里我们知道泄露了requirejs，require和define三个成员。知道以后那就好办多了，补充几行代码即可：</p>
+
+<pre><span style="color:blue">var </span>requirejs;
+<span style="color:blue">var </span>require;
+<span style="color:blue">var </span>define;
+
+beforeEach(<span style="color:blue">function </span>(done) {
+    <span style="color:blue">delete </span>requirejs;
+    <span style="color:blue">delete </span>require;
+    <span style="color:blue">delete </span>define;
+
+    loadScript(<span style="color:maroon">&quot;require.js&quot;</span>, done);
+});</pre>
+
+<p>我们只要在Mocha执行测试前先定义几个成员，在加载require.js之前删除，让它再定义回来，这样就能“骗”过Mocha了。剩下的便是编写各种异步的单元测试，Mocha对此支持的很好，例如在<a href="https://github.com/JeffreyZhao/jscex/blob/master/tests/jscex/env/amd.html">AMD环境下的单元测试</a>中：</p>
+
+<pre>it(<span style="color:maroon">&quot;should support complicated module&quot;</span>, <span style="color:blue">function </span>(done) {
+    require([<span style="color:maroon">'jscex'</span>], <span style="color:blue">function </span>(Jscex) {
+        <span style="color:blue">var </span>loaded = [];
+        define(<span style="color:maroon">&quot;jscex-m0&quot;</span>, <span style="color:blue">function </span>() { <span style="color:blue">return </span>{ init: <span style="color:blue">function </span>() { loaded.push(<span style="color:maroon">&quot;m0&quot;</span>); } }; });
+        define(<span style="color:maroon">&quot;jscex-m1&quot;</span>, <span style="color:blue">function </span>() { <span style="color:blue">return </span>{ init: <span style="color:blue">function </span>() { loaded.push(<span style="color:maroon">&quot;m1&quot;</span>); } }; });
+
+        Jscex.coreVersion = <span style="color:maroon">&quot;0.5.0&quot;</span>;
+        Jscex.modules[<span style="color:maroon">&quot;d0&quot;</span>] = <span style="color:maroon">&quot;0.1.0&quot;</span>;
+        Jscex.modules[<span style="color:maroon">&quot;d1&quot;</span>] = <span style="color:maroon">&quot;0.2.5&quot;</span>;
+
+        Jscex.define({
+            name: <span style="color:maroon">&quot;test&quot;</span>,
+            version: <span style="color:maroon">&quot;0.8.0&quot;</span>,
+            autoloads: [<span style="color:maroon">&quot;m0&quot;</span>, <span style="color:maroon">&quot;m1&quot;</span>],
+            dependencies: {
+                <span style="color:maroon">&quot;core&quot;</span>: <span style="color:maroon">&quot;~0.5.0&quot;</span>,
+                <span style="color:maroon">&quot;d0&quot;</span>: <span style="color:maroon">&quot;~0.1.0&quot;</span>,
+                <span style="color:maroon">&quot;d1&quot;</span>: <span style="color:maroon">&quot;~0.2.0&quot;
+            </span>},
+            init: <span style="color:blue">function </span>(root) {
+                root.hello = <span style="color:maroon">&quot;world&quot;</span>;
+            }
+        });
+
+        require([<span style="color:maroon">&quot;jscex-test&quot;</span>], <span style="color:blue">function </span>(test) {
+            loaded.should.be.empty;
+
+            test.init(Jscex);
+
+            loaded.should.eql([<span style="color:maroon">&quot;m0&quot;</span>, <span style="color:maroon">&quot;m1&quot;</span>]);
+            Jscex.hello.should.equal(<span style="color:maroon">&quot;world&quot;</span>);
+            Jscex.modules[<span style="color:maroon">&quot;test&quot;</span>] = <span style="color:maroon">&quot;0.8.0&quot;</span>;
+
+            done();
+        });
+    });
+});</pre>
+
+<p>写完单元测试之后，我会感到自己是一个非常专业的程序员，突然就有了强烈的码农自豪感和自尊心。当然，Jscex的单元测试之路还很长，不过基础已经打好，剩下的就是要靠自己把握了。</p>
+
+<h1>无关的事情</h1>
+
+<p>最后再说两件无关的事情，一是上周末<a href="https://twitter.com/audreyt/status/211519510446997505">Jscex得到了大名鼎鼎的唐凤大侠的肯定</a>：</p>
+
+<p><a href="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/3.png"><img src="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/3.png" width="450"></a></p>
+
+<p>二是给自己新订了一个玩具，离香港近就是这点好：</p>
+
+<p><a href="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/4.png"><img src="http://img.zhaojie.me/blog/jscex-unit-tests-with-mocha-chai/4.png" width="450"></a></p>
+
+<p>正所谓“顶配解千愁”，古之人不余欺也。</p>

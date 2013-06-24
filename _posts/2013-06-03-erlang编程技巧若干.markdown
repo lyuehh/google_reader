@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "erlang编程技巧若干"
+date:   2013-06-03 21:53:00
+author: Kevin Lynx
+categories: program
+---
+
+## erlang编程技巧若干
+### by Kevin Lynx
+### at 2013-06-03 21:53:00
+### original <http://www.udpwork.com/item/9967.html>
+
+<h2>guard</h2>
+<p>guard可以以逗号或者分号分隔，以逗号分隔表示最终的结果为各个guard的and结果，以分号则是只要任意一个guard为true则最终结果为true。</p>
+<div><pre>guard(X, Y) when not(X&gt;Y), is_atom(X) -&gt;
+    X + Y.
+</pre></div>
+<p>guard在list comprehension中可以筛选元素：</p>
+<div><pre>NewNodes  = [Node || Node &lt;- AllNodes, not gb_sets:is_member(Node, NewQueried)],
+</pre></div>
+<p>guard中不能使用自定义函数，因为guard应该保证没有副作用，但自定义函数无法保证这一点，所以erlang禁止在guard中使用自定义函数。</p>
+<h2>list comprehension</h2>
+<p>list comprehension是一个非常有用的语法特性，它可以用于构造一个新的list，可以用于将一种list映射到另一种list，可以筛选list元素。只要是跟list相关的操作，优先考虑用list comprehension来实现，将大大减少代码量。记住list comprehension的语法：</p>
+<pre>[Expression || Generators, Guards, Generators, ...]
+</pre><h2>timer</h2>
+<p>一定时间后向进程发送消息：</p>
+<div><pre>erlang:send_after(token_lifetime(), self(), renew_token),
+</pre></div>
+<p>一段时间后执行某个函数：</p>
+<div><pre>{ok, TRef} = timer:apply_interval(Interval, ?MODULE, announce, [self()]),
+</pre></div>
+<h2>gb_trees/gb_set</h2>
+<h2>pattern match</h2>
+<p>pattern match有太多作用了：</p>
+<h3>pattern match in case</h3>
+<p>case中判定多个值，比其使用逻辑运算符简洁多了：</p>
+<div><pre>A = 1, B = 2,
+case {A, B} of
+    {_C, _C} -&gt; true;
+    {_, _} -&gt; false
+end
+</pre></div>
+<h3>pattern match to check data type</h3>
+<p>pattern match可以用于检测变量的类型，可以用于检测函数的返回值，就像C/C++中的assert一样，可以用于尽早检测出异常状态：</p>
+<div><pre>ping({_, _, _, _} = IP, Port) -&gt;
+    ok.
+{ok, Ret} = call().
+</pre></div>
+<h2>list操作</h2>
+<h3>添加元素</h3>
+<p>添加元素进list有很多方式：</p>
+<div><pre>[2]++[3, 4].
+[2|[3,4]].
+</pre></div>
+<h3>foldl/foldr</h3>
+<p>用于遍历list计算出一个“累加值“。</p>
+<div><pre>lists:foldl(fun(X, Sum) -&gt; X + Sum end, 0, [1,2,3,4,5]).
+</pre></div>
+<p>也就是遍历一个list，将每个元素传递给fun，将fun的返回值继续传递给下一个元素。</p>
+<h3>zip</h3>
+<p>将两个list一一对应构造出一个tuple，作为新的list里的元素。</p>
+<div><pre>lists:zip([1, 2, 3], [4, 5, 6]).
+    =&gt; [{1,4},{2,5},{3,6}]
+</pre></div>
+<h3>数字进制</h3>
+<p>16##FF，表示16进制数字0xFF，通用格式为scale##num，即scale进制下的num。</p>
+<p>原文地址：<a href="http://codemacro.com/2013/06/03/erlang-code-snippets/">http://codemacro.com/2013/06/03/erlang-code-snippets/</a>
+<br>
+written by<a href="http://codemacro.com">Kevin Lynx</a> posted at<a href="http://codemacro.com">http://codemacro.com</a></p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/9967.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/9967.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/9967.html#reviews">评论: 0</a>
+					|
+					<a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+				</p>
+			</div>

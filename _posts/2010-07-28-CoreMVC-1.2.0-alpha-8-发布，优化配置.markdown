@@ -1,0 +1,20 @@
+---
+layout: post
+title:  "CoreMVC 1.2.0 alpha 8 发布，优化配置"
+date:   2010-07-28 22:54:04
+author: 
+categories: program
+---
+
+## CoreMVC 1.2.0 alpha 8 发布，优化配置
+### by 
+### at 2010-07-28 22:54:04
+### original <http://www.oschina.net/news/10826/CoreMVC-1-2-0-alpha8>
+
+<table width="100%"><tr>
+						<td valign="top">CoreMVC 是一个迷你的 PHP 开发框架。
+CM思想1. CM设计使用《模块驱动开发》的思想。2. CM框架照顾“开发、运行、部署”三部份。3. CM程序使用“导入、定义、执行”三段式。4. CM认为MVC可调整可伸缩，MCV/CMV/CVM/VCM/VMC/CM/CV/VM/VC/MC/MV/C/M/V均可。5. CM认为原生PHP本生就是一个基于Controller或View的框架。6. CM认为框架可以是一个风格约定，甚至可以不存在实际的框架文件。
+可通过SVN获取此最新版本：
+svn checkout http://coremvc.googlecode.com/svn/trunk/ coremvc-read-only
+...，<a href="http://www.oschina.net/news/10826/CoreMVC-1-2-0-alpha8?from=rss">阅读全文</a></td>
+			</tr></table>

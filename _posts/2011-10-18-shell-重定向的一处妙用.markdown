@@ -1,0 +1,183 @@
+---
+layout: post
+title:  "shell 重定向的一处妙用"
+date:   2011-10-18 11:41:30
+author: 王 聪
+categories: program
+---
+
+## shell 重定向的一处妙用
+### by 王 聪
+### at 2011-10-18 11:41:30
+### original <http://wangcong.org/blog/archives/1780>
+
+<p>偶然在 dracut 的代码中发现一个使用重定向很巧妙的地方。见 modules.d/90kernel-modules/module-setup.sh 文件。</p>
+<p>之前的老代码是这样的：</p>
+<div><span><a href="http://wangcong.org/blog#">PLAIN TEXT</a></span></div>
+<div><span>BASH:</span>
+<div>
+<div style="font-family:monospace">
+<ol>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal"><span style="color:#666666;font-style:italic">##</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#7a0874;font-weight:bold">local</span> _f</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#000000;font-weight:bold">while</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f; <span style="color:#000000;font-weight:bold">do</span> <span style="color:#000000;font-weight:bold">case</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">in</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">*</span>.ko<span style="color:#7a0874;font-weight:bold">)</span>    <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#000000;font-weight:bold">&lt;</span>        <span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">*</span>.ko.gz<span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#c20cb9;font-weight:bold">gzip</span> -dc <span style="color:#000000;font-weight:bold">&lt;</span><span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">esac</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#000000;font-weight:bold">done</span></div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p></p>
+<p>意思很清楚吧？就是在内核模块（注意是二进制格式）中匹配一些函数（字符串）。这样会很慢，因为 bash 要在庞大的二进制文件流中匹配一些指定字符串。</p>
+<p>于是，就有人想了一个方法加速这个处理过程，把原来的单个数据流分成两个并行的数据流，同时进行匹配！很巧妙！</p>
+<div><span><a href="http://wangcong.org/blog#">PLAIN TEXT</a></span></div>
+<div><span>BASH:</span>
+<div>
+<div style="font-family:monospace">
+<ol>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal"><span style="color:#666666;font-style:italic">##</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#000000;font-weight:bold">function</span> bmf1<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">{</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#7a0874;font-weight:bold">local</span> _f</div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">while</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f; <span style="color:#000000;font-weight:bold">do</span> <span style="color:#000000;font-weight:bold">case</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">in</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                     <span style="color:#000000;font-weight:bold">*</span>.ko<span style="color:#7a0874;font-weight:bold">)</span>    <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#000000;font-weight:bold">&lt;</span>        <span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                     <span style="color:#000000;font-weight:bold">*</span>.ko.gz<span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#c20cb9;font-weight:bold">gzip</span> -dc <span style="color:#000000;font-weight:bold">&lt;</span><span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                     <span style="color:#000000;font-weight:bold">esac</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">done</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#7a0874;font-weight:bold">}</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#666666;font-style:italic"># Use two parallel streams to filter alternating modules.</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#7a0874;font-weight:bold">local</span> merge side2</div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">             <span style="color:#7a0874;font-weight:bold">(</span> <span style="color:#7a0874;font-weight:bold">(</span> <span style="color:#7a0874;font-weight:bold">local</span> _f1 _f2</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">while</span>  <span style="color:#c20cb9;font-weight:bold">read</span> _f1; <span style="color:#000000;font-weight:bold">do</span>   <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f1&quot;</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                     <span style="color:#000000;font-weight:bold">if</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f2; <span style="color:#000000;font-weight:bold">then</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f2&quot;</span> <span style="color:#000000;color:#800000">1</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#800000">${side2}</span>; <span style="color:#000000;font-weight:bold">fi</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">done</span> \</div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">|</span> bmf1     <span style="color:#000000;color:#800000">1</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#800000">${merge}</span>    <span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">{</span>side2<span style="color:#7a0874;font-weight:bold">}</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#000000;color:#800000">1</span> \</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                 <span style="color:#000000;font-weight:bold">|</span> bmf1  <span style="color:#7a0874;font-weight:bold">)</span>      <span style="color:#7a0874;font-weight:bold">{</span>merge<span style="color:#7a0874;font-weight:bold">}</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#000000;color:#800000">1</span></div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p></p>
+<p>经过 refactor 之后的或许更好理解一些：</p>
+<div><span><a href="http://wangcong.org/blog#">PLAIN TEXT</a></span></div>
+<div><span>BASH:</span>
+<div>
+<div style="font-family:monospace">
+<ol>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal"><span style="color:#666666;font-style:italic"># subfunctions inherit following FDs</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#7a0874;font-weight:bold">local</span> <span style="color:#007800">_merge=</span><span style="color:#000000;color:#800000">8</span> <span style="color:#007800">_side2=</span><span style="color:#000000;color:#800000">9</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#000000;font-weight:bold">function</span> bmf1<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">{</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#7a0874;font-weight:bold">local</span> _f</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#000000;font-weight:bold">while</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f; <span style="color:#000000;font-weight:bold">do</span> <span style="color:#000000;font-weight:bold">case</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">in</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#000000;font-weight:bold">*</span>.ko<span style="color:#7a0874;font-weight:bold">)</span>    <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#000000;font-weight:bold">&lt;</span>        <span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#000000;font-weight:bold">*</span>.ko.gz<span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">[</span><span style="color:#7a0874;font-weight:bold">[</span> $<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#c20cb9;font-weight:bold">gzip</span> -dc <span style="color:#000000;font-weight:bold">&lt;</span><span style="color:#007800">$_f</span><span style="color:#7a0874;font-weight:bold">)</span> =~ <span style="color:#007800">$_blockfuncs</span> <span style="color:#7a0874;font-weight:bold">]</span><span style="color:#7a0874;font-weight:bold">]</span> <span style="color:#000000;font-weight:bold">&amp;&amp;</span> <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f&quot;</span> <span style="color:#000000;font-weight:bold">;;</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#000000;font-weight:bold">esac</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#000000;font-weight:bold">done</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#7a0874;font-weight:bold">}</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#000000;font-weight:bold">function</span> rotor<span style="color:#7a0874;font-weight:bold">(</span><span style="color:#7a0874;font-weight:bold">)</span> <span style="color:#7a0874;font-weight:bold">{</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#7a0874;font-weight:bold">local</span> _f1 _f2</div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#000000;font-weight:bold">while</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f1; <span style="color:#000000;font-weight:bold">do</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f1&quot;</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#000000;font-weight:bold">if</span> <span style="color:#c20cb9;font-weight:bold">read</span> _f2; <span style="color:#000000;font-weight:bold">then</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                        <span style="color:#7a0874;font-weight:bold">echo</span> <span style="color:#ff0000">&quot;$_f2&quot;</span> <span style="color:#000000;color:#800000">1</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#800000">${_side2}</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                    <span style="color:#000000;font-weight:bold">fi</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">                <span style="color:#000000;font-weight:bold">done</span> <span style="color:#000000;font-weight:bold">|</span> bmf1 <span style="color:#000000;color:#800000">1</span><span style="color:#000000;font-weight:bold">&gt;&amp;</span><span style="color:#800000">${_merge}</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#7a0874;font-weight:bold">}</span></div>
+</li>
+<li style="font-weight:bold;color:#26536a">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#666666;font-style:italic"># Use two parallel streams to filter alternating modules.</span></div>
+</li>
+<li style="font-weight:normal;color:#3a6a8b">
+<div style="font-family:&#39;Courier New&#39;,Courier,monospace;font-weight:normal;font-style:normal">            <span style="color:#7a0874;font-weight:bold">eval</span> <span style="color:#ff0000">&quot;( ( rotor ) ${_side2}&gt;&amp;1 | bmf1 ) ${_merge}&gt;&amp;1&quot;</span></div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<p></p>

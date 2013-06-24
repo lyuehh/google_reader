@@ -1,0 +1,194 @@
+---
+layout: post
+title:  "过去5年编程语言的演化（下）"
+date:   2011-11-15 19:46:35
+author: yuanyi
+categories: program
+---
+
+## 过去5年编程语言的演化（下）
+### by yuanyi
+### at 2011-11-15 19:46:35
+### original <http://item.feedsky.com/~feedsky/heikezhi/~8608072/603800683/6713895/1/item.html>
+
+<p>这是Fogus的“过去5年编程语言的演化”一文的下半部分，你可以点击<a href="http://heikezhi.com/2011/11/06/programming-language-development-the-past-5-years-part-1/">这里阅读上篇</a>。</p>
+<p>---------------</p>
+<p><strong>Potion</strong></p>
+<p>发布日期: 2009, 作者: _why the Lucky Stiff</p>
+<p>曾经有个叫_why的家伙在ruby圈子里引起了一场不小的风波，作为一个神秘人，他对Ruby和编程的一些见解为他在ruby以及ruby之外的世界赢得了很高的声誉，_why就是这样一个神奇的开源贡献者，在他的众多开源项目中，有一个叫做Potion的项目，这个项目的目标是创造一个小巧且强大的新编程语言，Potion继承了很多Io，Lua，OCaml以及Ruby的想法，并将它们汇集于一身：</p>
+<pre>
+Person = class: /name, /age, /sex.
+Policeman = Person class (rank): /rank = rank.
+Policeman print = ():
+  ("My name is ", /name, " and I'm a ", /rank, ".")
+  join print.
+
+Policeman ("Constable") print
+# My name is nil and I'm a Constable.
+</pre>
+<p>不过让我最感兴趣的就是，Potion分离了数据和表达式的符号系统，当然我必须得承认这个语言并不是很富有创造性，这是因为作者将大部分精力都投入到了实现上，它的实现非常简洁，只有大约6000行代码，也就是说一般公司的年轻程序员（或者是像我这样的老家伙）都可以在几周之内完全理解整个语言的实现，阅读代码是个很好的学习方式，尤其是阅读这样出色的的代码。</p>
+<p>继续了解</p>
+<p>* <a href="http://fogus.github.com/potion/">官方网站</a><br>
+* <a href="http://github.com/fogus/potion">源代码</a></p>
+<p><strong>Mirah</strong></p>
+<p>发布日期: 2008, 作者: Charles Nutter</p>
+<p>JRuby算是一个非常不错的在JVM之上构建的语言了，但是就像其它许多的Java.next语言一样，它也受到运行时问题的困扰，作为一个共生语言，要想提供一个强大且高效的开发和运行时体验，共生语言需要提供一个可以在任何java运行时上部署的核心库。如果我们将这个运行时限定在只支持一个轻量级的运行环境，那么这在实践中就不是什么大问题。让我们来看看Mirah，Mirah的目标（这是个很靠谱的目标）就是创造一个新的基于JVM的语言（语法主要借鉴Ruby），让你可以得到动态语言的体验，但又不需要增加任何额外的运行时库。</p>
+<pre>
+def reverse(s:string)
+    StringBuilder.new(s).reverse
+end
+
+puts reverse('reversed')
+</pre>
+<p>初看起来，Mirah就是一个增加了类型声明支持的JRuby，如果我不是这样喜欢JRuby，或许我会希望Charles Nutter把他所有的时间都花在Mirah上。</p>
+<p>继续了解</p>
+<p>   * <a href="http://www.mirah.org/">官方网站</a><br>
+   * <a href="http://blog.headius.com/2008/03/duby-type-inferred-ruby-like-jvm.html">初始声明</a><br>
+   * <a href="https://github.com/mirah/mirah">源码</a></p>
+<p><strong>Scratch</strong></p>
+<p>发布日期: 2007, 作者: Mitchel Resnick</p>
+<p>当我看到我5岁的儿子毫不费力的完成了对这些<a href="http://www.amazon.com/o/asin/B001USHRYI?tag=fogus-20">乐高机器人</a>的编程时，我就在想着，或许应该有一种提供图形化IDE的通用语言，当我发现Scratch时，我大吃了一惊，这个图形化的语言居然和我想的如此接近，并且它和上面讲的乐高机器人都是由MIT的一个小组开发的。</p>
+<p>下面是Scratch版的“Hello，World”：</p>
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/11/Screen-shot-2011-11-15-at-7.28.31-PM.png" alt="" title="Screen shot 2011-11-15 at 7.28.31 PM" width="195" height="95"></p>
+<p>Scratch算是Smalltalk的一个近亲，但是它的目标是以“玩乐式的体验”帮助孩子学习必要的数学和编程技能——我非常赞同这个目标，Scratch虽然看起来和<a href="http://research.microsoft.com/en-us/projects/kodu/">微软的Kodu</a>有点像，但是基于我玩乐高的体验，我更喜欢Scratch一些。</p>
+<p>更多资源</p>
+<p>   * <a href="http://scratch.mit.edu/">官方网站</a><br>
+   * <a href="http://info.scratch.mit.edu/Source_Code">源码</a></p>
+<p><strong>ClojureScript</strong></p>
+<p>发布日期: 2011, 作者: Rich Hickey</p>
+<p>ClojureScript是一个基于JavaScript之上的语言，它采用了大部分Clojure的语法，然后被编译成Javascript，因为我本人就是ClojureScript的开发者，我对它的看法难免会有偏见，所以还是让Brenton Ashworth来告诉你ClojureScript到底有多酷吧：</p>
+<p><a href="http://vimeo.com/29535884">ClojureScript browser-connected REPL from Brenton Ashworth</a></p>
+<p>这是个连我都被震住了的视频。</p>
+<p>继续了解</p>
+<p>   * <a href="http://blip.tv/clojure/rich-hickey-unveils-clojurescript-5399498">ClojureScript声明</a><br>
+   * <a href="http://clojure.com/blog/2011/07/22/introducing-clojurescript.html">介绍ClojureScript</a><br>
+   * <a href="http://github.com/clojure/clojurescript">源码</a></p>
+<p><strong>Clojure</strong></p>
+<p>发布日期: 2007, 作者: Rich Hickey</p>
+<p>同上面一样，我对Clojure的喜爱也不可避免的带有偏见，所以我尽量少说一些，下面就是我对它的简短评价：<br>
+不变性（Immutability）将会成为游戏规则的颠覆者</p>
+<p>另外，下面是一个由<a href="http://clj-me.cgrand.net/2011/08/19/conways-game-of-life/">Christophe Grand</a>实现的<a href="http://zh.wikipedia.org/wiki/%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F">生命游戏</a>的Clojure版本：</p>
+<pre>
+(defn neighbours [[x y]]
+  (for [dx [-1 0 1] dy (if (zero? dx) [-1 1] [-1 0 1])]
+    [(+ dx x) (+ dy y)]))
+
+(defn step [cells]
+  (set (for [[loc n] (frequencies (mapcat neighbours cells))
+             :when (or (= n 3) (and (= n 2) (cells loc)))]
+         loc)))
+
+(def board #{[2 1] [2 2] [2 3]})
+
+(defn print-board [board w h]
+  (doseq [x (range (inc w)) y (range (inc h))]
+    (if (= y 0) (print "\n"))
+    (print (if (board [x y]) "[X]" " . "))))
+
+(defn display-grids [grids w h]
+  (doseq [board grids]
+    (print-board board w h)
+    (print "\n")))
+</pre>
+<p>再就是，我写过一本<a href="http://joyofclojure.com/">关于Clojure的书</a>。</p>
+<p>更多资源</p>
+<p>   * <a href="http://clojure.org/">官方网站</a><br>
+   * <a href="http://github.com/clojure/clojure">源码</a></p>
+<p><strong>OMeta</strong></p>
+<p>发布日期: 2009 (?), 作者: Alessandro Warth</p>
+<p>最近几年关于DSL的讨论越来越多，大家的很大一部分注意力都被转移到了这个话题上，尽管如此，如果有人曾经参与过DSL的设计或者实现，那么他应该会发现，现在的情况远不能让人满意，问题就是你很难用一个通用语言实现一个既强大又健壮的DSL，造成这个问题的原因有很多，但最主要的问题就是，即使是使用那些具有很大的语法灵活性的语言，你也仍然很难保证你实现出来的DSL不会太过丑陋，当然，你可以做到，但是如果你想要实现一个理想的DSL，你会发现，你真的需要一套简单的工具来帮你构建一个完整的语言解析器和运行时，关于这个，我都可以花上一天再写个新帖了，但我还是先省省吧，让我们回到主题，真的，DSL的世界需要这样一种语言，它只是为你提供一套工具，让你可以编写独立的DSL解析器，或是嵌入式的变体，没错，那就是OMeta。</p>
+<p><a href="https://gist.github.com/1295331">Github上的OMeta示例代码</a></p>
+<p>就像JetBrain的<a href="http://www.jetbrains.com/mps/">元编程系统</a>提供的那种非常容易理解且强大的工具集一样，OMeta最大的优势就在于它非常简单，OMeta是基于语法表达式解析器（PEG）构建的，你可以轻松对它进行扩展来支持通用的数据结构。</p>
+<p>更多资源</p>
+<p>   * <a href="http://tinlizzie.org/ometa/">官方网站</a><br>
+   * <a href="https://github.com/alexwarth/ometa-js">JavaScript源码</a></p>
+<p><strong>Fortress</strong></p>
+<p>Fortress有点超出了这个贴的时间限制，因为在它公开发布之前，它已经在Sun内部被使用了多年，Fortress之所以引起我的关注，只是因为Guy Steele参与了这个项目，除了这一点，Fortress引人注目之处还在于它将精力放在了并行计算上，它的语法看起来更像是数学符号，并且支持对象-函数范式，comprehensions，traits, contracts以及静态计量单位解析和分布式数据结构。</p>
+<pre>
+for i←seq(1:m) do
+  for j←seq(1:n) do
+    print a[i,j]
+  end
+end
+</pre>
+<p>上面的这个简单的嵌套循环展示了Fortress的一个非常有趣的特性，那就是循环中的语句是并行执行的，Fortress对于并行采用了一个很坚决的做法，它没有将并行作为语言的一个可选项，而是将它和语言本身紧密的结合在了一起，当然，除了这种隐式的并行，Fortress也支持显式的并行计算。</p>
+<p>更多资源</p>
+<p>   * <a href="http://projectfortress.java.net/">项目主页</a><br>
+   * <a href="http://java.net/projects/projectfortress/sources/sources/show">源码</a></p>
+<p><strong>接下来?</strong></p>
+<p>最近又涌现了许多新的编程语言，但是我对这些语言的了解仅限于一条Tweet的长度：</p>
+<p>* <a href="http://www.dartlang.org/">Dart</a></p>
+<ul>
+<li>第一定理（译者注：这里指作者前面说的一句话：当牛逼的人创造了某个东西，你应该学习之）</li>
+<li>看起来为适配更多的运行时做了均衡</li>
+</ul>
+<p>* <a href="http://www.rust-lang.org/">Rust</a></p>
+<ul>
+<li>看起来像是<a href="http://www.digitalmars.com/d/2.0/index.html">D语言</a>的继承者</li>
+<li>第一定理</li>
+</ul>
+<p>* <a href="http://arstechnica.com/open-source/news/2011/04/the-rationale-for-ceylon-red-hats-new-programming-language.ars">Ceylon</a>，不确定对于一个坚持追随Java约定的团队，这个语言为他们提供了什么<br>
+* Kotlin，基于IDE打造<br>
+* <a href="http://newspeaklanguage.org/">Newspeak</a>，smalltalk+: FloatD的简化版<br>
+* <a href="http://perl6.org/">Perl6</a>，鉴于我不是Perl程序员，所以我可以等<br>
+* <a href="http://magpie.stuffwithstuff.com/">Magpie</a></p>
+<ul>
+<li>或许是最好的关于编程语言开发的“Blog"了</li>
+<li>很不幸没时间去看它的源代码</li>
+<li>由Dart团队的一员开发</li>
+<li>感谢<a href="http://twitter.com/kaleidic">Tracy Harms</a>提醒</li>
+</ul>
+<p><strong>更少人知道的</strong></p>
+<p>下面这些语言是其他人推荐给我的，我对它们基本上一无所知：</p>
+<p>* <a href="http://felix-lang.org/">Felix</a> 属于ML系<br>
+* <a href="https://github.com/built/wheeler">Wheeler</a> 看起来真的很独特，我会花点时间探索下<br>
+* <a href="http://opalang.org/">Opa</a> 下一代的Web语言<br>
+* <a href="http://code.google.com/p/frege/">Frege</a> 又一个Java.next语言，Haskell系<br>
+* <a href="http://cobra-language.com/">Cobra</a> 带给我合同<br>
+* <a href="http://claylabs.com/clay/">Clay</a> 另一个系统级编程语言，在我看来很干净</p>
+<p>写完这篇文章，一个让我惊奇的发现是，过去5年间我们对于数组编程【<a href="http://blog.fogus.me/2011/10/18/programming-language-development-the-past-5-years/#fn:j">6</a>】几乎没有取得什么进展，尽管如此，我怀疑可能还有有一些私有的项目没被我发现，随着时间的推移，我的感受就是，编程语言正在朝着衍生和进化的方向发展，而不是再从头重新发明一种革命性的新语言，这并不一定就是件坏事情，因为计算机史上还有很多隐藏的很深的好点子等着我们去发掘。</p>
+<p>我有错过什么吗？</p>
+<p>---------------</p>
+<p>本文是“Programming language development: the past 5 years”一文的下半部分（<a href="http://heikezhi.com/2011/11/06/programming-language-development-the-past-5-years-part-1/">上篇在这里</a>），作者：Fogus，翻译：<a href="http://about.me/yuanyiz">yuanyiz</a></p>
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="提高编程技能的10种方法" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F03%2F10-ways-to-improve-your-programming-skills%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F15%2Fprogramming-language-development-the-past-5-years-part-2%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">提高编程技能的10种方法</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="最快的编程语言是？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F02%2Fwhich-programming-languages-are-fastest%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F15%2Fprogramming-language-development-the-past-5-years-part-2%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/05/02/7327586.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">最快的编程语言是？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="过去5年编程语言的演化（上）" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F06%2Fprogramming-language-development-the-past-5-years-part-1%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F15%2Fprogramming-language-development-the-past-5-years-part-2%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">过去5年编程语言的演化（上）</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="10个编程首选字体" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F31%2Ftop-10-programming-font%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F15%2Fprogramming-language-development-the-past-5-years-part-2%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/06/01/10395930.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">10个编程首选字体</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/603800683/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/603800683/6713895/1/item.html" border="0" height="0" width="0">

@@ -1,0 +1,173 @@
+---
+layout: post
+title:  "学习CSS布局"
+date:   2013-06-13 11:00:56
+author: 
+categories: program
+---
+
+## 学习CSS布局
+### by 
+### at 2013-06-13 11:00:56
+### original <http://www.w3cplus.com/css/learn-css-layout.html>
+
+<div><div><div><blockquote>
+	<p>本文由<a href="http://weibo.com/2192190385">LL</a>根据<a href="http://learnlayout.com/">Learn CSS Layout</a>站点所译，整个译文带有我们自己的理解与思想，如果译得不好或不对之处还请同行朋友指点。如需转载此译文，需注明英文出处：<a href="http://learnlayout.com/">http://learnlayout.com/</a>，以及作者相关信息</p>
+	<p style="text-align:right">——译者：<a href="http://weibo.com/u/2192190385">LL</a></p>
+</blockquote>
+<p>这个篇文章介绍的是现在广泛使用于网站布局领域的CSS基础。</p>
+<p>你也许知道什么叫选择器，什么叫属性，什么叫数值，也许你对css布局略懂一二，但这还远远不够。如果你想着从头开始学习HTML和CSS的话，我建议你认真查看下 this tutorial. 否则，在工作的时候，你依然陷入迷惘的泥潭中苦苦挣扎。</p>
+<h2>
+	零布局</h2>
+<p>如果你希望你的网页内容以一个栏的形式显示出来的话，那么就用不着使用css布局了。然而，如果用户的浏览器界面调整得很宽的话，那么每一次看完一行文字的时候，你的视线都要从右到左地移动到下一行，很麻烦啊有没有，你自己调整一下界面的大小就知道我所说的情况了。</p>
+<p>在我们解决这个问题之前，先让我们了解下一个非常重要的display属性吧。</p>
+<h3>
+	"display"属性</h3>
+<p>在控制布局方面,display是最重要的css属性，每一个元素都有其默认的display属性值，大部分的默认值不是block就是inline，用block标记的元素一般称为块级元素，而用inline的元素一般称为内联元素。</p>
+<h4>
+	block</h4>
+<p>Div标签是块级元素的代表，块级元素占据着整整独立的一行，其他常见的块级元素有p和form，还有html5中加入的header，section和footer等等。</p>
+<h4>
+	inline</h4>
+<p>Span标签是内联元素的代表，内联元素能够避免破坏段落结构的情况下，往其中添加文本段落。而元素a就是最常见的内联元素，经常用他来作链接使用。</p>
+<h4>
+	none</h4>
+<p>另一个比较常见的display属性值就是none，像script这些比较特别的元素的默认属性值就是none，他经常被用来隐藏javascript语句，适当隐藏暂时不用着显示的元素.但这区别于visibility。设置display：none的元素，经过页面的渲染过后，就好像这个元素不存在了。而设置visibility：hidden；的时候，同样会对该元素进行隐藏，但是，如果他被完全隐藏的时候，其依然还是占据原来的空间。换句话说 display：none会真的把你弄没，而visibility：hidden则仅仅是为你披上一件隐身衣而已，你还在原来的地方呆着。</p>
+<h4>
+	其他display属性</h4>
+<p>除了上面讲到的display属性值之外，其实还有很多display属性值，比如list-item以及table这些。（链接）这里有一个详尽的列表。我们接下来还会讨论到inline-block和flex，敬请期待。</p>
+<p>&lt;4&gt;友情提示</p>
+<p>正如我所提到的，每一个元素都具备一个默认的的display属性值。其实你完全可以忽略这句话！虽然说div在默认情况下不可能是内联的，但是你定制出你想要的display属性值元素。举个常见的例子来说吧，li内联元素常常被用作水平的菜单。</p>
+<p><a href="http://codepen.io/w3cplus_LL/pen/xgqHt">在线查看</a></p>
+<blockquote>
+	<h2>
+		扩展阅读</h2>
+	<ol><li>
+			<a href="http://www.w3.org/TR/CSS21/visuren.html#display-prop">'display' property</a></li>
+		<li>
+			<a href="http://docs.webplatform.org/wiki/css/properties/display">display</a></li>
+		<li>
+			<a href="http://robertnyman.com/2010/02/24/css-display-inline-block-why-it-rocks-and-why-it-sucks/">CSS display: inline-Block: Why It Rocks, And Why It Sucks</a></li>
+		<li>
+			<a href="http://www.onenaught.com/posts/201/use-css-displaytable-for-layout">Use CSS display:table for Layout</a></li>
+		<li>
+			<a href="http://css-tricks.com/almanac/properties/d/display/">display</a></li>
+	</ol><p style="text-align:right">——大漠</p>
+</blockquote>
+<h2>
+	margin: auto;</h2>
+<pre>
+#main {
+  width: 600px;
+  margin: 0 auto; 
+}	
+</pre>
+<p>在块级元素中设计width属性能够防止在水平上撑满容器。然后，你还能够设置左右margin来进行水平居中。在中间占据指定的水平宽度，然后剩下来的宽度空间就会一分为二成为左右外边距。</p>
+<p>现在唯一需要解决的问题就是，一旦浏览器的显示窗口的宽度小于你设定的元素宽度。浏览器就会自动加上一个水平滚动条来进行内容显示，有时这种情况不是我们想要的，需要改进改进。</p>
+<p><a href="http://codepen.io/w3cplus_LL/pen/xgqHt">在线查看</a></p>
+<blockquote>
+	<h2>
+		扩展阅读</h2>
+	<ol><li>
+			<a href="http://www.w3.org/TR/CSS2/box.html">Box model</a></li>
+		<li>
+			<a href="http://simplebits.com/notebook/2004/09/08/centering/">CSS CENTERING 101</a></li>
+		<li>
+			<a href="http://designshack.net/articles/css/how-to-center-anything-with-css/">How to Center Anything With CSS</a></li>
+		<li>
+			<a href="http://coding.smashingmagazine.com/2010/11/08/equal-height-columns-using-borders-and-negative-margins-with-css/">Equal Height Column Layouts with Borders and Negative Margins in CSS</a></li>
+		<li>
+			<a href="http://reference.sitepoint.com/css/collapsingmargins">Collapsing Margins</a></li>
+	</ol><p style="text-align:right">——大漠</p>
+</blockquote>
+<h2>
+	Max-width</h2>
+<pre>
+#main {
+  max-width: 600px;
+  margin: 0 auto; 
+}	
+</pre>
+<p>使用max-width来代替width能够提升浏览器对小窗口情况的处理效果。这个处理方法在移动端上显得更加尤为重要。现在你就可以调整下窗口的大小，来对照下吧！</p>
+<p>顺便说下，max-width得到了<a href="http://caniuse.com/#search=max-width">所有的主流浏览器</a>的支持包括IE7在内，所以尽管使用它就行了。</p>
+<h2>
+	Box模型</h2>
+<p>当我们谈及width的时候，我们应该谈论到关于width一个重要的注意点，box模型。当你在元素中设定width，该元素的实际大小一般大于你的所设定的数值：元素的border以及padding会在原设定宽度的大小上进一步撑大容器的宽度。看看下面的例子，两个设定相同width大小的容器，却是以不同大小的形式显示出来。</p>
+<pre>
+.simple {
+  width: 500px;
+  margin: 20px auto;
+}
+
+.fancy {
+  width: 500px;
+  margin: 20px auto;
+  padding: 50px;
+  border-width: 10px;
+}	
+</pre>
+<p><a href="http://codepen.io/airen/pen/hKgqJ"><img alt="学习布局" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/learn-layout1.jpg" style="padding:2px;border:1px solid #ccc;width:560px"></a></p>
+<p><a href="http://codepen.io/w3cplus_LL/pen/xgqHt">在线查看</a></p>
+<p>一般来说，我们需要通过计算来解决这个问题，css开发者总是需要预先把容器设定得小一点（减去border以及padding占据的宽度）来最终达到理想的大小，让人庆幸的是，现在你再也不用这么苦逼了。</p>
+<h2>
+	Box-sizing</h2>
+<p>随着日子一天一天过，人们越来越发现为容器的大小计算得非常苦逼，于是，一个名字叫box-sizing的css属性新鲜出炉了。当你在容器当中设定box-sizing：border-box的时候，容器中的border和padding已经不能影响该容器的宽度了。下面的例子和上面的例子大部分都一样，只是下面的例子多了个box-sizing：border-box；</p>
+<pre>
+.simple {
+  width: 500px;
+  margin: 20px auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.fancy {
+  width: 500px;
+  margin: 20px auto;
+  padding: 50px;
+  border: solid blue 10px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}	
+</pre>
+<p><a href="http://codepen.io/airen/pen/KFuof"><img alt="学习布局" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/learn-layout2.jpg" style="padding:2px;border:1px solid #ccc;width:560px"></a></p>
+<p><a href="http://codepen.io/airen/pen/KFuof">在线查看</a></p>
+<p>这是目前为止保持宽度大小一致最好的解决办法了，css开发者把下面css代码放在他们的页面上，这样，页面上所有容器都具备这种属性了。</p>
+<pre>
+* {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}	
+</pre>
+<p>这样，页面上的所有元素就可以得到更加直观的排版。</p>
+<p>由于box-sizing是相当新的属性，你应该像我之前的例子那样添加-webkit-和-moz-前缀，这样在其对应的浏览器中得到更好的显示。<a href="http://caniuse.com/#search=box-sizing">IE8+</a>支持这个属性的。</p>
+<blockquote>
+	<h2>
+		扩展阅读</h2>
+	<ol><li>
+			<a href="http://www.w3cplus.com/content/css3-box-sizing">CSS3 Box-sizing</a></li>
+		<li>
+			<a href="http://css-tricks.com/box-sizing/">Box Sizing</a></li>
+		<li>
+			<a href="http://www.hongkiat.com/blog/css3-box-sizing/">A Look Into: CSS3 Box-Sizing</a></li>
+		<li>
+			<a href="http://quirksmode.org/css/user-interface/boxsizing.html">box-sizing</a></li>
+		<li>
+			<a href="http://albertogasparin.it/articles/2012/02/start-using-css-box-sizing-today/">Start using CSS box-sizing today</a></li>
+		<li>
+			<a href="http://www.w3.org/TR/css3-ui/#box-sizing0">‘box-sizing’ property</a></li>
+	</ol><p style="text-align:right">——大漠</p>
+</blockquote>
+<h2>
+	Position</h2>
+<p>为了应对更加复杂的布局需求，我们就不能忽略position这个属性。它有一揽子有用的属性，而且他们的名称又抽象难记，好吧，我们一个一个地攻破它吧，不过你要做好打持久战的心理准备哦。</p>
+<h3>
+	static</h3>
+<pre>
+.static {
+  position: static;
+}	
+</pre>
+<p>Static是元素与生俱来的默认属性。它表示着不进行特殊的定位。一般来说static属性表示该元素没有被定位，而一旦把position属性设定其他值的时候，那么就表示该元素被定位了。</p></div></div></div>

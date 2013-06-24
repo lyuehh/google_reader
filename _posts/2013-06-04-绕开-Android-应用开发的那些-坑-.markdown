@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "绕开 Android 应用开发的那些“坑”"
+date:   2013-06-04 12:17:00
+author: “豌豆洗白白”团队
+categories: program
+---
+
+## 绕开 Android 应用开发的那些“坑”
+### by “豌豆洗白白”团队
+### at 2013-06-04 12:17:00
+### original <http://www.infoq.com/cn/news/2013/06/bypass-android-dev-pits>
+
+自从推出“豌豆洗白白”之后，我们也在不断听取用户和开发者的意见来改进产品。不过，部分开发者提出的奇怪的场景，也会让我们感到疑惑：比如突然更换了签名文件，或者包名与别的应用撞车造成的误洗等。这些事故，很多情况下是可以避免的，所以我们也在本文中总结一下 Android 开发中容易被忽视的一些注意事项吧。
+ <i>By “豌豆洗白白”团队</i><img src="http://www1.feedsky.com/t1/741668883/InfoQChina/feedsky/s.gif?r=http://www.infoq.com/cn/news/2013/06/bypass-android-dev-pits" border="0" height="0" width="0">

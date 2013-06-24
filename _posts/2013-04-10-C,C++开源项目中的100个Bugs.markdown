@@ -1,0 +1,664 @@
+---
+layout: post
+title:  "C,C++开源项目中的100个Bugs"
+date:   2013-04-10 09:59:42
+author: bigwhite
+categories: program
+---
+
+## C,C++开源项目中的100个Bugs
+### by bigwhite
+### at 2013-04-10 09:59:42
+### original <http://tonybai.com/2013/04/10/100-bugs-in-c-cpp-opensource-projects/?utm_source=rss&utm_medium=rss&utm_campaign=100-bugs-in-c-cpp-opensource-projects>
+
+<p style="font-size:13px">俄罗斯<a href="http://www.viva64.com/">OOO Program Verification Systems</a>公司用自己的静态源码分析产品PVS-Studio对一些知名的C/C++开源项目，诸如<a href="http://httpd.apache.org">Apache Http Server</a>、<a href="http://www.chromium.org">Chromium</a>、<a href="http://clang.llvm.org">Clang</a>、<a href="http://www.cmake.org">CMake</a>、<a href="http://www.mysql.com">MySQL</a>等的源码进行了分析，找出了<a href="http://www.viva64.com/en/a/0079/">100个典型的Bugs</a>。个人觉得这份列表对C/C++ 程序员有一定参考意义。与其说事后用静态工具分析，倒不如在编码时就提高自知自觉，避免这份列表上的错误发生在你的代码中，因此这里将部分摘录一些Bugs（Bug编号这里不连续，为的是对应原文的编号）并做简要说明。原文将这份Bug列表分为了几类，这里也将沿用这个思路。</p>
+<p><b>一、数组和字符串处理错误</b></p>
+<p>数组和字符串处理错误是C/C++程序中最多的一类缺陷类型。这也可以看作是我们为拥有高效地底层内存操作能力而付出的代价。</p>
+<p><b>[</b><b><tt>#1</tt></b><b>]</b><a href="http://en.wikipedia.org/wiki/Wolfenstein_3D"> Wolfenstein 3D</a>项目 -&quot;只有部分对象被clear了&quot;</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">void CG_RegisterItemVisuals( int itemNum ) {<br>
+	    …<br>
+	    itemInfo_t *itemInfo;<br>
+	    …<br>
+	    memset( itemInfo, 0, sizeof( &amp;itemInfo ) );<br>
+	    …<br>
+	}</span></p>
+<p>这里的Bug出现在memset那一行。代码的真实意图是clear iteminfo这块内存，但调用memset时，第三个参数传入的却是sizeof(&amp;iteminfo)，要知道 sizeof(&amp;itemInfo) != sizeof(itemInfo_t)，前者只是一个指针的大小罢了。正确的写法是：</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">memset(itemInfo, 0, sizeof(itemInfo_t)); 或memset(itemInfo, 0, sizeof(*itemInfo));</span></p>
+<p><b>[#2] </b>Wolfenstein 3D项目 -&quot;只有部分Matrix被clear了&quot;</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">ID_INLINE mat3_t::mat3_t( float src[ 3 ][ 3 ] ) {<br>
+	    memcpy( mat, src, sizeof( src ) );<br>
+	}</span></p>
+<p>这里的Bug出现在memcpy一行。程序的原意是将clear src[3][3]这个<a href="http://tonybai.com/2013/03/28/pointer-and-multi-dimension-array-in-c/">二维数组</a>。但这里有个坑：那就是作为函数形式参数的数组名已经退化为指针了，对其sizeof只能得到一个指针的长度，因此这里的 memcpy只是copy了一个指针的长度，没有copy全。这里的代码是C++代码，原文中给出了正确的改正方法 – 传reference：</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">ID_INLINE mat3_t::mat3_t( float (&amp;src)[3][3] )<br>
+	{<br>
+	    memcpy( mat, src, sizeof( src ) );<br>
+	}</span></p>
+<p><b>[#4] </b><a href="http://www.reactos.org">ReactOS</a>项目 – &quot;错误地计算一个字符串的长度&quot;</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">static const PCHAR Nv11Board = &quot;NV11 (GeForce2) Board&quot;;<br>
+	static const PCHAR Nv11Chip = &quot;Chip Rev B2&quot;;<br>
+	static const PCHAR Nv11Vendor = &quot;NVidia Corporation&quot;;</span></p>
+<p><span style="font-family:courier new,courier,monospace">BOOLEAN<br>
+	IsVesaBiosOk(…)<br>
+	{<br>
+	    …<br>
+	    if (!(strncmp(Vendor, Nv11Vendor, sizeof(Nv11Vendor))) &amp;&amp;<br>
+	            !(strncmp(Product, Nv11Board, sizeof(Nv11Board))) &amp;&amp;<br>
+	            !(strncmp(Revision, Nv11Chip, sizeof(Nv11Chip))) &amp;&amp;<br>
+	            (OemRevision == 0×311))<br>
+	    …<br>
+	}</span></p>
+<p>Bug处在IsVesaBiosOK中那一串strncmp调用中，代码将一个指针的size传入strncmp作为第三个参数，导致 strncmp实际只是比较了字符串的前4 or 8个字节，而不是字符串的全部内容。</p>
+<p><b>[#6] </b>CPU Identifying Tool项目 – 数组越界</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">#define FINDBUFFLEN 64  // Max buffer find/replace size<br>
+	…<br>
+	int WINAPI Sticky (…)<br>
+	{<br>
+	    …<br>
+	    static char findWhat[FINDBUFFLEN] = {&#39;\0&#39;};<br>
+	    …<br>
+	    findWhat[FINDBUFFLEN] = &#39;\0&#39;;<br>
+	    …<br>
+	}</span></p>
+<p>bug出在&quot;findWhat[FINDBUFFLEN] = ‘\0′;”这一行。数组的最大长度为FINDBUFFLEN，但下标的最大值应该是FINDBUFFLEN-1，而不是FINDBUFFLEN。因此这 行代码显然应该改为findWhat[FINDBUFFLEN-1] = &#39;\0&#39;;</p>
+<p><b>[#7]</b> Wolfenstein 3D项目 – 数组越界</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">typedef struct bot_state_s<br>
+	{<br>
+	    …<br>
+	    char teamleader[32]; //netname of the team leader<br>
+	    …<br>
+	}  bot_state_t;</span></p>
+<p><span style="font-family:courier new,courier,monospace">void BotTeamAI( bot_state_t *bs ) {<br>
+	    …<br>
+	    bs-&gt;teamleader[sizeof( bs-&gt;teamleader )] = &#39;\0&#39;;<br>
+	    …<br>
+	}</span></p>
+<p>&quot;sizeof( bs-&gt;teamleader )]&quot;这行的结果值已经超出了数组的最大边界，正确的代码是：</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">bs-&gt;teamleader[<br>
+	  sizeof(bs-&gt;teamleader) / sizeof(bs-&gt;teamleader[0]) – 1<br>
+	  ] = &#39;\0&#39;;</span></p>
+<p><b>[#8] </b><a href="http://www.miranda-im.org">Miranda IM</a>项目 – 只Copy了部分字符串</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">struct _textrangew<br>
+	{<br>
+	    CHARRANGE chrg;<br>
+	    LPWSTR lpstrText;<br>
+	} TEXTRANGEW;</span></p>
+<p><span style="font-family:courier new,courier,monospace">const wchar_t* Utils::extractURLFromRichEdit(…)<br>
+	{<br>
+	    …<br>
+	    ::CopyMemory(tr.lpstrText, L&quot;mailto:&quot;, 7);<br>
+	    …<br>
+	}</span></p>
+<p>这里的bug在于L&quot;mailto:&quot;是宽字符串，宽字符串中的每个字符占2或4个字节（依Compiler使用的<a href="http://tonybai.com/2007/11/03/also-talk-about-char-encoding/">字符集</a>编码而定），因此这里只 copy 7个字节显然是不够的，应该是7 * sizeof(wchar_t)。</p>
+<p><b>[#9]</b> CMake项目 – 循环內的数组越界</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">static const struct {<br>
+	    DWORD   winerr;<br>
+	    int     doserr;<br>
+	} doserrors[] =<br>
+	{<br>
+	    …<br>
+	};</span></p>
+<p><span style="font-family:courier new,courier,monospace">static void<br>
+	la_dosmaperr(unsigned long e)<br>
+	{<br>
+	    …<br>
+	    for (i = 0; i &lt; sizeof(doserrors); i++)<br>
+	    {<br>
+	        if (doserrors[i].winerr == e)<br>
+	        {<br>
+	            errno = doserrors[i].doserr;<br>
+	            return;<br>
+	        }<br>
+	    }<br>
+	    …<br>
+	}</span></p>
+<p>作者原本意图la_dosmaperr中for循环的次数等于数组的元素个数，但sizeof(doserrors)返回的却是数组占用的字节个数，这远远大于数组元素个数，因此造成数组越界。正确的写法：</p>
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">for (i = 0; i &lt; sizeof(doserrors) / sizeof(*doserrors); i++)</span></p>
+<p><strong>[#10]</strong> CPU Identifying Tool项目 – 打印到自身的字符串</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">char * OSDetection ()<br>
+	{<br>
+	    …<br>
+	    sprintf(szOperatingSystem,<br>
+	                    &quot;%sversion %d.%d %s (Build %d)&quot;,<br>
+	                    szOperatingSystem,<br>
+	                    osvi.dwMajorVersion,<br>
+	                    osvi.dwMinorVersion,<br>
+	                    osvi.szCSDVersion,<br>
+	                    osvi.dwBuildNumber &amp; 0xFFFF);<br>
+	    …<br>
+	    sprintf (szOperatingSystem, &quot;%s%s(Build %d)&quot;,<br>
+	                      szOperatingSystem, osvi.szCSDVersion,<br>
+	                      osvi.dwBuildNumber &amp; 0xFFFF);<br>
+	    …<br>
+	}</span></p>
+<p style="font-size:13px">通过sprintf，szOperatingSystem字符串将自己打印到自己里面，这是十分危险的，将导致无法预知的错误结果，可能会导致栈溢出等严重问题。</p>
+<p style="font-size:13px"><strong>[#12]</strong> <a href="http://notepad-plus-plus.org">Notepad++</a>项目 – 数组局部clear</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">#define CONT_MAP_MAX 50<br>
+	int _iContMap[CONT_MAP_MAX];<br>
+	…<br>
+	DockingManager::DockingManager()<br>
+	{<br>
+	    …<br>
+	    memset(_iContMap, -1, CONT_MAP_MAX);<br>
+	    …<br>
+	}</span></p>
+<p style="font-size:13px">代码的原本试图将数组_iContMap清零，但memset的第三个参数CONT_MAP_MAX并不能代表数组的真正大小，而只是数组的元素个数而已，显然其忘记乘以sizeof(int)了。</p>
+<p style="font-size:13px"><b>二、未定义行为</b></p>
+<p style="font-size:13px">在C/C++的语言规范中，我们常常能看到“xx is undefined”。规范中并没有明确表明这类错误是什么样子的，只是说取决于Compiler的实现，也许Compiler会给出正确的结果，但这么使用却是不可移植的。</p>
+<p style="font-size:13px"><strong>[#1]</strong> Chromium项目 – 智能指针的误用</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">void AccessibleContainsAccessible(…)<br>
+	{<br>
+	    …<br>
+	    auto_ptr&lt;VARIANT&gt; child_array(new VARIANT[child_count]);<br>
+	    …<br>
+	}</span></p>
+<p style="font-size:13px">这里的问题在于使用new[]分配的内存，在智能指针释放时却用了delete，这将会导致未定义行为。看看autoptr的destructor就知道了：</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">~auto_ptr() {<br>
+	    delete _Myptr;<br>
+	}</span></p>
+<p style="font-size:13px">我们可以找一些更合适的类来fix这个问题，比如boost::scopedarray。</p>
+<p style="font-size:13px"><strong>[#2]</strong> IPP Sample项目 – 经典未定义行为</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">template&lt;typename T, Ipp32s size&gt; void HadamardFwdFast(…)<br>
+	{<br>
+	  Ipp32s *pTemp;<br>
+	  …<br>
+	  for(j=0;j&lt;4;j++) {<br>
+	    a[0] = pTemp[0*4] + pTemp[1*4];<br>
+	    a[1] = pTemp[0*4] – pTemp[1*4];<br>
+	    a[2] = pTemp[2*4] + pTemp[3*4];<br>
+	    a[3] = pTemp[2*4] – pTemp[3*4];<br>
+	    pTemp = pTemp++;<br>
+	    …<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">很多人一眼就看到了&quot;pTemp = pTemp++&quot;这行，对于这个代码编译器会产生两种结果截然不同的翻译：</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">pTemp = pTemp + 1;<br>
+	pTemp = pTemp;</span></p>
+<p style="font-size:13px">或</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">TMP = pTemp;<br>
+	pTemp = pTemp + 1;<br>
+	pTemp = TMP;</span></p>
+<p style="font-size:13px">到底是哪种呢？依赖于编译器的实现，甚至是优化级别的设定。</p>
+<p style="font-size:13px"><b>三、与运算优先级相关的错误</b></p>
+<p style="font-size:13px"><strong>[#1]</strong> MySQL工程 – !和&amp;的运算优先级</p>
+<p style="font-size:13px"><span style="font-family:&#39;courier new&#39;,courier,monospace">int ha_innobase::create(…)<br>
+	{<br>
+	  …<br>
+	  if (srv_file_per_table<br>
+	            &amp;&amp; !mysqld_embedded<br>
+	            &amp;&amp; (!create_info-&gt;options &amp; HA_LEX_CREATE_TMP_TABLE)) {<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">这段代码原意是想测试create_info-&gt;options变量中几个bit位的值是否set了，即!(create_info-&gt;options &amp; HA_LEX_CREATE_TMP_TABLE)，但由于!的运算优先级高于&amp;，实际逻辑变成了(!create_info-&gt;options) &amp; HA_LEX_CREATE_TMP_TABLE了。如果想要这段代码如期工作，就不要吝啬小括号了。</p>
+<p style="font-size:13px"><strong>[#2]</strong> <a href="http://www.emule-project.net">Emule</a>工程 – *和++的运算优先级</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">STDMETHODIMP<br>
+	CCustomAutoComplete::Next(…, ULONG *pceltFetched)<br>
+	{<br>
+	  …<br>
+	  if (pceltFetched != NULL)<br>
+	    *pceltFetched++;<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">显然作者原意是想对pceltFetched所指向的long型变量进行++操作，但由于*和++的运算优先级没有搞对，导致实际上执行了*(pceltFetched++)的操作，而不是(*pceltFetched)++操作。</p>
+<p style="font-size:13px"><strong>[#3]</strong> Chromium项目 – &amp;和!=的运算优先级</p>
+<p><span style="font-family:courier new,courier,monospace">#define FILE_ATTRIBUTE_DIRECTORY 0×00000010</span></p>
+<p><span style="font-family:courier new,courier,monospace">bool GetPlatformFileInfo(PlatformFile file, PlatformFileInfo* info) {<br>
+	  …<br>
+	  info-&gt;is_directory =<br>
+	    file_info.dwFileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY != 0;<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">这个程序员的意图是通过测试file_info.dwFileAttributes的几个bit位的值来判定是否是目录，逻辑上应该是(file_info.dwFileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY) != 0，但由于!=优先级高于&amp;，原代码中无括号，结果逻辑变成了file_info.dwFileAttributes &amp; (FILE_ATTRIBUTE_DIRECTORY != 0)，导致is_directory将永远求值为true。</p>
+<p style="font-size:13px"><strong>[#4]</strong> BCmenu项目 – if和else弄混</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void BCMenu::InsertSpaces(void)<br>
+	{<br>
+	  if(IsLunaMenuStyle())<br>
+	    if(!xp_space_accelerators) return;<br>
+	  else<br>
+	    if(!original_space_accelerators) return;<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">这又是C语言的一个“大坑”，无奈这个BCMenu项目的程序员掉坑里了。虽然从代码缩进上来看，else似乎是与最外层的if配对使用，但实际这段代码的效果是：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">if(IsLunaMenuStyle())<br>
+	{<br>
+	   if(!xp_space_accelerators) {<br>
+	     return;<br>
+	   } else {<br>
+	     if(!original_space_accelerators) return;<br>
+	   }<br>
+	}</span></p>
+<p style="font-size:13px">这显然不是程序员原意，看来括号必要时还是不能省略的。修改后的代码如下：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">if(IsLunaMenuStyle()) {<br>
+	  if(!xp_space_accelerators) return;<br>
+	} else {<br>
+	  if(!original_space_accelerators) return;<br>
+	}</span></p>
+<p style="font-size:13px"><b style="font-size:13px">四、格式化输出错误</b></p>
+<p style="font-size:13px"><strong>[#1]</strong> ReactOS项目 – 错误地输出WCHAR字符</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">static void REGPROC_unescape_string(WCHAR* str)<br>
+	{<br>
+	  …<br>
+	  default:<br>
+	    fprintf(stderr,<br>
+	            &quot;Warning! Unrecognized escape sequence: \\%c&#39;\n&quot;,<br>
+	            str[str_idx]);<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">%c是用来格式化输出非宽字符的，这里用来输出WCHAR显然会得到错误的结果，fix solution是将%c换位%C。</p>
+<p style="font-size:13px"><strong>[#2]</strong> Intel AMT SDK项目 – 缺少%s</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void addAttribute(…)<br>
+	{<br>
+	  …<br>
+	  int index = _snprintf(temp, 1023, <br>
+	                        &quot;%02x%02x:%02x%02x:%02x%02x:%02x%02x:&quot;<br>
+	                        &quot;%02x%02x:02x%02x:%02x%02x:%02x%02x&quot;,<br>
+	                        value[0],value[1],value[2],value[3],value[4],<br>
+	                        value[5],value[6],value[7],value[8],<br>
+	                        value[9],value[10],value[11],value[12],<br>
+	                        value[13],value[14],value[15]);<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px"> </p>
+<p style="font-size:13px">不解释了，自己慢慢数和对照吧。</p>
+<p style="font-size:13px"><strong>[#3]</strong> Intel AMT SDK项目 – 未使用的参数</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">bool GetUserValues(…)<br>
+	{<br>
+	  …<br>
+	  printf(&quot;Error: illegal value. Aborting.\n&quot;, tmp);<br>
+	  return false;<br>
+	}</span></p>
+<p style="font-size:13px">显然tmp是多余的。</p>
+<p style="font-size:13px"><b style="font-size:13px">五、书写错误</b></p>
+<p style="font-size:13px"><strong>[#1]</strong> Miranda IM项目 – 在if中赋值</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void CIcqProto::handleUserOffline(BYTE *buf, WORD wLen)<br>
+	{<br>
+	  …<br>
+	  else if (wTLVType = 0×29 &amp;&amp; wTLVLen == sizeof(DWORD))<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">“wTLVType = 0×29”显然是笔误，应该是“wTLVType == 0×29”才对。</p>
+<p style="font-size:13px"><strong>[#3]</strong> Clang项目 – 对象名书写错误</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">static Value *SimplifyICmpInst(…) {<br>
+	  …<br>
+	  case Instruction::Shl: {<br>
+	    bool NUW =<br>
+	      LBO-&gt;hasNoUnsignedWrap() &amp;&amp; LBO-&gt;hasNoUnsignedWrap();<br>
+	    bool NSW =<br>
+	      LBO-&gt;hasNoSignedWrap() &amp;&amp; RBO-&gt;hasNoSignedWrap();<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">从最后一行先后使用了LBO和RBO来看，前面只用了LBO的那行很可能是有问题的，正确的应该是：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">bool NUW =<br>
+	      LBO-&gt;hasNoUnsignedWrap() &amp;&amp; RBO-&gt;hasNoUnsignedWrap();</span></p>
+<p style="font-size:13px"><strong>[#6]</strong> G3D Content Pak项目 – 一对括号放错了地方</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">bool Matrix4::operator==(const Matrix4&amp; other) const {<br>
+	  if (memcmp(this, &amp;other, sizeof(Matrix4) == 0)) {<br>
+	    return true;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">由于括号放错了地方，导致memcmp最后的参数变成了sizeof(Matrix4) == 0，这行代码的正确写法应该是：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">if (memcmp(this, &amp;other, sizeof(Matrix4)) == 0) {</span></p>
+<p style="font-size:13px"><strong>[#8]</strong> Apache Http Server项目 – 多余的sizeof</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">PSECURITY_ATTRIBUTES GetNullACL(void)<br>
+	{<br>
+	  PSECURITY_ATTRIBUTES sa;<br>
+	  sa  = (PSECURITY_ATTRIBUTES)<br>
+	    LocalAlloc(LPTR, sizeof(SECURITY_ATTRIBUTES));<br>
+	  sa-&gt;nLength = sizeof(sizeof(SECURITY_ATTRIBUTES));<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">最后一行显然是笔误，sizeof(sizeof(SECURITY_ATTRIBUTES))应该写为sizeof(SECURITY_ATTRIBUTES)才对。</p>
+<p style="font-size:13px"><strong>[#10]</strong> Notepad++项目 – 在本来应该用&amp;的地方使用了&amp;&amp;</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">TCHAR GetASCII(WPARAM wParam, LPARAM lParam)<br>
+	{<br>
+	  …<br>
+	  result=ToAscii(wParam,<br>
+	                 (lParam &gt;&gt; 16) &amp;&amp; 0xff, keys,&amp;dwReturnedValue,0);<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">(lParam &gt;&gt; 16) &amp;&amp; 0xff没有什么意义，求值结果总是true。这里的代码应该是(lParam &gt;&gt; 16) &amp; 0xff。</p>
+<p style="font-size:13px"><strong>[#12]</strong> Fennec Media Project项目 – 额外的分号</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">int settings_default(void)<br>
+	{<br>
+	  …<br>
+	  for(i=0; i&lt;16; i++);<br>
+	    for(j=0; j&lt;32; j++)<br>
+	    {<br>
+	      settings.conversion.equalizer_bands.boost[i][j] = 0.0;<br>
+	      settings.conversion.equalizer_bands.preamp[i]   = 0.0;<br>
+	    }<br>
+	}</span></p>
+<p style="font-size:13px">这又是一个实际逻辑与代码缩进不符的例子。作者的原意是这样的：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">for(i=0; i&lt;16; i++) <br>
+	{<br>
+	    for(j=0; j&lt;32; j++)<br>
+	    {<br>
+	      settings.conversion.equalizer_bands.boost[i][j] = 0.0;<br>
+	      settings.conversion.equalizer_bands.preamp[i]   = 0.0;<br>
+	    }<br>
+	}</span></p>
+<p style="font-size:13px">但实际执行代码逻辑却是：</p>
+<p><span style="font-family:courier new,courier,monospace">for(i=0; i&lt;16; i++) <br>
+	{<br>
+	    ;<br>
+	}</span></p>
+<p><span style="font-family:courier new,courier,monospace">for(j=0; j&lt;32; j++)<br>
+	{   <br>
+	  settings.conversion.equalizer_bands.boost[i][j] = 0.0;<br>
+	  settings.conversion.equalizer_bands.preamp[i]   = 0.0;<br>
+	}</span></p>
+<p style="font-size:13px">这一切都是那个;导致的。</p>
+<p style="font-size:13px"><strong>六、对基本函数和类的误用</strong></p>
+<p style="font-size:13px"><strong>[#2]</strong> TortoiseSVN项目 – remove函数的误用</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">STDMETHODIMP CShellExt::Initialize(….)<br>
+	{<br>
+	  …<br>
+	  ignoredprops = UTF8ToWide(st.c_str());<br>
+	  // remove all escape chars (&#39;\\&#39;)<br>
+	  std::remove(ignoredprops.begin(), ignoredprops.end(), &#39;\\&#39;);<br>
+	  break;<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">作者意图删除所有&#39;\\&#39;，但他用错了函数，remove函数只是交换元素的位置，将要删除的元素交换到尾部trash，并且返回指向trash首地址的iterator。正确的做法应该是&quot;v.erase(remove(v.begin(), v.end(), 2), v.end())&quot;。</p>
+<p style="font-size:13px"><strong>[#5]</strong> Pixie项目 – 在循环中使用alloca函数</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">inline  void  triangulatePolygon(…) {<br>
+	  …<br>
+	  for (i=1;i&lt;nloops;i++) {<br>
+	    …<br>
+	    do {<br>
+	      …<br>
+	      do {<br>
+	        …<br>
+	        CTriVertex  *snVertex =<br>
+	         (CTriVertex *)alloca(2*sizeof(CTriVertex));<br>
+	        …<br>
+	      } while(dVertex != loops[0]);<br>
+	      …<br>
+	    } while(sVertex != loops[i]);<br>
+	    …<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">alloca函数在栈上分配内存，因此在循环中使用alloca可能会很快导致栈溢出。</p>
+<p style="font-size:13px"><strong style="font-size:13px">七、无意义的代码</strong></p>
+<p style="font-size:13px"><strong>[#1]</strong> IPP Samples项目 – 不完整的条件</p>
+<p><span style="font-family:courier new,courier,monospace">void lNormalizeVector_32f_P3IM(Ipp32f *vec[3],<br>
+	                                 Ipp32s* mask, Ipp32s len)<br>
+	{<br>
+	  Ipp32s  i;<br>
+	  Ipp32f  norm;</span></p>
+<p><span style="font-family:courier new,courier,monospace">  for(i=0; i&lt;len; i++) {<br>
+	    if(mask&lt;0) continue;<br>
+	    norm = 1.0f/sqrt(vec[0][i]*vec[0][i]+<br>
+	                     vec[1][i]*vec[1][i]+vec[2][i]*vec[2][i]);<br>
+	    vec[0][i] *= norm; vec[1][i] *= norm; vec[2][i] *= norm;<br>
+	  }<br>
+	}</span></p>
+<p style="font-size:13px">mask是Ipp32s类型指针，这样if (mask&lt; 0)这句代码显然没啥意义，正确的代码应该是：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">if (mask[i] &lt; 0) continue;</span></p>
+<p style="font-size:13px"><strong>[#2]</strong> QT项目 – 重复的检查</p>
+<p><span style="font-family:courier new,courier,monospace">Q3TextCustomItem* Q3TextDocument::parseTable(…)<br>
+	{<br>
+	  …<br>
+	  while (end &lt; length<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;/td&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;td&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;/th&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;th&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;td&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;/tr&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;tr&quot;))<br>
+	         &amp;&amp; !hasPrefix(doc, length, end, QLatin1String(&quot;&lt;/table&quot;))) {</span></p>
+<p><span style="font-family:courier new,courier,monospace">  …<br>
+	}</span></p>
+<p style="font-size:13px">这里对&quot;&lt;td&quot;做了两次check。</p>
+<p style="font-size:13px"><strong style="font-size:13px">八、总是True或False的条件</strong></p>
+<p style="font-size:13px"><strong>[#1]</strong> Shareaza项目 – char类型的值范围</p>
+<p><span style="font-family:courier new,courier,monospace">void CRemote::Output(LPCTSTR pszName)<br>
+	{</span></p>
+<p><span style="font-family:courier new,courier,monospace">  …<br>
+	  CHAR* pBytes = new CHAR[ nBytes ];<br>
+	  hFile.Read( pBytes, nBytes );<br>
+	  …<br>
+	  if ( nBytes &gt; 3 &amp;&amp; pBytes[0] == 0xEF &amp;&amp;<br>
+	             pBytes[1] == 0xBB &amp;&amp; pBytes[2] == 0xBF )<br>
+	  {<br>
+	    pBytes += 3;<br>
+	    nBytes -= 3;<br>
+	    bBOM = true;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p>表达式&quot;pBytes[0] == 0xEF&quot;总是False。char类型的值范围是-128~127 &lt; 0xEF，因此这个表达式总是False，导致整个if condition总是为False，与预期逻辑不符。</p>
+<p><strong>[#3]</strong> VirtualDub项目 – 无符号类型总是&gt;=0</p>
+<p><span style="font-family:courier new,courier,monospace">typedef unsigned short wint_t;<br>
+	…<br>
+	void lexungetc(wint_t c) {<br>
+	  if (c &lt; 0)<br>
+	    return;<br>
+	   g_backstack.push_back(c);<br>
+	}</span></p>
+<p>c是unsigned short类型，永远不会小于0,也就是说if (c &lt; 0)永远为False。</p>
+<p><strong>[#8]</strong> MySQL项目 – 条件错误</p>
+<p><span style="font-family:courier new,courier,monospace">enum enum_mysql_timestamp_type<br>
+	str_to_datetime(…)<br>
+	{<br>
+	  …<br>
+	  else if (str[0] != ‘a’ || str[0] != &#39;A&#39;)<br>
+	    continue; /* Not AM/PM */<br>
+	  …<br>
+	}</span></p>
+<p>if (str[0] != ‘a’ || str[0] != &#39;A&#39;)这个条件永远为真。也许这块本意是想用&amp;&amp;。</p>
+<p><strong style="font-size:13px">九、代码漏洞</strong></p>
+<p>导致漏洞的代码错误实际上也都是笔误、不正确的条件以及不正确的数组操作等。但这里还是想将一些特定错误划归为一类，因为入侵者可以利用这些错误来攻击你的代码，获取其利益。</p>
+<p><strong>[#1]</strong> Ultimate TCP/IP项目 – 空字符串的错误检查</p>
+<p><span style="font-family:courier new,courier,monospace">char *CUT_CramMd5::GetClientResponse(LPCSTR ServerChallenge)<br>
+	{<br>
+	  …<br>
+	  if (m_szPassword != NULL)<br>
+	  {<br>
+	    …<br>
+	    if (m_szPassword != &#39;\0&#39;)<br>
+	    {<br>
+	  …<br>
+	}</span></p>
+<p>第二个if condition check意图检查m_szPassword是否为空字符串，但却错误的将指针与&#39;\0&#39;进行比较，正确的代码应该是这样的：</p>
+<p><span style="font-family:courier new,courier,monospace">if (*m_szPassword != &#39;\0&#39;)</span></p>
+<p style="font-size:13px"><strong>[#2]</strong> Chromium项目 – NULL指针的处理</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">bool ChromeFrameNPAPI::Invoke(…)<br>
+	{<br>
+	  ChromeFrameNPAPI* plugin_instance =<br>
+	    ChromeFrameInstanceFromNPObject(header);<br>
+	  if (!plugin_instance &amp;&amp;<br>
+	      (plugin_instance-&gt;automation_client_.get()))<br>
+	    return false;<br>
+	  …<br>
+	}   </span></p>
+<p style="font-size:13px">一旦plugin_instance为NULL，!plugin_instance为True，代码对&amp;&amp;后面的子条件求值，引用plugin_instance将导致程序崩溃。正确的做法应该是：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">if (plugin_instance &amp;&amp;<br>
+	        (plugin_instance-&gt;automation_client_.get()))<br>
+	  return false;</span></p>
+<p style="font-size:13px"><strong>[#5]</strong> Apache httpd Server项目 – 不完整的缓冲区clear</p>
+<p><span style="font-family:courier new,courier,monospace">#define MEMSET_BZERO(p,l)       memset((p), 0, (l))</span></p>
+<p><span style="font-family:courier new,courier,monospace">void apr__SHA256_Final(…, SHA256_CTX* context) {<br>
+	  …<br>
+	  MEMSET_BZERO(context, sizeof(context));<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">这个错误前面提到过，sizeof(context)只是指针的大小，将之改为sizeof(*context)就OK了。</p>
+<p style="font-size:13px"><strong>[#7]</strong> PNG Library项目 – 意外的指针clear</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">png_size_t<br>
+	png_check_keyword(png_structp png_ptr, png_charp key,<br>
+	                    png_charpp new_key)<br>
+	{<br>
+	  …<br>
+	  if (key_len &gt; 79)<br>
+	  {<br>
+	    png_warning(png_ptr, &quot;keyword length must be 1 – 79 characters&quot;);<br>
+	    new_key[79] = &#39;\0&#39;;<br>
+	    key_len = 79;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">new_key的类型为png_charpp，顾名思义，这是一个char**类型，但代码中new_key[79] = ‘\0′这句显然是要给某个char赋值，但new_key[n]得到的应该是一个地址，给一个地址赋值为’\0′显然是有误的。正确的写法应该是(*new_key)[79] = &#39;\0&#39;。</p>
+<p style="font-size:13px"><strong>[#10]</strong> Miranda IM项目 – 保护没生效</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void Append( PCXSTR pszSrc, int nLength )<br>
+	{<br>
+	  …<br>
+	  UINT nOldLength = GetLength();<br>
+	  if (nOldLength &lt; 0)<br>
+	  {<br>
+	    // protects from underflow<br>
+	    nOldLength = 0;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">nOldLength椒UINT类型，其值永远不会小于0,因此if (nOldLength &lt; 0)这行成了摆设。</p>
+<p style="font-size:13px"><strong>[#12]</strong> Ultimate TCP/IP项目 – 不正确的循环结束条件</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void CUT_StrMethods::RemoveSpaces(LPSTR szString) {<br>
+	  …<br>
+	  size_t loop, len = strlen(szString);<br>
+	  // Remove the trailing spaces<br>
+	  for(loop = (len-1); loop &gt;= 0; loop–) {<br>
+	    if(szString[loop] != &#39; &#39;)<br>
+	      break;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px">循环中的结束条件loop &gt;= 0将永远为True，因为loop变量的类型是size_t是unsigned类型，永远不会小于0。</p>
+<p style="font-size:13px"><strong style="font-size:13px">十、拷贝粘贴</strong></p>
+<p style="font-size:13px">和笔误不同，程序员们决不因该低估拷贝粘贴问题，这类问题发生了太多。程序员们花费了大量时间在这些问题的debug上。</p>
+<p style="font-size:13px"><strong>[#1]</strong> Fennec Media Project项目 – 处理数组元素时出错</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void* tag_write_setframe(char *tmem,<br>
+	                         const char *tid, const string dstr)<br>
+	{<br>
+	  …<br>
+	  if(lset)<br>
+	  {<br>
+	    fhead[11] = &#39;\0&#39;;<br>
+	    fhead[12] = &#39;\0&#39;;<br>
+	    fhead[13] = &#39;\0&#39;;<br>
+	    fhead[13] = &#39;\0&#39;;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px"> </p>
+<p style="font-size:13px">咋看一下，fhead[13]做了两次赋值，似乎没啥问题。但仔细想一下，最后那行程序员的原意极可能是想写fhead[14] = &#39;\0&#39;。问题就在这里了。</p>
+<p style="font-size:13px">[#2] MySQL项目 – 处理数组元素时出错</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">static int rr_cmp(uchar *a,uchar *b)<br>
+	{<br>
+	  if (a[0] != b[0])<br>
+	    return (int) a[0] – (int) b[0];<br>
+	  if (a[1] != b[1])<br>
+	    return (int) a[1] – (int) b[1];<br>
+	  if (a[2] != b[2])<br>
+	    return (int) a[2] – (int) b[2];<br>
+	  if (a[3] != b[3])<br>
+	    return (int) a[3] – (int) b[3];<br>
+	  if (a[4] != b[4])<br>
+	    return (int) a[4] – (int) b[4];<br>
+	  if (a[5] != b[5])<br>
+	    return (int) a[1] – (int) b[5];<br>
+	  if (a[6] != b[6])<br>
+	    return (int) a[6] – (int) b[6];<br>
+	  return (int) a[7] – (int) b[7];<br>
+	}</span></p>
+<p style="font-size:13px"> </p>
+<p style="font-size:13px">编写这类代码时，我猜绝大多数人会选择Copy-Paste，然后再逐行修改，问题就发生在修改过程中，上面的代码中当处理a[5] != b[5]时就忘记修改一个下标了：return (int) a[1] – (int) b[5];显然这里的正确代码应该是return (int) a[5] – (int) b[5]。</p>
+<p style="font-size:13px"><strong>[#3]</strong> TortoiseSVN项目 文件名不正确</p>
+<p><span style="font-family:courier new,courier,monospace">BOOL GetImageHlpVersion(DWORD &amp;dwMS, DWORD &amp;dwLS)<br>
+	{<br>
+	  return(GetInMemoryFileVersion((&quot;DBGHELP.DLL&quot;),<br>
+	                                dwMS,               <br>
+	                                dwLS)) ;            <br>
+	}</span></p>
+<p><span style="font-family:courier new,courier,monospace">BOOL GetDbgHelpVersion(DWORD &amp;dwMS, DWORD &amp;dwLS)<br>
+	{<br>
+	  return(GetInMemoryFileVersion((&quot;DBGHELP.DLL&quot;),<br>
+	                                dwMS,                           <br>
+	                                dwLS)) ;                        <br>
+	}</span></p>
+<p style="font-size:13px">GetImageHlpVersion和GetDbgHelpVersion都使用了&quot;DBGHELP.DLL&quot;文件，显然GetImageHlpVersion写错文件名了。应该用&quot;IMAGEHLP.DLL&quot;就对了。</p>
+<p style="font-size:13px"><strong>[#4]</strong> Clang项目 – 等同的函数体</p>
+<p><span style="font-family:courier new,courier,monospace">MapTy PerPtrTopDown;<br>
+	MapTy PerPtrBottomUp;</span></p>
+<p><span style="font-family:courier new,courier,monospace">void clearBottomUpPointers() {<br>
+	  PerPtrTopDown.clear();<br>
+	}</span></p>
+<p><span style="font-family:courier new,courier,monospace">void clearTopDownPointers() {<br>
+	  PerPtrTopDown.clear();<br>
+	}</span></p>
+<p style="font-size:13px">我们看到虽然两个函数名不同，但是函数体的内容是相同的，显然又是copy-paste惹的祸。做如下修改即可：</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void clearBottomUpPointers() {<br>
+	  PerPtrBottomUp.clear();<br>
+	}</span></p>
+<p style="font-size:13px"> </p>
+<p style="font-size:13px"><strong style="font-size:13px">十一、Null指针的校验迟了</strong></p>
+<p style="font-size:13px">这里的“迟了”的含义是先使用指针，然后再校验指针是否为NULL。</p>
+<p style="font-size:13px"><strong>[#1]</strong> Quake-III-Arena项目 – 校验迟了</p>
+<p style="font-size:13px"><span style="font-family:courier new,courier,monospace">void Item_Paint(itemDef_t *item) {<br>
+	  vec4_t red;<br>
+	  menuDef_t *parent = (menuDef_t*)item-&gt;parent;<br>
+	  red[0] = red[3] = 1;<br>
+	  red[1] = red[2] = 0;<br>
+	  if (item == NULL) {<br>
+	    return;<br>
+	  }<br>
+	  …<br>
+	}</span></p>
+<p style="font-size:13px"> </p>
+<p style="font-size:13px">在校验item是否为NULL前已经使用过item了，一旦item真的为NULL，那程序必然崩溃。</p>
+<p style="font-size:13px"><strong>十二、其他杂项</strong></p>
+<p style="font-size:13px"><strong>[#1]</strong> Image Processing 项目 – 八进制数</p>
+<p><span style="font-family:courier new,courier,monospace">inline<br>
+	void elxLuminocity(const PixelRGBus&amp; iPixel,<br>
+	                     LuminanceCell&lt; PixelRGBus &gt;&amp; oCell)<br>
+	{<br>
+	  oCell._luminance = uint16(0.2220f*iPixel._red +<br>
+	                            0.7067f*iPixel._blue + 0.0713f*iPixel._green);<br>
+	  oCell._pixel = iPixel;<br>
+	}</span></p>
+<p><span style="font-family:courier new,courier,monospace">inline<br>
+	void elxLuminocity(const PixelRGBi&amp; iPixel,<br>
+	                     LuminanceCell&lt; PixelRGBi &gt;&amp; oCell)<br>
+	{<br>
+	  oCell._luminance = 2220*iPixel._red +<br>
+	    7067*iPixel._blue + 0713*iPixel._green;<br>
+	  oCell._pixel = iPixel;<br>
+	}</span></p>
+<p>第二个函数，程序员原意是使用713这个十进制整数，但0713 != 713，在C中，0713是八进制的表示法，Compiler会认为这是个八进制数。</p>
+<p><strong>[#2]</strong> IPP Sample工程 – 一个变量用于两个loop中</p>
+<p><span style="font-family:courier new,courier,monospace">JERRCODE CJPEGDecoder::DecodeScanBaselineNI(void)<br>
+	{<br>
+	  …<br>
+	  for(c = 0; c &lt; m_scan_ncomps; c++)<br>
+	  {<br>
+	    block = m_block_buffer + (DCTSIZE2*m_nblock*(j+(i*m_numxMCU)));</span></p>
+<p><span style="font-family:courier new,courier,monospace">    // skip any relevant components<br>
+	    for(c = 0; c &lt; m_ccomp[m_curr_comp_no].m_comp_no; c++)<br>
+	    {<br>
+	      block += (DCTSIZE2*m_ccomp
+<pre>[/c]</pre>
+<p>.m_nblocks);<br>
+	    }<br>
+	  …<br>
+	}</p></span></p>
+<p>变量c用在了两个loop中，这会导致只有部分数据被处理，或外部循环中止。</p>
+<p><strong>[#3]</strong> Notepad++项目 – 怪异的条件表达式</p>
+<p><span style="font-family:courier new,courier,monospace">int Notepad_plus::getHtmlXmlEncoding(….) const<br>
+	{<br>
+	  …<br>
+	  if (langT != L_XML &amp;&amp; langT != L_HTML &amp;&amp; langT == L_PHP)<br>
+	    return -1;<br>
+	  …<br>
+	}</span></p>
+<p>代码中的那行if条件等价于 if (langT == L_PHP)，显然似乎不是作者原意，猜测正确的代码应该是这样的：</p>
+<p><span style="font-family:courier new,courier,monospace">int Notepad_plus::getHtmlXmlEncoding(….) const<br>
+	{<br>
+	  …<br>
+	  if (langT != L_XML &amp;&amp; langT != L_HTML &amp;&amp; langT != L_PHP)<br>
+	    return -1;<br>
+	  …<br>
+	}</span></p>
+<p style="text-align:left">© 2013, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p><img src="http://www1.feedsky.com/t1/730350412/bigwhite/feedsky/s.gif?r=http://tonybai.com/2013/04/10/100-bugs-in-c-cpp-opensource-projects/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=100-bugs-in-c-cpp-opensource-projects" border="0" height="0" width="0">

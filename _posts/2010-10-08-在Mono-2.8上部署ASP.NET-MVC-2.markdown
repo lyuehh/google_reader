@@ -1,0 +1,167 @@
+---
+layout: post
+title:  "在Mono 2.8上部署ASP.NET MVC 2"
+date:   2010-10-08 22:45:00
+author: geff zhang
+categories: program
+---
+
+## 在Mono 2.8上部署ASP.NET MVC 2
+### by geff zhang
+### at 2010-10-08 22:45:00
+### original <http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html>
+
+<p><a href="http://www.cnblogs.com/shanyou/"><img src="http://pic.cnblogs.com/face/u510.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/shanyou/">geff zhang</a> 发表于 2010-10-08 22:45 <a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html">原文链接</a> 阅读: 1237 评论: 5</p><p><a href="http://www.cnblogs.com/shanyou/archive/2010/10/07/1845277.html">Mono 2.8发布：C#4.0和更好的性能</a>，我们知道Mono 2.8对ASP.NET MVC 2的完全支持，下面我们就来测试下在Mono 2.8上部署ASP.NET MVC 2应用程序。我的环境是Opensuse 11.3,通过以下命令部署好Mono 2.8的开发环境，之所以说是开发环境是同时会更新MonoDevelop，支持Mono2.8的程序开发：</p>  <blockquote><code>zypper addrepo <em>http://ftp.novell.com/pub/mono/download-stable/openSUSE_11.3</em> mono-stable      <br>zypper refresh --repo mono-stable      <br>zypper dist-upgrade --repo mono-stable</code></blockquote>  <p>然后启动MonoDevelop生成一个ASP.NET MVC 2应用程序TestMvc2。</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_2.png"><img style="border-bottom:0px;border-left:0px;display:inline;border-top:0px;border-right:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_thumb.png" width="687" height="355"></a> </p>  <p>我们使用Apache2 + mod_mono进行部署，设置一个虚拟主机：</p>  <div style="border-bottom:silver 1px solid;text-align:left;border-left:silver 1px solid;padding-bottom:4px;line-height:12pt;background-color:#f4f4f4;margin:20px 0px 10px;padding-left:4px;width:97.5%;padding-right:4px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;max-height:200px;font-size:8pt;overflow:auto;border-top:silver 1px solid;border-right:silver 1px solid;padding-top:4px">   <div style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px">     <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   1:</span> <span style="color:#0000ff">&lt;</span><span style="color:#800000">VirtualHost</span> *<span style="color:#ff0000">:80</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   2:</span>     ServerAdmin webmaster@dotnetting.com</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   3:</span>     ServerName www.dotnetting.com</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   4:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   5:</span>     # DocumentRoot: The directory out of which you will serve your</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   6:</span>     # documents. By default, all requests are taken from this directory, but</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   7:</span>     # symbolic links and aliases may be used to point to other locations.</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   8:</span>     DocumentRoot /srv/www/vhosts/dotnetting/public_html</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   9:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  10:</span>     # if not specified, the global error log is used</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  11:</span>     ErrorLog /srv/www/vhosts/dotnetting/logs/error.log</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  12:</span>     CustomLog /srv/www/vhosts/dotnetting/logs/access_log combined</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  13:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  14:</span>     # don't loose time with IP address lookups</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  15:</span>     HostnameLookups Off</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  16:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  17:</span>     # needed for named virtual hosts</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  18:</span>     UseCanonicalName Off</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  19:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  20:</span>     # configures the footer on server-generated documents</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  21:</span>     ServerSignature On</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  22:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  23:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  24:</span>     # Optionally, include *.conf files from /etc/apache2/conf.d/</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  25:</span>     #</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  26:</span>     # For example, to allow execution of PHP scripts:</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  27:</span>     #</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  28:</span>     Include /etc/apache2/conf.d/mod_mono.conf</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  29:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  30:</span>     MonoServerPath www.dotnetting.com &quot;/usr/bin/mod-mono-server4&quot;</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  31:</span>     MonoDebug www.dotnetting.com true</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  32:</span>     MonoSetEnv www.dotnetting.com MONO_IOMAP=all</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  33:</span>     MonoApplications www.dotnetting.com &quot;/:/srv/www/vhosts/dotnetting/public_html&quot;</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  34:</span>     <span style="color:#0000ff">&lt;</span><span style="color:#800000">Location</span> <span style="color:#0000ff">&quot;/&quot;</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  35:</span>       Allow from all</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  36:</span>       Order allow,deny</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  37:</span>       MonoSetServerAlias www.dotnetting.com</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  38:</span>       SetHandler mono</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  39:</span>       SetOutputFilter DEFLATE</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  40:</span>       SetEnvIfNoCase Request_URI &quot;\.(?:gif|jpg?g|png)$&quot; no-gzip dont-vary</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  41:</span>     <span style="color:#0000ff">&lt;/</span><span style="color:#800000">Location</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  42:</span>     <span style="color:#0000ff">&lt;</span><span style="color:#800000">IfModule</span> <span style="color:#ff0000">mod_deflate</span>.<span style="color:#ff0000">c</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  43:</span>       AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript</pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  44:</span>     <span style="color:#0000ff">&lt;/</span><span style="color:#800000">IfModule</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  45:</span>  </pre>
+
+
+    <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">  46:</span> <span style="color:#0000ff">&lt;/</span><span style="color:#800000">VirtualHost</span><span style="color:#0000ff">&gt;</span></pre>
+</div>
+</div>
+
+<p></p>
+
+<p>这是一个通用的ASP.NET虚拟主机配置，唯一的一行不同就是MonoServerPath上设置的Mvc1还是mvc2，我们这里设置为mod-mono-server4，如果你没有修改这个地方，会收到一个错误是web.config 的 targetFramework不对。然后把我们生成测试程序拷贝到/srv/www/vhosts/dotnetting/public_html 。</p>
+
+<p><strong>注：Mono2.8已经移除了对.NET 1.1的支持，因此也就不能设置为mod-mono-server1</strong></p>
+
+<p>重启Apache2</p>
+
+<p> service apache2 restart</p>
+
+<p>通过浏览器访问<a href="http://www.dotnetting.com">www.dotnetting.com</a> ,记得在访问之前在host文件中配置域名的解析。可以看到下面的页面：</p>
+
+<p><a href="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_4.png"><img style="border-bottom:0px;border-left:0px;display:inline;border-top:0px;border-right:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_thumb_1.png" width="680" height="411"></a> </p>
+
+<p>附：<strong><a href="http://dev.csdn.net/htmls/76/76253.html">个人常用的VIM命令列表</a></strong></p><img src="http://www.cnblogs.com/shanyou/aggbug/1846171.html?type=1" width="1" height="1" alt=""><p>评论: 5　<a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76739/">电子商务网站之信任度</a><span style="color:gray">(2010-10-09 17:02)</span><br>· <a href="http://news.cnblogs.com/n/76738/">马云：管理的核心在于“抓住人性的本真”</a><span style="color:gray">(2010-10-09 16:52)</span><br>· <a href="http://news.cnblogs.com/n/76737/">另一 Windows Phone Live 主页截图现身 Windows Phone 7 视频</a><span style="color:gray">(2010-10-09 16:38)</span><br>· <a href="http://news.cnblogs.com/n/76736/">谷歌首名员工：公司成功归结于运气不错</a><span style="color:gray">(2010-10-09 16:32)</span><br>· <a href="http://news.cnblogs.com/n/76735/">神奇小子Geohot带着“limera1n”回归</a><span style="color:gray">(2010-10-09 16:29)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76477/">远离.NET</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p>

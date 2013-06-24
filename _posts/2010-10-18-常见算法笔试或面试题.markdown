@@ -1,0 +1,105 @@
+---
+layout: post
+title:  "常见算法笔试或面试题"
+date:   2010-10-18 10:12:00
+author: zhenjing
+categories: program
+---
+
+## 常见算法笔试或面试题
+### by zhenjing
+### at 2010-10-18 10:12:00
+### original <http://www.cnblogs.com/zhenjing/archive/2010/10/18/1854020.html>
+
+<p><p><strong>Problem 1 </strong>: Is it a loop ? （判断链表是否有环？）</p>
+<p>Assume that wehave a head pointer to a link-list. Also assumethat we know the list is single-linked. Can you come up an algorithm to checkwhether this link list includes a loop by using O(n) time and O(1) space wheren is the length of the list? Furthermore, can you do so with O(n) time and onlyone register? </p>
+<p>方法：使用两个指针，从头开始，一个一次前进一个节点，一个前进2个节点，则最多2N，后两个指针可以重合；如果无环，则正常停止。</p>
+<p>同样的，可以找到链表的中间节点。同上。</p>
+<p> </p>
+<p><strong>Problem 2：</strong>设计一个复杂度为n的算法找到链表倒数第m个元素。最后一个元素假定是倒数第0个。</p>
+<p>提示：双指针查找</p>
+<p> </p>
+<p><strong>Problem 3：</strong>用最简单的方法判断一个LONG整形的数A是2^n（2的n次方）</p>
+<p>提示：x&amp;(x-1)</p>
+<p> </p>
+<p><strong>Problem 4：</strong>两个烧杯，一个放糖一个放盐，用勺子舀一勺糖到盐，搅拌均匀，然后舀一勺混合物会放糖的烧杯，问你两个烧杯哪个杂质多？</p>
+<p>提示：相同。假设杂质不等，那么将杂质放回原杯中，则杯中物体重量必变化，不合理。</p>
+<p> </p>
+<p><strong>Problem 5：</strong>给你a、b两个文件，各存放50亿条url，每条url各占用64字节，内存限制是4G，让你找出a、b文件共同的url。</p>
+<p>法1：使用hash表。使用a中元素创建hash表，hash控制在适当规模。在hash中查找b的元素，找不到的url先存在新文件中，下次查找。如果找到，则将相应的hash表项删除，当hash表项少于某个阈值时，将a中新元素重新hash。再次循环。</p>
+<p>法2：对于hash表项增加一项记录属于的文件a，b。只要不存在的表项即放入hash表中，一致的项则删除。注意：可能存在很多重复项，引起插入，删除频繁。<strong> </strong></p>
+<p><strong><br></strong></p>
+<p><strong>Problem 6：</strong>给你一个单词a，如果通过交换单词中字母的顺序可以得到另外的单词b，那么定义b是a的兄弟单词。现在给你一个字典，用户输入一个单词，让你根据字典找出这个单词有多少个兄弟单词。</p>
+<p>提示：将每个的单词按照字母排序，则兄弟单词拥有一致的字母排序（作为单词签名）。使用单词签名来查找兄弟单词。</p>
+<p><strong><br></strong></p>
+<p><strong>Problem 7：</strong>五桶球，一桶不正常，不知道球的重量和轻重关系，用天平称一次找出那桶不正常的球。</p>
+<p><strong><br></strong></p>
+<p><strong>Problem 8：</strong>给两个烧杯，容积分别是m和n升（m!=n），还有用不完的水，用这两个烧杯能量出什么容积的水？</p>
+<p>m, n, m+n, m-n以及线性叠加的组合</p>
+<p> </p>
+<p><strong>Problem 9：</strong>写出一个算法，对给定的n个数的序列，返回序列中的最大和最小的数。</p>
+<p> </p>
+<p><strong>Problem 10：</strong>你能设计出一个算法，只需要执行1.5n次比较就能找到序列中最大和最小的数吗？能否再少？</p>
+<p>提示：先通过两两比较，区分大小放入“大”，“小”两个数组中。从而最大数在“大”数组中，最小数在“小”数组中。</p>
+<p> </p>
+<p><strong>Problem 11：</strong>给你一个由n-1个整数组成的未排序的序列，其元素都是1到n中的不同的整数。请写出一个寻找序列中缺失整数的线性-时间算法。</p>
+<p>提示：累加求和</p>
+<p> </p>
+<p><strong>Problem 12：</strong>void strton(const char* src, const char*token) 假设src是一长串字符，token存有若干分隔符，只要src的字符是token中的任何一个，就进行分割，最终将src按照token分割成若干单词。找出一种O(n)算法？ </p>
+<p>提示：查表的方法，将所有的字符串存储在长度为128的数组中，并将作为分隔符的字符位置1，这样即可用常数时间判断字符是否为分隔符，通过n次扫描，将src分割成单词。</p>
+<p> </p>
+<p><strong>Problem 13：</strong>一个排好序的数组A，长度为n，现在将数组A从位置m(m&lt;n，m未知)分开，并将两部分互换位置，假设新数组记为B，找到时间复杂度为O(lgn)的算法查找给定的数x是否存在数组B中？</p>
+<p>提示：同样采用二分查找。核心思想就是确定所查找数所在的范围。通过比较3个数（头，尾，中间）和所查找数之间的关系，可以确定下次查找的范围。</p>
+<p> </p>
+<p><strong>Problem 14：</strong>一个排好序的数组A，长度为n，现在将数组A从位置m(m&lt;n，m已知)分开，并将两部分互换位置，设计一个O(n)的算法实现这样的倒置，只允许使用一个额外空间。（循环移位的效率不高）</p>
+<p>提示：(A’B’)’ =BA</p>
+<p> </p>
+<p><strong>Problem 15：</strong>给出Vector的一个更好实现。（STL的vector内存的倍增的，但是每次倍增需要拷贝已存元素，平均每个元素需要拷贝一次，效率不高）</p>
+<p>提示：可使用2^n的固定长度作为每次分配的最小单位，并有序的记录每个块的首地址。这中结构同样可以实现线性查找，并且拷贝代价很低（仅有指针）</p>
+<p> </p>
+<p>
+<strong>Problem 16：</strong>给出已排序数组A，B，长度分别为n，m，请找出一个时间复杂度为（lgn）的算法，找到排在第k位置的数。</p>
+<p>提示：二分查找。</p>
+<p> </p>
+<p><strong>Problem 17：</strong>给出任意数组A，B，长度分别为n，m，请找出一个时间复杂度为（lgn）的算法，找到排在第k位置的数。</p>
+<p>提示：通过最小堆记录k个数，不断更新，扫描一次完毕。</p>
+<p> </p>
+<p><strong>Problem 18：</strong>假设数组A有n个元素，元素取值范围是1~n，判定数组是否存在重复元素？要求复杂度为O(n)。</p>
+<p>法1：使用n的数组，记录元素，存在记为1，两次出现1，即重复。</p>
+<p>法2：使用m的数组，分别记录大小：n/m, 2n/m …..的元素个数。桶方法</p>
+<p>法3：累加求和。可用于求仅有一个元素重复的方法。</p>
+<p> </p>
+<p><strong>Problem 19：</strong>给定排好序的数组A，大小为n，现给定数X，判断A中是否存在两数之和等于X。给出一个O(n)的算法。</p>
+<p>提示：从中间向两边查找。利用有序的条件</p>
+<p> </p>
+<p><strong>Problem 20：</strong>给定排好序的数组A，大小为n，请给出一个O(n)的算法，删除重复元素，且不能使用额外空间。</p>
+<p>提示，既然有重复，必有冗余空间。将元素放入数组的前面，并记录下次可放位置，不断向后扫描即可。</p>
+<p> </p>
+<p><strong>Problem 21：</strong>给定两个排好序的数组A，B，大小分别为n，m。给出一个高效算法查找A中的哪些元素存在B数组中。</p>
+<p>注意：一般在大数组中执行二分查找，将小数组的元素作为需查找的对象。</p>
+<p> </p>
+<p>
+<strong>Problem 22：</strong>问：有1000桶酒，其中1桶有毒。而一旦吃了，毒性会在1周后发作。现在我们用小老鼠做实验，要在1周内找出那桶毒酒，问最少需要多少老鼠。</p>
+<p>答案：10只。将酒编号为1~1000 将老鼠分别编号为1 2 4 8 16 32 64 128 256 512 喂酒时 让酒的编号等于老鼠编号的加和如：17号酒喂给1号和16号老鼠  76号酒喂给4号、8号和64号老鼠 七天后将死掉的老鼠编号加起来 得到的编号就是有毒的那桶酒 因为2的10次方等于1024 所以10只老鼠最多可以测1024桶酒</p>
+<p>证明如下：使用二进制表示：01, 10, 100, 1000, … , 1,000,000,000。对于任何一个小于1024的数，均可以采用前面的唯一一组二进制数来表示。故成立。</p>
+<p> </p>
+<p>
+<strong>Problem 23：</strong>设计一组最少个数砝码，使得天平能够称量1~1000的重量。</p>
+<p>如果砝码只能放单边，1，2 ，4 ，  512最好。（只能单加）</p>
+<p>如果允许砝码双边放，1, 3, 9, 27….  最好。（可加可减）已知1,3，如何计算下一个数。现可称重量1,2,3,4。设下个数为x,可称重量为, x-4, x-3, x-2, x-1, x, x+1, x+2, x+3, x+4。为使砝码最好，所称重量应该不重复（浪费）。故x=9。同理，可得后面。</p>
+<p> </p>
+<p>图形算法题</p>
+<p><strong>Problem 24：</strong>如何判断一个点是否在一个多边形内？</p>
+<p>提示：对多边形进行分割，成为一个个三角形，判断点是否在三角形内。</p>
+<p> </p>
+<p>一个非常有用的解析几何结论：如果P2(x1,y1),P2(x2,y2), P3(x3,y3)是平面上的3个点，那么三角形P1P2P3的面积等于下面绝对值的二分之一：</p>
+<p>| x1  y1  1 |</p>
+<p>| x2 y2  1 | = x1y2 + x3y1 + x2y3 –x3y2 – x2y1 – x1y3</p>
+<p>| x3 y3  1 |</p>
+<p>       当且仅当点P3位于直线P1P2(有向直线P1-&gt;P2)的右侧时，该表达式的符号为正。这个公式可以在固定的时间内，检查一个点位于两点确定直线的哪侧，以及点到直线的距离(面积=底*高/2)。</p>
+<p> </p>
+<p>       这个结论：可以用来判断点是否在点是否在三角形内。法1：判断点和三角形三边所行程的3个三角形的面积之和是否等于原来三角形的面积。（用了三次上面的公式）。</p>
+<p>法2：判断是否都在三条边的同一边，相同则满足，否则不在三角形内。</p>
+<p> </p>
+<p><strong>Problem 25：</strong>给出两个n为向量与0点形成角的角平分线。</p>
+<p>提示：对两条边进行归一化，得到长度为1的两点，取两个的中点即可。</p><img src="http://www.cnblogs.com/zhenjing/aggbug/1854020.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/zhenjing/">zhenjing</a> 发表于 2010-10-18 10:12 <a href="http://www.cnblogs.com/zhenjing/archive/2010/10/18/1854020.html">原文链接</a></p><p>评论: 15　<a href="http://www.cnblogs.com/zhenjing/archive/2010/10/18/1854020.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/zhenjing/archive/2010/10/18/1854020.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77761/">腾讯微博一键转播组件对外开放</a><span style="color:gray">(2010-10-18 22:03)</span><br>· <a href="http://news.cnblogs.com/n/77760/">诺贝尔的遗嘱</a><span style="color:gray">(2010-10-18 21:56)</span><br>· <a href="http://news.cnblogs.com/n/77759/">Windows Phone 7使人对.NET语言协同发展承诺产生怀疑</a><span style="color:gray">(2010-10-18 21:50)</span><br>· <a href="http://news.cnblogs.com/n/77758/">美衣团突破Groupon模式 团购市场走向细分时代</a><span style="color:gray">(2010-10-18 21:49)</span><br>· <a href="http://news.cnblogs.com/n/77757/">百度或推下载软件</a><span style="color:gray">(2010-10-18 21:47)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77614/">与周鸿祎谈乔布斯</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

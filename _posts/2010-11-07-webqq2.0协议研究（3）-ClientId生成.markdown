@@ -1,0 +1,30 @@
+---
+layout: post
+title:  "webqq2.0协议研究（3）-ClientId生成"
+date:   2010-11-07 01:18:00
+author: hackren
+categories: program
+---
+
+## webqq2.0协议研究（3）-ClientId生成
+### by hackren
+### at 2010-11-07 01:18:00
+### original <http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html>
+
+<p><p>    在登陆过程中使用参数clientid，这个参数其实可以自定义的。他的生成没有基于任何服务器返回的参数。但是群里边经常有人提到这个参数算法，</p>
+<p>这里我就整理下群里讨论的结果<br>     clientid 的算法在eqq.all.js里。在dom里可以看到他是webqq.eqq.rpcservice下的getclientid方法返回的。</p>
+<p>     js里边的算法为：clientid = String(k.random(0, 99)) + String((new Date()).getTime() % 1000000)<br>      </p>
+<p>     用c#重写：</p>
+<p>      以下是群里  ～天 域(41485064)给出的代码：</p>
+<p>      </p>
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt=""><span>代码</span>
+<div>
+<pre><div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000"> GenerateClientID()<br>        {<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Random(Guid.NewGuid().GetHashCode()).Next(</span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">99</span><span style="color:#000000">) </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#800000">""</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> GetTime(DateTime.Now) </span><span style="color:#000000">/</span><span style="color:#000000"> </span><span style="color:#800080">1000000</span><span style="color:#000000">;<br>        }<br></span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">long</span><span style="color:#000000"> GetTime(DateTime dateTime)<br>        {<br>            DateTime startDate </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> DateTime(</span><span style="color:#800080">1970</span><span style="color:#000000">, </span><span style="color:#800080">1</span><span style="color:#000000">, </span><span style="color:#800080">1</span><span style="color:#000000">);<br>            DateTime endDate </span><span style="color:#000000">=</span><span style="color:#000000"> dateTime.ToUniversalTime();<br>            TimeSpan span </span><span style="color:#000000">=</span><span style="color:#000000"> endDate </span><span style="color:#000000">-</span><span style="color:#000000"> startDate;<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> (</span><span style="color:#0000ff">long</span><span style="color:#000000">)(span.TotalMilliseconds </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#800080">0.5</span><span style="color:#000000">);<br>        }</span></div></pre>
+</div>
+</div>
+<p> </p>
+<p> </p>
+<p>webQQ2协议研究群，欢迎各位加入，群号：8033525</p>
+<p> </p>
+<p>转载请注明原地址 <a href="http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html">http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html</a></p>
+<p><span style="color:#888888"><a href="http://www.cnblogs.com/hackren">hackren</a></span></p><img src="http://www.cnblogs.com/hackren/aggbug/1870903.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/hackren/">hackren</a> 发表于 2010-11-07 01:18 <a href="http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html">原文链接</a></p><p>评论: 1　<a href="http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/hackren/archive/2010/11/07/1870903.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/80092/">新世纪周刊：云计算虚实</a><span style="color:gray">(2010-11-07 22:31)</span><br>· <a href="http://news.cnblogs.com/n/80091/">传首款 Chrome OS 设备本月底上市</a><span style="color:gray">(2010-11-07 21:10)</span><br>· <a href="http://news.cnblogs.com/n/80090/">戴尔开始大规模采用 Windows Phone 7</a><span style="color:gray">(2010-11-07 21:06)</span><br>· <a href="http://news.cnblogs.com/n/80089/">开发者对各平台青睐程度悄然变化</a><span style="color:gray">(2010-11-07 20:13)</span><br>· <a href="http://news.cnblogs.com/n/80088/">研究人员指出最近Java频出安全漏洞问题</a><span style="color:gray">(2010-11-07 20:07)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/79632/">中国互联网最为惨烈的一场大战：360 VS 腾讯（持续更新）</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

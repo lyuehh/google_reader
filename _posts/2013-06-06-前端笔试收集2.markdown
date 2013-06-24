@@ -1,0 +1,187 @@
+---
+layout: post
+title:  "前端笔试收集2"
+date:   2013-06-06 12:57:36
+author: 晴方好玲
+categories: program
+---
+
+## 前端笔试收集2
+### by 晴方好玲
+### at 2013-06-06 12:57:36
+### original <http://blog.sina.com.cn/s/blog_897db7b50101bu49.html>
+
+<p><strong>1.简述div元素和span元素的区别。</strong></p>
+<p>div是块元素，默认换行，一般用于排版。</p>
+<p>span是行内元素，默认不换行，一般用于局部文字样式。</p>
+<p>通过display属性他们之间可以相互转换，div默认为block,span默认为inline。</p>
+<p>
+<strong>2.谈谈javascript数组方法sort()的使用，重点介绍sort()参数的使用及其内部机制。</strong></p>
+<p>语法：arrayObject.sort(sortby)</p>
+<p>参数sortby:可选，规定排序顺序。必须是函数。</p>
+<p>返回对数组的引用。注意，数组在原数组上进行排序，不生成副本。</p>
+<p>如果该方法没有使用参数，将按照字符编码的顺序进行排序。</p>
+<p>
+如果想要按照其他标准进行排序，就需要提供比较函数，该函数要比较两个值，然后返回一个用于说明这两个值的相对顺序的数字。比较函数应该具有两个参数a和b，其返回值如下：</p>
+<p>1）若a小于b，在排序后的数组中a应该出现在b之前，返回一个小于0的值。</p>
+<p>2）若a等于b，返回0。</p>
+<p>3）若a大于b，则返回一个小于0的值。</p>
+<p>例：按照数值进行排序</p>
+<pre>
+</pre><p><strong>3.结合<span><span>text</span></span>这段结构，谈谈innerHTML outerHTML
+innerText之间的区别。</strong></p>
+<p>innerHTML:对象里面的HTML内容，这里是<span>text</span></p>
+<p>outerHTML:对象里面包括对象本身的HTML内容，这里是<span><span>text</span></span></p>
+<p>innerText:对象里面的文本内容，这里是text</p>
+<p><strong>4.说几条XHTML规范的内容。</strong></p>
+<p>1）标签名必须用小写字母。</p>
+<p>2）所有标签都必须被关闭，包括空标签。</p>
+<p>3）属性值必须加引号。</p>
+<p>4）用Id属性代替name属性。</p>
+<p>5）所有XHTML文档必须进行文件类型声明。</p>
+<p><strong>5.对Web标准化（或网站重构）知道哪些相关知识，简述几条你知道的Web标准？</strong></p>
+<p>为什么要使用web标准？</p>
+<p>1）具有更好的兼容性。</p>
+<p>2）易于代码维护和开发。</p>
+<p>3）可增加网站的访问量。</p>
+<p>4）标准的web文档更易被转换为其他格式。</p>
+<p>5）更易被搜索引擎访问，也更易被准确索引。</p>
+<p>6）更易被JavaScript和DOM代码访问。</p>
+<p>W3C标准：HTML、XHTML、CSS、XML、XSL、DOM。</p>
+<p><strong>6.完成foo()函数的内容，要求能够弹出对话框提示当前选中的是第几个单选框。</strong></p>
+<p></p><p>function foo() {</p>
+<p>//在此处添加代码</p>
+<p><span style="CoLor:rgb(153,204,0)">var radioGroup =
+document.getElementsByName("radioGroup");</span></p>
+<p><span style="CoLor:rgb(153,204,0)">for(var i=0; i</span></p>
+<p><span style="CoLor:rgb(153,204,0)">if(radioGroup[i].checked)
+{</span></p>
+<p><span style="CoLor:rgb(153,204,0)">alert("你选择了第" +
+(i+1)+"单选框");</span></p>
+<p><span style="CoLor:rgb(153,204,0)">}</span></p>
+<p><span style="CoLor:rgb(153,204,0)">}</span></p>
+<p><span style="CoLor:rgb(153,204,0)">return false;</span></p>
+<p>}</p>
+
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+
+<p><strong>7.填充注释部分的函数体，使得foo()函数调用弹出“成功”的对话框。代码应尽量简短。</strong></p>
+<p></p><p>function foo() {</p>
+<p>var str = reverse('a,b,c,d,e,f,g');</p>
+<p>alert(str);</p>
+<p>if (str == 'g,f,e,d,c,b,a') {</p>
+<p>alert('成功');</p>
+<p>}else {</p>
+<p>alert('失败');</p>
+<p>}</p>
+<p>}</p>
+<p>function reverse(str)</p>
+<p>{</p>
+<p>// 在此处加入代码，完成字符串翻转功能</p>
+<p><span style="CoLor:rgb(153,204,0)">return
+str.split(",").reverse().join(",");</span></p>
+<p>}</p>
+<p></p>
+<p>8.下面代码：</p>
+<p></p><p>var x = 1;</p>
+<p>var y = 0;</p>
+<p>var z = 0;</p>
+<p>function add(n) {</p>
+<p>n = n +1;</p>
+<p>}</p>
+<p>y = add(x);</p>
+<p>function add(n) {</p>
+<p>n = n + 3;</p>
+<p>}</p>
+<p>z = add(x);</p>
+<p>s = y + z;</p>
+<p>求：y、z、s的值。</p>
+<p>
+答案：undefined、undefined、NaN。两个add函数都没有返回值，所以是undefined，两个undefined相加自然是NaN。</p>
+<p>9.下面代码：</p>
+<p></p><p>var x = 1;</p>
+<p>var y = 0;</p>
+<p>var z = 0;</p>
+<p>function add(n) {</p>
+<p>return n = n +1;</p>
+<p>}</p>
+<p>y = add(x);</p>
+<p>function add(n) {</p>
+<p>return n = n + 3;</p>
+<p>}</p>
+<p>z = add(x);</p>
+<p>s = y + z;</p>
+<p>求：y、z、s的值。</p>
+<p>答案：4，4，8。直接通过function声明的函数，后面定义的会影响前面的。</p>
+<p></p><p>function x() {alert("2");}</p>
+<p>x();//输出3</p>
+<p>function x() {alert("3");}</p>
+<p>x();//输出3</p>
+<p>通过var声明的函数，后面定义的不会影响前面的：</p>
+<p></p><p>var x = function() {alert("0");}</p>
+<p>x();//输出0</p>
+<p>var x = function() {alert("1");}</p>
+<p>x();//输出1</p>
+<p>
+通过function定义的函数，后面定义的，照旧影响前面的引用，但是不能改变通过var声明函数后的引用，反而，通过var声明的函数，改变了后来通过声明函数之后的引用。</p>
+<p></p><p>var x = function() {alert("1");}</p>
+<p>x();//输出1</p>
+<p>function x() {alert("3");}</p>
+<p>x();//输出1</p>
+<p></p><p>function x() {alert("2")};</p>
+<p>x();//输出3</p>
+<p>var x = function() {alert("0");}</p>
+<p>x();//输出0</p>
+<p>var x = function() {alert("1");}</p>
+<p>x();//输出1</p>
+<p>function x() {alert("3");}</p>
+<p>x();//输出1</p>
+<p>10.下面的输出结果为：</p>
+<p>typeof(NaN) //number</p>
+<p>typeof(Infinity) //number</p>
+<p>typeof(null) //object</p>
+<p>typeof(undefined) //undefined</p>
+<p>NaN == NaN //false</p>
+<p>NaN != NaN //true</p>
+<p>NaN &gt;= NaN //false</p>
+<p>null == undefined //true</p>
+<p>null &gt;= undefined //false</p>
+<p>null &lt;=undefined //false</p>
+<p>parseInt("123abc") //123</p>
+<p>"123abc" - 0 //NaN</p>
+<p>Infinity &gt; 10 //true</p>
+<p>Infinity == NaN //false</p>
+<p>Infinity &gt; &quot;abc&quot; //false</p>
+<p>true == 1 //true</p>
+<p>new String("abc") == "abc" //true</p>
+<p>new String("abc") === "abc" //false</p>
+<p>var a = "123abc";</p>
+<p>alert(typeof(a++)); //number</p>
+<p>alert(a); //NaN</p>
+<p>var a = "123abc";</p>
+<p>a.valueOf = function(){return parseInt(a);}</p>
+<p>a.toString = function(){return parseInt(a);}</p>
+<p>alert(++a); //NaN</p>
+<p>alert(a-0); //NaN</p>
+<p>var a = new Object();</p>
+<p>a.toString = function(){return "123abc";}</p>
+<p>a.valueOf = function(){return parseInt(a);}</p>
+<p>alert(++a); //124</p>
+<p>alert(a-0); //124</p>
+<p>String.prototype.valueOf = function()</p>
+<p>{</p>
+<p>return parseFloat(this);</p>
+<p>}</p>
+<p>alert(&quot;123abc&quot; &gt; 122); //false</p>
+<p>alert(new String(&quot;123abc&quot;) &gt; 122); //true</p>
+<p>var s = new String("abc");</p>
+<p>alert(typeof(s) == typeof("abc")); //false typeof(s) == object
+而typeof("abc")==string</p>
+<p>alert(s === "abc"); //false</p>
+<p>alert(s.toString() == s); //true</p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=3">

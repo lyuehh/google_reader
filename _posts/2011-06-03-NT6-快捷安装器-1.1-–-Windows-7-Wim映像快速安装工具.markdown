@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "NT6 快捷安装器 1.1 – Windows 7 Wim映像快速安装工具"
+date:   2011-06-03 17:37:09
+author: dragonsman
+categories: program
+---
+
+## NT6 快捷安装器 1.1 – Windows 7 Wim映像快速安装工具
+### by dragonsman
+### at 2011-06-03 17:37:09
+### original <http://www.softjie.cn/2011/06/03/nt6setup/>
+
+NT6 快捷安装器是一款支持在 WinPE 或者 Windows 环境 中快速安装 Windows 7/Vista/Windows Server 2008 R2（支持32位和64位系统）的免费便携软件。而它的与众不同之处在于，NT6 快捷安装器可以把Windows 7安装到移动硬盘上，而且安装速度较快！ NT6 快捷安装器功能： 1、支持在xp核心的WinPE环境下安装 Windows 7 2、支持直接把系统安装到移动硬盘上； 3、支持手动选择bootmgr所在分区，避免了移动硬盘/U盘启动PE时把启动文件装到移动硬盘/U盘的尴尬; 4、支持更改系统分区所占用的盘符。用setup.exe从winpe安装win7/2008 ，系统分区会占用C:盘，本安装器允许选择win7/2008 r2系统分区所占用的盘符。 5、安装速度快。用此安装器硬盘安装，一般主流的5400转的笔记本盘上用11-12分钟，台式机7200转的不到10分钟。 NT6 快捷安装器下载： NT6 快捷安装器官方：访问 NT6 快捷安装器版本：1.1 文章来源：软件盒子 //

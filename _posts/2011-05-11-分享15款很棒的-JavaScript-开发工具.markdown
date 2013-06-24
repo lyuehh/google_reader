@@ -1,0 +1,54 @@
+---
+layout: post
+title:  "分享15款很棒的 JavaScript 开发工具"
+date:   2011-05-11 00:27:00
+author: 梦想天空（山边小溪）
+categories: program
+---
+
+## 分享15款很棒的 JavaScript 开发工具
+### by 梦想天空（山边小溪）
+### at 2011-05-11 00:27:00
+### original <http://www.cnblogs.com/lhb25/archive/2011/05/11/2040071.html>
+
+<p><p>　　在开发中，借助得力的工具可以事半功倍。今天，这篇文章向大家分享最新收集的15款非常有用的 JavaScript 开发工具。</p>
+<br>
+<p><strong><a href="http://www.webresourcesdepot.com/testswarm-continious-distributed-js-testing/">TestSwarm: Continious &amp; Distributed JS Testing</a></strong><br>TestSwarm是Mozilla实验室推出的一个开源项目，它旨在为开发者提供在多个浏览器版本上快速轻松测试自己JavaScript代码的方法。</p>
+<p><a href="http://www.webresourcesdepot.com/testswarm-continious-distributed-js-testing/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-212.jpg" alt="Javascript-212 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://johndwells.com/software/minimee">Minimee</a></strong><br>在网络上，速度是很重要的，Minimee能帮助你将CSS和JavaScript文件进行自动压缩和打包。</p>
+<p><a href="http://johndwells.com/software/minimee"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-169.jpg" alt="Javascript-169 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://doctorjs.org/">Doctor JS</a></strong><br>Doctor JS 是一款帮你分析 JavaScript 代码的工具，测试你的代码在多态、原型、异常和回调方面写得怎么样。</p>
+<p><a href="http://doctorjs.org/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-174.jpg" alt="Javascript-174 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="https://github.com/remy/jsconsole">Remy Sharp’s JSConsole</a></strong><br>一个在线的 JavaScript 控制台工具，对于测试、调试和演示非常有用。</p>
+<p><a href="https://github.com/remy/jsconsole"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-269.jpg" alt="Javascript-269 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://benalman.com/projects/javascript-library-boilerplate/">JavaScript Library Boilerplate</a></strong><br>JavaScript Library Boilerplate 帮助你随时随地创建自己的 JavaScript 库。</p>
+<p><a href="http://benalman.com/projects/javascript-library-boilerplate/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-260.jpg" alt="Javascript-260 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://code.google.com/p/jsdoc-toolkit/">jsdoc-toolkit</a></strong><br>JsDoc Toolkit 是一款辅助工具，你只需要根据约定在 JavaScript 代码中添加相应的注释，它就可以根据这些注释来自动生成API文档。</p>
+<p><a href="http://code.google.com/p/jsdoc-toolkit/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/js-010.jpg" alt="Js-010 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://pivotal.github.com/jasmine/">Jasmine: BDD for your JavaScript</a></strong><br>Jasmine 是一个有名的javascript单元测试框架，它是独立的“行为驱动开发”框架。</p>
+<p><a href="http://pivotal.github.com/jasmine/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/js-011.jpg" alt="Js-011 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://tools.2vi.nl/index.html">ObfuscateJS: JavaScript compressor</a></strong><br>一款 JavaScript 混淆工具，去除空白和注释，重命名变量等。</p>
+<p><a href="http://tools.2vi.nl/index.html"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-282.jpg" alt="Javascript-282 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://pegjs.majda.cz/">PEG.js</a></strong><br>PEG.js 是一个JavaScript的表达式语法解析器，它使您能够轻松地建立复杂的数据或计算机程序语言的快速分析器。</p>
+<p><a href="http://pegjs.majda.cz/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-228.jpg" alt="Javascript-228 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://jsonview.com/">JSONView</a></strong><br>JSONView 是一款帮助你在浏览器中查看JSON文档的Firefox插件。</p>
+<p><a href="http://jsonview.com/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/js-014.jpg" alt="Js-014 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://jsonduit.com/">JSonduit</a></strong><br>JSonduit 是一个将网页内容转换为 JSON 格式订阅器的工具。</p>
+<p><a href="http://jsonduit.com/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-182.jpg" alt="Javascript-182 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://code.google.com/p/jsplumb/">jsplumb</a></strong><br>jsPlumb 为开发者提供了可视化链接元素到页面的方法，可以结合jQuery、MooTools 和 YUI3使用。</p>
+<p><a href="http://code.google.com/p/jsplumb/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-193.jpg" alt="Javascript-193 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://www.helma.org/">Helma</a></strong><br>Helma 是一个用来开发快速、稳定的Web应用程序的开源框架，它使用JavaScript 来作为服务端脚本环境，从而可以省略编译周期。</p>
+<p><a href="http://www.helma.org/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/js-015.jpg" alt="Js-015 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://ajaxstack.com/jsonreport/">HTML + JSON Report</a></strong><br>一款将 JSON 数据转换为可读性更高的HTML格式内容的在线工具。</p>
+<p><a href="http://ajaxstack.com/jsonreport/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-300.jpg" alt="Javascript-300 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<p><strong><a href="http://braincast.nl/samples/jsoneditor/">JSON Editor</a></strong><br>这个编辑器可以帮助你方便的编辑 JSON 字符串。</p>
+<p><a href="http://braincast.nl/samples/jsoneditor/"><img height="300" width="500" src="http://media.smashingmagazine.com/cdn_smash/wp-content/uploads/2011/04/javascript-222.jpg" alt="Javascript-222 in Useful JavaScript and jQuery Tools, Libraries, Plugins"></a></p>
+<h3>可能你还会喜欢</h3>
+<br>
+<ul>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2011/04/20/2001131.html">推荐40个优秀的免费CSS工具</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2010/12/26/1917047.html">分享18个常用的网站性能测试工具</a></li>
+<li><a href="http://www.cnblogs.com/lhb25/archive/2010/12/28/1918491.html">推荐25个提高网站可用性和转化率的工具</a></li>
+</ul>
+<br>
+<p>（编译来源：<a href="http://www.cnblogs.com/lhb25/">梦想天空</a>  原文来自：<a href="http://www.smashingmagazine.com/2011/04/07/useful-javascript-and-jquery-tools-libraries-plugins/">Useful JavaScript and jQuery Tools, Libraries, Plugins</a>）</p><img src="http://www.cnblogs.com/lhb25/aggbug/2040071.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lhb25/">梦想天空（山边小溪）</a> 发表于 2011-05-11 00:27 <a href="http://www.cnblogs.com/lhb25/archive/2011/05/11/2040071.html">原文链接</a></p><p>评论: 14　<a href="http://www.cnblogs.com/lhb25/archive/2011/05/11/2040071.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lhb25/archive/2011/05/11/2040071.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/100587/">评论：血拼苹果iPad2折射国人富得可怜</a><span style="color:gray">(2011-05-11 13:09)</span><br>· <a href="http://news.cnblogs.com/n/100586/">微软必须收购Skype五大原因</a><span style="color:gray">(2011-05-11 13:08)</span><br>· <a href="http://news.cnblogs.com/n/100585/">适用于 Ubuntu 11.04 的 10 个 AppIndicator</a><span style="color:gray">(2011-05-11 12:55)</span><br>· <a href="http://news.cnblogs.com/n/100584/">新浪34万元收购eju.com域名 进行房产电商交易</a><span style="color:gray">(2011-05-11 12:26)</span><br>· <a href="http://news.cnblogs.com/n/100583/">关于团购网站的两个负面</a><span style="color:gray">(2011-05-11 12:20)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/100515/">微软正式宣布85亿美元现金收购Skype</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>

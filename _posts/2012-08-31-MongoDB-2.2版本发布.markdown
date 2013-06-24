@@ -1,0 +1,99 @@
+---
+layout: post
+title:  "MongoDB 2.2版本发布"
+date:   2012-08-31 00:38:13
+author: nosqlfan
+categories: program
+---
+
+## MongoDB 2.2版本发布
+### by nosqlfan
+### at 2012-08-31 00:38:13
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/706989113/6253001/1/item.html>
+
+<p>8月29号，<span><a href="http://blog.nosqlfan.com/tags/mongodb" title="查看 MongoDB 的全部文章">MongoDB</a></span>发布了其2.2版本，2.2 版本可以看作是2.0 版本的功能增强版，本次改进最大的亮点在于其并发性能的提升，我们能够看到，广受诟病的全局锁已经在这一版中被拿掉，取而代之的是DB级别的锁，而且collection 级别的锁也不远了。</p>
+<p><img src="http://pic.yupoo.com/iammutex/CejDxYvu/J5BYZ.png" alt="" width="591" height="296"></p>
+<p>下面就看看2.2 版本的几个新功能吧：</p>
+<h3>1.并发性能增强</h3>
+<p>如上面所说，MongoDB 2.2版本中不再有凌驾于整个daemon上的全局锁，而是将锁的粒度减小到了DB级别。并且按MongoDB 的CEO Dwight Merriman所说，这次虽然没有一步到位的将锁粒度改到collection级别，但是从全局锁到DB 锁这一步，已经完成了锁粒度细化的最艰难部分工作，相信collection级别的读写锁会很快到来。</p>
+<p>除了减小锁粒度外，MongoDB对2.0 版本中的锁抑制功能也进行了一些增强，引入了PageFaultException 架构来进行锁抑制的判定。</p>
+<p>感兴趣的朋友可以看看这个演讲及PPT：<a href="http://www.10gen.com/presentations/concurrency-internals-mongodb-2-2">http://www.10gen.com/presentations/concurrency-internals-mongodb-2-2</a></p>
+<h3>2.新的<span><a href="http://blog.nosqlfan.com/tags/%e7%bb%9f%e8%ae%a1%e6%a1%86%e6%9e%b6" title="查看 统计框架 的全部文章">统计框架</a></span></h3>
+<p>统计操作一直不是MongoDB 的强项，这次版本MongoDB 对统计工作的易用性又进行了提升。在新的统计框架中，用户不需要再使用mapreduce方法去进行数据统计，而是使用统计框架提供和各种方便易用的函数来实现。这个在NoSQLFan之前的文章中也有介绍，见：<a href="http://blog.nosqlfan.com/html/3648.html">http://blog.nosqlfan.com/html/3648.html</a></p>
+<ul>
+<li>文档: <a href="http://docs.mongodb.org/manual/applications/aggregation/"><em>Aggregation Framework</em></a></li>
+<li>参考: <a href="http://docs.mongodb.org/manual/reference/aggregation/"><em>Aggregation Framework Reference</em></a></li>
+<li>例子: <a href="http://docs.mongodb.org/manual/tutorial/aggregation-examples/"><em>Aggregation Framework Examples</em></a></li>
+</ul>
+<h3>3.Tag Aware Sharding</h3>
+<p>在2.2版本中，可以人为的对数据的分片方式进行一些控制，从而使得数据能放到合适的分片节点上（这里所谓的合适，通常来说就是数据离要使用它的应用层更近）。具体的做法是通过对分片节点打tag标识，再将sharding key 按范围对应到这些标识上。比如我们设定sharding key在范围 [a, b]之间时，数据需要放到tag为BeiJing的节点。在[b, c]之前，数据放到tag为TianJin的节点。然后我们再对不同的分片节点打上不同的tag。这样对应sharding key在某个范围内的数据就会在我们的控制下存储到指定的分片节点上了。</p>
+<p>详见：<a href="http://www.mongodb.org/display/DOCS/Tag+Aware+Sharding">http://www.mongodb.org/display/DOCS/Tag+Aware+Sharding</a></p>
+<h3>4.TTL的collection</h3>
+<p>我们知道，MongoDB的capped collection，它保持数据在一定大小和条数范围内，在collection大小超量后，采用移除老数据的方式对空间进行循环利用。capped collection被大量使用在日志及队列系统中，具有很高的性能，但是其灵活性一直不高。</p>
+<p>在2.2版本中，MongoDB又引入了TTL collection（TTL == time to live），你可以在给某个字段建立索引的时候指定多长时间后删除掉对应的记录。建立索引的字段必须是date类型的。这样我们就可以灵活的控制数据的过期，可以更方便的存储和管理临时数据。</p>
+<p>详见：<a href="http://docs.mongodb.org/manual/tutorial/expire-data/">http://docs.mongodb.org/manual/tutorial/expire-data/</a></p>
+<p>更多介绍：<a href="http://docs.mongodb.org/manual/release-notes/2.2/">http://docs.mongodb.org/manual/release-notes/2.2/</a></p>
+<p>下载地址：<a href="http://www.mongodb.org/downloads">http://www.mongodb.org/downloads</a>
+<div style="margin-top:20px;margin-left:70px;line-height:24px;border:1px solid #ccc;text-align:center;width:545px;background:#fff">
+<div style="font-size:16px;font-family:Verdana;background:#d20;color:#fff;float:left;border-radius:10px 0 10px 0;padding:3px 12px 4px;line-height:32px;margin-top:14px">42区 VPS</div>
+<div>
+42qu.com 云主机 , 卖给创业的你 。 <a href="http://vps.42qu.com/by/iammutex/rss" style="text-decoration:none;background:none;color:#02d">点击这里 , 查看详情</a>
+</div>
+</div>
+<p style="margin:0;padding:0;height:1px;overflow:hidden">
+    <a href="http://www.wumii.com/widget/relatedItems.htm" style="border:0"><img src="http://static.wumii.com/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0"></a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F231.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4111.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB 1.4.3 发布</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3908.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4111.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB Hadoop Connector发布</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3171.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4111.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">10gen发布MongoDB监控系统MMS</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1244.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4111.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB Auto-Sharding 的问题</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F269.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4111.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB 开发版 1.5.3 发布</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/706989113/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/706989113/6253001/1/item.html" border="0" height="0" width="0"></p>

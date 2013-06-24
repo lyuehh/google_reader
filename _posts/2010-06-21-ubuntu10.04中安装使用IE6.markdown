@@ -1,0 +1,77 @@
+---
+layout: post
+title:  "ubuntu10.04中安装使用IE6"
+date:   2010-06-21 09:55:27
+author: 
+categories: program
+---
+
+## ubuntu10.04中安装使用IE6
+### by 
+### at 2010-06-21 09:55:27
+### original <http://www.javaeye.com/topic/695407>
+
+<p>在用ubuntu910的时候，已经装了一遍IE了，但是升级到10.04后IE使用过程中，出现丢失光标的问题。前几天重装了ie4linux后，还是无法解决问题，索性连wine一起也重新安装下，看看能不能解决问题。</p>
+<div>安装wine和cabeextract </div>
+<div>sudo apt-get update<br>
+
+sudo apt-get install wine cabextract</div>
+<p> 如果不能正常安装的话，先添加源。</p>
+<div>添加源 </div>
+<div>sudo gedit /etc/apt/sources.list<br><br>
+
+deb http://us.archive.ubuntu.com/ubuntu dapper universe<br>
+
+deb-src http://us.archive.ubuntu.com/ubuntu dapper universe<br>
+
+deb http://wine.budgetdedicated.com/apt dapper main</div>
+<p> </p>
+<div>安装ies4linux<br>
+</div>
+<div>http://www.tatanka.com.br/ies4linux/downloads下载最新的包<br><br>
+解压 tar zxvf ies4linux-latest.tar.gz<br><br>
+进入解压后的目录执行命令<br><br>
+./ies4linux --no-gui --install-ie6 --locale CN --install-corefonts</div>
+<p> 安装过程中下载字体的时候，经常会报错，重复执行命令基本上可以解决。</p>
+<p> </p>
+<p><span style="color:#ff0000"><strong><span style="font-size:small">下边记录下卸载过程。</span>
+</strong>
+</span>
+</p>
+<div>卸载wine </div>
+<div>sudo apt-get remove --purge<br><br>
+然后再进行以下步骤：<br><br>
+（1）删除.config/menus目录下的相应文件<br>
+（2）删除.config/menus/applications-merged目录下的相关文件<br>
+（3）打开.config/menus/applications.menu文件，删除文件中与wine有关的内容。<br>
+（4）删除以下三个文件：<br>
+        /usr/share/app-install/desktop/wine.desktop<br>
+        /usr/share/app-install/desktop/wineconfig.desktop<br>
+        /usr/share/app-install/desktop/winefish.desktop<br>
+（5）删除下面三个目录下与wine和wine相关的内容：<br>
+        ~/.local/share/applications<br>
+        ~/.local/share/desktop-directories<br>
+        ~/.local/share/icons </div>
+ 
+<div>卸载ies4linux </div>
+<div>There is no uninstall option because it is simple: just remove the files.<br><br>
+Usually you have to remove:<br><br>
+* ~/.ies4linux folder<br>
+* Executables at ~/bin<br>
+* Desktop shortcuts<br><br>
+If you configured different folders, just remove them. </div>
+ 
+          
+          <br><br>
+          作者: <a href="http://huangyuanmu.javaeye.com">huangyuanmu</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/695407" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+<br><br><br>

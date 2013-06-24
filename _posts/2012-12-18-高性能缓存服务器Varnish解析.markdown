@@ -1,0 +1,268 @@
+---
+layout: post
+title:  "高性能缓存服务器Varnish解析"
+date:   2012-12-18 16:22:03
+author: baiyuzhong
+categories: program
+---
+
+## 高性能缓存服务器Varnish解析
+### by baiyuzhong
+### at 2012-12-18 16:22:03
+### original <http://www.programmer.com.cn/14315/>
+
+<p><strong>文/刘鑫</strong></p>
+<p style="text-align:left">Varnish<span style="font-family:宋体">是一款高性能、开源的反向代理服务器和缓存服务器，其开发者</span><span style="font-family:Times New Roman">Poul-Henning Kamp</span><span style="font-family:宋体">是</span><span style="font-family:Times New Roman">FreeBSD</span><span style="font-family:宋体">核心的开发人员之一。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">采用全新的软件体系结构，和现在的硬件体系配合比较紧密。</span></p>
+<p style="text-align:left"><span style="font-family:宋体"><img style="border:0.5px solid black" title="封面" src="http://www.programmer.com.cn/wp-content/uploads/2012/12/%E5%B0%81%E9%9D%A2_%E5%89%AF%E6%9C%AC.jpg" alt="" width="200" height="283"></span></p>
+<p><span></span>当前计算机系统的内存除了主存外，还包括<span style="font-family:Times New Roman">CPU</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">L1</span><span style="font-family:宋体">级缓存、</span><span style="font-family:Times New Roman">L2</span><span style="font-family:宋体">级缓存，甚至还包括</span><span style="font-family:Times New Roman">L3</span><span style="font-family:宋体">级缓存。硬盘也有缓存，而</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">的架构导致其无法做到最佳存取，但操作系统可以实现这部分功能，所以这部分工作应该交给操作系统来处理，这就是</span><span style="font-family:Times New Roman">Varnish Cache</span><span style="font-family:宋体">设计架构。</span>挪威最大的在线报纸<span style="font-family:Times New Roman">Verdens Gang(vg.no)</span><span style="font-family:宋体">使用了</span><span style="font-family:Times New Roman">3</span><span style="font-family:宋体">台</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">服务器代替了原来的</span><span style="font-family:Times New Roman">12</span><span style="font-family:宋体">台</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">服务器，而且性能比以前更好，这是</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">最成功的应用案例之一。目前，</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">可以在</span><span style="font-family:Times New Roman">FreeBSD6.0/7.0</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">Solaris</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">Linux 2.6</span><span style="font-family:宋体">内核上运行。</span><strong></strong></p>
+<p><strong>Varnish<span style="font-family:黑体">的结构特点</span></strong></p>
+<p>Varnish<span style="font-family:宋体">的先进设计理念和成熟的设计框架是其主要特点。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">把数据存放在服务器的内存中，这种模式的效率是最高的，不过重启后数据会消失，官方透露</span><span style="font-family:Times New Roman">3.0</span><span style="font-family:宋体">版本可以解决这个问题。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">可以设置</span><span style="font-family:Times New Roman">0</span>～60<span style="font-family:宋体">秒的精确缓存时间，不过</span><span style="font-family:Times New Roman">32</span><span style="font-family:宋体">位的机器支持的缓存文件最大为</span><span style="font-family:Times New Roman">2 GB</span><span style="font-family:宋体">。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">采用</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">的配置，而且具有强大的管理功能，如</span><span style="font-family:Times New Roman">top</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">stat</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">admin</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">lis</span><span style="font-family:宋体">，所以管理方式比较灵活。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">的状态机设计不仅巧妙，结构也很清晰，利用二叉堆管理缓存文件，即可达到随时删除的目的。</span></p>
+<p><strong>Varnish<span style="font-family:黑体">和</span><span style="font-family:Arial">Squid</span><span style="font-family:黑体">的对比</span></strong></p>
+<p>Squid 也是一种开源的代理缓存软件，下面对比 Varnish 和 Squid 的不同点。</p>
+<p>Varnish<span style="font-family:宋体">的稳定性很好。两者在完成相同负载的工作时，</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">服务器发生故障的几率要高于</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">，因此</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">需要经常重启。</span>Varnish<span style="font-family:宋体">访问速度更快。</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">采用了</span> Visual Page Cache<span style="font-family:宋体">技术，所有缓存的数据都直接从内存读取，而</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">从硬盘读取缓存的数据，所以</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">在访问速度方面会更快一些。</span>Varnish<span style="font-family:宋体">可以支持更多的并发连接。因为</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">的</span><span style="font-family:Times New Roman">TCP</span><span style="font-family:宋体">连接与释放比</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">快，所以在高并发连接情况下可以支持更多的</span><span style="font-family:Times New Roman">TCP</span><span style="font-family:宋体">连接。</span>Varnish<span style="font-family:宋体">可以通过管理端口来管理缓存，使用正则表达式就可以批量清除部分缓存，而</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">做不到这一点。</span></p>
+<p>当然，和传统的<span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">相比，</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">也有缺点。</span></p>
+<p>Varnish<span style="font-family:宋体">在高并发状态下，</span><span style="font-family:Times New Roman">CPU</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">I/O</span><span style="font-family:宋体">和内存等资源的开销高于</span><span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">。</span>Varnish<span style="font-family:宋体">的进程一旦挂起、崩溃或者重启，缓存的数据都会从内存中释放出来。此时的所有请求都会被发送到后端应用服务器上，在高并发的情况下，就会给后端服务器造成很大压力。</span></p>
+<p><span style="color:#000000"><strong>Varnish实践部署</strong></span></p>
+<p><span style="color:#808080"><strong>Varnish<span style="font-family:黑体">编译安装</span></strong></span></p>
+<p>首先需要建立<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">用户以及用户组来运行</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">，并且创建</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">缓存目录和日志目录。</span></p>
+<blockquote><p>useradd  -s /sbin/nologin varnish</p>
+<p>mkdir /data/varnish/cache</p>
+<p>mkdir /data/varnish/log</p>
+<p>chown -R varnish:varnish  /data/varnish/cache</p>
+<p>chown -R varnish:varnish  /data/varnish/log</p></blockquote>
+<p>Varnish<span style="font-family:宋体">的官方网址为</span><a href="http://varnish-cache.org"><span style="font-family:Times New Roman">http://varnish-cache.org</span></a><span style="font-family:宋体">，可以在这里下载最新版本的软件。在安装</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">前需要安装</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库。如果没有安装该库，在</span><span style="font-family:Times New Roman">Varnish 2</span><span style="font-family:宋体">以上版本编译时，就会提示找不到</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库。</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库则可以兼容正则表达式，所以必须先安装。下面介绍其安装过程。</span></p>
+<blockquote><p>tar zxvf pcre-XXX.tar.gz</p>
+<p>cd pcre-XXX/</p>
+<p>./configure –prefix=/usr/local/pcre/</p>
+<p>make &amp;&amp; make install</p></blockquote>
+<p>安装完<span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库以后，接下来安装</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">。</span></p>
+<blockquote><p>tar -zxvf varnish-2.1.X.tar.gz</p>
+<p>cd varnish-2.1.X</p>
+<p>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig</p>
+<p>./configure -prefix=/app/soft/varnish -enable-debugging-symbols -enable- deve loper-warnings -enable-dependency-tracking</p>
+<p>make</p>
+<p>make install</p>
+<p>cp redhat/varnish.initrc  /etc/init.d/varnish</p>
+<p>cp redhat/varnish.sysconfig  /etc/sysconfig/varnish</p></blockquote>
+<p>export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig <span style="font-family:宋体">这一行一定要有，不然在编译的时候会报错。这一行用于指定</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">查找</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库的路径，如果</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">安装到其他路径下，在这里指定即可，</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">默认查找</span><span style="font-family:Times New Roman">PCRE</span><span style="font-family:宋体">库的路径为</span><span style="font-family:Times New Roman">/usr/local/lib/pkgconfig</span><span style="font-family:宋体">。</span></p>
+<p>最后面的两行是复制<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">的相关脚本，用于脚本的初始化、启动、停止等。</span></p>
+<p>Varnish<span style="font-family:宋体">安装完毕。</span></p>
+<p><span style="color:#000000"><strong>Varnish<span style="font-family:黑体">配置文件详解</span></strong></span></p>
+<p><span>V</span>arnish需要在多台服务器上缓存数据，就需要<span style="font-family:Times New Roman">V</span>arnish<span style="font-family:宋体">映射所有的</span><span style="font-family:Times New Roman">URL</span><span style="font-family:宋体">到一</span>台单独的主机。</p>
+<blockquote><p>backend webserver {</p>
+<p>.host = ”127.0.0.1″;</p>
+<p>.port = ”80″;</p>
+<p>.connect_timeout = 4s;</p>
+<p>.first_byte_timeout = 5s;</p>
+<p>.between_bytes_timeout = 20s;</p>
+<p>}</p>
+<p> </p></blockquote>
+<p>该块配置用于定义一台<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">默认访问的后端服务器，当</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">需要从后端服务器获取数据时，就会访问自己的</span><span style="font-family:Times New Roman">80</span><span style="font-family:宋体">端口。</span></p>
+<p>当然<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">也可以定义多台后端服务器实现负载均衡的目的。</span></p>
+<blockquote><p>.connect_timeout定义的是等待连接后端的时间</p>
+<p>.first_byte_timeout定义的是等待从<span style="font-family:Courier New">backend</span><span style="font-family:仿宋_GB2312">传输过来的第一个字</span>节的时间</p>
+<p>.between_bytes_timeout 定义的是两个字节的间隔时间</p></blockquote>
+<p>当然还可以增加一个<span style="font-family:Times New Roman">backend</span><span style="font-family:宋体">，用于访问本机的</span><span style="font-family:Times New Roman">8090</span><span style="font-family:宋体">端口，假设通过该端口提供图片服务。</span></p>
+<blockquote><p>backend img {</p>
+<p>.host = ”127.0.0.1″;</p>
+<p>.port = ”8090″;</p>
+<p>}</p></blockquote>
+<p>当匹配<span style="font-family:Times New Roman">img</span>的<span style="font-family:Times New Roman">URL</span>时，需把请求发送到上面定义的<span style="font-family:Times New Roman">backend img</span><span style="font-family:宋体">，其他的请求发送到</span><span style="font-family:Times New Roman">backend webserver</span><span style="font-family:宋体">。</span></p>
+<blockquote><p>sub vcl_recv {</p>
+<p>if (req.url ～ ”^/img/”) {</p>
+<p>set req.backend = img;</p>
+<p>} else {</p>
+<p>set req.backend = webserver.</p>
+<p>}</p>
+<p>}</p></blockquote>
+<p> </p>
+<p>Varnish<span style="font-family:宋体">不仅仅可以定义多个</span><span style="font-family:Times New Roman">backend</span><span style="font-family:宋体">，还可以把多个</span><span style="font-family:Times New Roman">backend</span><span style="font-family:宋体">合成一个组，</span>使用循环的方式把请求分配给组中的backends<span style="font-family:宋体">。</span>并且<span style="font-family:Times New Roman">V</span>arnish会根据健康检查情况来判断后端服务器是否正常提供服务。</p>
+<p>Varnish<span style="font-family:宋体">使用区域语言</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">来管理定义</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">的存取策略。</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">语法简单，跟</span><span style="font-family:Times New Roman">Perl</span><span style="font-family:宋体">比较相似，可以使用多种运算符如“</span><span style="font-family:Times New Roman">=</span><span style="font-family:宋体">”、“</span><span style="font-family:Times New Roman">==</span><span style="font-family:宋体">”</span>、“<span style="font-family:Times New Roman">!,&amp;&amp;,!!</span><span style="font-family:宋体">”等形式；也可以使用正则表达式来进行匹配，还可以使用“</span><span style="font-family:Times New Roman">set</span><span style="font-family:宋体">”来指定变量。</span>当执行VCL时，Varnish会先把<span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">转换成二进制代码。</span></p>
+<p>有一点要注意，“<span style="font-family:Times New Roman">\</span><span style="font-family:宋体">”字符在</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">里没有什么特别的含义，这点和其他语言不同。另外，</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">只是配置语言，并不是真正的编程语言，所以没有循环和自定义变量。</span></p>
+<p>为了可以更好地对<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">进行配置调整，需要了解</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">的配置语法，也就是</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">语言。下面对</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">常用的一些函数和变量进行介绍。</span></p>
+<p>（<span style="font-family:Times New Roman">1</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_recv<span style="font-family:宋体">模块</span></p>
+<p>用于接收和处理请求。当请求成功被调用后，<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">通过判断请求的数据来决定如何处理请求。此模块一般以如下几个关键字结束。</span></p>
+<ul>
+<li>pass<span style="font-family:宋体">：表示进入</span><span style="font-family:Times New Roman">pass</span><span style="font-family:宋体">模式，把请求交给</span><span style="font-family:Times New Roman">vcl</span>_pass<span style="font-family:宋体">模块处理。</span></li>
+<li>pipe<span style="font-family:宋体">：表示进入</span><span style="font-family:Times New Roman">pipe</span><span style="font-family:宋体">模式，把请求交给</span><span style="font-family:Times New Roman">vcl</span>_pipe<span style="font-family:宋体">模块处理。</span></li>
+</ul>
+<p>error code [reason]<span style="font-family:宋体">：表示把错误标识返回给客户端，并放弃处理该请求。错误标识包括</span><span style="font-family:Times New Roman">200</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">405</span><span style="font-family:宋体">等。“</span><span style="font-family:Times New Roman">reason</span><span style="font-family:宋体">”是对错误的提示信息。</span></p>
+<p>（<span style="font-family:Times New Roman">2</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_pipe<span style="font-family:宋体">模块</span></p>
+<p>此模块在请求进入<span style="font-family:Times New Roman">pipe</span><span style="font-family:宋体">模式时被调用，用于将请求直接传递至后端主机，在请求和返回的内容没有改变的情况下，也就是</span>在当前连接未关闭时，服务器将不变的内容返回给客户端，直到该连接被关闭。</p>
+<p>（<span style="font-family:Times New Roman">3</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_pass<span style="font-family:宋体">模块</span></p>
+<p>此模块表示当请求被<span style="font-family:Times New Roman">pass</span><span style="font-family:宋体">后，用于将请求直接传递至后端应用服务器。后端应用服务器在接收请求后将数据发送给客户端，但不进行任何数据的缓存，在当前连接下每次都返回最新的内容。</span></p>
+<p>（<span style="font-family:Times New Roman">4</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">lookup</span></p>
+<p>一个请求在<span style="font-family:Times New Roman">vcl</span>_recv<span style="font-family:宋体">中被</span><span style="font-family:Times New Roman">lookup</span><span style="font-family:宋体">后，</span>Varnish<span style="font-family:宋体">将</span>在缓存中提取数据。如果缓存中有相应的数据，就把控制权交给<span style="font-family:Times New Roman">vcl</span>_hit<span style="font-family:宋体">模块；</span>如果缓存中没有相应的数据，请求将被设置为<span style="font-family:Times New Roman">pass</span>并将其交给<span style="font-family:Times New Roman">vcl</span>_miss<span style="font-family:宋体">模块。</span></p>
+<p>（<span style="font-family:Times New Roman">5</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_hit<span style="font-family:宋体">模块</span></p>
+<p>执行<span style="font-family:Times New Roman">lookup</span><span style="font-family:宋体">指令后，</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">在缓存中找到请求的内容后将自动调用该模块。</span></p>
+<p>在此模块中，<span style="font-family:Times New Roman">deliver</span><span style="font-family:宋体">表示将找到的数据发送给客户端，并把控制权交给</span><span style="font-family:Times New Roman">vcl</span>_deliver<span style="font-family:宋体">模块。</span></p>
+<p>（<span style="font-family:Times New Roman">6</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_miss<span style="font-family:宋体">模块</span></p>
+<p>执行<span style="font-family:Times New Roman">lookup</span><span style="font-family:宋体">后，</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">在缓存中没有找到请求的内容时会自动调用该方法。此模块可以</span>用于判断是否需要从后端服务器获取内容。</p>
+<p>在此模块中，<span style="font-family:Times New Roman">fetch</span><span style="font-family:宋体">表示从后端获取请求的数据，并把控制权交给</span><span style="font-family:Times New Roman">vcl</span>_fetch<span style="font-family:宋体">模块。</span></p>
+<p>（<span style="font-family:Times New Roman">7</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_fetch<span style="font-family:宋体">模块</span></p>
+<p>在后端主机更新缓存并且获取内容后调用该方法，接着，通过判断获取的内容来决定是将内容放入缓存，还是直接返回给客户端。</p>
+<p>（<span style="font-family:Times New Roman">8</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_deliver<span style="font-family:宋体">模块</span></p>
+<p>当一个没有被缓存的数据交付给客户端的时候被调用。</p>
+<p>（<span style="font-family:Times New Roman">9</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_timeout <span style="font-family:宋体">模块</span></p>
+<p>在缓存数据到期前调用此模块。</p>
+<p>在此模块中，<span style="font-family:Times New Roman">discard</span><span style="font-family:宋体">表示从缓存中清除到期数据。</span></p>
+<p>（<span style="font-family:Times New Roman">10</span><span style="font-family:宋体">）</span><span style="font-family:Times New Roman">vcl</span>_discard<span style="font-family:宋体">模块</span></p>
+<p>在缓存数据到期后或缓存空间不够时，自动调用该模块。</p>
+<p>在此模块中<span style="font-family:Times New Roman">keep</span><span style="font-family:宋体">表示将数据继续保留在缓存中。</span></p>
+<blockquote><p>acl purge {</p>
+<p>“localhost”;</p>
+<p>“127.0.0.1″;</p>
+<p>“18.81.12.10″;</p>
+<p>}</p>
+<p>if (req.request == ”PURGE”) {</p>
+<p>if (!client.ip ～ purge) {</p>
+<p>error 405 ”Not allowed.”;</p>
+<p>}</p>
+<p>return(lookup);</p>
+<p>}</p></blockquote>
+<p>这两个规则定义了允许哪些主机通过<span style="font-family:Times New Roman">HTTP</span><span style="font-family:宋体">来执行</span><span style="font-family:Times New Roman">PURG</span><span style="font-family:宋体">进行缓存删除。如果不是指定的</span><span style="font-family:Times New Roman">IP</span><span style="font-family:宋体">，就会出现</span><span style="font-family:Times New Roman">HTTP 405</span><span style="font-family:宋体">错误，提示</span>Not allowed错误字样。</p>
+<blockquote><p>if (req.http.host ～ ”^(read)?.aaa.com$”) {</p>
+<p>set req.backend = webserver;</p>
+<p>if (req.request != ”GET” &amp;&amp; req.request != ”HEAD”) {</p>
+<p>return(pipe);</p>
+<p>}</p>
+<p>else {</p>
+<p>return(lookup);</p>
+<p>}</p>
+<p>}</p>
+<p>else {</p>
+<p>error 404 ” Cache Server”;</p>
+<p>return(lookup);</p>
+<p>}</p></blockquote>
+<p>这段条件判断用于对<span style="font-family:Times New Roman">aaa.com</span><span style="font-family:宋体">域名进行缓存加速，</span><span style="font-family:Times New Roman">aaa.com</span><span style="font-family:宋体">是泛指概念，也就是说所有以</span>aaa.com<span style="font-family:宋体">结尾的域名都进行缓存。而</span>if (req.request != ”GET” &amp;&amp; req.request != ”HEAD”) 表示“如果请求的类型不是<span style="font-family:Times New Roman">GET</span><span style="font-family:宋体">与</span><span style="font-family:Times New Roman">HEAD</span><span style="font-family:宋体">”，则返回错误码</span><span style="font-family:Times New Roman">404</span><span style="font-family:宋体">。</span></p>
+<blockquote><p>if (req.url ～ ”^/images”) {</p>
+<p>unset req.http.cookie;</p>
+<p>}</p></blockquote>
+<p>这条规则的意思是清除服务器上<span style="font-family:Times New Roman">/images</span><span style="font-family:宋体">目录下的所有缓存</span>，当这个请求在后端服务器生效时，如果访问的URL<span style="font-family:宋体">匹配这个</span>规则，那么头信息中的<span style="font-family:Times New Roman">cookie</span><span style="font-family:宋体">就会被删除。</span></p>
+<blockquote><p>if (req.request == ”GET” &amp;&amp; req.url ～ ”\.(png|swf|txt|png|gif|jpg|css|js|htm| html)$”) {</p>
+<p>unset req.http.cookie;</p>
+<p>}</p>
+<p>if (req.http.x-forwarded-for) {</p>
+<p>set req.http.X-Forwarded-For =</p>
+<p>req.http.X-Forwarded-For ”, ” client.ip; }</p>
+<p>else { set req.http.X-Forwarded-For = client.ip; }</p></blockquote>
+<p>因为<span style="font-family:Times New Roman">Squid</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">都会把客户端的</span><span style="font-family:Times New Roman">IP</span><span style="font-family:宋体">地址放在</span><span style="font-family:Times New Roman">HTTP</span>_X_FORWARDED_FOR<span style="font-family:宋体">里面传给后端的</span><span style="font-family:Times New Roman">Web</span><span style="font-family:宋体">服务器，所以后端的</span><span style="font-family:Times New Roman">Web</span><span style="font-family:宋体">程序都要对其进行调用。</span></p>
+<blockquote><p>if (req.request != ”GET” &amp;&amp;</p>
+<p>req.request != ”HEAD” &amp;&amp;</p>
+<p>req.request != ”PUT” &amp;&amp;</p>
+<p>req.request != ”POST” &amp;&amp;</p>
+<p>req.request != ”TRACE” &amp;&amp;</p>
+<p>req.request != ”OPTIONS” &amp;&amp;</p>
+<p>req.request != ”DELETE”) {</p>
+<p>return (pipe);</p>
+<p>}</p></blockquote>
+<p>该<span style="font-family:Times New Roman">if</span><span style="font-family:宋体">判断表示如果请求的类型不是</span><span style="font-family:Times New Roman">GET</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">HEAD</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">PUT</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">POST</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">TRACE</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">OPTIONS</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">DELETE</span><span style="font-family:宋体">时，则进入</span><span style="font-family:Times New Roman">pipe</span><span style="font-family:宋体">模式。注意这里的“</span><span style="font-family:Times New Roman">&amp;&amp;</span><span style="font-family:宋体">”是与的关系。</span></p>
+<blockquote><p>if (req.request == ”GET” &amp;&amp; req.url ～ ”\.(png|swf|txt|png|gif|jpg|css|js|htm| html)”) {</p>
+<p>set beresp.ttl = 180s;</p>
+<p>}</p>
+<p>else {</p>
+<p>set beresp.ttl = 30d;</p>
+<p>}</p>
+<p>return (deliver);</p>
+<p>}</p></blockquote>
+<p>该<span style="font-family:Times New Roman">if</span><span style="font-family:宋体">判断用于对请求类型是</span><span style="font-family:Times New Roman">GET</span><span style="font-family:宋体">，并且请求的</span><span style="font-family:Times New Roman">URL</span><span style="font-family:宋体">以</span><span style="font-family:Times New Roman">png</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">swf</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">txt</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">gif</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">css</span><span style="font-family:宋体">、</span><span style="font-family:Times New Roman">js</span><span style="font-family:宋体">等结尾时，则进行缓存，缓存时间为</span><span style="font-family:Times New Roman">180</span><span style="font-family:宋体">秒。其他缓存为</span><span style="font-family:Times New Roman">30</span><span style="font-family:宋体">天。</span></p>
+<blockquote><p>sub vcl_deliver {</p>
+<p>set resp.http.x-hits = obj.hits ;</p>
+<p>if (obj.hits &gt; 0) {</p>
+<p>set resp.http.X-Cache = ”HIT read.easouu.com”;</p>
+<p>}</p>
+<p>else {</p>
+<p>set resp.http.X-Cache = ”MISS read.easou.com”;</p>
+<p>}</p></blockquote>
+<p>这个模块定义的是添加一个<span style="font-family:Times New Roman">Header</span><span style="font-family:宋体">标识，以判断缓存是否命中。</span></p>
+<blockquote><p>sub vcl_error {</p>
+<p>set obj.http.Content-Type = ”text/html; charset=utf-8″;</p>
+<p>synthetic {”</p>
+<p>&lt;?xml version=”1.0″ encoding=”utf-8″?&gt;</p>
+<p>&lt;!DOCTYPE html PUBLIC ”-//W3C//DTD XHTML 1.0 Strict//EN” ”http://www.w3.org/TR/ xhtml1/DTD/xhtml1-strict.dtd”&gt;</p>
+<p>&lt;html&gt;</p>
+<p>&lt;head&gt;</p>
+<p>&lt;title&gt;”} obj.status ” ” obj.response {“&lt;/title&gt;</p>
+<p>&lt;/head&gt;</p>
+<p>&lt;body&gt;</p>
+<p>&lt;h1&gt;Error ”} obj.status ” ” obj.response {“&lt;/h1&gt;</p>
+<p>&lt;p&gt;”} obj.response {“&lt;/p&gt;</p>
+<p>&lt;h3&gt;Guru Meditation:&lt;/h3&gt;</p>
+<p>&lt;p&gt;XID: ”} req.xid {“&lt;/p&gt;</p>
+<p>&lt;hr&gt;</p>
+<p>&lt;address&gt;</p>
+<p>&lt;a href=”http://read.easou.com/”&gt;read.easou.com&lt;/a&gt;</p>
+<p>&lt;/address&gt;</p>
+<p>&lt;/body&gt;</p>
+<p>&lt;/html&gt;</p>
+<p>“};</p>
+<p>return (deliver);</p>
+<p>}</p></blockquote>
+<p>最后这个模块定义了访问错误页面时的返回信息。</p>
+<p>现在<span style="font-family:Times New Roman">varnish</span><span style="font-family:宋体">配置基本完成，可以在</span><span style="font-family:Times New Roman">8080</span><span style="font-family:宋体">端口上启动</span><span style="font-family:Times New Roman">varnish</span><span style="font-family:宋体">，并进行一些基本的测试。</span></p>
+<p><strong>Varnish<span style="font-family:黑体">启动等管理工具</span></strong></p>
+<p>一般情况下，启动Varnish的命令为：</p>
+<blockquote><p>varnishd  -f /etc/varnish/default.vcl  -s malloc,2G -T 127.0.0.1:2000 -a 0.  0.0.0:8080</p>
+<p>-f / etc/varnish/default.vcl</p></blockquote>
+<p> </p>
+<p>–f<span style="font-family:宋体">选项</span>用于指定Varnishd使用的配置文件的路径。</p>
+<p>-s malloc,2G中的–s<span style="font-family:宋体">选项用来确定</span>Varnish<span style="font-family:宋体">使用的存储类型和存储容量，</span>这里使用的是<span style="font-family:Times New Roman">malloc</span><span style="font-family:宋体">类型（</span><span style="font-family:Times New Roman">malloc</span><span style="font-family:宋体">是一个</span><span style="font-family:Times New Roman">C</span><span style="font-family:宋体">函数，用于分配内存空间），</span>2G <span style="font-family:宋体">定义多少内存被</span><span style="font-family:Times New Roman">malloced</span><span style="font-family:宋体">。</span></p>
+<p>-T 127.0.0.1:2000是Varnish<span style="font-family:宋体">基于文本</span>方式的一个管理接口，启动后可以在不停止Varnish<span style="font-family:宋体">的情况下来管理</span>Varnish<span style="font-family:宋体">。管理</span>端口<span style="font-family:Times New Roman">2000</span>可以指定。因为不是任何人都可以访问Varnish<span style="font-family:宋体">管理</span>端口，所以这里推荐只监听本机端口。</p>
+<p>-a 0.0.0.0:80中<span style="font-family:Times New Roman">-a</span><span style="font-family:宋体">选项表示</span><span style="font-family:Times New Roman">V</span>arnish<span style="font-family:宋体">监听所有</span><span style="font-family:Times New Roman">IP</span><span style="font-family:宋体">发给</span><span style="font-family:Times New Roman">80</span><span style="font-family:宋体">端口的</span><span style="font-family:Times New Roman">HTTP</span><span style="font-family:宋体">请求</span>。</p>
+<p>varnishd -n /app/soft/varnish/cache -f /app/soft/varnish/etc/varnish/vcl.conf -a 0.0.0.0:80 -s file,/app/soft/varnish/cache/varnish_cache.data,5G -u daemon -w 2,65536,60 -T 127.0.0.1:3600 -p thread_pool_min=200 -p thread_pool_max=4000 -p thread_pools=4 -p thread_pool_add_delay=2 -p listen_depth=4096 -p lru_interval=20</p>
+<p>varnishncsa -n /data/apps/varnish/cache -a -w /var/log/vlogs &amp;启动<span style="font-family:Times New Roman">varnishncsa</span><span style="font-family:宋体">用来将</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">访问日志写入日志文件。</span></p>
+<p>-a address:port # Varnishd<span style="font-family:宋体">命令用于指定监听的地址及其端口</span></p>
+<p>-b address:port #<span style="font-family:宋体">命令用于指定后台服务器地址及其端口</span></p>
+<p>-d # <span style="font-family:宋体">使用</span><span style="font-family:Times New Roman">debug</span><span style="font-family:宋体">模式</span></p>
+<p>-f file # varnishd<span style="font-family:宋体">服务器存取规则文件</span></p>
+<p>-F # 在后台运行</p>
+<p>-P file # PID文件</p>
+<p>-p param=value # <span style="font-family:宋体">服务器参数，用来优化性能</span></p>
+<p>-s kind[,storageoptions] # <span style="font-family:宋体">缓存内容存放方式</span></p>
+<p>-s file<span style="font-family:宋体">，</span>使用文件做为缓存，其路径、大小等</p>
+<p>-T address:port # telnet<span style="font-family:宋体">管理地址及其端口</span></p>
+<p>现在Varnish<span style="font-family:宋体">已经正常运行，</span>以上主要解释了使用内存作为存储方式启动命令行，也是比较常用的一种方式。接下来我们来看一下有哪些常用的工具。</p>
+<h4>Varnishtop</h4>
+<p>这个工具用于读取共享内存的日志，适当使用一些过滤选项如–I<span style="font-family:宋体">，</span><span style="font-family:Times New Roman">-i</span><span style="font-family:宋体">，</span><span style="font-family:Times New Roman">-X</span><span style="font-family:宋体">和</span><span style="font-family:Times New Roman">-x</span><span style="font-family:宋体">，</span>可以连续不断地显示大部分普通日志。Varnishtop可以按照使用要求显示请求的内容、客户端、浏览器等一些其他日志里的信息。比如：</p>
+<p>使用varnishtop -i rxurl查看客户端请求的<span style="font-family:Times New Roman">url</span><span style="font-family:宋体">次数</span>；</p>
+<p>使用Varnishtop -i txurl查看请求后端服务器的<span style="font-family:Times New Roman">url</span><span style="font-family:宋体">次数</span>；</p>
+<p>使用Varnishtop -i Rxheader –I Accept-Encoding查看接收到的头信息中有多少次包含</p>
+<p>Accept-Encoding<span style="font-family:宋体">。</span></p>
+<p><strong><span style="color:#888888">Varnishhist</span></strong></p>
+<p>用于读取Varnishd<span style="font-family:宋体">共享内存段的日志，</span>并生成一个连续的柱状图。<span style="font-family:Times New Roman">Varnishhist</span><span style="font-family:宋体">用于</span>显示最后<span style="font-family:Times New Roman">N</span><span style="font-family:宋体">个请求的处理情况。如果缓存命中</span>则标记“|”，如果缓存没有命中则标记“#”符号。</p>
+<p><strong>Varnishsizes</strong></p>
+<p>Varnishsizes<span style="font-family:宋体">和</span>Varnishhist<span style="font-family:宋体">相似，可以</span>查看服务对象的大致大小。</p>
+<p><span style="color:#888888"><strong>Varnishstat</strong></span></p>
+<p>用于查看Varnish<span style="font-family:宋体">计数丢失率</span>、命中率、存储信息、创建线程、删除对象等。</p>
+<p><strong>FAQ</strong></p>
+<p>Q：某些HTML页面的http头信息中常带有no-cache头，如何缓存？</p>
+<p>A<span style="font-family:宋体">：常规的配置无法实现缓存，需要修改</span><span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">配置文件，要去掉</span><span style="font-family:Times New Roman">http</span><span style="font-family:宋体">头信息中的里</span><span style="font-family:Times New Roman">no-cache</span><span style="font-family:宋体">头，修改如下内容</span><span style="font-family:Times New Roman">:</span></p>
+<blockquote><p>sub vcl_fetch {</p>
+<p>if (req.url ～ ”html$”) {</p>
+<p>set beresp.ttl = 10m;</p>
+<p>set beresp.do_gzip = true;</p>
+<p>unset beresp.http.Cache-Control;</p>
+<p>unset beresp.http.Pragma;</p>
+<p>set beresp.http.Cache-Control = ”max-age=60″;</p>
+<p>unset beresp.http.Expires;</p>
+<p>}</p>
+<p>}</p></blockquote>
+<p>如果<span style="font-family:Times New Roman">html</span><span style="font-family:宋体">页面带有</span><span style="font-family:Times New Roman">cookie</span><span style="font-family:宋体">，还需要在</span><span style="font-family:Times New Roman">sub vcl</span>_recv { } <span style="font-family:宋体">配置中添加如下内容：</span></p>
+<blockquote><p>sub vcl_recv {</p>
+<p>if (req.request == ”GET” &amp;&amp; req.url ～ ”\.(js|css|html|jpg|png|gif|swf|jpeg| ico)$”) {</p>
+<p>unset req.http.cookie;</p>
+<p>}</p>
+<p>}</p></blockquote>
+<p>Q：可以在32位机器上运行Varnish吗？</p>
+<p>A<span style="font-family:宋体">：</span>可以，不过<span style="font-family:Times New Roman">32</span><span style="font-family:宋体">位机器不支持大于</span><span style="font-family:Times New Roman">2G</span>B的文件存储，所以推荐使用<span style="font-family:Times New Roman">64</span><span style="font-family:宋体">位机器。</span></p>
+<p>Q：Varnish可以做正向代理吗？</p>
+<p>A<span style="font-family:宋体">：</span>不可以，Varnish<span style="font-family:宋体">需要配置所有后端服务器到</span><span style="font-family:Times New Roman">VCL</span><span style="font-family:宋体">。</span></p>
+<p>Q：怎样做才能在后端服务器记录客户端的IP地址？</p>
+<p>A<span style="font-family:宋体">：这是缓存服务器常常遇到的问题。</span>X-Forwarded-For的相关解释已经在前面讲述，只要在后面的<span style="font-family:Times New Roman">Web</span><span style="font-family:宋体">服务器日志格式中加上相关参数即可。</span><span style="font-family:Times New Roman">Apache</span><span style="font-family:宋体">的日志格式定义类似，为</span>Log Format ”%{X-Forwarded-For}i %l %u %t /”%r/” %&gt;s %b /”%{Referer}i/” /”% {User-Agent}i/”&quot; varnishlog</p>
+<blockquote><p>CustomLog /var/log/apache2.log varnishlog</p></blockquote>
+<p>Q：Varnish可以加速https吗？</p>
+<p>A<span style="font-family:宋体">：</span>目前还不行，欲知相关信息请密切关注官方网站。</p>
+<p>Q：可以查看Varnish缓存了哪些内容吗？</p>
+<p>A<span style="font-family:宋体">：</span>目前不可能，如果一个命令列出所有缓存的内容，那么缓存的内容是上千万或者更多，这样会导致因系统资源紧张而使<span style="font-family:Times New Roman">Varnish</span><span style="font-family:宋体">暂停服务。</span></p>
+<p><span style="color:#888888"><strong>刘鑫，运维工程师，从事IT培训、技术支持、高性能网站架构等相关技术的研究工作，ChinaUnix社区集群和高可用版块资深版主。</strong></span></p>
+<p><strong>本文节选自《高性能网站构建实战》一书，部分内容有删减。刘鑫著，由人民邮电出版社出版。</strong></p>

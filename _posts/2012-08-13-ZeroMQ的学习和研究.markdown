@@ -1,0 +1,555 @@
+---
+layout: post
+title:  "ZeroMQ的学习和研究"
+date:   2012-08-13 20:10:13
+author: 龙安
+categories: program
+---
+
+## ZeroMQ的学习和研究
+### by 龙安
+### at 2012-08-13 20:10:13
+### original <http://www.udpwork.com/item/7944.html>
+
+<p>ZeroMQ，史上最快的消息队列</p>
+<p>—– ZMQ的学习和研究</p>
+<p>一、ZeroMQ的背景介绍</p>
+<p>引用官方的说法： “ZMQ(以下ZeroMQ简称ZMQ)是一个简单好用的传输层，像框架一样的一个socket library，他使得Socket编程更加简单、简洁和性能更高。是一个消息处理队列库，可在多个线程、内核和主机盒之间弹性伸缩。ZMQ的明确目标是“成为标准网络协议栈的一部分，之后进入Linux内核”。现在还未看到它们的成功。但是，它无疑是极具前景的、并且是人们更加需要的“传统”BSD套接字之上的一 层封装。ZMQ让编写高性能网络应用程序极为简单和有趣。”</p>
+<p>近几年有关”Message Queue”的项目层出不穷，知名的就有十几种，这主要是因为后摩尔定律时代，分布式处理逐渐成为主流，业界需要一套标准来解决分布式计算环境中节点之间的消息通信。几年的竞争下来，Apache基金会旗下的符合AMQP/1.0标准的RabbitMQ已经得到了广泛的认可，成为领先的MQ项目。</p>
+<p>与RabbitMQ相比，ZMQ并不像是一个传统意义上的消息队列服务器，事实上，它也根本不是一个服务器，它更像是一个底层的网络通讯库，在Socket API之上做了一层封装，将网络通讯、进程通讯和线程通讯抽象为统一的API接口。</p>
+<p>二、ZMQ是什么？</p>
+<p>阅读了ZMQ的<a href="http://zguide.zeromq.org/page:all">Guide文档</a>后，我的理解是，这是个类似于Socket的一系列接口，他跟Socket的区别是：普通的socket是端到端的（1:1的关系），而ZMQ却是可以N：M 的关系，人们对BSD套接字的了解较多的是点对点的连接，点对点连接需要显式地建立连接、销毁连接、选择协议（TCP/UDP）和处理错误等，而ZMQ屏蔽了这些细节，让你的网络编程更为简单。ZMQ用于node与node间的通信，node可以是主机或者是进程。</p>
+<p>三、本文的目的</p>
+<p>在集群对外提供服务的过程中，我们有很多的配置，需要根据需要随时更新，那么这个信息如果推动到各个节点？并且保证信息的一致性和可靠性？本文在介绍ZMQ基本理论的基础上，试图使用ZMQ实现一个配置分发中心。从一个节点，将信息无误的分发到各个服务器节点上，并保证信息正确性和一致性。</p>
+<p>四、ZMQ的三个基本模型</p>
+<p>ZMQ提供了三个基本的通信模型，分别是“Request-Reply “，”Publisher-Subscriber“，”Parallel Pipeline<strong>”,</strong>
+我们从这三种模式一窥ZMQ的究竟</p>
+<h4>ZMQ的hello world！</h4>
+<p>由Client发起请求，并等待Server回应请求。请求端发送一个简单的hello，服务端则回应一个world。请求端和服务端都可以是 1:N 的模型。通常把 1 认为是 Server ，N 认为是Client 。ZMQ 可以很好的支持路由功能（实现路由功能的组件叫作Device），把 1:N 扩展为N:M （只需要加入若干路由节点）。如图1所示：</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig11.png"></p>
+<p>图1：ZMQ的Request-Reply 通信</p>
+<p>服务端的php程序如下：</p>
+<pre>
+&lt;?php
+/*
+* Hello World server
+* Binds REP socket to tcp://*:5555
+* Expects &quot;Hello&quot; from client, replies with &quot;World&quot;
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+$context = new ZMQContext(1);
+// Socket to talk to clients
+$responder = new ZMQSocket($context, ZMQ::SOCKET_REP);
+$responder-&amp;gt;bind(&quot;tcp://*:5555&quot;);
+while(true) {
+// Wait for next request from client
+$request = $responder-&amp;gt;recv();
+printf (&quot;Received request: [%s]\n&quot;, $request);
+
+// Do some &#39;work&#39;
+sleep (1);
+
+// Send reply back to client
+$responder-&amp;gt;send(&quot;World&quot;);
+}
+</pre><p>Client程序如下：</p>
+<pre>
+&lt;?php
+
+/*
+
+ *  Hello World client
+
+ *  Connects REQ socket to tcp://localhost:5555
+
+ *  Sends &quot;Hello&quot; to server, expects &quot;World&quot; back
+
+ * @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+
+ */
+$context = new ZMQContext();
+
+//  Socket to talk to server
+
+echo &quot;Connecting to hello world server...\n&quot;;
+
+$requester = new ZMQSocket($context, ZMQ::SOCKET_REQ);
+
+$requester-&amp;gt;connect(&quot;tcp://localhost:5555&quot;);
+
+for($request_nbr = 0; $request_nbr != 10; $request_nbr++) {
+
+    printf (&quot;Sending request %d...\n&quot;, $request_nbr);
+
+    $requester-&amp;gt;send(&quot;Hello&quot;);
+
+    $reply = $requester-&amp;gt;recv();
+
+    printf (&quot;Received reply %d: [%s]\n&quot;, $request_nbr, $reply);
+
+}
+</pre><p>从以上的过程，我们可以了解到使用ZMQ写基本的程序的方法，需要注意的是：</p>
+<p>a)     服务端和客户端无论谁先启动，效果是相同的，这点不同于Socket。</p>
+<p>b)     在服务端收到信息以前，程序是阻塞的，会一直等待客户端连接上来。</p>
+<p>c)      服务端收到信息以后，会send一个“World”给客户端。值得注意的是一定是client连接上来以后，send消息给Server，然后Server再rev然后响应client，这种一问一答式的。如果Server先send，client先rev是会报错的。</p>
+<p>d)     ZMQ通信通信单元是消息，他除了知道Bytes的大小，他并不关心的消息格式。因此，你可以使用任何你觉得好用的数据格式。Xml、Protocol Buffers、Thrift、json等等。</p>
+<p>e)     虽然可以使用ZMQ实现HTTP协议，但是，这绝不是他所擅长的。</p>
+<h4>ZMQ的Publish-subscribe模式</h4>
+<p>我们可以想象一下天气预报的订阅模式，由一个节点提供信息源，由其他的节点，接受信息源的信息，如图2所示：</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig40.png"></p>
+<p>图2：ZMQ的Publish-subscribe</p>
+<p>示例代码如下 ：</p>
+<p>Publisher：</p>
+<pre>
+&lt;?php
+/*
+* Weather update server
+* Binds PUB socket to tcp://*:5556
+* Publishes random weather updates
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+// Prepare our context and publisher
+$context = new ZMQContext();
+$publisher = $context-&amp;gt;getSocket(ZMQ::SOCKET_PUB);
+$publisher-&amp;gt;bind(&quot;tcp://*:5556&quot;);
+
+while (true) {
+// Get values that will fool the boss
+$zipcode = mt_rand(0, 100000);
+$temperature = mt_rand(-80, 135);
+$relhumidity = mt_rand(10, 60);
+
+// Send message to all subscribers
+$update = sprintf (&quot;%05d %d %d&quot;, $zipcode, $temperature, $relhumidity);
+$publisher-&amp;gt;send($update);
+}&lt;/pre&gt;
+Subscriber
+&lt;pre&gt;&amp;lt;?php
+/*
+* Weather update client
+* Connects SUB socket to tcp://localhost:5556
+* Collects weather updates and finds avg temp in zipcode
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+$context = new ZMQContext();
+
+// Socket to talk to server
+echo &quot;Collecting updates from weather server…&quot;, PHP_EOL;
+$subscriber = new ZMQSocket($context, ZMQ::SOCKET_SUB);
+$subscriber-&amp;gt;connect(&quot;tcp://localhost:5556&quot;);
+
+// Subscribe to zipcode, default is NYC, 10001
+$filter = $_SERVER[&#39;argc&#39;] &amp;gt; 1 ? $_SERVER[&#39;argv&#39;][1] : &quot;10001&quot;;
+$subscriber-&amp;gt;setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE, $filter);
+
+// Process 100 updates
+$total_temp = 0;
+for ($update_nbr = 0; $update_nbr &amp;lt; 100; $update_nbr++) {
+$string = $subscriber-&amp;gt;recv();
+sscanf ($string, &quot;%d %d %d&quot;, $zipcode, $temperature, $relhumidity);
+$total_temp += $temperature;
+}
+printf (&quot;Average temperature for zipcode &#39;%s&#39; was %dF\n&quot;,
+$filter, (int) ($total_temp / $update_nbr));
+</pre><p>这段代码讲的是，服务器端生成随机数zipcode、temperature、relhumidity分别代表城市代码、温度值和湿度值。然后不断的广播信息，而客户端通过设置过滤参数，接受特定城市代码的信息，收集完了以后，做一个平均值。</p>
+<p>a)     与Hello World不同的是，Socket的类型变成SOCKET_PUB和SOCKET_SUB类型。</p>
+<p>b)     客户端需要$subscriber-&gt;setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE, $filter);设置一个过滤值，相当于设定一个订阅频道，否则什么信息也收不到。</p>
+<p>c)      服务器端一直不断的广播中，如果中途有Subscriber端退出，并不影响他继续的广播，当Subscriber再连接上来的时候，收到的就是后来发送的新的信息了。这对比较晚加入的，或者是中途离开的订阅者，必然会丢失掉一部分信息，这是这个模式的一个问题，所谓的Slow joiner。稍后，会解决这个问题。</p>
+<p>d)     但是，如果Publisher中途离开，所有的Subscriber会hold住，等待Publisher再上线的时候，会继续接受信息。</p>
+<h4>ZMQ的PipeLine模型</h4>
+<p>想象一下这样的场景，如果需要统计各个机器的日志，我们需要将统计任务分发到各个节点机器上，最后收集统计结果，做一个汇总。PipeLine比较适合于这种场景，他的结构图，如图3所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig50.png"></p>
+<p>图3：ZMQ的PipeLine模型</p>
+<p>Parallel task ventilator in PHP</p>
+<pre>
+&lt;?php
+/*
+* Task ventilator
+* Binds PUSH socket to tcp://localhost:5557
+* Sends batch of tasks to workers via that socket
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+$context = new ZMQContext();
+
+// Socket to send messages on
+$sender = new ZMQSocket($context, ZMQ::SOCKET_PUSH);
+$sender-&amp;gt;bind(&quot;tcp://*:5557&quot;);
+
+echo &quot;Press Enter when the workers are ready: &quot;;
+$fp = fopen(&#39;php://stdin&#39;, &#39;r&#39;);
+$line = fgets($fp, 512);
+fclose($fp);
+echo &quot;Sending tasks to workers…&quot;, PHP_EOL;
+
+// The first message is &quot;0&quot; and signals start of batch
+$sender-&amp;gt;send(0);
+
+// Send 100 tasks
+$total_msec = 0; // Total expected cost in msecs
+for ($task_nbr = 0; $task_nbr &amp;lt; 100; $task_nbr++) {
+// Random workload from 1 to 100msecs
+$workload = mt_rand(1, 100);
+$total_msec += $workload;
+$sender-&amp;gt;send($workload);
+
+}
+printf (&quot;Total expected cost: %d msec\n&quot;, $total_msec);
+sleep (1); // Give 0MQ time to deliver
+</pre><p>Parallel task worker in PHP</p>
+<pre>
+&lt;?php
+/*
+* Task worker
+* Connects PULL socket to tcp://localhost:5557
+* Collects workloads from ventilator via that socket
+* Connects PUSH socket to tcp://localhost:5558
+* Sends results to sink via that socket
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+$context = new ZMQContext();
+
+// Socket to receive messages on
+$receiver = new ZMQSocket($context, ZMQ::SOCKET_PULL);
+$receiver-&amp;gt;connect(&quot;tcp://localhost:5557&quot;);
+
+// Socket to send messages to
+$sender = new ZMQSocket($context, ZMQ::SOCKET_PUSH);
+$sender-&amp;gt;connect(&quot;tcp://localhost:5558&quot;);
+
+// Process tasks forever
+while (true) {
+$string = $receiver-&amp;gt;recv();
+
+// Simple progress indicator for the viewer
+echo $string, PHP_EOL;
+
+// Do the work
+usleep($string * 1000);
+
+// Send results to sink
+$sender-&amp;gt;send(&quot;&quot;);
+}
+</pre><p>Parallel task sink in PHP</p>
+<pre>
+&lt;?php
+/*
+* Task sink
+* Binds PULL socket to tcp://localhost:5558
+* Collects results from workers via that socket
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+// Prepare our context and socket
+$context = new ZMQContext();
+$receiver = new ZMQSocket($context, ZMQ::SOCKET_PULL);
+$receiver-&amp;gt;bind(&quot;tcp://*:5558&quot;);
+
+// Wait for start of batch
+$string = $receiver-&amp;gt;recv();
+
+// Start our clock now
+$tstart = microtime(true);
+
+// Process 100 confirmations
+$total_msec = 0; // Total calculated cost in msecs
+for ($task_nbr = 0; $task_nbr &amp;lt; 100; $task_nbr++) {
+$string = $receiver-&amp;gt;recv();
+if($task_nbr % 10 == 0) {
+echo &quot;:&quot;;
+} else {
+echo &quot;.&quot;;
+}
+}
+
+$tend = microtime(true);
+
+$total_msec = ($tend - $tstart) * 1000;
+echo PHP_EOL;
+printf (&quot;Total elapsed time: %d msec&quot;, $total_msec);
+echo PHP_EOL;
+</pre><p>从程序中，我们可以看到，task ventilator使用的是SOCKET_PUSH，将任务分发到Worker节点上。而Worker节点上，使用SOCKET_PULL从上游接受任务，并使用SOCKET_PUSH将结果汇集到Slink。值得注意的是，任务的分发的时候也同样有一个负载均衡的路由功能，worker可以随时自由加入，task ventilator可以均衡将任务分发出去。</p>
+<p>五、其他扩展模式</p>
+<p>通常，一个节点，即可以作为Server，同时也能作为Client，通过PipeLine模型中的Worker，他向上连接着任务分发，向下连接着结果搜集的Sink机器。因此，我们可以借助这种特性，丰富的扩展原有的三种模式。例如，一个代理Publisher，作为一个内网的Subscriber接受信息，同时将信息，转发到外网，其结构图如图4所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig170.png"></p>
+<p>图4：ZMQ的扩展模式</p>
+<p>六、多个服务器</p>
+<p>ZMQ和Socket的区别在于，前者支持N：M的连接，而后者则只是1：1的连接，那么一个Client连接多个Server的情况是怎样的呢，我们通过图5来说明。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig180.png"></p>
+<p>图5：ZMQ的N:1的连接情况</p>
+<p>我们假设Client有R1,R2,R3,R4四个任务，我们只需要一个ZMQ的Socket，就可以连接四个服务，他能够自动均衡的分配任务。如图5所示，R1，R4自动分配到了节点A，R2到了B，R3到了C。如果我们是N:M的情况呢？这个扩展起来，也不难，如图6所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig200.png"></p>
+<p>图6：N:M的连接</p>
+<p>我们通过一个中间结点（Broker）来进行负载均衡的功能。我们通过代码了解，其中的Client和我们的Hello World的Client端是一样的，而Server端的不同是，他不需要监听端口，而是需要连接Broker的端口，接受需要处理的信息。所以，我们重点阅读Broker的代码：</p>
+<pre>
+&lt;?php
+/*
+* Simple request-reply broker
+* @author Ian Barber &amp;lt;ian(dot)barber(at)gmail(dot)com&amp;gt;
+*/
+
+// Prepare our context and sockets
+$context = new ZMQContext();
+$frontend = new ZMQSocket($context, ZMQ::SOCKET_ROUTER);
+$backend = new ZMQSocket($context, ZMQ::SOCKET_DEALER);
+$frontend-&amp;gt;bind(&quot;tcp://*:5559&quot;);
+$backend-&amp;gt;bind(&quot;tcp://*:5560&quot;);
+
+// Initialize poll set
+$poll = new ZMQPoll();
+$poll-&amp;gt;add($frontend, ZMQ::POLL_IN);
+$poll-&amp;gt;add($backend, ZMQ::POLL_IN);
+$readable = $writeable = array();
+
+// Switch messages between sockets
+while(true) {
+$events = $poll-&amp;gt;poll($readable, $writeable);
+
+foreach($readable as $socket) {
+if($socket === $frontend) {
+// Process all parts of the message
+while(true) {
+$message = $socket-&amp;gt;recv();
+// Multipart detection
+$more = $socket-&amp;gt;getSockOpt(ZMQ::SOCKOPT_RCVMORE);
+$backend-&amp;gt;send($message, $more ? ZMQ::MODE_SNDMORE : null);
+if(!$more) {
+break; // Last message part
+}
+}
+}
+else if($socket === $backend) {
+$message = $socket-&amp;gt;recv();
+// Multipart detection
+$more = $socket-&amp;gt;getSockOpt(ZMQ::SOCKOPT_RCVMORE);
+$frontend-&amp;gt;send($message, $more ? ZMQ::MODE_SNDMORE : null);
+if(!$more) {
+break; // Last message part
+}
+}
+}
+}
+</pre><p>Broker监听了两个端口，接受从多个Client端发送过来的数据，并将数据，转发给Server。在Broker中，我们监听了两个端口，使用了两个Socket，那么对于多个Socket的情况，我们是不需要通过轮询的方式去处理数据的，在之前，我们可以使用libevent实现，异步的信息处理和传输。而现在，我们只需要使用ZMQ的$poll-&gt;poll以实现多个Socket的异步处理。</p>
+<p>七、进程间的通信</p>
+<p>ZMQ不仅能通过TCP完成节点间的通信，也可以通过Socket文件完成进程间的通信。如图7所示，我们fork三个PHP进程，将进程1的数据，通过Socket文件发送到进程3。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig220.png"></p>
+<p>图7：进程间的通信</p>
+<pre>
+&lt;?php
+
+function step1() {
+
+        $context = new ZMQContext();
+
+        // Signal downstream to step 2
+
+        $sender = new ZMQSocket($context, ZMQ::SOCKET_PAIR);
+
+        $sender-&amp;gt;connect(&quot;ipc://step2.ipc&quot;);
+
+        $sender-&amp;gt;send(&quot;hello ,i am step1&quot;);
+
+}
+
+function step2() {
+
+        $pid = pcntl_fork();
+
+        if($pid == 0) {
+
+                step1();
+
+                exit();
+
+        }
+
+        $context = new ZMQContext();
+
+        //  Bind to ipc: endpoint, then start upstream thread
+
+        $receiver = new ZMQSocket($context, ZMQ::SOCKET_PAIR);
+
+        $receiver-&amp;gt;bind(&quot;ipc://step2.ipc&quot;);
+
+        // Wait for signal   
+
+        sleep(10);
+
+        $strings = $receiver-&amp;gt;recv();
+
+        echo &quot;step2 receiver is $strings&quot;. PHP_EOL;
+
+        sleep(10);
+
+        // Signal downstream to step 3
+
+        $sender = new ZMQSocket($context, ZMQ::SOCKET_PAIR);
+
+        $sender-&amp;gt;connect(&quot;ipc://step3.ipc&quot;);
+
+        $sender-&amp;gt;send($strings);
+
+}
+
+// Start upstream thread then bind to icp: endpoint
+
+$pid = pcntl_fork();
+
+if($pid == 0) {
+
+        step2();
+
+        exit();
+
+}
+
+$context = new ZMQContext();
+
+$receiver = new ZMQSocket($context, ZMQ::SOCKET_PAIR);
+
+$receiver-&amp;gt;bind(&quot;ipc://step3.ipc&quot;);
+
+// Wait for signal
+
+$sr = $receiver-&amp;gt;recv();
+
+echo &quot;the result is {$sr}&quot;.PHP_EOL;
+</pre><p>在运行中，我们可以看到多了两个文件，如图8所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/270.jpg"></p>
+<p>图8：运行过程中生成的文件</p>
+<p>八、利用ZeroMQ实现一个配置推送中心</p>
+<p>当我们将WEB代码部署到集群上的时候，如果需要实时的将最新的配置信息，主动的推送到各个机器节点。在此过程中，我们一定要保证，各个节点收到的信息的一致性和正确性，如果使用HTTP，由于他的无状态性，我们无法保证信息的一致性，当然，你可以使用HTTP来实现，只是更复杂，为什么不用ZMQ？他能让你更简单的实现这些功能。</p>
+<p>我们使用ZMQ的信息订阅模式。在那个模式中，我们注意到，对于后来的加入节点，始终会丢失在他加入之前，已经发送的信息（Slow joiner）。我们可以开启另外一个ZMQ的通信通道，用于报告当前节点的情况（节点的身份、准备状态等），其结构如图9所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fig230.png"></p>
+<p>图9：扩展ZMQ的订阅者模式</p>
+<p>我们通过$context-&gt;getSocket(ZMQ::SOCKET_REQ);设置一个新的Request-Reply连接，来用于Subscriber向Publisher报告自己的身份信息，而Publisher则等待所有的Subscriber都连接上的时候，再选择Publish自己的信息。</p>
+<p>Subscriber端的程序如下：</p>
+<pre>
+&lt;?php
+
+$hostname = $_SERVER[&#39;argc&#39;] &amp;gt; 1 ? $_SERVER[&#39;argv&#39;][1] : &quot;s1&quot;;
+
+$context = new ZMQContext(2);
+
+$sub = new ZMQSocket($context,ZMQ::SOCKET_SUB);
+
+$sub-&amp;gt;connect(&quot;tcp://localhost:5561&quot;);
+
+//$subscriber-&amp;gt;setSockOpt(ZMQ::SOCKOPT_IDENTITY, $hostname);
+
+$sub-&amp;gt;setSockOpt(ZMQ::SOCKOPT_SUBSCRIBE,&quot;&quot;);
+
+$client = $context-&amp;gt;getSocket(ZMQ::SOCKET_REQ);
+
+$client-&amp;gt;connect(&quot;tcp://localhost:5562&quot;);
+
+while(1) {
+
+//$client-&amp;gt;connect(&quot;tcp://localhost:5562&quot;);
+
+$client-&amp;gt;send($hostname);
+
+$version = $client-&amp;gt;recv();
+
+echo $version.&quot;\r\n&quot;;
+
+if (!empty($version)) {
+
+$recive = $sub-&amp;gt;recv();
+
+$vars = json_decode($recive);
+
+var_dump($vars);
+
+}
+
+}
+</pre><p>Publisher端的程序如下：</p>
+<pre>
+&lt;?php
+
+$CONFIG[&quot;TAOKE_BTS&quot;][&quot;ENABLE&quot;] = true;
+
+$CONFIG[&quot;QP_BTS&quot;][&quot;ENABLE&quot;] = true;
+
+$CONFIG[&quot;QP_BTS&quot;][&quot;TK_TEST&quot;] = 13;
+
+$string = json_encode($CONFIG);
+
+$clients = array(&quot;s2&quot;,&quot;s1&quot;,&quot;s3&quot;);
+
+$context = new ZMQContext(10);
+
+//Socket talk to clients
+
+$publisher = new ZMQSocket($context,ZMQ::SOCKET_PUB);
+
+$publisher-&amp;gt;bind(&quot;tcp://*:5561&quot;);
+
+//Socket to publish message
+
+$server = new ZMQSocket($context,ZMQ::SOCKET_REP);
+
+$server-&amp;gt;bind(&quot;tcp://*:5562&quot;);
+
+while(count($clients)!=0) {
+
+      $client_name = $server-&amp;gt;recv();
+
+        echo &quot;{$client_name} is connect!\r\n&quot;;
+
+if (in_array($client_name, $clients)) { //coming one client
+
+        $key = array_search($client_name, $clients);
+
+        unset($clients[$key]);
+
+        echo &quot;$client_name has come in!\r\n&quot;;
+
+        $server-&amp;gt;send(&quot;Version is 2.0&quot;);
+
+} else {
+
+        $server-&amp;gt;send(&quot;You are a stranger!&quot;);
+
+}
+
+}
+
+$publisher-&amp;gt;send($string);
+
+?&amp;gt;
+</pre><p>每个节点通过5562端口，使用Rep模式和Publisher连接，通过这个连接告之Publisher自己的机器名，而Publisher端通过白名单的方式，维护一个机器列表，当机器列表中所有的机器连接上来以后，通过5561端口，将最新的配置信息发送出去。</p>
+<p>后续的处理，Subscriber可以选择将配置信息写入到APC缓存，程序将始终从缓存中读取部分配置信息，Subscriber并将更新后的状态信息，实时的通过5562报告给Publisher。</p>
+<p>虽然，在本示例中不会出现，但是，如果需要发布的信息量过大，在接受信息的过程中，Subscriber端突然中断网络（或者是程序崩溃），那么当他在连接上来的时候，有部分信息就会丢失？ZMQ考虑到这个问题，通过$subscriber-&gt;setSockOpt(ZMQ::SOCKOPT_IDENTITY, $hostname);设置一个id，当这个id的Subscriber重新连接上来的时候，他可以从上次中断的地方，继续接受信息，当然，节点的中断，不会影响其他的节点继续的接受信息。</p>
+<p>那么ZMQ是怎么实现断线重连后，继续发送信息呢 ？他会将断开的Subscriber应该接受到的信息发到内存中，等待他重新上线后，将缓存的信息，继续发送给他。当然，内存必然是有限的，过多就会出现内存溢出。ZMQ通过</p>
+<p>SetSockOpt(ZMQ::SOCKOPT_SWAP, 250000)设置Swap空间的大小，来防止out of memory and crash。最终，我们的程序运行结果，如图10所示。</p>
+<p><img src="http://www.searchtb.com/wp-content/uploads/2012/08/fg230.jpg"></p>
+<p>图10：配置中心的运行结果</p>
+<p>当然，这只是一个大体的思路，如果应用到实际的成产环境中，还需要考虑更多的问题，包含稳定性，容错等等。然而，ZMQ由于高并发，以及稳定性和易用性，前景不错，他的目标是进入Linux内核，我们期待那一天的到来。</p>
+<p>参考资料 ：</p>
+<p><a href="http://www.infoq.com/cn/news/2010/09/introduction-zero-mq">http://www.infoq.com/cn/news/2010/09/introduction-zero-mq</a>Infoq对zeromq的简介</p>
+<p><a href="http://zguide.zeromq.org/page:all">http://zguide.zeromq.org/page:all</a>ZeroMQ的guide文档</p>
+
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/7944.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">0</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/7944.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">0</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/7944.html#reviews">评论: 0</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

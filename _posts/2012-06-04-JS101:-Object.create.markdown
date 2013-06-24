@@ -1,0 +1,189 @@
+---
+layout: post
+title:  "JS101: Object.create"
+date:   2012-06-04 07:00:00
+author: 
+categories: program
+---
+
+## JS101: Object.create
+### by 
+### at 2012-06-04 07:00:00
+### original <http://feedproxy.google.com/~r/dailyjs/~3/yA5SZmIPrKY/js101-object-create>
+
+<div>
+  JS101 is a tutorial series aimed at beginners.  Each post is a bite-sized chunk aimed to elucidate JavaScript fundamentals.  To read previous posts, view the <a href="http://dailyjs.com/tags.html#js101">js101</a> tag.
+</div>
+<p>The inheritance examples we looked at last week used the form <code>Rectangle.prototype = new Shape()</code>. The reason I like this example is it shows how powerful prototypes are, despite their simplicity. The downside is the constructor for the parent object is executed, which isn’t always what’s desired.</p>
+
+<p>ECMAScript 5 introduced <code>Object.create</code>, which creates new objects based on a prototype object and an additional set of properties.</p>
+
+<p>The main differences between <code>B.prototype = new A();</code> and <code>B.prototype = Object.create(A.prototype)</code> are as follows:</p>
+
+<ul>
+<li>The constructor, <code>A</code> isn’t called, so <code>B</code> remains uninitialised until instantiated</li>
+
+<li><code>Object.create</code> accepts a second argument that causes <code>Object.create</code> to behave as if <code>Object.defineProperties</code> was called</li>
+</ul>
+
+<h3>Using <code>Object.create</code></h3>
+
+<p>Last week’s <code>Shape</code> example could be rewritten to use <code>Object.create</code>:</p>
+<div><pre><code><span>function</span> <span>Shape</span><span>()</span> <span>{</span>
+  <span>this</span><span>.</span><span>x</span> <span>=</span> <span>0</span><span>;</span>
+  <span>this</span><span>.</span><span>y</span> <span>=</span> <span>0</span><span>;</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Shape constructor called&#39;</span><span>);</span>
+<span>}</span>
+
+<span>Shape</span><span>.</span><span>prototype</span> <span>=</span> <span>{</span>
+  <span>move</span><span>:</span> <span>function</span><span>(</span><span>x</span><span>,</span> <span>y</span><span>)</span> <span>{</span>
+    <span>this</span><span>.</span><span>x</span> <span>+=</span> <span>x</span><span>;</span>
+    <span>this</span><span>.</span><span>y</span> <span>+=</span> <span>y</span><span>;</span>
+  <span>}</span>
+<span>};</span>
+
+<span>// Rectangle</span>
+<span>function</span> <span>Rectangle</span><span>()</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Rectangle constructor called&#39;</span><span>);</span>
+  <span>this</span><span>.</span><span>x</span> <span>=</span> <span>0</span><span>;</span>
+  <span>this</span><span>.</span><span>y</span> <span>=</span> <span>0</span><span>;</span>
+<span>}</span>
+
+<span>Rectangle</span><span>.</span><span>prototype</span> <span>=</span> <span>Object</span><span>.</span><span>create</span><span>(</span><span>Shape</span><span>);</span>
+</code></pre>
+</div>
+<p>Now rectangles can be created with <code>var rect = new Rectangle()</code> and the original <code>Shape</code> constructor won’t be called. This leaves us with a cleaner prototype chain, but what if we still want to call the previous constructor? In this particular example, calling the <code>Shape</code> constructor is desirable because we’ll avoid duplicating some initialisation code.</p>
+
+<h3>Calling Constructors</h3>
+
+<p>By using the <code>Function.prototype.call</code> or <code>apply</code> methods, it’s entirely possible to call another constructor even when using <code>Object.create</code>. For example:</p>
+<div><pre><code><span>function</span> <span>Shape</span><span>()</span> <span>{</span>
+  <span>this</span><span>.</span><span>x</span> <span>=</span> <span>0</span><span>;</span>
+  <span>this</span><span>.</span><span>y</span> <span>=</span> <span>0</span><span>;</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Shape constructor called&#39;</span><span>);</span>
+<span>}</span>
+
+<span>Shape</span><span>.</span><span>prototype</span> <span>=</span> <span>{</span>
+  <span>move</span><span>:</span> <span>function</span><span>(</span><span>x</span><span>,</span> <span>y</span><span>)</span> <span>{</span>
+    <span>this</span><span>.</span><span>x</span> <span>+=</span> <span>x</span><span>;</span>
+    <span>this</span><span>.</span><span>y</span> <span>+=</span> <span>y</span><span>;</span>
+  <span>}</span>
+<span>};</span>
+
+<span>// Rectangle</span>
+<span>function</span> <span>Rectangle</span><span>()</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Rectangle constructor called&#39;</span><span>);</span>
+  <span>Shape</span><span>.</span><span>call</span><span>(</span><span>this</span><span>);</span>
+<span>}</span>
+
+<span>Rectangle</span><span>.</span><span>prototype</span> <span>=</span> <span>Object</span><span>.</span><span>create</span><span>(</span><span>Shape</span><span>);</span>
+</code></pre>
+</div>
+<p>The fact <code>call</code> and <code>apply</code> take a <code>this</code> parameter (known as <em>ThisBinding</em> in the ECMAScript specification) allows us to reuse constructors where required.</p>
+
+<h3>No Inheritance: <code>Object.create(null)</code></h3>
+
+<p>By passing <code>null</code> to <code>Object.create</code>, objects can be created that don’t inherit from anything. By default <code>Object.prototype</code> is used, which has <a href="http://es5.github.com/#x15.2.4">several built-in methods</a>. What if we don’t want to inherit from <code>Object.prototype</code>?</p>
+<div><pre><code><span>function</span> <span>Shape</span><span>()</span> <span>{</span>
+<span>}</span>
+
+<span>Shape</span><span>.</span><span>prototype</span> <span>=</span> <span>Object</span><span>.</span><span>create</span><span>(</span><span>null</span><span>);</span>
+
+<span>var</span> <span>shape</span> <span>=</span> <span>new</span> <span>Shape</span><span>();</span>
+<span>console</span><span>.</span><span>log</span><span>(</span><span>shape</span><span>.</span><span>toString</span><span>);</span>
+</code></pre>
+</div>
+<p>In this example, <code>undefined</code> will be printed – objects created using the <code>Shape</code> constructor inherit from <code>null</code>.</p>
+
+<p>Notice that this <strong>is not</strong> equivalent:</p>
+<div><pre><code><span>function</span> <span>Shape</span><span>()</span> <span>{</span>
+<span>}</span>
+
+<span>Shape</span><span>.</span><span>prototype</span> <span>=</span> <span>null</span><span>;</span>
+
+<span>var</span> <span>shape</span> <span>=</span> <span>new</span> <span>Shape</span><span>();</span>
+<span>console</span><span>.</span><span>log</span><span>(</span><span>shape</span><span>.</span><span>toString</span><span>);</span>
+</code></pre>
+</div>
+<p>This should print something like <code>[Function: toString]</code> rather than <code>undefined</code>.</p>
+
+<p>It’s interesting to think about exactly why this is useful. In <a href="http://www.devthought.com/2012/01/18/an-object-is-not-a-hash/">An Object is not a Hash</a>, Guillermo Rauch discusses how the properties of <code>Object.prototype</code> can be used to potentially cause security issues, and <code>Object.create(null)</code> was suggested as a suitable means for creating a “clean” object to avoid the problem.</p>
+
+<p>Another point is performance. These <a href="http://jsperf.com/object-create-null-iteration/2">Object.create(null) benchmarks</a> demonstrate iterating over various objects, and the <code>Object.create(null)</code> tests run faster than object literals.</p>
+
+<p>However, be very careful when using this approach because so many libraries expect objects to have the standard methods.</p>
+
+<h3>The Second Argument to <code>Object.create</code></h3>
+
+<p>According to the <a href="http://es5.github.com/#x15.2.3.5">Annotated ECMAScript 5 Object.create documentation</a>, passing a second argument behaves as if <code>Object.defineProperties</code> had been called. This method requires a bit of knowledge before it can be used – the properties have to be passed in the expected format.</p>
+
+<p>In this example, <code>Rectangle</code> inherits from <code>Shape</code> and gets a property called <code>animate</code> at the same time:</p>
+<div><pre><code><span>Rectangle</span><span>.</span><span>prototype</span> <span>=</span> <span>Object</span><span>.</span><span>create</span><span>(</span><span>Rectangle</span><span>.</span><span>prototype</span><span>,</span> <span>{</span>
+  <span>animate</span><span>:</span> <span>{</span>
+    <span>value</span><span>:</span> <span>function</span><span>()</span> <span>{</span>
+      <span>this</span><span>.</span><span>animating</span> <span>=</span> <span>true</span><span>;</span>
+    <span>}</span>
+  <span>}</span>
+<span>});</span>
+
+<span>var</span> <span>rect</span> <span>=</span> <span>new</span> <span>Rectangle</span><span>();</span>
+</code></pre>
+</div>
+<p>Now <code>rect.animate()</code> can be called, just like any other method. Notice that the second argument is in the form <code>{ propertyName: { value: function() {} } }</code> – the <code>value</code> property is important and I haven’t arbitrarily picked it. These properties are known as <a href="http://es5.github.com/#x8.6.1">property attributes</a>.</p>
+
+<p>Property attributes can be “named data” and “named attribute” properties. These additional flags can be applied to named data properties:</p>
+
+<ul>
+<li><code>writable</code>: Determines if the property is writable</li>
+
+<li><code>enumerable</code>: Should this property be included in <code>for-in</code> enumeration?</li>
+
+<li><code>configurable</code>: If <code>false</code>, attempts to delete or change the property’s attributes will fail</li>
+</ul>
+
+<p>Although this is new to ECMAScript 5, it adds a much desired level of control to properties and their definition.</p>
+
+<h3>Getters and Setters</h3>
+
+<p>Property attributes allow JavaScript to support getters and setters with a lightweight syntax:</p>
+<div><pre><code><span>function</span> <span>Rectangle</span><span>()</span> <span>{</span>
+  <span>this</span><span>.</span><span>_animating</span> <span>=</span> <span>false</span><span>;</span>
+<span>}</span>
+
+<span>Rectangle</span><span>.</span><span>prototype</span> <span>=</span> <span>Object</span><span>.</span><span>create</span><span>(</span><span>Shape</span><span>.</span><span>prototype</span><span>,</span> <span>{</span>
+  <span>active</span><span>:</span> <span>{</span>
+    <span>get</span><span>:</span> <span>function</span><span>()</span> <span>{</span>
+      <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Rectangle.prototype.animating get&#39;</span><span>);</span>
+      <span>return</span> <span>this</span><span>.</span><span>_animating</span><span>;</span>
+    <span>},</span>
+
+    <span>set</span><span>:</span> <span>function</span><span>(</span><span>value</span><span>)</span> <span>{</span>
+      <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;Rectangle.prototype.animating set&#39;</span><span>);</span>
+      <span>this</span><span>.</span><span>_animating</span> <span>=</span> <span>value</span><span>;</span>
+    <span>}</span>
+  <span>}</span>
+<span>});</span>
+
+<span>var</span> <span>rect</span> <span>=</span> <span>new</span> <span>Rectangle</span><span>();</span>
+
+<span>rect</span><span>.</span><span>animating</span> <span>=</span> <span>true</span><span>;</span>
+<span>console</span><span>.</span><span>log</span><span>(</span><span>rect</span><span>.</span><span>animating</span><span>);</span>
+</code></pre>
+</div>
+<p>In this example I’ve renamed <code>animating</code> to <code>_animating</code>, but it can still be accessed using <code>rect.animating</code> because I’ve defined an <code>animating</code> property with a <code>get</code> and <code>set</code> method.</p>
+
+<p>This makes it possible to track whenever this value is changed, as illustrated by the <code>console.log</code> calls.</p>
+
+<p>In JavaScript implementations that don’t include <code>Object.create</code>, this second argument may not be supported. The <a href="http://kangax.github.com/es5-compat-table/">ECMAScript 5 compatibility table</a> by Kangax has a wide range of compatibility tests that can help you decide if it’s safe to use it.</p>
+
+<h3>Update Notes</h3>
+
+<p>This article has been updated using feedback from the following readers:</p>
+
+<ul>
+<li><a href="http://dailyjs.com/2012/06/04/js101-object-create/#comment-547955246">Sean</a> – Accuracy issues</li>
+
+<li><a href="http://dailyjs.com/2012/06/04/js101-object-create/#comment-546985513">Marcel Laverdet</a> – <code>Object.create(null)</code></li>
+
+<li><a href="http://dailyjs.com/2012/06/04/js101-object-create/#comment-546880197">Ghasem Kiani</a> – Issues with my “super” example (removed)</li>
+</ul><img src="http://feeds.feedburner.com/~r/dailyjs/~4/yA5SZmIPrKY" height="1" width="1">

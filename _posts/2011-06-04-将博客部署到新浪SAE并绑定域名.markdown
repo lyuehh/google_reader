@@ -1,0 +1,79 @@
+---
+layout: post
+title:  "将博客部署到新浪SAE并绑定域名"
+date:   2011-06-04 07:45:07
+author: iGFW
+categories: program
+---
+
+## 将博客部署到新浪SAE并绑定域名
+### by iGFW
+### at 2011-06-04 07:45:07
+### original <http://igfw.tk/archives/3124>
+
+<h2>注册SAE</h2>
+<p>首先到 <a title="http://sae.sina.com.cn" href="http://sae.sina.com.cn/">http://sae.sina.com.cn</a> 注册帐号，现在已经开放注册，可以使用新浪微博直接登录。</p>
+<p>方法自己研究，不在本文的研究范围内。</p>
+<h2><span></span>创建并部署程序</h2>
+<p>一、首先到<a title="http://sae.sina.com.cn/?m=myapp&amp;a=create" href="http://sae.sina.com.cn/?m=myapp&amp;a=create">http://sae.sina.com.cn/?m=myapp&amp;a=create</a>创建一个应用</p>
+<p><img src="http://lanbing.figbed.com/201105192157396475616.jpg" alt=""></p>
+<p>二、然后到 <a title="http://sae.sina.com.cn/?m=sdk" href="http://sae.sina.com.cn/?m=sdk">http://sae.sina.com.cn/?m=sdk</a> 下载你的SDK，我是windows 7系统，所以下载win的 sdk。</p>
+<p>下载后解压到任意目录。</p>
+<p><img src="http://lanbing.figbed.com/201105192156379420322.jpg" alt=""></p>
+<p>点击am.exe进行登录。</p>
+<p><img src="http://lanbing.figbed.com/201105192158242101104.jpg" alt=""></p>
+<p>输入你的帐号和密码进入程序。</p>
+<p>我们可以看到刚刚创建的应用</p>
+<p><img src="http://lanbing.figbed.com/201105192159548662956.jpg" alt=""></p>
+<p>点击下面的加号添加一个版本</p>
+<p><img src="http://lanbing.figbed.com/201105192203577051852.jpg" alt=""></p>
+<p>我们可以输入1 。</p>
+<p>然后打开我们的目录</p>
+<p><img src="http://lanbing.figbed.com/201105192204339842603.jpg" alt=""></p>
+<p>进入应用名称</p>
+<p><img src="http://lanbing.figbed.com/201105192205158316538.jpg" alt=""></p>
+<p>进入版本号</p>
+<p><img src="http://lanbing.figbed.com/201105192205171367285.jpg" alt=""></p>
+<p>进入代码目录</p>
+<p> </p>
+<p><img src="http://lanbing.figbed.com/201105192205180247793.jpg" alt=""></p>
+<p>将程序放在code目录里面。（注意，该演示为Typecho的svn版本）</p>
+<p><img src="http://lanbing.figbed.com/201105192205187048182.jpg" alt=""></p>
+<p>回到管理器。</p>
+<p><img src="http://lanbing.figbed.com/201105192206491929938.jpg" alt=""></p>
+<p> </p>
+<p>点击更新上传，稍等片刻即可上传完毕。</p>
+<p> </p>
+<p>三、初始化数据库</p>
+<p>回到网页</p>
+<p><img src="http://lanbing.figbed.com/201105192208546561699.jpg" alt=""></p>
+<p>点击应用名进入</p>
+<p><img src="http://lanbing.figbed.com/201105192209162794066.jpg" alt=""></p>
+<p>点击  初始化mysql即可。</p>
+<p>四、安装程序</p>
+<p>在地址栏输入你的域名</p>
+<p>例如<img src="http://lanbing.figbed.com/201105192210350959147.jpg" alt=""></p>
+<p>系统自动检测数据库信息</p>
+<p><img src="http://lanbing.figbed.com/201105192211085158262.jpg" alt=""></p>
+<p>确认安装即可。</p>
+<p><img src="http://lanbing.figbed.com/201105192211468250174.jpg" alt=""></p>
+<p> </p>
+<p>出现上图的对话框是因为SAE的目录不可写入，需要手工创建一个文件，内容是下面的内容，复制进去，然后上传到code目录即可。</p>
+<p><img src="http://lanbing.figbed.com/201105192213115778649.jpg" alt=""></p>
+<p> </p>
+<p>然后更新数据</p>
+<p><img src="http://lanbing.figbed.com/201105192214210528387.jpg" alt=""></p>
+<p> </p>
+<p>重新打开网页，点击“上传完毕”</p>
+<p>出现欢迎界面</p>
+<p><img src="http://lanbing.figbed.com/201105192216487032838.jpg" alt=""></p>
+<p> </p>
+<p>整个程序已经部署完毕，可以正常使用了。</p>
+<p>五、绑定域名</p>
+<p>因为政策的关系，目前无法直接绑定，可以利用反向代理绑定。</p>
+<p>你可以找一个支持htaccess的虚拟主机</p>
+<p>复制以下代码到.htaccess</p>
+<blockquote><p>RewriteEngine On<br>
+RewriteBase /<br>
+RewriteRule ^(.*)$ <a href="http://lanbing.sinaapp.com/">http://lanbing.sinaapp.com/</a>$1 [P]</p></blockquote>
+<p><strong>来源</strong>：<a href="http://bianjian.org/zh-hans/saecode">http://bianjian.org/zh-hans/saecode</a></p>

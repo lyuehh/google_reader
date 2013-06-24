@@ -1,0 +1,90 @@
+---
+layout: post
+title:  "Flash游戏引擎列表"
+date:   2010-07-13 15:36:27
+author: 
+categories: program
+---
+
+## Flash游戏引擎列表
+### by 
+### at 2010-07-13 15:36:27
+### original <http://www.javaeye.com/topic/711659>
+
+在flash游戏架构方面，到底怎么做，我一直不敢妄言，在网上搜到了这个引擎列表，抛砖引玉，想听听达人们做游戏都是怎么选择引擎的。
+<br>note:
+<br>Away 3D
+<br>flash 10 native 3d support
+<br>as3isolib
+<br>pushbutton engine
+<br>
+<br>http://lab.polygonal.de/ds/  #数据结构，现在使用的是HaXe,AS3版本已不维护，附件中是能找到的最新的AS3版本的源码。
+<br>
+<br>-------------------------
+<br>Flash游戏引擎清单
+<br>Flash, 引擎, 清单, 游戏Flash, 引擎, 清单, 游戏
+<br>最近关于创建Flash游戏的热潮四起,尤其是社区游戏.像由Zynga, Playfish, Playdom, WonderHill提供的Flash游戏都需要你付款。查看了他们的网页和作品集后获取到关于社区游戏的大量图片。
+<br>
+<br>我会一直更新这个清单以帮助你开始构造Flash游戏或了解最新的发展,它主要包括了一些库和引擎.
+<br>•2D Engines
+<br>•ISO Engines
+<br>•Physics Engines
+<br>•3D Engines
+<br>•Social Gaming Platforms
+<br>•Useful AS3 Libs
+<br>我们同时也开通了Flash Platform Game Technology Center,对于每一个开发者，它肯定是一个非常不错的资源.
+<br>这些库我个人认为对开发游戏是非常有用的.其中一些仅仅是作为游戏的组件.我不打算对每个引擎写太多篇幅，它们的各种功能都很相似,比如碰撞检测、物理引擎、瓦片地图、优化渲染、层、音乐/音量、游戏状态、积分等等。其中一些甚至支持多人游戏.最好试玩一下游戏demo并在操作中查看这些的功能.
+<br>2D引擎
+<br>Flixel
+<br>面向2D bitmap平台游戏开发者的功能全面的游戏引擎.查看功能列表.
+<br>你可能已经知著名的游戏Canabalt，它就是由这款引擎构建的.
+<br>
+<br>FlashPunk
+<br>另一款很不错且速度相当快的2D bitmap游戏引擎.
+<br>PushButton Engine
+<br>集成Box2D物理引擎和支持多人网络的很不错的游戏引擎.可以在facebook上尝试一下YouTopia.
+<br>PushButton Engine
+<br>集成Box2D物理引擎和支持多人网络的很不错的游戏引擎.可以在facebook上尝试一下YouTopia.
+<br>ISO engines
+<br>AS3 ISO LIB
+<br>As3isolib包含了工具、原型和视图。As3isolib开发起来很简单、快速，所以使开发者能集中在实际的应用中，而不是去学习复杂的API.
+<br>TheoWorlds
+<br>“TheoSDK是一套基于我们的original Theo Isometric Engine的引擎,它让你快速创建自己的基于地图的游戏。”
+<br>物理引擎
+<br>JigLib - 3D 物理引擎
+<br>Box2D - 2D 物理引擎
+<br>APE (ActionScript物理引擎)- 2D 物理引擎
+<br>WOW Engine- 3D 物理引擎
+<br>3D engines (相关的)
+<br>Alternativa3D, Away3D,Papervision3D,Five3D, Sandy 3D
+<br>TankiOnline - 流行的Flash 3D游戏,使用Alternativa3D引擎.
+<br>发布你的游戏：社区游戏平台
+<br>Platogo
+<br>构建游戏并发布到Platogo便可以赚到钱-社区平台为游戏提供了ActionScript 3 API (积分，等级，排名，多玩家等).
+<br>Geewa.com这个社区站点支持多玩家.获取SDK.
+<br>Facebook无疑facebook是你游戏最好的平台.获取Facebook ActionScript API.
+<br>在Devnet上查看flash中怎么开发Fackbook应用程序.
+<br>http://www.adobe.com/devnet/facebook
+<br>BaseUI
+<br>设计很像Flex,但是主要是用于Flash(纯AS3,非Flex).
+<br>vancura-AS3-libs
+<br>提供纯AS3组件的皮肤和样式的集合。支持Scale9Bitmap.
+<br>BrowserCanvas
+<br>提供容易的方式动态修改Flash尺寸大小.
+<br>FreeSpin3D
+<br>Flash CS4和CS3的插件,支持实时交互，动画,在Flash  Professional的舞台上正确的编码.
+<br>
+          
+          <br><br>
+          作者: <a href="http://jasongreen.javaeye.com">jasongreen</a> 
+          <br>
+          声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+          <br><br>
+          <span style="color:red">
+            <a href="http://www.javaeye.com/topic/711659" style="color:red">已有 <strong>0</strong> 人发表回复，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+          </span>
+          <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+<br><br><br>

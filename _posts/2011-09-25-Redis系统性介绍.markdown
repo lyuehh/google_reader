@@ -1,0 +1,497 @@
+---
+layout: post
+title:  "Redis系统性介绍"
+date:   2011-09-25 17:45:22
+author: nosqlfan
+categories: program
+---
+
+## Redis系统性介绍
+### by nosqlfan
+### at 2011-09-25 17:45:22
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/560677702/6253001/1/item.html>
+
+<p>虽然<span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>已经很火了，相信还是有很多同学对Redis只是有所听闻或者了解并不全面，下面是一个比较系统的Redis介绍，对Redis的特性及各种数据类型及操作进行了介绍。是一个很不错的Redis入门教程。</p>
+<h3>1.介绍</h3>
+<h4>1.1 Redis是什么</h4>
+<p><strong>RE</strong>mote <strong>DI</strong>ctionary <strong>S</strong>erver(Redis) 是一个由Salvatore Sanfilippo写的key-value存储系统。Redis提供了一些丰富的数据结构，包括 lists, sets, ordered sets 以及 hashes ，当然还有和Memcached一样的 strings结构.Redis当然还包括了对这些数据结构的丰富操作。</p>
+<h4>1.2 Redis的优点</h4>
+<ul>
+<li>性能极高 – Redis能支持超过 100K+ 每秒的读写频率。</li>
+<li>丰富的数据类型 – Redis支持二进制案例的 Strings, Lists, Hashes, Sets 及 Ordered Sets 数据类型操作。</li>
+<li>原子 – Redis的所有操作都是原子性的，同时Redis还支持对几个操作全并后的原子性执行。</li>
+<li>丰富的特性 – Redis还支持 publish/subscribe, 通知, key 过期等等特性。</li>
+</ul>
+<h3>2.数据类型</h3>
+<h4>2.1 String类型</h4>
+<p>Redis能存储二进制安全的字符串，最大长度为1GB</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; GET name
+&quot;John Doe&quot;</pre>
+<p>String类型还支持批量的读写操作</p>
+<pre>redis 127.0.0.1:6379&gt; MSET age 30 sex &quot;male&quot;
+OK
+redis 127.0.0.1:6379&gt; MGET age sex
+1) &quot;30&quot;
+2) &quot;male&quot;</pre>
+<p>String类型其实也可以用来存储数字，并支持对数字的加减操作。</p>
+<pre>redis 127.0.0.1:6379&gt; INCR age
+(integer) 31
+redis 127.0.0.1:6379&gt; INCRBY age 4
+(integer) 35
+redis 127.0.0.1:6379&gt; GET age
+&quot;35&quot;
+redis 127.0.0.1:6379&gt; DECR age
+(integer) 34
+redis 127.0.0.1:6379&gt; DECRBY age 4
+(integer) 30
+redis 127.0.0.1:6379&gt; GET age
+&quot;30&quot;</pre>
+<p>String类型还支持对其部分的修改和获取操作</p>
+<pre>redis 127.0.0.1:6379&gt; APPEND name &quot; Mr.&quot;
+(integer) 12
+redis 127.0.0.1:6379&gt; GET name
+&quot;John Doe Mr.&quot;
+redis 127.0.0.1:6379&gt; STRLEN name
+(integer) 12
+redis 127.0.0.1:6379&gt; SUBSTR name 0 3
+&quot;John&quot;</pre>
+<h4>2.2 List类型</h4>
+<p>Redis能够将数据存储成一个链表，并能对这个链表进行丰富的操作</p>
+<pre>redis 127.0.0.1:6379&gt; LPUSH students &quot;John Doe&quot;
+(integer) 1
+redis 127.0.0.1:6379&gt; LPUSH students &quot;Captain Kirk&quot;
+(integer) 2
+redis 127.0.0.1:6379&gt; LPUSH students &quot;Sheldon Cooper&quot;
+(integer) 3
+redis 127.0.0.1:6379&gt; LLEN students
+(integer) 3
+redis 127.0.0.1:6379&gt; LRANGE students 0 2
+1) &quot;Sheldon Cooper&quot;
+2) &quot;Captain Kirk&quot;
+3) &quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; LPOP students
+&quot;Sheldon Cooper&quot;
+redis 127.0.0.1:6379&gt; LLEN students
+(integer) 2
+redis 127.0.0.1:6379&gt; LRANGE students 0 1
+1) &quot;Captain Kirk&quot;
+2) &quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; LREM students 1 &quot;John Doe&quot;
+(integer) 1
+redis 127.0.0.1:6379&gt; LLEN students
+(integer) 1
+redis 127.0.0.1:6379&gt; LRANGE students 0 0
+1) &quot;Captain Kirk&quot;</pre>
+<p>Redis也支持很多修改操作</p>
+<pre>redis 127.0.0.1:6379&gt; LINSERT students BEFORE &quot;Captain Kirk&quot; &quot;Dexter Morgan&quot;
+(integer) 3
+redis 127.0.0.1:6379&gt; LRANGE students 0 2
+1) &quot;Dexter Morgan&quot;
+2) &quot;Captain Kirk&quot;
+3) &quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; LPUSH students &quot;Peter Parker&quot;
+(integer) 4
+redis 127.0.0.1:6379&gt; LRANGE students 0 3
+1) &quot;Peter Parker&quot;
+2) &quot;Dexter Morgan&quot;
+3) &quot;Captain Kirk&quot;
+4) &quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; LTRIM students 1 3
+OK
+redis 127.0.0.1:6379&gt; LLEN students
+(integer) 3
+redis 127.0.0.1:6379&gt; LRANGE students 0 2
+1) &quot;Dexter Morgan&quot;
+2) &quot;Captain Kirk&quot;
+3) &quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; LREM students 1 &quot;John Doe&quot;
+(integer) 1
+redis 127.0.0.1:6379&gt; LLEN students
+(integer) 1
+redis 127.0.0.1:6379&gt; LRANGE students 0 1
+1) &quot;Captain Kirk&quot;</pre>
+<h4>2.3 集合（Sets）类型</h4>
+<p>Redis能够将一系列不重复的值存储成一个集合</p>
+<pre>redis 127.0.0.1:6379&gt; SADD birds crow
+(integer) 1
+redis 127.0.0.1:6379&gt; SADD birds pigeon
+(integer) 1
+redis 127.0.0.1:6379&gt; SADD birds bat
+(integer) 1
+redis 127.0.0.1:6379&gt; SADD mammals dog
+(integer) 1
+redis 127.0.0.1:6379&gt; SADD mammals cat
+(integer) 1
+redis 127.0.0.1:6379&gt; SADD mammals bat
+(integer) 1
+redis 127.0.0.1:6379&gt; SMEMBERS birds
+1) &quot;bat&quot;
+2) &quot;crow&quot;
+3) &quot;pigeon&quot;
+redis 127.0.0.1:6379&gt; SMEMBERS mammals
+1) &quot;bat&quot;
+2) &quot;cat&quot;
+3) &quot;dog&quot;</pre>
+<p>Sets结构也支持相应的修改操作</p>
+<pre>redis 127.0.0.1:6379&gt; SREM mammals cat
+(integer) 1
+redis 127.0.0.1:6379&gt; SMEMBERS mammals
+1) &quot;bat&quot;
+2) &quot;dog&quot;
+redis 127.0.0.1:6379&gt; SADD mammals human
+(integer) 1
+redis 127.0.0.1:6379&gt; SMEMBERS mammals
+1) &quot;bat&quot;
+2) &quot;human&quot;
+3) &quot;dog&quot;</pre>
+<p>Redis还支持对集合的子交并补等操作</p>
+<pre>redis 127.0.0.1:6379&gt; SINTER birds mammals
+1) &quot;bat&quot;
+redis 127.0.0.1:6379&gt; SUNION birds mammals
+1) &quot;crow&quot;
+2) &quot;bat&quot;
+3) &quot;human&quot;
+4) &quot;pigeon&quot;
+5) &quot;dog&quot;
+redis 127.0.0.1:6379&gt; SDIFF birds mammals
+1) &quot;crow&quot;
+2) &quot;pigeon&quot;</pre>
+<h4>2.4 有序集合（Sorted Sets）类型</h4>
+<p>Sorted Sets和Sets结构相似，不同的是存在Sorted Sets中的数据会有一个score属性，并会在写入时就按这个score排好序。</p>
+<pre>redis 127.0.0.1:6379&gt; ZADD days 0 mon
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 1 tue
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 2 wed
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 3 thu
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 4 fri
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 5 sat
+(integer) 1
+redis 127.0.0.1:6379&gt; ZADD days 6 sun
+(integer) 1
+redis 127.0.0.1:6379&gt; ZCARD days
+(integer) 7
+redis 127.0.0.1:6379&gt; ZRANGE days 0 6
+1) &quot;mon&quot;
+2) &quot;tue&quot;
+3) &quot;wed&quot;
+4) &quot;thu&quot;
+5) &quot;fri&quot;
+6) &quot;sat&quot;
+7) &quot;sun&quot;
+redis 127.0.0.1:6379&gt; ZSCORE days sat
+&quot;5&quot;
+redis 127.0.0.1:6379&gt; ZCOUNT days 3 6
+(integer) 4
+redis 127.0.0.1:6379&gt; ZRANGEBYSCORE days 3 6
+1) &quot;thu&quot;
+2) &quot;fri&quot;
+3) &quot;sat&quot;
+4) &quot;sun&quot;</pre>
+<h4>2.5 Hash类型</h4>
+<p>Redis能够存储key对多个属性的数据（比如user1.uname user1.passwd）</p>
+<pre>redis 127.0.0.1:6379&gt; HKEYS student
+1) &quot;name&quot;
+2) &quot;age&quot;
+3) &quot;sex&quot;
+redis 127.0.0.1:6379&gt; HVALS student
+1) &quot;Ganesh&quot;
+2) &quot;30&quot;
+3) &quot;Male&quot;
+redis 127.0.0.1:6379&gt; HGETALL student
+1) &quot;name&quot;
+2) &quot;Ganesh&quot;
+3) &quot;age&quot;
+4) &quot;30&quot;
+5) &quot;sex&quot;
+6) &quot;Male&quot;
+redis 127.0.0.1:6379&gt; HDEL student sex
+(integer) 1
+redis 127.0.0.1:6379&gt; HGETALL student
+1) &quot;name&quot;
+2) &quot;Ganesh&quot;
+3) &quot;age&quot;
+4) &quot;30&quot;</pre>
+<p>Hash数据结构能够批量修改和获取</p>
+<pre>redis 127.0.0.1:6379&gt; HMSET kid name Akshi age 2 sex Female
+OK
+redis 127.0.0.1:6379&gt; HMGET kid name age sex
+1) &quot;Akshi&quot;
+2) &quot;2&quot;
+3) &quot;Female&quot;</pre>
+<h3>3.Publish/Subscribe</h3>
+<p>Redis支持这样一种特性，你可以将数据推到某个信息管道中，然后其它人可以通过订阅这些管道来获取推送过来的信息。</p>
+<h4>3.1 订阅信息管道</h4>
+<p>用一个客户端订阅管道</p>
+<pre>redis 127.0.0.1:6379&gt; SUBSCRIBE channelone
+Reading messages... (press Ctrl-C to quit)
+1) &quot;subscribe&quot;
+2) &quot;channelone&quot;
+3) (integer) 1</pre>
+<p>另一个客户端往这个管道推送信息</p>
+<pre>redis 127.0.0.1:6379&gt; PUBLISH channelone hello
+(integer) 1
+redis 127.0.0.1:6379&gt; PUBLISH channelone world
+(integer) 1</pre>
+<p>然后第一个客户端就能获取到推送的信息</p>
+<pre>redis 127.0.0.1:6379&gt; SUBSCRIBE channelone
+Reading messages... (press Ctrl-C to quit)
+1) &quot;subscribe&quot;
+2) &quot;channelone&quot;
+3) (integer) 1
+1) &quot;message&quot;
+2) &quot;channelone&quot;
+3) &quot;hello&quot;
+1) &quot;message&quot;
+2) &quot;channelone&quot;
+3) &quot;world&quot;</pre>
+<h4>3.2 按一定模式批量订阅</h4>
+<p>用下面的命令订阅所有channel开头的信息通道</p>
+<pre>redis 127.0.0.1:6379&gt; PSUBSCRIBE channel*
+Reading messages... (press Ctrl-C to quit)
+1) &quot;psubscribe&quot;
+2) &quot;channel*&quot;
+3) (integer) 1</pre>
+<p>在另一个客户端对两个推送信息</p>
+<pre>redis 127.0.0.1:6379&gt; PUBLISH channelone hello
+(integer) 1
+redis 127.0.0.1:6379&gt; PUBLISH channeltwo world
+(integer) 1</pre>
+<p>然后在第一个客户端就能收到推送的信息</p>
+<pre>redis 127.0.0.1:6379&gt; PSUBSCRIBE channel*
+Reading messages... (press Ctrl-C to quit)
+1) &quot;psubscribe&quot;
+2) &quot;channel*&quot;
+3) (integer) 1
+1) &quot;pmessage&quot;
+2) &quot;channel*&quot;
+3) &quot;channelone&quot;
+4) &quot;hello&quot;
+1) &quot;pmessage&quot;
+2) &quot;channel*&quot;
+3) &quot;channeltwo&quot;
+4) &quot;world&quot;</pre>
+<h3>4.数据过期设置</h3>
+<p>Redis支持按key设置过期时间，过期后值将被删除（在客户端看来是补删除了的）</p>
+<p>用TTL命令可以获取某个key值的过期时间（-1表示永不过期）</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; TTL name
+(integer) -1</pre>
+<p>下面命令先用EXISTS命令查看key值是否存在，然后设置了5秒的过期时间</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; EXISTS name
+(integer) 1
+redis 127.0.0.1:6379&gt; EXPIRE name 5
+(integer) 1</pre>
+<p>5秒后再查看</p>
+<pre>redis 127.0.0.1:6379&gt; EXISTS name
+(integer) 0
+redis 127.0.0.1:6379&gt; GET name
+(nil)</pre>
+<p>这个值已经没有了。</p>
+<p>上在是直接设置多少秒后过期，你也可以设置在某个时间点过期，下面例子是设置2011-09-24 00:40:00过期。</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; EXPIREAT name 1316805000
+(integer) 1
+redis 127.0.0.1:6379&gt; EXISTS name
+(integer) 0</pre>
+<h3>5.事务性</h3>
+<p>Redis本身支持一些简单的组合型的命令，比如以NX结尾命令都是判断在这个值没有时才进行某个命令。</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; SETNX name &quot;Dexter Morgan&quot;
+(integer) 0
+redis 127.0.0.1:6379&gt; GET name
+&quot;John Doe&quot;</pre>
+<pre>redis 127.0.0.1:6379&gt; GETSET name &quot;Dexter Morgan&quot;
+&quot;John Doe&quot;
+redis 127.0.0.1:6379&gt; GET name
+&quot;Dexter Morgan&quot;</pre>
+<p>当然，Redis还支持自定义的命令组合，通过MULTI和EXEC，将几个命令组合起来执行</p>
+<pre>redis 127.0.0.1:6379&gt; SET counter 0
+OK
+redis 127.0.0.1:6379&gt; MULTI
+OK
+redis 127.0.0.1:6379&gt; INCR counter
+QUEUED
+redis 127.0.0.1:6379&gt; INCR counter
+QUEUED
+redis 127.0.0.1:6379&gt; INCR counter
+QUEUED
+redis 127.0.0.1:6379&gt; EXEC
+1) (integer) 1
+2) (integer) 2
+3) (integer) 3
+redis 127.0.0.1:6379&gt; GET counter
+&quot;3&quot;</pre>
+<p>你还可以用DICARD命令来中断执行中的命令序列</p>
+<pre>redis 127.0.0.1:6379&gt; SET newcounter 0
+OK
+redis 127.0.0.1:6379&gt; MULTI
+OK
+redis 127.0.0.1:6379&gt; INCR newcounter
+QUEUED
+redis 127.0.0.1:6379&gt; INCR newcounter
+QUEUED
+redis 127.0.0.1:6379&gt; INCR newcounter
+QUEUED
+redis 127.0.0.1:6379&gt; DISCARD
+OK
+redis 127.0.0.1:6379&gt; GET newcounter
+&quot;0&quot;</pre>
+<h3>6.持久化</h3>
+<p>Redis的所有数据都存储在内存中，但是他也提供对这些数据的持久化。</p>
+<h4>6.1 数据快照</h4>
+<p>数据快照的原理是将整个Redis中存的所有数据遍历一遍存到一个扩展名为rdb的数据文件中。通过SAVE命令可以调用这个过程。</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; SAVE
+OK
+redis 127.0.0.1:6379&gt; SET name &quot;Sheldon Cooper&quot;
+OK
+redis 127.0.0.1:6379&gt; BGSAVE
+Background saving started</pre>
+<p>如果你是使用的brew在Mac OSX上安全的Redis，那么rdb文件会存在如下路径</p>
+<pre>/usr/local/var/db/redis/dump.rdb</pre>
+<h4>6.2 Append-Only File（追加式的操作日志记录）</h4>
+<p>Redis还支持一种追加式的操作日志记录，叫append only file，其日志文件以aof结局，我们一般各为aof文件。要开启aof日志的记录，你需要在配置文件中进行如下设置：</p>
+<pre>appendonly yes</pre>
+<p>这时候你所有的操作都会记录在aof日志文件中</p>
+<pre>redis 127.0.0.1:6379&gt; GET name
+(nil)
+redis 127.0.0.1:6379&gt; SET name &quot;Ganesh Gunasegaran&quot;
+OK
+redis 127.0.0.1:6379&gt; EXIT
+
+→ cat /usr/local/var/db/redis/appendonly.aof
+*2
+$6
+SELECT
+$1
+0
+*3
+$3
+SET
+$4
+name
+$18
+Ganesh Gunasegaran</pre>
+<h3>7.管理命令</h3>
+<p>Redis支持多个DB，默认是16个，你可以设置将数据存在哪一个DB中，不同DB间的数据具有隔离性。也可以在多个DB间移动数据。</p>
+<pre>redis 127.0.0.1:6379&gt; SELECT 0
+OK
+redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; SELECT 1
+OK
+redis 127.0.0.1:6379[1]&gt; GET name
+(nil)
+redis 127.0.0.1:6379[1]&gt; SELECT 0
+OK
+redis 127.0.0.1:6379&gt; MOVE name 1
+(integer) 1
+redis 127.0.0.1:6379&gt; SELECT 1
+OK
+redis 127.0.0.1:6379[1]&gt; GET name
+&quot;John Doe&quot;</pre>
+<p>Redis还能进行一些如下操作，获取一些运行信息</p>
+<pre>redis 127.0.0.1:6379[1]&gt; DBSIZE
+(integer) 1
+redis 127.0.0.1:6379[1]&gt; INFO
+redis_version:2.2.13
+redis_git_sha1:00000000
+redis_git_dirty:0
+arch_bits:64
+multiplexing_api:kqueue
+......</pre>
+<p>Redis还支持对某个DB数据进行清除（当然清空所有数据的操作也是支持的）</p>
+<pre>redis 127.0.0.1:6379&gt; SET name &quot;John Doe&quot;
+OK
+redis 127.0.0.1:6379&gt; DBSIZE
+(integer) 1
+redis 127.0.0.1:6379&gt; SELECT 1
+OK
+redis 127.0.0.1:6379[1]&gt; SET name &quot;Sheldon Cooper&quot;
+OK
+redis 127.0.0.1:6379[1]&gt; DBSIZE
+(integer) 1
+redis 127.0.0.1:6379[1]&gt; SELECT 0
+OK
+redis 127.0.0.1:6379&gt; FLUSHDB
+OK
+redis 127.0.0.1:6379&gt; DBSIZE
+(integer) 0
+redis 127.0.0.1:6379&gt; SELECT 1
+OK
+redis 127.0.0.1:6379[1]&gt; DBSIZE
+(integer) 1
+redis 127.0.0.1:6379[1]&gt; FLUSHALL
+OK
+redis 127.0.0.1:6379[1]&gt; DBSIZE
+(integer) 0</pre>
+<h3>8.客户端</h3>
+<p>Redis的客户端很丰富，几乎所有流行的语言都有其客户端，这里就不再赘述，有兴趣的同学可以上Redis的<a href="http://redis.io/clients">Clients页面</a>去查找。</p>
+<h3>9.资料引用</h3>
+<ul>
+<li><a href="http://redis.io/documentation">Redis documentation</a></li>
+<li><a href="http://simonwillison.net/static/2010/redis-tutorial/">Simon Willison – Redis tutorial</a></li>
+<li><a href="http://blog.mjrusso.com/2010/10/17/redis-from-the-ground-up.html">Michael J. Russo – Redis from ground up</a></li>
+</ul>
+<h3>10.总结</h3>
+<p><img title="Redis overview" src="http://pic.yupoo.com/iammutex/BoygqXEo/12pXcY.png" alt="" width="600"></p>
+<p>来源：<a href="http://itsgg.com/2011/09/24/exploring-redis/">itsgg.com</a></p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Redis入门教程" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F320.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3139.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/06/09/11640575.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis入门教程</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="PyCon2011 PPT分享：Redis与Python" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3093.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3139.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/10/03/8483772.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">PyCon2011 PPT分享：Redis与Python</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis与CouchDB的对比" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2754.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3139.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/08/09/21917178.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis与CouchDB的对比</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis事件驱动库结构" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2799.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3139.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/08/14/22784581.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis事件驱动库结构</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis并发性能测试benchmark" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F538.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3139.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/06/09/11640895.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis并发性能测试benchmark</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/560677702/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/560677702/6253001/1/item.html" border="0" height="0" width="0">

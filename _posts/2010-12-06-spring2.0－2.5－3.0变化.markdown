@@ -1,0 +1,14 @@
+---
+layout: post
+title:  "spring2.0－2.5－3.0变化"
+date:   2010-12-06 16:51:39
+author: 
+categories: program
+---
+
+## spring2.0－2.5－3.0变化
+### by 
+### at 2010-12-06 16:51:39
+### original <http://my.oschina.net/dzt/blog/10729>
+
+忽然间想知道spring2.0到2.5 再到3.0的变化，就到网上搜索一下。方便查看而已 2.5的新特性 Spring2.5rc1发布了，一直想知道它葫芦里卖什么药，以下是文档里的change.log 1． JDK版本： JDK至少要1.4.2以上，如果仍然打算使用1.3的话就请用2.0.6/2.0.7版本吧。 2． Jar包：SpringMVC 不再使用spring.jar 这个庞大的包了。...

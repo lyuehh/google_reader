@@ -1,0 +1,91 @@
+---
+layout: post
+title:  "入门：兼容 nodejs"
+date:   2011-03-15 17:37:50
+author: 
+categories: program
+---
+
+## 入门：兼容 nodejs
+### by 
+### at 2011-03-15 17:37:50
+### original <http://yiminghe.javaeye.com/blog/963397>
+
+<p>   nodejs 可以在服务器端执行 javascript 脚本，并提供了一些<a href="http://nodejs.org/docs/v0.4.2/api/index.html">核心模块</a>
+可以进行读写，大大扩充了 javascript 的作用范围，并且经过简单的修改，原先的客户端脚本甚至可以直接运行在服务器端，即同样的代码可以自由选择在服务器端或者客户端渲染。</p>
+<p> </p>
+<h1>
+<span style="color:#000080">客户端脚本转化服务器端脚本</span>
+</h1>
+<p> </p>
+<h2>
+<span style="color:#000080">windows 下安装 nodejs</span>
+</h2>
+<p> </p>
+<p>1.下载<a href="http://node-js.prcn.co.cc/">整合版本</a>
+，推荐0.40</p>
+<p> </p>
+<p>2.解压缩至 x:/node ，并设置环境变量 PATH 指向 x:/node/bin</p>
+<p> </p>
+<p>3.运行 x:/node/bin/shell.cmd ，执行 node npm install <a href="https://github.com/tmpvar/jsdom">jsdom</a>
+ ，安装 jsdom 模块，注意一定要运行 shell.cmd</p>
+<p> </p>
+<p>4.安装完毕，接下来可以通过命令行 node xx.js 来执行 xx.js .</p>
+<p> </p>
+<h2>
+<span style="color:#000080">客户端脚本修改：</span>
+</h2>
+<p> </p>
+<h3>
+<span style="color:#000080">1.模拟浏览器环境</span>
+</h3>
+<p> </p>
+<p>浏览器环境下 window，document 都是属于宿主对象，全局作用域，在服务器中可通过 jsdom 来模拟，通过不指定 var 前缀来声明 global 变量 （commonjs规范并不赞成全局变量 (“no-globals” CommonJS spec)，<a href="https://github.com/yui/nodejs-yui3">nodejs-yui3</a>
+ 采用封装到 Y.browser 来代替直接访问 window/document，可实现<a href="https://gist.github.com/574000">每个沙箱都有自己的独立浏览器环境</a>
+）：</p>
+<p> </p>
+<pre name="code">var jsdom = require(&quot;jsdom&quot;).jsdom;
+    document = jsdom(&quot;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;&quot;);
+    window = document.createWindow();
+    location = window.location;
+    navigator = window.navigator;</pre>
+<h3>
+<span style="color:#000080"> 2.声明 global 对象</span>
+</h3>
+<p> </p>
+<p>客户端脚本 a 中通过顶层 var 声明的变量为全局作用域，而服务器脚本中则为模块作用域，要通过不加 var 前缀来声明全局变量，比如通过在一个模块中声明</p>
+<p> </p>
+<pre name="code">S={};</pre>
+<p> </p>
+<p>则其他模块可和原先客户端脚本保持一致，直接访问 S 即可，不需要再做修改（不需添加：var S= <a href="http://nodejs.org/docs/v0.4.2/api/modules.html">require</a>
+("S")），虽然仍然是违背 no-globals 原则，但这是最简单重用客户端脚本的方法。</p>
+<p> </p>
+<h3>
+<span style="color:#000080">3.重写模块动态加载器（loader）</span>
+</h3>
+<p> </p>
+<p>客户端的 loader 一般都要涉及动态添加 script 发送请求等操作，script 载入后浏览器会自动进行脚本解析，而服务器端则需要自己调用 require 来加载模块文件，另一方面也不需要发送网络请求，这时可简单对 require 进行封装，将原先的异步添加script转化为同步 require 即可。</p>
+<p> </p>
+<p> </p>
+<h2>
+<span style="color:#000080">npm 发布包</span>
+</h2>
+<p> </p>
+<p>把所有模块都放在 lib（或其他） 文件夹中，在lib文件夹同级目录编写 package.json 文件，格式可参考：<a href="https://github.com/yui/nodejs-yui3/blob/master/package.json">nodejs-yui3</a>
+</p>
+<p>，<a href="https://github.com/kissyteam/kissy/blob/module_experiment/tools/nodejs-patch/package.json">nodejs-kissy</a>
+，主要写明包名（name），主模块名（main），版本（version），以及依赖模块（dependencies）。</p>
+<p> </p>
+<p>在 lib 父目录运行 node npm publish 即可发布模块。</p>
+<p> </p>
+              
+              
+              <br><br>
+              <span style="color:red">
+                <a href="http://yiminghe.javaeye.com/blog/963397#comments" style="color:red">已有 <strong>0</strong> 人发表留言，猛击-&gt;&gt;<strong>这里</strong>&lt;&lt;-参与讨论</a>
+              </span>
+              <br><br><br>
+<span style="color:#e28822">JavaEye推荐</span>
+<br>
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+<br><br><br>

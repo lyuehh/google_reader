@@ -1,0 +1,51 @@
+---
+layout: post
+title:  "面试体验：Google 篇"
+date:   2012-08-04 14:08:56
+author: Guangchen Chen
+categories: program
+---
+
+## 面试体验：Google 篇
+### by Guangchen Chen
+### at 2012-08-04 14:08:56
+### original <http://www.udpwork.com/item/7877.html>
+
+<p>尝试在自己的博客上搜索点东西，结果发现 4 年多以前还在博客上写过一系列的<a href="https://www.google.com/search?q=Recruiting+Events+site%3Acatchen.me">recruiting events</a>，把大四时候参加过的各种笔试面试都记录下来了。我从去年准备离开百度开始，到现在总过面试过 4 家公司：Google、Microsoft、Yahoo、Facebook，原本去年也想把面试经验写一写的，结果一拖就拖到现在。我不想写面试经验，因为我个人不喜欢漏题和背题的做法。我自己作为面试官，知道要设计出来一道好用的题目有多难，所以我希望面试者都是如实表现自己解题能力的。我更喜欢写面试体验，就是在整个面试过程中一家公司给人的印象是怎样的，HR 和面试官是否专业，能否让人信服这是一家值得长期工作的公司。</p>
+<p>我想写的第一家公司是 Google，因为它是我在想要离开百度时第一家联系到我的公司。2010 年 12 月底的某一天早上，我突然感觉到我应该离开百度，因为如果这个时候已经没有勇气离开这家公司了，很可能就不会再想要离开了。当天中午在百度大厦西餐厅吃午饭，接到一个 Google 上海 HR 的电话，问我有没有兴趣去面试，我想既然你打电话来的时机那么好，我就答应你去面试吧。（在那一天之前，我对猎头的标准回复是「有美国或者香港的职位吗？」）她问我将来希望在北京还是上海工作，当时我对北京的厌恶程度还没有现在那么高，同时觉得搬家到上海又比较麻烦，于是就说在北京，接着我就变成跟北京 HR 沟通了。</p>
+<p>Google 的 HR 会负责做两件简单得不需要面试官做的事情，这能够很好的提高招聘流程的效率。第一件是确认你能够适应工作环境中的英语，为此 HR 要我用英语跟她对话两三分钟，主要就是让我说说工作经验和其中的亮点。习惯在私企工作的人不要以为外企对英语的要求很高，其实大多数长期在中国工作的人说话或者发邮件都会很 Chinglish 啦，所以关键是要敢于用英语进行沟通。</p>
+<p>然后 HR 发了一个<a href="http://codility.com/">Codility</a>的地址给我，让我有空抽时间去做题。一个小时 3 道难度相当于 OI 基础题的题目，平均 20 分钟一道。最简单的题目一看就知道是 O(n) 能解决的，最复杂的题目看上去是 O(n^2) 但想一下就能优化为 O(n log n)。对于有算法训练背景的人来说，这样的题目会让人感觉到很有把握。对于没有经受过算法训练的人来说，掉进陷阱里是很容易的。很可能没有把 O(n^2) 优化为 O(n log n)，结果超时；可能没仔细看题目说明的数值取值范围，某些变量选错了数值类型，结果溢出。考虑到 Google 重视算法的程度，再加上 Google 中国面试的额外难度，算法训练还是很必要的。</p>
+<p>在我通过 Codility 测试后，HR 问我了对题目难度的反馈，然后约了一轮电话面试，并且告知面试主要围绕算法、数据结构、系统设计、编码来进行。Google 面试的格式都很固定，45 分钟内期望你能做出 3 道题来。这 3 道题最起码要能把人人都能想出来的「笨办法」用代码写出来，否则会让面试官感到不满意。如果有些题目能够比较快地做出来，面试官就会让你优化。就算你第一次给出的答案已经是业界已知最优解，面试官都还是会让你优化，因为谁也不知道有没有人能在面试过程中突然爆发，想出一些过去没人想到过的解法。如果面试官心中已有优化的方案，在你想不出优化方案时他可能会给你提供一些暗示。</p>
+<p>一轮电话面试后，HR 就开始约到 Google 办公室的面试了。第一次约了下午 3 轮面试，还是那个很固定的格式：每轮面试 45 分钟，两轮间隔 15 分钟。整个面试流程让人感觉到很人性化：在 Google 签到后，HR 会先带你去 kitchen 拿点吃的喝的，然后把你带到面试所用的会议室。多轮面试的话，HR 中间还会来问一下你要不要去洗手间，或者多拿两瓶水。面试完毕后 HR 会来问你感觉如何，同时也会让你知道面试官的初步反馈是否跟你的感觉一致。我在 3 轮面试中有一轮感觉不太好，因为面试官只给了 2 道题，并且我最终都没办法解出来，HR 也确认了就是这一轮的反馈不好。</p>
+<p>此外，Google 的招聘流程还让人感觉到很有效率。作为面试官，我也知道自己写面试反馈有多喜欢拖延，而且公司填写面试反馈的系统越不人性化我就越想要拖延，然而公司内部系统做得人性化的又实在罕见。Google 的面试基本上隔天就有结果，然后 HR 就会约下一轮的面试。因为我在百度的时候每周哪个时间没有会议是很确定的，所以我总是选择下周同一个时间段来面试。在经过总共 4 轮面试后，HR 说因为前面有一轮的面试官反馈不好，所以希望再加一轮面试。因为前面反馈不好的面试官比较 senior，所以这次找了一位同样 senior 的面试官来面试，于是我又去了一次 Google 办公室。</p>
+<p>完成 5 轮面试后，HR 把材料提交给 Google 的北京招聘委员会，结果没有通过。HR 说，因为 Google 都是按照后端工程师的标准来招聘，看重算法和数据结构，前端工程师要通过不容易。因为 Google 没有专门的前端工程师，只有一个软件工程师职位，所以所有人还是必须按照一个标准来衡量。她问我如果找到专门需要前端工程师的团队，并且需要额外再面试的话，我是否感兴趣。当时 Google 是我的第一选择，我当然说感兴趣啦。</p>
+<p>后来 HR 跟我说，她帮忙问过 Google Maps，可惜对方说不要专才只要通才。又过了几个星期，HR 发现 IME 需要专门做前端的人，于是帮我再约了一轮面试。这轮面试是在 Google 办公室做的，但实际上是视频会议，因为面试官在美国。（不确定面试官是在美国出差，还是美籍华人。）面试过程跟电话面试类似，用 Google Docs 写代码，比电话面试要好的是说话时能够见到人。</p>
+<p>这一轮面试结束后，我的材料再次进入 Google 的北京招聘委员会。HR 说这次专门找了对前端有经验的人来审阅我的材料，结果顺利通过了。接着 HR 问我要了一大堆的补充材料，包括高考成绩和 GPA（连同成绩单），还包括当前薪酬和竞争对手的 offer（我当时有 Yahoo 的 offer），甚至包括过去的获奖和晋升经历。所有这些材料都会发往 Google 美国总部审阅，具体流程 HR 没有细说，但看<a href="http://dondodge.typepad.com/the_next_big_thing/2010/09/how-to-get-a-job-at-google-interview-questions-hiring-process.html">Don Dodge 的文章</a>可以了解一些。最后我被 Google 美国总部给拒绝了，然后 HR 还是一如既往地及时沟通，并且安慰了我几句。</p>
+<p>整个 Google 招聘流程下来，可以感觉到人性化和高效率，同时也能感觉到 HR 确实在很努力地为候选人争取机会。可以说，无论是否通过，Google 招聘流程至少能给候选人一个很好的印象。据我所知，尽管 Google 声称全球招聘标准一致，但因为中国聪明且懂算法的人实在太多，所以难度更高是很正常的。能够在 Google 中国以外的地区应聘的话，应该会容易一些。</p>
+<p>如果你对《面试体验》系列文章感兴趣，欢迎<a href="http://feeds.catchen.me/CatChen/Chinese">订阅</a>我的博客，或者是在 Twitter 上 follow<a href="https://twitter.com/CatChen">@CatChen</a>。我承诺我接下来一定会完成 Microsoft、Yahoo 和 Facebook 相关的三篇文章。此外，我的博客也接受<a href="http://gum.co/BWTR">捐赠</a>，通过信用卡支付，金额随意（$1 起）。</p>
+<p>最后是广告一则：如果有任何曾经参加过<a href="http://weibo.com/wandoulabs">豌豆荚</a>（豌豆实验室）面试的人愿意写类似的面试体验文章，欢迎联系我并把文章地址发给我，我愿意在我的博客上以链接的形式进行分享。</p>
+<div><img src="https://blogger.googleusercontent.com/tracker/7005036-6483437970564949572?l=chinese.catchen.me"></div>
+<p><a href="http://feedads.g.doubleclick.net/~a/R7aad6O1T25ednn6SoRk2Fbuo-M/0/da"><img src="http://feedads.g.doubleclick.net/~a/R7aad6O1T25ednn6SoRk2Fbuo-M/0/di"></a>
+<br>
+<a href="http://feedads.g.doubleclick.net/~a/R7aad6O1T25ednn6SoRk2Fbuo-M/1/da"><img src="http://feedads.g.doubleclick.net/~a/R7aad6O1T25ednn6SoRk2Fbuo-M/1/di"></a></p>
+<div><a href="http://feeds.feedburner.com/~ff/CatChen/Chinese?a=emzkEHwh_bE:4GKRvkvxy4U:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/CatChen/Chinese?d=yIl2AUoC8zA"></a><a href="http://feeds.feedburner.com/~ff/CatChen/Chinese?a=emzkEHwh_bE:4GKRvkvxy4U:7Q72WNTAKBA"><img src="http://feeds.feedburner.com/~ff/CatChen/Chinese?d=7Q72WNTAKBA"></a><a href="http://feeds.feedburner.com/~ff/CatChen/Chinese?a=emzkEHwh_bE:4GKRvkvxy4U:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/CatChen/Chinese?i=emzkEHwh_bE:4GKRvkvxy4U:V_sGLiPBpWU"></a><a href="http://feeds.feedburner.com/~ff/CatChen/Chinese?a=emzkEHwh_bE:4GKRvkvxy4U:qj6IDK7rITs"><img src="http://feeds.feedburner.com/~ff/CatChen/Chinese?d=qj6IDK7rITs"></a></div>
+<img src="http://feeds.feedburner.com/~r/CatChen/Chinese/~4/emzkEHwh_bE">
+			<div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf">
+				<div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold">
+	<a href="http://www.udpwork.com/item/7877.html#review_form" title="不喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_down24.gif" alt="">
+		<span style="color:#f33">1</span>
+	</a>
+	   
+	<a href="http://www.udpwork.com/item/7877.html#review_form" title="喜欢" style="text-decoration:none">
+		<img src="http://www.udpwork.com//images/thumb_up24.gif" alt="">
+		<span style="color:#3c3">1</span>
+	</a>
+</div>				<p>
+					由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+					|
+					<a href="http://www.udpwork.com/item/7877.html#reviews">评论: 2</a>
+					|
+					<a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+				</p>
+			</div>

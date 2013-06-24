@@ -1,0 +1,40 @@
+---
+layout: post
+title:  "Mac OS X文件系统的来龙去脉（上）"
+date:   2012-08-17 10:54:01
+author: baiyuzhong
+categories: program
+---
+
+## Mac OS X文件系统的来龙去脉（上）
+### by baiyuzhong
+### at 2012-08-17 10:54:01
+### original <http://www.programmer.com.cn/13200/>
+
+<p>文 / 王越</p>
+<p><span style="color:#888888"><strong>HFS+和UFS文件系统同时被引入早期的Mac OS X，随着若干年的发展，HFS+提供的功能已超越UFS，使其在Mac OS X 10.5之后成为成为唯一正式的Mac OS X系统，但因为其背负许多的历史包袱，为考虑兼容性，这些陈旧的设计并不能被推翻重来，所以苹果开始秘密研发下一代的文件系统。</strong></span></p>
+<div style="width:232px"><img title="著名BSD开发者Marshall Kirk McKusick" src="http://www.programmer.com.cn/wp-content/uploads/2012/08/TM%E6%88%AA%E5%9B%BE%E6%9C%AA%E5%91%BD%E5%90%8D4.jpg" alt="" width="222" height="310"><p>著名BSD开发者Marshall Kirk McKusick</p></div>
+<p><span style="color:#008000"><strong>UFS：经典的Unix文件系统</strong></span></p>
+<p>在Unix系统刚诞生的远古时期，文件系统被简单地称为FS。FS只包括启动块、超级块（处于硬盘分区开头用来保存文件系统信息）、inodes（索引节点）及数据。FS文件系统在Unix系统刚诞生时还能满足新老客户的需求，但随着科学技术的进步，FS已不能符合现代文件系统的需求，且会导致抖动等一系列问题。当时还是加州大学伯克利分校研究生，后成为著名BSD开发者Marshall Kirk McKusick在BSD 4.1b上承接传统的FS文件系统实现了FFS（<a href="http://www.cs.berkeley.edu/~brewer/cs262/FFS.pdf">Fast File System</a>），妥善地解决了这一难题，把先前整块的磁盘文件系统分为小块，每块包含自已的索引节点和数据，因而增加了文件的局部性，减少了寻道时间。由于Marshall Kirk McKusick的FFS文件系统很好很强大，所以立即被各大Unix系统所使用。SunOS/Solaris、System V Release 4、HP-UX及Tru64 UNIX都使用它，也成为当今各BSD分支（FreeBSD、OpenBSD、NetBSD及DragonFlyBSD）的标准文件系统。<span></span>每个不同的系统，无论开源与否，又会在FFS文件系统上增加各种扩展，这些扩展往往不互相兼容，但神奇的是，大家又都使用和原版同样的块大小和数据块宽度。因此在很大程度上，这些山寨版FFS文件系统又相互兼容，至少在一个操作系统上能对另一操作系统的文件系统执行只读操作。因此，FFS事实上已经成为Unix系统的标准文件系统，故它有了一个更广泛的称谓——UFS（<a href="http://en.wikipedia.org/wiki/Unix_File_System">Unix File System，即Unix文件系统</a>）。</p>
+<p>UFS在后来的若干年又取得了长足的发展。Sun公司在Solaris 7系统中，给UFS提供了简单的日志功能。日志文件系统指在档案系统发生变化时，先把相关的信息写入一个被称为日志的区域，然后再把变化写入主文件系统的文件系统。在文件系统发生故障（如内核崩溃或突然停电）时，日志文件系统更容易保持一致性，并且可以较快恢复。Marshall Kirk McKusick又实现了BSD一度引以为豪的<a href="http://en.wikipedia.org/wiki/Soft_updates">Soft Update</a>功能，来保证计算机掉电或系统崩溃时，通过使元数据按依赖顺序更新来确保磁盘上总的文件系统保持一致的实现机制。Soft Update的目标和日志类似，但实现代价比日志轻量许多。不过这项功能有所代价，主要是需要引入一个后台FSCK检查。</p>
+<p>2009年，Jeff Roberson正式发表了对UFS的一项改进，为<a href="https://blog.delphij.net/2009/12/suj.html">Soft Update加入了日志功能</a>，并消除了对FSCK的依赖，这项改进最终集成进了FreeBSD 9中。<a href="http://www.trustedbsd.org/acls.html">TrustedBSD项目</a>又为BSD分支的文件系统设计了ACL访问控制表功能（<a href="http://www.freebsd.org/doc/handbook/fs-acl.html">Access Control Lists</a>）。先前，Unix文件系统的访问控制是非常简单的，其权限管理分为三个不同的类别：用户、同组用户以及其他用户，对每个类别，Unix文件系统提供读、写、执行三种权限的管理。这样的许可管理过于粗糙，无法指定某一用户访问的权限，也无法指定更为细致的权限内容（例如准许对一文件实行删除操作）。为解决这个问题，访问控制表被增加到文件系统中，使用以存取控制矩阵为基础的存取控制方法。存取控制串列描述每一个文件对象各自的存取控制，并记录可对此物件进行存取的所有主体对对象的权限。总之，UFS与时俱进，不断增加新的功能。</p>
+<p><span style="color:#008000"><strong>HFS+：更现代的HFS</strong></span></p>
+<p>作为Mac OS X的老祖宗NeXTSTEP，因为基于BSD，所以自然也使用UFS。而老版的Mac OS则使用一个叫做<a href="http://en.wikipedia.org/wiki/Hierarchical_File_System">HFS</a>的文件系统。HFS是一个比较古老且不思进取的文件系统，因此，在20世纪90年代末已不能满足当时的需要。在《<a href="http://www.programmer.com.cn/6727/">Mac OS X背后的故事（一）</a>》中我们提到，为了实现Mac OS的现代化，Copland项目被提出。Copland项目的子项目Sequoia旨在HFS的基础上，加入现代文件系统所必需的新功能，如大文件支持、Unicode文件名支持、长文件名支持、32位文件映射表支持等。Sequoia项目即成为后来熟知的HFS+，由Don Brady领导，这个团队先花了6个月时间把HFS项目原本的Mac使用的68K处理器汇编码改写成C代码，然后逐渐<a href="http://arstechnica.com/apple/2011/03/how-zfs-is-slowly-making-its-way-to-mac-os-x/">加入新功能</a>。</p>
+<p>后来由于Copland被力挽狂澜的Ellen Hancock给废了，所以一些有用的更新，如HFS+即被集成到Mac OS 8.1中。在Mac OS X诞生初期，HFS+和UFS文件系统同时被引入早期的Mac OS X中。不过由于HFS+根植Mac OS，缺乏Unix文件系统所必需的功能，如符号链接、硬链接及其他各种POSIX兼容性，所以HFS+开发组又花了一些工夫在不影响和Mac OS兼容性的情况下引入了这些功能。由于HFS+是对HFS的扩展，故HFS+支持Mac OS至Mac OS X的平滑过渡，所以Mac OS X一直默认使用HFS+。但当时的UFS提供比HFS+更先进的功能，因此Mac OS X 10.0至10.4，也都支持把系统安装在UFS系统上。</p>
+<p>Mac OS X 10.0发布后，苹果不遗余力地对HFS+进行大规模的扩展和维护，增加了很多UFS独有的功能。这些新功能使得文件系统更加安全稳定可靠。例如Mac OS X 10.2.2中，HFS+支持日志。日志功能在Mac OS X 10.2服务器版中可以简单地设定，但在普通桌面版中需要使用命令行进行操作。在Mac OS X 10.3中，带日志功能的HFS+（被称为HFSJ，即HFS+ volume with journal）成为默认设置。Mac OS X 10.3亦增加名件名、目录名区分大小写及Unicode 3.2的支持。Mac OS X 10.4中，HFS+更是增加了ACL访问控制表功能，提供更复杂的对传统Unix文件系统权限的扩展。</p>
+<p>文件系统除了让用户供稳定地存放文件这一目标以外，还是各项操作系统功能的基础。Mac OS X每个大发行版都要增加数百项新功能，许多新功能严重依赖于文件系统的实现。Mac OS X 10.3提供了<a href="http://en.wikipedia.org/wiki/FileVault">FileVault来加密用户文件</a>，因此用户主目录被保存在一个HFS+文件系统加密镜像中。Mac OS X 10.4提供了<a href="http://en.wikipedia.org/wiki/Spotlight_(software)">系统内置的Spotlight桌面搜寻搜索功能</a>，能让用户对整个磁盘系统进行快速搜寻、随打即显。这项功能要求文件系统提供任意长度文件元数据（metadata）的支持。<a href="http://en.wikipedia.org/wiki/Apple&#39;s_transition_to_Intel_processors">Mac OS X 10.4转向了对Intel处理器的支持</a>，因此苹果发布了一个测试版本的BootCamp来让用户安装Mac OS X、Windows双系统，并在Mac OS X 10.5正式集成进系统。</p>
+<p>哪怕在Mac OS X系统运行，BootCamp也可以在时调整系统主分区的大小，来空出磁盘空间给Windows，因此，HFS+又需要支持动态分区大小调整。在Mac OS X 10.5中集成了<a href="http://en.wikipedia.org/wiki/Time_Machine_(Mac_OS)">Time Machine</a>，它是苹果公司所推出备份的工具程序，于2006年8月7日在苹果计算机全球研发者大会（WWDC）中首次公开，成为当天观众欢呼声最高的功能。Time Machine对于修改过的文件会在备份盘上保存一个新拷贝，而对于不变的内容，仅在备份盘上存一个指向先前文件的硬链接。因此每一次快照只保存改动的文件，而别的文件只保存占用空间很少的硬链接。但Unix一般只支持文件的硬链接而不支持目录的硬链接。因此HFS+在这点上走得比Unix文件系统更远，提供了对于目录的硬链接支持。在Mac OS X 10.6中，HFS+甚至支持文件系统压缩，使得安装后占用比Mac OS X 10.5少得多的空间。Mac OS X 10.7提出了<a href="http://arstechnica.com/apple/2011/07/mac-os-x-10-7/13/">FileVault2</a>，能加密整个磁盘而不是一个用户目录。这些功能我们在为读者介绍每个发行版时亦会提到，但总之读者看到，HFS+的功能随着Mac OS X的商业需求不断被扩展。“我在做了这么多工作后回想才发现，我们为HFS+增加了那么多新功能，”苹果前文件系统开发者Don Brady如是说。</p>
+<p>由于HFS+经过后来若干年的发展，提供的功能已不逊于UFS，甚至更多更好，故至Mac OS X 10.5砍掉了安装至UFS的支持。HFS+成为唯一正式的Mac OS X系统。</p>
+<p><span style="color:#008000"><strong>HFS+并不完美</strong></span></p>
+<p>HFS+自发布以来，几乎每个发行版都有令人欣喜的改动。它也逐渐成为一个非常完善的文件系统。但HFS+立足于HFS设计，HFS已有27年的历史，HFS+亦有14年历史。这个文件系统有大多的历史包袱，为考虑兼容性，这些陈旧的设计并不能被推翻重来。</p>
+<p>HFS+基于B-树实现，当查找B-树中未使用的节点时，HFS+只能每次处理16位，原因是老Mac使用的Motorola的68K芯片原生支持16位的数据操作。但不管是PowerPC还是Intel，寄存器都支持256位宽的寄存器。</p>
+<p>HFS+的元数据（metadata）都以大字节序保存，原因是Motorola的68k和后来Mac使用的PowerPC都使用大字节序。但经过Intel迁移后，当今的Mac都使用Intel芯片，而Intel芯片是使用小字节序的。因此每当数据读取或存入时，还要经过小字节序和大字节序的转换。远古时期磁盘很慢，计算机处理器的速度也很低，因此进行一次磁盘操作会占用较多的时间，<a href="http://en.wikipedia.org/wiki/HFS%2B">HFS+的时间分辨率为一秒</a>，但当今的磁盘、处理器处理一次文件系统操作的时间远小于一秒，因此所有主流磁盘文件系统的时间分辨率都是一至数百纳秒级别的。</p>
+<p>HFS+的元数据有全局锁，同一时间只有一个进程可以访问更新文件系统。在单核处理器连手机平板都较少见到的当今，这种设计显得很幼稚。</p>
+<p>HFS+亦没有稀疏文件的支持。例如我们在SQL中建立了一个数据库，SQL分配了10GB的文件给这个数据库，并且在文件头和文件尾写上一些字节的数据。而由于我们还没有给这个数据库添加新的数据，所以这10GB的文件除了头尾外其他字节都为0。现代的文件系统基本都支持稀疏文件，也就是说，当处理这个数据库操作时，事实上往磁盘写入的数据只有那文件头和文件尾的若干字节。而HFS+则需要把那些0也写上，因此会完整写入10GB的数据，耗费长得多的时间。</p>
+<p>此外，HFS+不具备元数据校验功能、快照功能、写入时复制功能、<a href="http://en.wikipedia.org/wiki/Execute_in_place">就地执行功能</a>、<a href="http://en.wikipedia.org/wiki/Logical_volume_manager">逻辑卷管理功能</a>等很多现代磁盘系统所具备的功能，也<a href="http://en.wikipedia.org/wiki/Comparison_of_file_systems">不能动态调整文件块大小</a>。这些功能的加入并不容易。</p>
+<p>其中最要命的是，HFS+不像一些先进的文件系统，支持写入时复制事务模型，也没有快照和克隆。这使得用户数据时时处于风险之中。例如由于因为断电、内核崩溃等原因，文件系统上写到一半的数据，小则导致个别文件损坏，大则导致整个文件系统崩溃。在生产领域，这样不可靠的文件系统，很有可能带来致命的灾难。</p>
+<p>正是由于上述这些原因，连我们介绍过的短视的Linus Torvalds都认为HFS+是个垃圾文件系统。苹果自然受不了这种侮辱，因此，干掉HFS+势在必行。用什么取代HFS+呢？苹果开始秘密研发下一代的文件系统。</p>
+<p><span style="color:#888888"> <strong>作者王越，美国宾夕法尼亚大学计算机系研究生，中国著名TeX开发者，非著名OpenFOAM开发者。</strong></span></p>
+<p><a href="http://www.programmer.com.cn/category/%E7%A8%8B%E5%BA%8F%E6%98%A5%E7%A7%8B/"><strong> Mac OS X 背后的故事系列更多精彩内容</strong></a></p>
+<p><a href="http://www.programmer.com.cn/12752/"><strong>本文选自《程序员》杂志2012年08期，未经允许不得转载。如需转载请联系 market@csdn.net</strong></a></p>
+<p><strong><a href="http://dingyue.programmer.com.cn/">《程序员》2012年杂志订阅送好礼活动火热进行中</a></strong></p>

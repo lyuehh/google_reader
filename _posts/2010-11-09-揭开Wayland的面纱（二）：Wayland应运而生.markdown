@@ -1,0 +1,88 @@
+---
+layout: post
+title:  "揭开Wayland的面纱（二）：Wayland应运而生"
+date:   2010-11-09 10:00:40
+author: 
+categories: program
+---
+
+## 揭开Wayland的面纱（二）：Wayland应运而生
+### by 
+### at 2010-11-09 10:00:40
+### original <http://news.cnblogs.com/n/80279/>
+
+<p>　　话说在上篇（<a href="http://news.cnblogs.com/n/80278/">揭开Wayland的面纱（一）：X Window的前生今世</a>）中我介绍了一些X Window的历史及发展，还没有提到Wayland本身，不少人已经等不及了。不过，介绍这些是有必要的，毕竟要知道X Window的一些知识，才能明白为什么会有Wayland这个东西。</p>
+<p>　　在本篇正式开始介绍Wayland之前，让我们先回到2008年11月4日，也就是整整两年前，我当时在中文领域第一时间报道了“Wayland”的新闻：<a href="http://www.ibentu.org/2008/11/04/linux-new-x-server-waylan.html">Wayland：Linux的新X Server</a>，在其后的一个月，又写了：<a href="http://www.ibentu.org/2008/12/09/wayland-news.html">Wayland最新动态</a>。</p>
+<p>　　当时这两篇文章主要是翻译Phoronix的新闻，自己也没有亲自把玩过Wayland，再加上Wayland项目还处于比较初期的阶段，对其的理解有限。如今经过整整两年的开发，包括Linux内核在图形方面的不断的改进、GTK+图形库的不断进化，Wayland已经渐渐成熟，接近可用状态。</p>
+<p>　　那么，回到上篇开头最初的那个问题：</p>
+<p><strong>　　Wayland究竟是什么？</strong></p>
+<p>　　如果在两年前，按照那篇《<a href="http://www.ibentu.org/2008/11/04/linux-new-x-server-waylan.html">Wayland：Linux的新X Server</a>》的理解，它是一个新的“X Server”，在于改善当前X Server的不足，从而取代它。现在，我们已经可以用更标准的语言来定义Wayland了，那就是：A Simple Display Server。</p>
+<p>　　没错，Wayland是一个简单的“显示服务器”（Display Server），与X Window属于同一级的事物，而不是仅仅作为X Window下X Server的替代（注：X Window下分X Server和X Client）。也就是说，Wayland不仅仅是要完全取代X Window，而且它将颠覆Linux桌面上X Client/X Server的概念，以后将没有所谓的“X Client”了，而是“Wayland Client”。</p>
+<p>　　更确切的说，Wayland只是一个协议（Protocol），就像X Window当前的协议——X11一样，它只定义了如何与内核通讯、如何与Client通讯，具体的策略，依然是交给开发者自己。所以Wayland依然是贯彻“提供机制，而非策略”的Unix程序。</p>
+<p>　　“什么？Wayland还是Server/Client模式？”可以这么理解，但实际上与X Window的Server/Client有着本质的区别。</p>
+<p>　　让我们用一张类似前文所示的图表来重新演示一下，在Wayland的框架下，窗口事件的响应是如何进行的。</p>
+<p>　　在Wayland的架构图中，最显著的一些特点是：</p>
+<ul>
+<li>它复用了所有Linux内核的图形、输入输出技术：KMS、evdev，因此已支持的驱动可以直接拿来用；</li>
+<li>Wayland没有传统的Server/Client的模式，取而代之的是：Compositor/Client，这不仅仅是换一个名称而已，后面会讲到具体区别；</li>
+</ul>
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201011/2010110909560384.png" alt=""></p>
+<p>　　还记得前文中“点击Firefox的刷新按钮”这个应用场景吧？在Wayland里，所有的流程是这样的：</p>
+<ol>
+<li>内核收到了鼠标发出的信息，经过处理后转发到了Wayland Compositor，就像之前发往X Server一样。</li>
+<li>Compositor收到消息后，立马能知道哪个窗口该收到这个消息，因为它就是总控制中心，它掌握窗口的层级关系、动画效果，因此它知道该坐标产生的鼠标点击信息应该发送给谁，就这样，Compositor将鼠标的点击信息发送给了Firefox。</li>
+<li>Firefox收到了消息，这时如果是在X Window下的话，Firefox会向X Server请求绘制按钮被按下的效果。然而在Wayland里，Firefox可以自行进行绘制而不需要再请求Compositor的许可！这就是传说中的：直接渲染机制（Direct Render）！Wayland不管Client的绘制工作，整个过程变得十分简单而且高效！当Firefox自行完成了按钮状态的绘制后，它只需要通知Compositor，某块区域已经被更新了。</li>
+<li>Compositor收到Firefox发来的信息的，再重新合成那块更新的那块区域，将最终桌面效果呈现给用户。这个过程主要是跟内核、显卡驱动打交道了。</li>
+</ol>
+<p>　　整个流程是不是很自然、很简单？</p>
+<p>　　所以结论出来了：</p>
+<ol>
+<li>Wayland的“直接渲染架构”彻底结束了传统X Window在渲染图形时需要不停的向Server请求、确认再绘制这个繁琐的过程，理论上响应速度有了“爆发式”增长；</li>
+<li>Wayland从根本上消除了“Server+Compositor”的重复劳动，仅有且只需要有一个“Compositor”合成器而已。</li>
+</ol>
+<p>　　Compostior，就是Wayland上的“X Server”，但是它更纯粹，它不像X Server一样，像个大家长，什么都要管。Compositor只做该做的事情，把上面的过程简化成任务便是：</p>
+<ol>
+<li>基于Wayland协议，处理evdev的信息；</li>
+<li>通知Client（即应用程序）对相关事件做出反应（至于应用程序想怎么反应，Compositor不需要过问）；</li>
+<li>收到Client的状态更新，重新合成图形或管理新的图形布局。</li>
+</ol>
+<p>　　你意识到了，Wayland Compositor的角色，就像是“X Server”＋“Window Manager”，但它只做份内的事情而已。我想你已经可以想像Wayland构架是如何简单而且高效了，它一举解决了“X Window”发展这么多年来积累的、通过“扩展”去解决的那些问题。</p>
+<p>　　看似很美好，那么Wayland现在的可用性如何？大家都知道，GTK+、Qt，现在都是基于X的，它们能顺利地移植至基于Wayland吗？当然可以！</p>
+<p><strong>　　逐渐成熟的Wayland周边应用</strong></p>
+<p>　　还记得前面那篇文章中，我说过的这句话吧：“尽管在Linux平台下，Cairo、Pango的发挥依然是基于X Window的，但X  Window充其量仅仅是一个“backend”而已，并不是少它不行。同理，跨平台的GTK+、Ｑt也只是视X为其中所支持的后端之一，假如哪天X真的不在了，更换一个新后端，当前的GNOME、KDE也能完整的跑起来。”</p>
+<p>　　你已经想到了，GTK＋、Qt，只需要简单的处理一下后端，便可以跑在Wayland上了。比如：</p>
+<p>　　在当前的GTK+3.0开发分支中，有一个开发分支是“<a href="http://git.gnome.org/browse/gtk+/log/?h=rendering-cleanup">rendering-cleanup</a>”。“清理渲染”？这是做什么的？联想一下那个连Client“怎么渲染”都要管的X Server吧。</p>
+<p>　　对了！GTK+3.0已经彻底移除了所有图形渲染、绘图方面跟X相关的部分了，现在它是一个100％基于Cairo绘制的图形工具库了（之前GTK+2.x时在2.8开始逐渐转向用Cairo绘制，但一直不彻底）。</p>
+<p>　　这意味着两点：</p>
+<ul>
+<li>GTK+的一直以来评价不怎么样的跨平台性，在3.0将有显著的突破；</li>
+<li>GTK+的Wayland后端，已经在路上了！</li>
+</ul>
+<p>　　见GTK+跑在Wayland上，截图引自：<a href="http://www.phoronix.com/scan.php?page=news_item&amp;px=ODQ1MQ">Kristian Shows Off GTK+ 3.0 On Wayland</a></p>
+<p style="text-align:center"><a href="http://www.phoronix.com/scan.php?page=news_item&amp;px=ODQ1MQ"><img src="http://pic003.cnblogs.com/2010/66372/201011/2010110909563596.jpg" alt=""></a></p>
+<p>　　当然，Qt也有了，限于篇福，这里就不介绍了。</p>
+<p>　　另外一个已经在主开发分支便支持Wayland的东西便是：<a href="http://www.ibentu.org/tag/clutter">Clutter</a>。这是一个基于OpenGL的动画框架，我以前介绍过很多次的<a href="http://imtx.me/tag/gnome-shell/">GNOME Shell</a>、<a href="http://www.ibentu.org/2009/07/10/moblin-2-0-beta-media.html">Moblin</a>，都是基于Clutter的。在Clutter当前1.5.x的开发分支，Wayland作为其中一个“backend”，已经得到了“experimental”的支持。所以说，GNOME 3.0、MeeGo Netbook很可能会成为第一个应用Wayland的桌面环境。</p>
+<p>　　那么，看来Wayland真的触手可及了啰？可以这么说，但是还差一点。</p>
+<p><strong>　　Wayland技术实现及工作重点</strong></p>
+<p>　　Wayland的核心协议已经实现的差不多了，它充分利用了Linux内核的KMS、GEM、DRM等技术，另外，它默认是支持3D加速的，也就是通过OpenGL ES进行图形的合成——光是这一点，X Window又要泪奔了。</p>
+<p>　　使用OpenGL ES这个子集而非OpenGL，这意味着什么？想想有多少项目是用OpenGL ES的：Android、iOS、WebOS、WebGL……几乎所有主流的的移动操作系统、浏览器3D的实现，都选用了精简、高效的OpenGL ES。</p>
+<p>　　我不知道当前Android的Display Server、Input/Output是如何实现的，总之跟iOS相比，在触控的响应上是有差距的。未来，对OpenGL ES有着良好支持的Wayland，不知道会不会给这些基于Linux内核的移动操作系统发力呢？我想是非常有可能的！</p>
+<p>　　这时问题就来了，因为Wayland所使用的，都是当前Linux下最新潮的图形技术。所以理所当然的，在驱动这一层面会有一些厂商跟不上。</p>
+<p>　　拿nVIDIA开刷吧，KMS技术都出来一年多了，Intel的全部显卡和AMD部分显卡已经获得支持了，可nVIDIA压根就没有兴趣搞这个，以致于开源社区利用反向工程，通过“Nouveau”项目让nVIDIA支持了KMS，当然比较遗憾的是，性能跟官方闭源的驱动是差了相当的距离。</p>
+<p>　　所以说，基于Wayland的Linux桌面/移动要真正得到应用，驱动这一关是一定要解决的。不过正所谓潮流不可挡，nVIDIA迟早会支持这项技术的。</p>
+<p>　　等到驱动完全不成问题了，Wayland还需要一个全功能的“Compositor”，这个角色，就由Clutter/Mutter、Compiz、KWin等当前主流的窗口管理器来扮演的，相信只要通过简单的修改，这些合成窗口管理器很快地就能转变成一个全能的“Wayland Compositor”！</p>
+<p><strong>　　把玩Wayland及展望未来</strong></p>
+<p>　　讲了这么多技术、历史和业界，大家肯定枯燥了，究竟现在有没有可以跑的“Wayland Compositor”可以玩玩呢？当然！</p>
+<p>　　现在，只要你从<a href="http://cgit.freedesktop.org/wayland">官方</a>取得源码，然后根据<a href="http://wayland.freedesktop.org/building.html">教程</a>进行编译，就能跑起一个简单实现的“Wayland Compositor”。由于Wayland协议的灵活性，Wayland Compositor也可以拥有自己的后端：比如直接在DRM上跑Wayland（不需要X），或者在X Window上跑起一个Wayland Compositor（相当于在X Window上用Xephyr再跑一个X Window）。</p>
+<p>　　当前我在Ubuntu 10.10的图形环境下，就跑起了默认的这个简易的Wayland Compositor，几点说明：</p>
+<ul>
+<li>支持透明、阴影和简单的窗口管理；</li>
+<li>所有的图形绘制，都是通过Cairo-gl（Cairo的OpenGL后端）进行；</li>
+</ul>
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201011/2010110909585588.jpg" alt=""></p>
+<p style="text-align:left">　　这是又一个例子，我编译了Clutter的Wayland后端，成功地跑起了一个Clutter的Demo：即同中Ubuntu Tweak的3D Logo。</p>
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201011/2010110909590848.jpg" alt=""></p>
+<p>　　除了这个Wayland Compositor本身是跑在X Window之上，其本身合成效果、处理窗口布局等等，都完全没有用到X，而且整个代码非常简洁。未来的Linux图形，就会像是这样一个结构简单又高效的样子。</p>
+<p>　　相信看完我这些介绍，大家对Wayland是个什么角色，已经比较清楚了吧？</p>
+<p>　　简单的说，它就是一个去除X Window中不必要的设计、充分利用现代Linux内核图形技术的一个显示机制，它的出现是自然而然的，它的使命不是为了消灭X Window，而是将Linux的图形技术发挥至更高的一个境界。传统的X Window（即经典X应用、Gtk 1.x/2.x等旧应用），也会在相当长一段时间内得到继续支持，通过Wayland Client的形式跑在Wayland Compositor上，直到最终升级、取代或被淘汰。</p>
+<p>　　2011年后期或2012年，我们将能看到Wayland正式着陆，期待吧！</p><p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/80278/">揭开Wayland的面纱（一）：X Window的前生今世</a><span style="color:gray">(2010-11-09)</span><br></p><p>　　本文链接：<a href="http://news.cnblogs.com/n/80279/">http://news.cnblogs.com/n/80279/</a></p><p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p><p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=80279" width="1" height="1" alt="">

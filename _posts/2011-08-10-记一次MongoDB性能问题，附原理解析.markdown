@@ -1,0 +1,117 @@
+---
+layout: post
+title:  "记一次MongoDB性能问题，附原理解析"
+date:   2011-08-10 11:02:56
+author: nosqlfan
+categories: program
+---
+
+## 记一次MongoDB性能问题，附原理解析
+### by nosqlfan
+### at 2011-08-10 11:02:56
+### original <http://item.feedsky.com/~feedsky/nosqlfan/~8149226/544917181/6253001/1/item.html>
+
+<p>下面文章转载自<a href="http://huoding.com/">火丁笔记</a>，原作者描述了一次<span><a href="http://blog.nosqlfan.com/tags/mongodb" title="查看 MongoDB 的全部文章">MongoDB</a></span>数据迁移过程中遇到的性能问题及其解决方案，中间追查问题的方法和工具值得我们学习。另外NoSQLFan还对作者略讲的问题产生原理进行了分析，希望对您有用。</p>
+<p>下面是其原文：</p>
+<blockquote><p>最近忙着把一个项目从MySQL迁移到MongoDB，在导入旧数据的过程中，遇到了些许波折，犯了不少错误，但同时也学到了不少知识，遂记录下来。</p>
+<p>公司为这个项目专门配备了几台高性能务器，清一色的双路四核超线程CPU，外加32G内存，运维人员安装好MongoDB后，就轮到我了，我习惯于在使用新服务器前先看看相关日志，了解一下基本情况，当我浏览MongoDB日志时，发现一些警告信息：</p>
+<pre>WARNING: You are running on a NUMA machine.
+We suggest launching mongod like this to avoid performance problems:
+numactl --interleave=all mongod [other options]</pre>
+<p>当时我并不太清楚<a href="http://en.wikipedia.org/wiki/Non-Uniform_Memory_Access">NUMA</a>是什么东西，所以没有处理，只是把问题报告给了运维人员，事实证明运维人员也没有处理，所以问题的序幕就这样拉开了…</p>
+<p>迁移工作首先要导入旧数据。开始一切倒还正常，不过几小时之后，我无意中发现不知道什么时候开始数据导入的速度下降了，同时我的PHP脚本开始不停的抛出异常：</p>
+<pre>cursor timed out (timeout: 30000, time left: 0:0, status: 0)</pre>
+<p>我一时判断不出问题所在，想想先在PHP脚本里加大Timeout的值应付一下：</p>
+<pre>MongoCursor::$timeout = -1;</pre>
+<p>可惜这样并没有解决问题，错误反倒变着花样的出现了：</p>
+<pre>max number of retries exhausted, couldn't send query
+couldn't send query: Broken pipe</pre>
+<p>无奈之下用strace跟踪了一下PHP脚本：</p>
+<pre>shell&gt; strace -p &lt;PID&gt;</pre>
+<p>发现进程卡在了recvfrom操作上：</p>
+<pre>recvfrom(&lt;FD&gt;,</pre>
+<p>通过如下命令查询recvfrom操作的含义是：receive a message from a socket</p>
+<pre>shell&gt; apropos recvfrom</pre>
+<p>还可以按照下面的方式确认一下：</p>
+<pre>shell&gt; lsof -p &lt;PID&gt;
+shell&gt; ls -l /proc/&lt;PID&gt;/fd/&lt;FD&gt;</pre>
+<p>此时查询MongoDB<a href="http://www.mongodb.org/display/DOCS/Viewing+and+Terminating+Current+Operation">当前操作</a>，发现几乎每个操作会消耗大量的时间：</p>
+<pre>shell&gt; echo &quot;db.currentOp()&quot; | /path/to/mongo</pre>
+<p>同时运行<a href="http://www.mongodb.org/display/DOCS/mongostat">mongostat</a>显示很高的locked值。</p>
+<p>…</p>
+<p>重复做了很多工作，但始终无法找到问题的症结在哪里，只好求助<a href="http://groups.google.com/group/mongodb-user">官方论坛</a>，那里的技术支持都很热心，在我描述了问题后，没过多久就有了回复，建议我检查一下是不是索引不佳所致，为了验证这种可能，我激活了<a href="http://www.mongodb.org/display/DOCS/Database+Profiler">Profiler</a>记录慢操作：</p>
+<pre>mongo&gt; use &lt;DB&gt;
+mongo&gt; db.setProfilingLevel(1);</pre>
+<p>不过结果显示基本都是insert操作（因为我是导入数据为主），本身就不需要索引：</p>
+<pre>mongo&gt; use &lt;DB&gt;
+mongo&gt; db.system.profile.find().sort({$natural:-1})</pre>
+<p>…</p>
+<p>问题到了这里，似乎已经走投无路了，为了死马当活马医，我又重复了几次迁移旧数据的过程，结果自然是次次都出问题，但幸运的是我发现每当出问题的时候，在top命令的结果中，总有一个名叫<a href="http://irqbalance.org/">irqbalance</a>的进程居高不下，搜索了一下，结果很多介绍<span><a href="http://blog.nosqlfan.com/tags/irqbalance" title="查看 irqbalance 的全部文章">irqbalance</a></span>的文章中都提及了<span><a href="http://blog.nosqlfan.com/tags/numa" title="查看 NUMA 的全部文章">NUMA</a></span>，让我一下子记起之前在日志中看到的警告信息，于是乎按照信息里介绍的，重新启动了一下MongoDB：</p>
+<pre>shell&gt; numactl --interleave=all /path/to/mongod</pre>
+<p>一切都正常了。为了解决这个问题，浪费了很多精神，实在没有力气再解释NUMA到底是什么东西了，有想了解的网友可以参考<a href="http://jcole.us/blog/archives/2010/09/28/mysql-swap-insanity-and-the-numa-architecture/">老外的文章</a>，里面的介绍很翔实。</p></blockquote>
+<p>原文链接：<a href="http://huoding.com/2011/08/09/104">huoding.com</a></p>
+<p>对于罪魁祸首，作者留给大家去学习，NoSQLFan在这里可以给大家做一个简单的描述，先解释几个概念</p>
+<p><strong>NUMA</strong>：NUMA是<span><a href="http://blog.nosqlfan.com/tags/%e5%a4%9a%e6%a0%b8" title="查看 多核 的全部文章">多核</a></span>心CPU架构中的一种，其全称为Non-Uniform Memory Access，简单来说就是在多核心CPU中，机器的物理内存是分配给各个核的，架构简图如下所示：</p>
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/08/numaarch.png"><img title="numaarch" src="http://blog.nosqlfan.com/wp-content/uploads/2011/08/numaarch.png" alt="" width="263" height="286"></a></p>
+<p>每个核访问分配给自己的内存会比访问分配给其它核的内存要快，有下面几种访问控制策略：</p>
+<div>
+<ul>
+<li>1.缺省(default)：总是在本地节点分配（分配在当前进程运行的节点上）；</li>
+<li>2.绑定(bind)：强制分配到指定节点上；</li>
+<li>3.交叉(interleave)：在所有节点或者指定的节点上交织分配；</li>
+<li>4.优先(preferred)：在指定节点上分配，失败则在其他节点上分配。</li>
+</ul>
+</div>
+<p>上面文章中最后使用numactl –interleave命令就是指定其为交叉共享模式。</p>
+<p><strong>irqbalance</strong>：这是作者在上面提到的一个占用CPU的进程，这个进程的作用是在多核心CPU的操作系统中，分配系统中断信号的。参见：<a href="http://irqbalance.org/">irqbalance.org</a></p>
+<p>概念说完了，下面是上面问题的简单描述：</p>
+<p>我们知道虚拟内存机制是通过一个中断信号来通过进行内存swap的，所以这个irqbalance进程忙，是一个危险信号，在这里是由于在进行频繁的内存交换。这种频繁交换现象称为swap insanity，在MySQL中经常提到，也就是在NUMA框架中，采用不合适的策略，导致核心只能从指定内存块节点上分配内存，即使总内存还有富余，也会由于当前节点内存不足时产生大量的swap操作。</p>
+<p>对于NUMA，进一步了解可以参考：<a href="http://hi.baidu.com/leexeo/blog/item/f706b74531d3f834cefca32b.html">NUMA与英特尔下一代Xeon处理器</a> 和 <a href="http://www.hellodb.net/2011/06/mysql_multi_instance.html">MySQL单机多实例方案</a> 两篇文章
+<p style="font-weight:bold"><span style="padding-top:5px;float:left">技术传播，需要你我共同努力！</span><a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html&amp;text=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVKEJk/custom.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html" title="新浪微博" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVKrzm/custom.png"></a><a href="http://v.t.qq.com/share/share.php?title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html" title="腾讯微博" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJX6o/custom.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html" title="QQ空间" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJSKI/custom.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html&amp;title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJrri/custom.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html&amp;title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVJ4v4/custom.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html" title="人人网" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVI86k/custom.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html&amp;title=%E8%AE%B0%E4%B8%80%E6%AC%A1MongoDB%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98%EF%BC%8C%E9%99%84%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90%20%E6%9D%A5%E8%87%AA%EF%BC%9A@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px;border:none"><img style="border:none;padding:0px" src="http://pic.yupoo.com/iammutex/B8hVHr67/custom.png"></a>    </p>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Mongoid：一个MongoDB的Ruby ODM封装" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2806.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/08/14/22799490.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Mongoid：一个MongoDB的Ruby ODM封装</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB paddingFactor的含义" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2654.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/square.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB paddingFactor的含义</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="性能测试：MongoDB vs. SQL Server" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F484.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/06/09/11639017.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">性能测试：MongoDB vs. SQL Server</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB vs Cassandra" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2564.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/07/24/18753232.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB vs Cassandra</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="mongodb的javascript性能" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2637.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2772.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/square.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">mongodb的javascript性能</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/544917181/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/544917181/6253001/1/item.html" border="0" height="0" width="0"></p>
