@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>重建iOS开发配置证书</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>重建iOS开发配置证书</h2>
+<p class="meta">24 Aug 2012</p>
+
+<div class="post">
+<h2>重建iOS开发配置证书</h2>
+
+<h3>by ytzong</h3>
+
+<h3>at 2012-08-23 18:03:40</h3>
+
+<h3>original <a href="http://www.99css.com/archives/1206">http://www.99css.com/archives/1206</a></h3>
+
+<p>MAC重装系统，开发证书没有备份，加上iDP即将过期，在重新导入证书的过程中遇到了一些小麻烦，比如 Xcode 4.4.1 中的证书出现 Valid Signing Identity not found，现记录一下（仅适用于重新生成证书者，不适用首次配置证书联机调试及发布，有此需要请自行搜索）</p>
+
+
+<ol>
+<li>生成私有证书，打开钥匙串，钥匙串访问 – 证书助理 – 从证书颁发机构请求证书…，填入iDP邮箱及常用名称（在 <a href="https://developer.apple.com/devcenter/ios/index.action">iOS Dev Center</a> 页面的 Hi, XXX 处查找，其中XXX为常用名称），选存储到磁盘，得到 CertificateSigningRequest.certSigningRequest 文件</li>
+<li>打开 iOS Provisioning Portal 中的 <a href="https://developer.apple.com/ios/manage/certificates/team/index.action">Certificates</a> 页面，Revoke Development 及 Distribution 中的证书，之后将第一步的文件上传重新生成，成功后下载安装</li>
+<li>Devices 及 App IDs 这两个页面保持原样，不需更改</li>
+<li>进入 <a href="https://developer.apple.com/ios/manage/provisioningprofiles/index.action"> Provisioning</a> 页面，将 Development 及 Distribution 中的配置文件清空（全选，Remove Selected），之后点 New Profile 按钮新建配置</li>
+<li>按照传统的方法是将上一步生成的配置分别下载安装，更简单的方法是打开 Xcode 的 Organizer – Devices，选中 LIBRARY 下的 Provisioning Profiles，之后在界面右下角找到 Refresh 按钮，点之，输入iDP账号密码即可自动下载并安装所有配置</li>
+</ol>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>hashtable详细介绍</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>hashtable详细介绍</h2>
+<p class="meta">16 Nov 2010</p>
+
+<div class="post">
+<h2>hashtable详细介绍</h2>
+
+<h3>by Leo Young</h3>
+
+<h3>at 2010-11-16 14:16:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/yangleiWPF/archive/2010/11/16/1878494.html">http://www.cnblogs.com/yangleiWPF/archive/2010/11/16/1878494.html</a></h3>
+
+<p><h1>Hashtable的定义</h1>
+<p>表示键/值对的集合，这些键/值对根据键的哈希代码进行组织。</p>
+<h1>Hashtable存储结构如下</h1>
+<p> <img src="http://pic002.cnblogs.com/images/2010/49091/2010111613483989.png" alt=""></p>
+<p><strong>Hashtable</strong>是非泛型的集合，所以在检索和存储值类型时通常会发生装箱与拆箱的操作。<strong> </strong></p>
+<p>当把某个元素添加到 <strong>Hashtable</strong> 时，将根据键的哈希代码将该元素放入存储桶中，由于是散列算法所以会出现一个哈希函数能够为两个不同的键生成相同的哈希代码，该键的后续查找将使用键的哈希代码只在一个特定存储桶中搜索，这将大大减少为查找一个元素所需的键比较的次数。</p>
+<p><strong>Hashtable</strong> 的加载因子确定元素与<strong>Hashtable</strong> 可拥有的元素数的最大比率。加载因子越小，平均查找速度越快，但消耗的内存也增加。默认的加载因子 0.72通常提供速度和大小之间的最佳平衡。当创建 <strong>Hashtable</strong> 时，也可以指定其他加载因子。</p>
+<p><strong>元素总量</strong><strong>/</strong> <strong>Hashtable</strong> 可拥有的元素数<strong>=</strong><strong>加载因子</strong><strong> </strong></p>
+<p>当向 <strong>Hashtable</strong> 添加元素时，<strong>Hashtable</strong> 的实际加载因子将增加。当实际加载因子达到指定的加载因子时，<strong>Hashtable</strong> 中存储桶的数目自动增加到大于当前 <strong>Hashtable</strong> 存储桶数两倍的最小素数。</p>
+<p>扩容时所有的数据需要重新进行散列计算。虽然Hash具有O(1)的数据检索效率，但它空间开销却通常很大，是以空间换取时间。所以Hashtable适用于读取操作频繁，写入操作很少的操作类型。</p>
+<p> </p>
+<h1>代码一、</h1>
+<p>    </p>
+<div>
+<pre><div><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Main(</span><span style="color:#0000ff">string</span><span style="color:#000000">[] args)<br><br>        {<br><br>            Hashtable hashtb </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Hashtable();<br><br>            hashtb.Add(</span><span style="color:#800080">1</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">aa</span><span style="color:#800000">"</span><span style="color:#000000">);<br><br>            hashtb.Add(</span><span style="color:#800080">2</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">bb</span><span style="color:#800000">"</span><span style="color:#000000">);<br><br>            hashtb.Add(</span><span style="color:#800080">3</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">cc</span><span style="color:#800000">"</span><span style="color:#000000">);<br><br>            hashtb.Add(</span><span style="color:#800080">4</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">dd</span><span style="color:#800000">"</span><span style="color:#000000">); <br><br>            <br><br>            </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (DictionaryEntry item </span><span style="color:#0000ff">in</span><span style="color:#000000"> hashtb)<br><br>            {<br><br>                Console.WriteLine(item.Value);<br><br>                item.Value </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">ee</span><span style="color:#800000">"</span><span style="color:#000000">; <br><br>            }<br><br>            Console.Read();<br><br>        }<br><br></span></div></pre>
+</div>
+<p> </p>
+<p> </p>
+<p>编译出错：<span style="color:#ff0000">item为foreach的迭代变量，无法修改其成员。</span></p>
+<p> </p>
+<p>原因：<strong>如果运行foreach处理语句试图修改迭代变量值，或将变量值作为ref参数或out参数传递，那么都会发生编译错误，迭代变量相当于一个局部只读变量。</strong></p>
+<p> </p>
+<h1>代码二、</h1>
+<p><span style="color:#ff0000">item.Value = "ee";改成hashtb[item.Key] = "ee";</span></p>
+<p>运行报错：<span style="color:#ff0000">集合已修改；可能无法执行枚举操作。</span></p>
+<p> </p>
+<p>原因：.<strong>NET Framework 提供枚举数作为循环访问一个集合的简单方法。枚举数只读取集合中的数据，无法用于修改基础集合。</strong></p>
+<p><strong>foreach 语句用于循环访问集合，以获取您需要的信息，但不能用于在源集合中添加或移除项，否则可能产生不可预知的副作用。如果需要在源集合中添加或移除项，请使用 for 循环。</strong></p>
+<h1>代码三、</h1>
+<p>          </p>
+<div>
+<pre><div><span style="color:#000000"> Thread tr1 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (DictionaryEntry item </span><span style="color:#0000ff">in</span><span style="color:#000000"> hashtb)<br><br>                {<br><br>                    Console.WriteLine(item.Value);<br><br>                }<br><br>            }));<br><br>            tr1.Start();<br><br>            Thread tr2 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> </span><span style="color:#800080">4</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br><br>                {<br><br>                    hashtb[i] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">ee</span><span style="color:#800000">"</span><span style="color:#000000">;<br><br>                    Console.WriteLine(hashtb[i]);<br><br>                }<br><br>               <br><br>            }));<br><br>            tr2.Start();<br><br></span></div></pre>
+</div>
+<p> </p>
+<p> </p>
+<p>线程tr1用来读hashtable，线程tr2用来foreach来枚举修改hashtable，</p>
+<p>运行时错误：<span style="color:#ff0000">集合已修改；可能无法执行枚举操作。</span></p>
+<h1>代码四、</h1>
+<p>       </p>
+<div>
+<pre><div><span style="color:#000000">  </span><span style="color:#008000">//</span><span style="color:#008000">读取</span><span style="color:#008000"><br></span><span style="color:#000000"><br>         Thread tr1 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;=</span><span style="color:#000000"> </span><span style="color:#800080">4</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br><br>                {<br><br>                    Console.WriteLine(hashtb[i]);<br><br>                }<br><br>            }));<br><br>            tr1.Start();<br><br>         Thread tr2 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;=</span><span style="color:#000000"> </span><span style="color:#800080">4</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br><br>                {<br><br>                    Console.WriteLine(hashtb[i]);<br><br>                }<br><br>            }));<br><br>            tr2.Start();<br><br> <br><br> <br><br>         </span><span style="color:#008000">//</span><span style="color:#008000">修改</span><span style="color:#008000"><br></span><span style="color:#000000"><br>            Thread tr3 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;=</span><span style="color:#000000"> </span><span style="color:#800080">4</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br><br>                {<br><br>                    hashtb[i] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">ee</span><span style="color:#800000">"</span><span style="color:#000000">;<br><br>                }<br><br>               <br><br>            }));<br><br>            tr3.Start();<br><br></span></div></pre>
+</div>
+<p> </p>
+<p> </p>
+<p> </p>
+<p>运行结果：<span style="color:#ff0000">正常</span></p>
+<p>说明：<strong>Hashtable 是线程安全的，可由多个读取器线程和一个写入线程使用。多线程使用时，如果只有一个线程执行写入（更新）操作，则它是线程安全的，从而允许进行无锁定的读取（若编写器序列化为 Hashtable）</strong></p>
+<h1>代码五、</h1>
+<p> </p>
+<div>
+<pre><div><span style="color:#000000">         Thread tr1 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">lock</span><span style="color:#000000"> (hashtb)<br><br>                {<br><br>                    </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (DictionaryEntry item </span><span style="color:#0000ff">in</span><span style="color:#000000"> hashtb)<br><br>                    {<br><br>                        Console.WriteLine(item.Value);<br><br>                    }<br><br>                }<br><br>            }));<br><br>            tr1.Start();<br><br>            Thread tr2 </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Thread(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreadStart(() </span><span style="color:#000000">=&gt;</span><span style="color:#000000"><br><br>            {<br><br>                </span><span style="color:#0000ff">lock</span><span style="color:#000000"> (hashtb)<br><br>                {<br><br>                    </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;=</span><span style="color:#000000"> </span><span style="color:#800080">4</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br><br>                    {<br><br>                        hashtb[i] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">ee</span><span style="color:#800000">"</span><span style="color:#000000">;<br><br>                    }<br><br>                }<br><br>               <br><br>            }));<br><br>            tr2.Start();<br></span></div></pre>
+</div>
+<p> </p>
+<p> </p>
+<p> 运行结果：<span style="color:#ff0000">正常</span></p>
+<p>说明：<strong>由于两个线程里面都加了lock (hashtb)所以是线程安全的。</strong> <strong>从头到尾对一个集合进行枚举本质上并不是一个线程安全的过程。即使一个集合已进行同步，其他线程仍可以修改该集合，这将导致枚举数引发异常。若要在枚举过程中保证线程安全，可以在整个枚举过程中锁定集合，或者捕捉由于其他线程进行的更改而引发的异常。</strong></p>
+<h1>Hashtable 提供的线程安全方法</h1>
+<p><strong>Hashtable的Synchronized静态方法提供线程安全的实例</strong>，如下：</p>
+<p>Hashtable ht = Hashtable.Synchronized(new Hashtable());</p>
+<p><strong>内部实现如下：</strong></p>
+<p><strong> </strong></p>
+<div>
+<pre><div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Add(</span><span style="color:#0000ff">object</span><span style="color:#000000"> key, </span><span style="color:#0000ff">object</span><span style="color:#000000"> value)<br>{<br>    </span><span style="color:#0000ff">lock</span><span style="color:#000000"> (</span><span style="color:#0000ff">this</span><span style="color:#000000">._table.SyncRoot)<br>    {<br>    　　</span><span style="color:#0000ff">this</span><span style="color:#000000">._table.Add(key, value);<br>    }<br>}<br><br></span></div></pre>
+</div>
+<p> </p>
+<p> </p>
+<p> </p>
+<h1>按输入方式输出</h1>
+<p>因为hashtable内部是无序的，所以输出不一定，hashtable取数据的机制没搞明白。按照下面代码可以实现先进先出。</p>
+<p>可以通过控制ArrayList里面keys的排序来控制hashtable的输出，当然也可以用SortedDictionary和SortedList实现排序集合。</p>
+<h1>
+<div>
+<pre><div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> NoSortHashtable : Hashtable<br>     {<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> ArrayList keys </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> ArrayList();<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> NoSortHashtable()<br>         {<br>        }<br>        <br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Add(</span><span style="color:#0000ff">object</span><span style="color:#000000"> key, </span><span style="color:#0000ff">object</span><span style="color:#000000"> value)<br>         {<br>            </span><span style="color:#0000ff">base</span><span style="color:#000000">.Add (key, value);<br>            keys.Add (key);<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> ICollection Keys<br>         {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"><br>             {<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> keys;<br>            }<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Clear()<br>         {<br>            </span><span style="color:#0000ff">base</span><span style="color:#000000">.Clear ();<br>            keys.Clear ();<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Remove(</span><span style="color:#0000ff">object</span><span style="color:#000000"> key)<br>         {<br>            </span><span style="color:#0000ff">base</span><span style="color:#000000">.Remove (key);<br>            keys.Remove    (key);<br>        }<br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">override</span><span style="color:#000000"> IDictionaryEnumerator GetEnumerator()<br>         {<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">base</span><span style="color:#000000">.GetEnumerator ();<br>        }<br><br>    }<br></span></div></pre>
+</div>
+</h1><img src="http://www.cnblogs.com/yangleiWPF/aggbug/1878494.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/yangleiWPF/">Leo Young</a> 发表于 2010-11-16 14:16 <a href="http://www.cnblogs.com/yangleiWPF/archive/2010/11/16/1878494.html">原文链接</a></p><p>评论: 7　<a href="http://www.cnblogs.com/yangleiWPF/archive/2010/11/16/1878494.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/yangleiWPF/archive/2010/11/16/1878494.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/81333/">Palm前首席执行官称webOS仍然很重要</a><span style="color:gray">(2010-11-17 08:25)</span><br>· <a href="http://news.cnblogs.com/n/81332/">盖茨鲍尔默股东大会表态：我们不会分拆微软</a><span style="color:gray">(2010-11-17 08:22)</span><br>· <a href="http://news.cnblogs.com/n/81331/">AMD不计前嫌加入英特尔智能手机阵营</a><span style="color:gray">(2010-11-17 08:20)</span><br>· <a href="http://news.cnblogs.com/n/81330/">敏捷十年，成效几何？</a><span style="color:gray">(2010-11-17 07:49)</span><br>· <a href="http://news.cnblogs.com/n/81329/">俄罗斯投资公司DST：Twitter符合投资标准</a><span style="color:gray">(2010-11-17 07:48)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/81220/">架构师给程序员的一封信</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

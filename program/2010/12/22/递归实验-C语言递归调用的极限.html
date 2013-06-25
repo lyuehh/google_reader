@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>递归实验-C语言递归调用的极限</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>递归实验-C语言递归调用的极限</h2>
+<p class="meta">22 Dec 2010</p>
+
+<div class="post">
+<h2>递归实验-C语言递归调用的极限</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2010-12-21 23:27:42</h3>
+
+<h3>original <a href="http://sunxiunan.com/?p=1784">http://sunxiunan.com/?p=1784</a></h3>
+
+<p>C语言递归调用不是无限的，当递归到一定时候，会出现stack over flow的问题。<a title="http://en.wikipedia.org/wiki/Stack_buffer_overflow" href="http://en.wikipedia.org/wiki/Stack_buffer_overflow">http://en.wikipedia.org/wiki/Stack_buffer_overflow</a></p>
+
+
+<p>但是，这个度是多少呢？</p>
+
+
+<p>我构造了一个极为简单的C语言递归程序，大家可以参考这里<a title="https://gist.github.com/749543" href="https://gist.github.com/749543">https://gist.github.com/749543</a></p>
+
+
+<p>#include &quot;stdafx.h&quot;   <br>      int count = 0;    <br>void f()    <br>{    <br>  int a = 1; int b = 1; int c = 1; int d = 1;    <br>  a = b + 3;    <br>  c = count + 4;    <br>  d = count + 5*c;    <br>  count++;    <br>  printf(&quot;count: %d\n&quot;, count);    <br>  f();    <br>} </p>
+
+
+<p>int _tmain(int argc, _TCHAR* argv[])   <br>     {    <br>        f(); return 0;    <br>      }</p>
+
+
+<p>我使用的是VC2010SP1的C语言模式编译，console程序，无优化。</p>
+
+
+<p>运行结果如下：</p>
+
+
+<p>默认情况下，count最后结果为42860，然后程序就结束了。通过查询MSDN可以知道</p>
+
+
+<pre><a href="http://msdn.microsoft.com/en-us/library/8cxs58a6%28v=vs.80%29.aspx">http://msdn.microsoft.com/en-us/library/8cxs58a6%28v=vs.80%29.aspx</a></pre>
+
+
+<p>我们可以通过修改project的link选项中的stack commit size和stack reserve size来改变程序的stack大小。</p>
+
+
+<p>如果这两个size都设置为1、64、640、2048这几个值，结果都是10092.</p>
+
+
+<p>如果size设置为1024000，那么结果是42860，与默认情况相同。可以看出这个size是以BYTE为单位。</p>
+
+
+<p>如果size设置为1048000，结果为43372.</p>
+
+
+<p>size设置为1072000以及2048000，结果都是86551.</p>
+
+
+<p>size设置为2110000以及3072000，结果都是130242.</p>
+
+
+<p>一般来说，我们基本上不需要考虑修改这个大小，因为很少会有将近四万的递归层次，默认值已经足够用了。但是如果万一不够用或者有这种递归需求，那么就需要修改这两个值，另外当我们新建一个线程的时候，也可以编程修改线程stack的大小。</p>
+
+
+<p><a title="http://cs.nyu.edu/exact/core/doc/stackOverflow.txt" href="http://cs.nyu.edu/exact/core/doc/stackOverflow.txt">http://cs.nyu.edu/exact/core/doc/stackOverflow.txt</a> 这里解释了一下不同平台上stackoverflow的问题，有一些数据可以参考。</p>
+
+
+<p><a title="http://stackoverflow.com/questions/53827/checking-available-stack-size-in-c" href="http://stackoverflow.com/questions/53827/checking-available-stack-size-in-c">http://stackoverflow.com/questions/53827/checking-available-stack-size-in-c</a> 在这里有人提供了一个有趣的递归C代码片段来判断栈大小。</p>
+
+
+<p>在这里多废话几句，关于Lua的proper tail call <a title="http://www.lua.org/pil/6.3.html" href="http://www.lua.org/pil/6.3.html">http://www.lua.org/pil/6.3.html</a> 。当我们使用Lua for windows构造一个简单的递归程序运行，依然是会得到stack over flow的结果。但是当我们使用proper tail call这种方式调用，（由于抛弃了前面程序的栈）调用可以无限循环下去，所以Lua这个特性常常用来构造state machine。关于使用proper tail call来实现斐波拉契，可以参考这里<a title="http://lua-users.org/wiki/ProperTailRecursion" href="http://lua-users.org/wiki/ProperTailRecursion">http://lua-users.org/wiki/ProperTailRecursion</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

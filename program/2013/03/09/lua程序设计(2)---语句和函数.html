@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>lua程序设计(2) - 语句和函数</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>lua程序设计(2) - 语句和函数</h2>
+<p class="meta">09 Mar 2013</p>
+
+<div class="post">
+<h2>lua程序设计(2) - 语句和函数</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2013-03-09 10:06:50</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/601174402013124416382">http://snoopyxdy.blog.163.com/blog/static/601174402013124416382</a></h3>
+
+<div>1、lua允许多重赋值<div>a,b = 10, 2*x</div><div><br></div><div>2、交换x和y的值</div><div>x,y = y,x</div><div><br></div><div>3、如果多重赋值等号左边的变量名多余右边的值，则右边的少于左边的值会以nil代替，反之右边多余的值会被去掉</div><div>例如：</div><div>a,b,c = 0;</div><div>print(a,b,c)  -- 0,nil,nil</div><div>a,b,c = 0,0,0</div><div>print(a,b,c)  -- 0,0,0</div><div><br></div><div>4、一般多重赋值用来接收函数的2个返回值，比如：</div><div>a,b = f()</div><div>则a和b分别被赋值了函数f的返回值</div><div><br></div><div>5、全局变量和局部变量</div><div>j = 10 -- 全局变量</div><div>local i = 1 -- 局部变量</div><div>局部变量仅作用于声明它的那个块，一个块是一个程序体，例如下面，从while到end是一个程序块</div><div>x=10</div><div>local i =1</div><div>while i &lt;= x</div><div>do</div><div>local x = i*2</div><div>print(x)</div><div>i = i + 1</div><div>end</div><div><br></div><div>6、显示的声明一个程序块</div><div>do</div><div> local a = 1</div><div> local b = 2</div><div>end</div><div><br></div><div>7、一个局部变量和局部变量同名的例子：</div><div>local a,b = 1,10</div><div>if a&lt;b then</div><div>print(a)  -- 1</div><div>local a    </div><div>print(a)   --nil</div><div>end</div><div>print(a,b)   -- 1  10</div><div><br></div><div>8、在lua中有一种书写习惯</div><div>local foo = foo</div><div>利用全局变量赋值给局部变量可以暂存全局变量而且会加速程序</div><div><br></div><div>9、if语句，lua不支持switch语句</div><div>if op == '+' then</div><div><span style="white-space:pre">    </span>r=a+b</div><div>elseif op == '-' then</div><div><span style="white-space:pre">   </span>r=a-b</div><div>else</div><div><span style="white-space:pre">    </span>r=a*b</div><div>end</div><div><br></div><div>10、while语句</div><div>如果条件为假则循环结束，否则一直执行下去</div><div>local i = 1</div><div>while a[i] do</div><div><span style="white-space:pre">  </span>print(a[i])</div><div><span style="white-space:pre"> </span>i = i + 1</div><div>end</div><div><br></div><div>11、repeat until至少执行循环一次</div><div>repeat</div><div><span style="white-space:pre"> </span>line = io.read()</div><div>until line ~= ""</div><div><br></div><div>12、for循环</div><div>for var=exp1,exp2,exp3</div><div><span style="white-space:pre">    </span>&lt;执行体&gt;</div><div>end</div><div>var从exp1变化到exp2，每次步长为exp3，exp3是可选的，默认为1</div><div>注意i是局部变量，所以在循环体外去读取循环变量会出现错误</div><div>例如</div><div>for i=1,10 do</div><div>print(i)</div><div>end</div><div>max = i  --错误！</div><div><br></div><div>13、for迭代器</div><div>a={x=1,y=2;3,4,5}</div><div>for i,v in ipairs(a) do</div><div>print(i,v)</div><div>end</div><div>这里将只叠代a表格数组部分，结果为</div><div>1 3</div><div>2 4</div><div>3 5</div><div><br></div><div>14、for迭代器2</div><div><div style="line-height:22px">a={x=1,y=2;3,4,5}</div><div style="line-height:22px">for i,v in pairs(a) do</div><div style="line-height:22px">print(i,v)</div><div style="line-height:22px">end</div></div><div style="line-height:22px">这里将叠代所有atable的key和value，结果为</div><div><div>1<span style="white-space:pre">  </span>3</div><div>2<span style="white-space:pre">  </span>4</div><div>3<span style="white-space:pre">  </span>5</div><div>y<span style="white-space:pre">  </span>2</div><div>x<span style="white-space:pre">  </span>1</div></div><div><br></div><div>15、return和break</div><div>break用于跳出循环</div><div>return用于跳出函数</div><div><br></div><div>16、一个简单的函数例子</div><div>function add(a)</div><div><span style="white-space:pre">   </span>local sum=0</div><div><span style="white-space:pre"> </span>for i,v in ipairs(a) do</div><div><span style="white-space:pre">     </span>sum = sum + v</div><div><span style="white-space:pre">   </span>end</div><div><span style="white-space:pre"> </span>return sum</div><div>end</div><div><br></div><div>17、函数多重返回值</div><div>return a,b</div><div>这样就可以返回多个值</div><div><br></div><div>18、可以讲函数放入一个圆括号中，迫使它只返回一个值</div><div><br></div><div>19、unpack</div><div><div>x = {1,2,3,4}</div><div>print(unpack(x))</div><div>a,b,c,d = unpack(x)</div><div>print(a,b,c,d)</div></div><div>结果为：</div><div><div>1<span style="white-space:pre">   </span>2<span style="white-space:pre">  </span>3<span style="white-space:pre">  </span>4</div><div>1<span style="white-space:pre">  </span>2<span style="white-space:pre">  </span>3<span style="white-space:pre">  </span>4</div></div><div><br></div><div>20、变长参数</div><div>function add(...)</div><div>local s=0</div><div>local a,b = ...  -- 获得可变参数的前2个</div><div>print(a,b)</div><div><span style="white-space:pre"> </span>for i,v in ipairs({...}) do</div><div><span style="white-space:pre">     </span>s = s + v</div><div><span style="white-space:pre">   </span>end</div><div>return s</div><div>end</div><div><br></div><div>print(add(3,4,10,25,12))</div><div><br></div><div>21、select选择器</div><div>select('#', ...) 返回可变参数的长度总数</div><div>select(i, ...)  返回可变参数的第i个参数</div><div><br></div><div>22、当参数为一个table时，函数调用的圆括号是可有可无的</div><div>rename{old="temp.lua", new="temp1.lua"}</div><br><div>23、异常try catch使用 pcall</div><div>local status, err = pcall(function() error({code=121}) end)</div><div><br></div><div>24、throw 异常使用error函数</div><div><div>function foo(str)</div><div>    if type(str) ~= &quot;string&quot; then</div><div>        error(&quot;string expected&quot;)</div><div>    end</div><div>...</div><div>end</div></div><div><br></div><div>25、print(debug.traceback())</div><div>独立的Lua解释器用来构建错误信息的函数就是debug.traceback。你可以在任何时候调用debug.traceback获取当前运行状况的跟踪信息</div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

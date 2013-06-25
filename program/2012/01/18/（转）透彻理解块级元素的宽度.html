@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>（转）透彻理解块级元素的宽度</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>（转）透彻理解块级元素的宽度</h2>
+<p class="meta">18 Jan 2012</p>
+
+<div class="post">
+<h2>（转）透彻理解块级元素的宽度</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-01-18 13:25:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/01/18/2325443.html">http://www.cnblogs.com/rubylouvre/archive/2012/01/18/2325443.html</a></h3>
+
+<p><strong>作者按：</strong>又翻出来一篇5年前（2006年12月28日）写的关于盒模型的文章，都不知道参考了哪本书了。只能凭印象感谢 Eric Meyer 的《CSS权威指南（第2版）》（<em>The Definitive Guide, 2nd Edition</em>）——因为当时作为练习刚翻译完这本书。</p>
+
+
+
+
+<p></p>
+
+
+
+
+<blockquote style="border:2px solid #efefef;color:#333333;padding:5px 10px">
+  <p><strong>内容提要</strong><br>
+  透彻掌握CSS可视化模型的原理，可以让我们准确判断某个意外行为到底是因为CSS样式问题，还是CSS解析引擎问题。本文要讨论的要点是，当<code>margin-left</code>、<code>width</code>和<code>margin-right</code>这三个属性分别取auto值或大于0的值，进而形成不同组合的情况下，如何确定块级元素中各个组成部分的宽度。</p>
+</blockquote>
+
+
+
+
+<p><strong>块级元素和行内元素</strong></p>
+
+
+
+
+<p>CSS把处在正常文档流中的不同html元素区分为块级元素（block element）和行内元素（inline element）。一般来说，所谓块级元素就是指当它们显示在浏览器中时，会在自身前后各插入一个空行，而使自身在页面中占据一个相对独立的块状区域的元素。因此，HTML文档中连续的块级元素的典型显示方式就是“堆叠”。块级元素的例子有<code>h1</code>到<code>h6</code>、<code>div</code>、<code>p</code>等。而行内元素则是指以自身所包含的内容决定在页面中占据空间的大小，并且可以与其他行内元素共处一行的元素。行内元素的典型显示方式就是“连接”。行内元素的例子有<code>a</code>、<code>img</code>、<code>span</code>、<code>input</code>等。对于行内元素，又可以进一步分为可替换行内元素和不可替换行内元素，两者的区别在于元素中所包含的内容是否直接显示在页面中。不可替换的行内元素，如<code>a</code>元素中的链接文本会直接显示在网页中；而可替换的行内元素，如<code>img</code>，当它在网页中显示时会被其<code>src</code>属性指向的图像替代。本文讨论的是块级元素，有关行内元素的更多内容请参考其他资料。</p>
+
+
+
+
+<blockquote style="border:2px solid #efefef;color:#333333;padding:5px 10px">
+  <p><strong>正常文档流</strong><br>
+  指的是HTML文档元素在进行内容布局时所遵循的从左到右、从上到下的表现方式。这种文档流布局的方式对于某些语言可能会有所不同（比如从右往左阅读的语言）。HTML中的大多数元素都处在正常的文档流中，而一个元素要脱离正常流的唯一途径就是浮动或定位。</p>
+</blockquote>
+
+
+
+
+<p><strong>块级元素的宽度</strong></p>
+
+
+
+
+<p>块级元素的宽度是指块级元素内容区、左右内边距、左右边框和左右外边距的宽度之和。而块级元素内容区的宽度由该元素的<code>width</code>属性来表示（或设置）。</p>
+
+
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/345658/o_layout1.gif" alt="enter image description here"></p>
+
+
+
+
+<p><strong>图1简单的盒模型示意图</strong></p>
+
+
+
+
+<p>有一个简单的规则，就是块级元素的宽度总是等于其父元素内容区的宽度。如果一个<code>div</code>元素的父元素是<code>body</code>，那么这个<code>div</code>元素的宽度就等于body的宽度，也就是浏览器中窗口的宽度。一个处在正常文档流中的块级元素，其宽度是由七个部分共同决定的。可以称为块级元素的水平“七属性”，它们分别是：</p>
+
+
+
+
+<ul>
+<li><code>margin-left</code></li>
+<li><code>border-left</code></li>
+<li><code>padding-left</code></li>
+<li><code>width</code></li>
+<li><code>padding-right</code></li>
+<li><code>border-right</code></li>
+<li><code>margin-right</code></li>
+</ul>
+
+
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/345658/o_layout2.gif" alt="enter image description here"></p>
+
+
+
+
+<p><strong>图2 块级元素的水平“七属性”</strong></p>
+
+
+
+
+<p>如图2所示，块级元素在水平方向上的宽度是由七个CSS属性共同决定的。例如，一个div元素中包含一个p元素。而<code>div</code>元素的宽度是500px，那么这个<code>p</code>元素内容区的宽度（<code>width</code>）加上其左右内边距、左右边框和左右外边距之和就等于500px。这个计算过程用公式表示，就是：</p>
+
+
+
+
+<pre><code>margin-left + 
+border-left + 
+padding-left + 
+width + 
+padding-right + 
+border-right + 
+margin-right 
+= 500px
+</code></pre>
+
+
+
+
+<p><strong>自动水平属性如何决定块级元素的宽度</strong></p>
+
+
+
+
+<p>在块级元素的水平七属性中，只有三个属性可以使用<code>auto</code>（自动）值，如图3所示。</p>
+
+
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/345658/o_layout3.gif" alt="enter image description here"></p>
+
+
+
+
+<p><strong>图3  可以取<code>auto</code>值的水平属性</strong></p>
+
+
+
+
+<p>也就是说，只有<code>margin-left</code>、<code>width</code>和<code>margin-right</code>这三个属性可以使用auto值。这正是本文要讨论的核心问题，即在上述三个属性分别取不同的auto值和长度值，形成不同组合的情况下，相应块级元素盒子中各部分的宽度是如何确定的？</p>
+
+
+
+
+<p>在掌握了各种组合的可能性和相应结果的基础上，我们就可以在遇到意外的情况时，对到底是CSS样式的问题，还是CSS解析引擎的问题作出正确的判断。并根据判断来决定是修改CSS样式、向浏览器提供商报告bug，还是采取过滤或hack手段来解决问题。</p>
+
+
+
+
+<p>现在举例子说明，假设有如下简单的html代码：</p>
+
+
+
+
+<pre><code>&lt;div&gt;
+    &lt;p&gt; &lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+
+
+
+<p>而相应有8种可能的CSS规则：</p>
+
+
+
+
+<pre>1. p { margin-left:auto;width:auto;margin-right:auto; }
+2. p { margin-left:50px;width:auto;margin-right:auto; }
+3. p { margin-left:auto;width:auto;margin-right:50px; }
+4. p { margin-left:50px;width:auto;margin-right:50px; }
+5. p { margin-left:auto;width:200px;margin-right:auto; }
+6. p { margin-left:50px;width:200px;margin-right:auto; }
+7. p { margin-left:auto;width:200px;margin-right:50px; }
+8. p { margin-left:50px;width:200px;margin-right:50px; }
+</pre>
+
+
+
+
+<p>将这8种可能的CSS规则应用到上面的标记以后，会得到如图3所示的结果（图中为父元素<code>div</code>添加了边框，而为了表示内容区的宽度，也为<code>p</code>元素添加了背景）。</p>
+
+
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/345658/o_layout4.gif" alt="enter image description here"></p>
+
+
+
+
+<p><strong>图4 自动宽度的8种可能性</strong></p>
+
+
+
+
+<p>下面，我们就来逐一分析这8种情况：</p>
+
+
+
+
+<p><strong>第一种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:auto;width:auto;margin-right:auto; }</code></p>
+
+
+
+
+<p>即，三个属性全都取<code>auto</code>值。如图3所示，结果是<code>p</code>元素的内容区的宽度和父元素<code>div</code>的宽度相等。根据前面的公式（此例未考虑左右边框和内边距，假设它们全取默认值0）我们知道，此时的<code>margin-left:auto</code>和<code>margin-right:auto</code>等同于<code>margin-left:0</code>和<code>margin-right:0</code>。或者说此时的左右外边距都等于0。</p>
+
+
+
+
+<p><strong>第二种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:50px;width:auto;margin-right:auto; }</code></p>
+
+
+
+
+<p>即，把左外边距明确设置为50像素，<code>width</code>和<code>margin-right</code>的值仍然是<code>auto</code>。如图3所示，结果是<code>p</code>元素的内容区宽度等于<code>div</code>元素的宽度减去50像素。也就是说，此时左外边距是50像素，而<code>margin-right:auto</code>相当于<code>margin-right:0</code>，即右外边距为0。</p>
+
+
+
+
+<p><strong>第三种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:auto;width:auto;margin-right:50px; }</code></p>
+
+
+
+
+<p>与第二种情况类似，只不过是把右外边距而不是左外边距明确设置为50像素。图3所示的结果告诉我们，此时右外边距是50像素，而左外边距为0。<br>
+（以上三种情况，值为auto的外边距都被重置为默认值0）</p>
+
+
+
+
+<p><strong>第四种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:50px;width:auto;margin-right:50px; }</code></p>
+
+
+
+
+<p>这次是把左、右外边距都明确地设置为50像素，而只有<code>width</code>属性是<code>auto</code>。如图3所示，结果是<code>p</code>元素内容区的宽度等于<code>div</code>的宽度减去（50+50=）100像素。也就是说，50像素的左、右外边距是有效的。<code>p</code>元素内容区在左右外边距之间以自动适应的宽度值补足了<code>div</code>元素的宽度。</p>
+
+
+
+
+<p><strong>第五种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:auto;width:200px;margin-right:auto; }</code></p>
+
+
+
+
+<p>这次把左、右外边距都设置为<code>auto</code>，而把<code>width</code>明确地设置为200像素。如图3所示，结果是<code>p</code>元素的内容区宽度就是设置的200像素，而且，由于左右外边距同为<code>auto</code>，使得<code>p</code>元素在<code>div</code>元素中水平居中。这种情况也是网页布局中最常用的居中块级元素居的主要手段。</p>
+
+
+
+
+<p><strong>第六种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:50px;width:200px;margin-right:auto; }</code></p>
+
+
+
+
+<p>这次<code>margin-left</code>和<code>width</code>分别明确设置成了50px和200px，只有右外边距的值是<code>auto</code>。从图3中可以看到，结果是<code>p</code>元素的内容区就是设置的200像素，而左外边距也是设置的50像素。但右外边距此时在前两个部分之后以自动适应的宽度值补足了<code>div</code>元素的宽度。</p>
+
+
+
+
+<p><strong>第七种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:auto;width:200px;margin-right:50px; }</code></p>
+
+
+
+
+<p>与第六种情况相似，但这次是左外边距在后两个部分之前以自动适应的宽度值补足了<code>div</code>元素的宽度。</p>
+
+
+
+
+<p><strong>第八种情况：</strong></p>
+
+
+
+
+<p>规则是 <code>p { margin-left:50px;width:200px;margin-right:50px; }</code></p>
+
+
+
+
+<p>这是一种典型的情况，即三个属性都明确地设置相应的值。从图3的结果中我们看到，只有左外边距和<code>p</code>元素内容区的宽度是设置的值。右外边距虽然也明确设置了50像素的值，但实际情况就像是使用了<code>auto</code>的第六种情况一样。实际上，在三个属性都明确设置了值，但其中一个值在没有解的情况下－－即在不能满足三者之和等于<code>div</code>元素宽度的情况下－－在从左往右阅读的语言中，会把右外边距重置为自动适应的宽度值，也就是<code>auto</code>。</p>
+
+
+
+
+<p><strong>小结</strong></p>
+
+
+
+
+<p>通过对以上8种可能情况的逐一分析，我们可以得出如下结论：</p>
+
+
+
+
+<ol>
+<li>在<code>width</code>属性的值设置成<code>auto</code>的情况下，块级元素内容区的宽度取决于左右外边距是否明确设置了值。如果左右外边距值都是<code>auto</code>，则左右外边距的值都会被重置为默认的值0；如果左右外边距中只有一个值是<code>auto</code>，则该值被重置为0，另一个值有效；如果左右外边距都设置了明确的值，两个值都将有效，此时元素内容区的宽度就是父元素的宽度减去左右外边距后的值。需要说明的是，左右外边距的默认值是0，这意味着如果没有在CSS规则中声明<code>margin-left</code>或者<code>margin-right</code>，它们就会使用默认值0。</li>
+<li>在<code>width</code>属性的值设置为大于0的值的情况下，块级元素内容区的宽度就是由<code>width</code>属性设置的值。此时，左右外边距的值如果都是<code>auto</code>，则会使块级元素在其父元素中居中；如果左右外边距中只有一个值是<code>auto</code>，则明确设置的值有效，<code>auto</code>值会自动适应剩余的宽度；如果左右外边距都设置了明确的值，那么在从左往右阅读的语言中，会把右外边距的值重置为<code>auto</code>。</li>
+</ol>
+
+
+
+
+<blockquote style="border:2px solid #efefef;color:#333333;padding:5px 10px">
+  <p><strong>（注：本文所说“设置明确的值”，是指设置了大于0的值）</strong></p>
+  
+  <p>以下是今天（2012年1月17日）在Chrome中做的一个测试的截图。<br>
+  <img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/345658/o_layout5.png" alt="enter image description here"></p>
+</blockquote>
+
+
+<p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2325443.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/01/18/2325443.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

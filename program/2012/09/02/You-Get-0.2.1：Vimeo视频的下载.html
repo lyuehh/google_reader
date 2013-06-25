@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>You-Get 0.2.1：Vimeo视频的下载</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>You-Get 0.2.1：Vimeo视频的下载</h2>
+<p class="meta">02 Sep 2012</p>
+
+<div class="post">
+<h2>You-Get 0.2.1：Vimeo视频的下载</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-02 15:00:00</h3>
+
+<h3>original <a href="http://www.soimort.org/tech-blog/2012/09/02/you-get.html">http://www.soimort.org/tech-blog/2012/09/02/you-get.html</a></h3>
+
+<p>Python 3的YouTube/优酷视频下载工具<a href="https://github.com/soimort/you-get">You-Get</a>今天更新到0.2.1版了。</p>
+
+
+
+
+<p>新版本特性一览：</p>
+
+
+
+
+<ul>
+<li>添加了对<a href="http://vimeo.com">Vimeo</a>的支持。</li>
+<li>添加了对youku-lixian所支持的其他所有视频网站的支持：
+
+<ul>
+<li>AcFun <a href="http://www.acfun.tv">http://www.acfun.tv</a></li>
+<li>bilibili <a href="http://www.bilibili.tv">http://www.bilibili.tv</a></li>
+<li>CNTV <a href="http://www.cntv.cn">http://www.cntv.cn</a></li>
+<li>爱奇艺 <a href="http://www.iqiyi.com">http://www.iqiyi.com</a></li>
+<li>酷6网 <a href="http://www.ku6.com">http://www.ku6.com</a></li>
+<li>PPTV <a href="http://www.pptv.com">http://www.pptv.com</a></li>
+<li>新浪视频 <a href="http://video.sina.com.cn">http://video.sina.com.cn</a></li>
+<li>搜狐视频 <a href="http://tv.sohu.com">http://tv.sohu.com</a></li>
+<li>56网 <a href="http://www.56.com">http://www.56.com</a></li>
+<li>凤凰视频 <a href="http://v.ifeng.com">http://v.ifeng.com</a></li>
+</ul>
+</li>
+<li>加上0.0.1版中原有的支持：
+
+<ul>
+<li>YouTube <a href="http://www.youtube.com">http://www.youtube.com</a></li>
+<li>音悦台 <a href="http://www.yinyuetai.com">http://www.yinyuetai.com</a></li>
+<li>优酷 <a href="http://www.youku.com">http://www.youku.com</a></li>
+<li>土豆 <a href="http://www.tudou.com">http://www.tudou.com</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+<p>至此，You-Get已经实现了youku-lixian全部功能的同等替代。</p>
+
+
+
+
+<h2><a href="http://pypi.python.org/pypi">芝士商店（Cheeseshop）</a>上架啦！</h2>
+
+
+
+
+<p><a href="http://pypi.python.org/pypi/you-get/">You-Get</a>已经在<a href="http://pypi.python.org/pypi">PyPI（Cheeseshop）</a>上<a href="http://pypi.python.org/pypi/you-get/">注册</a>。以后可以直接通过<a href="http://www.pip-installer.org/">Pip</a>或者<a href="http://pypi.python.org/pypi/setuptools">EasyInstall</a>来进行安装和升级：</p>
+
+
+
+
+<pre><code>$ pip install you-get
+
+$ you-get
+</code></pre>
+
+
+
+
+<p>或：</p>
+
+
+
+
+<pre><code>$ easy_install you-get
+
+$ you-get
+</code></pre>
+
+
+
+
+<p>你仍然可以通过从Git获取源码的方式来使用You-Get：</p>
+
+
+
+
+<pre><code>$ git clone git://github.com/soimort/you-get.git
+
+$ cd you-get/
+$ ./you-get
+</code></pre>
+
+
+
+
+<p>通过以下命令将You-Get安装到系统路径（与Pip安装等效）：</p>
+
+
+
+
+<pre><code>$ make install
+
+$ you-get
+</code></pre>
+
+
+
+
+<h2>命令行的使用</h2>
+
+
+
+
+<p>请参考<a href="https://github.com/soimort/you-get/blob/master/README.md#you-get---%E4%B8%AD%E6%96%87%E8%AF%B4%E6%98%8E">中文说明</a>。</p>
+
+
+
+
+<h2>Python APIs的使用</h2>
+
+
+
+
+<p>这里有一个<a href="https://github.com/soimort/you-get/blob/master/README.md#examples-for-developers">简单的示例</a>。</p>
+
+
+
+
+<h2>技术细节：Vimeo视频的下载 / HTTP headers的正确伪造方法（误）</h2>
+
+
+
+
+<p>简略地介绍一下如何使用Python 3下载Vimeo视频的实现细节，感兴趣的可以看。</p>
+
+
+
+
+<p>Vimeo的视频地址格式主要有类似如下两种（以任意视频为例）：</p>
+
+
+
+
+<p><a href="http://vimeo.com/48070853">http://vimeo.com/48070853</a></p>
+
+
+
+
+<p><a href="http://vimeo.com/channels/staffpicks/48070853">http://vimeo.com/channels/staffpicks/48070853</a></p>
+
+
+
+
+<p>无论哪种URL，最后的一串数字就是Vimeo视频的ID。用一行正则表达式匹配获取这个ID（令视频地址为变量<code>url</code>）：</p>
+
+
+
+
+<pre><code>id = re.search(r'http://\w*vimeo.com[/\w]*/(\d+)$', url).group(1)
+</code></pre>
+
+
+
+
+<p>在相应的HTML页面中（令HTML内容存放于变量<code>html</code>），我们需要抓取三个重要的JSON信息：</p>
+
+
+
+
+<pre><code>signature = re.search(r'"signature":"([^"]+)"', html).group(1)
+timestamp = re.search(r'"timestamp":([^,]+)', html).group(1)
+title = re.search(r'"title":"([^"]+)"', html).group(1)
+</code></pre>
+
+
+
+
+<p><code>title</code>即为视频的标题。其他两个变量值<code>signature</code>和<code>timestamp</code>用来和<code>id</code>一同构成视频的真实地址：</p>
+
+
+
+
+<pre><code>url = &#39;http://player.vimeo.com/play_redirect?clip_id=%s&amp;sig=%s&amp;time=%s&#39; \
+% (id, signature, timestamp)
+</code></pre>
+
+
+
+
+<p>我在这里得到的<code>signature</code>是<code>80e1d7a8ee1e7fecce971566cbe94a09</code>，<code>timestamp</code>是<code>1346545369</code>，加上视频的<code>id</code>：<code>48070853</code>，合成的<code>url</code>是：</p>
+
+
+
+
+<p><a href="http://player.vimeo.com/play_redirect?clip_id=48070853&amp;sig=80e1d7a8ee1e7fecce971566cbe94a09&amp;time=1346545369">http://player.vimeo.com/play_redirect?clip_id=48070853&amp;sig=80e1d7a8ee1e7fecce971566cbe94a09&amp;time=1346545369</a></p>
+
+
+
+
+<p>但是，这个地址根本就是无效的（既无法用Python进行下一步请求，也不能在浏览器中打开）。原因是，我们直接使用了Python默认的request header来获取HTML内容，而Vimeo采取的下载防范措施禁止我们这么做。所以，直接通过这种方式抓取的视频URL被封禁掉了：</p>
+
+
+
+
+<p><img src="http://i.imgur.com/znGur.png" width="100%"></p>
+
+
+
+
+<p>解决的方法也很简单。子曰：使用伪造headers的人是邪恶的。现在我们就来用这种邪恶的手段抓取Vimeo上的视频地址，让服务器误以为我们的客户端是正常的浏览器，而不是某个不怀好意的Python脚本。</p>
+
+
+
+
+<p>先找到浏览器所使用的request headers：</p>
+
+
+
+
+<p><img src="http://i.imgur.com/ya6BS.png" width="100%"></p>
+
+
+
+
+<p>将其原封不动地照搬到Python里：</p>
+
+
+
+
+<pre><code>fake_headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Charset': 'UTF-8,*;q=0.5',
+    'Accept-Encoding': 'gzip,deflate,sdch',
+    'Accept-Language': 'en-US,en;q=0.8',
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) \
+AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.57 Safari/537.1'
+}
+</code></pre>
+
+
+
+
+<p>在以后凡是向Vimeo发出HTTP请求时，我们只需发送这个假的<code>fake_headers</code>就好了：</p>
+
+
+
+
+<pre><code>response = request.urlopen(request.Request(url, headers = fake_headers), None)
+</code></pre>
+
+
+
+
+<p>Vimeo是我目前见到的唯一一个会根据浏览器的headers来封锁下载的网站。不过如你所见，对于真心想下载视频的人来说，这招基本上没用。。。</p>
+
+
+
+
+<p><a href="https://github.com/soimort/you-get"><img style="border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>我的模块加载系统 v7</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>我的模块加载系统 v7</h2>
+<p class="meta">05 Aug 2011</p>
+
+<div class="post">
+<h2>我的模块加载系统 v7</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2011-08-05 11:26:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html">http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html</a></h3>
+
+<p><p>模块加载系统是我框架的核心模块的一部分，与domReady彻底地整合在一起。当然核心模块还提供了其他常用方法，如数组化，类型判定，简单的事件绑定...本版本有以下改进:</p>
+    <ul>
+      <li>更改隐藏的命名空间escape(DOC.URL.split("#")[0]),为DOC.URL.replace(/(#.+|\W)/g,'');。这个命名空间被其他框架占有的机率几乎为零。</li>
+      <li>强化dom.log方法，让IE6也能打印日志。</li>
+      <li>重构fixOperaError与resolveCallbacks。</li>
+      <li>将provide方法合并到require中去。</li>
+    </ul>
+<p>通过测试的浏览器：IE6-9 FF3.6.12 FF5.1 opera11.50 safari 5 chrome14.0.8</p>
+<pre>
+//=========================================
+// 模块加载模块（核心模块）2011.8.4 by 司徒正美
+//=========================================
+(function(global,DOC){
+    var
+    _dom = global.dom,
+    w3c = DOC.dispatchEvent, //w3c事件模型
+    namespace = DOC.URL.replace(/(#.+|\W)/g,&#39;&#39;);,
+    HEAD = DOC.head || DOC.getElementsByTagName(&quot;head&quot;)[0],
+    class2type = {
+        &quot;[object HTMLDocument]&quot;   : &quot;Document&quot;,
+        &quot;[object HTMLCollection]&quot; : &quot;NodeList&quot;,
+        &quot;[object StaticNodeList]&quot; : &quot;NodeList&quot;,
+        &quot;[object IXMLDOMNodeList]&quot;: &quot;NodeList&quot;,
+        &quot;[object DOMWindow]&quot;      : &quot;Window&quot;  ,
+        &quot;null&quot;                    : &quot;Null&quot;    ,
+        &quot;NaN&quot;                     : &quot;NaN&quot;     ,
+        &quot;undefined&quot;               : &quot;Undefined&quot;
+    },
+    toString = class2type.toString;
+    /**
+     * 糅杂，为一个对象添加更多成员
+     * @param {Object} target 目标对象
+     * @param {Object} source 属性包
+     * @param {Boolean|undefined} override
+     * @return  {Object} 目标对象
+     */
+    function mix(target, source, override) {
+        var key,  ride = (override === void 0) || override;
+        for (key in source) {
+            if (ride || !(key in target)) {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    }
+    /**
+     * @class dom
+     * dom Framework拥有两个命名空间,
+     * 第一个是DOC.URL.split(&quot;#&quot;)[0]，根据页面的地址动态生成
+     * 第二个是dom，我们可以使用别名机制重写它
+     * @namespace dom
+     */
+    var dom = function(expr,context){
+        if(typeof expr == &quot;function&quot;){ 
+            dom.ready(expr, true);
+        }else{
+            if(!dom.fn)
+                throw &quot;must load the &#39;node&#39; module!&quot;
+            return new dom.fn.init(expr,context);
+        }
+    }
+
+    mix(dom,{
+        uuid:1,
+        HTML:DOC.documentElement,
+        HEAD:HEAD,
+        rword:/[^, ]+/g,
+        rreadystate: /loaded|complete|undefined/i,
+        &quot;@name&quot;:&quot;dom&quot;,
+        &quot;@debug&quot;:true,
+        &quot;@emitter&quot;: w3c ? &quot;addEventListener&quot; : &quot;attachEvent&quot;,
+        /**
+         * 别名机制(相当于jquery的noConflict)
+         * @param {String} name 新的命名空间
+         */
+        exports: function(name) {
+            _dom &amp;&amp; (global.dom = _dom);
+            name = name || dom[&quot;@name&quot;];
+            dom[&quot;@name&quot;] = name ;
+            global[name] = global[namespace] = this;
+        },
+        /**
+         * 数组化
+         * @param {ArrayLike} nodes 要处理的类数组对象
+         * @param {Number} start 可选。要抽取的片断的起始下标。如果是负数，从后面取起
+         * @param {Number} end  可选。规定从何处结束选取
+         * @return {Array}
+         */
+        slice: function (nodes, start, end) {
+            for(var i = 0,n = nodes.length, result = []; i &lt; n; i++){
+                result[i] = nodes[i];
+            }
+            if (arguments.length &gt; 1) {
+                return result.slice(start , (end || result.length));
+            } else {
+                return result;
+            }
+        },
+        /**
+         * curry化
+         * @param {Any} a
+         * @return {Function} 新函数
+         */
+        K:function (a) {
+            return function() {
+                return a;
+            };
+        },
+        /**
+         * 用于取得数据的类型或判定数据的类型
+         * @param {Any} obj 要检测的东西
+         * @param {String} str 要比较的类型
+         * @return {String|Boolean}
+         */
+        type : function(obj, str){
+            var result = class2type[ (obj == null || obj !== obj )? String(obj) :  toString.call(obj)  ] || obj.nodeName || &quot;#&quot;;
+            if( result.charAt(0) === &quot;#&quot;){//兼容旧式浏览器与处理个别情况,如window.opera
+                if(obj.window==obj){
+                    result = &#39;Window&#39;; //返回构造器名字
+                }else if(obj.nodeType === 9) {
+                    result = &#39;Document&#39;;//返回构造器名字
+                }else if(  obj.callee ){
+                    result = &#39;Arguments&#39;;//返回构造器名字
+                }else if(isFinite(obj.length) &amp;&amp; obj.item ){
+                    result = &#39;NodeList&#39;; //处理节点集合
+                }else if(obj.open &amp;&amp; obj.send ){
+                    result = &quot;XMLHttpRequest&quot;;
+                }else{
+                    result = toString.call(obj).slice(8,-1);
+                }
+            }
+            if(str){
+                return str === result;
+            }
+            return result;
+        },
+        /**
+         * 用于调试，如果是IE6直接打印到页面上
+         * @param {String} s 要打印的内容
+         * @param {Boolean} force 强制打印到页面上
+         */
+        log:function(s, force){
+            if(force || !global.console){
+                var div =  DOC.body &amp;&amp; DOC.createElement(&quot;div&quot;);
+                if(div){
+                    div.innerHTML = s;
+                    DOC.body.appendChild(div)
+                }
+            }else{
+                global.console.log(s);
+            }
+        },
+        /**
+         * 生成键值统一的对象，用于高速化判定
+         * @param {Array|String} array 如果是字符串，请用&quot;,&quot;或空格分开
+         * @param {Number} val 可选，默认为1
+         * @return {Object}
+         */
+        oneObject : function(array, val){
+            if(typeof array == &quot;string&quot;){
+                array = array.match(dom.rword) || [];
+            }
+            var result = {},value = val !== void 0 ? val :1;
+            for(var i=0,n=array.length;i &lt; n;i++){
+                result[array[i]] = value;
+            }
+            return result;
+        }
+    });
+    &quot;Boolean,Number,String,Function,Array,Date,RegExp,Window,Document,Arguments,NodeList,XMLHttpRequest&quot;.replace(dom.rword,function(name){
+        class2type[ &quot;[object &quot; + name + &quot;]&quot; ] = name;
+    });
+
+    var
+    rmodule =  /([^(\s]+)\(?([^)]*)\)?/,
+    method = w3c ? &quot;onload&quot; : &quot;onreadystatechange&quot;,
+    stack = [],//用于放置负回调
+    checks = [],//用于放置正向回调或模块本身的wrapper函数
+    status = {};//用于记录每个模块加载状态0 未注册 1 已注册 2 已加载 3已执行
+    /**
+     * 用于模拟opera的script onerror
+     * @param {String} name 模块名
+     * @param {String} url  模块的路径
+     * @param {Element} node 为加载这个模块临时生成的script节点
+     */
+    function fixOperaError(name, url, node){
+        var iframe = DOC.createElement(&quot;iframe&quot;);
+        var code = &#39;&lt;script&gt; window[document.URL.replace(/(#.+|\W)/g,&quot;&quot;)] = {define:function(){} } &lt;\/script&gt;&#39;+
+        &#39;&lt;script src=&quot;&#39;+url+&#39;&quot; onload=&quot;this.ownerDocument.x = 1;&quot;&gt;&lt;\/script&gt;&#39;;
+        iframe.style.display = &quot;none&quot;;
+        HEAD.appendChild(iframe);
+        var d = iframe.contentDocument;
+            d.write(code);
+            d.close();
+        iframe.onload = function(){
+            if(d.x == void 0){
+                removeScript(name, node, true);
+            }
+            iframe.onload = null;//opera无法在iframe被事件绑定时被移除
+            HEAD.removeChild(this);
+        };
+    }
+    //执行并移除所有依赖都具备的模块或回调
+    function resolveCallbacks(){
+       for (var i = checks.length, obj; obj = checks[--i]; ) {
+            for(var name in status){
+                if(status[name] == 3 &amp;&amp; obj.deps[&quot;@&quot;+name]){
+                    delete obj.deps[&quot;@&quot;+name];
+                    obj.length--;
+                    dom[&quot;@debug&quot;] &amp;&amp;  dom.log(obj.length+&quot; &quot;+name);//调试用
+                }
+            }
+            if(!obj.length){
+                checks.splice(i,1);//必须先移除再执行，防止在IE下DOM树建完后手动刷新页面，会多次执行最后的回调函数
+                obj.callback();//装配模块到主干或执行最后的回调
+            }
+        }
+    }
+    /**
+     * 为加载模块而临时生成一个script节点
+     * @param {String} name 模块名
+     * @param {String} url  模块的路径
+     */
+    function appendScript(name, url){
+        var node = DOC.createElement(&quot;script&quot;);
+        url = url  || dom.basePath +&quot;/&quot;+ name + &quot;.js&quot; + (dom[&quot;@debug&quot;]? &quot;?timestamp=&quot;+new Date : &quot;&quot;);
+        node.charset = &quot;utf-8&quot;;
+        node.async = true;
+        node.onerror = function(){
+            removeScript(name, this, true);
+        }
+        node[method] = function(){
+            if (dom.rreadystate.test(this.readyState) ){
+                resolveCallbacks();
+                resolveCallbacks();//确保所有能清除的依赖都清除
+                removeScript(name, this );
+            }
+        }
+        node.src =  url;
+        global.opera &amp;&amp; fixOperaError(name, url, node);
+        HEAD.insertBefore(node,HEAD.firstChild);
+    }
+    /**
+     * 移除临时生成的script节点
+     * @param {String} name 模块名
+     * @param {Element} node 为加载这个模块临时生成的script节点
+     * @param {Boolean} error 是否加载失败
+     */
+    function removeScript(name, node, error){
+        var parent = node.parentNode;
+        if(parent &amp;&amp; parent.nodeType === 1){
+            if(error || status[name] === 1){
+                dom.stack(&#39;dom.log(&quot;fail to load module [ &#39;+name+&#39; ]&quot;)&#39;);
+                dom.stack(true);//打印错误堆栈
+            }
+            if (node.clearAttributes) {
+                node.clearAttributes();
+            } else {
+                node[method] = node.onerror = null;
+            }
+            parent.removeChild(node);
+        }
+    }
+
+    mix(dom, {
+        mix:mix,
+        //绑定事件(简化版)
+        bind : w3c ? function(el, type, fn, phase){
+            el.addEventListener(type,fn, phase);
+        } : function(el, type, fn){
+            el.attachEvent(&quot;on&quot;+type, function(){
+                fn.call(el,event);
+            });
+        },
+        stack:function(fn){
+            if(fn === true){
+                while(fn = stack.pop()){
+                    fn();
+                }
+            }else if(typeof fn === &quot;string&quot;){
+                stack.push(new Function(fn));
+            }else if(typeof fn === &quot;function&quot;){
+                stack.push(fn);
+            }
+        },
+        /**
+         * &lt;a href=&quot;http://www.cnblogs.com/rubylouvre/archive/2011/02/10/1950940.html&quot;&gt;核心模块所在路径&lt;/a&gt;
+         * @property
+         * @type String
+         */
+        basePath:(function(url, scripts, node){
+            scripts = DOC.getElementsByTagName(&quot;script&quot;);
+            node = scripts[scripts.length - 1];
+            url = node.hasAttribute ?  node.src : node.getAttribute(&#39;src&#39;, 4);
+            return url.substr( 0, url.lastIndexOf(&#39;/&#39;));
+        })(),
+        /**
+         * 请求模块
+         * @param {String|Array} deps 依赖列表，如果是字符串请用逗号隔开，如果要指定具体路径请写到小括号中
+         * @param {Function} module 正向回调
+         * @param {Function} errback 负向回调
+         */
+        require:function(deps,callback,errback){
+            var names = [];
+            (deps +&quot;&quot;).replace(dom.rword,function(url,name,match){
+                match = url.match(rmodule);
+                name  = match[1];//取得模块名
+                if(!status[name]){ //防止重复生成节点与请求
+                    status[name] = 1;
+                    if(name !== &quot;ready&quot;){
+                        appendScript(name,match[2]);//加载JS文件
+                        dom.stack(errback);//压入错误堆栈
+                    }
+                }
+                if(!names[&quot;@&quot;+name]){//防止&quot;node,oop,node&quot;的情况
+                    names.push(name);
+                    names[&quot;@&quot;+name] = 1;
+                }
+            });
+            checks.push({
+                name:callback._name,
+                callback:callback,
+                deps:names,
+                length:names.length
+            });
+        },
+        /**
+         * 定义模块
+         * @param {String} name 模块名
+         * @param {String} dependList 依赖列表
+         * @param {Function} module 模块本身
+         */
+        define:function(name,deps,callback){
+            if(typeof deps == &quot;function&quot;){//处理只有两个参数的情况
+                callback = deps;
+                deps = &quot;&quot;;
+            }
+            status[name] = 2;
+            function wrap(){
+                status[name] = 3;
+                callback();
+            }
+            wrap._name = name;
+            //如果是空字符串则置换为空数组
+            this.require(deps,wrap);
+        }
+    });
+    /**
+     * domReady机制
+     * @param {Function} fn 回调函数
+     * @param {Boolean} more 是否加载指定的模块
+     */
+    var Ready = dom.ready = function(fn){
+        if ( Ready.list) {
+            Ready.list.push( fn );
+        }else{
+            fn();
+        }
+    };
+    Ready.list = [];
+    function fireReady(){
+        if(Ready.list){
+            for(var i=0, fn;fn = Ready.list[i++];)
+                fn();
+            delete Ready.list;
+            status.ready = 3;
+            resolveCallbacks();//fix opera没有执行最后的回调
+        }
+    };
+    function doScrollCheck() {
+        try {
+            dom.HTML.doScroll(&quot;left&quot;);
+            fireReady();
+        } catch(e) {
+            setTimeout( doScrollCheck, 0);
+        }
+    };
+    //开始判定页面的加载情况
+    if ( DOC.readyState === &quot;complete&quot; ) {
+        fireReady();
+    }else {
+        dom.bind(DOC, (w3c ? &quot;DOMContentLoaded&quot; : &quot;readystatechange&quot;), function(){
+            if (w3c || DOC.readyState === &quot;complete&quot;) {
+                fireReady();
+            }
+        });
+        try {
+            //http://bugs.jquery.com/ticket/4787 
+            //在IE6下,内嵌页面如果重设了document.domain，访问window.frameElement抛错，
+            //但是经过多次try catch后，才能访问该值
+            var toplevel = global.frameElement == null;
+        } catch(e) {};
+        if ( dom.HTML.doScroll &amp;&amp; toplevel ) {
+            doScrollCheck();
+        }
+    }
+    dom.exports();
+})(this,this.document);
+/**
+ 2011.7.11
+@开头的为私有的系统变量，防止人们直接调用,
+dom.check改为dom[&quot;@emitter&quot;]
+dom.namespace改为dom[&quot;@name&quot;]
+去掉无用的dom.modules
+优化exports方法
+2011.8.4
+强化dom.log，让IE6也能打印日志
+重构fixOperaError与resolveCallbacks
+将provide方法合并到require中去
+ */
+
+</pre>
+<p>每个模块的定义如下(请确保模块名与文件名要一致，名字不能取名为"ready"，那是一个标识符，表示最后的回调函数要延迟到domReady之外才执行)：</p>
+<pre>
+//class.js
+(function(global,DOC){
+    var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+    dom.define("class","lang",function(){//模块名，依赖模块的名字，模块本身
+       dom.log("class模块")
+    });
+})(this,this.document);
+</pre>
+<p>依赖于多个模块时：</p>
+<pre>
+//node.js
+(function(global,DOC){
+    var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+    dom.define("node", "class,support,query,data",function(){//第二个参数也可以改成字符串数组
+       dom.log("node模块")
+    });
+})(this,this.document);
+</pre>
+
+<p>或者使用以下精简模式，但这也意味着让框架的别名机制报废了。</p>
+<pre>
+   dom.define("class","lang",function(){
+       dom.log("class模块")
+    });
+</pre>
+<p>别名机制。像EXT那样多文件框架不能让别人占用EXT这个命名空间的，那dom Framework是怎样做到的呢？关键在于其模块的定义。每个JS文件里面都是一个<a href="http://benalman.com/news/2010/11/immediately-invoked-function-expression/">Immediately-Invoked Function Expression (IIFE)</a>，这些模块依赖的是document.URL.split("#")[0]这个隐藏命名空间，而不是"dom"命名空间。如果不喜欢"dom"这个名字，想用"$"这个更大众化的名字，我们可以使用dom.exports方法进行重新命名。exports顾名思义，就是把新名字输出到全局作用域下，它也起到与jQuery的noConflict一样的作用，防止与其他框架相冲突。</p>
+<pre>
+      dom.exports("$")
+      dom = "取消"
+      $.require("ready,attr",function(){
+        $.log("执行最后的回调函数")
+      });
+</pre>
+<p>如果某模块的JS文件与核心模块的JS文件不在同一文件下，比如是在核心模块dom.js的所在文件夹下的ajax文件下，那它的模块名定义如下：</p>
+<pre>
+// 位置  ajax/base.js
+      (function(global,DOC){
+          var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+          dom.define("ajax/base","ajax/jxhr", function(){
+                    //模块代码
+          })
+      })(this,this.document)
+</pre>
+<p>如果某模块压底就是与核心模块不在同一台服务器下，我们可以通过"module_name(url)"这种形式来指定其地址。</p>
+<pre>
+// 位置  http://www.cnblogs.com/rubylouvre/dom/css.js
+      (function(global,DOC){
+          var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+          dom.define("css(http://www.cnblogs.com/rubylouvre/dom/css.js)","lang", function(){
+                    //模块代码
+          })
+      })(this,this.document)
+</pre>
+<p>dom.require提供了强大的负向回调支持。它拥有三个参数，依赖列表（可以是字符串数组，或由逗号或空间隔开的字符串），正向回调（当所有依赖的模块加载成功时执行），负向回调（可选，当某一个模块不存在不存在时，就立即中止整个请求链）。为了减少框架因为加载模块而为原DOM树添加多余的script节点，这些临时生成的script节点都会在模块成功加载后移除，或当请求地址不存在时，通过onerror把它移除。在opera与IE6-8下，script不支持onerror，不过我的模块加载系统 v5中已创造性地解决这问题，v7中让它们支持得更加完美！</p>
+<pre>
+      dom.require("ready,attr2",function(){
+        alert("执行最后的回调函数")
+      },function(){
+        alert("发生错误了,并没有attr2这个模块或对应的同名JS文件")
+      });
+</pre>
+<p>对第三方框架类库的支持，需要做一些修改，如jquery框架，修改如下：</p>
+<pre>
+(function(global,DOC){
+    var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+    dom.define("jquery",function(){//没有依赖时，只需两个参数
+       //jquery源码
+    });
+})(this,this.document);
+</pre>
+<p>实践，在页面上引用dom.js这个核心模块，然后通过require调用其他你需要的模块。</p>
+<pre>
+
+&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;并行加载器&lt;/title&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;http://www.cnblogs.com/neo/dom.js&quot;&gt;
+    &lt;/script&gt;
+    &lt;script&gt;
+      dom.exports(&quot;$&quot;)
+      dom = &quot;取消&quot;
+      $.require(&quot;ready,attr&quot;,function(){
+        $.log(&quot;执行最后的回调函数&quot;)
+        alert(&quot;111111111&quot;)
+      });
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;并行加载器 by 司徒正美&lt;/h1&gt;
+
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/199042/o_dom_core.jpg"></p>
+
+<p>相关链接<a href="http://www.cnblogs.com/rubylouvre/archive/2011/07/12/2104777.html">我的模块加载系统 v6</a></p>
+<img src="http://www.cnblogs.com/rubylouvre/aggbug/2127791.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rubylouvre/">司徒正美</a> 发表于 2011-08-05 11:26 <a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html">原文链接</a></p><p>评论: 2　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/112613/">摩托之卖与谷歌之买</a><span style="color:gray">(2011-08-22 16:41)</span><br>· <a href="http://news.cnblogs.com/n/112612/">Symbian Belle 上手初评</a><span style="color:gray">(2011-08-22 16:34)</span><br>· <a href="http://news.cnblogs.com/n/112611/">开发者自立门户前请考虑五件事</a><span style="color:gray">(2011-08-22 16:22)</span><br>· <a href="http://news.cnblogs.com/n/112609/">传三星考虑牵手惠普 接管PC和webOS业务</a><span style="color:gray">(2011-08-22 16:18)</span><br>· <a href="http://news.cnblogs.com/n/112608/">鞋类B2C淘鞋网正式启用taoxie.com域名</a><span style="color:gray">(2011-08-22 16:10)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/JimmyZhang/archive/2011/08/20/2146390.html">大道至简，职场上做人做事做管理</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

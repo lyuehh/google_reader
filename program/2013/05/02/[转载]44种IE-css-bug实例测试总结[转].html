@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[转载]44种IE css bug实例测试总结[转]</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[转载]44种IE css bug实例测试总结[转]</h2>
+<p class="meta">02 May 2013</p>
+
+<div class="post">
+<h2>[转载]44种IE css bug实例测试总结[转]</h2>
+
+<h3>by 晴方好玲</h3>
+
+<h3>at 2013-05-02 15:11:56</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_897db7b50101b4et.html">http://blog.sina.com.cn/s/blog_897db7b50101b4et.html</a></h3>
+
+<div style="padding-top:15px;margin:20px 0;border:none;border-top:1px dotted #ccc"><div style="margin-bottom:12px"><span style="margin-right:25px"><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_6c07dac30100lfft.html" title="44种IE css bug实例测试总结[转]">44种IE css bug实例测试总结[转]</a></span><span><strong>作者：</strong><a href="http://blog.sina.com.cn/u/1812454083" title="yychao">yychao</a></span></div><div><div>
+<div>
+<p>  
+ web前端，我们可以把它理解成浏览器端。从这种意义上来讲，开发者日常工作跟浏览器关系是相对紧密的；我们今天要探讨的问题，就是关于浏览器中的另类（当然开发人员是这么认为的）—IE
+对CSS解释和渲染上的一些bug，以及对这些bug的解决方案。</p>
+<p>  
+ 当然你会说，ie的CSS
+bug咱都给haslayout属性来解决不就完了；您这就有点儿太低估ie的“能力”了；不否认在接下来的实例中，确实有的bug是haslayout属性造成的，但不是全部。</p>
+<p>  
+ 以下的44个bug及解决方案实例是从一篇老外的博文上翻译过来的（其实这博客地址已经在我的收藏夹呆了快一年）了，之所以这次抽时间来翻译它，也是因为最近项目中出现的N多问题，我发现都能从这里找到；其实早前在豆丁网上看到有人翻译过(只是对BUG
+list做了简单的翻译，而实例却没有)，我想自己亲自来做一变实例测试，对自己还是有很大好处的，而且也想把这个拿出来分享。</p>
+<p>  
+ 注意：1)以下关于ie 的CSS
+bug在我注明的测试日之前是一直存在的(吼吼。。以后的事儿谁也不知道)；2)关于bug的解决方案在我注明测试日之前是有效的。3)查看bug请点击bug
+Name 相关链接，查看解决方案请点击”<font color="#ED1C24"><b>GO</b></font>”;<br>
+说明：如果您觉得看英文比较爽，<a title="haslayout.net" href="http://haslayout.net/css/">请猛点这里查看原文</a>(<a href="http://haslayout.net/css/">http://haslayout.net/css/</a>)<br>
+<ins></ins><br>
+<strong>实例LIST&gt;&gt;</strong></p>
+<table border="1">
+<caption>General Internet Explorer <td><abbr title="Cascading Style Sheets">CSS</abbr> Bugs</td></caption>
+<thead>
+<tr>
+<th>Bug Name</th>
+<th>影响版本</th>
+<th>解决方案</th>
+<th>bug描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a title="&#39;Image Label Focus Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_01.html">&gt;label标签中有img标签 无法focus到表单元素</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_01_Solution.html">Go</a></td>
+<td>当img标签包含在label标签中，点击img标签时，无法触发form元素选中事件</td>
+</tr>
+<tr>
+<td><a title="&#39;No Auto-Margin Center on Buttons Inconsistency&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_02.html">&gt;button元素 不会自动居中</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_02_Solution.html">Go</a> <a href="http://ued.iciba.com/Demo/alex/20100823/G_02_Solution_2.html">Go2</a></td>
+<td>Button元素和input元素如：type=submit,type=button,type=reset and so
+on,当应用{display:block;margin-left:auto;margin<br>
+:auto;}属性时，是不起作用的。</td>
+</tr>
+<tr>
+<td><a title="&#39;Incorrect Float Shrink-Wrap Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_03.html">&gt;错误的浮动布局</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_03_Solution.html">Go</a></td>
+<td>连续N个浮动元素且有clear属性时，显示出错误的排版（宽度没有自适应）</td>
+</tr>
+<tr>
+<td><a title="&#39;Document Scrollbars Overflow Inconsistency&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_04.html">&gt;页面滚动Bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_04_solution.html">Go</a></td>
+<td>非常怪异的溢出，看代码</td>
+</tr>
+<tr>
+<td><a title="&#39;Float Squeeze Weird Gap Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_05.html">&gt;连续浮动元素Bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_05_solution.html">Go</a></td>
+<td>在连续浮动元素中，最后一个与倒数第2个元素间会出现一段留白。</td>
+</tr>
+<tr>
+<td><a title="&#39;Float Squeeze Duplicate Last Character Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_06.html">&gt;连续浮动元素会重复出现最后一个元素的Bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_06_solution.html">Go</a></td>
+<td>在连续浮动元素中，最后一个元素是重复的。</td>
+</tr>
+<tr>
+<td><a title="&#39;Empty Element Height Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_07.html">&gt;空标签会有height值</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_07_solution.html">Go</a></td>
+<td>拥有layout属性的空标签会有height值</td>
+</tr>
+<tr>
+<td><a title="&#39;Form Control Double Margin Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_08.html">&gt;表单元素双margin值</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_08_solution.html">Go</a></td>
+<td>input textarea元素在水平方向的margin值会继承父级元素的margin和“layout”</td>
+</tr>
+<tr>
+<td><a title="&#39;IE7 1px Dotted Border Appears As Dashed Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_09.html">&gt;边框dotted属性值等同dashed属性值ie7</a></td>
+<td>IE7</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_09_solution.html">Go</a></td>
+<td>当元素某边应用{1px dotted}属性且至少有一边的宽度大于1px时，dotted会出现dashed效果</td>
+</tr>
+<tr>
+<td><a title="&#39;Relative Overflow Failure Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_10.html">&gt;relative属性overflow失效</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_10_solution.html">Go</a></td>
+<td>当子元素设置position为relative的时候，父元素的overflow属性值hidden与auto均失效</td>
+</tr>
+<tr>
+<td><a title="&#39;IE7 &quot;Broken&quot; :hover Absolute Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_11.html">&gt;IE7 “Broken” :hover Absolute Bug</a></td>
+<td>IE7</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_11_solution.html">Go</a></td>
+<td>当子元素设置position为relative的时候，父元素的overflow属性值hidden与auto均失效</td>
+</tr>
+<tr>
+<td><a title="&#39;Button Background Shift On :active Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_12.html">&gt;Button Background Shift On :active
+Bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_12_solution.html">Go</a></td>
+<td>:active时背景偏移当在button input type=”submit”标签应用:active状态时
+背景偏上及偏下</td>
+</tr>
+<tr>
+<td><a title="&#39;Invisible Hover Border Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_13.html">&gt;Invisible Hover Border Bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_13_solution.html">Go</a></td>
+<td>hover时边框隐藏元素设置了outline属性，当:hover状态时，bottom边框会完全不显示或少1px;</td>
+</tr>
+<tr>
+<td><a title="&#39;Percentage Padding Margin Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_14.html">&gt;Percentage Padding Margin Bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_14_solution.html">Go</a></td>
+<td>
+元素垂直方向设置margin值，且父元素设置了padding值为百分比以及父元素的父级设置了border或padding属性是，产生的bug，且看实例：</td>
+</tr>
+<tr>
+<td><a title="&#39;Image Float Bullet Chaos Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_15.html">&gt;图片浮动list标记bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_15_solution.html">Go</a></td>
+<td>当list有浮动图片是list标记位置错误或根本不显示</td>
+</tr>
+<tr>
+<td><a title="&#39;Non-Inherited TH Text-Align Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_16.html">&gt;TH标签没有继承text-align属性bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_16_solution.html">Go</a></td>
+<td>TH元素不会继承来自其父元素的text-align的属性值</td>
+</tr>
+<tr>
+<td><a title="&#39;32 Styles Limitation&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_17.html">&gt;32个style限制</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_17_solution.html">Go</a></td>
+<td>页面中style标签大于等于32个时，第32个及之后的style都将被忽略（当然包括<br>
+@import这种形式外链的样式表）</td>
+</tr>
+<tr>
+<td><a title="&#39;Hover White Background Ignore Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_18.html">&gt;hover状态下白色背景忽略bug</a></td>
+<td>IE7</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_18_solution.html">Go</a></td>
+<td>:hover时背景不会改变</td>
+</tr>
+<tr>
+<td><a title="&#39;IE7 Child Selector Comment Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_19.html">&gt;ie7下子选择器注释bug</a></td>
+<td>IE7</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_19_solution.html">Go</a></td>
+<td>在注释后包含有子选择器的选择器会被忽视；</td>
+</tr>
+<tr>
+<td><a title="&#39;Star HTML Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_20.html">&gt;使用*HTML bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_20_solution.html">Go</a></td>
+<td>* HTML选择器ie6是能识别的</td>
+</tr>
+<tr>
+<td><a title="&#39;IE6 !important Ignore Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_21.html">&gt;ie6忽略！important bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_21_solution.html">Go</a></td>
+<td>当我们在CSS规则后面加上!important 关键字时，ie6是不能识别的；</td>
+</tr>
+<tr>
+<td><a title="&#39;PNG Image and Background Color Mismatch&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_22.html">&gt;PNG背景与背景颜色不匹配</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_22_solution.html">Go</a></td>
+<td>元素应用PNG背景图片与背景颜色，且PNG图片的颜色与背景颜色值相同，但ie表现bug</td>
+</tr>
+<tr>
+<td><a title="&#39;No Auto Margin Center Pseudo-Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_23.html">&gt;margin值为auto无法居中 暂且叫伪bug</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_23_solution.html">Go</a></td>
+<td>给块级元素设置margin值为auto时没法居中</td>
+</tr>
+<tr>
+<td><a title="&#39;:first-line !important Rule Ignore Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_24.html">&gt;:first-line !important规则无用</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_24_solution.html">Go</a></td>
+<td>当应用:first-line伪类，且有!important规则是，在ie8下是无法正常显示的</td>
+</tr>
+<tr>
+<td><a title="&#39;:first-letter Ignore Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_25.html">&gt;:first-letter忽视bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_25_solution.html">Go</a></td>
+<td>此bug是由一个有趣的原因引起；</td>
+</tr>
+<tr>
+<td><a title="&#39;Partial Click Bug v2&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_26.html">&gt;不完全的点击bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_26_solution.html">Go</a></td>
+<td>a元素仅仅在有文字的地方才能点击，且:hover效果也只有鼠标移动到文字上才会出现</td>
+</tr>
+<tr>
+<td><a title="&#39;Staircase Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_27.html">&gt;浮动元素阶梯状bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_27_solution.html">Go</a></td>
+<td>浮动元素像楼梯状排列在一起</td>
+</tr>
+<tr>
+<td><a title="&#39;Disappearing List Background Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_28.html">&gt;列表背景消失bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_28_solution.html">Go</a></td>
+<td>li,dt,dd元素背景不显示</td>
+</tr>
+<tr>
+<td><a title="&#39;noscript Ghost Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_29.html">&gt;noscript标签背景与边框bug</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_29_solution.html">Go</a></td>
+<td>noscript元素只有在浏览器禁用script时才会出现，但在ie浏览器却非全是如此；</td>
+</tr>
+<tr>
+<td><a title="&#39;No Transparency Click Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_30.html">&gt;透明区域无法点击bug</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_30_solution.html">Go</a></td>
+<td>用PNG图片做背景时，a标签的透明区域无法点击；</td>
+</tr>
+<tr>
+<td><a title="&#39;List Drop Shift Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_31.html">&gt;list位置偏移bug</a></td>
+<td>IE8</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_31_solution.html">Go</a></td>
+<td>在ie8中，我们看到list与标记向下偏移</td>
+</tr>
+<tr>
+<td><a title="&#39;No Increase on &lt;ol&gt; Numbers Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_32.html">&gt;ol列表数没有增加bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_32_solution.html">Go</a></td>
+<td>在ie6 7中我们无法看到ol列表数增加，而始终是1，不会发生变化</td>
+</tr>
+<tr>
+<td><a title="&#39;No Bullets on &lt;ul&gt; and &lt;ol&gt; Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_33.html">&gt;ul与ol列表编号与符号隐藏bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_33_solution.html">Go</a></td>
+<td>在ie6 7中我们无法看到ol与ul列表数与图标；</td>
+</tr>
+<tr>
+<td><a title="&#39;No line-height Vertical Center on Images Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_34.html">&gt;无法让图片垂直居中</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_34_solution.html">Go</a></td>
+<td>给元素使用line-height方法无法让内部图片垂直居中显示；</td>
+</tr>
+<tr>
+<td><a title="&#39;No Background Image Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_35.html">&gt;背景图片不显示</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_35_solution.html">Go</a></td>
+<td>background 属性应用时在ie中背景图片不显示</td>
+</tr>
+<tr>
+<td><a title="&#39;Custom Cursor Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_36.html">&gt;自定义鼠标bug</a></td>
+<td>IE8, IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_36_solution.html">Go</a></td>
+<td>自定义鼠标在ie中不显示</td>
+</tr>
+<tr>
+<td><a title="&#39;Leaking Background Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_37.html">&gt;背景溢出bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_37_solution.html">Go</a></td>
+<td>背景色会从一个元素溢出到与他下面相邻的元素里</td>
+</tr>
+<tr>
+<td><a title="&#39;Expanding Height Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_38.html">&gt;高度扩大Bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_38_solution.html">Go</a> <a href="http://ued.iciba.com/Demo/alex/20100823/G_38_solution_2.html">Go</a></td>
+<td>元素自身的高度大于对其定义的高度（此高度值很小）</td>
+</tr>
+<tr>
+<td><a title="&#39;Expanding Width Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_39.html">&gt;宽度度扩大Bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_39_solution.html">Go</a></td>
+<td>元素自身的高度大于对其定义的宽度(英文状态下)</td>
+</tr>
+<tr>
+<td><a title="&#39;Double Margin Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_40.html">&gt;双边距bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_40_solution.html">Go</a></td>
+<td>浮动元素产生双倍的左右边距</td>
+</tr>
+<tr>
+<td><a title="&#39;Negative Margin Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_41.html">&gt;负边距bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_41_solution.html">Go</a></td>
+<td>当元素定义了负边距时，超出父元素部分会被隐藏掉;</td>
+</tr>
+<tr>
+<td><a title="&#39;Italics Float Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_42.html">&gt;斜体字浮动bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_42_solution.html">Go</a></td>
+<td>浮动元素字体为斜体时，与其相邻的浮动元素会被挤下；</td>
+</tr>
+<tr>
+<td><a title="&#39;3px Gap Bug aka Text Jog Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_43.html">&gt;3px间隙bug</a></td>
+<td>IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_43_solution.html">Go</a></td>
+<td>浮动元素相邻的元素或者有3px的间隙，或者向下移动了位置</td>
+</tr>
+<tr>
+<td><a title="&#39;Text-Align Bug&#39; tutorial" href="http://ued.iciba.com/Demo/alex/20100823/G_44.html">&gt;Text-Align Bug</a></td>
+<td>IE7, IE6</td>
+<td><a href="http://ued.iciba.com/Demo/alex/20100823/G_44_solution.html">Go</a></td>
+<td>text-align属性影响块级元素</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>原文地址(爱词霸UED)：<a href="http://ued.iciba.com/?p=401">http://ued.iciba.com/?p=401</a></p>
+<p><br></p></div></div>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=8"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

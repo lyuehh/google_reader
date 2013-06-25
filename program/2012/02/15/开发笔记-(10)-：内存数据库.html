@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>开发笔记 (10) ：内存数据库</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>开发笔记 (10) ：内存数据库</h2>
+<p class="meta">15 Feb 2012</p>
+
+<div class="post">
+<h2>开发笔记 (10) ：内存数据库</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2012-02-15 12:39:25</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2012/02/dev_note_10.html">http://blog.codingnow.com/2012/02/dev_note_10.html</a></h3>
+
+<p>离上一次写 <a href="http://blog.codingnow.com/cloud/DevNotes">开发笔记</a> 快有一个月了。当然，中间我们放了 10 天的长假。</p>
+
+
+
+
+<p>项目的进展比较缓慢、主要是解决一些琐碎的技术问题，客户端的比较多，服务器这边就是节前的一些 bug 修改和功能完善。大部分工作都不是我自己在做。由于感到人手不足，小规模私下的做了一点点招聘工作。也算物色到一两个同学可以过来一起干的。好久没做招聘工作了，都不知道怎么开始谈。唉，我们这里条件不算好，要求还多，都不好意思开口。</p>
+
+
+
+
+<p>可写的东西其实也不少。今天挑一点来记录一下。</p>
+
+
+
+
+<p>话要说回 <a href="http://blog.codingnow.com/2011/12/dev_note_6.html">开发笔记第六篇</a> ，我谈过结构化数据的共享存储。这个模块细化其实有挺多工作要做。核心部分我自己完成了，没有用太多时间。然后，有位华南理工的同学想来实习。想到他们学校距离我们办公室仅有十分钟步行距离，我便考虑让 logicouter 同学过来试试接手这个模块，做后续开发。当然，他不能全职来做，对旧代码也需要一定时间熟悉，进度比较慢。</p>
+
+
+
+
+<p>我的规划大约是这样的：</p>
+
+
+
+
+<p>核心部分仅仅实现了结构化数据在内存中的表达。但储存在内存中的数据还不能直接使用。C API 虽然实现好了，但性能比较低。我实现的是无锁的数据结构，采用单向链表保存。检索一项属性值都是 O(n) 的复杂度。这显然是不能在项目中直接使用的。为了提供性能，需要再做一层 cache 。在 Lua 虚拟机中，用 hash 表映射。使得读写数据的速度都降低到 O(1) 。因为我自己对 Lua 比较熟悉，所以这步 Lua 的薄封装还是我自己完成的。实测下来，和原生的 Lua 表访问差距不到一个数量级(3,4 倍左右)，是可以接受的范围。比常规 IPC 通讯要快的多，也没有异步通讯的负担。以后编写逻辑代码的时候稍微注意一点就好了。</p>
+
+
+
+
+<p>需要额外开发的工作是，要定义一个数据描述的小语言。类似 C 语言的结构定义。在数据储存中，我没有实现无格式信息的字典类型。 map 的 key 都是在结构定义中预先定义好的，内存中存放的是编号。这一是因为实现简单，而是可以实现成无锁的数据结构。再就是数据结构也能严谨一些，减少 typo （可以立刻检查到）。</p>
+
+
+<pre><code>    &lt;p&gt;一开始我打算直接使用 google protobuf 的协议定义语言。开始做的时候发现意义不大。不如自己定义一个更为简单一些的，切合需求。另外，我们需要更好的多版本支持。大概的样子是这样的：&lt;/p&gt;
+</code></pre>
+
+<pre>
+type Etc {
+  int[] object_id = 1
+}
+
+enum Gender {
+  male = 1
+  female = 2
+}
+
+type main {
+  string name = 1
+  int id = 2
+  Gender gender = 3
+  Etc etc = 4 [deprecated]
+}
+</pre>
+
+
+
+
+<p>这只是一个示意，没有定稿。具体也想让 logicouter 同学自己来设计决定。对于版本更替的问题，我想是必然遇到的。暂时我们采用简单的策略，就是只增加新的域，而不修改老的。但是可以在一些不再支持的域上面标记 deprecated 。有这个标记，我们可以在持久化这些数据的时候做一些处理，并能够逐步淘汰老版本的协议。</p>
+
+
+
+
+<p>Lua 层不会直接利用这段文本来分析数据结构，而是从这段文本生成必要的数据结构信息。它将是一张 lua table 。我们可以动态生成并序列化后 cache 起来。当然直接用 lpeg 直接解析这段文本并不困难。只是，lpeg 的内存开销略大，我们的服务器想尽量保持单个 lua state 的精简, 以方便在同一台机器上可以开出上万个 lua state 。</p>
+
+
+
+
+<p>btw，之前我提到过，我希望尽量把单一的事情放在单一的 lua state 里去做。每个 lua state 处理的业务很小，甚至处理完后可以直接关闭，而不需要承受 gc 的代价。lua 的 bootstrap 过程非常之快，调整后，空的 lua state 占内存非常小（可以减少到 10k 之下）。这样，加载 lua 代码甚至是比较大的一个开销。因为 parser 本身是要消耗内存的，至少要多一份文本代码。你可以把 lua 文本代码做预编译，但是那样对开发不太友好（流程较多）。有些代码是动态生成的，也不方便做这个工作（比如利用 lpeg 解析上述 DSL 并生成 lua 表再做序列化）。如果 lua state 间通讯做的比较完善的话，你可以在一个独立的 lua state 中做这些代码动态生成，或是编译加载的工作，dump 出 byte code （适当做 cache），最后传递给最终的 lua state 使用。既然是 BTW ，那么这些并不是这次工作的重点，只是一个优化方向了。</p>
+
+
+
+
+<p>自定义 DSL 的好处是，你可以对 DSL 做解析，对同一段描述做不同的理解。就拿 deprecated 来说，就可以有专门负责数据持久化的模块分析出来做妥善的数据管理。而当前的逻辑运算的模块则可以忽略掉这些域。</p>
+
+
+
+
+<p>在最终的应用环境中，我们将严格保证按生产消费模式使用这些数据。</p>
+
+
+
+
+<p>对于玩家数据，是一个单一类型的机构（就是例子中的 type main ）。agent 进程 attach 对应玩家的 id ，得到共享内存对象。只有这个 agent 有权力改写共享对象的内容。其它所有服务都只能读这个对象的数据，包括其它的 agent ，场景服务，等等。其它人对这个对象的修改，都需要用 RPC 调用通知 agent 来实现。共享内存带来的好处是，不需要通过 RPC 调用来同步对象的内部数据。而只需要传递 id 和更改消息即可。</p>
+
+
+
+
+<p>数据持久化工作是额外服务完成的，这个服务是一个特例，它可以读写共享数据体。但是在它写的过程中，没有任何其它服务可以读（包括 agent）。它负责从外部数据库中读出对象的全部信息，并写入共享数据体，然后通知 agent 准备好了。或是另一个用来实现离线玩家数据查询的异步 API 。根据之前的分析，这个共享数据体是可以很安全的做数据快照的，不需要 OS 的支持。只需要顺序遍历数据体即可。这个工作也是由这个服务一并完成的，可以采用定期将数据写入数据库的这种策略工作。</p>
+
+
+
+
+<p>这样，保存玩家数据的外部数据库到底用什么反而不太重要了。Redis 也好，Mysql 也罢，是可以替换的。</p>
+
+
+
+
+<p>重要的是，最后提到的这个玩家数据持久化服务对开发尤其重要。我们可以把它看成是一个自制的内存数据库系统。只是可以不通过低效的 socket 访问。除了备份和读取外部数据库数据的功能外，不可缺少的是遍历已有数据的相关 API。围绕这些可能需要做一个工具集。好在我们现在大体的基础设施已经完成，做这些都比较容易了。</p>
+
+
+
+
+<hr>
+
+
+
+
+<p>姑且把这个叫做内存数据库吧。如果日后不仅仅想用它来保存玩家数据怎么办？我觉得有个简单的方法可以实现。</p>
+
+
+
+
+<pre>
+type Player {
+}
+
+type Npc {
+}
+
+type Scene {
+}
+
+type main {
+  Player player = 1
+  Npc npc = 2
+  Scene scene = 3
+}
+</pre>
+
+
+
+
+<p>我们可以用两层的数据结构解决这个问题，类似 google protobuf 中推荐的 union 的模拟方案。我们在内存数据库中的每个对象都按 type main 保存。并仅填写其中的一个域。以上面的例子为例，要么它有一组 Player 数据，要么是 Scene 数据。在储存空间上不会有太大浪费，也并影响检索效率。只是在用到的地方，需要了解哪个 id 具体是什么类型的数据罢了。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

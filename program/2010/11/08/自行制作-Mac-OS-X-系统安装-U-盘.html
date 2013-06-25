@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>自行制作 Mac OS X 系统安装 U 盘</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>自行制作 Mac OS X 系统安装 U 盘</h2>
+<p class="meta">08 Nov 2010</p>
+
+<div class="post">
+<h2>自行制作 Mac OS X 系统安装 U 盘</h2>
+
+<h3>by 苹果贩</h3>
+
+<h3>at 2010-11-08 14:04:27</h3>
+
+<h3>original <a href="http://mac.lauyuk.cn/20101108/create-their-own-mac-os-x-installation-disk-u.mac">http://mac.lauyuk.cn/20101108/create-their-own-mac-os-x-installation-disk-u.mac</a></h3>
+
+<p>新款的 MacBook Air 极佳的设计感，十分的诱人。就连附赠的 软件重新安装优盘（Software Reinstall Drive） 也让我口水流个不停。可惜的是，这只优盘不但不能单买，还是 MacBook Air only  的产品…</p>
+
+
+<p>不过除了那颗 apple  以外（其实这才是重点吧），我们也是可以自己做一个系统安装优盘，而且很简单，用内置的程序就可以了。</p>
+
+
+<p>首先我们需要一个 8GB 或是 16GB 的优盘。建议使用 16GB  的优盘，这样除了系统安装光盘之外，我们还可以将程序安装光盘也一并制作。再来，系统安装光盘的容量为 7.6GB，很难保证一支 8GB  的优盘格式化之后，还可以有这样的容量。</p>
+
+
+<p>另外，因为 PPC 系列的机子不支持 USB 开机，所以本篇教学仅适用于 Intel 的 Apple 主机。</p>
+
+
+<p>一开始使用 磁盘工具程序 先将优盘 分割 成三部分（也可以只成分两个），容量分别为  7.6GB、5.1GB 以及剩下的部份。</p>
+
+
+<p>7.6GB 跟 5.1GB 是制作安装盘的最低需求。但并不是每一个版本的容量都是如此，这里示范的系统为  10.6.3，大家可以依照自己的情况来做适当的调整</p>
+
+
+<p>要特别注意的是，请务必使用<span style="text-decoration:underline"> Mac OS X  扩充格式（日志式）</span>来做格式化<span></span></p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060428xHE.png" alt="" width="660" height="580"></p>
+
+
+<p>不用太在意这三个分区的名称，事后会自行给定，也可以再做修改。</p>
+
+
+<p>格式化完成后，不要关闭程序，接着进入制作的重头戏了：恢复  功能</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/06043016W.png" alt="" width="660" height="580"></p>
+
+
+<p>放入系统安装光盘，就会在磁盘工具程序的侧边栏看到，将这个 Mac  OS X Install DVD 拉到 来源  的部份</p>
+
+
+<p>再将 未命名1 拉到 目标 的部份</p>
+
+
+<p>请勾选 清除目标磁盘 的项目，然后点右下角的 恢复 按钮来执行操作</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060431rki.png" alt="" width="660" height="580"></p>
+
+
+<p>需要输入用户的密码方能执行</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060432NbY.png" alt="" width="524" height="327"></p>
+
+
+<p>然后会出现个警告语。虽然有点奇怪，但没错，请点 抹掉 按钮来开始动作</p>
+
+
+<p>此时，挂载在桌面上的磁盘会消失，这是正常的。</p>
+
+
+<p>整个恢复的动作大概要花上 40 分钟。请耐心等候，并注意不要晃动到机子。</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060433oUs.png" alt="" width="434" height="151"></p>
+
+
+<p>完成后，再依循同样的步骤，来制作应用程序盘，也是大概要花个30多分钟。</p>
+
+
+<p>另外，多出来第三区块，就可以拿来当一般的优盘用，我们可以用 抹掉 的功能，来将它重新命名。</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060434oft.png" alt="" width="660" height="580"></p>
+
+
+<p>最后，别忘了把系统跟应用程序这两个分区的权限改成 只读。</p>
+
+
+<p>这样做并不会影响到第三分区的正常使用，而且插入优盘时，也是可以三个分区单独退出的。</p>
+
+
+<p><img src="http://mac.lauyuk.cn/wp-content/uploads/auto_save_image/2010/11/060435qsw.png" alt="" width="345" height="708"></p>
+
+
+<p>其实这样的制作方式，作者 从 10.4 进入 Apple  的世界后就开始用了。当时就常常看到光驱故障的抱怨文，心里很是担心哪天要用到重装系统时，才发现光驱不能用，所以很习惯的将身边所有的系统盘跟应用程序盘都制作成 USB 版本。</p>
+
+
+<p>这样做还有一个好处，就是可以完善的备份系统光盘，要是光驱是好的，光盘却不知所踪也很是头疼。</p>
+
+
+<p>另外，使用 USB  来安装系统，可是比用光盘安装快上许多（所以优盘请挑快一点的），所以最后我都直接将系统盘制作在外接硬盘上。当然，有火线的外接盒又更棒了。给大家做 个参考^^
+<div style="font-style:italic">
+<p><a href="http://mac.lauyuk.cn/">苹果贩</a></p>
+<p><strong>本文链接地址:</strong> <a href="http://mac.lauyuk.cn/20101108/create-their-own-mac-os-x-installation-disk-u.mac">自行制作 Mac OS X 系统安装 U 盘 | http://mac.lauyuk.cn/20101108/create-their-own-mac-os-x-installation-disk-u.mac</a></p>
+</div>
+<p><br>
+如果本文有侵犯到您的权益，请在下方留言告知，我们将进行处理！</p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

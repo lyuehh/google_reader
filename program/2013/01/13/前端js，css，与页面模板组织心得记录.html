@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>前端js，css，与页面模板组织心得记录</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>前端js，css，与页面模板组织心得记录</h2>
+<p class="meta">13 Jan 2013</p>
+
+<div class="post">
+<h2>前端js，css，与页面模板组织心得记录</h2>
+
+<h3>by mrhack</h3>
+
+<h3>at 2013-01-13 03:03:41</h3>
+
+<h3>original <a href="http://myjser.com/?p=370&amp;utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%2589%258d%25e7%25ab%25afjs%25ef%25bc%258ccss%25e6%2596%2587%25e4%25bb%25b6%25e7%25bb%2584%25e7%25bb%2587%25ef%25bc%258c%25e4%25b8%258e%25e9%25a1%25b5%25e9%259d%25a2%25e6%25a8%25a1%25e6%259d%25bf%25e7%25bb%2584%25e7%25bb%2587%25e5%25bf%2583%25e5%25be%2597%25e8%25ae%25b0%25e5%25bd%2595">http://myjser.com/?p=370&amp;utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%2589%258d%25e7%25ab%25afjs%25ef%25bc%258ccss%25e6%2596%2587%25e4%25bb%25b6%25e7%25bb%2584%25e7%25bb%2587%25ef%25bc%258c%25e4%25b8%258e%25e9%25a1%25b5%25e9%259d%25a2%25e6%25a8%25a1%25e6%259d%25bf%25e7%25bb%2584%25e7%25bb%2587%25e5%25bf%2583%25e5%25be%2597%25e8%25ae%25b0%25e5%25bd%2595</a></h3>
+
+<p>做一个独立的产品的一个好处就是你不仅仅是需求的实现者，同时你也是网站的构架师。</p>
+
+
+<p>在这里整理下自己在前端（js,css）、模板（php）和后端业务接口配合的一些心得。</p>
+
+
+<h2>javascript</h2>
+
+
+<p>javascript使用公司的按需加载工具来实现模块js的管理。原来页面逻辑的js是直接写在页面上的内部js代码。这种模板中写js代码的弊端显而易见。它不但增加了网页的传输量，同时不利于代码的重复利用。因此有必要把这些代码挪到外部js文件中，利用浏览器的缓存可以有效的减少网络的传输量（当网站访问较大时，节约的成本就非常可观了）。因此我们现在的js代码开始分为了两部分：模块js和页面js。模块js不需要知道页面中逻辑，它只是作为一个组件模块而被调用。而页面js则需要知道当前页面的逻辑实现，包括页面中的元素节点，或者模板渲染的变量等。下面我以sns网站的顶部作为例子，介绍如何引入页面js文件。</p>
+
+
+<p>对于一个sns网站的页面来说，都有一个相同点，那就是不同页面上的所有顶部样式和功能都基本一样或者说基本相似，似乎只有登录和非登录状态才会有所区分。这里有一种解决方案是把顶部js逻辑写入到基本js中，使用所有的页面都可以引入到这段js代码。但这显然是没有区分登录和非登录状态，在有些时候js代码会显得有些多余（当然使用按需加载不同状态的js也是可行的，但这会有稍许的延迟）。这里介绍下我们目前使用的方式：（模板由前端工程师所写，后面会介绍为什么需要这样的分工）</p>
+
+
+<p>在顶部模板中一般来说会有一套这样的代码来区分登录和非登录状态，同时每一个状态需要引入不同的js文件：(以下的所有模板都是使用php的模板引擎smarty来表示)</p>
+
+
+<pre>
+<font face="Consolas">
+<font color="#000000">    {if $is_login}</font>
+<font color="#000000">        </font><font color="#008000">&lt;!-- login template here --&gt;</font>
+<font color="#000000">        ...</font>
+<font color="#000000">        {require file='login-topbar.js' params=$params}</font>
+<font color="#000000">    {else}</font>
+<font color="#000000">        </font><font color="#008000">&lt;!-- unlogin template here --&gt;</font>
+<font color="#000000">        ...</font>
+<font color="#000000">        {require file='notlogin-topbar.js'}</font>
+<font color="#000000">    {/if}</font>
+</font>
+</pre>
+
+
+<p>其中require模板是自己写的一个smarty插件，它的作用只是收集页面上所有需要引入的页面级js文件。这个插件只做收集功能，但并不会在当前位置渲染出js引入的代码，它需要配合另一个插件render_sta来使用。而render_sta基本在所有的页面尾部模板中使用（把引入的js文件放置在html文档的末尾），它主要用来把所有通过require插件收集到的js或者其它的静态文件渲染成相应的html代码。</p>
+
+
+<p>在第一个require中我们除了传递file这个参数外，还多了一个params这个参数。这个是为了前面所说的，如何把后端的变量渲染到js中的方式。require插件会把params以js的方式渲染到模板中，例如：G.setPageVar(‘params’ , {…})。这样你就可以在页面js中通过G.getPageVar(‘params’)来获取模板渲染的变量了。</p>
+
+
+<p>如上所述，通过两个smarty插件(require和render_sta)就实现了对页面js的控制，如果这个模板被应用到其它的页面，它依然会把其中的require的js文件第一时间加载进来而不会导致重复的代码产生。而关于组件js就只能在页面级js中通过按需加载的方式进行引入，这里推荐使用SeaJs和RequireJs。</p>
+
+
+<h2>css</h2>
+
+
+<p>对于css我们采用的是less工具来构造整个项目样式。less确实是一个很棒的工具，至少它可以让你很方便的组织你的css代码和文件。你可以使用less生成一些方法来完成重复的输入，就像javascript的小工具库一样。<br>
+在项目中，我们的css组织方式很普通，每一个页面都包含一个基础css和页面css。基础css包含大部分页面都会出现的样式和浏览器的重置样式，而页面css则包含当前页面所独有的样式。当然如果一个模块的样式只会出现在有限的几个页面中，把这个模块的样式单独抽取出来，使用less的@import引入到页面css中即可。由于我们的项目是一个类sns的网站，所以不同页面模块样式重复的概率比较大，所以会把一些重复率较高的放在一个小的css文件中，通过less的@import功能引入到页面级css中。</p>
+
+
+<p>同javascript一样，css的引入可以使用类似require的方式模块化，但这样会带来个问题，只有当页面在smarty渲染到底部后才会渲染这个页面中的所有require的资源。这样相当于把css资源放置在body结束之前。在css还没下载完成时，页面将会出现没有样式的情况，这样就得不偿失了。所以目前我们的页面级css是配制在引入的html文档头部的变量中。</p>
+
+
+<h2>模板</h2>
+
+
+<p>在做这方面的记录之前先说下我们之前的团队分工与现在的团队分工。一个较小的互联网技术团队基本有前端技术团队和后端技术团队。一般前端的职责是负责把设计出的PSD转化成HTML，后端则负责业务逻辑的实现。</p>
+
+
+<p>这两个团队碰头的时候很大一部分是关于模板的联调，包括接口渲染的对应的模板、模板中对应的变量以及通过模板引擎来处理的模板逻辑。在大改造之前我们的分工如下：<br>
+前端–&gt; 出完成的html模板（整个页面可单独预览，不过里面的数据都是自己随便写的字符）<br>
+后端–&gt; 写业务逻辑，拼模板（把后部吐出的数据渲染到对应的模板中，把对应的地方使用模板引擎输出变量）<br>
+原来的拼模板这一块是在后端工程师的职责范围内。在改造后的团队分工中，我们把拼模板这一块划分到了前端工程师手上。是的，前端工程师需要了解后端的模板渲染引擎，对于一个工程师而言，对于上手一个模板渲染引擎应该不是一个难事。下面我说下这样做的好处：</p>
+
+
+<p>    1. 前端工程师开发完完整的html页面后，这个页面交付给后端工程师变成模块化的模板。这里html的代码经过了两次的加工，而且前端工程师还需要告诉后端工程师如何渲染模板，即使是使用html的注释说明清楚页面的渲染逻辑这也需要后端工程师与前端工程师的交流配合。假如前端不产出html页面，而是直接产出模板的话，整个活动的效率会得到明显的提升。</p>
+
+
+<p>    2. 前端最了解自己写的html结构，也最了解页面的展现逻辑，他们知道如何拆分小模板来完成重复的页面内容。这有利于减少模板文件，减少模板的维护成本。</p>
+
+
+<p>    3. 假如需要渲染后端数据给js使用，那么前端工程师是最了解需要哪些数据的，因此前端工程师可以在写模板的时候根据自己的需要把数据渲染出来。减少了两个团队之间的沟通的环节。</p>
+
+
+<p>当然上面只是列出了为什么需要前端工程师而不是后端工程师来写模板。这时候在你脑海里可能会有如下疑问：<br>
+1. 前端工程师怎么知道接口会渲染哪些变量呢？</p>
+
+
+<p>给模板渲染什么变量，到底这个决定权还是在后端，那前端工程师是否需要先和后端约定好变量呢？这是当然的。对于不同的后端工程师开发的不同接口，可能说的是同一个对象，但变量的命名不又一样，这样就会导致在前端模板渲染上会有差异，即使是相同的模板应用到不同的接口都需要开发两套模板以便适应不同的变量命名。这样就会导致模板的重复和维护成本的增高。当与后端有了变量契约的时候你会发现，你闭着眼睛都知道需要怎么来获取变量了，而后端也是闭着眼睛也知道如何渲染变量（对于后端如何渲染出变量来，将会在后面进行阐述）。目前我们模板变量约定是这样的：</p>
+
+
+<p>        a. 你可以想像你的页面有一个数据池，你需要哪些数据了，你就去这个数据池中取数据，例如：$G_users中存放了页面中所有需要渲染的用户详细信息。$G_loadtions中存放了页面中所有需要渲染的位置信息等等，这些信息都是一个array，以id做为key。你可以把这些存放详细信息的array想象成一个存放数据的池子，而模板中需要哪个对象的信息，就从这个池子中取出来渲染即可。</p>
+
+
+<p>        b. 对于页面中固定的一些变量，需要约定成固定的名称。例如当前登录用户的id，你可以约定成$G_user_id，当前的位置id可以约定成$G_location_id。这样你就可以通过$G_uers[$G_user_id]来获取当前登录用户的详细信息。你可以想像下在所有的模板中都使用这种方式来获取当前用户的登录信息是一件多么惬意的事情，虽然它不够精简，但已成规矩。</p>
+
+
+<p>        c. 对于页面中的列表信息，通通使用id_list的形式来渲染，例如粉丝列表渲染成$fans_id_list。里面只保存一个一个的id信息，当前id_list所对应的详细数据通通保存在$G_users中。所以渲染一个粉丝列表可以使用如下的smarty循环代码。</p>
+
+
+<pre>
+<font face="Consolas">
+<font color="#000000">    {foreach from=$fans_id_list item=fans_id}</font>
+<font color="#000000">       </font><font color="#008000">&lt;!--获取粉丝信息--&gt;</font>
+<font color="#000000">       {assign var=fans value=$G_users[$fans_id]}</font>
+<font color="#000000">       ...</font>
+<font color="#000000">    {/foreach}</font>
+</font>
+</pre>
+
+
+<p>        d. 对于页面中需要的一些特定数据，前端工程师可以自己定义鞭个变量的名字，等到接口联调的时候再让后端工程师渲染相应的变量命名即可。例如上面所举例的$fans_id_list变量（后面会讲到前端工程师在哪里定义这个变量，并赋与测试数据的）。</p>
+
+
+<p>        e. （这是对后端代码的要求）后端在render页面之前需要给出页面所需要的所有id列表。然后通过某种固定的方法格式化出模板所需要的变量。说白了就是变量格式化的过程。<br>
+2. 如果不产出完成的html，而是介入后端模板代码，这个模板的样式怎么调试呢？</p>
+
+
+<p>由于页面都是基于php模板引擎的，所以每一个前端工程师的机器上直接部署一套web服务器是很有必要的。本机的服务器能让你不会频繁的提交文件到服务器或者svn上，这样可以节省相当多的时间。有了web服务器之后，你就能在本机跑通模板引擎了。因此你可以渲染单个的模板，同时通过某种规则，配置单个模板所依赖的css和对应的测试数据即可。最方便的做法是通过模板的目录来做为url的path来访问，同时在别一个测试数据目录下相应的目录下面会新建一个与当前模板对应的测试数据文件。例如：</p>
+
+
+<pre>
+<font face="Consolas">
+<font color="#000000">    模板目录            ：template/user/profile.tpl    (template是模板根目录)</font>
+<font color="#000000">    url访问             ：http://localhost/user/profile</font>
+<font color="#000000">    新建的测试数据文件  ：test-data/user/profile.config</font>
+<font color="#000000">    全局测试数据文件    ：test-data/global.config</font>
+</font>
+</pre>
+
+
+<p> 对于一些数据池中的数据，可以配置一个类似于全局的数据文件。无论渲染哪一个模板都会先加载全局的测试数据（global.config），后加载当前模板所对应的测试数据（例如user/profile.config）。通过这种方式你不再需要制作完成的html文件，而是直接制作模板，而且还可以本地调试页面上的任何一个单独的模板了。<br>
+对于测试数据，你可以通过写注释的方式告诉后端工程师这个模板变量是做什么用的。这样后端工程师也可以通过这个测试数据来渲染变量，这大大减少了两个工程师团队的沟通成本。</p>
+
+
+<p> 经过实践，目前我们的模板相对原来已经精简了很多，每一个模板中的变量命名也已经规范了很多，同时在效率上也有了大大的提升。</p>
+
+
+<p><a href="http://www.addtoany.com/share_save#url=http%3A%2F%2Fmyjser.com%2F%3Fp%3D370&amp;title=%E5%89%8D%E7%AB%AFjs%EF%BC%8Ccss%EF%BC%8C%E4%B8%8E%E9%A1%B5%E9%9D%A2%E6%A8%A1%E6%9D%BF%E7%BB%84%E7%BB%87%E5%BF%83%E5%BE%97%E8%AE%B0%E5%BD%95"><img src="http://myjser.com/wp-content/plugins/add-to-any/share_save_171_16.png" width="171" height="16" alt="Share"></a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

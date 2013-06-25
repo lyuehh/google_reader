@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Gphone 翻墙攻略</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Gphone 翻墙攻略</h2>
+<p class="meta">21 Nov 2010</p>
+
+<div class="post">
+<h2>Gphone 翻墙攻略</h2>
+
+<h3>by iGFW</h3>
+
+<h3>at 2010-11-21 11:15:55</h3>
+
+<h3>original <a href="http://igfw.tk/archives/1571">http://igfw.tk/archives/1571</a></h3>
+
+<p>其实很简单了，会gae+fetchserver翻墙，然后gphone安装了ase，这就水到渠成了，不过目前只能通过运营商的网络翻墙，不能走wifi，原因很简单，wifi没有代理服务器设置…找了几个proxy软件，不好用，真是一个杯具。</p>
+
+
+<div><span style="color:#ff0102">首先</span>，你要学会<a href="http://blog.chinaunix.net/u3/116533/showart_2286022.html">GAE+fetchserver翻墙</a>，即在gae端，上传代理服务器,在客户端，配置好服务器地址。<span></span></div>
+
+
+<div>－－－－－－－－－－－－－－－－－－－<a href="http://blog.chinaunix.net/u3/116533/showart_2286022.html">GAE+fetchserver翻墙</a>－－－－－－－－－－－－－－－－－－－</div>
+
+
+<div>国内太和谐了，好多网站上不去，很是郁闷，free的VPN好像没有好使的。目前发现GAE+fetchserver搭配不错，速度还可以。废话不说，开始吧～</div>
+
+
+<div>
+<div>GAE是Google App  Engine的简称。</div>
+<div>Application  Identifier,主要用于区别不同的App,访问App Identifier为xxx的应用，网址为  xxx.appspot.com.</div>
+<div>首先，要申请一个Google App  Engine的帐号。用来登录。</div>
+<div>
+<ol>
+<li>你需要有一个Google账号，同时登陆<a href="http://appengine.google.com/">Google App Engine</a>；</li>
+<li>点击 Create an Application  创建一个应用程序；</li>
+<li><strong>Country and  Carrier</strong>选择<strong>Other (Not  Listed)</strong>；<br>
+这时候你需要输入手机号收取验证码，格式为<strong>+国家代码 号码</strong>，例如我的+86 132XXXXXXXX；</li>
+<li>稍等一会儿，你的手机会受到一条短讯，内容为：<strong>Google App Engine Code:  XXXXXXX</strong>；<br>
+如果你的号码已经注册过，会提示：
+<blockquote><p>← The phone number has been  sent too many messages or has already been used to confirm an account.</p></blockquote>
+</li>
+<li>在网页上填写你的验证码：<strong>XXXXXXX</strong>；</li>
+<li>然后填写注册表单，并记住你的域名前缀，例： <strong>myapp.appspot.com 中的  myapp</strong><br>
+<a href="http://lh3.ggpht.com/_yJB0PIHwozI/SaZ0GHwAxuI/AAAAAAAABz8/xpYE_J6Xn_w/s800/gapps.jpg"><img title="Click to enlarge" src="http://lh3.ggpht.com/_yJB0PIHwozI/SaZ0GHwAxuI/AAAAAAAABz8/xpYE_J6Xn_w/s288/gapps.jpg" alt="image"></a>
+<div>Google App Engine</div>
+</li>
+<li>OK，只要注册成功，第一步就此结束。</li>
+</ol>
+<div>然后呢，下载安装Python和GDK(Google App Engine  SDK)。</div>
+<div>然后，要下载fetchserver并上传。</div>
+<div>
+<ol>
+<li>下载 <a href="http://gappproxy.googlecode.com/files/fetchServer.r69.tar.gz">fetchServer</a> ；</li>
+<li>解开你下载的<strong>fetchServer.r69.tar.gz</strong>，将其中的 <strong>fetchServer</strong> 目录释放到 <strong>C:\Program  Files\Google\google_appengine\</strong>，使其成为 <strong>C:\Program  Files\Google\google_appengine\fetchServer</strong>的目录结构；</li>
+<li>使用任何文本编辑器打开 <strong>C:\Program  Files\Google\google_appengine\fetchServer\app.yaml</strong> 文件，更改为以下内容后保存退出，<br>
+<blockquote><p><strong>application:  your_application_name</strong><br>
+更改为你的appsopt.com地址的前缀，例如：<strong>myapp</strong><br>
+<strong>application:  myapp</strong></p></blockquote>
+<p><img src="http://lh6.ggpht.com/_yJB0PIHwozI/Sb3ygH7YIQI/AAAAAAAACDs/cmmMsZdppiI/s800/app.yaml.JPG" alt=""></p></li>
+<li>开始上传项目。选择开始-&gt;运行，输入“<strong>cmd</strong>”（不包括引号），然后依次输入
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre>1
+2</pre>
+</td>
+<td>
+<pre>C: (回车)
+C:\Program Files\Google\google_appengine\ (回车)</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li>之后，键入<strong>appcfg.py update  fetchserver</strong>，<br>
+这个时候会提示输入你的Google账号和密码，输入过程中，密码是不显示的。</li>
+<li>如果不出意外的话，你的cmd窗口最后一行会显示“Uploading index  definitions.”，<br>
+上传成功。</li>
+</ol>
+</div>
+<div>然后，要下载配置客户端。</div>
+<div>
+<ol>
+<li>下载<a href="http://www.rayfile.com/zh-cn/files/cead9ce3-a864-11df-96b5-0015c55db73d/">GappProxy</a>；</li>
+<li>解压缩，得到<strong>GAppProxy</strong>目录。</li>
+<li>如果在win下，进入<strong>GAppProxy</strong>，用文本编辑器打开<strong>proxy.conf</strong>，将其更改为以下内容并保存退出。<br>
+<blockquote><p>fetch_server =  http://你的ID.appspot.com/fetch.py</p></blockquote>
+</li>
+<li>双击<strong>Gui.exe</strong>启动代理，点击<strong>Hide</strong>隐藏备用。<img src="http://lh6.ggpht.com/_yJB0PIHwozI/Sb31WvPW4xI/AAAAAAAACEU/XfBJP7GVvzs/s800/gap.JPG" alt=""></li>
+<li>如果是在linux下，到localproxy下，修改proxy.conf如下：</li>
+</ol>
+<div>
+<div>GAppProxy  configuration</div>
+<div>#  listen_port</div>
+<div>listen_port =  8000</div>
+<div>#  local_proxy</div>
+<div>#local_proxy =  host:port</div>
+<div># If local proxy  needs authentication:</div>
+<div>#local_proxy =  user:passwd@host:port</div>
+<div>fetch  server</div>
+<div>#fetch_server =  http://127.0.0.1:8080/fetch.py</div>
+<div>fetch_server =  http://myapp.appspot.com/fetch.py</div>
+</div>
+<div>然后，python proxy.py。  就可以了。如果正确，会显示</div>
+<div>
+<div>HTTPS Enabled:  YES</div>
+<div>Direct Fetch :  YES</div>
+<div>Listen Addr  :  127.0.0.1:8000</div>
+<div>Local Proxy   :</div>
+<div>Fetch Server :  http://myapp.appspot.com/fetch.py</div>
+</div>
+<p><strong>Firefox</strong></p>
+<ol>
+<li>工具(Tools) -&gt; 选项/设置(Options)  -&gt; 高级(Advanced) -&gt; 网络(Network) -&gt; 连接(Connection)</li>
+<li>点击“设置(Settings)”，选择“手动设置代理(Manual proxy  configuration)”</li>
+<li>HTTP代理(Http  Proxy):<strong>127.0.0.1</strong> 端口(Port):<strong>8000</strong></li>
+</ol>
+<p><strong>Internet Explorer  7</strong></p>
+<ol>
+<li>工具(Tools) -&gt; Internet  选项(Internet Options) -&gt; 连接(Connections) -&gt; 局域网设置(LAN Settings) -&gt;  代理服务器(Proxy Server)</li>
+<li>勾上“使用代理服务器”</li>
+<li>地址(Address):<strong>127.0.0.1</strong> 端口(Port):<strong>8000</strong></li>
+</ol>
+<div><strong>Chrome</strong></div>
+<div><strong> </strong>optons  -&gt;高级选项更改代理服务器设置</div>
+<ol>
+<li>选择Manual proxy  Configuration</li>
+<li>HTTP Proxy：<strong>127.0.0.1</strong> 端口(Port):<strong>8000</strong></li>
+</ol>
+<div><strong><br>
+</strong></div>
+<div><strong><br>
+</strong></div>
+<div><strong>然后</strong></div>
+<div><strong><br>
+</strong></div>
+<div><strong><br>
+</strong></div>
+<ol>
+<li>访问 http://www.ip.cn/  ，看看当前IP是不是来自美国，如果是，设置成功，开工，翻墙！<br>
+<img src="http://lh5.ggpht.com/_yJB0PIHwozI/Sb36r2Lc_JI/AAAAAAAACE0/AhO0jaV3_jg/s800/ip.JPG" alt=""></li>
+</ol>
+<div>－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－</div>
+<div><span style="color:#ff0102">然后</span>，你要学会在<a href="http://blog.chinaunix.net/u3/116533/showart_2287407.html">Gphone上安装脚本运行环境</a>ase。</div>
+<div>－－－－－－－－－－－－－－－－－<a href="http://blog.chinaunix.net/u3/116533/showart_2287407.html">Gphone上安装脚本运行环境</a>－－－－－－－－－－－－－－－－－－－</div>
+<div>前几天研究android手机上运行终端，可以运行shell，最近想能不能运行其他脚本呢，像python，perl等等。这样就可以在手机上随时随地的编程了，嘎嘎。GOOGLE一下，发现真有，Android的吸引力真强大～～
+<div>废话不说，开始吧。</div>
+<div>googlecode有这么一个项目，<a href="http://code.google.com/p/android-scripting/">android-scripting</a>，Scripting Layer For  Android（SL4A，之前被称作Android Scripting Environment 或者  ASE），把脚本语言带到了Android系统中，这样，在你的Android手机上，你就可以运行或者编辑脚本了。通过这些脚本，你就可以调用Android程序里面的一些API，而且这些接口很容易使用。</div>
+<div>脚本可以在终端，后台，或者<a rel="nofollow" href="http://www.androidlocale.com/">Locale</a>（一个应用场景程序，在特<span>定场景下，启动设定好的</span>操作）。目前支持Python, Perl, JRuby, Lua, BeanShell,  JavaScript, Tcl, 和 shell。</div>
+<div>目前这个项目还是在alpha测试阶段。下面我来介绍一下如何安装。</div>
+<div>首先安装ASE（android  scripting environmen），这为上面的脚本运行提供一个环境。我安装的是<a href="http://code.google.com/p/android-scripting/downloads/detail?name=ase_r25.apk&amp;can=2&amp;q=">ase_r25.apk</a>，这个不能从sd卡安装解释器，<a href="http://android-scripting.googlecode.com/files/ase_r14.apk">ase_r14.apk</a>可以从sd卡装解释器。</div>
+<div>安装好后，下一步安装解释器，在http://code.google.com/p/android-scripting/downloads/list有解释器的列表，我安装的是python  的。据我观察，需要安装三个文件，如果是xxx的解释器，就要装 xxx_ry.zip   xxx_scripts.zip   xxx_extras_ry.zip。<span>如果是r14，</span><span>打开ASE-&gt;Menu键-&gt;</span><span style="color:black"><span>Interpreters</span></span><span> -&gt;Menu</span><span style="color:black"><span>键</span></span><span style="color:black"><span>-&gt;Add</span></span><span style="color:black"><span>选择</span></span><span style="color:black"><span>python。如果是r25，ase-&gt;menu-&gt;view-&gt;interpreters-&gt;python,然后就会从网上下载。。。</span></span></div>
+<div><span style="color:black"><span><br>
+</span></span></div>
+<div><span>安装完了后，就可以编写自己喜欢的程序了。</span><a href="http://code.google.com/p/android-scripting/wiki/AndroidFacadeAPI">这里</a>有api。</div>
+<div><span>下面是我自己写的一个简单的小程序，是给我手机发个短信。</span></div>
+<div><span>
+<pre>
+<table border="1" cellspacing="0" cellpadding="0" width="95%" bgcolor="#f1f1f1">
+<tbody>
+<tr>
+<td>
+<code>import android
+droid = android.Android()
+droid.smsSend("159xxxxxxxx","Hello Alan")</code>
+<div><code>
+</code></div>
+</td>
+</tr>
+</tbody>
+</table>
+</pre>
+<pre>然后menu-&gt;Save&amp;Run。嘎嘎</pre>
+<pre>其他脚本也类似。</pre>
+<pre>－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－</pre>
+<p></p></span></div>
+</div>
+<div><span style="color:#ff0102">第三呢</span>，在这步之前，你要确定第一步里面的配置是否可用，可以先在电脑上试一下能不能翻墙，如果可以了，然后把客户端（<a href="http://gappproxy.googlecode.com/files/GAppProxy.r63.exe">GappProxy</a>）的代码，代理复制到sd卡上的ase/scripts下面。</div>
+<div>具体点呢，就是把gappproxy/localproxy文件夹下所有的文件拷贝到手机sd卡上的ase/scripts/文件夹下面。然后下面有如下文件应该：</div>
+<div><img src="http://blog.chinaunix.net/photo/116533_100813222428.jpg" alt=""></div>
+<div><span style="color:#ff0102">第四呢</span>，就很简单了，在你的Gphone上建立一个新的apn，名字自己取，apn设置cmnet，proxy设置127.0.0.1，port设置成8000，其他默认。如果有合适的proxy软件，把设置改成跟apn的proxy跟port一样，也可以wifi翻墙了。</div>
+<div><img src="http://blog.chinaunix.net/photo/116533_100804163424.png" alt=""></div>
+<div><span style="color:#ff0102">第五呢</span>，运行ase，然后运行proxy.py就ok了。</div>
+<div><img src="http://blog.chinaunix.net/photo/116533_100804163417.png" alt=""></div>
+<div><span style="color:#ff0102">第六呢</span>，打开浏览器，上个twitter试试～～</div>
+<div><img src="http://blog.chinaunix.net/photo/116533_100804163411.png" alt=""></div>
+<div>这样，就能用你的Gphone  翻墙了～</div>
+</div>
+<div></div>
+<div>来源：<a href="http://blog.chinaunix.net/u3/116533/showart_2290099.html">AlanHome</a> 原文：<a href="http://blog.chinaunix.net/u3/116533/showart_2290099.html">Gphone 翻墙攻略</a></div>
+</div>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

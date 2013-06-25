@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IDE 不是程序员的唯一选择（四）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IDE 不是程序员的唯一选择（四）</h2>
+<p class="meta">08 Oct 2008</p>
+
+<div class="post">
+<h2>IDE 不是程序员的唯一选择（四）</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2008-10-08 13:33:28</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2008/09/replacement_of_ide_4.html">http://blog.codingnow.com/2008/09/replacement_of_ide_4.html</a></h3>
+
+<p>前面我们介绍了一些 Make 的基本知识以及 Make 的工作原理。如果同学们有兴趣的话，翻阅手册已经可以开始做许多事情了。而 GNU Make 更是有许多扩展，灵活应用便能发挥出超乎想象的威力。为了达到这些，Make 必须要有更多的一些可编程的能力。在处理不同的事务的时候，以不同的方式工作。在处理相同的事务时，又不必让编写 Makefile 的人机械性的重复。</p>
+
+
+
+
+<p>今天，我们来谈谈 GNU Make 中的变量。这里提到的都是以 GNU Make 为基础，因为 Make 的各种变种太多，每种版本间都可能有一些细微的差别，但其基本原理是相通的。</p>
+
+
+<pre><code>    &lt;hr&gt;
+</code></pre>
+
+<p>昨天我们最终的 Makefile 版本是这样的：</p>
+
+
+
+
+<pre>
+all : foobar.exe
+
+clean :
+    -del foobar.exe foo.obj bar.obj
+
+foobar.exe : foo.obj bar.obj
+    link /out:$@ $^
+
+foo.obj : foo.c
+    cl /c $&lt;
+
+bar.obj : bar.c
+    cl /c $&lt;
+</pre>
+
+
+
+
+<p>我们能看出，其中有许多重复的信息，让我们一点点的去掉它们。</p>
+
+
+
+
+<p>首先，将 .c 文件编译成 .obj 文件的方法是一样的。在 GNU Make 里，我们可以为其写一个通用的规则：</p>
+
+
+
+
+<pre>
+%.obj : %.c
+    cl /c $&lt;
+</pre>
+
+
+
+
+<p>注意，这并非传统的 makefile 的写法（传统规则定义方法就不介绍了），而是 GNU Make 扩展，以后我们就不再为 GNU Make 做特别说明了。</p>
+
+
+
+
+<p>它的含义是，所有以 .obj 结尾的目标，都依赖于相同模式，但以 .c 结尾的文件。并且这类文件用统一的构建方法：cl /c $&lt; 。$&lt; 我们在前面已经反复提到过，它表示以上的第一个依赖文件。这个符号看起来有些怪异比较难记忆。如果你用 BSD Make ，那么就写作 ${.IMPSRC} 可能会舒服点。其实习惯了后都不错。</p>
+
+
+
+
+<p>% 可以看成一通配符，%.obj 是一个后缀匹配，用 . 做文件后缀名的区分仅仅是一个习惯。如果你愿意，自然也可以写 %obj 去匹配所有obj 结尾的文件。</p>
+
+
+
+
+<p>Makefile 既可简化为：</p>
+
+
+
+
+<pre>
+all : foobar.exe
+
+clean :
+    -del foobar.exe foo.obj bar.obj
+
+foobar.exe : foo.obj bar.obj
+    link /out:$@ $^
+
+%.obj : %.c
+    cl /c $&lt;
+</pre>
+
+
+
+
+<p>因为这里只生成了一个 exe 文件，要是有多个 exe 文件生成，那个 link 也应该可以提取出来。可以写成：</p>
+
+
+
+
+<pre>
+all : foobar.exe
+
+clean :
+    -del foobar.exe foo.obj bar.obj
+
+foobar.exe : foo.obj bar.obj
+
+%.exe :
+    link /out:$@ $^
+
+%.obj : %.c
+    cl /c 
+</pre>
+
+
+
+
+<p>这个版本里，foobar.exe 和 %.exe 被分开定义了，根据我们前面的介绍，知道这样是合法的。一个目标可以有多次的依赖关系定义，Make 只是顺着往它的依赖关系表里添加而已。</p>
+
+
+
+
+<p>接下来，我们发现 foo.obj bar.obj 在两个地方出现。程序员很自然的会想到，让我们用一个变量记录下它们。对 Make 支持变量。定义变量很简单，使用 = 赋值即可。还可以用 += 追加。更多的用法可以去查参考手册。而使用一个标量，则用 $(变量名) 这样的形式。因为 $ 对于 Makefile 文件有特殊含义，所以，一旦你需要在命令行部分（Tab 开头的那些行）写上 $ 就用两个代替，写作 $$ 。</p>
+
+
+
+
+<pre>
+COBJS=foo.obj bar.obj
+
+all : foobar.exe
+
+clean :
+    -del foobar.exe $(COBJS)
+
+foobar.exe : $(COBJS)
+
+%.exe :
+    link /out:$@ $^
+
+%.obj : %.c
+    cl /c 
+</pre>
+
+
+
+
+<p>现在看起来是这样了。我们的定义了一个变量 COBJS ，保存了跟 foobar.exe 有关的所有 obj 文件名。然后在下面用这个变量替换掉。这是个很基本的用法，看起来没有什么意义，但是现在我们考虑一个问题：如果我们使用 C 和 C++ 混合编程，或者再使用了汇编等别的语言。这样，项目里的 .obj 文件就不全是由 .c 文件生成的了。这样，%.obj : %.c 这条规则有有了问题。</p>
+
+
+
+
+<p>因为如果你连续定义 </p>
+
+
+
+
+<pre>
+%.obj : %.c
+    cl /c 
+
+%.obj : %.cpp
+    cl /c 
+</pre>
+
+
+
+
+<p>这里 %.obj 文件有了两条生成方法（虽然它们相同），这是不允许的。注意：简单的定义 %.obj : %.c 和 %.obj : %.cpp 则是合法的，它只是个 %.obj 增加了依赖关系而已。但是导致错误的解决问题：我们生成 .obj 文件并不需要同时拥有同名的 .c 和 .cpp 。</p>
+
+
+
+
+<p>怎么办？</p>
+
+
+
+
+<p>让我们进一步改进一下：</p>
+
+
+
+
+<pre>
+$(COBJS) : %.obj : %.c
+    cl /c 
+</pre>
+
+
+
+
+<p>写成这样即可。这一句的变量展开是什么呢？</p>
+
+
+
+
+<pre>
+foo.obj bar.obj : %.obj : %.c
+    cl /c 
+</pre>
+
+
+
+
+<p>根据前面我们已经具备的知识，我们知道这个等价于：</p>
+
+
+
+
+<pre>
+foo.obj : %.obj : %.c
+    cl /c 
+
+bar.obj : %.obj : %.c
+    cl /c 
+</pre>
+
+
+
+
+<p>这是一个严格的模式匹配的过程：foo.obj : %.obj : %.c 表示了，用 %.obj 试着匹配 foo.obj ，如果成功 % 就等于 foo ，如果不成功，Make 会警告你。然后，给 foo.obj 添加了依赖文件 foo.c （用 foo 替换了 %.c 里的 % ）</p>
+
+
+
+
+<p>注：对于现在版本的 GNU Make ，（含 % ）模式规则定义可以不考虑这种问题。如果一个目标有两条规则可以匹配上，会通过检查所依赖的目标是否存在来决定适用哪条规则。但是，以上的方案在间接目标构建中依然有用。</p>
+
+
+
+
+<p>现在回头来看看昨天的一篇最后那个问题：为什么 foo.c 中包含了 foo.h 文件，但是不能在 Makefile 中写 foo.c : foo.h ？</p>
+
+
+
+
+<p>这是因为 Make 在工作的时候，每个目标的构建的单独判断所依赖的文件是否存在或其时间的。如果，foo.h 被修改，的确会触发 foo.c 的构建。不过这里我们只描述了 foo.c 和 foo.h 的依赖关系，而没有写任何构建指令。缺少构建指令时，默认是成功的。但是 foo.c 的时间并没有修改。这样在接下来的 foo.obj 构建过程中，foo.obj 的时间新于 foo.c （foo.c 未被修改过），故而 foo.h 的修改不会触发 foo.obj 的构建。</p>
+
+
+
+
+<p>btw, 随着 Makefile 的复杂度增加，调试会是一个问题，上次我们介绍了 gmake 的 -n 参数，以观察执行流程。其实还有一个更为强大的 -d 参数，有兴趣的同学可以自己试试。</p>
+
+
+
+
+<p>如何解决这个问题呢？一个苯办法是，当 foo.h 修改后，同时也更新 foo.c 的时间。在 *inx 下，有一个 touch 指令可以做这件事情。我们写作：</p>
+
+
+
+
+<pre>
+foo.c : foo.h
+    touch $@
+</pre>
+
+
+
+
+<p>Windows 下没有 touch 指令，但是 copy 可以代劳：</p>
+
+
+
+
+<pre>
+foo.c : foo.h
+    copy $@ +
+</pre>
+
+
+
+
+<p>这样做有些坏味道，明明是 foo.h 的修改，凭什么要更新 foo.c 的文件时间呢？所以，一般的做法是，让 foo.obj 直接依赖于 foo.h 。这样，我们的 Makefile 就变成了这样。</p>
+
+
+
+
+<pre>
+COBJS=foo.obj bar.obj
+
+all : foobar.exe
+
+clean :
+    -del foobar.exe $(COBJS)
+
+foobar.exe : $(COBJS)
+
+foo.obj : foo.h
+
+%.exe :
+    link /out:$@ $^
+
+$(COBJS) : %.obj : %.c
+    cl /c 
+
+</pre>
+
+
+
+
+<p>如果我们需要随时开关调试状态怎么办？也就是说，希望更灵活的打开或关闭 /Zi （调试信息）/O2 (最大速度优化）这样的编译开关。通常会预留一个变量。</p>
+
+
+
+
+<pre>
+$(COBJS) : %.obj : %.c
+    cl $(CFLAGS) /c $&lt;
+</pre>
+
+
+
+
+<p>然后再最前面定义 CFLAGS =/Zi</p>
+
+
+
+
+<p>我们还可以把最下面两段比较通用的规则放到一个独立文件 compile.mk 里，就好象 C 语言里的头文件那样。</p>
+
+
+
+
+<pre>
+CFLAGS=/O2    #优化
+#CFLAGS=/Zi    #调试
+
+COBJS=foo.obj bar.obj
+
+all : foobar.exe
+
+clean :
+    -del foobar.exe $(COBJS)
+
+foobar.exe : $(COBJS)
+
+foo.obj : foo.h
+
+include compile.mk
+</pre>
+
+
+
+
+<p>注意前面两行的 CFLAGS 的定义，它放置了一些我们以后可能会调整的编译选项。这里 # 表示注释，相当于 C++ 里的 // </p>
+
+
+
+
+<p>再注意最后的 include 语句，它完成的工作非常类似于 C 语言中的 #include ，即把一段文本插入当前的 Makefile 文件。只不过，Make 的 include 比 C 语言下的强的多。它可以在 include 后跟多个文件名，而文件名也可以是一个变量。甚至 include 的文件本身也可以是一个目标文件。如果 include 的文件不存在时，可以调用自身对应的目标将其生成出来。这些用法，我们会在以后的时间里细细展开。对于 C 语言头文件的依赖关系的自动生成，通常需要类似的技术来实现。</p>
+
+
+
+
+<p>附上 compile.mk 文件</p>
+
+
+
+
+<pre>
+%.exe :
+    link /out:$@ $^
+
+$(COBJS) : %.obj : %.c
+    cl $(CFLAGS) /c $&lt;
+</pre>
+
+
+
+
+<hr>
+
+
+
+
+<p>今天，我不想一直的围绕编译构建 C/C++ 工程谈下去。如前面所说，Make 可以帮助我们简化日常的许多工作。比如今天，我就碰到一个需求：要把一颗目录树下的所有图片文件转换成一种私有格式。</p>
+
+
+
+
+<p>我们有自己的命令行转换工具，每次可以转换一个文件。（这种图片转换我想很多人都遇到过，对于通用图象格式间的互转，有一个非常好用的命令行工具，ImageMagick，google 即得）</p>
+
+
+
+
+<p>我第一感觉想到的是使用命令行指令 for 。不知道的同学可以输入 for /? 查询。</p>
+
+
+
+
+<p>for 可以帮我遍历目录树，并对每一个符合要求的文件做一段命令行指令。但是，这里有几个问题。我们需要转换的图片非常多，有上万个文件。全部转换一次非常长的时间。而转换工具有点小问题，中间如果出了故障，不方便继续。另一方面，我的台式机是双核的，很难利用两个核同时工作。</p>
+
+
+
+
+<p>所以我写了一个 Makefile 来做这件事情。首先我用 for 指令生成了需要转换的文件名列表。</p>
+
+
+
+
+<pre>
+filelist:
+    echo # &gt; $@ &amp;&amp; for /R %%I in (*.jpg) do echo LIST+=%%~pI%%~nI.dat &gt;&gt; $@
+</pre>
+
+
+
+
+<p>这小段代码会生成一个叫 filelist 的文件，里面有所有的 jpg 文件名。但是把扩展名 jpg 换成了我们的目标扩展名 .dat 。
+下面是一段针对转换工具的调用：</p>
+
+
+
+
+<pre>
+$(LIST) : %.dat : %.jpg
+    convert $&lt;
+</pre>
+
+
+
+
+<p>完整的 Makefile 最终是这样的，由于是随手写的，有些地方并不完备，但它可以快速工作。</p>
+
+
+
+
+<pre>
+include filelist
+
+all: $(LIST)
+
+filelist:
+    echo # &gt; $@ &amp;&amp; for /R %%I in (*.jpg) do echo LIST+=%%~pI%%~nI.dat &gt;&gt; $@
+
+$(LIST) : %.dat : %.jpg
+    convert $&lt; -o $@
+</pre>
+
+
+
+
+<p>运行 gmake ，转换工作开始了。一开始会显示 makefile:1: filelist: No such file or directory ，表示 filelist 找不到，无法 include 。但是没关系，接下来 Make 找到了 filelist 的构造方法，立刻构造出这个文件列表来。all 这个缺省目标就是依赖这个文件列表上的所有文件的。所以，工作可以随时用 Ctrl-C 停下来，下次运行时，gmake 将根据文件时间继续上次的工作。</p>
+
+
+
+
+<p>这个 makefile 比较通用，其实可以放在任何地方，比如我把它塞在了 c:\tmp 下。需要转换那个目录下的所有 jpg 时，只需要进入那个目录，运行 gmake -f c:\tmp\makefile 即可。没错，gmake 可以用一个 -f 参数指定 makefile 文件的位置。这样，我们便有了一个方便的批量文件转换工具了。</p>
+
+
+
+
+<p>怎么利用双核？太容易了。 gmake -j2 即可。-j2 表示用两个进程同时工作，如果是四核的机器，则可以 -j4 。打开 -j2 开关后，立刻可以发现 CPU 处于满负荷工作状态。短短几行代码就把这件事情搞定了。非常开心。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

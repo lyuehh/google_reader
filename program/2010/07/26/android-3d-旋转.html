@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>android 3d 旋转</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>android 3d 旋转</h2>
+<p class="meta">26 Jul 2010</p>
+
+<div class="post">
+<h2>android 3d 旋转</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-26 10:10:45</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/721142">http://www.javaeye.com/topic/721142</a></h3>
+
+<p><span style="white-space:pre">   </span>在javaeye里看到了关于3d旋转的文章，可是博主没有透入什么技术细节。由于一直想做出那种旋转效果，所以就想啊想，终于想出来了（<img src="http://www.iteye.com/images/smiles/icon_rolleyes.gif" alt="">我是个小菜鸟）。呵呵，不管怎样，希望对想做还没做出来的朋友一些帮助。</p>
+
+
+<p><span style="white-space:pre">   </span>先上一个效果图：</p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/283149/5be5a35e-2734-366f-afe0-ded6e8aa9290.jpg" alt=""></p>
+
+
+<p> </p>
+
+
+<p><span style="white-space:pre">   </span>这是你想要的吗？如果是就继续往下看吧。</p>
+
+
+<p><span style="white-space:pre">   </span>其实，这个效果是用animation配合camera做出来的，相信大家在apidemo里面看过类似的。</p>
+
+
+<p><span style="white-space:pre">   </span>那么先写一个继承animation的类：Rotate3d</p>
+
+
+<p> </p>
+
+
+<pre name="code">public class Rotate3d extends Animation {
+    private float mFromDegree;
+    private float mToDegree;
+    private float mCenterX;
+    private float mCenterY;
+    private float mLeft;
+    private float mTop;
+    private Camera mCamera;
+    private static final String TAG = &quot;Rotate3d&quot;;
+
+    public Rotate3d(float fromDegree, float toDegree, float left, float top,
+            float centerX, float centerY) {
+        this.mFromDegree = fromDegree;
+        this.mToDegree = toDegree;
+        this.mLeft = left;
+        this.mTop = top;
+        this.mCenterX = centerX;
+        this.mCenterY = centerY;
+
+    }
+
+    @Override
+    public void initialize(int width, int height, int parentWidth,
+            int parentHeight) {
+        super.initialize(width, height, parentWidth, parentHeight);
+        mCamera = new Camera();
+    }
+
+    @Override
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        final float FromDegree = mFromDegree;
+        float degrees = FromDegree + (mToDegree - mFromDegree)
+                * interpolatedTime;
+        final float centerX = mCenterX;
+        final float centerY = mCenterY;
+        final Matrix matrix = t.getMatrix();
+
+        if (degrees &lt;= -76.0f) {
+             degrees = -90.0f;
+             mCamera.save();
+             mCamera.rotateY(degrees);
+             mCamera.getMatrix(matrix);
+             mCamera.restore();
+        } else if(degrees &gt;=76.0f){
+            degrees = 90.0f;
+            mCamera.save();
+            mCamera.rotateY(degrees);
+            mCamera.getMatrix(matrix);
+            mCamera.restore();
+        }else{
+            mCamera.save();
+                       //这里很重要哦。
+            mCamera.translate(0, 0, centerX);
+            mCamera.rotateY(degrees);
+            mCamera.translate(0, 0, -centerX);
+            mCamera.getMatrix(matrix);
+            mCamera.restore();
+        }
+
+        matrix.preTranslate(-centerX, -centerY);
+        matrix.postTranslate(centerX, centerY);
+    }
+}</pre>
+
+
+<p> </p>
+
+
+<p> 有了这个类一切都会变得简单的，接着只要在activity中写两个Rotate3d的对象，让两个view,分别做这两个对象的animation就好了。（<img src="http://www.iteye.com/images/smiles/icon_biggrin.gif" alt="">原来就这么简单啊！无语）</p>
+
+
+<p> </p>
+
+
+<pre name="code">//下面两句很关键哦，呵呵，心照不宣。
+        Rotate3d leftAnimation = new Rotate3d(-0, -90, 0, 0, mCenterX, mCenterY);
+        Rotate3d rightAnimation = new Rotate3d(-0+90, -90+90, 0.0f, 0.0f, mCenterX, mCenterY);
+
+        leftAnimation.setFillAfter(true);
+        leftAnimation.setDuration(1000);
+        rightAnimation.setFillAfter(true);
+        rightAnimation.setDuration(1000);
+
+        mImageView1.startAnimation(leftAnimation);
+        mImageView2.startAnimation(rightAnimation);</pre>
+
+
+<p> </p>
+
+<p> </p>
+
+
+<p> </p>
+
+<p> </p>
+
+
+<p>还要写一下mImageView1,mImageView2的xml,</p>
+
+
+<p> </p>
+
+
+<pre name="code">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:orientation=&quot;vertical&quot;
+    android:layout_width=&quot;fill_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    &gt;
+
+    &lt;FrameLayout
+        android:layout_width=&quot;fill_parent&quot;
+        android:layout_height=&quot;fill_parent&quot;&gt;
+
+                   &lt;ImageView
+                    android:id=&quot;@+id/image1&quot;
+                    android:layout_gravity=&quot;center_horizontal&quot;
+                    android:layout_width=&quot;fill_parent&quot;
+                    android:layout_height=&quot;wrap_content&quot;
+                    android:src=&quot;@drawable/image1&quot;
+                    /&gt;
+                   &lt;ImageView
+                    android:id=&quot;@+id/image2&quot;
+                    android:background=&quot;#ffff0000&quot;
+                    android:layout_gravity=&quot;center_horizontal&quot;
+                    android:layout_width=&quot;fill_parent&quot;
+                    android:layout_height=&quot;wrap_content&quot;
+                    android:src=&quot;@drawable/image2&quot;
+                    /&gt;
+
+    &lt;/FrameLayout&gt;
+&lt;/LinearLayout&gt;</pre>
+
+
+<p> 写完收工。如果有不足之处，还请朋友们不吝指教。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://harriszhang.javaeye.com"&gt;harriszhang&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/721142" style="color:red"&gt;已有 &lt;strong&gt;5&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

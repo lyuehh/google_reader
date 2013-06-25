@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Backbone.js: Hacker&#39;s Guide</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Backbone.js: Hacker&#39;s Guide</h2>
+<p class="meta">19 Jul 2012</p>
+
+<div class="post">
+<h2>Backbone.js: Hacker&#39;s Guide</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-07-19 07:00:00</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/dailyjs/~3/Kb6xPDDq3ec/mvstar-2">http://feedproxy.google.com/~r/dailyjs/~3/Kb6xPDDq3ec/mvstar-2</a></h3>
+
+<p>There’s no denying the popularity and impact that <a href="http://backbonejs.org/">Backbone.js</a> (License: <em>MIT</em>, GitHub: <a href="https://github.com/documentcloud/backbone/">documentcloud / backbone</a>) by Jeremy Ashkenas and DocumentCloud has made. Although the documentation and examples are excellent, I thought it would be interesting to review the code on a more technical level. Hopefully this will give readers a deeper understanding of Backbone, and as the <em>MVC</em> series progresses these code reviews should prove useful in accurately comparing the many competing frameworks.</p>
+
+
+
+
+<p>Follow me on a guided tour through Backbone’s source to really learn how it works and what it provides.</p>
+
+
+
+
+<h3>Namespace and Conflict Management</h3>
+
+
+
+
+<p>Like most client-side projects, Backbone.js wraps everything in an immediately-invoked function expression:</p>
+
+
+<div><pre><code><span>(</span><span>function</span><span>(){</span>
+  <span>// Backbone.js</span>
+<span>}).</span><span>call</span><span>(</span><span>this</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Several things happen during this configuration stage. A <code>Backbone</code> “namespace” is created, and multiple versions of Backbone on the same page are supported through the <code>noConflict</code> mode:</p>
+
+
+<div><pre><code><span>var</span> <span>root</span> <span>=</span> <span>this</span><span>;</span>
+<span>var</span> <span>previousBackbone</span> <span>=</span> <span>root</span><span>.</span><span>Backbone</span><span>;</span>
+
+<span>Backbone</span><span>.</span><span>noConflict</span> <span>=</span> <span>function</span><span>()</span> <span>{</span>
+  <span>root</span><span>.</span><span>Backbone</span> <span>=</span> <span>previousBackbone</span><span>;</span>
+  <span>return</span> <span>this</span><span>;</span>
+<span>};</span>
+</code></pre>
+</div>
+
+
+<p>Multiple versions of Backbone can be used on the same page by calling <code>noConflict</code> like this:</p>
+
+
+<div><pre><code><span>var</span> <span>Backbone19</span> <span>=</span> <span>Backbone</span><span>.</span><span>noConflict</span><span>();</span>
+<span>// Backbone19 refers to the most recently loaded version,</span>
+<span>// and `window.Backbone` will be restored to the previously</span>
+<span>// loaded version</span>
+</code></pre>
+</div>
+
+
+<p>This initial configuration code also supports CommonJS modules so Backbone can be used in Node projects:</p>
+
+
+<div><pre><code><span>var</span> <span>Backbone</span><span>;</span>
+<span>if</span> <span>(</span><span>typeof</span> <span>exports</span> <span>!==</span> <span>&#39;undefined&#39;</span><span>)</span> <span>{</span>
+  <span>Backbone</span> <span>=</span> <span>exports</span><span>;</span>
+<span>}</span> <span>else</span> <span>{</span>
+  <span>Backbone</span> <span>=</span> <span>root</span><span>.</span><span>Backbone</span> <span>=</span> <span>{};</span>
+<span>}</span>
+</code></pre>
+</div>
+
+
+<p>The existence of <a href="http://underscorejs.org/">Underscore.js</a> (also by DocumentCloud) and a jQuery-like library is checked as well.</p>
+
+
+
+
+<h3>Server Support</h3>
+
+
+
+
+<p>During configuration, Backbone sets a variable to denote if extended HTTP methods are supported by the server. Another setting controls if the server understands the correct MIME type for JSON:</p>
+
+
+<div><pre><code><span>Backbone</span><span>.</span><span>emulateHTTP</span> <span>=</span> <span>false</span><span>;</span>
+<span>Backbone</span><span>.</span><span>emulateJSON</span> <span>=</span> <span>false</span><span>;</span>
+</code></pre>
+</div>
+
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L1331">Backbone.sync</a> method that uses these values is actually an integral part of Backbone.js. A jQuery-like <code>ajax</code> method is assumed, so HTTP parameters are organised based on jQuery’s API. Searching through the code for calls to the <code>sync</code> method show it’s used whenever a model is saved, fetched, or deleted (destroyed).</p>
+
+
+
+
+<p>What if jQuery’s <code>ajax</code> API isn’t appropriate for your project? Well, it seems like the <code>sync</code> method is the right place to override for changing how models are persisted, and this is confirmed by Backbone’s documentation:</p>
+
+
+
+
+<blockquote>
+<p>The <em>sync</em> function may be overriden globally as <code>Backbone.sync</code>, or at a finer-grained level, by adding a <code>sync</code> function to a Backbone collection or to an individual model.</p>
+</blockquote>
+
+
+
+
+<p>There’s no fancy plugin API for adding a persistence layer – simply override <code>Backbone.sync</code> with the same function signature:</p>
+
+
+<div><pre><code><span>Backbone</span><span>.</span><span>sync</span> <span>=</span> <span>function</span><span>(</span><span>method</span><span>,</span> <span>model</span><span>,</span> <span>options</span><span>)</span> <span>{</span>
+<span>};</span>
+</code></pre>
+</div>
+
+
+<p>The default <code>methodMap</code> is useful for working out what the <code>method</code> argument does:</p>
+
+
+<div><pre><code><span>var</span> <span>methodMap</span> <span>=</span> <span>{</span>
+  <span>&#39;create&#39;</span><span>:</span> <span>&#39;POST&#39;</span><span>,</span>
+  <span>&#39;update&#39;</span><span>:</span> <span>&#39;PUT&#39;</span><span>,</span>
+  <span>&#39;delete&#39;</span><span>:</span> <span>&#39;DELETE&#39;</span><span>,</span>
+  <span>&#39;read&#39;</span><span>:</span>   <span>&#39;GET&#39;</span>
+<span>};</span>
+</code></pre>
+</div>
+
+
+<h3>Events</h3>
+
+
+
+
+<p>Backbone has a <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L76-167">built-in module for handling events</a>. It’s a simple object with the following methods:</p>
+
+
+
+
+<ul>
+<li><code>on: function(events, callback, context) </code>, aliased to <code>bind</code></li>
+
+<li><code>off: function(events, callback, context) {</code>, aliased to <code>unbind</code></li>
+
+<li><code>trigger: function(events) {</code></li>
+</ul>
+
+
+
+
+<p>Each of these methods returns <code>this</code>, so it’s a chainable object. The comments recommend using Underscore.js to add <code>Backbone.Events</code> to any object:</p>
+
+
+<div><pre><code><span>//     var object = {};</span>
+<span>//     _.extend(object, Backbone.Events);</span>
+<span>//     object.on(&#39;expand&#39;, function(){ alert(&#39;expanded&#39;); });</span>
+<span>//     object.trigger(&#39;expand&#39;);</span>
+</code></pre>
+</div>
+
+
+<p>This won’t overwrite the existing object, it appends the methods instead. That means it’s easy to add event support to other objects in your project.</p>
+
+
+
+
+<h3>Model</h3>
+
+
+
+
+<p><a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L178">Backbone.Model</a> is where things start to get serious. Models use a constructor function that sets up various internal properties for managing things like attributes and whether or not the model has been saved yet. Underscore.js is used to add the methods from <code>Backbone.Events</code>, and then the public model API is defined. This contains most of the frequently used Backbone methods.</p>
+
+
+
+
+<p>Notice that <code>Backbone.Model</code> is actually quite transparent: there aren’t any private methods defined inside the constructor.</p>
+
+
+
+
+<p>The <code>set</code> method supports two different signatures, making it easy to support a <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L257-264">single attribute or multiple attributes</a>:</p>
+
+
+<div><pre><code><span>// Handle both `&quot;key&quot;, value` and `{key: value}` -style arguments.</span>
+<span>if</span> <span>(</span><span>_</span><span>.</span><span>isObject</span><span>(</span><span>key</span><span>)</span> <span>||</span> <span>key</span> <span>==</span> <span>null</span><span>)</span> <span>{</span>
+  <span>attrs</span> <span>=</span> <span>key</span><span>;</span>
+  <span>options</span> <span>=</span> <span>value</span><span>;</span>
+<span>}</span> <span>else</span> <span>{</span>
+  <span>attrs</span> <span>=</span> <span>{};</span>
+  <span>attrs</span><span>[</span><span>key</span><span>]</span> <span>=</span> <span>value</span><span>;</span>
+<span>}</span>
+</code></pre>
+</div>
+
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L349-355">save method does something similar</a>. Notice how the authors ensure an object is always set for <code>options</code>:</p>
+
+
+<div><pre><code><span>options</span> <span>||</span> <span>(</span><span>options</span> <span>=</span> <span>{});</span>
+</code></pre>
+</div>
+
+
+<p>In terms of expressing the programmer’s intent, this seems better than <code>options = options || {}</code>.</p>
+
+
+
+
+<p>The <code>set</code> method triggers validations and prevents the method from progressing if a validation fails:</p>
+
+
+<div><pre><code><span>if</span> <span>(</span><span>!</span><span>this</span><span>.</span><span>_validate</span><span>(</span><span>attrs</span><span>,</span> <span>options</span><span>))</span> <span>return</span> <span>false</span><span>;</span>
+</code></pre>
+</div>
+
+
+<p>Next each attribute is iterated over. If the attribute has changed, according to Underscore’s <code>isEqual</code> method, then the change is recorded. Once the list of changes have been built, the <code>change</code> method is called.</p>
+
+
+
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L457">change</a> method calls <code>trigger</code> for each change. This allows for changes to any attribute to be listened on specifically, allowing the UI to be updated appropriately. For example, let’s say I had a <code>blogPost</code> model instance:</p>
+
+
+<div><pre><code><span>blogPost</span><span>.</span><span>on</span><span>(</span><span>&#39;change:title&#39;</span><span>,</span> <span>function</span><span>()</span> <span>{</span>
+  <span>// Update the HTML for the page title</span>
+<span>});</span>
+
+<span>blogPost</span><span>.</span><span>set</span><span>(</span><span>&#39;title&#39;</span><span>,</span> <span>&#39;All Work and No Play Makes Blank a Blank Blank&#39;</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Other methods also trigger <code>change</code> events: <code>unset</code>, <code>clear</code>, and <code>fetch</code>. Since we don’t always care if these cause a change event, a <code>silent</code> option is supported that will be passed from these methods to <code>set</code>. It’s actually quite interesting how each of these methods is implemented by reusing <code>set</code>:</p>
+
+
+<div><pre><code><span>// Clear all attributes on the model, firing `&quot;change&quot;` unless you choose</span>
+<span>// to silence it.</span>
+<span>clear</span><span>:</span> <span>function</span><span>(</span><span>options</span><span>)</span> <span>{</span>
+  <span>options</span> <span>=</span> <span>_</span><span>.</span><span>extend</span><span>({},</span> <span>options</span><span>,</span> <span>{</span><span>unset</span><span>:</span> <span>true</span><span>});</span>
+  <span>return</span> <span>this</span><span>.</span><span>set</span><span>(</span><span>_</span><span>.</span><span>clone</span><span>(</span><span>this</span><span>.</span><span>attributes</span><span>),</span> <span>options</span><span>);</span>
+<span>},</span>
+</code></pre>
+</div>
+
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L329">fetch</a> method will trigger a sync operation that will retrieve the latest values from the server (or suitable persistence layer if it’s been overridden).</p>
+
+
+
+
+<p>The <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L345">save</a> method ensures only valid attributes and models are persisted, and calls <code>set</code> if required:</p>
+
+
+<div><pre><code><span>if</span> <span>(</span><span>options</span><span>.</span><span>wait</span><span>)</span> <span>{</span>
+  <span>if</span> <span>(</span><span>!</span><span>this</span><span>.</span><span>_validate</span><span>(</span><span>attrs</span><span>,</span> <span>options</span><span>))</span> <span>return</span> <span>false</span><span>;</span>
+  <span>current</span> <span>=</span> <span>_</span><span>.</span><span>clone</span><span>(</span><span>this</span><span>.</span><span>attributes</span><span>);</span>
+<span>}</span>
+
+<span>// Regular saves `set` attributes before persisting to the server.</span>
+<span>var</span> <span>silentOptions</span> <span>=</span> <span>_</span><span>.</span><span>extend</span><span>({},</span> <span>options</span><span>,</span> <span>{</span><span>silent</span><span>:</span> <span>true</span><span>});</span>
+<span>if</span> <span>(</span><span>attrs</span> <span>&amp;&amp;</span> <span>!</span><span>this</span><span>.</span><span>set</span><span>(</span><span>attrs</span><span>,</span> <span>options</span><span>.</span><span>wait</span> <span>?</span> <span>silentOptions</span> <span>:</span> <span>options</span><span>))</span> <span>{</span>
+  <span>return</span> <span>false</span><span>;</span>
+<span>}</span>
+
+<span>// Do not persist invalid models.</span>
+<span>if</span> <span>(</span><span>!</span><span>attrs</span> <span>&amp;&amp;</span> <span>!</span><span>this</span><span>.</span><span>isValid</span><span>())</span> <span>return</span> <span>false</span><span>;</span>
+</code></pre>
+</div>
+
+
+<p>The <code>sync</code> method is called to persist the changes to the server. <code>isNew</code> is used to determine if the model should be created or updated. The <code>isNew</code> state is determined by whether an <code>id</code> attribute exists or not. This could be easily overridden if a given persistence layer works a different way. Notice that Backbone internally references this attribute as <code>this.id</code> and doesn’t map it to the value set with <code>idAttribute</code> in <code>isNew</code>.</p>
+
+
+
+
+<p>A <a href="https://github.com/documentcloud/backbone/blob/ddefd21167c27d98fd1eb05a44e330a2313055f6/backbone.js#L440">parse</a> placeholder method is called whenever models are fetched, or saved. There are examples of people using this to parse other <a href="http://newcome.wordpress.com/2011/02/20/consuming-xml-web-services-in-backbone-js-using-jath/">data formats like XML</a>.</p>
+
+
+
+
+<h3>Conclusion</h3>
+
+
+
+
+<p>After looking at the Backbone.js setup and model code, we’ve already learned quite a lot:</p>
+
+
+
+
+<ul>
+<li>Any persistence scheme can be supported by overriding the <code>sync</code> method</li>
+
+<li>Models are event-based</li>
+
+<li><code>change</code> events can drive the UI whenever models change</li>
+
+<li>Models know when to create or update objects</li>
+
+<li>Reusing Backbone’s models, events, and Underscore methods is useful for organising project architecture</li>
+</ul>
+
+
+
+
+<p>Although the Backbone models don’t have a plugin layer, the authors have kept the design open and allowed for just the right hooks to support lots of HTTP services and data types outside the built-in RESTful JSON oriented design.</p>
+
+
+
+
+<p>Backbone relies heavily on Underscore.js, which means applications built with it can build on both of these libraries to create (potentially) well-designed and reusable code.</p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/dailyjs/~4/Kb6xPDDq3ec" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

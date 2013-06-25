@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Android 2.2平台API变化概述</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Android 2.2平台API变化概述</h2>
+<p class="meta">19 Aug 2010</p>
+
+<div class="post">
+<h2>Android 2.2平台API变化概述</h2>
+
+<h3>by ddna</h3>
+
+<h3>at 2010-08-18 17:20:33</h3>
+
+<h3>original <a href="http://www.linuxidc.com/Linux/2010-08/27924.htm">http://www.linuxidc.com/Linux/2010-08/27924.htm</a></h3>
+
+<p>Android平台现在支持应用主动要求安装在外部存储设备（如SD卡），以取代将其安装在设备的内部存储区。</p>
+
+
+<p>应用开发者可以通过manifest文件里一个新的&lt;menifest&gt;属性来说明更希望将应用安装在哪里，即Android:installLocation。这个属性支持三个值：”internalOnly”,”preferExternal”,”auto”。可能的话在安装时，系统会检查android:installLocation的值，根据倾向的位置安装应用的.apk。如果应用要求安装在外部，系统会将其安装在外部存储介质的一个私有加密的分区上。一旦应用的.apk被安装在外部，系统会通过用户设定里的应用管理(Manage Applications)来使用户可以在需要的时候将其移动到内部存储区域，反之也是一样。</p>
+
+
+<p>...</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

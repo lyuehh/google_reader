@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JavaScript中instanceof对于不同的构造器可能都返回true</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JavaScript中instanceof对于不同的构造器可能都返回true</h2>
+<p class="meta">04 Feb 2013</p>
+
+<div class="post">
+<h2>JavaScript中instanceof对于不同的构造器可能都返回true</h2>
+
+<h3>by snandy</h3>
+
+<h3>at 2013-02-03 20:03:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/snandy/archive/2013/02/03/2891018.html">http://www.cnblogs.com/snandy/archive/2013/02/03/2891018.html</a></h3>
+
+<p>我们知道 instanceof 运算符用来检查对象是否为某构造器的实例。下面列举它返回true的各种情景。</p>
+
+
+<p> </p>
+
+
+<p>1、<strong>对象obj是通过new Constructor创建的，那么 <em><span style="color:#ff00ff">obj instanceof Constructor </span></em><span style="color:#333333">为</span>true</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function Person(n, a) {<br>this.name = n;<br>this.age = a;<br>}<br>var p = new Person('John Backus', 82);<br>console.log(p instanceof Person); // true<br></div>
+
+
+<p> </p>
+
+
+<p><strong>2、如果存在继承关系，那么 <span style="color:#ff00ff"><em>子类实例 instanceof 父类</em></span> 也会返回true</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A(){}<br>function B(){}<br>B.prototype = new A(); // B继承于A<br><br>var b = new B();<br>console.log(b instanceof A); // true<br></div>
+
+
+<p> </p>
+
+
+<p><strong>3、由于Object是根类，所有其它自定义类都继承于它，因此 <span style="color:#ff00ff"><em>任意构造器的实例 instanceof Object</em></span> 都返回true</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A() {}<br>var a = new A();<br>console.log(a instanceof Object); // true<br><br>var str = new String('hello');<br>console.log(str instanceof Object); // true<br><br>var num = new Number(1);<br>console.log(num instanceof Object); // true<br></div>
+
+
+<p>甚至包括构造器自身</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A() {}<br>console.log(A instanceof Object); // true<br>console.log(String instanceof Object); // true<br>console.log(Number instanceof Object); // true<br></div>
+
+
+<p> </p>
+
+
+<p><strong>4、<span style="color:#ff00ff"><em>所有构造器 instanceof Function</em></span> 返回true</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A() {}<br>console.log(A instanceof Function); // true<br>console.log(String instanceof Function); // true<br>console.log(Number instanceof Function); // true</div>
+
+
+<p> </p>
+
+
+<p>以上四点总结为一句话：<strong>如果某实例是通过某类或其子类的创建的，那么instanceof就返回true</strong>。或者说某构造函数的原型 存在与对象obj的内部原型链上，那么返回true。即instanceof的结果与构造器自身并无直接关系。这在许多语言中都是通用的。</p>
+
+
+<p><br>Java中定义了一个类Person，实例p对于Person和Object都返回true</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">class Person {<br>public String name;<br>public int age;<br>Person (String n, int a) {<br>this.name = name;<br>this.age = a;<br>}<br>public static void main(String[] args) {<br>Person p = new Person("John Backus", 82);<br>System.out.println(p instanceof Person); // true<br>System.out.println(p instanceof Object); // true<br>}<br>}</div>
+
+
+<p> </p>
+
+
+<p>Java中如果存在继承关系，那么 <span style="color:#ff00ff">子类实例 instanceof 父类</span> 也返回true</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">// 父类<br>class Person {<br>    public String name;<br>    public int age;<br>    Person (String n, int a) {<br>        name = name;<br>        age = a;<br>    }<br>}<br>// 子类<br>public class Man extends Person{<br>public String university;<br>Man(String n, int a, String s) {<br>super(n, a);<br>university = s;<br>}<br>public static void main(String[] args) {<br>Man mm = new Man("John Resig", 29, "PKU");<br>System.out.println(mm instanceof Man); // true<br>System.out.println(mm instanceof Person); // 也是true<br>}<br>}<br></div>
+
+
+<p>　　</p>
+
+
+<p>　　</p>
+
+
+<p>知道了这些，JS中以下的表现就不奇怪了</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">// 定义两个构造器<br>function A(){}<br>function B(){}<br>A.prototype = B.prototype = {a: 1};<br><br>// 分别创建两个不同构造器的实例<br>var a = new A();<br>var b = new B();<br>console.log(a instanceof B); // true<br>console.log(b instanceof A); // true<br></div>
+
+
+<p>我们看到a, b分别是用A和B创建的，但<em>a instanceof B</em>和 <em>b instanceof A</em>都是true。即a虽然不是用构造器B创建的，但仍然返回true。因为B.prototype存在于a的内部原型链上。</p>
+
+
+<p> </p>
+
+
+<p>由于JS的动态语言特性，可以在运行时修改原型，因此下面返回false也不足为奇了。因为A.prototype已经不在a的内部原型链中，链条被打断了。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A(){}<br>var a = new A();<br>A.prototype = {}; // 动态修改原型，注意必须在创建a后<br>console.log(a instanceof A); // false<br></div>
+
+
+<p>注意这么写也打破了上面总结的第一条：<em><strong>对象obj是通过new Constructor创建的，那么<span>obj instanceof Constructor </span><span>为</span>true</strong></em></p>
+
+
+<p> </p>
+
+
+<p>实际在ECMAScript标准中（以5.1为准），instanceof 内部实现会调用构造器的内部方法[[HasInstance]]，描述如下</p>
+
+
+<p><img style="border:1px solid gray;border-radius:10px" src="http://images.cnitblog.com/blog/114013/201302/03200116-17d7280d4b4748949194b4029f153cc9.png" alt="" width="600"></p>
+
+
+<p>假如F是一个函数对象，当F(V)执行时，以下步骤将发生：</p>
+
+
+<p>1、如果instanceof左运算元V不是对象类型，直接返回false</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var a, b = 1, c = true, d = 'hello';<br>console.log(a instanceof Object); // false 这里a值为undefined<br>console.log(b instanceof Object); // false<br>console.log(c instanceof Object); // false<br>console.log(d instanceof Object); // false<br></div>
+
+
+<p>2/3、取构造器F的prototype属性，如果不是对象类型，须抛出TypeError异常，</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function A(){}<br>A.prototype = 1; // A的prototype设为非对象类型<br>var a = new A();<br>console.log(a instanceof A);<br></div>
+
+
+<p>各浏览器抛出的异常提示不同，</p>
+
+
+<div style="margin-left:25px"><p>Firefox18：</p><p><img src="http://images.cnitblog.com/blog/114013/201302/03202221-85254542e77d4eaaba5d37cc21620e95.png" alt=""></p><p> </p><p>Chrome24:</p><p><img src="http://images.cnitblog.com/blog/114013/201302/03202308-f321ce7782994f9cabe638ec86860c82.png" alt=""></p><p> </p><p>Safari6:</p><p><img src="http://images.cnitblog.com/blog/114013/201302/03202420-5fc44140c46949b586a248913523c653.png" alt=""></p><p> </p><p>Opera12:</p><p><img src="http://images.cnitblog.com/blog/114013/201302/03202606-a9c3821f09004292be625ba836f9f8ef.png" alt=""></p><p> </p><p>IE10：</p><p><img src="http://images.cnitblog.com/blog/114013/201302/03204151-95365589fde54fe09f6c1b28f3f2b365.png" alt="">　　</p></div>
+
+
+<p>4、不断的执行以下逻辑：将V设为内部原型的V，如果V是null则返回false，如果V和O都指向同一个对象，则返回true。</p>
+
+
+<p> </p>
+
+
+<p>相关：</p>
+
+
+<p><a href="https://developer.mozilla.org/zh-CN/docs/JavaScript/Reference/Operators/instanceof">https://developer.mozilla.org/zh-CN/docs/JavaScript/Reference/Operators/instanceof</a></p>
+
+
+<p><a href="http://www.cnblogs.com/snandy/archive/2012/09/01/2664134.html">JavaScript中__proto__与prototype的关系</a></p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/snandy/aggbug/2891018.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2013/02/03/2891018.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

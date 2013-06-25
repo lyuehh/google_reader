@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用node.js快速开发透明代理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用node.js快速开发透明代理</h2>
+<p class="meta">24 Dec 2010</p>
+
+<div class="post">
+<h2>使用node.js快速开发透明代理</h2>
+
+<h3>by 草屋主人</h3>
+
+<h3>at 2010-12-23 16:38:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/sunli/archive/2010/12/23/node_js.html">http://www.cnblogs.com/sunli/archive/2010/12/23/node_js.html</a></h3>
+
+<p><p>           [文章作者：孙立 链接：<a href="http://www.cnblogs.com/sunli/">http://www.cnblogs.com/sunli/</a> 更新时间：2010-12-23]  </p>
+<p>      服务器端js（Server-Side Javascrpt）很早也就有了，JAVA中也有javascript 的script引擎。但是最近服务器端js的火爆确实因为<a href="http://nodejs.org/">node.js</a>项目。在velocity china 2010大会Douglas Crockford(Yahoo!)也有一个topic《<a href="http://velocity.oreilly.com.cn/index.php?func=session&amp;name=%E5%8D%B7%E5%9C%9F%E9%87%8D%E6%9D%A5%EF%BC%9A%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AFJavaScript">卷土重来：服务器端JavaScript</a>》提到node.js。关于node.js的详细资料请google.</p>
+<p>      node.js的非常大的一个特点就是事件驱动，在开发服务器端服务的时候显得非常方便。昨晚在新浪的<a href="http://t.sina.com.cn/10503/l4CtE7kuB">@timYang</a>也提到了node.js，估计新浪微博也注意到了它的优点。同时，淘宝最近也表示对node.js有相当的兴趣。参见：<a href="http://www.tbdata.org/archives/1285">http://www.tbdata.org/archives/1285</a>  <a href="http://www.tbdata.org/archives/1292">http://www.tbdata.org/archives/1292</a> ，为了体验一把，就用node.js写了一个透明的代理服务层，代码如下：</p>
+<p> </p>
+<div>
+<pre><div><span style="color:#0000ff">var</span><span style="color:#000000"> net </span><span style="color:#000000">=</span><span style="color:#000000"> require(</span><span style="color:#000000">'</span><span style="color:#000000">net</span><span style="color:#000000">'</span><span style="color:#000000">);<br></span><span style="color:#0000ff">var</span><span style="color:#000000"> proxyhost</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">127.0.0.1</span><span style="color:#000000">"</span><span style="color:#000000">;</span><span style="color:#008000">//</span><span style="color:#008000">被代理的服务的IP</span><span style="color:#008000"><br></span><span style="color:#0000ff">var</span><span style="color:#000000"> proxyport</span><span style="color:#000000">=</span><span style="color:#000000">3306</span><span style="color:#000000">;</span><span style="color:#008000">//</span><span style="color:#008000">被代理的端口</span><span style="color:#008000"><br></span><span style="color:#0000ff">var</span><span style="color:#000000"> listenport</span><span style="color:#000000">=</span><span style="color:#000000">8124</span><span style="color:#000000">;</span><span style="color:#008000">//</span><span style="color:#008000">代理端口</span><span style="color:#008000"><br></span><span style="color:#000000">net.createServer(</span><span style="color:#0000ff">function</span><span style="color:#000000"> (socket) {<br>   socket.on(</span><span style="color:#000000">"</span><span style="color:#000000">connect</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>        console.log(</span><span style="color:#000000">'</span><span style="color:#000000">connected</span><span style="color:#000000">'</span><span style="color:#000000">);<br>        </span><span style="color:#0000ff">try</span><span style="color:#000000">{<br>            </span><span style="color:#0000ff">var</span><span style="color:#000000"> db</span><span style="color:#000000">=</span><span style="color:#000000">net.createConnection(proxyport,proxyhost);<br>            db.on(</span><span style="color:#000000">"</span><span style="color:#000000">connect</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                console.log(</span><span style="color:#000000">"</span><span style="color:#000000">server connected</span><span style="color:#000000">"</span><span style="color:#000000">);<br>                socket.on(</span><span style="color:#000000">"</span><span style="color:#000000">data</span><span style="color:#000000">"</span><span style="color:#000000">, </span><span style="color:#0000ff">function</span><span style="color:#000000"> (data) {<br>                    db.write(data);<br>                  });<br>                db.on(</span><span style="color:#000000">"</span><span style="color:#000000">data</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(data){<br>                    console.log(data.toString(</span><span style="color:#000000">'</span><span style="color:#000000">utf8</span><span style="color:#000000">'</span><span style="color:#000000">,</span><span style="color:#000000">0</span><span style="color:#000000">,data.legnth));<br>                    </span><span style="color:#008000">//</span><span style="color:#008000">console.log(data);</span><span style="color:#008000"><br></span><span style="color:#000000">                    socket.write(data);<br>                });<br>                socket.on(</span><span style="color:#000000">"</span><span style="color:#000000">close</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                    console.log(</span><span style="color:#000000">"</span><span style="color:#000000">server closed</span><span style="color:#000000">"</span><span style="color:#000000">);<br>                    db.destroy();<br>                });<br>            });<br>           db.on(</span><span style="color:#000000">"</span><span style="color:#000000">error</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(data){<br>                console.log(</span><span style="color:#000000">"</span><span style="color:#000000">error:\r\n</span><span style="color:#000000">"</span><span style="color:#000000">+</span><span style="color:#000000">data);<br>            });<br>            db.on(</span><span style="color:#000000">"</span><span style="color:#000000">end</span><span style="color:#000000">"</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                console.log(</span><span style="color:#000000">"</span><span style="color:#000000">server closed</span><span style="color:#000000">"</span><span style="color:#000000">);<br>                socket.destroy();<br>            });<br>        }</span><span style="color:#0000ff">catch</span><span style="color:#000000">(err){<br>             console.log(err);                    <br>        }<br>    });<br>}).listen(listenport, </span><span style="color:#000000">"</span><span style="color:#000000">0.0.0.0</span><span style="color:#000000">"</span><span style="color:#000000">);<br></span></div><div><span style="font-family:&#39;Courier New&#39;">//来自<a href="http://www.cnblogs.com/sunli/">http://www.cnblogs.com/sunli/</a>，用于测试，生产环境需考虑稳定性代码处理</span></div></pre>
+</div>
+<p>     OK，大功告成，只用了一点点的时间，是的，就是这么简单。我们把proxyhost，proxyport=3306改成本机的一个数据上，启动后，我用mysql客户端连8124,就可以连上3306端口的数据库了。</p>
+<p>    不仅仅是数据库，把proxyhost，proxyport指向到memcached，那么就变成memcached代理了。</p>
+<p>    通过console.log你可以非常方便的调试协议。也可以用来监视某些不开放的协议。</p>
+<p>    使用node.js开发网络服务应用程序，比如代理层，httpserver处理非常方便。</p>
+<p>    刚刚有<a href="http://t.sina.com.cn/1856928204">朋友</a>提出了<a href="http://hi.baidu.com/pyleaf/blog/item/397781ffca3fc1effd037f0f.html?timeStamp=1293102330971">一个 bug </a>,谢谢这位朋友。</p>
+<p> </p><img src="http://www.cnblogs.com/sunli/aggbug/1915033.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/sunli/">草屋主人</a> 发表于 2010-12-23 16:38 <a href="http://www.cnblogs.com/sunli/archive/2010/12/23/node_js.html">原文链接</a></p><p>评论: 6　<a href="http://www.cnblogs.com/sunli/archive/2010/12/23/node_js.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/sunli/archive/2010/12/23/node_js.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/85676/">2010手机市场：苹果最挣钱 诺基亚出货量最高</a><span style="color:gray">(2010-12-23 23:14)</span><br>· <a href="http://news.cnblogs.com/n/85675/">DivX再转手 Rovi 7.2亿美元收购Sonic</a><span style="color:gray">(2010-12-23 23:13)</span><br>· <a href="http://news.cnblogs.com/n/85674/">iOS Safari支持浏览器内方向感应</a><span style="color:gray">(2010-12-23 23:07)</span><br>· <a href="http://news.cnblogs.com/n/85673/">2014年全球将有13%手机内置近场通信技术</a><span style="color:gray">(2010-12-23 22:59)</span><br>· <a href="http://news.cnblogs.com/n/85669/">2010年世界品牌500强排行揭晓 Facebook居首位</a><span style="color:gray">(2010-12-23 22:32)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/85621/">程序员在创业团队的技术挑战</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

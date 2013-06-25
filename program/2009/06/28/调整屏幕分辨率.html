@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>调整屏幕分辨率</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>调整屏幕分辨率</h2>
+<p class="meta">28 Jun 2009</p>
+
+<div class="post">
+<h2>调整屏幕分辨率</h2>
+
+<h3>by Mr. Shu</h3>
+
+<h3>at 2009-06-28 15:04:06</h3>
+
+<h3>original <a href="http://www.shuax.com/?p=9">http://www.shuax.com/?p=9</a></h3>
+
+<p>到网吧去上网的时候，看着它的分辨率很不爽，难道没有人觉得变形了吗？又还故意把设置很弄没了，真是搞不懂啊……</p>
+
+
+<p>到网上搜索了一下，原来很简单的程序；</p>
+
+
+
+
+<div><table width="100%"><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td><pre style="font-family:monospace"> 
+<span style="color:#339933">#include &lt;windows.h&gt;</span>
+<span style="color:#339933">#include &lt;stdio.h&gt;</span>
+<span style="color:#993333">int</span> main<span style="color:#009900">(</span><span style="color:#009900">)</span>
+<span style="color:#009900">{</span>
+    DEVMODE lpDevMode<span style="color:#339933">;</span>
+    lpDevMode.<span style="color:#202020">dmBitsPerPel</span> <span style="color:#339933">=</span> <span style="color:#0000dd">32</span><span style="color:#339933">;</span>
+ 
+    <span style="color:#000066">printf</span><span style="color:#009900">(</span><span style="color:#ff0000">&quot;请输入分辨率：&quot;</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+    scanf<span style="color:#009900">(</span><span style="color:#ff0000">&quot;%d%d&quot;</span><span style="color:#339933">,</span> <span style="color:#339933">&amp;</span>lpDevMode.<span style="color:#202020">dmPelsWidth</span><span style="color:#339933">,</span> <span style="color:#339933">&amp;</span>lpDevMode.<span style="color:#202020">dmPelsHeight</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+    lpDevMode.<span style="color:#202020">dmSize</span> <span style="color:#339933">=</span> <span style="color:#993333">sizeof</span><span style="color:#009900">(</span>lpDevMode<span style="color:#009900">)</span><span style="color:#339933">;</span>
+    lpDevMode.<span style="color:#202020">dmFields</span> <span style="color:#339933">=</span> DM_PELSWIDTH <span style="color:#339933">|</span> DM_BITSPERPEL <span style="color:#339933">|</span> DM_PELSHEIGHT<span style="color:#339933">;</span>
+    ChangeDisplaySettings<span style="color:#009900">(</span><span style="color:#339933">&amp;</span>lpDevMode<span style="color:#339933">,</span> 0<span style="color:#009900">)</span><span style="color:#339933">;</span>
+    <span style="color:#b1b100">return</span> <span style="color:#0000dd">0</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span></pre></td></tr></table></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

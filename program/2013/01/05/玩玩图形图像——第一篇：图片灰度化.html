@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>玩玩图形图像——第一篇：图片灰度化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>玩玩图形图像——第一篇：图片灰度化</h2>
+<p class="meta">05 Jan 2013</p>
+
+<div class="post">
+<h2>玩玩图形图像——第一篇：图片灰度化</h2>
+
+<h3>by 一线码农</h3>
+
+<h3>at 2013-01-04 23:52:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/huangxincheng/archive/2013/01/04/2845050.html">http://www.cnblogs.com/huangxincheng/archive/2013/01/04/2845050.html</a></h3>
+
+<p> </p>
+
+
+<p><br><p>    去年买了本数字图像处理算法，一直都没有看，前几个星期都一直忙着工作上的活，趁这阶段悠闲点，玩一玩图片处理，这玩意</p><br><p>还是非常有意思的。</p><br><p>   以前我们在做Web上的用户注册时，通常都会做一个验证码，大家都知道用来防止暴力注册的，当然提到验证码大家都知道C#里</p><br><p>面有一个Bitmap类专门用来处理图片的，好吧，这一篇我们从最简单的“图片灰度化”说起。</p><br><p>一：图片灰度化</p><br><p>     我们都知道，位图是由一个一个像素点组成的，像素点可能是红色，橙色，粉色等等，这些颜色我们都知道是用RGB来表示的。</p><br><p>每个颜色分量都是一个字节(0-255)，所以一般情况下图的像素点都是24位，当然还有32位，64位，当RGB是0-255之间的不同值</p><br><p>时，那么该像素点就呈现“五颜六色”，而当RGB都是相同的值是，则像素点呈现“灰色”，如果大家玩过CSS的话，肯定都知道给一个</p><br><p>字体的color通常都是#999999,#666666,#333333这些不同深度的灰色。</p><br><p>1.计算公式</p><br><p>   下面我们该如何设置合理的灰度值呢？当然还是用当前的RGB为模板，然后对RGB乘以一个合理的权重就ok了</p><br><p>   Gary(i,j)=0.299<em>R(i,j)+0.587</em>G(i,j)+0.114*B(i,j)；</p><br><p>2.编程</p><br><p>  有了公式，实现起来就不成问题了。Bitmap类中有一个GetPixel/SetPixel，它可以获取和设置当前的像素点。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>        static void Main(string[] args)<br>        {<br>            Bitmap bitmap = new Bitmap(Environment.CurrentDirectory + "//1.jpg");<br><br>            for (int i = 0; i &lt; bitmap.Width; i++)<br>            {<br>                for (int j = 0; j &lt; bitmap.Height; j++)<br>                {<br>                    //取图片当前的像素点<br>                    var color = bitmap.GetPixel(i, j);<br><br>                    var gray = (int)(color.R * 0.299 + color.G * 0.587 + color.B * 0.114);<br><br>                    //重新设置当前的像素点<br>                    bitmap.SetPixel(i, j, Color.FromArgb(gray, gray, gray));<br>                }<br>            }<br><br>            bitmap.Save(Environment.CurrentDirectory + "//2.jpg");<br>        }<br></pre><br></div><br><p>　　<img src="http://images.cnitblog.com/blog/214741/201301/04234954-9a52146790454c3eaaa793bd6de24364.jpg" alt=""></p><br><p>3.改进</p><br><p>   上面这个方法很简单，Get/Set就Ok了，当然这是我们站在像素点这个角度来考虑问题的，貌似只要O(N<sup>2</sup>)的时间就可以KO问</p><br><p>题，但是Get/Set远远不是O(1)的，基于性能考虑，我们能不能有更优的方法，此时我们可以站在字节这个角度思考，不过这里我</p><br><p>们要注意一个问题就是：比如图片的width=21px，一个像素点占用3个字节，但是21个像素点不一定就占用63个字节，这是因为</p><br><p>系统基于性能考虑，在每一行中存放着一个“未用区域”，来确保图片每行的byte数是4的倍数，那么如何去读某一行的字节数呢？</p><br><p>C#里面有一个Stride属性就可以用来获取，很简单吧。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>static void Main(string[] args)<br>        {<br>            Bitmap bitmap = new Bitmap(Environment.CurrentDirectory + "//1.jpg");<br><br>            //定义锁定bitmap的rect的指定范围区域<br>            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);<br><br>            //加锁区域像素<br>            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, bitmap.PixelFormat);<br><br>            //位图的首地址<br>            var ptr = bitmapData.Scan0;<br><br>            //stride：扫描行<br>            int len = bitmapData.Stride * bitmap.Height;<br><br>            var bytes = new byte[len];<br><br>            //锁定区域的像素值copy到byte数组中<br>            Marshal.Copy(ptr, bytes, 0, len);<br><br>            for (int i = 0; i &lt; bitmap.Height; i++)<br>            {<br>                for (int j = 0; j &lt; bitmap.Width * 3; j = j + 3)<br>                {<br>                    var color = bytes[i * bitmapData.Stride + j + 2] * 0.299<br>                                + bytes[i * bitmapData.Stride + j + 1] * 0.597<br>                                + bytes[i * bitmapData.Stride + j] * 0.114;<br><br>                    bytes[i * bitmapData.Stride + j]<br>                             = bytes[i * bitmapData.Stride + j + 1]<br>                             = bytes[i * bitmapData.Stride + j + 2] = (byte)color;<br>                }<br>            }<br><br>            //copy回位图<br>            Marshal.Copy(bytes, 0, ptr, len);<br><br>            //解锁<br>            bitmap.UnlockBits(bitmapData);<br><br>            bitmap.Save(Environment.CurrentDirectory + "//3.jpg");<br>        }<br></pre><br></div><br><p>　　<img src="http://images.cnitblog.com/blog/214741/201301/04235024-84db70864cd04940b3a14c6924e7bf2d.jpg" alt=""></p><br><p> </p><img src="http://www.cnblogs.com/huangxincheng/aggbug/2845050.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/huangxincheng/archive/2013/01/04/2845050.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

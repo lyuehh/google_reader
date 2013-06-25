@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>lua API 小记3(lua虚拟机初始化)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>lua API 小记3(lua虚拟机初始化)</h2>
+<p class="meta">09 Nov 2010</p>
+
+<div class="post">
+<h2>lua API 小记3(lua虚拟机初始化)</h2>
+
+<h3>by ROTC</h3>
+
+<h3>at 2010-11-09 08:16:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ringofthec/archive/2010/11/09/lua_State.html">http://www.cnblogs.com/ringofthec/archive/2010/11/09/lua_State.html</a></h3>
+
+<p><p>这些东西是平时遇到的, 觉得有一定的价值, 所以记录下来, 以后遇到类似的问题可以查阅, 同时分享出来也能方便需要的人, 转载请注明来自RingOfTheC[ring.of.the.c@gmail.com]</p>
+<p> </p>
+<p> </p>
+<h2>1. 创建lua虚拟机</h2>
+<p>lua_State *lua_newstate (lua_Alloc f, void *ud)</p>
+<p>创建一个新的独立的lua虚拟机. 参数指定了内存分配策略及其参数, 注意, 让用户可以定制内存分配策略是十分有用的, 比如在游戏服务器端使用lua, 我做过一次统记lua在运行的时候会大量的分配大小小于128字节的内存块, 在这样的环境下, 使用lua原生的分配器就不太适合了, 还好在服务器端, 我们往往已经实现了memory pool, 这时只需要写一个符合 lua_Alloc 原型的适配器, 然后指定为lua的内存分配器就可以了, 很灵活. </p>
+<p>从lua的设计层面来说, lua只是内存分配器的用户, 它只使用一个简单的接口来分配内存, 而不去实现如何分配, 毕竟内存分配不在lua的功能范围内, 这样使的lua变的更加紧凑, 它只是专注于实现lua本身, 而不需要去关注内存分配策略这样的和lua本身无关的东西. 其实学习lua源代码不光是为了更好的掌握lua, 也是为了学习lua中的体现出来的一些编程思想, lua是一个高度的一致性的, 优雅的软件作品</p>
+<p>失败返回null, 多是因为内存分配失败了</p>
+<p>该函数会创建栈</p>
+<p>从该函数学习到的东西:  1. 当你制作一个功能时, 最好是理清该功能的核心概念和需求, 然后去实现他们, 功能要模块化, 核心概念之间应该是概念一致的, 联系紧密的[谈何容易, 只能是尽可能的, 随时提醒自己要有这样的想法].</p>
+<p>                                2. 不要因为功能的实现问题而将一个非该功能核心概念的东西加进来, 反之应该把这些东西抽象化作为用户可配置的形式.[在实现时很容易发生&quot;要用到某个功能了, 就是实现它&quot;这样的情况, 这样并不好]就比如lua, 它的核心概念就是lua虚拟机, 而内存分配只是在实现lua虚拟机的过程中的要用到的一种东西, 但它本身不在lua的核心概念里面, 所以把它暴露出来, 让用户自己去定制.</p>
+<p>                                再说下去就是: <strong>除了系统最核心的功能, 其他的东西能用插件的形式暴露给用户, 使其可配置可扩展</strong>.</p>
+<p> </p>
+<p>关于这个函数, 还要做更多的解释, 比如我们看到的lua的绝大多数api的第一个参数都是lua_State* L, 而这个L就是lua_newstate制造出来的, 那么在分析源码的时候, 当然要去看看lua_newstate到底是干了些什么, lua_State的结构又是什么, 要了解这些内容, 需要知道lua的内部组织结构, 下面是一张很概括但能反映其结构的图</p>
+<p> </p>
+<p><a href="http://images.cnblogs.com/cnblogs_com/ringofthec/WindowsLiveWriter/lua1_BEAB/JSZUY$VR25$M%7BO%7DOQV59XYW_2.jpg"><img style="display:inline;border-width:0px" title="JSZUY$VR25$M{O}OQV59XYW" src="http://images.cnblogs.com/cnblogs_com/ringofthec/WindowsLiveWriter/lua1_BEAB/JSZUY$VR25$M%7BO%7DOQV59XYW_thumb.jpg" border="0" alt="JSZUY$VR25$M{O}OQV59XYW" width="469" height="272"></a>  </p>
+<p> </p>
+<p>可以看出来, 在一个独立的lua虚拟机里, global_State是一个全局的结构, 而lua_State可以有多个  </p>
+<p>值得说明的是, 当调用lua_newstate的时候, 主要的工作就是1. 创建和初始化global_State 2. 创建一个lua_State, 下面来详细的讲解global_State的内容和作用.  </p>
+<p> </p>
+<h3>global_State </h3>
+<p>一个lua虚拟机中只有一个, 它管理着lua中全局唯一的信息, 主要是以下功能</p>
+<p>1. 内存分配策略及其参数, 在调用lua_newstate的时候配置它们. 也可以通过lua_getallocf和lua_setallocf随时获取和修改它</p>
+<p>2. 字符串的hashtable, lua中所有的字符串都会在该hashtable中注册.</p>
+<p>3. gc相关的信息. 内存使用统计量.</p>
+<p>4. panic, 当无保护调用发生时, 会调用该函数, 默认是null, 可以通过lua_atpanic配置.</p>
+<p>5. 注册表, 注意, 注册表是一个全局唯一的table.</p>
+<p>6. 记录lua中元方法名称 和 基本类型的元表[注意, lua中table和userdata每个实例可以拥有自己的独特的元表--记录在table和userdata的mt字段, 其他类型是每个类型共享一个元表--就是记录在这里].</p>
+<p>7. upvalue链表.</p>
+<p>8. 主lua_State, 一个lua虚拟机中, 可以有多个lua_State, lua_newstate会创建出一个lua_State, 并邦定到global_state的主lua_State上.</p>
+<p><strong>global_State主要是管理lua虚拟机的全局环境.</strong></p>
+<p> </p>
+<h3>lua_State</h3>
+<p>1. 要注意的是, 和nil, string, table一样, lua_State也是lua中的一种基本类型, lua中的表示是TValue {value = lua_State, tt = LUA_TTHREAD}</p>
+<p>2. lua_State的成员和功能</p>
+<p>    a. 栈的管理, 包括管理整个栈和当前函数使用的栈的情况.</p>
+<p>    b. CallInfo的管理, 包括管理整个CallInfo数组和当前函数的CallInfo.</p>
+<p>    c. hook相关的, 包括hookmask, hookcount, hook函数等.</p>
+<p>    d. 全局表l_gt, 注意这个变量的命名, 很好的表现了它其实只是在本lua_State范围内是全局唯一的的, 和注册表不同, 注册表是lua虚拟机范围内是全局唯一的.</p>
+<p>     e. gc的一些管理和当前栈中upvalue的管理.</p>
+<p>     f. 错误处理的支持.</p>
+<p>3. 从lua_State的成员可以看出来, lua_State最主要的功能就是函数调用以及和c的通信.</p>
+<p><strong>lua_State主要是管理一个lua虚拟机的执行环境, 一个lua虚拟机可以有多个执行环境.</strong></p>
+<p> </p>
+<h3>lua_newstate函数的流程</h3>
+<p>经过上面的分析, 可以看出newstate = [new 一个 global_state] + [new 一个 lua_State], 现在看一下它的流程, 很简单</p>
+<p>1. 新建一个global_state和一个lua_State.</p>
+<p>2. 初始化, 包括给g_s创建注册表, g_s中各个类型的元表的默认值全部置为0.</p>
+<p>3. 给l_s创建全局表, 预分配l_s的CallInfo和stack空间.</p>
+<p>4. 其中涉及到了内存分配统统使用lua_newstate传进来的内存分配器分配.</p>
+<p> </p>
+<p> </p>
+<h2>2. 创建新lua执行环境</h2>
+<p>lua_State *luaE_newthread (lua_State *L)</p>
+<p>创建一个新的lua_State, 预分配CallInfo和stack空间, 并共享l_gt表, 注意, 虽然每个lua_State都有自己的l_gt, 但是这里是却将新建的lua_State的l_gt都指向主lua_State的l_gt.</p>
+<p>注意, lua_State是lua运行的基础[CallInfo]和与c通信的基础[stack], 在新的lua_State上操作不会影响到原来的lua_State:), 这个是协程实现的基础. 这里顺便提一下协程, 这里先引一段lua创始人的话:" 我们不信任基于抢占式内存共享的多线程技术. 在 HOPL 论文中, 我们写道: "我们仍然认为, 如果在连 a=a+1 都没有确定结果的语言中, 无人可以写出正确的程序." 我们<strong>可以通过去掉抢占式这一点, 或是不共享内存</strong>, 就可以回避这个问题."协程的基础就是"去掉抢占式, 但共享内存", 这里的共享是在lua虚拟机的层面上的, 而不是通常意义上的share memory, 这里的共享内存直接就指的是不同线程[lua_State]之间, 共享lua_State.l_gt全局表, 全局表可以作为不同协程之间的通信环境, 当然也可以用lua_xmove函数, 协程的事先说到这里.</p>
+<p> </p>
+<p>一个和多lua_State相关的函数是: 在同一个lua虚拟机里传递不同lua_State的值</p>
+<pre>void lua_xmove (lua_State *from, lua_State *to, int n)</pre>
+<pre>把from栈上的前n个值弹出, 并压入到to栈中.</pre>
+<pre> </pre>
+<pre> </pre>
+<pre>今天就先写到这里吧:)</pre><img src="http://www.cnblogs.com/ringofthec/aggbug/1872286.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/ringofthec/">ROTC</a> 发表于 2010-11-09 08:16 <a href="http://www.cnblogs.com/ringofthec/archive/2010/11/09/lua_State.html">原文链接</a></p><p>评论: 2　<a href="http://www.cnblogs.com/ringofthec/archive/2010/11/09/lua_State.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ringofthec/archive/2010/11/09/lua_State.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/80387/">谷歌网页预览功能上线</a><span style="color:gray">(2010-11-09 20:13)</span><br>· <a href="http://news.cnblogs.com/n/80386/">Google 高管指出他们还要继续大型收购，甚至要收复中国市场份额</a><span style="color:gray">(2010-11-09 20:09)</span><br>· <a href="http://news.cnblogs.com/n/80385/">Google 以在美帝灰机上提供免费 WIFI 的方式为 Chrome 做广告</a><span style="color:gray">(2010-11-09 20:06)</span><br>· <a href="http://news.cnblogs.com/n/80384/">Google遭美用户集体诉讼 Toolbar泄露个人数据</a><span style="color:gray">(2010-11-09 20:02)</span><br>· <a href="http://news.cnblogs.com/n/80383/">eBay裁员重组中国研发部门</a><span style="color:gray">(2010-11-09 19:58)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/80363/">一场关于 YUI vs jQuery 的精彩辩论</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

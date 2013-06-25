@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ActionView::TemplateError (incompatible character encodings: ASCII-8BIT and UTF-</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ActionView::TemplateError (incompatible character encodings: ASCII-8BIT and UTF-</h2>
+<p class="meta">26 May 2011</p>
+
+<div class="post">
+<h2>ActionView::TemplateError (incompatible character encodings: ASCII-8BIT and UTF-</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-05-26 03:07:27</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1058790">http://hlee.iteye.com/blog/1058790</a></h3>
+
+<p>ruby 1.9.2和mysql 2.8.1的encode不匹配问题
+<br>
+<br>mysql 2.8.1有时候明明返回的是utf8但是却告诉ruby是ascii所以
+<br>
+<br><img src="http://dl.iteye.com/upload/attachment/487829/481cada8-cfb6-3339-97bd-be375ab24dfc.png">
+<br>
+<br>所以，要么呢装一个好点版本的msyql，要么呢，如下？
+<br>
+<br><pre name="code"></p>
+
+<h1>lib/mysql_utf8.rb</h1>
+
+<p>require &#39;mysql&#39;</p>
+
+<p>class Mysql::Result
+  def encode(value, encoding = &quot;utf-8&quot;)
+    String === value ? value.force_encoding(encoding) : value
+  end</p>
+
+<p>  def each_utf8(&amp;block)
+    each_orig do |row|
+      yield row.map {|col| encode(col) }
+    end
+  end
+  alias each_orig each
+  alias each each_utf8</p>
+
+<p>  def each_hash_utf8(&amp;block)
+    each_hash_orig do |row|
+      row.each {|k, v| row[k] = encode(v) }
+      yield(row)
+    end
+  end
+  alias each_hash_orig each_hash
+  alias each_hash each_hash_utf8
+end
+</pre>
+<br>
+<br>
+<br>
+<br>在environments相关环境里load一下，就可以了
+<br></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1058790#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

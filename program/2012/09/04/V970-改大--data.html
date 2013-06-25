@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>V970 改大 /data</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>V970 改大 /data</h2>
+<p class="meta">04 Sep 2012</p>
+
+<div class="post">
+<h2>V970 改大 /data</h2>
+
+<h3>by kxn</h3>
+
+<h3>at 2012-09-03 23:10:11</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8052.html">http://www.udpwork.com/item/8052.html</a></h3>
+
+<p>为了节省成本，比较新的android手机一般会内置2G-4G flash, 然后将除去系统剩下的部分作为 /sdcard，这样就不用随手机还送一个鸡肋的 tf 卡了。然而国内厂家也明白国内的特殊需求，因此通常也会保留 tf 卡插槽。于是如果你真的插了一个 tf 卡，就会悲剧的挂载在 /sdcard2 /sdcard/extra 之类非标准路径，不能被很多软件利用。目前常见的千元 android 手机，比如 zte v970, 夏新 N820 等，都是这样。</p>
+
+
+<p>最简单的解决方案是 root 以后，修改 /system/etc/vold.fstab, 将里面 /sdcard 和 tf 卡的路径倒过来，这样 /sdcard 就还指向 tf 卡。但是机身原有的 /sdcard 空间就跑到了非标准路径，只能用来放些 mp3 之类的，这部分空间通常有 1-2G，与此同时，手机的 /data 分区却还经常是小小的几百 M, 一不小心把几个大家伙装进去就满了。如果能把浪费的空间都给 /data 就堪称完美。内置 flash 的速度和稳定性都要比外置的 sd 卡有优势，可以用来运行经常要启动的应用，比如微博微信之类。</p>
+
+
+<p>改手机分区大小也不算是什么新鲜事情，以前在只有 512M 或者 1G flash 的手机上，经常有人放出来调整 /system 分区的 rom。 但是 V970 等流行屌丝机大部分是 MTK 方案的，而 MTK 方案的资料少之又少，我自己尝试修改了刷写工具的分区描述文件，但是刷机以后似乎无效，启动以后原来的分区大小没有变化，网上搜了一下，搜到一些可能是从事 MTK android 开发的人的笔记，里面提到 MTK 方案改分区是修改代码里面一个 xls 文件，然后用 ptgen 工具来生成所有对应的 .h 和刷写用的分区描述文件。如果是这样的话，说明 MTK 平台的分区信息可能是硬编码在内核里面的。这样除非搞到内核源码能重编译，否则就没啥搞头了（网上唯一找到的 MTK android 改分区的 ROM 是 HD7 的，但是其用到的 MT6573 网上有泄露出来的源代码，因此不知道作者是不是使用那些代码编译了一个新内核出来)</p>
+
+
+<p>不过我们还有退而求其次的方案，那就是干脆把 /data 和原来 /sdcard 的空间也给调换过来算了。这样就只浪费原来 /data 的几百兆。和调换内外卡的情况不同的是，/data 是在 boot.img 启动的时候就挂载了，因此要调换这个，光 root phone 是不行的，还得修改 boot.img 里面的启动脚本才行。基本思路就是先解包，然后修改，最后重新打成 boot.img 刷进手机即可。</p>
+
+
+<p>解包 MTK boot.img 的工具和其他平台略有不同，请使用<a href="https://github.com/bgcngm/mtk-tools">xda 上 bruno 的工具</a>下载两个.pl 文件就可以了，然后找一个你平台可以用的 mkbootimg 过来。执行</p>
+
+
+<p>perl unpack-MT65xx.pl boot.img</p>
+
+
+<p>之后会生成 boot.img-kernel 文件和 boot.img-ramdisk 目录，目录下面就是所有启动时 ramdisk 里面的文件，在里面修改所有 .rc 中涉及 /data 分区的地方即可， V970 的可以用我做的<a href="http://blog.kangkang.org/static/v970-initrd-diff">diff</a>, 下载来</p>
+
+
+<p>cd boot.img-ramdisk
+<br>
+patch -p1 ../v970-initrd-diff
+<br>
+cd ..</p>
+
+
+<p>即可
+<br>
+最后重新打包</p>
+
+
+<p>perl repack-MT65xx.pl -boot boot.img-kernel boot.img-ramdisk boot1.img</p>
+
+
+<p>这样就得到了一个 boot1.img. 把这个 boot1.img 单独刷进手机即可。</p>
+
+
+<p>刷完了以后不要急于启动，因为两个分区原来的内容是不一样的，以前 /data 是 ext3/ext4 格式，而 /sdcard 通常是 fat 格式，因此请同时刷个第三方 recovery, 然后直接启动进 recovery，用 adb 连进去格式化新的 /data, V970 是</p>
+
+
+<p>adb shell mke2fs /emmc@fat
+<br>
+adb shell tune2fs -O extents,uninit_bg,dir_index /emmc@fat
+<br>
+adb shell e2fsck -f /emmc@fat</p>
+
+
+<p>这里不用 recovery 的格式化功能是因为 recovery 对 /data 的位置理解可能不一样，有可能格式化了其他的分区。</p>
+
+
+<p>之后重启手机即可。</p>
+
+
+<p>最后鸣谢一下神族论坛的 shuaidi, 参考了他的改大 data 方案。不过他方案的问题是授人以鱼，直接丢给你一个改好的 boot.img，对于洁癖者来说说实在不能接受。这个 boot.img 还有个副作用是 adb shell 默认是 root，这个虽然方便，但是有点太不安全。而且出了新版本以后也没法刷。还是自己在官方 rom 的基础上根据原理来改比较保险一些。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8052.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8052.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8052.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

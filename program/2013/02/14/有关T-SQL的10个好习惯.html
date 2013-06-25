@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>有关T-SQL的10个好习惯</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>有关T-SQL的10个好习惯</h2>
+<p class="meta">14 Feb 2013</p>
+
+<div class="post">
+<h2>有关T-SQL的10个好习惯</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-02-13 20:49:01</h3>
+
+<h3>original <a href="http://kb.cnblogs.com/page/160066/">http://kb.cnblogs.com/page/160066/</a></h3>
+
+<p>　　<strong>1. 在生产环境中不要出现Select *</strong></p>
+
+
+<p>　　这一点我想大家已经是比较熟知了，这样的错误相信会犯的人不会太多。但我这里还是要说一下。</p>
+
+
+<p>　　不使用Select *的原因主要不是坊间所流传的将*解析成具体的列需要产生消耗，这点消耗在我看来完全可以忽略不计。更主要的原因来自以下两点:</p>
+
+
+<ul><li>扩展方面的问题</li><li>造成额外的书签查找或是由查找变为扫描</li></ul>
+
+
+<p>　　扩展方面的问题是当表中添加一个列时，Select *会把这一列也囊括进去，从而造成上面的第二种问题。</p>
+
+
+<p>　　而额外的IO这点显而易见，当查找不需要的列时自然会产生不必要的IO，下面我们通过一个非常简单的例子来比较这两种差别，如图1所示。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106162793.png"><img style="display:block;margin-left:auto;margin-right:auto" title="1" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106175235.png" alt="1" width="598" height="524" border="0"></a>图1.*带来的不必要的IO</p>
+
+
+<p>　　<strong>2. 声明变量时指定长度</strong></p>
+
+
+<p>　　这一点有时候会被人疏忽，因为对于T-SQL来说，如果对于变量不指定长度，则默认的长度会是1。考虑下面这个例子，如图2所示。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106176839.png"><img style="display:block;margin-left:auto;margin-right:auto" title="2" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106175726.png" alt="2" width="341" height="218" border="0"></a>图2.不指定变量长度有可能导致丢失数据</p>
+
+
+<p>　　<strong>3. 使用合适的数据类型</strong></p>
+
+
+<p>　　合适的数据类型首先是从性能角度考虑，关于这一点，我写过一篇文章详细的介绍过，有兴趣可以阅读：<a href="http://www.cnblogs.com/CareySon/archive/2012/06/14/ChoiceOfDataTypeWhenDesignTable.html">对于表列数据类型选择的一点思考</a>，这里我就不再细说了</p>
+
+
+<p>　　不要使用字符串类型存储日期数据，这一点也需要强调一些，有时候你可能需要定义自己的日期格式，但这样做非常不好，不仅是性能上不好，并且内置的日期时间函数也不能用了。</p>
+
+
+<p>　　<strong>4. 使用Schema前缀来选择表</strong></p>
+
+
+<p>　　解析对象的时候需要更多的步骤，而指定Schema.Table这种方式就避免了这种无谓的解析。</p>
+
+
+<p>　　不仅如此，如果不指定Schema容易造成混淆，有时会报错。</p>
+
+
+<p>　　还有一点是，Schema使用的混乱有可能导致更多的执行计划缓存，换句话说，就是同样一份执行计划被多次缓存，让我们来看图3的例子。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/20121011110618120.png"><img style="display:block;margin-left:auto;margin-right:auto" title="3" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106189530.png" alt="3" width="612" height="231" border="0"></a>图3.不同的schema选择不同导致同样的查询被多次缓存</p>
+
+
+<p>　　<strong>5. 命名规范很重要</strong></p>
+
+
+<p>　　推荐使用实体对象+操作这种方式，比如Customer_Update这种方式。在一个大型一点的数据库会存在很多存储过程，不同的命名方式使得找到需要的存储过程变得很不方便。因此有可能造成另一种问题，就是重复创建存储过程，比如上面这个例子，有可能命名规范不统一的情况下又创建了一个叫UpdateCustomer的存储过程。</p>
+
+
+<p>　　<strong>6. 插入大量数据时，尽量不要使用循环，可以使用CTE，如果要使用循环，也放到一个事务中</strong></p>
+
+
+<p>　　这点其实显而易见。SQL Server是隐式事务提交的，所以对于每一个循环中的INSERT,都会作为一个事务提交。这种效率可想而知，但如果将1000条语句放到一个事务中提交，效率无疑会提升不少。</p>
+
+
+<p>　　打个比方，去银行存款，是一次存1000效率高，还是存10次100？</p>
+
+
+<p>　　<strong>7. where条件之后尽量减少使用函数或数据类型转换</strong></p>
+
+
+<p>　　换句话说,WHERE条件之后尽量可以使用可以嗅探参数的方式，比如说尽量少用变量，尽量少用函数，下面我们通过一个简单的例子来看这之间的差别。如图4所示。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106198069.png"><img style="display:block;margin-left:auto;margin-right:auto" title="4" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106194971.png" alt="4" width="660" height="529"></a>图4.在Where中使用不可嗅探的参数导致的索引查找</p>
+
+
+<p>　　对于另外一些情况来说，尽量不要让参数进行类型转换，再看一个简单的例子，我们可以看出在Where中使用隐式转换代价巨大。如图5所示。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106203477.png"><img style="display:block;margin-left:auto;margin-right:auto" title="5" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/20121011110621379.png" alt="5" width="660" height="445"></a>图5.隐式转换带来的性能问题</p>
+
+
+<p>　　<strong>8. 不要使用旧的连接方式，比如（from x，y，z）</strong></p>
+
+
+<p>　　可能导致效率底下的笛卡尔积，当你看到下面这个图标时，说明查询分析器无法根据统计信息估计表中的数据结构，所以无法使用Loop join, merge Join和Hash Join中的一种，而是使用效率地下的笛卡尔积。</p>
+
+
+<p><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106213934.png"><img style="display:block;margin-left:auto;margin-right:auto" title="image" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/20121011110621313.png" alt="image" width="64" height="60" border="0"></a>　　所以，尽量使用Inner join的方式替代from x, y, z这种方式。</p>
+
+
+<p>　　<strong>9. 使用游标时，加上只读只进选项 </strong></p>
+
+
+<p>　　首先，我的观点是：游标是邪恶的，尽量少用。但是如果一定要用的话，请记住，默认设置游标是可进可退的，如果你仅仅设置了</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">declare</span> c <span style="color:#0000ff">cursor</span><br><span style="color:#0000ff">for</span> </div>
+
+
+<p>　　这样的形式，那么这种游标要慢于下面这种方式。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">declare</span> c <span style="color:#0000ff">cursor</span><span style="color:#000000"><br>local static read_only forward_only<br></span><span style="color:#0000ff">for</span>… </div>
+
+
+<p>　　所以，在游标只读只进的情况下，加上上面代码所示的选项。</p>
+
+
+<p>　　<strong>10. 有关Order一些要注意的事情</strong></p>
+
+
+<p>　　首先，要注意，不要使用Order by+数字的形式，比如图6这种。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/20121011110621836.png"><img style="display:block;margin-left:auto;margin-right:auto" title="6" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106226900.png" alt="6" width="364" height="97" border="0"></a>图6.Order By序号</p>
+
+
+<p>　　当表结构或者Select之后的列变化时，这种方式会引起麻烦，所以老老实实写上列名。</p>
+
+
+<p>　　还有一种情况是，对于带有子查询和CTE的查询，子查询有序并不代表整个查询有序，除非显式指定了Order By，让我们来看图7。</p>
+
+
+<p style="text-align:center"><a href="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106228819.png"><img style="display:block;margin-left:auto;margin-right:auto" title="7" src="http://images.cnblogs.com/cnblogs_com/CareySon/201210/201210111106224641.png" alt="7" width="636" height="441" border="0"></a>图7. 虽然在CTE中中有序，但显式指定Order By，则不能保证结果的顺序</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Nginx与Lua</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Nginx与Lua</h2>
+<p class="meta">01 Sep 2012</p>
+
+<div class="post">
+<h2>Nginx与Lua</h2>
+
+<h3>by 老王</h3>
+
+<h3>at 2012-08-31 17:05:42</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8037.html">http://www.udpwork.com/item/8037.html</a></h3>
+
+<p>火云邪神语录：天下武功，无坚不破，唯快不破！Nginx的看家本领就是速度，Lua的拿手好戏亦是速度，这两者的结合在速度上无疑有基因上的优势。</p>
+
+
+<p></p>
+
+
+<p>最先将Nginx，Lua组合到一起的是<a href="http://openresty.org/">OpenResty</a>，它有一个<a href="http://wiki.nginx.org/HttpLuaModule">ngx_lua</a>模块，将Lua嵌入到了Nginx里面；随后<a href="http://tengine.taobao.org/">Tengine</a>也包含了ngx_lua模块。至于二者的区别：OpenResty是Nginx的Bundle；而Tengine则是Nginx的Fork。值得一提的是，OpenResty和Tengine均是国人自己创建的项目，前者主要由<a href="http://weibo.com/n/agentzh">春哥</a>和<a href="http://weibo.com/n/chaoslawful">晓哲</a>开发，后者主要由淘宝打理。</p>
+
+
+<p>至于OpenResty和Tengine孰优孰劣，留给大家自己判断，如下资料可供参考：</p>
+
+
+<ul><li><a href="http://agentzh.org/misc/slides/ngx-openresty-ecosystem.pdf">ngx_openresty: an Nginx ecosystem glued by Lua</a></li>
+<li><a href="http://tengine.taobao.org/download/taobao_nginx_2012_06.pdf">淘宝网Nginx应用、定制与开发实战</a></li>
+</ul>
+
+
+<p>推荐看看春哥在<a href="http://www.tech-club.org/">Tech-Club</a>上关于『<a href="http://blog.zoomquiet.org/pyblosxom/oss/openresty-intro-2012-03-06-01-13.html">由Lua粘合的Nginx生态环境</a>』的演讲实录，有料！</p>
+
+
+<h2>安装</h2>
+
+
+<p>需要最新版的<a href="http://nginx.org/en/download.html">Nginx</a>，<a href="http://luajit.org/download.html">LuaJIT</a>，<a href="https://github.com/simpl/ngx_devel_kit/tags">ngx_devel_kit</a>，<a href="https://github.com/chaoslawful/lua-nginx-module/tags">ngx_lua</a>等安装文件。</p>
+
+
+<p>安装Lua或者LuaJIT都是可以的，但是出于效率的考虑，推荐安装LuaJIT。</p>
+
+
+<pre>shell&gt; wget http://luajit.org/download/LuaJIT-&lt;VERSION&gt;.tar.gz
+shell&gt; tar zxvf LuaJIT-&lt;VERSION&gt;.tar.gz
+shell&gt; cd LuaJIT-&lt;VERSION&gt;
+shell&gt; make
+shell&gt; make install</pre>
+
+
+<p>因为安装在缺省路径，所以LuaJIT对应的lib，include均在/usr/local目录里。</p>
+
+
+<pre>shell&gt; export LUAJIT_LIB=/usr/local/lib
+shell&gt; export LUAJIT_INC=/usr/local/include/luajit-&lt;VERSION&gt;</pre>
+
+
+<p>下面就可以编译Nginx了：</p>
+
+
+<pre>shell&gt; wget http://nginx.org/download/nginx-&lt;VERSION&gt;.tar.gz
+shell&gt; tar zxvf nginx-&lt;VERSION&gt;.tar.gz
+shell&gt; cd nginx-&lt;VERSION&gt;
+shell&gt; ./configure
+    --add-module=/path/to/ngx_lua \
+    --add-module=/path/to/ngx_devel_kit
+shell&gt; make
+shell&gt; make install</pre>
+
+
+<p>试着启动一下Nginx看看，如果你运气不好的话，可能会遇到如下错误：</p>
+
+
+<p>cannot open shared object file: No such file or directory</p>
+
+
+<p>这是神马情况？可以用ldd命令来看看：</p>
+
+
+<pre>shell&gt; ldd /path/to/nginx
+libluajit-&lt;VERSION&gt;.so =&gt; not found</pre>
+
+
+<p>此类问题通常使用ldconfig命令就能解决：</p>
+
+
+<pre>shell&gt; echo &quot;/usr/local/lib&quot; &gt; /etc/ld.so.conf.d/usr_local_lib.conf
+shell&gt; ldconfig</pre>
+
+
+<p>再试着启动Nginx看看，应该就OK了。</p>
+
+
+<h2>应用</h2>
+
+
+<p>我们先用一个简单的程序来暖暖场：把下面的代码加入到Nginx的配置文件nginx.conf，并重启Nginx，然后浏览，就能看到效果了。</p>
+
+
+<pre>location /lua {
+    set $test &quot;hello, world.&quot;;
+    content_by_lua &#39;
+        ngx.header.content_type = &quot;text/plain&quot;;
+        ngx.say(ngx.var.test);
+    &#39;;
+}</pre>
+
+
+<p>在深入学习ngx_lua之前，建议大家仔细阅读一遍春哥写的<a href="https://github.com/agentzh/nginx-tutorials">Nginx教程</a>。</p>
+
+
+<p>这里我就说关键的：Nginx配置文件所使用的语言本质上是『声明性的』，而非『过程性的』。Nginx处理请求的时候，指令的执行并不是由定义指令时的物理顺序来决定的，而是取决于指令所属的阶段，Nginx常用的阶段按先后顺序有：rewrite阶段，access阶段，content阶段等等。演示代码中的set指令属于rewrite阶段，content_by_lua指令属于content阶段，如果试着把两条指令的顺序交换一下，会发现程序依然能够正常运行。</p>
+
+
+<p>下面我们尝试结合Redis写个更实战一点的例子。</p>
+
+
+<p>首先，我们需要创建一个Redis配置文件config.json，内容如下：</p>
+
+
+<pre>{
+    &quot;host&quot;: &quot;&lt;HOST&gt;&quot;,
+    &quot;port&quot;: &quot;&lt;PORT&gt;&quot;
+}</pre>
+
+
+<p>然后，我们创建一个解析配置文件的脚本init.lua，其中用到了<a href="http://www.kyne.com.au/~mark/software/lua-cjson.php">Lua CJSON</a>模块：</p>
+
+
+<pre>local cjson = require &quot;cjson&quot;;
+
+local config = ngx.shared.config;
+
+local file = io.open(&quot;config.json&quot;, &quot;r&quot;);
+local content = cjson.decode(file:read(&quot;*all&quot;));
+file:close();
+
+for name, value in pairs(content) do
+    config:set(name, value);
+end</pre>
+
+
+<p>说明：代码里用到了共享内存，这样就不必每次请求都解析一遍配置文件了。</p>
+
+
+<p>接着，我们创建一个渲染内容的脚本content.lua，用到了<a href="https://github.com/agentzh/lua-resty-redis">Resty Redis</a>模块：</p>
+
+
+<pre>ngx.header.content_type = &quot;text/plain&quot;;
+
+local redis = require &quot;resty.redis&quot;;
+
+local config = ngx.shared.config;
+
+local instance = redis:new();
+
+local host = config:get(&quot;host&quot;);
+local port = config:get(&quot;port&quot;);
+
+local ok, err = instance:connect(host, port);
+if not ok then
+    ngx.log(ngx.ERR, err);
+    ngx.exit(ngx.HTTP_SERVICE_UNAVAILABLE);
+end
+
+instance:set(&quot;name&quot;, &quot;laowang&quot;);
+
+local name = instance:get(&quot;name&quot;)
+
+instance:close();
+
+ngx.say(&quot;name: &quot;, name);</pre>
+
+
+<p>说明：建议把Resty Redis模块放到vendor目录下，稍后在Nginx中统一设置。</p>
+
+
+<p>最后，我们需要在Nginx配置文件里设置一下：</p>
+
+
+<pre>lua_shared_dict config 1m;
+lua_package_path &quot;/path/to/vendor/?.lua;;&quot;;
+
+init_by_lua_file /path/to/init.lua;
+
+server {
+    lua_code_cache off;
+
+    location /lua {
+        content_by_lua_file /path/to/content.lua;
+    }
+
+    ...
+}</pre>
+
+
+<p>说明：为了方便调试，我关闭了lua_code_cache，如果是生产环境，应该开启它。</p>
+
+
+<p>…</p>
+
+
+<p>我最近参与的一个项目，提供了一些用于Web轮询的接口，都是用Nginx+Lua实现的，虽然总共只有十几台服务器，但是每天可以提供几十亿次的请求量，贼拉拉的强。</p>
+
+
+<p>最后，让我引用某位屌丝的语录做结束语吧：Lua，未婚男性程序员的最爱。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8037.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8037.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;1&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8037.html#reviews">评论: 1</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

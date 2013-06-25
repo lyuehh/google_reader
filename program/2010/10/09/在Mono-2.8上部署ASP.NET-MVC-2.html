@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>在Mono 2.8上部署ASP.NET MVC 2</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>在Mono 2.8上部署ASP.NET MVC 2</h2>
+<p class="meta">09 Oct 2010</p>
+
+<div class="post">
+<h2>在Mono 2.8上部署ASP.NET MVC 2</h2>
+
+<h3>by geff zhang</h3>
+
+<h3>at 2010-10-08 22:45:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html">http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/shanyou/"><img src="http://pic.cnblogs.com/face/u510.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/shanyou/">geff zhang</a> 发表于 2010-10-08 22:45 <a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html">原文链接</a> 阅读: 1237 评论: 5</p>
+
+
+<p><a href="http://www.cnblogs.com/shanyou/archive/2010/10/07/1845277.html">Mono 2.8发布：C#4.0和更好的性能</a>，我们知道Mono 2.8对ASP.NET MVC 2的完全支持，下面我们就来测试下在Mono 2.8上部署ASP.NET MVC 2应用程序。我的环境是Opensuse 11.3,通过以下命令部署好Mono 2.8的开发环境，之所以说是开发环境是同时会更新MonoDevelop，支持Mono2.8的程序开发：</p>
+
+
+<p>  <blockquote><code>zypper addrepo <em>http://ftp.novell.com/pub/mono/download-stable/openSUSE_11.3</em> mono-stable      <br>zypper refresh --repo mono-stable      <br>zypper dist-upgrade --repo mono-stable</code></blockquote>  <p>然后启动MonoDevelop生成一个ASP.NET MVC 2应用程序TestMvc2。</p>  <p><a href="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_2.png"><img style="border-bottom:0px;border-left:0px;display:inline;border-top:0px;border-right:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_thumb.png" width="687" height="355"></a> </p>  <p>我们使用Apache2 + mod_mono进行部署，设置一个虚拟主机：</p>  <div style="border-bottom:silver 1px solid;text-align:left;border-left:silver 1px solid;padding-bottom:4px;line-height:12pt;background-color:#f4f4f4;margin:20px 0px 10px;padding-left:4px;width:97.5%;padding-right:4px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;max-height:200px;font-size:8pt;overflow:auto;border-top:silver 1px solid;border-right:silver 1px solid;padding-top:4px">   <div style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px">     <pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&#39;Courier New&#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"><span style="color:#606060">   1:</span> <span style="color:#0000ff">&lt;</span><span style="color:#800000">VirtualHost</span> *<span style="color:#ff0000">:80</span><span style="color:#0000ff">&gt;</span></pre></p>
+
+<pre><code>&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   2:&lt;/span&gt;     ServerAdmin webmaster@dotnetting.com&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   3:&lt;/span&gt;     ServerName www.dotnetting.com&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   4:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   5:&lt;/span&gt;     # DocumentRoot: The directory out of which you will serve your&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   6:&lt;/span&gt;     # documents. By default, all requests are taken from this directory, but&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   7:&lt;/span&gt;     # symbolic links and aliases may be used to point to other locations.&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   8:&lt;/span&gt;     DocumentRoot /srv/www/vhosts/dotnetting/public_html&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;   9:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  10:&lt;/span&gt;     # if not specified, the global error log is used&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  11:&lt;/span&gt;     ErrorLog /srv/www/vhosts/dotnetting/logs/error.log&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  12:&lt;/span&gt;     CustomLog /srv/www/vhosts/dotnetting/logs/access_log combined&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  13:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  14:&lt;/span&gt;     # don't loose time with IP address lookups&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  15:&lt;/span&gt;     HostnameLookups Off&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  16:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  17:&lt;/span&gt;     # needed for named virtual hosts&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  18:&lt;/span&gt;     UseCanonicalName Off&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  19:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  20:&lt;/span&gt;     # configures the footer on server-generated documents&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  21:&lt;/span&gt;     ServerSignature On&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  22:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  23:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  24:&lt;/span&gt;     # Optionally, include *.conf files from /etc/apache2/conf.d/&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  25:&lt;/span&gt;     #&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  26:&lt;/span&gt;     # For example, to allow execution of PHP scripts:&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  27:&lt;/span&gt;     #&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  28:&lt;/span&gt;     Include /etc/apache2/conf.d/mod_mono.conf&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  29:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  30:&lt;/span&gt;     MonoServerPath www.dotnetting.com &amp;quot;/usr/bin/mod-mono-server4&amp;quot;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  31:&lt;/span&gt;     MonoDebug www.dotnetting.com true&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  32:&lt;/span&gt;     MonoSetEnv www.dotnetting.com MONO_IOMAP=all&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  33:&lt;/span&gt;     MonoApplications www.dotnetting.com &amp;quot;/:/srv/www/vhosts/dotnetting/public_html&amp;quot;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  34:&lt;/span&gt;     &lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;Location&lt;/span&gt; &lt;span style="color:#0000ff"&gt;&amp;quot;/&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  35:&lt;/span&gt;       Allow from all&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  36:&lt;/span&gt;       Order allow,deny&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  37:&lt;/span&gt;       MonoSetServerAlias www.dotnetting.com&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  38:&lt;/span&gt;       SetHandler mono&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  39:&lt;/span&gt;       SetOutputFilter DEFLATE&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  40:&lt;/span&gt;       SetEnvIfNoCase Request_URI &amp;quot;\.(?:gif|jpg?g|png)$&amp;quot; no-gzip dont-vary&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  41:&lt;/span&gt;     &lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;Location&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  42:&lt;/span&gt;     &lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;IfModule&lt;/span&gt; &lt;span style="color:#ff0000"&gt;mod_deflate&lt;/span&gt;.&lt;span style="color:#ff0000"&gt;c&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  43:&lt;/span&gt;       AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  44:&lt;/span&gt;     &lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;IfModule&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:white;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  45:&lt;/span&gt;  &lt;/pre&gt;
+
+
+&lt;pre style="border-bottom-style:none;text-align:left;padding-bottom:0px;line-height:12pt;border-right-style:none;background-color:#f4f4f4;margin:0em;padding-left:0px;width:100%;padding-right:0px;font-family:&amp;#39;Courier New&amp;#39;,courier,monospace;direction:ltr;border-top-style:none;color:black;font-size:8pt;border-left-style:none;overflow:visible;padding-top:0px"&gt;&lt;span style="color:#606060"&gt;  46:&lt;/span&gt; &lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;VirtualHost&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;/pre&gt;
+</code></pre>
+
+<p></div>
+</div></p>
+
+<p></p>
+
+
+
+
+<p>这是一个通用的ASP.NET虚拟主机配置，唯一的一行不同就是MonoServerPath上设置的Mvc1还是mvc2，我们这里设置为mod-mono-server4，如果你没有修改这个地方，会收到一个错误是web.config 的 targetFramework不对。然后把我们生成测试程序拷贝到/srv/www/vhosts/dotnetting/public_html 。</p>
+
+
+
+
+<p><strong>注：Mono2.8已经移除了对.NET 1.1的支持，因此也就不能设置为mod-mono-server1</strong></p>
+
+
+
+
+<p>重启Apache2</p>
+
+
+
+
+<p> service apache2 restart</p>
+
+
+
+
+<p>通过浏览器访问<a href="http://www.dotnetting.com">www.dotnetting.com</a> ,记得在访问之前在host文件中配置域名的解析。可以看到下面的页面：</p>
+
+
+
+
+<p><a href="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_4.png"><img style="border-bottom:0px;border-left:0px;display:inline;border-top:0px;border-right:0px" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/shanyou/WindowsLiveWriter/Mono2.8ASP.NETMVC2_13FFE/image_thumb_1.png" width="680" height="411"></a> </p>
+
+
+
+
+<p>附：<strong><a href="http://dev.csdn.net/htmls/76/76253.html">个人常用的VIM命令列表</a></strong></p>
+
+
+<p><img src="http://www.cnblogs.com/shanyou/aggbug/1846171.html?type=1" width="1" height="1" alt=""><p>评论: 5　<a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/shanyou/archive/2010/10/08/1846171.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76739/">电子商务网站之信任度</a><span style="color:gray">(2010-10-09 17:02)</span><br>· <a href="http://news.cnblogs.com/n/76738/">马云：管理的核心在于“抓住人性的本真”</a><span style="color:gray">(2010-10-09 16:52)</span><br>· <a href="http://news.cnblogs.com/n/76737/">另一 Windows Phone Live 主页截图现身 Windows Phone 7 视频</a><span style="color:gray">(2010-10-09 16:38)</span><br>· <a href="http://news.cnblogs.com/n/76736/">谷歌首名员工：公司成功归结于运气不错</a><span style="color:gray">(2010-10-09 16:32)</span><br>· <a href="http://news.cnblogs.com/n/76735/">神奇小子Geohot带着“limera1n”回归</a><span style="color:gray">(2010-10-09 16:29)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76477/">远离.NET</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

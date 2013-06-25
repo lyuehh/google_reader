@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>关于watir selenium和webdriver soda cucumber</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>关于watir selenium和webdriver soda cucumber</h2>
+<p class="meta">29 Nov 2011</p>
+
+<div class="post">
+<h2>关于watir selenium和webdriver soda cucumber</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-11-29 01:34:09</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1282183">http://hlee.iteye.com/blog/1282183</a></h3>
+
+<p>watir和selenium在自动化测试web测试领域强硬增长。这一趋势日渐强势，各种搭配和框架丛生。
+<br>
+<br>简单的搜集，我看到了cucumber配合watir的框架，看到例教，和类似的测试集成框架，也看到分布式测试框架
+<br>
+<br>
+<br>简单使用：
+<br>
+<br>安装
+<br><pre name="code">gem install watir-webdriver</pre>
+<br><pre name="code"></p>
+
+<p>require &#39;watir-webdriver&#39;
+b = Watir::Browser.new
+b.goto &#39;bit.ly/watir-webdriver-demo&#39;
+b.text_field(:id =&gt; &#39;entry_0&#39;).set &#39;your name&#39;
+b.select_list(:id =&gt; &#39;entry_1&#39;).select &#39;Ruby&#39;
+b.select_list(:id =&gt; &#39;entry_1&#39;).selected? &#39;Ruby&#39;
+b.div(:class =&gt; &#39;ss-form-entry&#39;).button.click
+b.text.include? &#39;Thank you&#39;</p>
+
+<h1>webdriver通用watir语法</h1>
+
+<p>browser.goto(&#39;http://myserver/mypage&#39;)</p>
+
+<h1>to enter text into a text field - assuming the field is named &#39;username&#39;</h1>
+
+<p>browser.text_field(:name, &#39;username&#39;).set(&#39;Paul&#39;)</p>
+
+<h1>if there was a text field that had an id of &#39;company_ID&#39;, you could set it to &#39;Ruby Co&#39;:</h1>
+
+<p>browser.text_field(:id ,&#39;company_ID&#39;).set(&#39;Ruby Co&#39;)</p>
+
+<h1>to click a button that has a caption of &#39;Cancel&#39;</h1>
+
+<p>ie.button(:value, &#39;Cancel&#39;).click</p>
+
+<p></pre>
+<br>
+<br>这一篇，夜猪希望开个头，加强关注这个领域，列一些资源，有机会的话更多学习和接触。
+<br>资源一部分：
+<br>
+<br><a href="http://watir.com/book/">书籍watirbook</a>
+<br>
+<br><a href="https://github.com/zeljkofilipin/watirbook/blob/master/installation/ubuntu.md">watir-webdriver不同系统的安装简单应用</a>
+<br>
+<br><a href="http://watirpodcast.com/">watir Podcast</a>
+<br>
+<br><a href="http://wiki.openqa.org/display/WTR/Cheat+Sheet">watir Cheat sheet</a>快速差语法用
+<br>
+<br><a href="http://wiki.openqa.org/display/WTR/Tutorial">watir不错的Tutorial</a>
+<br>
+<br>soda是用于测试nodejs的selenium client端
+<br>
+<br><a href="https://github.com/ph7/selenium-client">selenium的client</a>是之前夜猪自己就一直在用和cucumber配合用的。
+<br>
+<br>在测试的时候，很希望能停下来用firebug测debug一下，就会用到
+<br><a href="https://github.com/jfirebaugh/capybara-firebug">capybara-firebug</a>
+<br>
+<br><pre name="code"></p>
+
+<h1>located in features/support/capybara.rb or similar</h1>
+
+<p>require &#39;capybara/firebug&#39;
+Selenium::WebDriver::Firefox::Profile.firebug_version = &#39;1.8.3&#39;</p>
+
+<p>profile = Selenium::WebDriver::Firefox::Profile.new
+profile.enable_firebug</p>
+
+<p>Capybara::Driver::Selenium.new(app,
+   :browser =&gt; :remote,
+   :url =&gt; &quot;http://my.ip.add.ress:4444/wd/hub&quot;,
+   :desired_capabilities =&gt; Selenium::WebDriver::Remote::Capabilities.firefox(:firefox_profile =&gt; profile))
+</pre></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1282183#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

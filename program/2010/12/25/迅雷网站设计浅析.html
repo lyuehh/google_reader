@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>迅雷网站设计浅析</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>迅雷网站设计浅析</h2>
+<p class="meta">25 Dec 2010</p>
+
+<div class="post">
+<h2>迅雷网站设计浅析</h2>
+
+<h3>by 莫文</h3>
+
+<h3>at 2010-12-24 20:19:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/mowen/archive/2010/12/24/xunlei_design.html">http://www.cnblogs.com/mowen/archive/2010/12/24/xunlei_design.html</a></h3>
+
+<p>&gt;
+<p><span style="font-family:宋体">很久之前就想写篇关于迅雷网站的设计分析文章了，迅雷看看一直是我在线看电影的网站，也是我比较喜欢的网站，所以我也比较乐于分析一下它的设计，先从结构上分析，也就是导航、搜索、详细信息展示、以及播放页面的顺序。</span><span lang="EN-US"> </span></p>
+<h2><span lang="EN-US">1</span><span style="font-family:宋体">、导航</span></h2>
+<h3><span style="font-family:宋体">全局导航</span></h3>
+<p><span style="font-family:宋体">迅雷首页导航是非常清晰的，一目了然，如图：</span></p>
+<p><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei2.gif" alt="" width="690" height="97"><br><br></span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">根据人的视觉路线来看，除了阿拉伯等少数语系之外，大部分人都是从左到右，从上到下，也就是图中的红色箭头所示。这也是它能做到一目了然的原因。再来细看导航：</span></p>
+<p><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei1.gif" alt=""><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">迅雷看看</span><span lang="EN-US">Logo</span><span style="font-family:宋体">是可点击的链接，用于返回首页，其实，</span><span lang="EN-US">Logo</span><span style="font-family:宋体">能不能点击问题不是很大，不可点击，也不会给用户带来太大的困扰，但对于一些专家用户来说，是一个返回首页的捷径，增加此处设计能增加用户体验度。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">可用性导航很醒目很简洁，放在了</span><span lang="EN-US">Logo</span><span style="font-family:宋体">的旁边，减少了用户的记忆负担，当用户想登录的时候，他能马上把鼠标移到</span><span lang="EN-US">Logo</span><span style="font-family:宋体">旁边。同时也给右边的广告腾出了空的地方。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">主导航放的是频道列表，内容频道的划分非常合理，上来迅雷看看的用户有一些时间是比较空闲的，可能比较喜欢看电视剧，也有一些用户时间不是很富裕的，像我就没有太多时间，我的空余时间不够我看电视连续剧，只好看电影，所以我一上来就直奔电影频道。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">副导航在这里就显得不大显眼了一点，副导航采用的是专题形式，专题有个好处就是能推荐很多内容，且能抓住当前大部分用户关注的话题来推荐。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">说完了首页导航再来看，频道内导航：</span></p>
+<p><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei3.gif" alt=""><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">从各个频道来看，一致的布局，一样的颜色，每个频道最顶上的全局导航颜色要比下边的当前主频道要浅很多，让用户的视觉聚焦到频道主导航上来。每个频道的主导航旁边都有一个检索框，方便用户进行直接查找，放在右边还有一个好处，就是尽量不影响主导航，毕竟有具体查找目标的用户相对于根分类来查找自己喜欢的内容的用户来说还是少数。</span></p>
+<p><span lang="EN-US"> </span></p>
+<h3><span style="font-family:宋体">分类导航</span></h3>
+<p><span style="font-family:宋体">频道主导航右上边的热门分类，可以帮用户迅速定位到当前热门上。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">从上边频道截图还可以看到，频道主导航都有一个“分类”的标签，从这个小细节能看得出来，迅雷看看比较重视使用分类来导航的。以电影频道的“分类浏览”来看，点击“分类浏览”，页面如图：</span></p>
+<p><span style="font-family:宋体"><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei4.gif" alt=""></span></span></p>
+<p> </p>
+<p><span style="font-family:宋体">选择了一个分类，之后页面如图：</span></p>
+<p><span lang="EN-US"><br><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei5.gif" alt=""><br><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">到了这个页面之后，左边仍然显示分类等筛选条件，每切换一个条件，右边的检索结果则会根据选择条件显示相应的结果。整个流程很清晰，不用用户思考，让人感觉到不到导航的存在就直奔自己想看的电影去了。</span></p>
+<p><span lang="EN-US"> </span></p>
+<h4><span style="font-family:宋体">关联导航</span></h4>
+<p><span style="font-family:宋体">在关联导航上，迅雷看看做得非常，在这个方面，它从没有让我失望过。在首页有一处很有意思的地方：</span></p>
+<p><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei8.gif" alt="" width="690" height="161"><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">“猜你会喜欢”，虽然迅雷看看在这个推荐信息不一定能做到百分百猜得对，但是迅雷为每个用户都不同的推荐信息，给了用户一种被重视的感觉，而且标题标签的右边还允许用户关闭，还可以设置下次不显示，减少对用户的打扰。</span></p>
+<p><span lang="EN-US"> </span></p>
+<h2><span lang="EN-US">2</span><span style="font-family:宋体">、搜索</span></h2>
+<p><span style="font-family:宋体">搜索有两种情况会用到，第一种用户有明确具体的搜索关键词，第二种情况是在当前导航找不到自己想要找的资源最后不得不求助于搜索。所以从这个观点来说，搜索不用放在很重要的位置，只要我想要使用它，我能立刻知道它在哪就成。</span></p>
+<p><span style="font-family:宋体">迅雷看看首页的搜索条放在了主导航的底下：</span></p>
+<p><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei6.gif" alt=""><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">相对于页面的主导航来说，搜索条的颜色浅很多，视觉焦点在主导航上，但检索条的位置遵守了大多数网站默认设计，放在主导航和内容区之间，所以当用户想要用搜索条的时候，找起来还是很方便的。</span></p>
+<p><span lang="EN-US"> </span></p>
+<p><span style="font-family:宋体">频道首页的搜索条，放在了频道主导航的右边：</span></p>
+<p><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei7.gif" alt=""><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">这里也遵循占用地方不大，位置很显然的原则。</span></p>
+<p><span lang="EN-US"> </span></p>
+<h2><span lang="EN-US">3</span><span style="font-family:宋体">、详细信息页设计</span></h2>
+<p><span style="font-family:宋体">其实在迅雷看看，详细信息页面的地位不是很受重视，很多页面上的链接是直接链接到在线播放页面去的，只有在搜索结果页面，有详细信息页面的链接：</span></p>
+<p><span lang="EN-US"><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei9.gif" alt=""></span></span></p>
+<p> </p>
+<p><span style="font-family:宋体">详细信息页面，设计也是比较清晰简洁：</span></p>
+<p><span lang="EN-US"><img style="width:690px" src="http://www.cnfounder.com/mw/futu/xunlei/xunlei10.gif" alt=""><br><br><br><br></span></p>
+<p> </p>
+<p><span style="font-family:宋体">标题很明显，重点链接很突出，没有太多的空白，也没有拥挤。</span></p>
+<p><span style="font-family:宋体">给用户提供推荐信息：</span></p>
+<p><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei11.gif" alt=""><br><br></span></p>
+<p> </p>
+<p><span lang="EN-US"> </span></p>
+<h2><span lang="EN-US">4</span><span style="font-family:宋体">、在线播放页面</span></h2>
+<p><span style="font-family:宋体">在线播放页面是最终的服务页面，这个页面是整个系统里边至关重要的页面，也是决定用户体验的终极页，系统其它地方设计得再好，也不能弥补这个页面的不好。迅雷看看的在线播放页面的在线播放也和详细信息页一样，很简洁：</span></p>
+<p><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei12.gif" alt="" width="690" height="394"></span></p>
+<p><span lang="EN-US"><img src="http://www.cnfounder.com/mw/futu/xunlei/xunlei13.gif" alt="" width="554" height="340"><br><br><br><br></span></p>
+<p> </p><img src="http://www.cnblogs.com/mowen/aggbug/1916328.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/mowen/">莫文</a> 发表于 2010-12-24 20:19 <a href="http://www.cnblogs.com/mowen/archive/2010/12/24/xunlei_design.html">原文链接</a></p><p>评论: 11　<a href="http://www.cnblogs.com/mowen/archive/2010/12/24/xunlei_design.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/mowen/archive/2010/12/24/xunlei_design.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/85882/">世界上最小的太阳能动力电影院问世</a><span style="color:gray">(2010-12-25 15:16)</span><br>· <a href="http://news.cnblogs.com/n/85881/">英国望远镜阵列拍到首张双类星体图片</a><span style="color:gray">(2010-12-25 15:14)</span><br>· <a href="http://news.cnblogs.com/n/85880/">叛变的Google前雇员</a><span style="color:gray">(2010-12-25 14:47)</span><br>· <a href="http://news.cnblogs.com/n/85877/">过一个数字圣诞节</a><span style="color:gray">(2010-12-25 12:34)</span><br>· <a href="http://news.cnblogs.com/n/85876/">移动设备行业2011年5大预测：视频分享快速发展</a><span style="color:gray">(2010-12-25 12:21)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cathsfz/archive/2010/12/24/1916106.html">Tangram 前端库通过 Github 开源了</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Lua中动态产生函数</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Lua中动态产生函数</h2>
+<p class="meta">13 Aug 2012</p>
+
+<div class="post">
+<h2>Lua中动态产生函数</h2>
+
+<h3>by Kevin Lynx</h3>
+
+<h3>at 2012-08-13 15:56:00</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7941.html">http://www.udpwork.com/item/7941.html</a></h3>
+
+<p>可以结合<a href="http://codemacro.com/2012/08/02/simple-oo-in-lua/">Lua里实现简单的类-对象</a>看。在我的应用中，存在类似以下代码：</p>
+
+
+<div><pre>function Item.new()
+    local o = {
+        property = {}
+    }
+    return newObject(o, Item)
+end
+</pre></div>
+
+
+<p>property是一个key-value的表，里面的内容不是固定的。最开始我为Item类写了get/set函数，用于存取property表里的值。但这样写起来还是有点麻烦。Ruby里可以动态产生类成员函数，其实Lua里也可以。其思路就是通过metatable来做：</p>
+
+
+<div><pre>-- 为newObject增加一个可选参数，该参数是一个函数，当在表示类的table里无法找到成员时就调用该可选参数
+function newObject(o, class, after)
+    class.__index = function (self, key) return class[key] or after(self, key) end
+    return setmetatable(o, class)
+end
+</pre></div>
+
+
+<p>然后就是编写这个after函数，我的理想方式是，例如property里有Name和Index的key-value，那么就可以通过这样的方式来存取：</p>
+
+
+<div><pre>item = Item.new()
+print(item:Name())
+item:SetName(&quot;hello&quot;)
+print(item:Index()
+item:SetIndex(101)
+</pre></div>
+
+
+<p>after函数的实现：</p>
+
+
+<div><pre>function Item.new()
+    local o = {
+        property = {}
+    }
+    local function after(self, key)
+        local name = string.match(key, &quot;Set(%a+)&quot;)
+        if name then 
+            return function (self, value)
+                self:set(name, value)
+            end
+        else
+            return function (self)
+                return self.property[key] and self.property[key].value
+            end
+        end
+    end
+    return newObject(o, Item, after)
+end
+</pre></div>
+
+
+<p>执行过程就为：</p>
+
+
+<ul><li>当item:Name()执行时，首先试图获取Item上的Name成员，没找到就调用传入的after函数，这个函数检查Name这个字符串是否是SetXX的形式，如果不是则返回一个获取函数；这个时候取得Name成员，然后将其作为函数调用，相当于调用了after刚才返回的函数</li>
+<li>item:SetName(“hello”)过程类似，只不过调用了另一个返回函数。</li>
+</ul>
+
+
+<p>原文地址：<a href="http://codemacro.com/2012/08/13/dynamic-method-in-lua/">http://codemacro.com/2012/08/13/dynamic-method-in-lua/</a>
+<br>
+written by<a href="http://codemacro.com">Kevin Lynx</a> posted at<a href="http://codemacro.com">http://codemacro.com</a></p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7941.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7941.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7941.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

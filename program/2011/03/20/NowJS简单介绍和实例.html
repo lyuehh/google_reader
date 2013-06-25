@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>NowJS简单介绍和实例</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>NowJS简单介绍和实例</h2>
+<p class="meta">20 Mar 2011</p>
+
+<div class="post">
+<h2>NowJS简单介绍和实例</h2>
+
+<h3>by yedingding</h3>
+
+<h3>at 2011-03-19 23:02:45</h3>
+
+<h3>original <a href="http://heikezhi.com/2011/03/19/nowjs-intro-and-example/">http://heikezhi.com/2011/03/19/nowjs-intro-and-example/</a></h3>
+
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/03/nowjs.png" alt="" title="nowjs"></p>
+
+
+<p><a title="NowJS" href="http://nowjs.com">NowJS</a>是<a title="Node" href="http://nodejs.org/">Node.JS</a>的一个RPC模块, 旨在简化实时Web应用开发.</p>
+
+
+<p><strong>安装</strong></p>
+
+
+<p>首先, 你需要安装node.js和npm. 下面以Mac系统下homebrew为例</p>
+
+
+<ul>
+<li>$ brew install node</li>
+<li>$ curl http://npmjs.org/install.sh</li>
+<li>$ export NODE_PATH=/usr/local/lib/node</li>
+<li>$ npm install now</li>
+</ul>
+
+
+<p><strong>服务端设置</strong></p>
+
+
+<pre name="code">var yourHttpServer = require('http').createServer(function(req, response){
+    /* Serve your static files */
+});
+yourHttpServer.listen(8080);</pre>
+
+
+<p>之后, 我们加载NowJS进来</p>
+
+
+<pre name="code">var everyone = require("now").initialize(app);</pre>
+
+
+<p><strong>客户端设置</strong></p>
+
+
+<p>我们需要在客户端加载NowJS库, 也很简单.</p>
+
+
+<pre name="code">&lt;script src=&quot;/nowjs/now.js&quot;&gt;&lt;/script&gt;</pre>
+
+
+<p><strong>如何使用NowJS</strong></p>
+
+
+<p>NowJS的魔力在于两个对象:  now, everyone.now. 刚才在服务端我们创建了everyone对象, 而在客户端通过加载now.js后now对象会被自动加入文档的全局命名空间。</p>
+
+
+<p>每个客户端都有一个和服务端共享的now对象, 当客户端对now对象做修改后, 就会被自动同步到服务端. 而服务端的everyone.now是服务端和所有客户端共享的命名空间, 当服务端修改everyone对象后, 每个客户端的now对象都会同步修改。</p>
+
+
+<p>基于这两个对象, NowJS可以很简单的实现RPC. 服务端可以调用客户端的函数, 客户端也直接调用服务端的函数。</p>
+
+
+<p>还有三个回调函数值得一提。</p>
+
+
+<p>当客户端开始建立连接时, 服务端会触发</p>
+
+
+<pre name="code">everyone.connected(function(){});</pre>
+
+
+<p>当客户端开始断开连接时, 服务端会触发</p>
+
+
+<pre name="code">everyone.disconnected(function(){});</pre>
+
+
+<p>当客户端建立好连接后, 客户端会触发</p>
+
+
+<pre name="code">now.ready(function(){});</pre>
+
+
+<p>下面让我们来看一个真实的应用实例: 聊天室. 这里在服务端使用了expressjs和jade</p>
+
+
+<ul>
+<li>$ npm install express</li>
+<li>$ npm install jade</li>
+</ul>
+
+
+<pre name="code">- chatapp
+  - server.js
+  - views
+    - index.jade
+</pre>
+
+
+<p><strong>server.js</strong></p>
+
+
+<pre name="code">var app = require('express').createServer();
+app.set('view options', { layout: false });
+app.get('/', function(req, res) {
+    res.render('helloworld.jade');
+});
+app.listen(8080);</pre>
+
+
+<pre name="code">var everyone = require("now").initialize(app);
+everyone.connected(function() {
+    console.log("Joined: " + this.now.name);
+});
+everyone.disconnected(function() {
+    console.log("Left: " + this.now.name);
+});
+everyone.now.distributeMessage = function(message) {
+    everyone.now.receiveMessage(this.now.name, message);
+};</pre>
+
+
+<p><strong>index.jade</strong></p>
+
+
+<pre name="code">!!! 5
+html(lang=&quot;en&quot;)
+    head
+        title nowjs test
+        script(type=&quot;text/javascript&quot;, src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js&quot;)
+        script(src=&quot;http://localhost:8080/nowjs/now.js&quot;)
+        script(type=&quot;text/javascript&quot;)
+        $(document).ready(function() {
+            now.name = prompt(&quot;What&#39;s your name?&quot;, &quot;&quot;);
+            now.receiveMessage = function(name, message) {
+                $(&quot;#messages&quot;).append(&quot;&lt;br&gt;&quot; + name + &quot;: &quot; + message);
+            }
+            $(&quot;#send-button&quot;).click(function() {
+                now.distributeMessage($(&quot;#text-input&quot;).val());
+                $(&quot;#text-input&quot;).val(&quot;&quot;);
+            });
+       });
+    body
+        #messages
+            input(type=&quot;text&quot;, id=&quot;text-input&quot;)
+            input(type=&quot;button&quot;, value=&quot;Send&quot;, id=&quot;send-button&quot;)</pre>
+
+
+<pre name="code">$ node server.js</pre>
+
+
+<p>然后在浏览器里访问http://localhost:8080. 一个聊天室应用完工了. 试试看吧, :)</p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="将数学变成音乐: 那么Pi听起来会如何呢？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F13%2Fwhat-pi-sounds-like%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fnowjs-intro-and-example%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">将数学变成音乐: 那么Pi听起来会如何呢？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="iRobot的机器人也要投入救援战斗了" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F20%2Firobot-japan-eq%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fnowjs-intro-and-example%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/20/3903109.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">iRobot的机器人也要投入救援战斗了</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="蛋疼之字母人像" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F15%2Fletter-heads%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fnowjs-intro-and-example%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/16/3622440.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">蛋疼之字母人像</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="为什么Quick Bar还是如此讨人厌" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F21%2Fwhy-quick-bar-is-still-so-offensive%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fnowjs-intro-and-example%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/22/4012297.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">为什么Quick Bar还是如此讨人厌</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/489152480/heikezhi/feedsky/s.gif?r=http://heikezhi.com/2011/03/19/nowjs-intro-and-example/" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/heikezhi/489152480/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/heikezhi/489152480/art01.gif"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

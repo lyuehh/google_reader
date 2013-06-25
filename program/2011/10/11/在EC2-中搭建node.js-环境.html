@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>在EC2 中搭建node.js 环境</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>在EC2 中搭建node.js 环境</h2>
+<p class="meta">11 Oct 2011</p>
+
+<div class="post">
+<h2>在EC2 中搭建node.js 环境</h2>
+
+<h3>by vitrum</h3>
+
+<h3>at 2011-10-11 14:46:41</h3>
+
+<h3>original <a href="http://cnodejs.org/blog/?p=3057">http://cnodejs.org/blog/?p=3057</a></h3>
+
+<p><strong>1，为什么用EC2搭建node.js环境。</strong></p>
+
+
+<div>首先，本地虚拟机装centOs是很好的选择，但是需要在家里和公司同时搭好相同的环境比较麻烦，而且也不方便小团队一起折腾。</div>
+
+
+<div>亚马逊的免费虚拟机只要不跑太复杂的运算大概不会有额外的费用，而且亚马逊么有被墙，国内的托管目前cnode的邀请号求不到啊，还是自己动手丰衣足食吧。</div>
+
+
+<p><strong>2，如何申请免费一年的EC2</strong></p>
+
+
+<div>在http://aws.amazon.com/上注册。</div>
+
+
+<div>网上有很多教程，请自行GOOGLE。</div>
+
+
+<div><strong>3，EC2虚拟机简单的管理和设置</strong></div>
+
+
+<div>新建KEY，保存。</div>
+
+
+<div>For MAC &amp; Linux</div>
+
+
+<div>很简单，只要一句话</div>
+
+
+<div>
+<pre>ssh -i user.pem <a href="mailto:ec2-user@ec2-XXX-XXX-XXX-XXX.compute-1.amazonaws.com">ec2-user@ec2-XXX-XXX-XXX-XXX.compute-1.amazonaws.com</a></pre>
+</div>
+
+
+<div>以上user.pem可以是你的KEY的路径。</div>
+
+
+<div>For PC</div>
+
+
+<div>putty 链接ec2-XXX-XXX-XXX-XXX.compute-1.amazonaws.com</div>
+
+
+<div>注意需要在connection-&gt;SSH-&gt;Auth里选上你的KEY，之前需要转pem到ppk。</div>
+
+
+<div>怎么看DNS名：在管理界面里，先点击你要查看的虚拟机，点右键，再弹出的菜单上点“connect”就可以看到如下图：</div>
+
+
+<div>其中ec2-XXX-XXX-XXX-XXX.compute-1.amazonaws.com是你的DNS名</div>
+
+
+<div>一般不太需要调整什么，可能要改的就是端口8080要开启。</div>
+
+
+<div><strong>4，搭建node前的准备</strong></div>
+
+
+<div>默认的liunx中不会吧所有工具都装好，一些基本的工具，需要我们自己装。</div>
+
+
+<div>以下：</div>
+
+
+<div>a. make</div>
+
+
+<div>b.gcc++</div>
+
+
+<div>c.curl</div>
+
+
+<div>d.git</div>
+
+
+<div>一句话安装：</div>
+
+
+<div>
+<pre>sudo yum install gcc-c++ openssl-devel make curl git</pre>
+</div>
+
+
+<p><strong>5，安装node</strong></p>
+
+
+<div>
+<pre>wget <a href="http://nodejs.org/dist/node-v0.4.12.tar.gz" rel="nofollow">http://nodejs.org/dist/node-v0.4.12.tar.gz</a>
+tar -xvf node-v0.4.12.tar.gz
+cd node-v0.4.12
+./configure
+make</pre>
+</div>
+
+
+<div>由于是在云里跑的，所以make可能会花上30多分钟， 我出去吃了个中饭，回办公室发现好了的。所以，不用在屏幕前傻等，出去走走，预防一下颈椎病。</div>
+
+
+<div>
+<pre>make install</pre>
+</div>
+
+
+<div>其他调整，由于EC2中path的问题，node装完了不一定能直接跑。所以有时候需要做些映射。</div>
+
+
+<div>
+<pre>sudo ln -s /usr/local/bin/node /usr/bin/node
+sudo ln -s /usr/local/lib/node /usr/lib/node
+sudo ln -s /usr/local/bin/npm /usr/bin/npm
+sudo ln -s /usr/local/bin/node-waf /usr/bin/node-waf</pre>
+</div>
+
+
+<div><strong>6，测试第一个静态文件服务</strong></div>
+
+
+<div>先在/home/ec2-user/上建个nodeweb目录，里面放静态页面，然后可以测试了～～</div>
+
+
+<div>
+<pre>var libpath = require('path'),
+    http = require("http"),
+    fs = require('fs'),
+    url = require("url"),
+    mime = require('mime');
+var path = "/home/ec2-user/nodeweb";
+var port = 8080;
+http.createServer(function (request, response) {
+    var uri = url.parse(request.url).pathname;
+    var filename = libpath.join(path, uri);
+    libpath.exists(filename, function (exists) {
+        if (!exists) {
+            response.writeHead(404, {
+                "Content-Type": "text/plain"
+            });
+            response.write("404 Not Found\n");
+            response.end();
+            return;
+        }
+        if (fs.statSync(filename).isDirectory()) {
+            filename += '/index.html';
+        }
+        fs.readFile(filename, "binary", function (err, file) {
+            if (err) {
+                response.writeHead(500, {
+                    "Content-Type": "text/plain"
+                });
+                response.write(err + "\n");
+                response.end();
+                return;
+            }
+            var type = mime.lookup(filename);
+            response.writeHead(200, {
+                "Content-Type": type
+            });
+            response.write(file, "binary");
+            response.end();
+        });
+    });
+}).listen(port);</pre>
+</div>
+
+
+<p><strong>7，推荐阅读：</strong></p>
+
+
+<div> a.Installing Node.js On Amazon EC2 :<a href="http://www.embracingthecloud.com/2010/12/05/InstallingNodejsOnAmazonEC2.aspx" rel="nofollow">http://www.embracingthecloud.com/2010/12/05/InstallingNodejsOnAmazonEC2.aspx</a></div>
+
+
+<div> b.npm : https://github.com/isaacs/npm</div>
+
+
+<div> c.mime : https://github.com/bentomas/node-mime</div>
+
+
+<div><strong>8，其他～</strong></div>
+
+
+<p>求推荐操作简单的配合node用数据库。</p>
+
+
+<p>我的微博：<a href="http://weibo.com/vitrum">http://weibo.com/vitrum</a>
+<div style="border:1px solid #ccc;font-size:14px;margin:27px auto">
+<div style="padding:7px 10px;border-bottom:1px dotted #ccc">关于作者</div>
+<div style="overflow:hidden">
+<div style="text-align:left;line-height:23px">
+<div style="padding:5px 10px">
+<div style="margin:2px 0;height:23px;overflow:hidden;font-size:14px"><a href="http://42qu.com/-10093679" style="text-decoration:none">vitrum.cn</a></div>
+<div></div>
+</div>
+</div>
+</div>
+<div style="text-align:right;border-top:1px dotted #ccc;padding:10px">
+<div style="float:left"></div>
+<div><a href="http://42qu.com/-10093679/pay?title=%E5%9C%A8EC2+%E4%B8%AD%E6%90%AD%E5%BB%BAnode.js+%E7%8E%AF%E5%A2%83&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057&amp;rel=blog" style="text-decoration:none;margin-right:17px">向文章付费</a> <a href="http://42qu.com/-10093679/pay?title=%E5%9C%A8EC2+%E4%B8%AD%E6%90%AD%E5%BB%BAnode.js+%E7%8E%AF%E5%A2%83&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057&amp;cid=1&amp;rel=blog" style="text-decoration:none;margin-right:16px">请作者吃饭</a></div>
+</div>
+</div><table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="亚马逊EC2上node.js配置与开发的入门经验" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D4581&amp;from=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">亚马逊EC2上node.js配置与开发的入门经验</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="多核单服务器各种配置和业务压力下的node.js性能测试" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D2334&amp;from=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/09/13/30533496.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">多核单服务器各种配置和业务压力下的node.js性能测试</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="node.js与dojo完美的融合-开发完全面向对象化" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D4817&amp;from=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/01/09/13672442.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">node.js与dojo完美的融合-开发完全面向对象化</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="单服务器node.js和php性能测试" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D2460&amp;from=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/09/13/30533496.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">单服务器node.js和php性能测试</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Node 下 Http Streaming 的跨浏览器实现" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D112&amp;from=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D3057">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/04/27/6890699.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Node 下 Http Streaming 的跨浏览器实现</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

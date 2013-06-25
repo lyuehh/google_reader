@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>如何用程序触发window的onscroll事件</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>如何用程序触发window的onscroll事件</h2>
+<p class="meta">08 Sep 2011</p>
+
+<div class="post">
+<h2>如何用程序触发window的onscroll事件</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2011-09-07 18:29:01</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/606431457/6618683/1/item.html">http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/606431457/6618683/1/item.html</a></h3>
+
+<p>很多延迟加载的组件监听的都是window.onscroll事件.所以如果你自己模拟滚动条的话,你需要在滚动到时候能用js触发这个事件.</p>
+
+
+<p>如何做呢,直接上代码,不要问为什么,就是这样:</p>
+
+
+<pre>if (document.createEvent)
+            {
+                var evObj = document.createEvent("HTMLEvents")
+                evObj.initEvent( "scroll", true, false )
+                window.dispatchEvent(evObj)
+            }else{
+                document.body.click();
+            }
+</pre>
+
+
+<p>ie里面有人说用scrollTo或者scrollBy可以触发….不错,不过如果你的鼠标左键被按下或者滚轮在滚动,这种方法就失效了….为什么我也不知道.<br>
+后来发现只需要点击一下body…就能触发onscroll….注意是window的onscroll…其他元素的可能存在不同.</p>
+
+
+<div style="float:left">
+<div>
+    <a></a>
+    <a></a>
+    <a></a>
+    <a></a>
+    <a></a>
+    <a href="http://www.jiathis.com/share/"></a>
+    <a></a>
+</div>
+
+</div>
+
+
+<p><img src="http://www1.feedsky.com/t1/606431457/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/606431457/6618683/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

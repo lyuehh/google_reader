@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>迷你MVVM框架 avalon的魔术</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>迷你MVVM框架 avalon的魔术</h2>
+<p class="meta">04 May 2013</p>
+
+<div class="post">
+<h2>迷你MVVM框架 avalon的魔术</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2013-05-04 13:18:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/04/3057896.html">http://www.cnblogs.com/rubylouvre/archive/2013/05/04/3057896.html</a></h3>
+
+<p>本文将深入介绍一下<a href="http://rubylouvre.github.io/mvvm">avalon</a>的运作机理及与jQuery的区别。</p>
+
+
+<p><br><p>许多人都知道MVVM是MVC的一个变体，但那些MVC是在后端的，包括微软的WPF，这意味着这个V与我们前端接触到的V差别很大。后端的V就是使用各种模板拼凑成一个静态页面给前端。而前端的V在JSer的眼中就是一个巨大的DOM树，要考虑加载时间，渲染顺序，浏览器对HTML的容错与修复，浏览器的默认事件，新图片与节点增删移动引起的reflow，是活生生的。前端的V就是一个DOM的世界，而后端就是字符串！</p><br><br><p>M，模型，一个数据体，用于填允我们的页面，通常PHP交给我们时数据已经填好了，想改变，就要再发出请求，然后通过jQuery寻找节点，修改它的innHTML与innerText。当然DOM操作是非常繁锁的，什么透明度，背景，位置等CSS属性我们都需要通过操作类名来修改。我们有时忙乎于这些细节，而把我们业务混在其中了。因此调试时，业务好了，但样式坏了，样好修好，这时务业又爆开了……</p><br><br><p>在MVVM中，M只是一个过客，它与其他表示业务状态的东西融入VM（ViewModel）中。ViewModel是一个状态的集合，当然还拖家带口监控着大量的回调。状态听起来是个深奥的概念，其实就是一个开关。比如if(aaa){}语句中的aaa，就是表示true与false，switch(bbb){}语句，它表示有多个值的状态，就像有人幼年，童年，少年，青年，中年，老年这几个阶段，它们都指向同一个东西。jQuery是什么管理状态的呢？比如我做个切换卡，点一下，这个面板显示，其他面板隐藏，它里面就使用了大量的hasClass来检测元素有没有某个表示显示的类名，有就隐藏，其他关闭。</p><br><pre><br>$(button).click(function(){<br>  var index = $(this).index();<br>  $(panel).eq(index).show().siblings().hidden()<br>})<br></pre><br><p>而在MVVM中，只要妥善绑定好视图，直接像 vm.activated = 1，1 为你要显示的按钮，这样切换卡就切换过去，包括你点的按钮上的类名。你可以被动地在事件回调修改VM中的属性，也可以直接对VM中属性，无论哪一种，基本上很少看到DOM代码。</p><br><br><pre><br>   &lt;div ms-controller=&quot;tabs&quot; &gt;<br>        &lt;div ms-each-tab=&quot;tabs&quot; class=&quot;triggers&quot;&gt;<br>            &lt;a href=&quot;###&quot; class=&quot;trigger&quot; ms-class-selected=&quot;activated === $index&quot; ms-click=&quot;activate&quot;&gt;&lt;/a&gt;<br>        &lt;/div&gt;<br>        &lt;div ms-each-tab=&quot;tabs&quot; &gt;<br>            &lt;div  class=&quot;panel&quot; ms-visible=&quot;activated === $index&quot;&gt;&lt;/div&gt;<br>        &lt;/div &gt;<br>    &lt;/div &gt;<br></pre><br><br><pre><br>            avalon.ready(function() {<br>                avalon.define("tabs", function(a) {<br>                    a.tabs = [  //tabs上的title, panel来源自后端的数据库，如果PHPer帮你把整个页面搞定，这个就不需要<br>                        {      //只要下面的activated 与 activate <br>                            title: "aaaa",<br>                            panel: "aaaa panel"<br>                        },<br>                        {<br>                            title: "bbbb",<br>                            panel: "ffffffffffffffffffff"<br>                        },<br>                        {<br>                            title: "cccc",<br>                            panel: "cccc panel"<br>                        }<br>                    ]<br>                    a.activated = 0  //这个是我们的务业产生的变量，<br>                    a.activate = function(){<br>                         a.activated = this.$scope.$index;//这是我们的业务，就是改一下activated 的值。<br>                    }<br>                })<br>                avalon.scan();<br>            })<br></pre><br><p><a href="http://www.cnblogs.com/rubylouvre/archive/2013/04/25/3042436.html">可运行的例子见之前的博文</a></p><br><p>在MVVM中，数据是核心。而jQuery则以DOM为核心。而DOM只是HTML在JS的世界的抽象，是一个很易变的东西。因此如果业务代码遍历选择器表达式会非常难维护。但不可否认，jQuery是操作DOM的王者，让我们操作DOM顺手拈来。但如果不让你操作DOM，不是更好吗？就像jQuery不让你用getElementById，getElementsByTagName, querySelecterAll，大家都不知道里面有多少坑，短短几个字母$(expr)是背后sizzle选择器引擎1700行的实现！！！！jQuery其实是在用户代码与原生API中提供一层厚厚的粘合层，因此摸起来光溜溜。在MVVM中，DOM操作基本是水下运作了。由于VM与V之间的双向绑定，操作了VM中的数据（当然只能是监控属性），就会同步到DOM，我们透过DOM事件监控用户对DOM的改动，也会同步到VM。DOM隐形了，就像软件公司，到处跑出来活动的是业务员与不写代码的经理老总，程序员全部关起来加班！虽然这比喻有点残酷，但这正体现了各司其职的威力。能说会道去拉风投接单子没什么不妥，喜欢呆在电脑前的就让他呆吧。jQuery的世界就是一个混乱的公司，全能的程序员什么都做。</p><br><br><p>为了各司其职，必须有良好的分层。MVVM划分三层，M，VM，V，M是原始数据，用于转换为VM，VM管理状态与绑定回调，V通过绑定得到VM的状态与回调，渲染页面，绑定事件，切换类名，什么脏活都揽了——但用户只需要声明。avalon与其他前端MVVM框架最大的不同是，VM是用ecma262v5的新API， Object.defineProperties生成的一个充满访问器的对象，这样的对象，能通过用户对它的属性的读写，触发定义时的getter, setter函数。getter, setter对rubyer, pythoner, C#er应该很熟悉，我就不展开了。旧式IE，avalon利用VBScript的类实例，它也存在其他语言的访问器。不过，VBS对象不像JS对象那样随意添加新属性，删除已有属性，因此我们就无法监后添加的新属性。Object.defineProperties也一样，它能处理的属性也只是它定义时的属性，想监控后来的，需要再调用一次Object.defineProperties。尽管如此，也比其他MVVM框架魔幻多了。</p><br><p>如果监控属性不够用，可以用监控数组，计算属性与$watch, $fire方法。</p><br><p>比如下面一个监控数组fruits ：</p><br><pre><br>  var model = avalon.define("form", [], function(vm) {<br>                    vm.fruits = [{name: "xxx"}, {name: "yyy"}, {name: "ooo"}, {name: "ppp"}]<br>                    vm.numbers = [1, 2, 3, 4]<br>                });<br></pre><br><p>被改造成如下样子，我们可以在chrome的控制台看到它的正身：</p><br><div><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/199042/o_observableArray.jpg"></div><br><p>首先这个数组的sort, splice, push, shift, reverse, pop, unshift等方法被重写，并添加了contains, ensure, remove, removeAll, removeAt, clear, upeate, set等方法， 还有表示它是个监控数组的isCollection, $id等属性。它内部四个对象也转换子ViewModel，name转换为监控属性，每个name在内部都有个set, get方法。我们只需要aaa.name = "xxx"; var d = aaa.name就能调用它们。而不像knockout那样全部转为真正的函数。</p><br><p>为了能互相同步，要写你绑定在页面上的字段为监控属性，如果它是一个复杂数据的某个子属性的子属性，那么至少也保持最后那个是监控属性，否则无法同步</p><br><pre><br>      var model = avalon.define("test", [], function(vm) {<br>                    vm.fruits = [{name: "xxx"}, {name: "yyy"}, {name: "ooo"}, {name: "ppp"}]<br>                    vm.numbers = [1, 2, 3, 4]<br>                    vm.lang = "ruby"<br>                });<br>        //在这里，我们可以监听当中的name  即, 但无法监控numbers中的元素，因为数字无法作为Object.defineProperty的第一个参数传入，因此转换不了。<br>        //  Object.defineProperty(object, propertyname, descriptor);//obj必须为对象 <br></pre><br><p>根据这思路，整个转换过程为： </p><br><pre><br>      Object.defineProperty(vm, "fruits", {set:fn, get: fn})//事实上，avalon是使用Object.defineProperties同时处理！<br>      Object.defineProperty(vm, "numbers ", {set:fn, get: fn})<br>      Object.defineProperty(vm, "lang", {set:fn, get: fn})<br>      Object.defineProperty(fruits[0], "name", {set:fn, get: fn})<br>      Object.defineProperty(fruits[1], "name", {set:fn, get: fn})<br>      Object.defineProperty(fruits[2], "name", {set:fn, get: fn})<br>      Object.defineProperty(fruits[3], "name", {set:fn, get: fn})<br></pre><br><p>比如像下面这样的复杂结构，<a href="http://rubylouvre.github.io/mvvm">avalon</a>就有点为不从心了。因此不要直接把Model的数据整个扔到ViewModel中，你懒，<a href="http://rubylouvre.github.io/mvvm">avalon</a>也懒——它只是监听对象属性的变化，数组长度与位置的变化。不会监听纯字符数组与纯字母数组。即便对于angular，google拥有这么多算法帝，它也要求你使用$watch来处理，而不是直接放在VM中就一了百了。emberjs, knockout就更呛了。要用好ViewModel必须对原始数据进行加工。</p><br><pre><br>     var model = avalon.define("class", [], function(vm) {<br>                    vm.data = {<br>                        rows: [<br>                            {<br>                                "d": [<br>                                    "PO00000078",<br>                                    "ABC"<br>                                ]<br>                            },<br>                            {<br>                                "d": [<br>                                    "PO00000079",<br>                                    "DEF"<br>                                ]<br>                            }<br>                        ]<br>                    }<br>                })<br></pre><br><p>如果一定要监听，只能使用each绑定，你这个对象在层次结构上有多少个数组，就应该用多少次each绑定。比如这个对象，就有rows, d这个数组，需要用上两次。</p><br><br><pre><br><br>        &lt;ul ms-each-row=&quot;rows&quot; ms-controller=&quot;class&quot;&gt;<br>            &lt;li ms-each-td=&quot;row.d&quot;&gt;<br>                <br>            &lt;/li&gt;<br>        &lt;/ul&gt;<br></pre><br><p>生成的结构如下：</p><br><div><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/199042/t_xxxxx.jpg"></div><br><br><p>不过真正强大的是各种绑定，帮你打包所有DOM操作。<a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/01/3053469.html">可详看这里的API说明</a>。</p><br><p>MVVM是前端未来的发展方向，微软有knockout, winjs等MVVM框架； 著名的.Net组件开发公司 Telerik 推出了一套基于 jQuery的MVVM UI库kendoui； 谷歌组织开发angular；jQuery, rails，Sproutecore，Merb，Handlebars这几个著名框架的核心成员，超级大牛Yehuda Katz推出了emberjs！</p><br><p>外国有文章介绍，使用了AngularJS（MVVM）代替（Backbone），代码减少了一半。</p><br><p><a href="http://www.localytics.com/blog/2013/angularjs-at-localytics/">http://www.localytics.com/blog/2013/angularjs-at-localytics/</a></p><br><div><img src="http://www.justaple.com/staples/public/f2ebbdcf6f4f11e09ab840404112cf76/2013/4/11/bc2b2a3ca28d11e2932140404112cf76/http/www.localytics.com/wp-content/uploads/2013/04/amp-angular-backbone-550x339.png"></div><br><p>现在园子里有不少人在用knockout与angular，<a href="http://ruby-china.org/topics/node5">在ruby china中</a>，最爱玩新技术的rubyer最近也密集提到它们。毫无疑问，这是非常有吸引力，极具生产力的东西。</p><br><p>avalon作为现在最迷你的MVVM框架，易用性也堪称一绝，绝对可以一试。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/3057896.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/04/3057896.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

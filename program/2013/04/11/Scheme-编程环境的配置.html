@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Scheme 编程环境的配置</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Scheme 编程环境的配置</h2>
+<p class="meta">11 Apr 2013</p>
+
+<div class="post">
+<h2>Scheme 编程环境的配置</h2>
+
+<h3>by 王垠</h3>
+
+<h3>at 2013-04-11 12:49:08</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_5d90e82f0101ko2d.html">http://blog.sina.com.cn/s/blog_5d90e82f0101ko2d.html</a></h3>
+
+<div><font style="font-size:18px">介绍了这么久的 Scheme，却没有讲过如何配置一个高效的
+Scheme 的编程环境。有些人开始学习 Scheme 的时候感觉无从下手，所以今天讲一下它的配置。</font></div>
+
+
+<div><span style="font-size:18px"><br></span></div>
+
+
+<div><span style="font-size:18px">Scheme
+的配置有很多种方式，我不想介绍太多东西，免得有人看花了眼，所以这里只介绍一下我自己的配置。</span><span style="font-size:18px">我不大喜欢像 <a href="http://www.neilvandyke.org/quack">Quack</a>
+一类的复杂的环境，因为它们经常有很多多余的功能，却缺少我想要的功能。一旦我想修改它们，又到处出问题。我的配置很简约，</span><span style="font-size:18.18181800842285px">我用它写了几千行的超高难度的代码，翻来覆去的改，感觉效率非常高，也没有觉得缺少什么特别重要的东西。</span></div>
+
+
+<div><span style="font-size:18.18181800842285px"><br></span></div>
+
+
+<div><span style="font-size:18.18181800842285px">现在我就一步一步的介绍我的配置。</span></div>
+
+
+<div><span style="font-size:18.18181800842285px"><br></span></div>
+
+
+<div><span style="font-size:18.18181800842285px"><br></span></div>
+
+
+<div><span style="font-size:18.18181800842285px">1. 安装
+Scheme</span></div>
+
+
+<div><span style="font-size:18.18181800842285px"><br></span></div>
+
+
+<div><span style="font-size:18.18181800842285px">世界上最好的 Scheme
+实现是 <a href="http://blog.sina.com.cn/s/blog_5d90e82f0101jscn.html">Chez
+Scheme</a>，但是它不免费也不开源。所以如果你不想破费，那就只好下载一个它的“免费版”，叫做 Petite Chez
+Scheme（petite 是法语里“小”的意思）。它可以在这里下载：</span></div>
+
+
+<div><span style="font-size:18.18181800842285px"><br></span></div>
+
+
+<div><a href="http://scheme.com/download/">http://scheme.com/download</a></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px"><br></span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px">这个页面挺长，上面都是正式版的 Chez
+Scheme，一点击就会叫你“联系销售人员”。要滚动到下面才能看见免费的版本。怎么安装我就不讲了，自己看说明应该很容易的。</span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px"><br></span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px">Petite
+是一个完善的，高效的实现，你可以把它当成解释器使用。这个解释器的速度非常之快，甚至比很多别的 Scheme
+实现编译后的代码还要快。但是它有一个问题，就是它给出的出错信息太简约了，以至于连出错的函数名字都不告诉你。这样写大一点的程序就会比较痛苦了（虽然我还是用它写了2000多行的编译器代码）。</span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px"><br></span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px">所以如果你想写稍微大点的东西，可以用
+Racket。它可以在这里下载：</span></font></div>
+
+
+<div><font style="font-size:18px"><span style="line-height:24.545454025268555px"><br></span></font></div>
+
+
+<div><a href="http://racket-lang.org">http://racket-lang.org</a></div>
+
+
+<div><br></div>
+
+
+<div><font style="font-size:18px">安装应该很容易。Ubuntu 也自带了
+Racket，所以可以直接让系统安装它。</font></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<div><font style="font-size:18px">2. 设置 ParEdit mode</font></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<div><font style="font-size:18px">我编辑 Scheme 的时候都用 Emacs。我使用一个叫做
+ParEdit mode 的插件。它可以让你“半结构化”式的编辑 Scheme 和其它的 Lisp
+文件。开头你可能会有点不习惯，可是一旦习惯了，你就再也离不开它。</font></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<div><font style="font-size:18px">ParEdit mode
+可以在这里下载：</font></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<p><a href="http://mumble.net/~campbell/emacs/paredit.el">http://mumble.net/~campbell/emacs/paredit.el</a></p>
+
+<div><span style="font-size:18px"><br></span></div>
+
+
+<div><span style="font-size:18px">下载之后，把它放到一个目录里，比如
+~/.emacs.d，然后打开 ~/.emacs 配置文件，加入如下设置：</span></div>
+
+
+<div><font style="font-size:18px"><br></font></div>
+
+
+<div>
+<div><font style="font-size:14px"><font style="font-size:14px">(autoload 'paredit-mode
+"paredit"</font></font></div>
+<div><font style="font-size:14px">  &quot;Minor mode
+for pseudo-structurally editing Lisp code.&quot;</font></div>
+<div><font style="font-size:14px"> 
+t)</font></div>
+<div style="font-size:18px"><br></div>
+<div style="font-size:18px">这样，只要你使用 M-x paredit-mode
+就可以自动载入这个模式。具体的操作方式可以看它的说明（按 C-h m 查看“模式帮助”），我下面也会简单说一下。</div>
+<div style="font-size:18px"><br></div>
+<div style="font-size:18px"><br></div>
+<div style="font-size:18px">3. 设置 scheme mode</div>
+<div style="font-size:18px"><br></div>
+<div><font style="font-size:18px">我一般就用系统自带的 Scheme 模式，叫
+cmuscheme。但是为了方便，我自己写了几个函数，用于在执行 Scheme
+代码的时候自动启动解释器，并且打开解释器窗口。你基本只需要把下面的代码拷贝到你的 .emacs 文件里就行：</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div style="font-size:18px"><font style="font-size:14px"><br></font></div>
+<div>
+<div>;;;;;;;;;;;;</div>
+<div>;; Scheme </div>
+<div>;;;;;;;;;;;;</div>
+<div><br></div>
+<div>(require 'cmuscheme)</div>
+<div>(setq scheme-program-name &quot;racket&quot;)  
+      ;; 如果用
+Petite 就改成 &quot;petite&quot;</div>
+<div><br></div>
+<div><br></div>
+<div>;; bypass the interactive question and start the default
+interpreter</div>
+<div>(defun scheme-proc ()</div>
+<div>  &quot;Return the current Scheme process,
+starting one if necessary.&quot;</div>
+<div>  (unless (and scheme-buffer</div>
+<div>     
+     
+   (get-buffer
+scheme-buffer)</div>
+<div>     
+     
+   (comint-check-proc
+scheme-buffer))</div>
+<div>   
+(save-window-excursion</div>
+<div>     
+(run-scheme scheme-program-name)))</div>
+<div>  (or (scheme-get-process)</div>
+<div>     
+(error &quot;No current process. See variable `scheme-buffer&#39;&quot;)))</div>
+<div><br></div>
+<div><br></div>
+<div>(defun scheme-split-window ()</div>
+<div>  (cond</div>
+<div>   ((= 1
+(count-windows))</div>
+<div>   
+(delete-other-windows)</div>
+<div>    (split-window-vertically
+(floor (* 0.68 (window-height))))</div>
+<div>    (other-window 1)</div>
+<div>    (switch-to-buffer
+&quot;*scheme*&quot;)</div>
+<div>    (other-window 1))</div>
+<div>   ((not (find
+&quot;*scheme*&quot;</div>
+<div>     
+     
+   (mapcar (lambda (w)
+(buffer-name (window-buffer w)))</div>
+<div>     
+     
+     
+   
+ (window-list))</div>
+<div>     
+     
+   :test &#39;equal))</div>
+<div>    (other-window 1)</div>
+<div>    (switch-to-buffer
+&quot;*scheme*&quot;)</div>
+<div>    (other-window
+-1))))</div>
+<div><br></div>
+<div><br></div>
+<div>(defun scheme-send-last-sexp-split-window ()</div>
+<div>  (interactive)</div>
+<div>  (scheme-split-window)</div>
+<div>  (scheme-send-last-sexp))</div>
+<div><br></div>
+<div><br></div>
+<div>(defun scheme-send-definition-split-window ()</div>
+<div>  (interactive)</div>
+<div>  (scheme-split-window)</div>
+<div>  (scheme-send-definition))</div>
+<div><br></div>
+<div>(add-hook 'scheme-mode-hook</div>
+<div>  (lambda ()</div>
+<div>    (paredit-mode 1)</div>
+<div><span style="font-size:14px"> 
+  (define-key scheme-mode-map (kbd
+&quot;&lt;f5&gt;&quot;)
+&#39;scheme-send-last-sexp-split-window)</span></div>
+<div>    (define-key
+scheme-mode-map (kbd &quot;&lt;f6&gt;&quot;)
+&#39;scheme-send-definition-split-window)))</div>
+<div style="font-size:14px"><br></div>
+<div style="font-size:14px"><br></div>
+<div><font style="font-size:18px">我的配置会在加载 Scheme 文件的时候自动载入
+ParEdit mode，并且把 F5
+键绑定到“执行前面的S表达式”。这样设置的目的是，我只要把光标移动到一个S表达式之后，然后用一根手指头按
+F5，就可以执行程序。够懒吧。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><br></div>
+<div><font style="font-size:18px">4. ParEdit mode
+的简单使用方法</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<font style="font-size:18px">ParEdit mode
+是一个很特殊的模式。它起作用的时候，你不能直接修改括号。这样所有的括号都保持完整的匹配，不可能出现语法错误。但是这样有一个问题，如果你要把一块代码放进另一块代码，或者从里面拿出来，就不是很方便了。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">为此，ParEdit mode
+提供了几个非常高效的编辑方式。我平时只使用两个： </font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">1) C-right: 也就是按住 Ctrl
+再按右箭头。它的作用是让光标右边的括号，“吞掉”下一个S表达式。</font></div>
+<div><br></div>
+<div><font style="font-size:18px">比如，(a b c) (d e)。你把光标放在 (a b c)
+里面，然后按 C-right。结果就是 (a b c (d e))。也就是把 (d e) 被整个“吞进”了 (a b c)
+里面。 </font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">2) M-r: 去掉外层代码。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">这在你需要去掉外层的 let
+等结构的时候非常有用。比如，如果你的代码看起来是这样：</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div>
+<div>
+<div><span style="line-height:24.545454025268555px"><font style="font-size:14px">(let ([x 10])</font></span></div>
+<div><font style="font-size:14px">  (* x
+2))</font></div>
+<div style="font-size:large"><br></div>
+<div style="font-size:large">当你把光标放在 (* x 2) 的最左边，然后按
+ M-r，结果就变成了</div>
+<div style="font-size:large"><br></div>
+<div><font style="font-size:14px">(* x 2)</font></div>
+<div><span style="font-size:18px"><br></span></div>
+<div><span style="font-size:18px">也就是把外面的 (let ([x 10]) ...)
+给“掀掉”了。</span></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">其它的一些按键虽然也有用，不过我觉得这两个是最有用的，甚至不可缺少的。有些其他的自动匹配括号的模式，没有提供这种按键，所以用起来很别扭。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">5. 设置括号颜色</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">很多人看见 Lisp
+就怕了，就是因为它看起来括号太多。可是这样的语法，却是有很大的好处的（参考这篇博文《<a href="http://blog.sina.com.cn/s/blog_5d90e82f0101irad.html">谈语法</a>》）。如果你真的觉得括号碍眼，你可以稍微调整一下括号的颜色，比如淡灰色。这样括号看起来就没有那么显眼了。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">你只需要下载这个 el，放到你的
+.emacs.d:</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div>  <a href="https://www.dropbox.com/s/v0ejctd1agrt95x/parenface.el">https://www.dropbox.com/s/v0ejctd1agrt95x/parenface.el</a></div>
+<div><font style="font-size:18px"><br></font></div>
+<div><font style="font-size:18px">然后在 .emacs 里面加入两行：</font></div>
+<div><font style="font-size:18px"><br></font></div>
+<div>
+<div><font size="#"><font style="font-size:14px">(require
+'parenface)</font></font></div>
+<div><font style="font-size:14px">(set-face-foreground
+'paren-face "DimGray")</font></div>
+<div style="font-size:18px"><br></div>
+<div style="font-size:18px">然后再打开 Scheme 代码的时候，你就会看到是这个样子：</div>
+<div style="font-size:18px"><br></div>
+<div style="font-size:18px"><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://s2.sinaimg.cn/orignal/5d90e82fgda1d51f37161"><img src="http://s2.sinaimg.cn/mw690/5d90e82fgda1d51f37161&amp;600" name="image_operate_44701365719439220"></a><br>
+<br></div>
+</div>
+<div><font style="font-size:18px">好了，这就是我写 Scheme
+的所有配置了。希望这些有所帮助。</font></div>
+<div><font style="font-size:18px"><br></font></div>
+</div>
+</div>
+</div>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=2"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

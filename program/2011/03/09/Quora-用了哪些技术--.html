@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Quora 用了哪些技术 ?</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Quora 用了哪些技术 ?</h2>
+<p class="meta">09 Mar 2011</p>
+
+<div class="post">
+<h2>Quora 用了哪些技术 ?</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-03-08 19:18:11</h3>
+
+<h3>original <a href="http://news.cnblogs.com/n/93349/">http://news.cnblogs.com/n/93349/</a></h3>
+
+<p>　　很多团队都在学习、研究 Quora 。前段时间看到这篇 <a href="http://www.philwhln.com/quoras-technology-examined">Quora's Technology Examined</a> ，阐述了 Quora 的技术架构，有一些值得关注的信息，记录并分享一下。</p>
+
+
+<p>　　<strong>使用云计算服务</strong></p>
+
+
+<p>　　Quora 大量使用 Amazon EC2 与 S3 服务；操作系统部署的是 Ubuntu Linux，易于部署和管理；静态内容用 Cloudfront 服务分发，图片先传到 EC2 服务器，使用 Pyhon S3 <acronym title="Application Programming Interface">API</acronym> 处理后后传到 S3。</p>
+
+
+<p>　　从开始就使用云计算服务的的好处是节省了大量人工维护硬件服务器的成本，当然这个做法在咱这片土地上不太可行。</p>
+
+
+<p>　　<strong>Web 层与 <acronym title="Content Management System">CMS</acronym> </strong></p>
+
+
+<p>　　HAProxy作为前端负载均衡服务器，反向代理服务器是 Nginx，Nginx后真正的 Pylons (<a href="http://spacepants.org/blog/pylons-paste-stack">Pylons + Paste</a>)，承担动态 Web 请求。 </p>
+
+
+<p>　　Webnode2 与 LiveNode 这两个内部系统承担创建、管理内容的重任，Webnode2 生成 HTML、CSS 与JavaScript ，并且与 LiveNode 轻度耦合。LiveNode 的作用用以显示 Web 页面内容。用 Python、C++与JavaScript 写的。特别提到用到了 jQuery 与 Cython 。LiveNode 有可能开源。</p>
+
+
+<p>　　<strong>为什么用 Python?</strong></p>
+
+
+<p>　　前面已经提到了一些 Python 相关的技术组件。有意思的是从 Facebook 出来的团队居然用 Python 作为主要开发语言。Quora 对此有所<a href="http://www.quora.com/Why-did-Quora-choose-Python-for-its-development">解释</a>: Facebook 选择 <acronym title="PHP (Personal Home Pages) Hypertext Preprocessor">PHP</acronym> 也并非是最佳选择，而是有历史原因。Quora 技术团队在考察了多个语言之后选择的 Python ，当然理由有一大堆，总体看来，并非很激进。</p>
+
+
+<p>　　<strong>通信处理</strong></p>
+
+
+<p>　　后端通信使用的是 Facebook 开源出来的 <a href="http://incubator.apache.org/thrift/">Thrift</a>，除了开发接口简单之外，可能更为熟悉也是一个因素吧 :) <a href="http://en.wikipedia.org/wiki/Comet_%28programming%29">Comet</a> 服务器使用的是 <a href="http://www.tornadoweb.org/">Tornado</a>，用以处理 Long polling 以及 Push 更新(不知道<a href="http://www.zhihu.com/">知乎</a>用的什么?)，Thrift 是前 FriendFeed 技术团队开源的产品。</p>
+
+
+<p>　　<strong>实时搜索</strong></p>
+
+
+<p>　　因为 <a href="http://sphinxsearch.com/">Sphinx</a> 不能满足实时性方面的要求，Quora启用了自己开发的搜索引擎，只使用了 Thrift 与 Python Unicode 库，此外没有用别的。Quora的搜索比较特别，因为要对输入内容做关联并且要做有效提示，所以需要提供更好的前缀索引(Prefix indexing)功能。</p>
+
+
+<p>　　Quora 搜索的实现还是挺有技术含量的，对后端的查询请求压力也不小(或许当前的并发请求量还没那么大)。对这个场景，做相关开发的朋友不妨仔细研究一下。如果大体框架类似，那么决定最后生出的因素很可能是那些细节。</p>
+
+
+<p>　　<strong>数据持久层</strong></p>
+
+
+<p>　　大量使用 MySQL 作为存储方案，Memcached 作 Cache 层。没有使用当前比较火爆的 NoSQL 相关产品。Quora 这样做有自己的<a href="http://www.quora.com/When-Adam-DAngelo-says-partition-your-data-at-the-application-level-what-exactly-does-he-mean">理由</a>，用户量级没有达到百万的 <acronym title="Social Networking Service">SNS</acronym> 站点完全没必要用 NoSQL 的东西。或许以后 Quora 也会启用。</p>
+
+
+<p>　　创始人查理·奇弗（Charlie Cheever）与亚当·德安杰洛（Adam D&#39;Angelo）之前都在 Facebook，所以，Quora 的技术还真有不少 Facebook 的基因。Quora的团队规模并不大，做技术的估计十余人而已，这么紧凑的团队利用了这么多的技术与产品，可见很多人都是多面手了。这是国内技术团队需要向国外同行学习的地方。</p>
+
+
+<p><br>　　本文链接：<a href="http://news.cnblogs.com/n/93349/">http://news.cnblogs.com/n/93349/</a></p>
+
+
+<p>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/90619/">Quora近一半流量来自搜索引擎</a><span style="color:gray">(2011-02-11)</span><br>　　· <a href="http://news.cnblogs.com/n/80446/">Quora改变了什么？</a><span style="color:gray">(2010-11-10)</span><br>　　· <a href="http://news.cnblogs.com/n/77854/">问答网Quora成Facebook大患 缘起人才争夺战</a><span style="color:gray">(2010-10-19)</span><br>　　· <a href="http://news.cnblogs.com/n/87570/">分析称美社交问答网站Quora难与Twitter比肩</a><span style="color:gray">(2011-01-07)</span><br>　　· <a href="http://news.cnblogs.com/n/90327/">Quora详述新的答案排名算法，打造Quora版Pagerank</a><span style="color:gray">(2011-02-06)</span><br></p>
+
+
+<p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=93349" width="1" height="1" alt=""></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]ES6:数组推导式和生成器推导式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]ES6:数组推导式和生成器推导式</h2>
+<p class="meta">11 Jan 2013</p>
+
+<div class="post">
+<h2>[译]ES6:数组推导式和生成器推导式</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2013-01-10 16:43:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2013/01/10/2855018.html">http://www.cnblogs.com/ziyunfei/archive/2013/01/10/2855018.html</a></h3>
+
+<p>原文:<a href="http://www.2ality.com/2013/01/comprehensions.html">http://www.2ality.com/2013/01/comprehensions.html</a></p>
+
+
+<p><br><hr><br><p>ES6中将会有两种推导式:数组推导式(array comprehension)和生成器推导式(generator comprehension),你可以使用它们来快速的组装出一个数组或者一个生成器对象.许多编程语言中都有推导式这一语法,比如:CoffeeScript, Python, Haskell, Clojure. <a name="more"></a></p><br><h3>数组推导式</h3><br><p>下面就是一个ES6中的数组推导式的例子:</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>[<span style="color:#0000ff">for</span> (x of a) <span style="color:#0000ff">for</span> (y of b) <span style="color:#0000ff">if</span> (x &gt; y) [x,y]]</pre><br></div><br><p>执行该推导式的效果和执行下面这个函数的效果相同(函数中使用了ES6中的for-of循环).</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre><span style="color:#0000ff">function</span><span style="color:#000000"> arrayComprehension() {<br>    let result </span>=<span style="color:#000000"> [];<br>    </span><span style="color:#0000ff">for</span><span style="color:#000000"> (x of a) {<br>        </span><span style="color:#0000ff">for</span><span style="color:#000000"> (y of b) {<br>            </span><span style="color:#0000ff">if</span> (x &gt;<span style="color:#000000"> y) {<br>                result.push([x,y]);<br>            }<br>        }<br>    }<br>    </span><span style="color:#0000ff">return</span><span style="color:#000000"> result;<br>}</span></pre><br></div><br><p>数组推导式中可以包含下面两种子式:</p><br><ul><br><li><tt>for</tt></li><br><li><tt>if</tt></li><br></ul><br><p>数组推导式可以很方便的将一个数组转换成另一个数组:</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>let numbers = [1,2,3<span style="color:#000000">];<br>let squares </span>= [<span style="color:#0000ff">for</span> (x of numbers) x<em>x];</pre><br></div><br><p>不过,配合ES6中的箭头函数(arrow function),使用<tt>Array.prototype.map来完成这项任务貌似更方便</tt>:</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>let squares = numbers.map(x =&gt; x * x);</pre><br></div><br><h3>生成器推导式</h3><br><p>生成器推导式看起来和数组推导式很类似,但它是用小括号括住的,且返回的是一个生成器对象,而不是数组.例如:</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>(<span style="color:#0000ff">for</span> (x of a) <span style="color:#0000ff">for</span> (y of b) <span style="color:#0000ff">if</span> (x &gt; y) [x,y])</pre><br></div><br><p>执行该推导式的效果和执行下面这个生成器函数(也是ES6特性)的效果相同</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre><span style="color:#0000ff">function</span></em><span style="color:#000000"> generatorComprehension() {<br>    </span><span style="color:#0000ff">for</span><span style="color:#000000"> (x of a) {<br>        </span><span style="color:#0000ff">for</span><span style="color:#000000"> (y of b) {<br>            </span><span style="color:#0000ff">if</span> (x &gt;<span style="color:#000000"> y) {<br>                yield [x,y];<br>            }<br>        }<br>    }<br>}</span></pre><br></div><br><p>你可以这样遍历生成器对象中的元素:</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>let compr =<span style="color:#000000"> ( ... );<br></span><span style="color:#0000ff">for</span><span style="color:#000000"> (elem of compr) {<br>    console.log(elem);<br>}</span></pre><br></div><br><h3>Firefox已经实现了这两种推导式?</h3><br><p>Firefox虽然早已经实现了这两种推导式,但它实现的语法并不是ES6(而是ES4),如果你愿意,可以简单的了解并尝试一下:</p><br><ul><br><li><a href="https://developer.mozilla.org/zh-CN/docs/JavaScript/Guide/Predefined_Core_Objects#Array_comprehensions">数组推导式</a></li><br><li><a href="https://developer.mozilla.org/zh-CN/docs/JavaScript/Guide/Iterators_and_Generators#Generator_expressions">生成器表达式</a> (生成器推导式的另外一个名字)</li><br></ul><br><h3>相关文章</h3><br><ol><br><li><a href="http://www.2ality.com/2012/06/for-of-ff13.html">ES6: for-of, 生成器, 迭代器</a></li><br><li><a href="http://www.2ality.com/2012/04/arrow-functions.html">ES6: 箭头函数和方法定义</a></li><br></ol><img src="http://www.cnblogs.com/ziyunfei/aggbug/2855018.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2013/01/10/2855018.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

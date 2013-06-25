@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>快乐周末：“最二的 Go 语言程序”竞赛</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>快乐周末：“最二的 Go 语言程序”竞赛</h2>
+<p class="meta">28 Jun 2012</p>
+
+<div class="post">
+<h2>快乐周末：“最二的 Go 语言程序”竞赛</h2>
+
+<h3>by xslidian</h3>
+
+<h3>at 2012-06-27 23:16:45</h3>
+
+<h3>original <a href="http://www.guao.hk/posts/the-most-2ed-go-contest.html">http://www.guao.hk/posts/the-most-2ed-go-contest.html</a></h3>
+
+<p>Go-Nuts 群组有人发起了“最傻的 Go 语言代码”竞赛。你的程序能比下面的更具魅力吗？</p>
+
+
+<p>点击标题可查看执行效果和进行在线调试。</p>
+
+
+<p>1、<a href="http://play.golang.org/p/0yIjnY47Ko">LOL</a></p>
+
+
+<pre>func main() {
+var LOL bool
+fmt.Println(!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!LOL)
+}</pre>
+
+
+<p>2、<a href="http://play.golang.org/p/YHZg-KI-S2">Hello World</a></p>
+
+
+<pre>func мир(ы interface{}){ fmt.Println(ы) }
+ func Ґудзик(){if привет := recover(); привет != nil {мир(привет)}}
+ func main() {
+ defer Ґудзик()
+ こんにちは := make(chan string)
+ 你好 := make(chan string)
+ go func(){ 你好 &lt;- &lt;- こんにちは }()
+ go func(){ こんにちは &lt;- &quot;world&quot; }()
+ go func(){ мир(&quot;Hello&quot;) }()
+ panic(&lt;- 你好)
+ }</pre>
+
+
+<p>3、<a href="http://play.golang.org/p/XNNtaoz5Nz">求助信</a></p>
+
+
+<pre>Dear gc,</pre>
+
+
+<pre>I hope you are well. I regret that we haven't spoken for a while, but I have been busy preparing for Google I/O.</pre>
+
+
+<pre>I am writing to ask a favor. Would you mind emitting the standard "Hello, world" program? It would be a big help.</pre>
+
+
+<pre>Keep up the good work.</pre>
+
+
+<pre>Your pal,
+ Andrew</pre>
+
+
+<p>4、<a href="http://play.golang.org/p/E18gLgRtV2">又一个 Hello World</a></p>
+
+
+<pre>func main() {
+ fmt.Println("H‮!dlrow ,olle")
+ }</pre>
+
+
+<p>5、<a href="http://play.golang.org/p/CfYho9AIiI">再一个 Hello World</a></p>
+
+
+<pre>package main
+ import (
+ "fmt"
+ "strings"
+ )</pre>
+
+
+<pre>type char string</pre>
+
+
+<pre>func main() {
+ print(H,E,L,L,O, SPACE, W, O, R, L, D)
+ }</pre>
+
+
+<pre>func print(chars ...char) {
+ // print ascciart character line by line
+ lblChar := make([][]string, len(chars))
+ maxSplit := 0
+ for i := 0; i &lt; len(chars); i++ {
+ lblChar[i] = strings.Split(string(chars[i]), &quot;\n&quot;)
+ maxSplit = max(maxSplit, len(lblChar[i]))
+ }
+ for line := 0; line &lt; maxSplit; line++ {
+ for i := 0; i &lt; len(lblChar); i++ {
+ if line &lt; len(lblChar[i]) {
+ fmt.Print(lblChar[i][line])
+ }
+ }
+ fmt.Println()
+ }
+ }</pre>
+
+
+<pre>func max(i, j int) int{
+ if i &gt; j {
+ return i
+ }
+ return j
+ }</pre>
+
+
+<pre>const (
+ H char =
+ `
+ _ _
+ | | | |
+ | |_| |
+ | _ |
+ | | | |
+ |_| |_|
+ `
+ E char =
+ `
+ ___
+ | _|
+ | |_
+ | _|
+ | |_
+ |___|
+ `
+ L char =
+ `
+ _
+ | |
+ | |
+ | |
+ | |_
+ |___|
+ `</pre>
+
+
+<pre>O char =
+ `
+ _____
+ | _ |
+ | | | |
+ | | | |
+ | |_| |
+ |_____|
+ `
+ SPACE char =
+ `</pre>
+
+
+<pre>`
+ R char =
+ `
+ _____
+ | _ |
+ | |_| |
+ | _ |
+ | | \ \
+ |_| \_\
+ `
+ W char =
+ `
+ __ __
+ \ \ / /
+ \ \ /\ / /
+ \ \/ \/ /
+ \ /
+ \____/
+ `
+ D char =
+ `
+ ____
+ | _ \
+ | | | |
+ | | | |
+ | |_| |
+ |____/
+ `</pre>
+
+
+<pre>)</pre>
+
+
+<hr>
+
+
+<p><small>© xslidian 发表于 <a href="http://www.guao.hk">谷奥——探寻谷歌的奥秘 ( http://www.guao.hk )</a>, 2012.  |
+<a href="http://www.guao.hk/posts/the-most-2ed-go-contest.html#comments">1 条评论</a> |
+<a href="http://www.guao.hk/posts/the-most-2ed-go-contest.html">永久链接</a> |
+<a href="http://google.org.cn/about/">关于谷奥</a> |
+<a href="http://google.org.cn/submit/">投稿/爆料</a><br>
+Post tags: <a href="http://www.guao.hk/tag/fun" rel="tag">fun</a>, <a href="http://www.guao.hk/tag/go" rel="tag">Go</a>
+</small></p>
+
+
+<p><img src="http://img.tongji.linezing.com/1105192/tongji.php" border="0" width="0" height="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

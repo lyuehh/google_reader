@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Lua 5.2 的细节改变</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Lua 5.2 的细节改变</h2>
+<p class="meta">29 Sep 2012</p>
+
+<div class="post">
+<h2>Lua 5.2 的细节改变</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2012-09-29 10:47:44</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2012/09/lua_52_changes.html">http://blog.codingnow.com/2012/09/lua_52_changes.html</a></h3>
+
+<p>最近想试一下, Lua JIT 2.0 能给我们的系统带来多大的提升。但可惜的是，我们一开始就在用 Lua 5.2 来构建系统，而 Lua JIT 2.0 只支持 Lua 5.1 的 API ，在可以看到的时间里，恐怕也不太会去支持 5.2 了。</p>
+
+
+
+
+<p>所以，我只能想办法反向支持 Lua 5.1 。</p>
+
+
+
+
+<p>语法层面最重大的改变是 Lua 5.2 取消了环境表这个概念，转而提供 <code>_ENV</code> 这个语法糖。</p>
+
+
+
+
+<p>许多小细节是 C API 上的变化。这使得按 Lua 5.2 标准写的 C 库，无法在 Lua 5.1 环境下编译。我打算用 Lua 5.1 的 API 来模拟出来。</p>
+
+
+<pre><code>    &lt;p&gt;我并没有完全实现所有 Lua 5.2 新增的 API ，比如对 continuation function 的支持，几乎不可能在 Lua 5.1 已有的 API 上完成的。&lt;/p&gt;
+</code></pre>
+
+<p>一些简单的 API 的实现我 <a href="https://github.com/cloudwu/skynet/tree/master/luacompat">放在这里了</a>。</p>
+
+
+
+
+<p><code>luaL_checkversion</code> 很有用，但很难完全实现其功能。无法检测出重复链接。</p>
+
+
+
+
+<p><code>lua_arith</code> 虽然可以实现，但是直接用 5.1 的 API 模拟出来，会比较繁琐，性能低下。而我也没用它，所以就放弃了。</p>
+
+
+
+
+<p><code>lua_upvalueid</code> 和 <code>lua_upvaluejoin</code> 估计也不太会用的上。</p>
+
+
+
+
+<p><code>luaL_Buffer</code> 在 Lua 5.2  里结构变了，所以，新增加的 <code>luaL_buffinitsize</code> 和 <code>luaL_prepbuffsize</code> 是无法实现相同的语义的，不想改变 5.1 里的 auxlib 的行为，所以只能回避用它们了。</p>
+
+
+
+
+<hr>
+
+
+
+
+<p>对于 lua 层面的 API ，改变最大的是 load 的语义。这是和 <code>_ENV</code> 一起改变的，完美支持会比较麻烦。我先<a href="https://github.com/cloudwu/skynet/blob/master/lualib/loadx.lua">模拟了一个最简单的</a>。</p>
+
+
+
+
+<p>一开始，我想通过修改用户传入的代码，在前面增加一小段代码来模拟 <code>_ENV</code> 的行为。后来发现，我们自己用的库里有一部分是用 binary 格式来在 State 间传递 function 的。而二进制模式的代码，不能通过附加文本代码的方式来改变行为。这个难题下一步再去解决。</p>
+
+
+
+
+<p>Lua 5.2 里的 string.format 中，%s 会默认调用对象的 <code>__tostring</code> 方法，而 5.1 则不会。我不打算更新 5.1 中的 format 方法，还是把 lua 代码中的 format 参数显式调用一下好了。那些地方多是用来输出 log 的，只要避免将 nil 传进入就可以了。</p>
+
+
+
+
+<hr>
+
+
+
+
+<p>Lua 5.2 改进了 coroutine 的支持，好在 Lua JIT 2.0 也同样支持了。但是 Lua JIT 2 似乎对 <code>__pairs</code> 的支持（默认关闭）是有 bug 的。今天调试了很久终于确认并非我们自己代码的 bug 。</p>
+
+
+
+
+<p>我构造了一个简单的 test case :</p>
+
+
+
+
+<pre>
+local tbl = {}
+
+local a = { values=  { foo = 1 } }
+
+local iter = function(value)
+    local function loop(t,k)
+        return next(t,k)
+    end
+    return loop, value
+end
+
+local mt = {
+    __pairs = function(self)
+        local values = rawget(self, "values")
+        return iter(values)
+    end
+}
+
+setmetatable(a,mt)
+
+tbl.a = a
+
+local function trav(k,t)
+    if type(t) == "table" then
+        print(k, t)
+        for k,v in pairs(t) do
+            trav(k,v)
+        end
+    end
+end
+
+trav("",tbl)
+</pre>
+
+
+
+
+<p>在 luajit 2.0 下运行，会输出两个 a :</p>
+
+
+
+
+<pre>
+        table: 0x00327fa8
+a       table: 0x00321d00
+a       table: 0x00321d00
+</pre>
+
+
+
+
+<p>a 这个字段被重复迭代了两次。</p>
+
+
+
+
+<hr>
+
+
+
+
+<p>今天还发现，debug 库中的 getinfo 信息，lua 5.2 比 lua 5.1 更丰富。5.2 用 nparams 字段，可以取得函数的参数个数。而 5.1 里把参数和 local 变量一视同仁。</p>
+
+
+
+
+<p>在旧代码里，我们试图这样去取得一个函数的参数名字（为了匹配通讯协议）。</p>
+
+
+
+
+<pre>
+    local nparam = debug.getinfo(f,"u").nparams
+    local p = {}
+    for i=1,nparam do
+        local name = debug.getlocal(f,i)
+        table.insert(p, name)
+    end
+</pre>
+
+
+
+
+<p>在 Lua 5.1 里，是没有 nparams 字段的。而且 getlocal 不能传入一个函数，而必须是一个堆栈层次数。我只好使用了一个变通的方案来达到相同的功能。</p>
+
+
+
+
+<pre>
+local function gen_hook(p)
+        return function()
+                local i = 1
+                while true do
+                        local name = debug.getlocal(2,i)
+                        if name == nil or string.byte(name) == 40 then -- '(' is 40
+                                break
+                        end
+                        p[i] = name
+                        i = i + 1
+                end
+                error()
+        end
+end
+
+function debug.params(f)
+        local p = {}
+        local co
+        local function probe()
+                debug.sethook(co, gen_hook(p), "c")
+                f()
+        end
+
+        co = coroutine.create(probe)
+        coroutine.resume(co)
+        return p
+end
+</pre>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>NodeStack：另类的开源云计算组合</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>NodeStack：另类的开源云计算组合</h2>
+<p class="meta">21 Nov 2012</p>
+
+<div class="post">
+<h2>NodeStack：另类的开源云计算组合</h2>
+
+<h3>by baiyuzhong</h3>
+
+<h3>at 2012-11-20 20:55:15</h3>
+
+<h3>original <a href="http://www.programmer.com.cn/14134/">http://www.programmer.com.cn/14134/</a></h3>
+
+<p><span style="color:#888888"><strong>文/<a href="http://weibo.com/marscheng">程显峰</a></strong></span></p>
+
+
+<p>NodeStack是另类的开源云计算组合，从内到外实现了应用PaaS。其架构主要包括SmartOS、Node.js和MongoDB三部分。本文将重点介绍NodeStack的底层平台SmartOS。</p>
+
+
+<div>
+<p>最近谈到开源云计算，大家可能第一想到的是OpenStack、Cloud Foundry这种金光闪耀的组合。但NodeStack的发布，使大家眼前一亮——原来可以这么玩。简单地说，NodeStack使用了一套完全不同的开源架构，从内到外实现应用PaaS。其架构主要包括SmartOS、Node.js和MongoDB。由于这几种技术的东家都参与了这个项目，我们就来看看NodeStack到底有什么神奇的地方。<span></span></p>
+<p>先来简单介绍一下出场的各位玩家。</p>
+<ul>
+<li>Joyent，Node.js的东家。有趣的是这个公司的主营业务是IaaS，其核心技术在于SmartOS——一种与时俱进的Solaris。</li>
+<li>Nodejitsu，Node.js社区的核心玩家。公司的目标是做一个基于Node.js的PaaS平台。</li>
+<li>10gen，MongoDB的东家。</li>
+<li>MongoLab，MongoDB云服务的提供商。</li>
+</ul>
+<p>Joyent 在这个体系当中提供最为基础的计算和存储资源，很多人可能认为这和其他提供IaaS的公司没什么两样。其实不然，Joyent的云从某种角度上来说并不完 备。但依我看，这个云真的就是为做PaaS而裁剪的，特别合体。SmartOS的种种特性，真的令人赞叹：原来PaaS的底层应该是这样的。</p>
+<p>Nodejitsu 所做的工作就是用Joyent提供的计算和存储资源，做一个专门针对Node.js应用的PaaS。这个开源PaaS的源代码可以从GitHub上获取。 应用肯定是少不了数据的，一个时髦的数据库服务也是必不可少的，甚至有人将数据库服务称为DBaaS。MongoLab就是将10gen的MongoDB 做成了云服务，按量收钱，因此成为PaaS中强有力的组件。</p>
+<p>本文将重点介绍底层平台SmartOS。后面我会陆续写文章介绍开源PaaS平台和MongoDB云服务。</p>
+<div style="width:512px"><img title="Nodestack的整体架构" src="http://ipad-cms.csdn.net/cms/attachment/201211/508f44ff42107.jpg" alt="" width="502" height="297"><p>Nodestack的整体架构</p></div>
+<p><span style="color:#99cc00"><strong>SmartOS</strong></span></p>
+<p>为什么Joyent要使用Solaris？Solaris开源吗？不是挂掉了吗？</p>
+<p>要是大家知道谁为Joyent工作或许就不会有这样的疑问了。Bryan Cantrill是Joyent现在的工程副总裁。作为原来Sun的杰出工程师，他设计并实现了DTrace，被MIT的《技术评论》评为“35才俊”（TR35）。</p>
+<p>Brendan Gregg现在是Joyent的首席性能工程师。他是《DTrace》那本巨著的主要作者。此外，他还参与了《Solaris Performance and Tools》一书的撰写。作为DTrace工具包的开发者，他在Sun工作时曾参与了大量的Solaris性能优化项目，是这个星球上最懂性能优化的工程 师之一。</p>
+<p>Sun开放了OpenSolaris，本以为Solaris那些闪耀的技术会对社区产生深远的影响。不曾想好景不长，在被 Oracle收购之后，Sun改变了对待社区的态度，不再支持OpenSolaris项目了。然而，很多Solaris的团队成员并不接受这种安排，继续 维护了一个叫做Illumos的项目，使得开源的Solaris内核得以继续维护。</p>
+<p>好在Sun当时已开放了好多代码，基础已相当不错。我认为有点可惜的是，Sun当时的编译器体系并没有开放出来，其中的编译器、优化器、性能分析器和调试器都是业界一流水准的作品。但做人要厚道，不能贪求太多，让我们着眼于已开放的那一部分吧。</p>
+<p>Sun这家公司，你说它有先见之明也好，说它过于超前也好。以当今云计算大潮的视角来看，能看准这些方向的公司实在是太有眼光了，主要体现为ZFS彪悍的文件系 统（其实说它是文件系统本身就是对ZFS的一种侮辱，它还有卷管理）、Zone操作系统层的虚拟化技术、Crossbow网络虚拟化组件以及DTrace 超级调试工具。甚至有Solaris忠粉说，Linux的Btrfs、LXC、Open vSwitch、SystemTap就是对Solaris上述技术的山寨。山寨与否可能无从考证，看来大家对技术趋势看法比较一致。我认为，这些技术也是 云计算技术拆解的一个缩影。</p>
+<p>Joyent认为，Solaris这些特性简直就是为其IaaS而打造的，因此坚定地将方向锁定在这个看似不怎 么闪耀的系统上。它不但招聘了大量原来Sun公司的工程师，还积极投身到Illumos这个项目上。但仅有Illumos远远不够，它只维护了一个非常核 心的内核，距离发行版还有一段距离。Joyent并没有采用已有的基于Illumos的发行版，比如OpenIndian，而是根据自己的需要做了一个， 这就是SmartOS。要说SmartOS和别的发行版最明显的不同，那一定是KVM了。对，你看得没错。SmartOS将Linux的KVM移植到了 Solaris上。我不知道Joyent这些天才工程师是如何做到的，但他们的确做到了。</p>
+<p>综合来看，SmartOS是一个非常有特点的发行版。SmartOS的定位就是做Hypervisor，甚至这个发行版不提供安装功能，只提供一个LiveCD镜像。开始时，我对此也非常不理解，后来慢慢发现这也是一个非常不错的想法。</p>
+<p>这样无论使用网络启动，还是USB引导，只要使用的LiveCD是一样的，起来的系统就是完全一样的。这个看上去没什么，但如果大家管理的机器数目众多，很 少有人能保证系统是完全一样的。作为Hypervisor的所有软件都在SmartOS内部提供了，结果给各种软件版本依赖性造成了冲突，也就是说升级新 版本失败了，大不了换回老的镜像，不会出现“升级崩溃”现象。当然，这种LiveCD的设计相对来讲只能算雕虫小技，远不能与其最核心的四大亮点相比，即 KVM、Zones、DTrace和ZFS。</p>
+<p><strong>KVM</strong></p>
+<p>KVM是开源虚拟化的一面旗帜。但提到KVM，就不得不提到它的对手——Xen。似乎在相当长的一段时间，选择Xen还是KVM引起了很大的争议。Xen的势力非常强大，现在比较彪悍的虚拟化系统都有Xen的身影，比如 Amazon Web Services、Rackspace、Linode都是基于Xen的。</p>
+<p>Xen无疑曾经是一个非常成功的平台虚拟化 方案。其实Sun的Solaris本来就是支持Xen的，可是Joyent的这些爱好技术的工程师认为KVM更有前途（我也这么认为），于是把KVM移植到了Solaris上。毫无疑问，KVM会在Linux下前途无量，因为它已进入了Linux内核主线。Xen虽然提交了一些东西给内核，但远不是内核的 一部分。</p>
+<p>很多人都不看好这个把KVM移植到Solaris上的做法。因为大家都知道KVM和Xen最大的不同就在于两点：第一，要求使用硬 件的虚拟化支持；第二，尽可能地使用Linux内核已有的特性，而不是另起炉灶。不知道是Joyent的工程师水平太高，还是KVM设计得足够精良很容易移植，反正大家看到Joyent对自己的移植成果还是非常满意的。</p>
+<p>KVM并不是Joyent的重头戏，但的确是个非常重要的部分。因为有了 KVM，就可以兼容以前的各种既有系统，用户可以不用迁移到SmartOS上，仍然使用原来的系统。这大大降低了用户迁移的顾虑。但说白了，Joyent 要做的IaaS不是类似于AWS的那种，而是一种更容易构建PaaS或者其他服务的IaaS，所以说KVM很精彩，但不是重点。那么重点是什么呢？</p>
+<p><strong>Zones</strong></p>
+<p>PaaS也好，IaaS也好，肯定是要为很多用户服务的，比较学术的说法叫多租户系统。由于各租户之间的数据和资源是完全隔离的，所以就需要系统提供各个层面的隔离。</p>
+<p>举个例子来说，我们要提供一个为很多人服务的数据库，用户之间是绝对不能泄露数据的，这是数据的隔离。但这只是用户看到的一个表面。试想，如果一个用户缺乏数据库的使用经验，写了一条不恰当的查询语句，导致CPU的占用率非常高，可能会影响其他用户的正常使用。</p>
+<p>如果这种情况发生在没有CPU限制的系统内，一般的解决方案需要修改数据库的源码，增加监视或者评估模块，来限制对于某种资源的消耗。但这种方案的成本很 高，需要对应用场景非常了解，不具有普遍性。要是临时换了一种数据库，原来做的工作就要付诸东流了。另外，这种技术还需要对可能发生问题的原因有定论。但 提供云计算就像提供电能一样，几乎不太可能知道用户最终如何使用电能。因此，用总结规律的方式来处理这类资源消耗问题并不是一个好方法。这不仅要求考虑到 所有可能发生的情况，而且实现起来也非常复杂，违背了KISS原则。</p>
+<p>能否只在资源层面做出一些限制，比如分配给一个用户固定的CPU占用，无论用户以何种方式操作，都不能逾越这个限制，用户好像被限制在一台资源有限的机器中一样？</p>
+<p>Zones 是Solaris下操作系统层面的虚拟化方案，也称作容器技术。平台虚拟化的方案对很多场景并不经济，如前面所说的提供数据库服务的方案。但为每个用户提 供一个操作系统，然后在里面安装一个数据库，显然又有点太浪费了。容器有效地将由单个操作系统管理的资源划分到孤立的组中，以更好地在孤立的组间平衡有冲 突的资源使用需求。与虚拟化相比，这样既不需要指令级模拟，也不需要即时编译。容器可以在核心CPU本地运行指令，而不需要任何专门的解释机制。此外，也 避免了准虚拟化（Paravirtualization）和系统调用替换过程中的复杂性。</p>
+<p>这里也体现出了多租户和多用户的一个非常不同的地方，多个租户使用不同的实例，也就是说kill了这个租户的数据库进程，别的租户是完全感觉不到的。本质上说，依赖修改应用源码的方式还是属于多用户的套路。这样会有很多问题，后续将讨论这个问题。</p>
+<p>这里多说两句，用Linux的同学也不用羡慕，可以尝试LXC。LXC在Cgroup基础上又向前发展了一步，成为比较系统的容器。很多国内大的互联网公司最近都纷纷拥抱了容器技术，而不是IaaS，究其原因还是容器技术非常适合其应用场景，更加经济高效。</p>
+<p>互联网企业中拥有大量的服务器集群，但一般来讲，系统管理非常规范，不会有太多不同的系统，因此不太需要KVM这种非常重型的虚拟化方案。他们要解决的问题 是如何能最经济地减少CPU的空闲。这也是Joyent虚拟化方案的主要应用场景，它希望的是客户在它的IaaS上构建某种服务。客户在意的是弹性和隔 离，Joyent在意的是成本。</p>
+<p>这与大部分互联网企业的内部需求非常相似。在这种场景下真的没有必要使用KVM等重型方案。给大家提个醒，OpenStack也是支持LXC作为Hypervisor的，不过支持得还不是很好。</p>
+<p>要强调的一点是，这几种技术都有个美中不足之处，那就是不支持热迁移。当然，既然提到了这一点肯定就是有人实现了热迁移，那就是OpenVZ。OpenVZ 也算是老牌的容器项目了，说句比较公道的话，目前OpenVZ还是要比LXC成熟、好用些，但它的命运有点儿像Xen，终究不是嫡系。虽然目前在欧美 VPS市场占据绝对主导地位，但最终被LXC取代也是可以预见的。其他各路人马也正在加班加点实现热迁移这一非常重要的特性，且看谁能夺冠就是了。</p>
+<p><strong>DTrace</strong></p>
+<p>对PaaS平台来说，一个超级调试工具是不可或缺的。DTrace可以实现动态跟踪服务，解决开发者所关心的各种问题。我们其实可以用标签来描述 DTrace：可在生产环境下跟踪系统的方方面面（功能和性能）——能跟踪用户的服务、开销十分小、支持容器模型。目前，操作系统和软件已经非常复杂，尤 其是虚拟化以后就更加复杂了。系统内部究竟发生了什么，对于用户来讲似乎根本是无从知道的。而摆在PaaS开发者面前的问题则是，不但要清楚地知道自己的 服务瓶颈在哪里，还要知道使用PaaS的应用有哪些问题，以便对用户提供良好的支持。</p>
+<p>DTrace这种工具，让系统再一次透明地展现在我们 面前，让我们能够清楚地知道整个系统各个层面的所有信息。这些信息对于调试那种原来我们最为头痛的瞬态，以及几乎无法复现的线上Bug起着至关重要的作 用。DTrace非常彻底地解决了一个核心问题：系统到底在什么时刻做了什么。这对于解决有些不确定因素的系统是特别有帮助的，比如不可人工干预的垃圾收 集调度器。</p>
+<p>相应的，Linux也有其超级调试工具——SystemTap。这种工具目前得到了非常多开源项目的大力支持。10月 SystemTap迎来了它的2.0版本，也算是标志性事件。不过SystemTap真的是晚了好几年啊。DTrace为Sun的各种系统的成熟与稳定都 立下了汗马功劳，包括最著名的ZFS和JVM。ZFS也不是一诞生就天下无敌的，它也遇到过类似今天EXT4这些焦头烂额的问题。关键是这些问题解决得 早。要是SystemTap再早3年，没准Linux的文件系统能成熟不少呢。</p>
+<p>我这里也建议很多与Linux系统打交道比较多的同行，尽快 投入SystemTap的怀抱，早早放弃落后腐朽的调试方式。SystemTap前途光明，毕竟它是Red Hat的亲儿子，Linux阵营中只要是Red Hat亲儿子的一般都能成为高富帅，何况还有IBM的支持，也算是有个白富美的妈。</p>
+<p><strong>ZFS</strong></p>
+<p>说ZFS是目前最彪悍的文件系统恐怕不会有多少人反对。它不但将传统的文件系统和卷管理合二为一，还提供了诸多对云计算特别有帮助的特性，比如快照和克隆、数据校验、数据压缩、数据去重。</p>
+<p>快照可以快速且一致地保存数据的状态，可以随时回滚数据，也可以使服务回滚到任何想要的时刻。快照开销非常小，这使得用快照来做常规备份成为一种可能。克隆 则可以在短时间内生成大量服务实例，对那些使用PaaS的用户，有什么比等待应用启动更让人着急的呢。因此必须一个瞬间就为用户提供所需要的租户空间。</p>
+<p>将PaaS提供给用户后，其上会有海量的应用，这些应用会引用很多第三方库，而这其中有很多库是被重复使用的。比如很多展示类的网站都使用了同一个缩放图片 的库。这时要是文件系统能将这些重复自动合并，则可以大大降低存储的成本。包括上面的大量克隆也是需要强有力的数据去重的。至于数据的压缩和校验，也不失 为一种降低数据存储成本的途径。云时代存储价格低廉才有竞争力嘛！</p>
+<p><span style="color:#99cc00"><strong>小结</strong></span></p>
+<p>SmartOS 没有像样的管理工具，没有可供调用的API，仅凭这两点我们就可以判定它不是一个合格的IaaS。因为云计算最重要的可扩展性并没有体现出来，所以 SmartOS肯定不是Joyent云的全部。我们赞叹SmartOS各项精巧设计的同时，也为缺失一部分精彩内容而感到有点儿遗憾。不过还好，下期我们 可以解剖一个PaaS的源码，它的名字叫haibu。</p>
+<p><span style="color:#888888"><strong>作者程显峰，AdMaster首席布道师，关注云计算对软件研发过程的影响，积极投身开源社区，译有《MongoDB权威指南》等。 新浪微博：<a href="http://weibo.com/marscheng">@程显峰-Mars</a></strong></span></p>
+<p> </p>
+<p><a href="http://www.programmer.com.cn/13920/"><strong>本文选自《程序员》杂志2012年11期，未经允许不得转载。如需转载请联系 market@csdn.net</strong></a></p>
+<p><strong><a href="http://dingyue.programmer.com.cn/">《程序员》2012年杂志订阅送好礼活动火热进行中</a></strong></p>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

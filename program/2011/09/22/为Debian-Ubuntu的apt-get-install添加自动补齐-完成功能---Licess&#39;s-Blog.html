@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>为Debian/Ubuntu的apt-get install添加自动补齐/完成功能 - Licess&#39;s Blog</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>为Debian/Ubuntu的apt-get install添加自动补齐/完成功能 - Licess&#39;s Blog</h2>
+<p class="meta">22 Sep 2011</p>
+
+<div class="post">
+<h2>为Debian/Ubuntu的apt-get install添加自动补齐/完成功能 - Licess&#39;s Blog</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-09-22 12:53:37</h3>
+
+<h3>original <a href="http://blog.licess.org/debianubuntu-apt-get-install-autocompletion/">http://blog.licess.org/debianubuntu-apt-get-install-autocompletion/</a></h3>
+
+<h1><a href="http://blog.licess.org/debianubuntu-apt-get-install-autocompletion/" rel="bookmark" title="Permalink to 《为Debian/Ubuntu的apt-get install添加自动补齐/完成功能》">为Debian/Ubuntu的apt-get install添加自动补齐/完成功能</a></h1>
+
+
+<pre><code> &lt;p&gt;
+                &lt;span&gt;2011年05月20日 13:54 | 作者：&lt;a href="http://blog.licess.org/author/licess/" title="由 licess 发布" rel="author"&gt;licess&lt;/a&gt;&lt;/span&gt;
+            &lt;/p&gt;
+
+&lt;div&gt;
+    &lt;p&gt;Debian/Ubuntu的apt-get太常用了，不过偶尔可能也会碰到不太熟悉，想不起来的包的名称，除了去&lt;a href="http://www.debian.org/distrib/packages"&gt;debian packages&lt;/a&gt;去查找，另外的方法就是给Debian/Ubuntu添加自动补齐/完成功能。方法如下：&lt;/p&gt;
+</code></pre>
+
+<p><strong>1、安装bash-completion</strong></p>
+
+
+<p>apt-get install bash-completion</p>
+
+
+<p><strong>2、编辑~/.bashrc 文件</strong></p>
+
+
+<p>添加如下内容：<span></span></p>
+
+
+<p>if [ -f /etc/bash_completion ]; then<br>
+. /etc/bash_completion<br>
+fi</p>
+
+
+<p><strong>3、使其生效</strong></p>
+
+
+<p>退出SSH，重新登录。</p>
+
+
+<p>apt-get install build-e  然后TAB一下，自动补齐了吧。</p>
+
+
+<p>好久不写东西了，都荒草丛生了。</p>
+
+
+<p></div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

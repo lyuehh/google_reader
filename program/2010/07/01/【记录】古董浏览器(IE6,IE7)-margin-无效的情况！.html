@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【记录】古董浏览器(IE6,IE7) margin 无效的情况！</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【记录】古董浏览器(IE6,IE7) margin 无效的情况！</h2>
+<p class="meta">01 Jul 2010</p>
+
+<div class="post">
+<h2>【记录】古董浏览器(IE6,IE7) margin 无效的情况！</h2>
+
+<h3>by jelle</h3>
+
+<h3>at 2010-07-01 11:59:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/idche/archive/2010/07/01/1769005.html">http://www.cnblogs.com/idche/archive/2010/07/01/1769005.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/idche/"><img src="http://pic.cnblogs.com/face/u85181.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/idche/">jelle</a> 发表于 2010-07-01 11:59 <a href="http://www.cnblogs.com/idche/archive/2010/07/01/1769005.html">原文链接</a> 阅读: 860 评论: 10</p>
+
+
+<p>　　margin 失效，楼主开玩笑的吧！</p>
+
+
+<p>　　前几天做一个页面的时候遇到了这个问题。我设置div的margin-top IE6下居然无效；后来搞了好半天没弄出来。</p>
+
+
+<p>只能设置父元素的padding-top;来达到效果。看下面的演示代码；</p>
+
+
+<p>　　今天有时间，所以特意做了一个测试。</p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#0000ff">　　　　&lt;</span><span style="color:#800000">style </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/css"</span><span style="color:#0000ff">&gt;</span><span style="background-color:#f5f5f5;color:#800000"><br>            .test-1,.test-2</span><span style="background-color:#f5f5f5;color:#000000">{</span><span style="background-color:#f5f5f5;color:#ff0000">border</span><span style="background-color:#f5f5f5;color:#000000">:</span><span style="background-color:#f5f5f5;color:#0000ff">5px solid #F00</span><span style="background-color:#f5f5f5;color:#000000">;</span><span style="background-color:#f5f5f5;color:#000000">}</span><span style="background-color:#f5f5f5;color:#800000"><br>            .test-1</span><span style="background-color:#f5f5f5;color:#000000">{</span><span style="background-color:#f5f5f5;color:#ff0000">border-color</span><span style="background-color:#f5f5f5;color:#000000">:</span><span style="background-color:#f5f5f5;color:#0000ff">#000</span><span style="background-color:#f5f5f5;color:#000000">;</span><span style="background-color:#f5f5f5;color:#000000">}</span></div><div><span style="background-color:#f5f5f5;color:#000000"> </span><span style="background-color:#f5f5f5;color:#008000">　　　　　　　/*</span><span style="background-color:#f5f5f5;color:#008000">width:100%; height:auto !important;height:1%; zoom:1;</span><span style="background-color:#f5f5f5;color:#008000">*/</span><span style="background-color:#f5f5f5;color:#800000"><br>            .test-2</span><span style="background-color:#f5f5f5;color:#000000">{</span><span style="background-color:#f5f5f5;color:#ff0000">margin</span><span style="background-color:#f5f5f5;color:#000000">:</span><span style="background-color:#f5f5f5;color:#0000ff">10px</span><span style="background-color:#f5f5f5;color:#000000">;</span><span style="background-color:#f5f5f5;color:#ff0000">height</span><span style="background-color:#f5f5f5;color:#000000">:</span><span style="background-color:#f5f5f5;color:#0000ff">50px</span><span style="background-color:#f5f5f5;color:#000000">;</span><span style="background-color:#f5f5f5;color:#ff0000">width</span><span style="background-color:#f5f5f5;color:#000000">:</span><span style="background-color:#f5f5f5;color:#0000ff">500px</span><span style="background-color:#f5f5f5;color:#000000">;</span><span style="background-color:#f5f5f5;color:#000000">}</span><span style="background-color:#f5f5f5;color:#800000"><br>        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">style</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="test-1"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>            </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">div </span><span style="color:#ff0000">class</span><span style="color:#0000ff">="test-2"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>                test-2<br>            </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>        </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">div</span><span style="color:#0000ff">&gt;</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/idche/245996/r_%e6%9c%aa%e6%a0%87%e9%a2%98-2.jpg" width="365" height="150" alt="IE8,FF,chrome 正常"></p>
+
+
+<p><img src="http://images.cnblogs.com/cnblogs_com/idche/245996/r_%e6%9c%aa%e6%a0%87%e9%a2%98-3.jpg" width="330" height="115" alt="IE6,IE7表现怪异"></p>
+
+
+<p>　　呵呵，我标题没错吧。果然IE6,IE7的margin:10px; 失效了。</p>
+
+
+<p> </p>
+
+
+<p><strong>解决办法</strong></p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#000000">.test-1{border-color:#000;width:100%; height:auto !important;height:1%; zoom:1;}</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p>使用：width:100%;或者 height:auto !important;height:1%; 或者zoom:1; 都可以解决上面的问题。（3选1，不要全部写进去。）</p>
+
+
+<p>根据自己的具体情况来选择一种即可！</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>问题根源</strong></p>
+
+
+<p>　　当然知道了解决办法还不够，我们必须知道什么情况会引发上面的BUG，zoom:1;这东西貌似经常使用。于是我去查询了一下关于zoom的一些信息。</p>
+
+
+<p>
+
+
+
+
+
+发现他会触发IE的 <a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a> ; <a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a>来解决一些常见的IE BUG；（建议不太明白 <a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a> 的同学点击连接去读一下。<a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a> 不神秘。）</p>
+
+
+<p>　　<strong>在InternetExplorer中，一个元素要么自己对自身的内容进行计算大小和组织，要么依赖于父元素来计算尺寸和组织内容</strong></p>
+
+
+<p>　　上面这句加粗的话很重要哦。</p>
+
+
+<p>　　上面的例子 test-1 没有触发  <a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a> 他不能负责对自己和可能的子孙元素进行尺寸计算和定位；所以子元素的margin失效。</p>
+
+
+<p>　　当然 激活 <a href="http://baike.baidu.com/view/2945869.htm?fr=ala0_1">haslayout</a> 的方式很多 zoom:1; 其实设置 widht height 也可以激活。所以当设置了 这两个值。子元素定位也正确了。</p>
+
+
+<p> </p>
+
+
+<p>以上仅个人根据网上的资料得到的结论，如果有错误，还请高人指点。</p>
+
+
+<p>罪恶的IE 浏览器何时退出舞台。</p>
+
+
+<p><img src="http://www.cnblogs.com/idche/aggbug/1769005.html?type=1" width="1" height="1" alt=""><p>评论: 10　<a href="http://www.cnblogs.com/idche/archive/2010/07/01/1769005.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/idche/archive/2010/07/01/1769005.html#commentform">发表评论</a></p><p><a href="http://mpd.cnblogs.com/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67408/">Google 香港主页由于 “技术问题” 无法向大陆提供搜索建议</a><span style="color:gray">(2010-07-01 22:15)</span><br>· <a href="http://news.cnblogs.com/n/67406/">是不是文言文有望实现自动翻译呢？</a><span style="color:gray">(2010-07-01 22:01)</span><br>· <a href="http://news.cnblogs.com/n/67407/">移动互联网经济笔记之五： 挺进纵深</a><span style="color:gray">(2010-07-01 21:58)</span><br>· <a href="http://news.cnblogs.com/n/67405/">苹果公司该不该赚高利？</a><span style="color:gray">(2010-07-01 21:46)</span><br>· <a href="http://news.cnblogs.com/n/67404/">12款非同寻常但默默无闻的Linux发行版</a><span style="color:gray">(2010-07-01 21:41)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/wayfarer/archive/2010/06/30/1768694.html">领域驱动设计实践</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

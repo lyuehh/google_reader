@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>前端之美——GitHub前端工具链整理汇总</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>前端之美——GitHub前端工具链整理汇总</h2>
+<p class="meta">06 Mar 2013</p>
+
+<div class="post">
+<h2>前端之美——GitHub前端工具链整理汇总</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-03-05 16:00:00</h3>
+
+<h3>original <a href="http://www.soimort.org/posts/143">http://www.soimort.org/posts/143</a></h3>
+
+<p>给GitHub-Linguist添加<a href="https://github.com/github/linguist/pull/408">Literate CoffeeScript支持</a>的时候稍稍总结了一下这个问题，即GitHub是怎样在前端渲染它的Markdown和处理代码高亮的。</p>
+
+
+
+
+<p>大体上似乎是这个流程，</p>
+
+
+<div><pre><code><span>输入</span><span>:</span> <span>代码文本</span>
+<span>GitHub</span><span>-</span><span>Linguist</span> <span>判断代码语言</span>
+<span>case</span> <span>代码语言</span> <span>of</span>
+    <span>程序语言</span> <span>=&gt;</span> <span>Pygments</span> <span>全部代码高亮处理</span>
+  <span>|</span> <span>文本标记语言</span> <span>=&gt;</span>
+        <span>GitHub</span><span>-</span><span>Markup</span> <span>渲染框架</span>
+            <span>RedCarpet</span> <span>/</span> <span>RedCloth</span> <span>/</span> <span>...</span> <span>文本渲染</span>
+            <span>Pygments</span> <span>代码块高亮处理</span>
+        <span>end</span>
+<span>输出</span><span>:</span> <span>HTML</span><span>文本</span>
+</code></pre></div>
+
+
+<p>GitHub在前端用到的一系列工具基本上都是开源的。现简单地整理如下。</p>
+
+
+
+
+<hr>
+
+
+
+
+<h2>1. HTML / CSS / JavaScript</h2>
+
+
+
+
+<h3>1.1. HTML模板</h3>
+
+
+
+
+<p>GitHub的标记 &amp; 模板风格指南：<a href="https://github.com/styleguide/templates">https://github.com/styleguide/templates</a></p>
+
+
+
+
+<h3>1.2. 样式 &amp; CSS</h3>
+
+
+
+
+<p>GitHub使用的CSS替代品是</p>
+
+
+
+
+<ul>
+<li><a href="http://sass-lang.com/">SCSS</a>：<a href="https://github.com/nex3/sass">https://github.com/nex3/sass</a></li>
+</ul>
+
+
+
+
+<p>采用文档框架</p>
+
+
+
+
+<ul>
+<li><a href="http://warpspire.com/kss/">KSS</a>：<a href="https://github.com/kneath/kss">https://github.com/kneath/kss</a></li>
+</ul>
+
+
+
+
+<p>GitHub的样式 &amp; CSS风格指南：<a href="https://github.com/styleguide/css">https://github.com/styleguide/css</a></p>
+
+
+
+
+<h3>1.3. 行为 &amp; JavaScript</h3>
+
+
+
+
+<p>GitHub使用的JavaScript替代品是</p>
+
+
+
+
+<ul>
+<li><a href="http://coffeescript.org/">CoffeeScript</a>：<a href="https://github.com/jashkenas/coffee-script">https://github.com/jashkenas/coffee-script</a></li>
+</ul>
+
+
+
+
+<p>GitHub的行为 &amp; JavaScript风格指南：<a href="https://github.com/styleguide/javascript">https://github.com/styleguide/javascript</a></p>
+
+
+
+
+<h2>2. GitHub Flavored Markdown和渲染引擎</h2>
+
+
+
+
+<p>GitHub使用的Markdown是对原标准的一个扩展集：</p>
+
+
+
+
+<ul>
+<li><a href="https://help.github.com/articles/github-flavored-markdown">GitHub Flavored Markdown</a>: <a href="https://github.com/github/github-flavored-markdown">https://github.com/github/github-flavored-markdown</a></li>
+</ul>
+
+
+
+
+<p>支持GitHub Flavored Markdown的渲染引擎：</p>
+
+
+
+
+<ul>
+<li><strong>RedCarpet</strong>：<a href="https://github.com/vmg/redcarpet">https://github.com/vmg/redcarpet</a></li>
+</ul>
+
+
+
+
+<p>RedCarpet的核心库是用C实现的，叫做Sundown（RedCarpet是Sundown的Ruby wrapper）：</p>
+
+
+
+
+<ul>
+<li><strong>Sundown</strong>：<a href="https://github.com/vmg/sundown">https://github.com/vmg/sundown</a></li>
+</ul>
+
+
+
+
+<p><a href="https://github.com/vmg/sundown/commit/37728fb2d7137ff7c37d0a474cb827a8d6d846d8">Sundown项目已经中止开发</a>。GitHub正在计划与Reddit、StackOverflow、Meteor协作开发一个统一的Markdown标准，以及一个相应的轻量级、快速的、高安全性的渲染引擎。发布时间预期为去年年底（或者今年年底？）。关于该替代品的开发状况，目前尚无可靠消息得以确认。</p>
+
+
+
+
+<h2>3. 标记语言渲染框架</h2>
+
+
+
+
+<p>GitHub用来渲染各种文本标记语言的框架（支持多种主流的轻量级标记语言，如Markdown、Textile、RDoc、Org mode、reStructuredText、AsciiDoc等，依赖于具体的引擎来完成。例如对Markdown的渲染依赖于<strong>RedCarpet</strong>）：</p>
+
+
+
+
+<ul>
+<li><strong>GitHub-Markup</strong>：<a href="https://github.com/github/markup">https://github.com/github/markup</a></li>
+</ul>
+
+
+
+
+<h2>4. 代码高亮渲染</h2>
+
+
+
+
+<p>基于Python的代码高亮工具<a href="http://pygments.org/">Pygments</a>的一个Ruby wrapper：</p>
+
+
+
+
+<ul>
+<li><strong>Pygments.rb</strong>：<a href="https://github.com/tmm1/pygments.rb">https://github.com/tmm1/pygments.rb</a></li>
+</ul>
+
+
+
+
+<p>取代了原来的<strong>Albino</strong>: <a href="https://github.com/github/albino">https://github.com/github/albino</a></p>
+
+
+
+
+<h2>5. 语言识别</h2>
+
+
+
+
+<p>GitHub用它来识别代码库中的语言（属于何种程序语言 或 文本标记语言）：</p>
+
+
+
+
+<ul>
+<li><strong>GitHub-Linguist</strong>：<a href="https://github.com/github/linguist">https://github.com/github/linguist</a></li>
+</ul>
+
+
+
+
+<p>这个库也决定了GitHub的<a href="https://github.com/languages">Top Languages页面</a>中哪些编程语言将会被展示出来。</p>
+
+
+
+
+<p>对于程序语言，GitHub将调用<strong>Pygments.rb</strong>对代码进行高亮处理；</p>
+
+
+
+
+<p>对于文本标记语言，GitHub将把文件交由<strong>GitHub-Markup</strong>进行渲染。</p>
+
+
+
+
+<h2>6. 在线编辑器</h2>
+
+
+
+
+<p>在线代码编辑功能使用的是<a href="http://ace.ajax.org/">Ace（Ajax.org Cloud9 Editor）</a>。这是一个非GitHub项目：</p>
+
+
+
+
+<ul>
+<li><strong>Ace</strong>：<a href="https://github.com/ajaxorg/ace">https://github.com/ajaxorg/ace</a></li>
+</ul>
+
+
+
+
+<h2>7. 基于Git的Wiki框架</h2>
+
+
+
+
+<p>用于托管GitHub的项目Wiki：</p>
+
+
+
+
+<ul>
+<li><strong>Gollum</strong>：<a href="https://github.com/github/gollum">https://github.com/github/gollum</a></li>
+</ul>
+
+
+
+
+<h2>8. 数据可视化框架</h2>
+
+
+
+
+<p>用于渲染Contribution graphs / Network graphs等页面的可视化效果：</p>
+
+
+
+
+<ul>
+<li><a href="http://d3js.org/">D3</a>：<a href="https://github.com/github/d3">https://github.com/github/d3</a>
+（fork自<a href="https://github.com/mbostock/d3">mbostock/d3</a>）</li>
+</ul>
+
+
+
+
+<h2>9. GitHub Pages / 静态网站生成器</h2>
+
+
+
+
+<p>GitHub Pages托管服务使用的静态网站生成器：</p>
+
+
+
+
+<ul>
+<li><strong>Jekyll</strong>: <a href="https://github.com/mojombo/jekyll">https://github.com/mojombo/jekyll</a></li>
+</ul>
+
+
+
+
+<p>（Jekyll并非GitHub的官方项目，没有使用GitHub-Markup作为其渲染框架。在最近的版本中才开始支持使用RedCarpet作为其Markdown引擎。）</p>
+
+
+
+
+<h2>10. 绘文字 <img src="https://a248.e.akamai.net/assets.github.com/images/icons/emoji/metal.png" alt=""></h2>
+
+
+
+
+<p>GitHub官方指定绘文字表情（详细列表参见<a href="http://www.emoji-cheat-sheet.com/">http://www.emoji-cheat-sheet.com/</a>）：</p>
+
+
+
+
+<ul>
+<li><strong>Gemoji</strong>: <a href="https://github.com/github/gemoji">https://github.com/github/gemoji</a></li>
+</ul>
+
+
+
+
+<p>（这一套通用的绘文字同时也被Campfire和Trac等支持。）</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

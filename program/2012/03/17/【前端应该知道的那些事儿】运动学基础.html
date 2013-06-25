@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【前端应该知道的那些事儿】运动学基础</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【前端应该知道的那些事儿】运动学基础</h2>
+<p class="meta">17 Mar 2012</p>
+
+<div class="post">
+<h2>【前端应该知道的那些事儿】运动学基础</h2>
+
+<h3>by 岑安</h3>
+
+<h3>at 2012-03-16 20:41:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/hongru/archive/2012/03/16/2394332.html">http://www.cnblogs.com/hongru/archive/2012/03/16/2394332.html</a></h3>
+
+<p><span style="color:#008000">【写在前面的话：】</span><br><span style="color:#008000">前不久刚看到过一句话：说好的技术文章应该让读者感觉增加信心，而不是失去信心。</span><br><span style="color:#008000">有感于这句话是因为以前觉得发一些貌似高深的，看起来nb的东西才算一篇好博文，可是多少有点炫技的成分。可是后来越发觉想把一个看起来简单的问题说通透也着实不易。我希望今后的文章多少能带给更多的读者一些帮助吧。 这是我的目标之一。 </span></p>
+
+
+<p>web前端，确实算编码里面的挺特殊的一个职位，不仅仅要理性的编码，还要感性的接触UI，通常我都把这种工作叫做需要情商的码字工作者。</p>
+
+
+<p>要说前端有多难，我想会被很多做算法或者底层的同学所不齿。确实，前台的工作并不算难，尤其是web端的前台，有困难的部分，那也是少数。所以在互联网发展初期，都没有前端这个职位，就算后来有了前端这个职位，也曾被当作是门槛最低的IT类职位之一。很多同学学习前端相关的知识，初衷很简单，因为好学，包括当年的自己也是一样 : )</p>
+
+
+<p>当然，如今随着交互逻辑的不断复杂，用户体验的不断提升，外带很多后端的逻辑也都纷纷转到前端来实现。前端的工作者们开始有了一些价值。当然，你要担当的更多，必然需要会的更多。所以如今对于一个优秀的前台编码工作者来说，要求高了很多。</p>
+
+
+<p>但是同样，还是不能算难。因为哪怕前端们开始接触一些算法，一些数学物理的东西，但常用的，通常也仅限于初衷，高中的程度。所以神马高等数学，高等物理之类的。咱暂时还用不上，大家完全不用惧。</p>
+
+
+<p>那么，比如：</p>
+
+
+<p>【关于缓动】<br>我相信在DHTML时代，也就是所谓的动态 html 的时候，那时候javascript 脚本除了用来做一些表单验证和提交之外，开始干起让页面动起来的事情。最常见的莫过于什么幻灯片，轮播banner之类的。甚至在当时能够手写出一款好的，兼容的轮播插件成了一件非常niu的事儿。那么回想一下，我们最开始学习，尝试自己写一个轮播插件的时候，遇到的头疼的事儿，我想缓动应该算一个了吧。<br>好吧，咱们就先来说说它。 </p>
+
+
+<p>缓动难吗，不难，我们先说一个最简单的。所谓“缓动”，无非就是运动的越来越缓慢呗。那么怎么让一个物体运动的越来越缓慢呢。</p>
+
+
+<p>我们用的计时器，不管你是用setInterval也好，setTimeout也好，或者 requestAnimationFrame也好，思路都一样。反正把它想象成是单位时间重复调用某个函数就行。那就好，既然单位时间是一样，那么我们让单位时间内 物体运行的距离 越来越小不就成了“缓动”了吗。</p>
+
+
+<p>ok，咱们可以试试看：</p>
+
+
+<p>假如我们有一段固定的路程100米，然后让物体 每个单位时间里面运动的距离都是 它距离目的地剩余距离的1/10， 什么意思呢。 即物体最开始距离目的地100米，那么它第一个单位时间里朝目的地运动 100*1/10 ，即10米， 于是，第二个单位时间里，它距离目的地 就只有90米了，那么第二次运动 90*1/10 ，即9米，... 不断叠加下去，由于物体总是距离目的地越来越近，那么 它单位时间里运动的距离必然越来越小。 这不就达到了 我们缓动的目的的了么。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">(function () {<br>var moveDis = 0,<br>conEl = document.getElementById('container'),<br>maxDis = (conEl.offsetWidth-22) || (800-20), // 总距离<br>moveEl = document.getElementById('move');<br><br>function step () { <br>var nowLeft = parseInt(moveEl.style['left']),<br>leftDis = maxDis - nowLeft, // 获取距离目的地的距离<br>stepDis = Math.ceil(leftDis*.015); // 每次移动 剩余距离的 固定百分比。<br><br>nowLeft += stepDis; // 不断叠加<br>moveEl.style['left'] = nowLeft + 'px';<br><br>requestAnimFrame(step); // repeat<br>}<br><br>step();<br><br>})();<br></div>
+
+
+<p><a href="http://hongru.github.com/test/cnblogs/0313/1.html">Tween Demo 1</a></p>
+
+
+<p> 当然，这是最简单的模式，咱们接着往下看。</p>
+
+
+<p>那么，那些看起来高深的缓动公式是怎么来的呢？？</p>
+
+
+<p>其实也很简单，想想我们初中，高中学的数学吧， 二次函数，三角函数之类的。</p>
+
+
+<p>先看二次函数，也就是我们的抛物线：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/160412/2012031320314967.png" alt=""></p>
+
+
+<p>为什么我要说先看二次函数或者三角函数呢。他们的轨迹跟 缓动有什么关系？我们接着往下看：</p>
+
+
+<p>拿上面的那个最简单的demo举例，我们把 方块的运行距离s 和时间 t的运动关系 画出来，看会是什么样子的。</p>
+
+
+<p>看这个demo：<br> <a href="http://hongru.github.com/test/cnblogs/0313/2.html">Tween Demo 2</a></p>
+
+
+<p>这里面的缓动算法跟上面那个最简单的模式一模一样。我们把它的 t-s 路线图画出来，可以看出一点端倪了吧。没看出来的同学，把它旋转一下，想象成 x轴 时间， y轴位移。那么是不是就跟 我上面画那个二次函数 的左半部分 的形状很像。</p>
+
+
+<p>所以，到此为止，相信不难理解，为什么缓动的公式通常和二次函数或者三角函数有关，直观一点的话说，就是在某一个区间内 位移的变化率 是随着时间递减的。 那么这种 轨迹都可以用作 缓动公式。</p>
+
+
+<p>那么，</p>
+
+
+<p>我们怎么用二次函数来做缓动呢？很简单，大家随着我的思路来。我们要设计一个缓动的接口api，假如是类似下面这样,我们先想一个最简单的方式。</p>
+
+
+<p>【已知】：一物体要从 0 运行到 400， 运行时间为1秒（1000ms）。<br>那么我们怎么为它来设计一个二次函数的缓动呢。我们先画一个示意图：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/160412/2012031612282462.png" alt=""></p>
+
+
+<p>那么求的 方程 的系数 a = 0.00005, b = -0.1;</p>
+
+
+<p>那么方程就出来了 s = 0.00005*t^2 - 0.1*t  (0 &lt; t &lt;=1000);</p>
+
+
+<p>剩下的就好办了，把每个时间点的位置渲染出来就好了。<br>例如，我们做个例子，设计一个api：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">// from 表示起始点<br>// to 表示到达位置<br>// t 表示运行总时间<br>tween(from, to, t)<br></div>
+
+
+<p>按照上面说的思路，其实就是已知运行距离（from-to）和运行时间t ，求一个二次函数公式而已。　　</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">// 二次函数 s = a*t^2 + b*t;<br>// 顶点： (to-from) = a*t^2 + b*t<br>// 右侧x轴交点： 0 = a*(2t)^2 + b*2t<br>// 得出 a = -(to-from)/t^2; b = 2(to-from)/t;<br><br>     var left = a*st*st + b*st;<br>     o.style['left'] = from + left + 'px';<br></div>
+
+
+<p>看demo：<br>　 <a href="http://hongru.github.com/test/cnblogs/0313/3.html">Tween Demo 3</a> 　(demo里面由于用的普通的dom生成的点图，会占内存，请不要测试过多次 ^^).</p>
+
+
+<p>原理其实就是那么简单，其实大家可以自己试一下，熟悉了之后完全可以封装出自己的好用的，易用的缓动方法。</p>
+
+
+<p>用这类的二次函数，还有一个很常见的场景，就是“重力系统”。</p>
+
+
+<p>我们知道，如果忽略所谓的空气阻力和一些外界干扰因素，重力系统其实就完全可以简化成 二次函数（抛物线）问题。</p>
+
+
+<p>比如我们做个小游戏，系统有固定的向下的重力 g ,那么由用户操作的主角 在像上跳的过程中，就完全可以按 上面说的方式来考虑。</p>
+
+
+<p>基本思路上面都说了，这次我们换个思路。都说数学和物理是相通的，那么这次已知 在一个重力系统中，跳起初速度和重力大小。那么假设一个物体跳起该怎么运动呢？</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">S = v0*t + a*t^2<br>v0 = a*t</div>
+
+
+<p>这两个应该是初中的物理公式吧。已知初速度v0 和加速度 a ，求位移还不简单。<br>其他的我就不多说了，看一个简单的demo吧：<br><a href="http://hongru.github.com/test/cnblogs/0313/4.html">弹跳Demo</a>　　</p>
+
+
+<p> </p>
+
+
+<p>看完了【二次函数】，咱们再看看【三角函数】，其实在我们常用的特效中，三角函数能做的事情比二次函数多很多。但是今天就只讲跟【缓动】相关的。</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/160412/2012031618105440.png" alt=""></p>
+
+
+<p> 前面说了，凡是大家看到类似这种“山坡”形状的图，基本都可以做成类似的缓动。那么我们取sin函数的前 PI/2 部分，可以看出他也完全满足所谓的 缓动的图形条件。</p>
+
+
+<p>而且，基于sin函数做的缓动公式 相对于二次函数而言，思路更简单。因为更容易得出 位移相对时间的公式S-T：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">/**<br> 我们假设 每一帧 间隔时间为 dt， 那么在这个dt时间内 运动的距离为ds<br>那么，假设一个物体 从 from 移动到 to 所花的时间为t， 则容易得出 在这个时间区间内用sin公式得到 每个dt的位移公式ds<br>*/<br>function tween (from, to, t) {<br>    // sin函数; ds = (to-from)*Math.sin(Math.PI*dt/(2*t));<br>}<br></div>
+
+
+<p>剩下的工作，就是把计算出来的当前位置渲染到页面即可。我们这里还是以类似的例子为例：<br>　 <a href="http://hongru.github.com/test/cnblogs/0313/5.html">sin 缓动 demo</a> 　</p>
+
+
+<p> </p>
+
+
+<p><span style="color:#008000">【写在后面的话】</span><br><span style="color:#008000">不知不觉也写了这么多了，所谓“会者不难”，本文说到底其实涉及的技术技巧其实并不多，我花这么大篇幅来说也是希望能给对运动学还不甚了解的同学一点帮助吧。</span><br><span style="color:#008000">我希望我能把简单的东西说明白，至于有没有达到这个目的我也不得而知。</span></p>
+
+
+<p><span style="color:#008000">其实在前端的工作里，还有一些常用的数学和物理知识，但是都不难。说起来都很简单。比如前一阵的mac QQ浏览器的logo 周围的闪动旋转的星星。就是用了简单的椭圆公式。</span><br>http://hongru.github.com/test/qqbrowser/index.html </p>
+
+
+<p><img src="http://www.cnblogs.com/hongru/aggbug/2394332.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/hongru/archive/2012/03/16/2394332.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

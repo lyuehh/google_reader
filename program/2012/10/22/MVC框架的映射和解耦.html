@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>MVC框架的映射和解耦</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>MVC框架的映射和解耦</h2>
+<p class="meta">22 Oct 2012</p>
+
+<div class="post">
+<h2>MVC框架的映射和解耦</h2>
+
+<h3>by 四火</h3>
+
+<h3>at 2012-10-21 21:18:04</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8434.html">http://www.udpwork.com/item/8434.html</a></h3>
+
+<p><strong>文章系本人原创，转载请保持完整性并注明出自<a href="http://www.raychase.net/850">《四火的唠叨》</a></strong>
+</p>
+
+
+<p><a href="http://www.raychase.net/wp-content/uploads/2012/10/mvc.jpg"><img src="http://www.raychase.net/wp-content/uploads/2012/10/mvc_thumb.jpg" alt="MVC框架的映射和解耦"></a>最近在写一个业务上用到的框架，回想起接触过的一些MVC框架，尤其是主要贡献在后端表现层上的那些，它们之间有太多的相似，在不断解耦的过程中，层数和模块数也越来越多，需要不断引入层与层之间的映射逻辑将不同层次之间关联起来，我们不妨来查看一下这个过程，能否寻找一些MVC框架的共性和启示。</p>
+
+
+<p><strong>MVC 1到MVC 2模型的进化</strong>
+</p>
+
+
+<p>这个话题有点老。MVC 1在桌面程序中应用较多，业务逻辑当然放在Model里面，Controller负责将用户的请求数据传递到Model去，之后就放手不管了，让View通过观察者模式不断获知Model的最新变化（可以是Model变化后通知View，也可以是View自己来获取）。这个模式看起来很简单，不过很容易发现一个严重的问题，View必须对Model了如指掌，要不然怎么观察它呢。这实在是一件不甚合理的事情。</p>
+
+
+<p><a href="http://www.raychase.net/wp-content/uploads/2012/10/image.png"><img src="http://www.raychase.net/wp-content/uploads/2012/10/image_thumb.png" alt="MVC框架的映射和解耦"></a></p>
+
+
+<p>MVC 2则解开了Model和View的耦合，Controller变成了中介者一样的角色，View接收了用户输入，Controller把处理请求分派给Model，处理完后，又把结果交回View来展现。不过，这样的代价是Controller变成了一个百事通，如果它要关心Model和View的具体实现，耦合的问题只是换了一件外衣而已。所以，需要对Controller进一步解耦。下面的话题，也是借由这一点展开的。</p>
+
+
+<p><a href="http://www.raychase.net/wp-content/uploads/2012/10/image1.png"><img src="http://www.raychase.net/wp-content/uploads/2012/10/image_thumb1.png" alt="MVC框架的映射和解耦"></a></p>
+
+
+<p>从这个改变就可以看出在解耦方面的进化，但是依然没有做足，后来ASP.NET又出了<a href="http://www.asp.net/mvc/mvc3">MVC 3</a>、<a href="http://www.asp.net/mvc/mvc4">MVC 4</a>，我没有去了解其中的变更。这只是关于解耦的一个前传，下面让我们回到正题，看看那些随着解耦的进一步进行，新产生的映射逻辑和配置。</p>
+
+
+<p><strong>URL Mapping</strong>
+</p>
+
+
+<p>也许最早会有人这样写代码：</p>
+
+
+<pre>if(&quot;/ServletTest/eg1&quot;.equals(request.getURI()))
+    xxx;
+else if(&quot;/ServletTest/eg2&quot;.equals(request.getURI()))
+    xxx;
+... ...</pre>
+
+
+<p>但是现在应该已经不会有人这样写了，印象中即便是最早只是用JSP+Servlet写程序的那一批程序员写网站应用的时候，URL和控制器入口的映射逻辑也已经被独立出来了，例如Tomcat的web.xml：</p>
+
+
+<pre>&lt;servlet&gt;
+    &lt;servlet-name&gt;Example&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;com.xxx.xxx.Example&lt;/servlet-class&gt;
+&lt;/servlet&gt;
+&lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;Example&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/example&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;</pre>
+
+
+<p>但是这样的配置匹配的表达式不够灵活（例如无法自定义匹配逻辑），而且配置过于冗长（通常来说，我是一个xml配置文件的痛恨者），于是现今的MVC框架都提供了一套自己的映射匹配逻辑，例如Struts2：</p>
+
+
+<pre>&lt;action name=&quot;example&quot; class=&quot;com.xxx.xxx.ExampleAction&quot;&gt;
+    &lt;result name=&quot;success&quot; type=&quot;dispatcher&quot;&gt;/success.jsp&lt;/result&gt;
+    &lt;result name=&quot;input&quot; ... /&gt;
+&lt;/action&gt;</pre>
+
+
+<p>还可以配置全局的跳转逻辑，传递参数等等，总之配置是灵活多了，可是每写一段控制器的逻辑，还是需要配置一段到XML文件中。这样的问题也是可以解决的，将变化点独立到Action里，配置文件中只写这个变化的参数，这样只需要一个配置就可以完成大部分跳转了。</p>
+
+
+<p>对于不同参数名称和参数个数变化的情况，上面的办法支持得又不好了，好在许多框架都提供了注解配置的办法，把URL映射的逻辑变成短短的注解：</p>
+
+
+<pre>@Results( { @Result(name = &quot;success&quot;, location = &quot;/success.jsp&quot;), @Result(name = &quot;error&quot;, location = &quot;/error.jsp&quot;) }) </pre>
+
+
+<p>可是这帮难伺候的程序员啊，还是嫌麻烦，这就需要利用CoC原则（规约优于配置，Convention over Configuration）。在Spring MVC中，声明了ControllerClassNameHandlerMapping以后，对于这样没有配置任何映射信息的方法：</p>
+
+
+<pre>@Controller
+public class ExampleController extends MultiActionController{
+
+    @RequestMapping
+    public void e1(...);
+}</pre>
+
+
+<p>类名叫做ExampleController，方法名叫做e1，因此在使用如下URI进行访问的时候，就自动mapping到这个example方法上：</p>
+
+
+<pre>/example/e1</pre>
+
+
+<p>好了，这总满足懒惰的程序员你了吧。</p>
+
+
+<p><strong>Data Binding</strong>
+</p>
+
+
+<p>这里Data Binding（数据绑定）指的是将用户请求提交上来的数据和领域模型绑定起来，即生成若干个携带数据的模型对象。</p>
+
+
+<p>自不必说，最原始的方式应该是类似这样的解决方法：</p>
+
+
+<pre>User user = new User();
+user.setName = (String)request.getParameter(&quot;name&quot;);
+user.setAge = (Integer)request.getParameter(&quot;age&quot;);
+... ...</pre>
+
+
+<p>这当然不会入程序员的法眼了，于是框架替你把参数绑定到一个数据集合的对象上，你获取起来就容易多了，比如在Grails框架中，可以这样写：</p>
+
+
+<pre>def example = {
+    def name = params.name;
+    def age = params.age;
+    ... ...
+}</pre>
+
+
+<p>或者干脆换成参数映射的配置文件，可是还是好啰嗦，于是“规约优于配置”又来了，以Struts2为例：</p>
+
+
+<pre>class UserAction{
+    private User user;
+    //get/set方法
+}</pre>
+
+
+<p>这种情况下，只要提交这样的请求：</p>
+
+
+<pre>/example/userAction?user.name=Jim&amp;user.age=18</pre>
+
+
+<p>这个name为Jim、age为18的User对象就自动被塞进这个Action去了。Spring MVC的情况类似，只不过粒度更小，参数注入的不是类Action实例的属性，而是Controller方法的参数——当然，思想是一样的。</p>
+
+
+<p><strong>视图指向</strong>
+</p>
+
+
+<p>你可能猜到我要说的内容了。程序员最原始的做法应该是类似这个样子的：</p>
+
+
+<pre>request.getRequestDispatcher(&quot;/common/success.jsp&quot;).forward(request, response);</pre>
+
+
+<p>之后进化成为配置文件配置的形式、注解配置的形式，有了前文的介绍，这实在是没什么特别的。值得一提的是，我用过一个框架，它对于URL Mapping（front-controller做的事情）和View Routing（backend-controller做的事情）通过这样一种有趣的机制来完成：</p>
+
+
+<ol><li>根据URL路径和Controller返回的结果字符串去寻找相应目录下对应名称的handler；</li>
+<li>如果找不到就找defaultHandler；</li>
+<li>如果还是找不到就往上一级目录去找，依此类推。</li>
+</ol>
+
+
+<p>举例来说，Controller返回View的路径为“user/admin/do”，就到…/user/admin目录下寻找一个do.handler的文件，找不到就寻找同目录下的default.handler，再找不到就往父目录去递归寻找。这种机制就使得URL Mapping和View Routing的过程变得具有天然的继承性（比如公用的success.handler可以放在顶级目录中）。</p>
+
+
+<p>这种方式其实也是配置，但是既不是配置文件，也不是注解，更不是代码，而是一个文件和文件夹的组织结构。</p>
+
+
+<p>最后，你肯定知道我还是要回到“规约优于配置”上面来。效果就是，例如访问user/do默认完成后就去寻找…/user/success.jsp，异常后通过异常拦截器首先寻找…/user/failed.jsp。</p>
+
+
+<p><strong>页面聚合</strong>
+</p>
+
+
+<p>对于服务端页面模板的组织在我看来一直是网站应用编程中比较薄弱的一块（客户端页面聚合即前端页面聚合我在此先不讨论），直到现在，页面模板的代码还是极容易陷入过于复杂和不易理解的境地。最开始追溯到JSP诞生以前的时代，页面是可以由Servlet一行一行输出的：</p>
+
+
+<pre>PrintWriter pw = response.getWriter();
+pw.write(&quot;xxx&quot;);
+... ...</pre>
+
+
+<p>那个时候还没有页面模板的概念。于是JSP出现，可以把页面HTML和页面上用于展示的Java代码糅合在一起。至于JSP最初就容易被误用做了更多的展示以外的事情，那其实并不是工具本身的错。直到现在，还有许多人对于Servlet和JSP有相当的偏见，在程序员聊天的时候，你要是说你的网站是用Servlet+JSP做的，对方往往会直接鄙视你，用那么老土的技术。其实技术本身并没有任何错，Servlet+JSP依然可以非常漂亮地解决很多实际问题。</p>
+
+
+<p>对于页面模板，无论你是使用JSP，还是FreeMarker、Velocity，你都会面对一个问题，一个和Java代码、C++代码一样需要依赖和组织的问题。于是程序员就将页面分为几个子页面，通过这样的方式引入：</p>
+
+
+<pre>&lt;%@ page import=&quot;xxx.jsp&quot; %&gt;</pre>
+
+
+<p>不过，对于一些公共的页面而言，可能要被许多页面引用，几乎所有的结果页面都要引入header.jsp、menu.jsp、footer.jsp……并传递一些类似的参数。这让啰嗦的程序员又觉得不开心了，我应该把我有限的精力专注到业务特有的逻辑和页面上去，这些通用的部分框架能不能替我聚合，而我就不需要关心了？</p>
+
+
+<p>这和异常处理很像，很多项目都喜欢定义自己的总异常，继承自RuntimeException，不需要声明，而且在通用异常拦截器内统一处理这些未被捕获的异常，完成通用的逻辑处理和页面转向；而错误信息就通过异常携带出来了，程序员就不需要把精力分散到大量的异常信息传递上面——比如通过返回码这种需要单独处理的形式，记得在老项目（特别是存储过程）的业务逻辑中还经常看到错误信息的返回码，现在真是越来越少见了。</p>
+
+
+<p>于是Tiles给了这样的页面聚合办法，配置文件：</p>
+
+
+<pre>&lt;definition name=&quot;user&quot; extends&quot;main&quot;&gt;
+    &lt;put name=&quot;title&quot; value=&quot;XXX Site - User&quot; /&gt;
+    &lt;put name=&quot;body&quot; value=&quot;user.jsp&quot; /&gt;
+    ... ...
+&lt;/definition&gt;</pre>
+
+
+<p>并且可以灵活地使用继承和参数传递，可是依旧不爽，每一个页面跳转都要配置这样一块豆腐干，实在是很啰嗦。SiteMesh提供了一种更为简洁的配置方式：</p>
+
+
+<pre>&lt;decorator name=&quot;main&quot; page=&quot;main.jsp&quot;&gt;
+    &lt;pattern&gt;/*&lt;/pattern&gt;
+&lt;/decorator&gt;
+&lt;excludes&gt;
+    &lt;pattern&gt;/admin/*&lt;/pattern&gt;
+&lt;/excludes&gt;</pre>
+
+
+<p>这样一来，所有的请求（除了匹配“/admin/*”这样的）全部都走到基于main.jsp聚合的逻辑中去了，通用的部分全部在main.jsp中完成，变化的页面依然根据原有的View Routing的映射来寻找页面，聚合这件事情，就真正对后续开发的程序员透明了。</p>
+
+
+<p>对于框架来说，还有进一步解耦的需求吗？有。比如可配置的拦截器，对于不同的请求能够使用配置为不同数量和不同个数拦截器的“拦截器栈”来响应，既可能有前置处理，也可能有后置处理。拦截器把原本在许多业务里都要重复做的事情（比如权限校验）通过AOP这种形式横向切一刀给做了。再比如序列化，如果要返回页面，形式可能是text/html的，而要传递对象，形式可能就是application/json这样的，将页面或者对象转换成html或者JSON响应的活儿，程序员当然也不想干……</p>
+
+
+<p>纵观上面介绍的这些MVC框架在解耦和映射方面做的贡献，我们很容易看到，在不断地解耦过程中，层数、模块数不断在增加，复杂性应该说也在增加，配置当然更复杂，可是爱偷懒的程序总有办法让复杂变得简单。这个因解耦引起层与层之间映射的配置便是如此：</p>
+
+
+<ol><li>程序员自己实现；</li>
+<li>框架实现，但是需要手动配置；</li>
+<li>规约优于配置。</li>
+</ol>
+
+
+<p>正是程序员对于懒惰的追求，造就了一个又一个好用的MVC框架，现在开发一个网站对于十多年前来说，实在是简便太多太多了，在今天谈论的角度上，未来MVC框架还会有怎样的发展趋势呢？还有哪一些通用的部分会被解耦出来，你又怎么看？</p>
+
+
+<p><strong>文章系本人原创，转载请保持完整性并注明出自<a href="http://www.raychase.net/850">《四火的唠叨》</a></strong>
+</p>
+
+
+<div>分享到：<a href="http://www.raychase.net//javascript:void(0);" title="分享到新浪"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到腾讯微博"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到QQ空间"></a><a href="javascript:void(0);" title="分享到Google Reader"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到人人网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到豆瓣"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到鲜果"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到开心"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到Follow5"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到同学网"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到嘀咕"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到饭否"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到做啥"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到百度收藏"></a><a href="http://www.raychase.net//javascript:void(0);" title="分享到twitter"></a><a href="http://www.raychase.net//javascript:void(0);" title="添加到收藏夹"></a></div>
+
+
+<div>你可能也喜欢：</div>
+
+
+<ul><li><a href="http://www.raychase.net/512" title="前端解耦的一个最简单示例"><img src="http://www.raychase.net/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/7.jpg" alt="MVC框架的映射和解耦"></a><a href="http://www.raychase.net/512" title="前端解耦的一个最简单示例">前端解耦的一个最简单示例</a></li>
+</ul>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8434.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8434.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8434.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

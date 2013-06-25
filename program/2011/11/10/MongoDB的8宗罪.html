@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>MongoDB的8宗罪</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>MongoDB的8宗罪</h2>
+<p class="meta">10 Nov 2011</p>
+
+<div class="post">
+<h2>MongoDB的8宗罪</h2>
+
+<h3>by yuanyi</h3>
+
+<h3>at 2011-11-09 16:20:37</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/heikezhi/~8608072/603800684/6713895/1/item.html">http://item.feedsky.com/~feedsky/heikezhi/~8608072/603800684/6713895/1/item.html</a></h3>
+
+<p>有人在Hacker News上贴出了<a href="http://news.ycombinator.com/item?id=3202081">一篇匿名贴</a>声泪俱下的控诉了<a href="http://pastebin.com/raw.php?i=FD3xe6Jt">MongoDB的8大罪状</a>，如果你也打算在大数据量，高并发，高负载的环境下尝试MongoDB，那么或许你应该先看看这篇贴然后再做决定，下面是原文的节选。</p>
+
+
+<p>-------<br>
+出于某些政治上的原因，我对这个问题沉默了一段时间，但是现在我觉得我有责任站出来以我的亲身经历来告诫那些想要在它们的业务中使用MongoDB的人们。</p>
+
+
+<p>我们团队在一个很大的项目（几千万用户）中使用了MongoDB，根据早期的使用，我们希望可以像10gen公司吹捧的那样，通过长期使用来获得它们宣扬的伸缩性上的好处，但是事实证明，我们错了，我觉得有必要分享下我们的教训，即使只有一个人从中收益，我认为也值了。要说明的是，10gen公司确实尽了他们最大的努力并且很热情的帮助我们，有时甚至热心过度，但是，这并不妨碍我对他们失败产品的批评。</p>
+
+
+<p>1. MongoDB为了追求赢得基准测试导致它默认以不安全的方式进行写操作</p>
+
+
+<p>如果你不调用getLastError()，MongoDB会在写操作实际完成之前就返回了，这会导致2种问题：</p>
+
+
+<p>＊ 在并发环境下（比如连接池），如果你在“完成”一个写操作后接着去读刚刚写入的数据，可能会遇到一个读错误，并且你没法知道数据库会在什么时候完成这个写操作。</p>
+
+
+<p>＊ 很多情况下，队列中的保存操作会被丢弃，而你得不到任何通知，比如连接中断，或者数据库崩溃或者其它意外情况下，TCP缓存中保存的操作就人间蒸发了。</p>
+
+
+<p>2. MongoDB会以很多莫名其妙的方式弄丢你的数据</p>
+
+
+<p>＊ 数据忽然就没了，不知道为什么<br>
+＊ 损坏的数据库没法恢复<br>
+＊ 主节点和从节点的复制（Replication）存在缝隙，导致从节点经常缺少某些数据，是得，没有校验和，并且复制状态显示从节点的数据是同步的<br>
+＊ 复制经常不工作，没有错误，你需要自己监控你的复制状态。</p>
+
+
+<p>3. 需要全局锁来发出写请求</p>
+
+
+<p>4. MongoDB的分区（sharding）在带负载的情况下工作也不正常</p>
+
+
+<p>在高负载的情况下添加一个shard简直就是噩梦，Mongo要么就是过快的在分区之间移动数据块，变成对自己的DOS攻击，要么就是拒绝接受更多的块。</p>
+
+
+<p>5. Mongo完全没有可靠性可言</p>
+
+
+<p>Mongod/配置服务器/mongos的架构确实很聪明，但不幸的是，mongos完全就是垃圾，在有负荷的情况下，它随时都会崩溃，短则几小时，长则几天，并且重启管理进程有时也不管用，有时它会抛出断言破坏一个关键线程，但是进程却依然在运行。</p>
+
+
+<p>你猜怎么着，唯一可行的方式就是在mongos前面配置一个haproxy，然后启动一个外部监管程序对mongos进行轮询，定期清除老实例然后创建新实例，没错，就是这样，不开玩笑。</p>
+
+
+<p>6. MongoDB有次甚至删除了整个数据库</p>
+
+
+<p>MongoDB 1.6，在配置了复制后，有时会错误的将一个全新节点的数据当作是最新的数据，然后删除其它所有节点的所有数据（大约有700G的好数据被删掉了），并将这个空数据同步到其它所有节点，作为一个数据库，这种事情是绝对不应该发生的，如果不能确定，应该询问管理员来选择合适的操作，而不是删除所有数据。</p>
+
+
+<p>谢天谢地，这个Bug在1.8已经修复了。</p>
+
+
+<p>7. 他们总是交付些压根就不应该交付的东西</p>
+
+
+<p>一个令人尴尬的事实就是，即使是稳定版也会存在破坏数据的Bug——而且总是在我们的数据被破坏之后我们才发现——我们购买了10gen的白金支持，但是我们得到的支持就是一堆它们称之为内部RC的热补丁，直接运行在我们的数据上。</p>
+
+
+<p>8. 复制（Replication）在忙碌的服务器上基本就是废柴</p>
+
+
+<p>复制经常性不工作，要么就是DOS master，要么就是消耗太多时间直到耗光oplog（即使oplog有50G的空间）。</p>
+
+
+<p>但是，这些都不是最主要的，真正的问题：</p>
+
+
+<p>你可能会说，这些都是老黄历了，他们已经在最新版修复了这些问题，但这不是我想说的，我要表达的是，作为一个数据库开发公司，它们应该按照下面的顺序来排列它们的工作优先级：</p>
+
+
+<p>1. 不能丢失数据，确保数据非常可靠<br>
+2. 通过实践确保可达性<br>
+3. 多节点的伸缩性<br>
+4. 降低延迟到99%和95%之间<br>
+5. 单个资源的每秒请求数</p>
+
+
+<p>10gen的排序似乎是#5是第一位的，其它几项的排序未知，但是可以肯定，第一条肯定不在它们的前三之列。</p>
+
+
+<p>最后，希望你能认真考虑以上警告。</p>
+
+
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="想去MongoDB工作？解决这个问题" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F24%2Fwant-a-job-working-on-mongodb-your-first-online-interview-is-in-this-post%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F09%2Fdont-use-mongod%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">想去MongoDB工作？解决这个问题</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="每个电脑Geek都应该知道的70件事" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F24%2F70-things-every-computer-geek-should-know%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F09%2Fdont-use-mongod%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/05/24/9459351.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">每个电脑Geek都应该知道的70件事</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Data Structure Visualizations: 数据结构及算法可视化工具" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F05%2F03%2Fdata-structure-visualizations-%25E6%2595%25B0%25E6%258D%25AE%25E7%25BB%2593%25E6%259E%2584%25E5%258F%258A%25E7%25AE%2597%25E6%25B3%2595%25E5%258F%25AF%25E8%25A7%2586%25E5%258C%2596%25E5%25B7%25A5%25E5%2585%25B7%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F09%2Fdont-use-mongod%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/05/04/7471270.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Data Structure Visualizations: 数据结构及算法可视化工具</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="84个纯CSS GUI图标" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F07%2F12%2Fpure-css-gui-icons%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F11%2F09%2Fdont-use-mongod%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/07/21/18260031.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">84个纯CSS GUI图标</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/603800684/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/603800684/6713895/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Linux虚拟内存实现原理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Linux虚拟内存实现原理</h2>
+<p class="meta">02 Sep 2011</p>
+
+<div class="post">
+<h2>Linux虚拟内存实现原理</h2>
+
+<h3>by nosqlfan</h3>
+
+<h3>at 2011-09-01 22:33:33</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/nosqlfan/~8149226/552612129/6253001/1/item.html">http://item.feedsky.com/~feedsky/nosqlfan/~8149226/552612129/6253001/1/item.html</a></h3>
+
+<p>下面是一篇翻译文章，原文出自<span><a href="http://blog.nosqlfan.com/tags/mongodb" title="查看 MongoDB 的全部文章">MongoDB</a></span>的核心开发工程师 <a href="http://www.snailinaturtleneck.com/">Kristina Chodorow</a> 的个人博客，由NoSQLFan翻译整理。</p>
+
+
+<p>我们都知道，MongoDB 使用<span><a href="http://blog.nosqlfan.com/tags/%e5%86%85%e5%ad%98%e6%98%a0%e5%b0%84" title="查看 内存映射 的全部文章">内存映射</a></span>的方式来进行数据文件的存取操作。本文的目的就在于描述操作系统<span><a href="http://blog.nosqlfan.com/tags/%e8%99%9a%e6%8b%9f%e5%86%85%e5%ad%98" title="查看 虚拟内存 的全部文章">虚拟内存</a></span>的使用及内存映射的内部实现。</p>
+
+
+<p><span style="color:#ff0000"><strong>以下是译文</strong></span></p>
+
+
+<p>当你运行一个程序，程序中有许多东西需要存储，堆、栈以及各种功能库。而这一切在你写程序时可能都不需要自己控制，Linux内核会帮你完成这些存储的调度，你只需要告诉它你需要做什么，内核就会在合适的地方给你分配内存空间。本文主要通过几个实例程序的内存使用研究，来为大家展示Linux的内存使用状况。</p>
+
+
+<p>第一个例子：下面一段程序会打印出程序的pid（进程号）后挂起。</p>
+
+
+<pre>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+
+int main() {
+  printf(&quot;run `pmap %d`\n&quot;, getpid());
+  pause();
+}</pre>
+
+
+<p>将上面代码保存成文件 mem_munch.c 然后运行下面程序编译并执行：</p>
+
+
+<pre>$ gcc mem_munch.c -o mem_munch
+$ ./mem_munch
+run `pmap 25681`</pre>
+
+
+<p>上面进程号是25681，可能你试验的结果会不太一样。</p>
+
+
+<p>下面我们通过pmap命令来查看一下这个小程序的内存使用情况</p>
+
+
+<pre>$ pmap 25681
+25681:   ./mem_munch
+0000000000400000      4K r-x--  /home/user/mem_munch
+0000000000600000      4K r----  /home/user/mem_munch
+0000000000601000      4K rw---  /home/user/mem_munch
+00007fcf5af88000   1576K r-x--  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fcf5b112000   2044K -----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fcf5b311000     16K r----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fcf5b315000      4K rw---  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fcf5b316000     24K rw---    [ anon ]
+00007fcf5b31c000    132K r-x--  /lib/x86_64-linux-gnu/ld-2.13.so
+00007fcf5b512000     12K rw---    [ anon ]
+00007fcf5b539000     12K rw---    [ anon ]
+00007fcf5b53c000      4K r----  /lib/x86_64-linux-gnu/ld-2.13.so
+00007fcf5b53d000      8K rw---  /lib/x86_64-linux-gnu/ld-2.13.so
+00007fff7efd8000    132K rw---    [ stack ]
+00007fff7efff000      4K r-x--    [ anon ]
+ffffffffff600000      4K r-x--    [ anon ]
+ total             3984K</pre>
+
+
+<p>上面的结果是这个程序的内存使用情况，其实更确切的说是这个程序认为它使用内存的情况。从上面的结果我们能看到，当你访问libc库时，实际上是对内存地址00007fcf5af88000的访问，当你访问ld库时，实际上是对内存地址00007fcf5b31c000的访问。</p>
+
+
+<p>上面的输出可能还比较抽象，下面我们修改一下上面的程序，我们在程序的堆和栈上各放一块数据。</p>
+
+
+<pre>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+  int on_stack, *on_heap;
+
+  //局部变量是放在栈上的，所以 on_stack 的地址就是栈的初始地址
+  on_stack = 42;
+  printf(&quot;stack address: %p\n&quot;, &amp;on_stack);
+
+  //malloc 的内存是在堆上分配的
+  on_heap = (int*)malloc(sizeof(int));
+  printf(&quot;heap address: %p\n&quot;, on_heap);
+
+  printf(&quot;run `pmap %d`\n&quot;, getpid());
+  pause();
+}</pre>
+
+
+<p>编译运行：</p>
+
+
+<pre>$ ./mem_munch
+<span style="color:#008000">stack address: 0x7fff497670bc</span>
+<span style="color:#ff0000">heap address: 0x1b84010</span>
+run `pmap 11972`</pre>
+
+
+<p>然后再用pmap命令查看一下内存使用：</p>
+
+
+<pre>$ pmap 11972
+11972:   ./mem_munch
+0000000000400000      4K r-x--  /home/user/mem_munch
+0000000000600000      4K r----  /home/user/mem_munch
+0000000000601000      4K rw---  /home/user/mem_munch
+<span style="color:#008000"><span style="color:#ff0000">0000000001b84000    132K rw---    [ anon ]</span>
+</span>00007f3ec4d98000   1576K r-x--  /lib/x86_64-linux-gnu/libc-2.13.so
+00007f3ec4f22000   2044K -----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007f3ec5121000     16K r----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007f3ec5125000      4K rw---  /lib/x86_64-linux-gnu/libc-2.13.so
+00007f3ec5126000     24K rw---    [ anon ]
+00007f3ec512c000    132K r-x--  /lib/x86_64-linux-gnu/ld-2.13.so
+00007f3ec5322000     12K rw---    [ anon ]
+00007f3ec5349000     12K rw---    [ anon ]
+00007f3ec534c000      4K r----  /lib/x86_64-linux-gnu/ld-2.13.so
+00007f3ec534d000      8K rw---  /lib/x86_64-linux-gnu/ld-2.13.so
+<span style="color:#008000">00007fff49747000    132K rw---    [ stack ]</span>
+00007fff497bb000      4K r-x--    [ anon ]
+ffffffffff600000      4K r-x--    [ anon ]
+ total             4116K</pre>
+
+
+<p>这次多出了上面红色的一行内容，红色内容就是堆的起始位置：</p>
+
+
+<pre>0000000001b84000    132K rw---    [ anon ]</pre>
+
+
+<p>在我们程序运行的输出里也有一行红色的输出，这是这个地址在程序中的内存地址：</p>
+
+
+<pre>heap address: 0x1b84010</pre>
+
+
+<p>这两个地址基本上是一样的，其中的anon是Anonymous的缩写，表明这段内存是没有文件映射的。</p>
+
+
+<p>我们再看上面绿色的两行，与上面相对应，这两行分别是用pmap 和应用程序看到的栈起始地址：</p>
+
+
+<pre>00007fff49747000    132K rw---    [ stack ]</pre>
+
+
+<pre>stack address: 0x7fff497670bc</pre>
+
+
+<p>上面说到的内存使用，都只是程序认为自己对内存的使用，实际上程序在分配内存是不知道系统内存的状态的。所以上面的输出都只是从程序自己的角度看到的内存使用状况。比如在上面的例子中，我们看到程序的内存地址空间是从0×0000000000400000到0xffffffffff600000的所有地址（而0xffffffffff600000到0×00007fffffffffffffff之间的地址是有<a href="http://en.wikipedia.org/wiki/X86-64#Canonical_form_addresses">特殊用处</a>的，这里不多讲）。这样算下来，我们总共可以使用的内存空间有1千万TB。</p>
+
+
+<p>但是实际上目前没有硬件能有1千万TB的物理内存。为什么操作系统会如此设计呢？原因有很多，可以看<a href="http://en.wikipedia.org/wiki/Virtual_memory">这里</a>，但也正因此，我们可以使用远远超出物理内存大小的内存空间。</p>
+
+
+<h3>内存映射</h3>
+
+
+<p>内存映射的原理就是让操作系统将一个文件映射到一段内存中，然后在操作这个文件内存就可以像操作内存一样。比如我们创建一个完全内容随机的文件，然后将它用内存映射的方式映射到一段内存空间中。那么我们在这段内存中随便取一位就相当于取到了一个随机数。下面就让我们来做这个实验，先用下面命令生成一个内容随机的文件。</p>
+
+
+<pre>$ dd if=/dev/urandom bs=1024 count=1000000 of=/home/user/random
+1000000+0 records in
+1000000+0 records out
+1024000000 bytes (1.0 GB) copied, 123.293 s, 8.3 MB/s
+$ ls -lh random
+-rw-r--r-- 1 user user 977M 2011-08-29 16:46 random</pre>
+
+
+<p>然后我们用下面程序来将这个文件内容映射到内存，再从中取出随机数</p>
+
+
+<pre>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/mman.h&gt;
+
+int main() {
+  char *random_bytes;
+  FILE *f;
+  int offset = 0;
+
+  // open &quot;random&quot; for reading
+  f = fopen(&quot;/home/user/random&quot;, &quot;r&quot;);
+  if (!f) {
+    perror(&quot;couldn&#39;t open file&quot;);
+    return -1;
+  }
+
+  // we want to inspect memory before mapping the file
+  printf(&quot;run `pmap %d`, then press &quot;, getpid());
+  getchar();
+
+  random_bytes = mmap(0, 1000000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+
+  if (random_bytes == MAP_FAILED) {
+    perror(&quot;error mapping the file&quot;);
+    return -1;
+  }
+
+  while (1) {
+    printf(&quot;random number: %d (press  for next number)&quot;, *(int*)(random_bytes+offset));
+    getchar();
+
+    offset += 4;
+  }
+}</pre>
+
+
+<p>然后运行这个程序：</p>
+
+
+<pre> $ ./mem_munch
+run `pmap 12727`, then press</pre>
+
+
+<p>下面我们通过一次次的按下回车键来从这个文件中读取随机数，按下几次后我们可以再通过pmap来查看其内存空间的情况：</p>
+
+
+<pre>$ pmap 12727
+12727:   ./mem_munch
+0000000000400000      4K r-x--  /home/user/mem_munch
+0000000000600000      4K r----  /home/user/mem_munch
+0000000000601000      4K rw---  /home/user/mem_munch
+000000000147d000    132K rw---    [ anon ]
+<span style="color:#ff0000">00007fe261c6f000 976564K r--s-  /home/user/random</span>
+00007fe29d61c000   1576K r-x--  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fe29d7a6000   2044K -----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fe29d9a5000     16K r----  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fe29d9a9000      4K rw---  /lib/x86_64-linux-gnu/libc-2.13.so
+00007fe29d9aa000     24K rw---    [ anon ]
+00007fe29d9b0000    132K r-x--  /lib/x86_64-linux-gnu/ld-2.13.so
+00007fe29dba6000     12K rw---    [ anon ]
+00007fe29dbcc000     16K rw---    [ anon ]
+00007fe29dbd0000      4K r----  /lib/x86_64-linux-gnu/ld-2.13.so
+00007fe29dbd1000      8K rw---  /lib/x86_64-linux-gnu/ld-2.13.so
+00007ffff29b2000    132K rw---    [ stack ]
+00007ffff29de000      4K r-x--    [ anon ]
+ffffffffff600000      4K r-x--    [ anon ]
+ total           980684K</pre>
+
+
+<p>上面的输出和之前的大同小异，但是多出了上面红色的一行。这是我们上面的随机文件映射到内存中的内存。我们再使用pmap -x 选项来查看一下程序的内存使用，会得到下面的内容，其中RSS（resident set size）列表示真实占用的内存。</p>
+
+
+<pre>pmap -x 12727
+12727:   ./mem_munch
+Address           Kbytes     RSS   Dirty Mode   Mapping
+0000000000400000       0       4       0 r-x--  mem_munch
+0000000000600000       0       4       4 r----  mem_munch
+0000000000601000       0       4       4 rw---  mem_munch
+000000000147d000       0       4       4 rw---    [ anon ]
+00007fe261c6f000       0       4       0 r--s-  random
+00007fe29d61c000       0     288       0 r-x--  libc-2.13.so
+00007fe29d7a6000       0       0       0 -----  libc-2.13.so
+00007fe29d9a5000       0      16      16 r----  libc-2.13.so
+00007fe29d9a9000       0       4       4 rw---  libc-2.13.so
+00007fe29d9aa000       0      16      16 rw---    [ anon ]
+00007fe29d9b0000       0     108       0 r-x--  ld-2.13.so
+00007fe29dba6000       0      12      12 rw---    [ anon ]
+00007fe29dbcc000       0      16      16 rw---    [ anon ]
+00007fe29dbd0000       0       4       4 r----  ld-2.13.so
+00007fe29dbd1000       0       8       8 rw---  ld-2.13.so
+00007ffff29b2000       0      12      12 rw---    [ stack ]
+00007ffff29de000       0       4       0 r-x--    [ anon ]
+ffffffffff600000       0       0       0 r-x--    [ anon ]
+----------------  ------  ------  ------
+total kB          980684     508     100</pre>
+
+
+<p>如果你的虚拟内存占用（上面的Kbytes列）都是0，不用担心，这是一个在Debian/Ubuntu系统上pmap -x命令的<a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=614513">bug</a>。最后一行输出的总占用量是正确的。</p>
+
+
+<p>现在你可以看一下RSS那一列，这就是实际内存占用。在random文件上，你的程序实际上可以访问在00007fe261c6f000之前的数十亿字节的内存地址，但是只要你访问的地址超过4KB，那么操作系统就会去磁盘上查找内容。也就是说实际上只有4KB的物理内存被使用了。只有访问这4KB的东西时，才是真正的内存操作。其它部分虽然你使用的也是内存操作函数来访问它，但是由于它没有被加载到内存中，所以在这些内容被访问的时候，操作系统会先去磁盘读random中读取内容到内存中。</p>
+
+
+<p>如果我们把程序再修改一下，修改成下面这样，让程序把整个random文件都访问一遍。</p>
+
+
+<pre>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/mman.h&gt;
+
+int main() {
+  char *random_bytes;
+  FILE *f;
+  int offset = 0;
+
+  // open &quot;random&quot; for reading
+  f = fopen(&quot;/home/user/random&quot;, &quot;r&quot;);
+  if (!f) {
+    perror(&quot;couldn&#39;t open file&quot;);
+    return -1;
+  }
+
+  random_bytes = mmap(0, 1000000000, PROT_READ, MAP_SHARED, fileno(f), 0);
+
+  if (random_bytes == MAP_FAILED) {
+    printf(&quot;error mapping the file\n&quot;);
+    return -1;
+  }
+
+  for (offset = 0; offset &lt; 1000000000; offset += 4) {
+    int i = *(int*)(random_bytes+offset);
+
+    // to show we&#39;re making progress
+    if (offset % 1000000 == 0) {
+      printf(&quot;.&quot;);
+    }
+  }
+
+  // at the end, wait for signal so we can check mem
+  printf(&quot;\ndone, run `pmap -x %d`\n&quot;, getpid());
+  pause();
+}</pre>
+
+
+<p>现在我们的pmap -x命令就会得到如下输出：</p>
+
+
+<pre>$ pmap -x 5378
+5378:   ./mem_munch
+Address           Kbytes     RSS   Dirty Mode   Mapping
+0000000000400000       0       4       4 r-x--  mem_munch
+0000000000600000       0       4       4 r----  mem_munch
+0000000000601000       0       4       4 rw---  mem_munch
+0000000002271000       0       4       4 rw---    [ anon ]
+00007fc2aa333000       0  976564       0 r--s-  random
+00007fc2e5ce0000       0     292       0 r-x--  libc-2.13.so
+00007fc2e5e6a000       0       0       0 -----  libc-2.13.so
+00007fc2e6069000       0      16      16 r----  libc-2.13.so
+00007fc2e606d000       0       4       4 rw---  libc-2.13.so
+00007fc2e606e000       0      16      16 rw---    [ anon ]
+00007fc2e6074000       0     108       0 r-x--  ld-2.13.so
+00007fc2e626a000       0      12      12 rw---    [ anon ]
+00007fc2e6290000       0      16      16 rw---    [ anon ]
+00007fc2e6294000       0       4       4 r----  ld-2.13.so
+00007fc2e6295000       0       8       8 rw---  ld-2.13.so
+00007fff037e6000       0      12      12 rw---    [ stack ]
+00007fff039c9000       0       4       0 r-x--    [ anon ]
+ffffffffff600000       0       0       0 r-x--    [ anon ]
+----------------  ------  ------  ------
+total kB          980684  977072     104</pre>
+
+
+<p>我们可以看到，random文件映射实际占用内存量已经和random文件大小一致了，也就是也random文件通过循环访问，其内容已经完全加载到内存中了。现在我们再访问random文件的任何部分，实际上都是内存操作。而不会穿透到磁盘。</p>
+
+
+<p>话说回来，这就是为什么MongoDB的内存使用，可以远远超出操作系统物理内存大小。</p>
+
+
+<p>来源：<a href="http://www.snailinaturtleneck.com/blog/2011/08/30/playing-with-virtual-memory/">www.snailinaturtleneck.com</a></p>
+
+
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2865.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2956.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB与内存</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2989.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2956.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Python调用MongoDB使用心得</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2064.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2956.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">MongoDB 索引数据类型优化，节省60％内存</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F683.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2956.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">NoSQL理论之-内存是新的硬盘，硬盘是新的磁带</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1694.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2956.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis内存存储结构分析</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/552612129/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/552612129/6253001/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

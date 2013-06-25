@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>理解Javascript_05_原型继承原理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>理解Javascript_05_原型继承原理</h2>
+<p class="meta">13 Oct 2010</p>
+
+<div class="post">
+<h2>理解Javascript_05_原型继承原理</h2>
+
+<h3>by 笨蛋的座右铭</h3>
+
+<h3>at 2010-10-13 04:32:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/fool/archive/2010/10/13/1849734.html">http://www.cnblogs.com/fool/archive/2010/10/13/1849734.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/fool/">笨蛋的座右铭</a> 发表于 2010-10-13 04:32 <a href="http://www.cnblogs.com/fool/archive/2010/10/13/1849734.html">原文链接</a> 阅读: 860 评论: 4</p>
+
+
+<p>对于面向对象的基础语法在此我就不重复了，对面向对象不熟悉的朋友可以参看《使用面向对象的技术创建高级 Web 应用程序》一文。</p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:18pt"><strong>prototype与[[prototype]]</strong></span></p>
+
+
+<p>在有面象对象基础的前提下，来看一段代码：</p>
+
+
+<div>
+<pre>//Animal构造函数
+function Animal(name){
+    this.name = name;
+}
+//Animal原型对象
+Animal.prototype = {
+    id:"Animal",
+    sleep:function(){
+        alert("sleep");
+    }
+}
+
+var dog = new Animal("旺才");
+alert(dog.name);//旺才
+alert(dog.id);//Animal
+dog.sleep()//sleep</pre>
+</div>
+
+
+<p>其对应的简易内存分配结构图：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2010/138960/2010101303391250.png" alt=""></p>
+
+
+<p> </p>
+
+
+<p>现在让我们来解释一下这张内存图的来龙去脉：</p>
+
+
+<p>首先明确一点[[prototype]]与prototype并不是同一个东西。</p>
+
+
+<p>　　那先来看prototype,每一个函数对象都有一个显示的prototype属性,它代表了对象的原型，更明确的说是代表了由函数对象(构造函数)所创建出来的对象的原型。结合本例，Animal.prototype就是dog的原型，dog所引用的那个对象将从Animal.prototype所引用的对象那继承属性与方法。</p>
+
+
+<p>　　每个对象都有一个名为[[Prototype]]的内部属性，指向于它所对应的原型对象。在本例中dog的[[prototype]]指向Animal.prototype，大家都知道，Animal.prototype也是一个对象，即然是一个对象，那它必然也有[[prototype]]属性指向于它所对应的原型对象，由此便构成了一种链表的结构，这就是原型链的概念。额外要说的是:不同的JS引擎实现者可以将内部[[Prototype]]属性命名为任何名字，并且设置它的可见性，前且只在JS引擎内部使用。虽然无法在JS代码中访问到内部[[Prototype]](FireFox中可以，名字为__proto__因为Mozilla将它公开了)，但可以使用对象的 isPrototypeOf()方法进行测试，注意这个方法会在整个Prototype链上进行判断。</p>
+
+
+<p>注：关于函数对象的具体内容，将在后继的博文中讲解。</p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:18pt"><strong>属性访问原则</strong></span></p>
+
+
+<p>使用obj.propName访问一个对象的属性时，按照下面的步骤进行处理(假设obj的内部[[Prototype]]属性名为__proto__):<br>1. 如果obj存在propName属性，返回属性的值，否则<br>2. 如果obj.__proto__为null，返回undefined，否则<br>3. 返回obj.__proto__.propName<br>调用对象的方法跟访问属性搜索过程一样，因为方法的函数对象就是对象的一个属性值。<br>提示: 上面步骤中隐含了一个递归过程，步骤3中obj.__proto__是另外一个对象，同样将采用1, 2, 3这样的步骤来搜索propName属性。</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2010/138960/2010101303004750.jpg" alt=""></p>
+
+
+<p>这就是基于Prototype的继承和共享。其中object1的方法fn2来自object2，概念上即object2重写了object3的方法fn2。<br>JavaScript对象应当都通过prototype链关联起来，最顶层是Object，即对象都派生自Object类型。</p>
+
+
+<p>结合是上面的理论，让我们再来看一个更加复杂的示例，他明确的解释了prototype、[[prototype]]、原型链以及属性访问的相关要点:</p>
+
+
+<div>
+<pre>//Animal构造函数
+function Animal(name){
+    this.name = name;
+}
+//Animal原型对象
+Animal.prototype = {
+    id:"Animal",
+    sleep:function(){
+        alert("sleep");
+    }
+}
+
+function Human(name,age){
+    Animal.call(this,name);
+    this.age = age;
+}
+
+Human.prototype = new Animal();
+Human.prototype.id = "Human";
+
+Human.prototype.say = function(){
+    alert("hello everyone,My name is "+this.name +",I'm "+this.age+" and I'm a "+this.id);
+}
+
+//Human相关调用
+var jxl = new Human('笨蛋',25);
+alert(jxl.name);//笨蛋
+alert(jxl.id);//Human
+jxl.say();//hello everyone,My name is 笨蛋,I'm 25 and I'm a Human
+
+alert(Animal.prototype.isPrototypeOf(jxl));//true
+alert(Object.prototype.isPrototypeOf(jxl));//true</pre>
+</div>
+
+
+<p>根据上面的代码，你能画出相应的内存图吗？好，让我们来看一下：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2010/138960/2010101304222762.png" alt=""></p>
+
+
+<p>注：prototype的根为Object.prototype,对象Object.prototype的内部[[prototype]]属性为null.</p>
+
+
+<p>其实，这里还有很多东西可以讲，但在其原理都在这张图上了，可试着调整一下代码的次序，如将Human.prototype.id = "Human";放在Human.prototype = new Animal();的前面，看一下运行结果，解释一下为什么之类的，你可以学到很多。</p>
+
+
+<p> </p>
+
+
+<p>我发现，通过内存来展现程序内部运行细节真的是太完美了！</p>
+
+
+<p> </p>
+
+
+<p>参考：</p>
+
+
+<div>
+<pre>http://www.cnblogs.com/RicCC/archive/2008/02/15/JavaScript-Object-Model-Execution-Model.html
+</pre>
+</div>
+
+
+<p><img src="http://www.cnblogs.com/fool/aggbug/1849734.html?type=1" width="1" height="1" alt=""><p>评论: 4　<a href="http://www.cnblogs.com/fool/archive/2010/10/13/1849734.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/fool/archive/2010/10/13/1849734.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77170/">苹果申请反色情专利 自动替换文本</a><span style="color:gray">(2010-10-13 16:55)</span><br>· <a href="http://news.cnblogs.com/n/77168/">Linux与Windows纠缠多年的七个矛盾</a><span style="color:gray">(2010-10-13 16:19)</span><br>· <a href="http://news.cnblogs.com/n/77167/">你是一位有体育精神的自由职业者吗？</a><span style="color:gray">(2010-10-13 16:07)</span><br>· <a href="http://news.cnblogs.com/n/77166/">酷六网陈峰：向网络电视台转型须具备三要素</a><span style="color:gray">(2010-10-13 15:51)</span><br>· <a href="http://news.cnblogs.com/n/77165/">宏达电周永明：WP7和Android同样重要</a><span style="color:gray">(2010-10-13 15:44)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77144/">上海麻辣马资深程序员叶劲峰：我的游戏人生</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

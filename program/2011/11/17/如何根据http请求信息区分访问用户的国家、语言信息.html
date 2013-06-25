@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>如何根据http请求信息区分访问用户的国家、语言信息</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>如何根据http请求信息区分访问用户的国家、语言信息</h2>
+<p class="meta">17 Nov 2011</p>
+
+<div class="post">
+<h2>如何根据http请求信息区分访问用户的国家、语言信息</h2>
+
+<h3>by editor</h3>
+
+<h3>at 2011-11-16 19:44:38</h3>
+
+<h3>original <a href="http://stblog.baidu-tech.com/?p=1148">http://stblog.baidu-tech.com/?p=1148</a></h3>
+
+<p>是不是见到google，facebook等大型专业网站的拥有不同的语言站群，可以不同语言间切换很给力？而我们只能羡慕嫉妒恨呢？<br>
+今天要介绍的就是如何识别不同国家，只需要简单几步，就能识别出来自不同国家的请求，使你的web应用更有国际范。<br>
+国家识别主要用到的是http header中的host，Accept-Language，cookie以及请求的url，ip等。<br>
+下面先温习下http header的基础知识。</p>
+
+
+<p><span></span></p>
+
+
+<h1 style="font-size:20px">1 HTTP Header头格式</h1>
+
+
+<p>在WEB开发中，无论是前端或后端都会发送请求，来浏览网页。而我们在开发中经常需要识别出客户端的信息，比如，国家，地区，浏览器信息等等。而这些信息都是由http header发送的。<br>
+下面首先介绍下公司在扩展国际化业务中，识别客户端国家版本，使用了哪些http header。</p>
+
+
+<h2>1.1.1 HTTP Headers</h2>
+
+
+<p>HTTP Headers是HTTP请求和相应的核心，它承载了关于客户端浏览器，请求页面，服务器等相关的信息。<br>
+<a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321441193.jpg&amp;type=image%2Fjpeg&amp;width=530&amp;height=433"><img title="1" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321441193.jpg&amp;type=image%2Fjpeg&amp;width=530&amp;height=433" alt="" width="530" height="433"></a></p>
+
+
+<h2>1.1.2 Host</h2>
+
+
+<p>请求的web服务器域名地址。<br>
+例如web请求URL：http://test. baidu.com /test/<br>
+Host就为test.baidu.com。<br>
+在PHP中，可以通过$_SERVER['HTTP_HOST'] 或 $_SERVER['SERVER_NAME']来查看。</p>
+
+
+<h2>1.1.3 Accept-Language</h2>
+
+
+<p>Accept-Language: en-us,en;q=0.5<br>
+这个信息可以说明用户的默认语言设置。如果网站有不同的语言版本，那么就可以通过这个信息来重定向用户的浏览器。<br>
+它可以通过逗号分割来携带多国语言。第一个会是首选的语言，其它语言会携带一个“q”值，来表示用户对该语言的喜好程度（0~1）。<br>
+在PHP中用 $_SERVER["HTTP_ACCEPT_LANGUAGE"] 来获取这一信息。</p>
+
+
+<h2>1.1.4 Cookie</h2>
+
+
+<p>会发送你浏览器中存储的Cookie信息给服务器。<br>
+Cookie: PHPSESSID=r2t5uvjq435r4q7ib3vtdjq120; foo=bar<br>
+它是用分号分割的一组名值对。Cookie也可以包含session id。<br>
+在PHP中，单一的Cookie可以访问$_COOKIE数组获得。你可以直接用$_SESSION array获取session变量。如果你需要session id，那么你可以使用session_id()函数代替cookie。</p>
+
+
+<h1 style="font-size:20px">2 国家版本识别</h1>
+
+
+<p>上面介绍了几个常用的http header，现在您已经确信可以尝试下，来识别下这些国家版本了。</p>
+
+
+<h2>2.1.1 规范</h2>
+
+
+<p>在介绍例子前，先了解下国家识别中的已知的规范。</p>
+
+
+<p>语言名称用于标明当前请求对应的语言版本，遵照BCP47协议规定的tag。（在线校验：<a href="http://schneegans.de/lv/?tags=zh-CN&amp;format=text">http://schneegans.de/lv/?tags=zh-CN&amp;format=text</a>）</p>
+
+
+<p>规范规定：Tag 以第一部分表示语言，都为小写，第二部分为地区，大写。中间通过中划线分隔。<br>
+以下列出几个常见使用到的缩写规范tag：</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321448224.jpg&amp;type=image%2Fjpeg&amp;width=633&amp;height=172"><img title="1" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321448224.jpg&amp;type=image%2Fjpeg&amp;width=633&amp;height=172" alt="" width="633" height="172"></a></p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321448245.jpg&amp;type=image%2Fjpeg&amp;width=664&amp;height=192"><img title="2" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321448245.jpg&amp;type=image%2Fjpeg&amp;width=664&amp;height=192" alt="" width="664" height="192"></a></p>
+
+
+<h2>2.1.2 Domain (域名)方式</h2>
+
+
+<p><span style="color:#0000ff">这种方式是通过客户端请求的域名，如果有支持对应域名下的语言，则成功识别。</span></p>
+
+
+<p>这里的域名是发送header中的host请求，在php中通过$_SERVER['SERVER_NAME']获取。</p>
+
+
+<p>比如我们浏览网址：<a href="http://www.xxx.com.eg/">http://www.xxx.com.eg</a></p>
+
+
+<p>首页，看看浏览器发送的请求（以windows下，firefox浏览器为例），</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321441776.jpg&amp;type=image%2Fjpeg&amp;width=537&amp;height=178"><img title="2" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321441776.jpg&amp;type=image%2Fjpeg&amp;width=537&amp;height=178" alt="" width="537" height="178"></a></p>
+
+
+<p>如上图看到的，header中host 为当前的域名，那我们可以按照以下步骤识别：<br>
+1.  后端配置好当前域名和国家版本的对应关系<br>
+2.  Server端的php程序中通过$_SERVER['SERVER_NAME'] 获取header中的host。<br>
+3.  根据第一步中的对应关系找到匹配的国家版本（region），并通过locale的对应关系找到语言。</p>
+
+
+<h2>2.1.3</h2>
+
+
+<p>Url &amp; Cookie 方式<br>
+该方式的原理如下表:</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321448365.jpg&amp;type=image%2Fjpeg&amp;width=572&amp;height=293"><img title="3" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321448365.jpg&amp;type=image%2Fjpeg&amp;width=572&amp;height=293" alt="" width="572" height="293"></a></p>
+
+
+<p><strong>1)  URL 方式</strong></p>
+
+
+<p><span style="color:#0000ff">这种方式是通过在url中传入语言的参数来确定国家版本。</span><br>
+应用场景就如访问了埃及国家域名，那你查看的默认是阿拉伯语。假如想使用其他语言浏览埃及域名下的页面（如英文），这时就需要使用URL方式。</p>
+
+
+<p>比如我们浏览网址：<a href="http://www.xxx.com.eg/?locale=en-EG">http://www.xxx.com.eg?locale=en-EG</a>。</p>
+
+
+<p>url方式传入的国家语言信息优先级要高于host方式等其他方式，为最高优先级。</p>
+
+
+<h3><strong>2)  COOKIE </strong><strong>方式</strong><strong> </strong></h3>
+
+
+<p><span style="color:#0000ff">通过请求页面传递的cookie信息（locale）来识别版本。</span></p>
+
+
+<p>这种方式是客户端首次浏览完页面后，服务端通过host方式确认了国家语言版本后，就会在客户端设置cookie。下面的浏览请求发送的http header都会带有该cookie信息。</p>
+
+
+<p>下面举例介绍下cookie方式的流程：</p>
+
+
+<p>首次访问通过host方式识别出国家语言信息后的，http Response header如下：</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321442876.jpg&amp;type=image%2Fjpeg&amp;width=574&amp;height=385"><img title="3" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321442876.jpg&amp;type=image%2Fjpeg&amp;width=574&amp;height=385" alt="" width="574" height="385"></a></p>
+
+
+<p>如上图所示，第一次请求后，客户端的cookie会被设置为ar-EG。<br>
+那接下来客户端发送的请求header中都会带有该cookie。<br>
+<a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=41321442945.jpg&amp;type=image%2Fjpeg&amp;width=580&amp;height=298"><img title="4" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=41321442945.jpg&amp;type=image%2Fjpeg&amp;width=580&amp;height=298" alt="" width="580" height="298"></a></p>
+
+
+<p>服务端的识别流程就如下：<br>
+1.  获取请求中的cookie，如果有国家语言信息，则进行下面<br>
+2.  判断获取的国家语言信息当前是否支持，如果支持则返回该语言下的版本，不支持在使用默认语言版本。</p>
+
+
+<h2>2.1.4 IP方式</h2>
+
+
+<p><span style="color:#0000ff">我们知道IP可以用来识别网络中的主机。而且IP地址段的划分是有规律的，每个国家有不同的地址段。<br>
+那我们就可以获取客户端的ip地址，通过IP地址库，来识别国家地区，并根据国家来设置语言。</span><br>
+该方式的识别流程就如下：<br>
+1.  获取请求客户端的ip<br>
+2.  根据ip，确定国家，使用国家的默认语言(和其他方式一起还能识别特定语言，如accept_lanuage明确表明请求语言，可以优先展示该语言)回显给客户端</p>
+
+
+<h2>2.1.5 Accept_language方式</h2>
+
+
+<p>“Accept_language”是为RFC2616的HTTP/1.1中14.4段定义的一个可选HTTP报头，通常被用来声明代表用户接收语言偏好。<br>
+<span style="color:#0000ff"> 当客户端请求的时候，会发送默认的accept_language，服务端获取该值，如果支持，就返回该语言的版本。</span></p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=51321443123.jpg&amp;type=image%2Fjpeg&amp;width=550&amp;height=396"><img title="5" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=51321443123.jpg&amp;type=image%2Fjpeg&amp;width=550&amp;height=396" alt="" width="550" height="396"></a></p>
+
+
+<p>该方式的识别流程就如下：<br>
+1.  获取请求客户端的Accept_language<br>
+2.  判断获取的国家语言信息当前是否支持，如果支持则返回该语言下的版本，不支持在使用默认语言版本。<br>
+这种方式有个缺点是：和用户使用的浏览器是版本有关。<br>
+如：浏览器是使用中文版的firefox，那发送header请求的时候，会自动加入。<br>
+Accept-Language zh-cn.<br>
+下图所示为中文版firefox的请求，那么如果用户有多个语言版本的浏览器，就会在不同版本的浏览器，出现不同的语言。（如：在中文版firefox中浏览显示中文界面，而在英文版firefox中浏览显示英文界面）<br>
+这种场景在双语国家出现的概率比较大，开发中可以根据自己的需求，灵活设置，把此种识别方式的优先级设置的低点（下面有优先级的详细介绍）。</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=61321443312.jpg&amp;type=image%2Fjpeg&amp;width=572&amp;height=339"><img title="6" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=61321443312.jpg&amp;type=image%2Fjpeg&amp;width=572&amp;height=339" alt="" width="572" height="339"></a></p>
+
+
+<h2>2.1.6 优先级</h2>
+
+
+<p>也许你可能问，我发送header请求的时候同时有host , cookie, url, accept_language, ip地址。<br>
+那最终按那个方式来确认客户端请求的国家语言呢？<br>
+那就需要设置各个方式的优先级，国际化识别的一般的顺序，可以如下:<br>
+<span style="color:#0000ff"> 1) URL方式<br>
+2)  COOKIE 方式<br>
+3)  Domain方式<br>
+4)  Accept_language方式<br>
+5)  IP方式</span><br>
+那为什么按上面的优先级呢？<br>
+url方式属于用户明确切换语言的情况，肯定需要最高的优先级。而cookie做为第二个可以减少识别的逻辑，使识别更加容易，复杂的识别逻辑只在客户端第一次请求时。<br>
+当然，可以根据自己的需求安排优先级。</p>
+
+
+<h1 style="font-size:20px">3 结束语</h1>
+
+
+<p>本文中，您了解了识别国家语言的几种方式。那么在开发大型web程序中可以灵活使用这些方式，就可以识别出国家语言的信息，进而开发出支持多种语言的web应用。</p>
+
+
+<p style="text-align:right">by wangtao</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>node.js-v0.8API解读（5）- Crypto（补完）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>node.js-v0.8API解读（5）- Crypto（补完）</h2>
+<p class="meta">03 Sep 2012</p>
+
+<div class="post">
+<h2>node.js-v0.8API解读（5）- Crypto（补完）</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2012-09-03 00:04:50</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/6011744020128211113692">http://snoopyxdy.blog.163.com/blog/static/6011744020128211113692</a></h3>
+
+<div>前一篇详细介绍了node的crypto模块的一些常用api，本文对此进行补完，主要介绍“迪菲－赫尔曼密钥交换”（Diffie–Hellman key exchange），它可以让双方在完全没有对方任何预先信息的条件下通过不安全信道创建起一个密钥。这个密钥可以在后续的通讯中作为<b><font color="#ff0000">对称密钥</font></b>来加密通讯内容。（具体对称密钥的作用请参阅我上篇文章：<a href="http://snoopyxdy.blog.163.com/blog/static/601174402012730105523656/">node.js-v0.8API解读（5）- Crypto</a>）<div><br></div><div><div>crypto.createDiffieHellman(prime_length)</div><div>crypto.createDiffieHellman(prime, [encoding])</div><div>用来创建DiffieHellman实例，可以传递一个素数的bit长度来生成或者传递另外一个素数来生成。</div><div><br></div><div>注意：以下DiffieHellman 简称dh（不是恶魔猎手哦！）</div><div><div><br></div><div>1、diffieHellman.getPrime([encoding]) 和 diffieHellman.getGenerator([encoding])</div></div><div>获得这个dh实例的素数，以参数encoding的形式， &#39;binary&#39;, &#39;hex&#39;, 或 &#39;base64&#39;. 默认是 &#39;binary&#39;。</div><div><br></div><div>2、diffieHellman.generateKeys([encoding])</div><div>生成dh的私有key和公有key，此方法根据指定的encoding返回公有key，公有key会传递给另外一方，用来生成<b><font color="#ff0000">对称密钥</font></b>用</div><div><br></div><div>3、diffieHellman.getPrivateKey([encoding]) 和 diffieHellman.getPublicKey([encoding])</div><div>顾名思义，返回私有key和公有key</div><div><br></div><div>4、diffieHellman.setPublicKey(public_key, [encoding]) 和 diffieHellman.setPrivateKey(public_key, [encoding])</div>顾名思义，设置公有key和私有key，这里nodeapi写错了。</div><div><br></div><div>5、diffieHellman.computeSecret(other_public_key, [input_encoding], [output_encoding])</div><div><b><font color="#ff0000">根据 对方的公有 key 算出对称密钥</font></b>，第二个参数是对方密钥输入的encoding，第三个是对称密钥输出的格式</div><div><br></div><div>6、crypto.getDiffieHellman(group_name)</div><div>生成一个预定义的dh交换key对象，支持如下几种：'modp1', 'modp2', 'modp5' (defined in RFC 2412) and 'modp14', 'modp15', 'modp16', 'modp17', 'modp18' (defined in RFC 3526)。</div><div>返回的对象就像dh实例一样，但是不允许去改变它的私有key和公有key。使用它的优点是通常就是直接使用它不用交换生成key，只需要在握手前使用一样的group系数即可，节约了大家的处理时间和握手时间。</div><div>看如下代码示例：</div><div><br></div><div><pre><div><div>var crypto = require('crypto');</div><div>var alice = crypto.getDiffieHellman('modp5');</div><div>var bob = crypto.getDiffieHellman('modp5');</div><div><br></div><div>alice.generateKeys();</div><div>bob.generateKeys();</div><div><br></div><div>var alice_secret = alice.computeSecret(bob.getPublicKey(), 'binary', 'hex');</div><div>var bob_secret = bob.computeSecret(alice.getPublicKey(), 'binary', 'hex');</div><div><br></div><div>/* alice_secret and bob_secret should be the same */</div><div>console.log(alice_secret == bob_secret);</div></div><p></p></pre></div><div><br></div><div>我们看下完整的一个Diffie–Hellman key exchange的示例：</div><div><br></div><div><pre><p>var crypto = require("crypto");<br>var assert = require("assert");<br><br>var diffieHellman1 = crypto.createDiffieHellman(256);<br>var prime1 = diffieHellman1.getPrime('base64');<br>var diffieHellman2 = crypto.createDiffieHellman(prime1, 'base64');<br>var key1 = diffieHellman1.generateKeys();<br>var key2 = diffieHellman2.generateKeys('hex');<br>var secret1 = diffieHellman1.computeSecret(key2, 'hex', 'base64');<br>var secret2 = diffieHellman2.computeSecret(key1, 'binary', 'base64');<br><br>assert.equal(secret1, secret2);</p></pre><br></div><div>crypto.randomBytes(size, [callback])</div><div>生成加密用的伪随机码，支持2种方法，当传递cb的话就是异步方法，不传cb就是同步方法：</div><div><pre><p>// async<br>crypto.randomBytes(256, function(ex, buf) {<br>  if (ex) throw ex;<br>  console.log('Have %d bytes of random data: %s', buf.length, buf);<br>});<br><br>// sync<br>try {<br>  var buf = crypto.randomBytes(256);<br>  console.log('Have %d bytes of random data: %s', buf.length, buf);<br>} catch (ex) {<br>  // handle error<br>}</p></pre><br></div><div>crypto.pbkdf2(password, salt, iterations, keylen, callback)</div><div>异步的方法，通过伪随机码来加密迭代数次，利用sha1算法生成一个更加强壮的加密串。我们结合上面的 crypto.randomBytes 来生成一个强壮的加密串。</div><div>代码如下：</div><div><br></div><div><div><pre><p></p><div>crypto.randomBytes(128, function (err, salt) {<br>    if (err) { throw err;}<br>    salt = new Buffer(salt).toString('hex');<br>    crypto.pbkdf2('123456', salt, 7000, 256, function (err,hash) {<br>        if (err) { throw err; }<br>        hash = new Buffer(hash).toString('hex');<br>        console.log(hash);<br> })<br>})</div><p></p></pre></div></div><div><br></div><div>每个人运行上面的代码输出都不一样。（本例子源自node-cookbook，真是本好书）</div><div><br></div><div>相关阅读：</div><div>博客原文：<a href="http://snoopyxdy.blog.163.com/blog/static/601174402012730105523656/">node.js-v0.8API解读（5）- Crypto</a></div><div>cnode社区：<a rel="nofollow" href="http://cnodejs.org/topic/504061d7fef591855112bab5">浅谈nodejs中的Crypto模块</a></div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

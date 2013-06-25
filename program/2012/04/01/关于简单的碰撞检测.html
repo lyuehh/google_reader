@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>关于简单的碰撞检测</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>关于简单的碰撞检测</h2>
+<p class="meta">01 Apr 2012</p>
+
+<div class="post">
+<h2>关于简单的碰撞检测</h2>
+
+<h3>by 岑安</h3>
+
+<h3>at 2012-03-31 23:41:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/hongru/archive/2012/03/31/2427590.html">http://www.cnblogs.com/hongru/archive/2012/03/31/2427590.html</a></h3>
+
+<p>【前言】</p>
+
+
+<p><br><p>这篇博文旨在给自己做个记录和备忘，同时希望也能给有这方面简易碰撞模型需求的同学一点点参考价值。</p><br><p>【关于像素级别检测】</p><br><p>前一阵有同学问我说能否做到像素级别的碰撞检测，做过类似碰撞检测的同学应该清楚，按照我们最常规的想法，假如要检测一个运动的物体和一条线之间是否有碰撞，最简单的判断条件，就是看当前帧，这个物体的位置，是否超过的我们的界定范围...</p><br><p>但这样简单的判定确实是有问题的，我们举一个实际一点的例子。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033120262119.png" alt=""></p><br><p>假如 小球 从 a 点向 c 点的方向 落下。外面的黑框为我们所示的边界，那么，我们想要小球在碰到边界的时候反弹... 那么我们该怎么做呢？</p><br><p>可能有同学会迫不及待说了，这还不简单，一个 条件语句搞定： 假设 小球的 纵向 速度 为 vy，那么在循环帧里判断 小球当前的 位置， 当发现 位置 低于 边界 的时候 vy = -vy 就可以了。</p><br><p>没错，这的确是最简单的判别 方法。 但是也是漏洞百出的 办法。 在复杂度不高的情况下 勉强可以胜任需求。</p><br><p>如果我们把要求升级一点。小球每反弹一次，它的纵向 速度值 降为原来的 0.5 ，那么会出现什么情况下。我们假设 每个循环帧的间隔为dt，我下面画出 小球 在临界碰撞 前后3帧 位置的示意图， 大家看看就会发现问题了。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033120390095.png" alt=""></p><br><p>假设a,b,c 三点为小球 1，2，3帧的位置，那么我们按上面说的 检测方法， 小球在b点的时候检测 发现 小球位置 已经超出 界定范围了，那么 vy 反向，同时 ，vy的数值 减半，那么可想而知 ，再下一帧的位置 就会大约是在 c点的位置。</p><br><p>那么按照上面说的检测方法，问题就来了，在 c 点，检测发现，小球位置依然在 界定范围外， 又被判定为 “碰撞” ，速度反向， 那么可想而知，以此类推， 这个小球 就永远也弹不起来了... 坑爹。</p><br><p>好吧，为了绕过这种问题，肯定有同学都想到了，我们的碰撞检测 再 加上 对于速度方向的判断 不就可以了吗？</p><br><p>没错，对于这个模型，再加上一个速度方向的判断，也可以勉强的解决问题。 不过话说回来，这样不觉得有些别扭吗？ 而且其实反弹的点也不对，正确的应该是在红色交点 o 处反弹的，结果按照上面的思路变成 在 b 点反弹了.... 还是有点坑爹。</p><br><p> 那么怎么把 反弹点从b点移到o点呢？</p><br><p>可能又有同学会说了，你这不就回到最开始的问题了吗，要精确的得到 反弹点 o 不就需要所谓的 像素级判断了吗？理论上是不可能的....</p><br><p>确实，如果按照上面的思路是不可能的。但是换个思路，一切就有戏了。</p><br><p>【关于线段相交】</p><br><p>回到正题，上面的例子已经表明 那种 简单的 利用当前位置来判断 碰撞的模型 是不太靠谱的。 那么换个思路，按小球的运行轨迹 与 边界 的相交性 来判断，是否可行呢？<br>什么意思呢？就是说 我们 把小球 当前帧 和 下一帧 的位置 连接起来， 变成一条线段， 然后跟 需要进行检测的 边界 这条线段 放到一起，碰撞问题 就变成 数学中 简单的 【二维平面中两条线段相交问题】了。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033122354328.png" alt=""></p><br><p>同样，我们以 a, b, c 三点来表示小球 前后 3 帧的位置，中间那条黑色的实线表示边界N, 那么 在第一帧 到第二帧， 也就是 a -&gt; b 的运行过程中，线段ab 和边界N 明显是没有交点的，那么 自然可以认为 是没有碰撞的。</p><br><p>而由b-&gt;c 的过程中，可以发现，线段bc 和 N 就有 交点 o 了，只要我们有办法 证明 bc 和N 相交，并且求出 这个交点 o 的位置，那么 就可以证明 小球在 b -&gt; c 的运行过程中，必然和边界N 碰撞。同时 交点 o 即为反弹点。</p><br><p>通过这种方式来判断碰撞关系的话，就不会说因为小球的速度 过大 或者 FPS 过小 而造成 碰撞检测失效的情况了，而且还能精确的得到反弹点。甚至反弹角度。</p><br><p>好吧，接下来，咋们有了数学模型，就是所谓的 关于两条线段 的相交问题。这个问题怎么处理呢。</p><br><p>判断已知的两条线段是否相交的办法，我这里提供两个。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>1. 分别求出 两条线段 的 二维 表示公式 如：线段A： y= a1<em>x + b1;  线段B： y=a2</em>x+b2; <br>然后把线段A 的两个端点 分别 带到 线段B 的公式里。<br>我们知道，把一个点坐标 带到 一条直线 公式中， a2<em>x + b2 -y ； 如果等于0 ，那么表示点在线上，如果小于0表示点在线的一方， 大于0 表示在另一方。<br>那么 当 两个端点 带到 公式里面的结果 ，一正一负 就可以表示 这条线段 的两个端点 分别在这条直线的两边。<br></pre><br></div><br><p>如：</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033122533916.png" alt=""></p><br><p>把 a， b点分别 带到 线段N 所在 的直线公式中， 如果 结果 一正一负 就可以 表示 a, b 分布在N 的两边，</p><br><p>但是光把 a, b 戴到N中 去算 是不够的，因为 还有这种情况，</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033122563068.png" alt=""></p><br><p>因为是线段嘛，所以 还要把另一条线段 的 端点 再带到 自己所在直线 的公式 上，按同样的方式 进行计算， 得到 另一条线段 端点 也分布在 相对应的 线段两边 的时候， 才能保证线段 是相交的。</p><br><p>另外一种判断 两条 线段 是否相交的思路，可以用 向量外积来判断。关于外积，如果已经还给数学老师的同学，可以百度或者google一下。简单的理解，其实 外积本身 也就是带方向的向量， 数值上等于 两条向量组成的三角形的外接矩形面积。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033123060978.png" alt=""><br>我们可以简单的理解为，我们先求 线段ab 的两个端点 相对于 cd 的“外积” 。 比如， 由 a,c,d 三点组成的三角形的外积，得到的结果是一个带方向的数值，我们假定为 S_acd, 同样的方式 得到 b点 和 线段cd 组成的三角形 外积 S_bcd 。 <br>数学上可以证明，如果a， b 两点分布在 cd 的两侧的话，那么 S_acd 和S_bcd 一定是反向的。即 S_acd</em>S_bcd &lt; 0;</p><br><p>同理，为了避免类似：</p><br><p><img src="http://pic002.cnblogs.com/images/2012/160412/2012033123145366.png" alt=""></p><br><p> 这种， 虽然 S_abc * S_abd &lt; 0 , 但是 S_acd<em>S_bcd &gt; 0;</p><br><p>同样不能判定相交。</p><br><p>所以必须是：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>S_abc * S_abd &lt; 0<br>S_acd * S_bcd &lt; 0<br></pre><br></div><br><p>同时满足时，才能证明 ab 和 cd 两条线段相交。</p><br><p>关于二维坐标系三角形外积的求法，我这里给出简单的代码：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>/</em> == Helper == <em>/<br>// 用于帮助检测 碰撞<br>/**<br> * Helper area calculation function. Returns 2 X the area.<br> * 三角形外积<br> </em><br> * @param  {Vec2} pointA<br> * @param  {Vec2} pointB<br> * @param  {Vec2} pointC<br> * @return {number}<br> <em>/<br>function signed2DTriArea(pointA, pointB, pointC) {<br> return ((pointA.x - pointC.x) * (pointB.y - pointC.y) - (pointA.y - pointC.y) * (pointB.x - pointC.x));<br>}<br></pre><br></div><br><p>有了上面的知识，就可以得出两条线段相交 的判定 方法 和交点了：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>/**<br> * Helper intersection function. Checks if two lines intersect.<br> </em><br> * @param {LineSegment2} a Line A<br> * @param {LineSegment2} b Line B<br> * @return {Object} An object is returned with intersection point and time if they intersect, otherwise null.<br> * 判断两条线段是否相交，如果是，返回交点，和相交比例， 否则返回null<br> <em>/<br>function intersectLineSegments(a, b) {<br>var a1 = signed2DTriArea(a.a, a.b, b.b);<br>var a2 = signed2DTriArea(a.a, a.b, b.a);<br>if (a1 * a2 &lt; 0) {<br>var a3 = signed2DTriArea(b.a, b.b, a.a);<br>var a4 = a3 + a2 - a1;<br>if (a3 * a4 &lt; 0) {<br>var intersectionTime = a3 / (a3 - a4);<br><br>// intersectionPoint = a.a + intersectionTime * (a.b - a.a);<br>var intersectionPoint = new Vec2(a.b.x, a.b.y);<br>intersectionPoint.sub(a.a);<br>intersectionPoint.mul(intersectionTime);<br>intersectionPoint.add(a.a);<br><br>return {intersectionPoint: intersectionPoint,intersectionTime : intersectionTime};<br>}<br>}<br><br>return null;<br>}<br></pre><br></div><br><p>【关于线段类】</p><br><p>当然，我们要用到线段的概念，那么最好抽象出一个 线段的 类， 我这里也提供在线段处理中常用的几个方法，比如</p><br><ul><br><li><span>获取线段上 到指定点p 最短距离的点</span></li><br><li><span>获取距离p点最短距离的点 的 比例</span></li><br><li><span>得到 p 点到线段的最短距离</span></li><br></ul><br><p>类似的，可以看看 这个 demo 就知道 是怎么回事了。<a href="http://hongru.github.com/proj/laro/test/lineSegment.test.html">http://hongru.github.com/proj/laro/test/lineSegment.test.html</a> （需canvas支持，里面几个端点都是可以拖动的）。　　</p><br><p>　　</p><br><p>【关于 由 多条线段组成的不规则凸起物的碰撞】</p><br><p>有了针对运动物体相对于 一条 线段 碰撞的检测后， 那么 由多条线段组成的 凸起物 也就顺着解决就行，无非就是 将 这种 由多条线段组成的 凸起物 按每条边分解成 单一的 向量，分别检测 就行。<br>以下是 一个圆 相对于 不规则突起物 的碰撞检测判断代码： </p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>/**<br> * Test a sweep-circle against convex shape.<br> </em><br> * @param {Circle}      circle        Circle used in test<br> * @param {Vec2}        movement      Vector describing movement<br> * @param {ConvexShape} shape         Shape to be tested against<br> * @return {Collisions}               Collision objects that holds both contact points and intersection time.<br> * 判断一个移动的圆 和 不规则凸起形状的碰撞相交关系，如果相交，返回关联的点和 相交比例<br> * convex shape 的 points 顶点顺序 需要是逆时针排列的，这样可以避免在内部碰撞的检测，同时movement反向的也可以直接跳出<br> */<br>function getCollisionShape(circle, movement, shape) {<br>var contactPoints = [],<br>SWEEP_EPSILON = pkg.SWEEP_EPSILON;<br><br>var foundOne = false;<br>var minIntersectionTime = Number.MAX_VALUE;<br>var localIntersectionTime = Number.MAX_VALUE;<br><br>var i = 0;      // Used for iteration<br>var pt;         // Handle during loops<br>var contact;    // Placeholder for eventual contact point<br><br>if (shape.numOfPoints() &gt; 1) {<br>pt = shape.points;<br>for (i = 0; i &lt; pt.length; i++) {<br>var last = pt[i];<br>var curr = i+1 === pt.length ? pt[0] : pt[i+1];<br><br>// last &amp; curr is now start and end points of the line.<br>// 远离<br>var normal = new Vec2(-(curr.y - last.y), curr.x - last.x);<br>if (0 &lt; normal.dot(movement)) {<br>continue; <br>}<br><br>normal.normalize();<br><br>// last = last + normal * (circle.r + SWEEP_EPSILON)<br>var <em>last = new Vec2(normal.x, normal.y);<br></em>last.mul(circle.r + SWEEP_EPSILON);<br><em>last.add(last);<br><br>// curr = curr + normal * (circle.r + SWEEP_EPSILON)<br>var </em>curr = new Vec2(normal.x, normal.y);<br><em>curr.mul(circle.r + SWEEP_EPSILON);<br></em>curr.add(curr);<br><br>var endPos = new Vec2(circle.c.x, circle.c.y);<br>endPos.add(movement);<br><br>var localContact = new Vec2();<br><br>var res = intersectLineSegments(new LineSegment2(circle.c, endPos), new LineSegment2(<em>last, </em>curr));<br>if (res) {<br>if (res.intersectionTime &lt; minIntersectionTime) {<br>foundOne = true;<br>minIntersectionTime = res.intersectionTime;<br><br>// localContact - normal * circle.r<br>var <em>lc = new Vec2(normal.x, normal.y);<br></em>lc.mul(circle.r);<br><br>res.intersectionPoint.sub(<em>lc);<br><br>contact = new CollisionContact(res.intersectionPoint, normal, 0, shape.user, shape.material);<br>}<br>}<br>}<br>}<br><br><br>if (!foundOne) {<br>pt = shape.points;<br>for (i = 0; i &lt; pt.length; i++) {<br>localIntersectionTime = Number.MAX_VALUE; <br><br>// Multiply the length of the ray to make sure that the spheres won't go<br>// through each other at extremely low speeds<br>var </em>mov = new Vec2(movement.x, movement.y);<br><em>mov.mul(1.1);<br>if (intersectRaySphere(new Ray2(circle.c, </em>mov), new Circle(pt[i], circle.r))) {<br>localIntersectionTime = closure();<br>if (localIntersectionTime &lt; minIntersectionTime) {<br>// Got collision.<br>foundOne = true;<br>minIntersectionTime = localIntersectionTime;<br><br>// circle.c + localIntersectionTime * movement - pt[i]<br>var <em>normal = new Vec2(movement.x, movement.y);<br></em>normal.mul(localIntersectionTime);<br><em>normal.sub(pt[i]);<br></em>normal.add(circle.c);<br><em>normal.normalize();<br><br>// Contact point is the vertex.<br>// Normal is vector from corner to position of sphere at collision time.<br>contact = new CollisionContact(pt[i], </em>normal, 0, shape.user, shape.material);<br>}<br>}<br>}<br>}<br><br><br>if (foundOne) {<br>contactPoints.push(contact);<br>return new Collisions(contactPoints, minIntersectionTime);<br>}<br>else {<br>return null;<br>}<br>};<br></pre><br></div><br><p>其他的代码我就不多贴了，相信明白了原理之后，大家都能自己写出类似功能的代码。<br>我也就不献丑了。</p><br><p>最后把另外两个 用上面的方式 进行碰撞检测 的demo 贴出来：（都需要canvas支持）<br><a href="http://hongru.github.com/proj/laro/test/laro.collision.test2.html">http://hongru.github.com/proj/laro/test/laro.collision.test2.html</a>　　<br><a href="http://hongru.github.com/proj/laro/test/laro.collision.test3.html">http://hongru.github.com/proj/laro/test/laro.collision.test3.html</a></p><br><p>【注：test3 demo 引入的弹性碰撞 和 非弹性碰撞的概念， 这个后面再说】</p><br><p> </p><br><p>【后记】<br>代码功能越多，复杂度越高，必然导致计算量增加。 更重要的是找一个权衡吧。<br>PS，吐槽下，所谓的弹性工作时间没了，明天要9点前到公司，坑爹，要早起了。<br>今天早点睡吧，各位晚安 : ) </p><img src="http://www.cnblogs.com/hongru/aggbug/2427590.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/hongru/archive/2012/03/31/2427590.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>模块加载器获取URL的原理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>模块加载器获取URL的原理</h2>
+<p class="meta">12 Nov 2011</p>
+
+<div class="post">
+<h2>模块加载器获取URL的原理</h2>
+
+<h3>by lifesinger</h3>
+
+<h3>at 2011-11-11 22:05:35</h3>
+
+<h3>original <a href="http://lifesinger.wordpress.com/2011/11/11/get-url-in-module-loader/">http://lifesinger.wordpress.com/2011/11/11/get-url-in-module-loader/</a></h3>
+
+<h2>浏览器端的模块管理</h2>
+
+
+<p>JavaScript 构建的应用越来越复杂，为了提高代码的可维护性，第一步是拆分为多个文件：</p>
+
+
+<pre>
+a.js
+b.js
+c.js
+...
+</pre>
+
+
+<p> <br>
+文件拆开是第一步，为了彼此能互相调用，但又不污染全局造成潜在冲突，于是聪明的程序员们想出了用对象来模拟命名空间：</p>
+
+
+<pre>
+// a.js:
+X = {};
+X.a = {...};
+
+// b.js:
+X.b = {...};
+
+// c.js:
+X.c = {...};
+...
+</pre>
+
+
+<p> <br>
+这种命名空间得自己维护，当层级达到三层及其以上时，维护起来并不轻松，比如 YAHOO.widget.TreeView。于是出现了类似 YUI3 的扁平方式：</p>
+
+
+<pre>
+// 定义模块
+YUI.add('a', factory);
+
+// 加载模块
+YUI().use('a', function(Y) {
+  // 调用模块
+  Y.a.doSomething();
+});
+</pre>
+
+
+<p> <br>
+这种方式解决了不少问题，比如依赖加载、模块沙箱、命名空间。但使用时，用户的记忆负担还是比较重，比如：</p>
+
+
+<pre>
+YUI().use('dd-drop', function(Y) {
+  Y.DD...
+});
+</pre>
+
+
+<p> <br>
+得记住 dd-drop 和 Y.DD 的对应关系。当模块很多时，经常要查文档。<br>
+<span></span></p>
+
+
+<h2>服务器端的模块管理</h2>
+
+
+<p>上面是浏览器端的发展。同一时期，服务端 JavaScript 也悄然兴起。开始有了 CommonJS/Modules 1.0 规范：</p>
+
+
+<pre>
+// math.js:
+export.add = function(){...}
+
+// program.js:
+var math = require('./math');
+math.add(1, 2);
+</pre>
+
+
+<p> <br>
+通过 exports 和 require, 就可以向外提供模块和向内引入模块。在服务端，可即时读取文件，因此 require 是同步的，很方便。</p>
+
+
+<p>CommonJS/Modules 1.0 用非常简单的规则，征服了 NodeJS 等社区。简单意味着记忆负担少，简单意味着清晰，简单意味着受众广，等等。</p>
+
+
+<p>CommonJS 在服务端取得了很高的认可，当迁移到浏览器端时，由于浏览器的两大限制：</p>
+
+
+<ol>
+<li>Context: 不通过包裹，很难做到上下文环境的限制。</li>
+<li>Distance: 文件不能像服务端一样即时读取，需要远程链接。</li>
+</ol>
+
+
+<p>加上浏览器的同源策略等限制，导致 CommonJS/Modules 1.0 规范在浏览器端只是看起来很美。</p>
+
+
+<p>于是 CommonJS 社区展开了大讨论，基本上形成了两大派系，其中一派是 AMD 规范：</p>
+
+
+<pre>
+// a.js:
+define(['./b'], function(B) {...});
+
+// main.js:
+require(['a.js'], function(A) {...});
+</pre>
+
+
+<p> </p>
+
+
+<p>RequireJS 与 YUI3 有类似的地方，YUI3 是将加载的依赖模块放在 Y 上，AMD 是直接作为参数传入。很显然，AMD 的记忆负担变轻了些。</p>
+
+
+<p>除了 AMD 规范，CommonJS 的另一大派系，有 Wrappings 和 Modules/2.0 等规范。（注意：CommonJS 的模块规范里，只有 1.x 是正式版，其他都还在讨论中，未成定论。AMD 则脱离了 CommonJS 社区，成为独立的社区发展。）</p>
+
+
+<p>Wrappings 等规范与 AMD 最大的不同点在于：</p>
+
+
+<ol>
+<li>Wrappings 尽量保持与 Modules 1.x 的兼容。</li>
+<li>Wrappings 的哲学是尽量保持简单，用最小的代价、最少的 API 来实现浏览器端的模块规范。</li>
+<li>Wrappings 尽量保持“懒”。能不执行的先不执行，需要时才初始化。</li>
+</ol>
+
+
+<p>举个例子：</p>
+
+
+<pre>
+// a.js:
+define(function(require, exports, module) {
+  var b = require('./b');
+  //...
+});
+</pre>
+
+
+<p> <br>
+在 Wrappings 规范里，除了外层包裹，里层代码绝大部分和服务端是一样的。</p>
+
+
+<p>RequireJS 也支持一种 CommonJS Simple Wrapper 规范，只是长得一样，内蕴上是差异比较大的，比如：</p>
+
+
+<pre>
+// a.js:
+define(function(require, exports, module) {
+  alert(2);
+});
+
+// b.js:
+define(function(require, exports, module) {
+  alert(1);
+  var a = require('./a');
+});
+</pre>
+
+
+<p> </p>
+
+
+<p>在 AMD 和 Wrappings 等规范里，a 模块都会提前加载好，但对于什么时候执行 a 模块的 factory 代码，两派存在很大的差异。AMD 里，运行上面的代码，会先弹出 2, 然后才是 1. 在 Wrappings 等规范里，a 模块只是提取加载好，factory 的运行，会延迟到第一次 require 时，因此会先弹出 1, 然后才是 2, 和服务端的逻辑是一样的。</p>
+
+
+<p>有点扯远了，萝卜白菜，各有所爱。我个人更喜欢 NodeJS 遵守的 CommonJS/Modules 1.x 规范，以及简单 Wrappings 模式。</p>
+
+
+<p>回到本篇博客的正题。无论是 AMD 还是 Wrappings 规范，从 DRY 的原则上讲，都支持匿名 define 模块（这和 YUI3 要显式指明模块名是不同的），都是匿名模块了，那如何引用呢？肯定得有 id 的，这 id 就是 URI. 对于浏览器端来说，就是 URL. 模块的 URL 就是模块的唯一标识，很简单的道理，但能将此固化为标准并加以实现就不容易了。</p>
+
+
+<h2>串行获取方案</h2>
+
+
+<p>这是最简单的方式，一次只下载一个：</p>
+
+
+<pre>
+// 在执行 define 时：
+var mod = {...};
+
+// 在加载 script 时：
+getScript(url, function() {
+  // 保存模块
+  save(url, mod);
+
+  // 加载下一个模块
+  next();
+});
+</pre>
+
+
+<p> <br>
+这样，每次只加载一个模块，url 的获取非常轻松，YUI3 早期也是这种模式。</p>
+
+
+<h2>现代浏览器下的获取方案</h2>
+
+
+<p>现代浏览器（排除IE6-8）下，有一个很强的规律：</p>
+
+
+<p><strong>脚本 a 执行完后，会立刻触发 a 的 onload 事件，中间不会被打断（除非被 alert 等操作强行打断）。</strong></p>
+
+
+<p>由于采用包裹的方式，alert 这种中断我们就不用考虑了。利用这个规律，很容易实现URL的获取：</p>
+
+
+<pre>
+// 在执行 define 时：
+var mod = {...};
+
+// 在加载 script 时：
+getScript(url, function() {
+  // 保存模块
+  save(url, mod);
+});
+</pre>
+
+
+<p> <br>
+看起来和串行方案的唯一区别是没有 next(), 其实上复杂很多，a.js 和 b.js 的下载都是并发的，要通过递归回调等方式来处理依赖加载。</p>
+
+
+<h2>IE6-8 下的获取方案</h2>
+
+
+<p>如果这个世界上没有 IE，那么，会很糟糕的（必须承认 IE 对 Web 的伟大贡献），但现在 IE 的确成为了前端巨大的负担。在 IE6-8 下，脚本执行和脚本onload事件之间没有紧相邻的规律，比如：</p>
+
+
+<pre>
+// 记 a.js 的执行为 A, onload 为 a
+// 记 b.js 的执行为 B, onload 为 b
+
+// 同时加载 a.js 和 b.js 时，有可能是 ABab, 而不总是 AaBb
+</pre>
+
+
+<p> </p>
+
+
+<p>这个看起来很小的麻烦，要解决却是大麻烦。CommonJS 社区讨论了好久，后来出现了一种解决方案：</p>
+
+
+<pre>
+// 在执行 define 时：
+var mod = {...};
+var url = getInteractiveScript();
+save(url, mod);
+</pre>
+
+
+<p> <br>
+通过 getInteractiveScript, 在 define 执行时，就可获取到当前正在执行的脚本文件路径：</p>
+
+
+<pre>
+funcition getInteractiveScript() { 
+  var scripts = head.getElementsByTagName(&#39;script&#39;);
+
+  for (var i = 0; i &lt; scripts.length; i++) {
+    var script = scripts[i];
+    if (script.readyState === &#39;interactive&#39;) {
+      return script;
+    }
+  }
+  return null;
+</pre>
+
+
+<p> <br>
+正在执行的脚本，其 readyState 属性是 interactive. 这真是天才的发现，一切看起来很完美。</p>
+
+
+<p>然而，当加载的文件是浏览器缓存好的文件时，IE的读取是“瞬间的”，这个瞬间绝对会秒杀你的想象，不光不会有 interactive 状态，还会像服务器一样“同步操作”：</p>
+
+
+<pre>
+// 在执行 define 时：
+var mod = {...};
+
+// 在加载 script 时：
+var urlCache = url;
+getScript(url, function() {
+    save(urlCache, mod);
+});
+urlCache = null;
+</pre>
+
+
+<p> <br>
+getScript 是异步的，但其 callback 里，却可“同步”获取到 urlCache 的值，诡异又强悍的 IE！</p>
+
+
+<h2>IE下的总方案</h2>
+
+
+<p>对于 IE9，和现代浏览器一样，采用紧相邻规律就行。</p>
+
+
+<p>对于 IE6-8，先用 getInteractiveScript 的方案获取，获取不到时，再用同步 cache 的获取方式，倘若还是获取不到，则进一步降级到紧相邻规律（虽然不严格遵守，但大部分情况下，IE6-8 还是符合这一规律的）。</p>
+
+
+<p>注意：IE6-8 下，虽然用了三种方式组合获取，但依旧可能获取失败。并行加载的文件越多，获取失败的概率越大，主要是 IE6 有问题。原因很复杂，尚未分析出具体规律。（好在概率很低，目前只发现 IE6 下，在获取没有设置缓存头的动态 js 文件时，会经常获取不到正确的 URL。）</p>
+
+
+<p>目前 RequireJS、BravoJS、SeaJS 等等模块加载器采用的都是这个方案，可靠性不是 100%, 但还是非常值得信赖的，特别是考虑上线时还会经过打包优化。</p>
+
+
+<h2>Army 的方案</h2>
+
+
+<p>Army 最近做了一个很有趣的测试：<a href="http://army8735.org/2011/11/10/1019.html">onload次序测试</a>，发现虽然无法保证 AbBbCc, 但执行的顺序和 onload 的顺序彼此是一致的，比如：ACaBcb. 如果大写字母的顺序是 ACB，则小写字母的顺序一定是 acb.</p>
+
+
+<p>利用这个规律，可以很方便获取到 URL:</p>
+
+
+<pre>
+// 在执行 define 时：
+var mod = {...};
+defQueque.push(mod);
+
+// 在加载 script 时：
+getScript(url, function() {
+  save(url, defQueque.shift());
+});
+</pre>
+
+
+<p> <br>
+如果能严格做到一个文件一个模块，采用这种方式是很完美的。注意：Army 博客中的测试数据显示还是有极少失败的概率，目前确切原因未知。但这个方法本身的确很好，是所有浏览器都遵守的统一规律。</p>
+
+
+<h2>更复杂的现实情况</h2>
+
+
+<p>API 的设计要尽可能简单，但另一方面，对使用时的场景又得尽可能的包容。在 Army 的方案中，如果有两个文件：</p>
+
+
+<pre>
+// a.js 是打包部署后的：
+define(true, 'http://path/to/a.js', ...); 
+// 在 army 方案中，打包后，会在 define 的参数前面添加两个参数来指明
+
+// b.js 是新开发的，尚未打包的：
+define(function(){...});
+
+// 同时使用时：
+use(["a.js", "b.js"], callback);
+</pre>
+
+
+<p> <br>
+这种情况是很现实的，比如在老产品上开发新功能。</p>
+
+
+<p>这时，a.js 不会给 defQueue 添加新项，b.js 则会给 defQueque 添加一项。但在 getScript 的 callback 中，比如 a.js 的 callback 里，是不知道 a.js 有无给 defQueue 添加项，这样信息是缺失的，会导致 defQueque.shift() 出来的与当前 callback 不对应而出现错乱。</p>
+
+
+<p>面对现实情况，看似完美的方案，困境重重。（谁若简单的好策略，热烈欢迎交流回复，很希望能找出完满的方案。）</p>
+
+
+<h2>小结</h2>
+
+
+<p>困了，睡觉。今天的困惑，有可能是明天的希望。</p>
+
+
+<p><br>  <img alt="" border="0" src="http://stats.wordpress.com/b.gif?host=lifesinger.wordpress.com&amp;blog=38365&amp;post=619&amp;subd=lifesinger&amp;ref=&amp;feed=1" width="1" height="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

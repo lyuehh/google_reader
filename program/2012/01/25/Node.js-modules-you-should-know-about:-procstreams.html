@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Node.js modules you should know about: procstreams</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Node.js modules you should know about: procstreams</h2>
+<p class="meta">25 Jan 2012</p>
+
+<div class="post">
+<h2>Node.js modules you should know about: procstreams</h2>
+
+<h3>by Peteris Krumins</h3>
+
+<h3>at 2012-01-25 01:49:17</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/catonmat/~3/VpZVHQUt9tw/nodejs-modules-procstreams">http://feedproxy.google.com/~r/catonmat/~3/VpZVHQUt9tw/nodejs-modules-procstreams</a></h3>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/d2n91nq9qmj6vqrru8boa895t4/468/60#http%3A%2F%2Fwww.catonmat.net%2Fblog%2Fnodejs-modules-procstreams" width="100%" height="60" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p><img src="http://www.catonmat.net/images/nodejs-modules/nodejs-logo.png" alt="node logo" align="left">Hello everyone! This is the 15th post in the <a href="http://www.catonmat.net/blog/nodejs-modules-dnode/">node.js modules you should know about</a> article series.</p>
+
+
+<p>The first post was about <a href="http://www.catonmat.net/blog/nodejs-modules-dnode/">dnode</a> - the freestyle rpc library for node, the second was about <a href="http://www.catonmat.net/blog/nodejs-modules-optimist/">optimist</a> - the lightweight options parser for node, the third was about <a href="http://www.catonmat.net/blog/nodejs-modules-lazy/">lazy</a> - lazy lists for node, the fourth was about <a href="http://www.catonmat.net/blog/nodejs-modules-request/">request</a> - the swiss army knife of HTTP streaming, the fifth was about <a href="http://www.catonmat.net/blog/nodejs-modules-hashish/">hashish</a> - hash combinators library, the sixth was about <a href="http://www.catonmat.net/blog/nodejs-modules-read/">read</a> - easy reading from stdin, the seventh was about <a href="http://www.catonmat.net/blog/nodejs-modules-ntwitter/">ntwitter</a> - twitter api for node, the eighth was about <a href="http://www.catonmat.net/blog/nodejs-modules-socketio/">socket.io</a> that makes websockets and realtime possible in all browsers, the ninth was about <a href="http://www.catonmat.net/blog/nodejs-modules-redis/">redis</a> - the best redis client API library for node, the tenth was on <a href="http://www.catonmat.net/blog/nodejs-modules-express/">express</a> - an insanely small and fast web framework for node, the eleventh was <a href="http://www.catonmat.net/blog/nodejs-modules-semver/">semver</a> - a node module that takes care of versioning, the twelfth was <a href="http://www.catonmat.net/blog/nodejs-modules-cradle/">cradle</a> - a high-level, caching, CouchDB client for node, the thirteenth was <a href="http://www.catonmat.net/blog/nodejs-modules-jsonstream/">jsonstream</a> - streaming JSON parsing library, the fourteenth was about <a href="http://www.catonmat.net/blog/nodejs-modules-everyauth/">everyauth</a> - a module for authenticating your webapp with facebook, twitter, etc.</p>
+
+
+<p>Today I'm gonna introduce you to <a href="https://github.com/polotek/procstreams">procstreams</a> by <a href="http://marcorogers.com/blog/">Marco Rogers</a> aka <a href="https://twitter.com/#!/polotek">polotek</a>. Procstreams is a little experiment with shell scripting in node. Here is an example:</p>
+
+
+<div><pre><span>var</span> <span>$p</span> <span>=</span> <span>require</span><span>(</span><span>&#39;procstreams&#39;</span><span>);</span>
+
+<span>$p</span><span>(</span><span>&#39;cat lines.txt&#39;</span><span>).</span><span>pipe</span><span>(</span><span>&#39;wc -l&#39;</span><span>)</span>
+  <span>.</span><span>data</span><span>(</span><span>function</span><span>(</span><span>stdout</span><span>,</span> <span>stderr</span><span>)</span> <span>{</span>
+      <span>console</span><span>.</span><span>log</span><span>(</span><span>stdout</span><span>);</span> <span>// prints number of lines in the file lines.txt</span>
+  <span>});</span>
+</pre>
+</div>
+
+
+<p>This example executes the shell command <code>cat lines.txt</code>, then pipes the output to <code>wc -l</code>, and then collects the output through a callback that prints the number of lines in <code>lines.txt</code></p>
+
+
+<p>Here is another example:</p>
+
+
+<div><pre><span>var</span> <span>$p</span> <span>=</span> <span>require</span><span>(</span><span>&#39;procstreams&#39;</span><span>);</span>
+
+<span>$p</span><span>(</span><span>&#39;mkdir foo&#39;</span><span>)</span>
+  <span>.</span><span>and</span><span>(</span><span>&#39;cp file.txt foo/&#39;</span><span>)</span>
+  <span>.</span><span>and</span><span>(</span><span>&#39;rm file.txt&#39;</span><span>)</span>
+    <span>.</span><span>on</span><span>(</span><span>&#39;exit&#39;</span><span>,</span> <span>function</span><span>()</span> <span>{</span>
+      <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;done&#39;</span><span>);</span>
+    <span>});</span>
+</pre>
+</div>
+
+
+<p>This example executes <code>mkdir foo</code>, and if that succeeds, it executes <code>cp file.txt foo/</code>, and if that succeeds, it executes <code>rm file.txt</code>. In shells scripting you'd write this as:</p>
+
+
+<pre>
+mkdir foo &amp;&amp; cp file.txt foo/ &amp;&amp; rm file.txt
+</pre>
+
+
+<p>The <code>.and(...)</code> is the same as <code>&amp;&amp;</code> in the shell scripting.</p>
+
+
+<p>Procstreams also support <code>.or(...)</code>, which is <code>||</code> in the shell and <code>.then(...)</code>, which is <code>;</code> in the shell.</p>
+
+
+<p>Here is an example:</p>
+
+
+<div><pre><span>var</span> <span>$p</span> <span>=</span> <span>require</span><span>(</span><span>&#39;procstreams&#39;</span><span>);</span>
+
+<span>$p</span><span>(</span><span>&#39;mkdir foo&#39;</span><span>)</span>
+  <span>.</span><span>then</span><span>(</span><span>&#39;cp file.txt file2.txt&#39;</span><span>)</span>
+  <span>.</span><span>or</span><span>(</span><span>&#39;echo &quot;failed&quot; &gt; ~/notify&#39;</span><span>)</span>
+</pre>
+</div>
+
+
+<p>This example <code>mkdirs foo</code>, then copies file.txt to file2.txt, if that fails, it echos "failed" to <code>~/notify</code>. Shell equivalent:</p>
+
+
+<pre>
+mkdir foo; cp file.txt file2.txt || echo &quot;failed&quot; &gt; ~/notify
+</pre>
+
+
+<p>See <a href="https://github.com/polotek/procstreams">procstreams documentation</a> on GitHub for full info on other thingies it supports.</p>
+
+
+<p>You can install <code>procstreams</code> through npm as always:</p>
+
+
+<pre>
+npm install procstreams
+</pre>
+
+
+<p>Procstreams on GitHub: <a href="https://github.com/polotek/procstreams">https://github.com/polotek/procstreams</a>.</p>
+
+
+<h2>Sponsor this blog series!</h2>
+
+
+<p>Doing a node.js company and want your ad to appear in the series? The ad will go out to 14,000 rss subscribers, 7,000 email subscribers, and it will get viewed by thousands of my blog visitors! <a href="http://www.catonmat.net/feedback/">Email me</a> and we'll set it up! </p>
+
+
+<h2>Enjoy!</h2>
+
+
+<p>If you love these articles, <a href="http://www.catonmat.net/feed/" title="Subscribe to catonmat.net RSS feed">subscribe to my blog</a> for more, <a href="http://twitter.com/pkrumins" title="Peteris Krumins on Twitter">follow me on Twitter</a> to find about my adventures, and <a href="http://github.com/pkrumins" title="Peteris Krumins on GitHub">watch me produce code on GitHub</a>!</p>
+
+
+<div>
+<a href="http://feeds.feedburner.com/~ff/catonmat?a=VpZVHQUt9tw:B8DYaijzyfc:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/catonmat?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=VpZVHQUt9tw:B8DYaijzyfc:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/catonmat?i=VpZVHQUt9tw:B8DYaijzyfc:F7zBnMyn0Lo" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=VpZVHQUt9tw:B8DYaijzyfc:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/catonmat?i=VpZVHQUt9tw:B8DYaijzyfc:gIN9vFwOqvQ" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=VpZVHQUt9tw:B8DYaijzyfc:XiUCZPyL81w"><img src="http://feeds.feedburner.com/~ff/catonmat?d=XiUCZPyL81w" border="0"></a> <a href="http://feeds.feedburner.com/~ff/catonmat?a=VpZVHQUt9tw:B8DYaijzyfc:DhrJZwOgkxs"><img src="http://feeds.feedburner.com/~ff/catonmat?d=DhrJZwOgkxs" border="0"></a>
+</div>
+
+
+<p><img src="http://feeds.feedburner.com/~r/catonmat/~4/VpZVHQUt9tw" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

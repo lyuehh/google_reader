@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Redis监控技巧</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Redis监控技巧</h2>
+<p class="meta">30 Jan 2013</p>
+
+<div class="post">
+<h2>Redis监控技巧</h2>
+
+<h3>by nosqlfan</h3>
+
+<h3>at 2013-01-30 00:18:59</h3>
+
+<h3>original <a href="http://blog.nosqlfan.com/html/4166.html">http://blog.nosqlfan.com/html/4166.html</a></h3>
+
+<p>本文来自 <a href="https://bugsnag.com/">Bugsnag</a> 的联合创始人 <a href="https://twitter.com/snmaynard/">Simon Maynard</a> 的系列文章，作者根据几年来对 <span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span> 的使用经历，对 Redis <span><a href="http://blog.nosqlfan.com/tags/%e7%9b%91%e6%8e%a7" title="查看 监控 的全部文章">监控</a></span>方法进行了系统性的总结，干货很多，值得一看。</p>
+
+
+<p>原文链接：<a href="http://snmaynard.com/2013/01/22/redis-masterclass-part-two-monitoring-redis/">Redis Masterclass – Part 2, Monitoring</a></p>
+
+
+<p>Redis 监控最直接的方法当然就是使用系统提供的 info 命令来做了，你只需要执行下面一条命令，就能获得 Redis 系统的状态报告。</p>
+
+
+<pre>redis-cli info</pre>
+
+
+<h3>内存使用</h3>
+
+
+<p>如果 Redis 使用的内存超出了可用的物理内存大小，那么 Redis 很可能系统会被 <a href="http://linux-mm.org/OOM_Killer">OOM Killer</a> 杀掉。针对这一点，你可以通过 info 命令对 <span style="color:#008000"><em>used_memory</em></span> 和 <span style="color:#008000"><em>used_memory_peak</em></span> 进行监控，为使用内存量设定阈值，并设定相应的报警机制。当然，报警只是手段，重要的是你得预先计划好，当内存使用量过大后，你应该做些什么，是清除一些没用的冷数据，还是把 Redis 迁移到更强大的机器上去。</p>
+
+
+<h3>持久化</h3>
+
+
+<p>如果因为你的机器或 Redis 本身的问题导致 Redis 崩溃了，那么你唯一的救命稻草可能就是 dump 出来的 rdb文件了，所以，对 Redis dump 文件进行监控也是很重要的。你可以通过对 <span style="color:#008000"><em>rdb_last_save_time</em></span> 进行监控，了解你最近一次 dump 数据操作的时间，还可以通过对 <em><span style="color:#008000">rdb_changes_since_last_save</span></em> 进行监控来知道如果这时候出现故障，你会丢失多少数据。</p>
+
+
+<h3>主从复制</h3>
+
+
+<p>如果你设置了主从复制模式，那么你最好对复制的情况是否正常做一些监控，主要是对 info 输出中的 <span style="color:#008000"><em>master_link_status</em></span> 进行监控，如果这个值是 up，那么说明同步正常，如果是 down，那么你就要注意一下输出的其它一些诊断信息了。比如下面这些：</p>
+
+
+<pre>role:slave
+master_host:192.168.1.128
+master_port:6379
+master_link_status:down
+master_last_io_seconds_ago:-1
+master_sync_in_progress:0
+master_link_down_since_seconds:1356900595</pre>
+
+
+<h3>Fork 性能</h3>
+
+
+<p>当 Redis 持久化数据到磁盘上时，它会进行一次 fork 操作，通过 fork 对内存的 copy on write 机制最廉价的实现内存镜像。但是虽然内存是 copy on write 的，但是虚拟内存表是在 fork 的瞬间就需要分配，所以 fork 会造成主线程短时间的卡顿（停止所有读写操作），这个卡顿时间和当前 Redis 的内存使用量有关。通常 GB 量级的 Redis 进行 fork 操作的时间在毫秒级。你可以通过对 info 输出的 <span style="color:#008000"><em>latest_fork_usec</em></span> 进行监控来了解最近一次 fork 操作导致了多少时间的卡顿。</p>
+
+
+<h3>配置一致</h3>
+
+
+<p>Redis 支持使用 <a href="http://redis.io/commands/config-set">CONFIG SET</a> 操作来实现运行实的配置修改，这很方便，但同时也会导致一个问题。就是通过这个命令动态修改的配置，是不会同步到你的配置文件中去的。所以当你因为某些原因重启 Redis 时，你使用 CONFIG SET 做的配置修改就会丢失掉，所以我们最好保证在每次使用 CONFIG SET 修改配置时，也把配置文件一起相应地改掉。为了防止人为的失误，所以我们最好对配置进行监控，使用 <a href="http://redis.io/commands/config-get">CONFIG GET</a> 命令来获取当前运行时的配置，并与 redis.conf 中的配置值进行对比，如果发现两边对不上，就启动报警。</p>
+
+
+<h3>慢日志</h3>
+
+
+<p>Redis 提供了 <a href="http://redis.io/commands/slowlog">SLOWLOG</a> 指令来获取最近的慢日志，Redis 的慢日志是直接存在内存中的，所以它的慢日志开销并不大，在实际应用中，我们通过 crontab 任务执行 SLOWLOG 命令来获取慢日志，然后将慢日志存到文件中，并用 <a href="http://kibana.org/">Kibana</a> 生成实时的性能图表来实现性能监控。</p>
+
+
+<p>值得一提的是，Redis 的慢日志记录的时间，仅仅包括 Redis 自身对一条命令的执行时间，不包括 IO 的时间，比如接收客户端数据和发送客户端数据这些时间。另外，Redis 的慢日志和其它数据库的慢日志有一点不同，其它数据库偶尔出现 100ms 的慢日志可能都比较正常，因为一般数据库都是多线程并发执行，某个线程执行某个命令的性能可能并不能代表整体性能，但是对 Redis 来说，它是单线程的，一旦出现慢日志，可能就需要马上得到重视，最好去查一下具体是什么原因了。</p>
+
+
+<h3>监控服务</h3>
+
+
+<h4>-Sentinel</h4>
+
+
+<p><a href="http://redis.io/topics/sentinel">Sentinel</a> 是 Redis 自带的工具，它可以对 Redis 主从复制进行监控，并实现主挂掉之后的自动故障转移。在转移的过程中，它还可以被配置去执行一个用户自定义的脚本，在脚本中我们就能够实现报警通知等功能。</p>
+
+
+<h4>-Redis Live</h4>
+
+
+<p><a href="http://www.nkrode.com/article/real-time-dashboard-for-redis">Redis Live</a> 是一个更通用的 Redis 监控方案，它的原理是定时在 Redis 上执行 <a href="http://redis.io/commands/monitor">MONITOR</a> 命令，来获取当前 Redis 当前正在执行的命令，并通过统计分析，生成web页面的可视化分析报表。</p>
+
+
+<h4>-Redis Faina</h4>
+
+
+<p><a href="http://instagram-engineering.tumblr.com/post/23132009381/redis-faina-a-query-analysis-tool-for-redis">Redis Faina</a> 是由著名的图片分享应用 instagram 开发的 Redis 监控服务，其原理和 Redis Live 类似，都是对通过 <span><a href="http://blog.nosqlfan.com/tags/monitor" title="查看 MONITOR 的全部文章">MONITOR</a></span> 来做的。</p>
+
+
+<h3>数据分布</h3>
+
+
+<p>弄清 Redis 中数据存储分布是一件很难的是，比如你想知道哪类型的 key 值占用内存最多。下面是一些工具，可以帮助你对 Redis 的数据集进行分析。</p>
+
+
+<h4>-Redis-sampler</h4>
+
+
+<p><a href="https://github.com/antirez/redis-sampler">Redis-sampler</a> 是 Redis 作者开发的工具，它通过采样的方法，能够让你了解到当前 Redis 中的数据的大致类型，数据及分布状况。</p>
+
+
+<h4>-Redis-audit</h4>
+
+
+<p><a href="https://github.com/snmaynard/redis-audit">Redis-audit</a> 是一个脚本，通过它，我们可以知道每一类 key 对内存的使用量。它可以提供的数据有：某一类 key 值的访问频率如何，有多少值设置了过期时间，某一类 key 值使用内存的大小，这很方便让我们能排查哪些 key 不常用或者压根不用。</p>
+
+
+<h4>-Redis-rdb-tools</h4>
+
+
+<p><a href="https://github.com/sripathikrishnan/redis-rdb-tools">Redis-rdb-tools</a> 跟 Redis-audit 功能类似，不同的是它是通过对 rdb 文件进行分析来取得统计数据的。
+<div style="margin-top:20px;margin-left:70px;line-height:24px;border:1px solid #ccc;text-align:center;width:545px;background:#fff">
+<div style="font-size:16px;font-family:Verdana;background:#d20;color:#fff;float:left;border-radius:10px 0 10px 0;padding:3px 12px 4px;line-height:32px;margin-top:14px">42区 VPS</div>
+<div>
+42qu.com 云主机 , 卖给创业的你 。 <a href="http://vps.42qu.com/by/iammutex/rss" style="text-decoration:none;background:none;color:#02d">点击这里 , 查看详情</a>
+</div>
+</div>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3644.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4166.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">redmon：Redis监控管理Web工具</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3208.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4166.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">使用Cacti监控MongoDB和Redis</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F3971.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4166.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">redis-faina：一个Redis的query分析小工具</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1764.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4166.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Radish：Redis监控与分析服务</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.cn/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2785.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4166.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">redis_warp、redis_graph、redis_queue － Python下的Redis二次开发</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/723917538/nosqlfan/feedsky/s.gif?r=http://blog.nosqlfan.com/html/4166.html" border="0" height="0" width="0"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

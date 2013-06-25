@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>我的模块加载系统 v13</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>我的模块加载系统 v13</h2>
+<p class="meta">17 Nov 2011</p>
+
+<div class="post">
+<h2>我的模块加载系统 v13</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2011-11-17 13:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/17/2251868.html">http://www.cnblogs.com/rubylouvre/archive/2011/11/17/2251868.html</a></h3>
+
+<p><p>本版本最大的亮点是<strong>多版本共存</strong>。在一些大型项目，开发时间可能长达一年，其依赖的JS库，如jQuery可能在一年间升几次级。这时遇到的困难是该不该升级呢？基本上大家用jQuery的原因是它的插件多，这些插件作者与JR的水平差距大，没有他那样的功力与前瞻性，只保证在当前版本上运作良好。因此一升级就死一大堆插件，与rails有“插件杀手”的美誉。因此有些项目就出现不同版块使用不同jQuery的版本的情况了，项目反而被那些出于迅敏开发而引进的jQuery插件所累。</p>
+<p>多版本共享的实现原理很简单，实现有效的代码隔离，而常用法就是命名空间。比如jQuery的命名空间就是jQuery与$，只有一层，它只能通过重命名减少与其他库或自己以前的版本冲突。但是jQuery的插件呢？它都是这样调用(function($){})(jQuery)，如果改名并且这个$或jQuery被占用，就问题大了。为什么会出现jQuery被占用的情况呢？因为这个jQuery是jQuery1.42的那个命名空间对象啊，你又引进一个jQuery1.7，jQuery就被重写了。。。。因此我的框架<a href="https://github.com/RubyLouvre/mass-Framework">mass Framework</a>(即原来的dom Framework)一开始就有两个命名空间，隐藏的动态命名空间，它是根据URL生成的，另一个是面向用户的dom命名空间，并且这个dom放到动态命名空间上, window[httplocalhost8888indexhtml]["1.0"] = dom。如果页面上还加载了另一个版本呢？比如它的版本号是1.2，那么，window[httplocalhost8888indexhtml]["1.2"] = dom ;注意，这个dom与刚才的dom是不同一个对象。但这只是第一步。如何让用户调用它们呢？如果页面只有一个版本，用户直接使用dom.require("xxx",function(){})，如果存在第二版本（也就是后加进来的），那么它暴露到window下的名字是"dom"加版本号并且将点号改为下划线，即 "dom1_1", 使用时是 dom1_2.require("yyy",function(){})。不喜欢这么长的名字，简单，有两种方法：</p>
+<pre>
+ var $ = dom1_2;
+ $(function(){
+    $("#aaa").attr("title");//由于mass Framework的方法名与jQuery的方法名90%相同，直接使用就行了。
+  })
+</pre>
+<pre>
+  dom1_2.exports("$");//使用自带的别名机制
+ $(function(){
+    $("#aaa").attr("title");
+  })
+</pre>
+<p>但作为一个框架，它注定不只有模块加载这样一个JS文件，还有许多其他JS文件来放置其他模块。在mass Framework中，模块是这样定义的：<p>
+<pre>
+dom.define("c","a,b",function(a,b){//依赖于a模块与b模块，回调函数的a,b参数是此两模块的返回值，如果没有为undefined
+    dom.log("ccccccccccc");
+    dom.log([a,b].join(","))
+    return 3
+})
+</pre>
+
+<pre>
+dom.define("c",["a","b"],function(a,b){//模块定义的依赖列表可以是字符串，以逗号或空格分开，或者是字符串数组
+    dom.log("ccccccccccc");
+    dom.log([a,b].join(","))
+    return 3
+})
+</pre>
+<p>如果没有依赖模块，可以直接省去：</p>
+<pre>
+dom.define("c",function(){
+    dom.log("c模块已加载")
+    return 3
+})
+</pre>
+<p>v13之前的模块定义比较麻烦，需要外包一层，即如下的样子</p>
+<pre>
+(function(global,DOC){     
+    var dom = global[DOC.URL.replace(/(#.+|\W)/g,'')];
+    dom.define("data", "lang", function(){
+        //数据缓存模块
+        })
+})(this,this.document);
+</pre>
+<p>v13已抛弃这种形式了。不过，有些人可能不解，这岂不是把dom命名空间暴露到全局作用域，如果这时我们改了名，再加载别的模块，那个模块岂不是找不到变量吗？与jQuery沦入同等境地？</p>
+<p>不会的，插件是在<strong>iframe</strong>这样的沙箱环境中加载的。具体步骤是，创建一个临时的iframe节点挂在head上，然后再在iframe里面写入两个script，第一个把dom变量，指向父窗口中的隐藏命名空间上的对应版本号的dom对象。第二个利用模块名动用URL，加载JS文件，并设置相应的onload, onreadystatechange, onerror来捕捉回调与判定是否死链接。成功了就把这回调变成文本保存起来。</p>
+<pre>
+
+&lt;script&gt; var dom = parent[document.URL.replace(/(#.+|\W)/g,&#39;&#39;)][&quot;1.0b&quot;] ;&lt;/script&gt;&lt;script src=&quot;http://localhost:8888/dom/node.js?timestamp=1321452993351&quot; onload=&quot;if(/loaded|complete|undefined/i.test(this.readyState)){ dom._resolveCallbacks(); dom._checkFail(&#39;@node&#39;);} &quot; onerror=&quot;dom._checkFail(&#39;@node&#39;,true);&quot; &gt;&lt;/script&gt;
+</pre>
+<p>至于为什么变成文本保存起来？大家看一下那个经典的isArray问题就行了，不同window生成的对象不是能混用的。变成文本，再回传到父窗口eval一下，确保特征嗅探与其他操作准确无误。至此，模块加载时的同名冲突也解决掉了。</p>
+<pre>
+    //凡是通过iframe加载回来的模块函数都要经过它进行转换
+    function safeEval(fn, args, str){
+        for(var i = 0,argv = [], name; name = args[i++];){
+            argv.push(rets[name]);
+        }//如果是同一执行环境下，就不用再eval了
+        if(fn instanceof Function){
+            return fn.apply(global,argv);
+        }
+        return  Function("b","return " +(str || fn) +".apply(window,b)" )(argv);
+    }
+</pre>
+<p>总结一下，v13的改进：</p>
+<ol>
+<li>dom.log在打印页面时强制转换为字符串。</li>
+<li>整合多版本共存到模块加载中，简化模块的定义。</li>
+<li>添加getUid方法。</li>
+</ol>
+<br>
+<p><strong style="color:red"><a href="http://115.com/file/aqvci4cv">多版本共存的示例</a></strong></p>
+
+<p>相关链接:</p>
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/10/27/2226228.html">我的模块加载系统 v12</a></p>
+
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/10/09/2203826.html">我的模块加载系统 v11</a></p>
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/09/25/2189529.html">我的模块加载系统 v10</a></p>
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/22/2147058.html">我的模块加载系统 v9</a></p>
+
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/08/2129951.html">我的模块加载系统 v8</a></p>
+
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/08/05/2127791.html">我的模块加载系统 v7</a></p>
+
+<p><a href="http://www.cnblogs.com/rubylouvre/archive/2011/07/12/2104777.html">我的模块加载系统 v6</a></p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2251868.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rubylouvre/">司徒正美</a> 发表于 2011-11-17 13:06 <a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/17/2251868.html">原文链接</a></p><p>评论: 7　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/17/2251868.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/17/2251868.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/123427/">一些有意思的算法代码</a><span style="color:gray">(2011-11-29 12:00)</span><br>· <a href="http://news.cnblogs.com/n/123425/">别再预测未来了，动手制造它吧！</a><span style="color:gray">(2011-11-29 11:58)</span><br>· <a href="http://news.cnblogs.com/n/123424/">LOGO正在死去</a><span style="color:gray">(2011-11-29 11:50)</span><br>· <a href="http://news.cnblogs.com/n/123423/">自由软件搜索引擎YaCy 1.0发布</a><span style="color:gray">(2011-11-29 11:46)</span><br>· <a href="http://news.cnblogs.com/n/123422/">图片微博“Pinterest”的病毒式崛起，再现06年Facebook的增长缩影</a><span style="color:gray">(2011-11-29 11:44)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/svage/archive/2011/11/28/2266064.html">HTML5 WebWorkers 防止浏览器假死</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://q.cnblogs.com/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

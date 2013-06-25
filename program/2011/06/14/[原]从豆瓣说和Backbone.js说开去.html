@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[原]从豆瓣说和Backbone.js说开去</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[原]从豆瓣说和Backbone.js说开去</h2>
+<p class="meta">14 Jun 2011</p>
+
+<div class="post">
+<h2>[原]从豆瓣说和Backbone.js说开去</h2>
+
+<h3>by soasme</h3>
+
+<h3>at 2011-06-14 06:23:00</h3>
+
+<h3>original <a href="http://blog.csdn.net/soasme/article/details/6541417">http://blog.csdn.net/soasme/article/details/6541417</a></h3>
+
+<p> </p>
+
+
+<p>简而言之，Backbone.js是一个可以在前端组织MVC的javascript框架。</p>
+
+
+<p>写的Javascript代码一旦多起来，没有一个好的组织，那就会像噩梦一样。</p>
+
+
+<p>Backbone提供了Models, Collections, Views。Models 用来创建数据，校验数据，绑定事件，存储数据到服务器端；Collections 包含你创建的 functions；Views 用来展示数据。如此这般，在前端也做到了数据和显示分离。</p>
+
+
+<p>Backbone依赖于Underscore.js，这是一个有很多常用函数的js文件（很好用）</p>
+
+
+<p>下面简要介绍下Backbone的用法。</p>
+
+
+<p> </p>
+
+
+<p>1. Backbone.Events</p>
+
+
+<p>Events可以被添加到任何一个javascript对象中，一旦对象与Events合体，就可以自定义事件了。</p>
+
+
+<p>var obj = {};
+_.extend(obj, Backbone.Events);
+obj.bind('data', function(data) {
+console.log('Receive Data: ' + data);
+});
+obj.trigger('data', 'I/'m an Backbone.event');
+obj.unbind('data');
+obj.trigger('data', 'I/'m an Backbone.event'); </p>
+
+
+<p>如上，一旦使用了_.extend(obj, Backbone.Events)，obj对象就获得了自定义事件的能力。</p>
+
+
+<p>obj.bind(event, callback) bind方法前面是事件名，后面是回调函数。bind可以将回调函数绑定到对象上，事件触发时便会执行回调函数。另外，如果事件很多，可以给事件加上命名空间，例如"poll:start", "change:selection"。</p>
+
+
+<p>obj.unbind([event], [callback]) unbind方法就是移除事件绑定，如果event, callback都没有，就将移除所有绑定。</p>
+
+
+<p>obj.trigger(event,[*args]) 触发事件。</p>
+
+
+<p> </p>
+
+
+<p>2. Backbond.Controller</p>
+
+
+<p>由于富Ajax的网站大多用带#的url来识别抓取服务器内容，因此Backbone也提供了前端的url#fragment的路由支持，并且可以把他们绑定到Action和Event中去。</p>
+
+
+<p>注意：在使用前端路由的功能之前，一定要调用一次Backbone.history.start()。</p>
+
+
+<p>我们以豆瓣说的前端代码为例解说下这个功能。</p>
+
+
+<p>http://img3.douban.com/anduin/anduin-min-1307608962.js</p>
+
+
+<p>这堆代码的最后一个大块就是Controller的使用。</p>
+
+
+<p>这一块的大致结构如下：</p>
+
+
+<p>App.Controllers.Statuses = Backbone.Controller.extend({
+    routes: {
+        "": "home",
+        "!/comments": "comments",
+        "!/mentions": "mentions",
+        "!/:uid": "profile",
+        "!/:uid/following": "following",
+        "!/:uid/followers": "followers",
+        "!/:uid/status/:id": "status",
+        "!/search/users/:query": "user_search",
+        "!/search/:query": "search"
+    },
+    initialize: function(){...}
+    home: function(){...}
+    comments: function() {...}
+    mentions: function() {...}
+    profile: function(a) {...}
+    status: function(a, b) {...}
+    following: function(a) {...}
+    followers: function(a) {...}
+    user_search: function(a) {...}
+    search: function(a) {...}
+}); </p>
+
+
+<p>这样我们就很容易看出Backbone.Controller.extend(properties, [classProperties]) 的用法了。properties里面要有一个routes的哈希表，提供了路由和方法名的键值对。</p>
+
+
+<p>所以我们看到http://shuo.douban.com/#!/comments对应着下面的comments方法。这个页面对应着“最新回复”模块。</p>
+
+
+<p>我们还可以看到#fragment里面有!这个符号，这个是给搜索引擎识别用的，我们下次在谈。</p>
+
+
+<p>另外，还有:uid, :query, :id这些符号，如果有玩doophp, flask, bottlepy，这些符号应该也很熟悉了，这是动态的参数，uid、query、id都是这些参数的参数名，因此</p>
+
+
+<p>http://shuo.douban.com/#!/search/users/豆瓣</p>
+
+
+<p>就对应着"!/search/users/:query": "user_search",这个路由，继而可以用user_search()来处理。</p>
+
+
+<p>(特别的 "file/*path" 可以匹配#file/nested/folder/file.txt, 参数 "nested/folder/file.txt"会被传送到相对应的Action中去。)</p>
+
+
+<p>顺便提一句，当url匹配后，会触发一个和Action名字有关的事件，比如"!/comments": "comments"，如果访问了http://shuo.douban.com/#!/comments，就会触发"route:comments"的事件，因此我们可以用</p>
+
+
+<p>controller.bind("route:comments", function(){...});来处理一些额外的逻辑。</p>
+
+
+<p> </p>
+
+
+<p>initialize方法是构造器，初始化，可以加入自定义的相关逻辑。</p>
+
+
+<p>比如豆瓣说中</p>
+
+
+<p>initialize: function() {
+        shuo.themes.loadDefaultTheme();
+        shuo.loggedIn &amp;&amp; (mMy = new User({
+            uid: UID
+        }), mMyStat = new Stat, mMyFollowing = new App.Collections.Following([], {
+            uid: UID,
+            count: 9
+        }), cHomeTimeline = new App.Collections.HomeTimeline([], 
+        {
+            type: STREAM_TYPE_HOME_TIMELINE
+        }), cSuggestions = new App.Collections.Suggestions([], {
+            count: 10
+        }), mMy.fetch(), mMyStat.fetch(), mMyFollowing.fetch())
+    }, </p>
+
+
+<p>每当匹配了一个URL，页面首先先去除刚才的内容，加载默认的空内容，如果登录了豆瓣说则初始化User(登录用户),Stat(统计),Following(关注当前用户的用户),HomeTimeLine(时间线),Suggestion,然后用fetch获取数据。</p>
+
+
+<p>最后，Controller还有route、saveLocation方法，this.route("page/:number", "page", function(number){ ... });这个方法可以很快的建立一个路由，this.saveLocation("!/comments");可以不触发hashchange时间的到达另外一个url。</p>
+
+
+<p> </p>
+
+
+<p>3. Backbone.View</p>
+
+
+<p>View并不操作html或者css，所有的操作留给了各种各样JS的模板库。</p>
+
+
+<p>豆瓣说JS文件倒数的十几个块都是与Backbone.View有关的区块。</p>
+
+
+<p>例如：</p>
+
+
+<p>App.Views.UserInfo = Backbone.View.extend({
+    model: User,
+    className: "components cross",
+    template: $("#user-info-template").html(),
+    initialize: function() {
+        _.bindAll(this, "render");
+        this.model.bind("change", this.render)
+    },
+    render: function() {
+        var a = this.model;
+        $(this.el).html(Mustache.to_html(this.template, a.toJSON()));
+        $(this.el).find(".days").html(function() {
+            var b = a.get("created_at");
+            return getDays(b)
+        });
+        return this
+    }
+}); </p>
+
+
+<p>在这里，最外层用了Backbone.View.extend(properties, [classProperties]),在initialize中一旦User类触发了change事件就会执行render方法，继而显示新的视图。</p>
+
+
+<p>render方法中总是有个约定俗称的写法的。this.el是一个DOM对象，render的目的就是把内容填到this.el中。this.el会根据view提供的tagName, className, id属性创建，如果一个都没有，就会创建一个空的DIV。</p>
+
+
+<p>更新完this.el后，我们还应该return this;这样才能继续执行下面的链式调用(如果有的话)。</p>
+
+
+<p>豆瓣说用jquery+mustache来显示，事实上我们还可以采用haml-js,eco等等模板，js模板在GITHUB上也是多如牛毛的。</p>
+
+
+<p> </p>
+
+
+<p>我们也可以用$(view.el).remove()或者view.remove()很方便的清空DOM。</p>
+
+
+<p> </p>
+
+
+<p>View层有一个委托事件的机制。直接看代码：</p>
+
+
+<p>App.Views.Likers = Backbone.View.extend({
+    className: &quot;likers-manager&quot;,
+    template: $(&quot;#likers-components-template&quot;).html(),
+    title_template: &quot;&lt;h3&gt;/u4eba/u8d5e&lt;/h3&gt;&quot;,
+    events: {
+        &quot;click .btn-more&quot;: &quot;loadMore&quot;
+    },
+    initialize: function() {
+        _.bindAll(this, &quot;render&quot;, &quot;updateTitle&quot;, &quot;loadOne&quot;, &quot;loadAll&quot;, &quot;loadMore&quot;);
+        ...
+    }
+    render: function() { ... }
+    updateTitle: function() { ... }
+    loadOne: function(a) { ... }
+    loadAll: function() { ... }
+    loadMore: function(a) { ... }
+}); </p>
+
+
+<p>在这里面有个events的键值对，格式为{"event selector": "callback"}，其中click为事件，.btn-more是基于this.el为根的选择器，这样一旦约定好，接下来我们就不需要再去手动调用事件方法了。</p>
+
+
+<p> </p>
+
+
+<p>4. Backbone.Model</p>
+
+
+<p>扩展了Backbone.Model类的对象就会有一些特殊的方法，用来更好地管理对象。通过Backbone.Model.extend(properties, [classProperties]) 扩展成Backbone.Model。第二个参数可选</p>
+
+
+<p>如下 extend中的方法是可以被子类继承的。</p>
+
+
+<p>var Note = Backbone.Model.extend({
+  initialize: function() { ... },
+  author: function() { ... },
+  coordinates: function() { ... },
+  allowedToEdit: function(account) {
+    return true;
+  }
+});
+var PrivateNote = Note.extend({
+  allowedToEdit: function(account) {
+    return account.owns(this);
+  }
+}); </p>
+
+
+<p>豆瓣说中的Backbone.Model都写得比较简单</p>
+
+
+<p>var User = Backbone.Model.extend({
+    initialize: function() {
+        this.url = &quot;/api/users/&quot; + this.get(&quot;uid&quot;);
+        shuo.loggedIn &amp;&amp; this.get(&quot;uid&quot;) === UID &amp;&amp; this.set({
+            i: !0
+        })
+    }
+}); </p>
+
+
+<p>get/set用法是Model的一个特色</p>
+
+
+<p>此外Model还有不少字段和方法，像id, cid, excape,unset,clear,attributes, defaults等等。</p>
+
+
+<p>内容比较繁杂，下次研究。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>        &lt;div&gt;
+            作者：soasme 发表于2011-6-13 15:23:00 &lt;a href="http://blog.csdn.net/soasme/article/details/6541417"&gt;原文链接&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：15904 评论：4 &lt;a href="http://blog.csdn.net/soasme/article/details/6541417#comments"&gt;查看评论&lt;/a&gt;
+        &lt;/div&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

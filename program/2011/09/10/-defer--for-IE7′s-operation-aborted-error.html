@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>“defer” for IE7′s operation aborted error</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>“defer” for IE7′s operation aborted error</h2>
+<p class="meta">10 Sep 2011</p>
+
+<div class="post">
+<h2>“defer” for IE7′s operation aborted error</h2>
+
+<h3>by stoyan</h3>
+
+<h3>at 2011-09-10 07:52:56</h3>
+
+<h3>original <a href="http://www.jspatterns.com/defer-for-ie7s-operation-aborted-error/">http://www.jspatterns.com/defer-for-ie7s-operation-aborted-error/</a></h3>
+
+<p>IE has this "operation aborted" problem (<a href="http://support.microsoft.com/kb/927917">MSDN article</a>) when you try to change your parent while it's not ready.</p>
+
+
+<p>This is the example they give that causes this error:</p>
+
+
+<div>
+<pre><span>&lt;</span><span>html</span><span>&gt;</span><span>
+  </span><span>&lt;</span><span>body</span><span>&gt;</span><span>
+    </span><span>&lt;</span><span>div</span><span>&gt;</span><span>
+      </span><span>&lt;</span><span>script</span><span>&gt;</span>
+<span>        </span><span>document</span><span>.</span><span>body</span><span>.</span><span>innerHTML</span><span>+=</span><span>&quot;</span><span>sample text</span><span>&quot;</span><span>;</span>
+      <span>&lt;/</span><span>script</span><span>&gt;</span><span>
+    </span><span>&lt;/</span><span>div</span><span>&gt;</span><span>
+  </span><span>&lt;/</span><span>body</span><span>&gt;</span><span>
+</span><span>&lt;/</span><span>html</span><span>&gt;</span></pre>
+</div>
+
+
+<p>Turns out you can easily solve it by just adding a <code>defer</code> attribute to the <code>script</code>. This works just fine:</p>
+
+
+<div>
+<pre><span>&lt;</span><span>html</span><span>&gt;</span><span>
+  </span><span>&lt;</span><span>body</span><span>&gt;</span><span>
+    </span><span>&lt;</span><span>div</span><span>&gt;</span><span>
+      </span><span>&lt;</span><span>script</span> defer<span>&gt;</span>
+<span>        </span><span>document</span><span>.</span><span>body</span><span>.</span><span>innerHTML</span><span>+=</span><span>&quot;</span><span>sample text</span><span>&quot;</span><span>;</span>
+      <span>&lt;/</span><span>script</span><span>&gt;</span><span>
+    </span><span>&lt;/</span><span>div</span><span>&gt;</span><span>
+  </span><span>&lt;/</span><span>body</span><span>&gt;</span><span>
+</span><span>&lt;/</span><span>html</span><span>&gt;</span></pre>
+</div>
+
+
+<p><a href="http://www.phpied.com/files/operation-aborted/oa.html">Demo page here</a></p>
+
+
+<p>BTW, this operation aborted may bite you if you decide to append a script node to the body, like </p>
+
+
+<pre>var js = document.createElement('script');
+js.async = true;
+js.src = "http://tools.w3clubs.com/pagr/1.sleep-2.js";
+document.body.appendChild(js); </pre>
+
+
+<p>So it's not a good idea to append to the body like this when you don't control the page you're adding this code to, although <code>document.body</code> <a href="http://www.phpied.com/files/bscope/autobody.html">seems to be always available</a> even when the page doesn&#39;t have a &lt;body&gt; tag</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

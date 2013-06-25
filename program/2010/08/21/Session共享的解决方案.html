@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Session共享的解决方案</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Session共享的解决方案</h2>
+<p class="meta">21 Aug 2010</p>
+
+<div class="post">
+<h2>Session共享的解决方案</h2>
+
+<h3>by 心海巨澜</h3>
+
+<h3>at 2010-08-21 08:21:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/xinhaijulan/archive/2010/08/21/1805116.html">http://www.cnblogs.com/xinhaijulan/archive/2010/08/21/1805116.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/xinhaijulan/">心海巨澜</a> 发表于 2010-08-21 08:21 <a href="http://www.cnblogs.com/xinhaijulan/archive/2010/08/21/1805116.html">原文链接</a> 阅读: 1046 评论: 6</p>
+
+
+<p>Session共享的解决方案</p>
+
+
+<p>1、客户端SessionID值唯一；</p>
+
+
+<p>      对于不同的域名：主域名、子域名、跨站点域名或跨服务器域名，用户在打开页面时会产生不同的SessionID，</p>
+
+
+<p>为了使这些站点在用户登录时只登录一次，那我们就要解决SessionID的问题，必须使SessionID在这些共享Session的站点中只产生一次。而SessionID是存储在客户端的cookie之中键值为ASP.NET_SessionId的一个字符串（也可以存储在URL中，这里不作使介绍），为此只须使各站点存储的SP.NET_SessionId唯一即可。</p>
+
+
+<p>      因每个客户端在打开时会产生一个SessionID，为此我们要做的就是重置SessionID。我们可以在继承HttpModule，在结束请求时重写SessionID。</p>
+
+
+<p> </p>
+
+
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码如下</span>
+<div>
+<pre><div><span style="color:#000000">    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MakeSessionIDOneOnly : IHttpModule<br>    {<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000"> m_RootDomain </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000">.Empty;<br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IHttpModule Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Dispose()<br>        {<br>            <br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Init(HttpApplication context)<br>        {<br>            m_RootDomain </span><span style="color:#000000">=</span><span style="color:#000000"> ConfigurationManager.AppSettings[</span><span style="color:#800000">"</span><span style="color:#800000">RootDomain</span><span style="color:#800000">"</span><span style="color:#000000">];<br><br>            Type stateServerSessionProvider </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">typeof</span><span style="color:#000000">(HttpSessionState).Assembly.GetType(</span><span style="color:#800000">"</span><span style="color:#800000">System.Web.SessionState.OutOfProcSessionStateStore</span><span style="color:#800000">"</span><span style="color:#000000">);<br>            FieldInfo uriField </span><span style="color:#000000">=</span><span style="color:#000000"> stateServerSessionProvider.GetField(</span><span style="color:#800000">"</span><span style="color:#800000">s_uribase</span><span style="color:#800000">"</span><span style="color:#000000">, BindingFlags.Static </span><span style="color:#000000">|</span><span style="color:#000000"> BindingFlags.NonPublic);<br><br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (uriField </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                </span><span style="color:#0000ff">throw</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> ArgumentException(</span><span style="color:#800000">"</span><span style="color:#800000">UriField was not found</span><span style="color:#800000">"</span><span style="color:#000000">);<br><br>            uriField.SetValue(</span><span style="color:#0000ff">null</span><span style="color:#000000">, m_RootDomain);<br>            <br>            context.EndRequest </span><span style="color:#000000">+=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> System.EventHandler(context_EndRequest);<br>        }<br><br>        </span><span style="color:#0000ff">void</span><span style="color:#000000"> context_EndRequest(</span><span style="color:#0000ff">object</span><span style="color:#000000"> sender, System.EventArgs e)<br>        {<br>            HttpApplication app </span><span style="color:#000000">=</span><span style="color:#000000"> sender </span><span style="color:#0000ff">as</span><span style="color:#000000"> HttpApplication;<br>            </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> app.Context.Response.Cookies.Count; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br>            {<br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (app.Context.Response.Cookies[i].Name </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">ASP.NET_SessionId</span><span style="color:#800000">"</span><span style="color:#000000">)<br>                {<br>                    app.Context.Response.Cookies[i].Domain </span><span style="color:#000000">=</span><span style="color:#000000"> m_RootDomain;<br>                }<br>            }<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>    }</span></div></pre>
+</div>
+</div>
+
+
+<p>  </p>
+
+
+<p>为使用以上代码，须配置下面节点项。</p>
+
+
+<p>     &lt;httpModules&gt;</p>
+
+
+<p>             &lt;add name=&quot;节点名称&quot; type=&quot;类名全称, 程序集&quot;/&gt;</p>
+
+
+<p>     &lt;/httpModules&gt;</p>
+
+
+<p> </p>
+
+
+<p>2、Session值的共享；</p>
+
+
+<p>配置sessionState置节点，使用StateServer或SQLServer来实现Session共享。</p>
+
+
+<p>为实现跨服务器共享，必须在Web.config配置：</p>
+
+
+<p>&lt;machineKey decryptionKey=&quot;FD69B2EB9A11E3063518F1932E314E4AA1577BF0B824F369&quot; validationKey=&quot;5F32295C31223A362286DD5777916FCD0FD2A8EF882783FD3E29AB1FCDFE931F8FA45A8E468B7A40269E50A748778CBB8DB2262D44A86BBCEA96DCA46CBC05C3&quot; validation=&quot;SHA1&quot; decryption=&quot;Auto&quot;/&gt;</p>
+
+
+<p>并且，不同服务器上站点配置必须用相同的Web.config，各站点目录配置也要相同。</p>
+
+
+<p> </p>
+
+
+<p style="text-align:left">2.1、使用StateServer：</p>
+
+
+<p>存储Session的服务器必须开启StateServer：ASP.NET状态服务。只有机器重起的情况下才导致Session丢失。</p>
+
+
+<p>&lt;sessionState cookieless=&quot;false&quot; timeout=&quot;50&quot; mode=&quot;StateServer&quot; stateConnectionString=&quot;tcpip=IpAddress:42424&quot;/&gt;</p>
+
+
+<p>     若StateServer在本机存储，则IpAddress为：127.0.0.1；若StateServer为远程服务器，则为IpAddress为远程服务器IP地址，并且修改注册表项如下：</p>
+
+
+<p>Windows Registry Editor Version 5.00</p>
+
+
+<p> [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\aspnet_state\Parameters]</p>
+
+
+<p>"Port"=dword:0000a5b8</p>
+
+
+<p>"AllowRemoteConnection"=dword:00000001</p>
+
+
+<p>        </p>
+
+
+<p>2.2、使用SQLServer：</p>
+
+
+<p>必须开启SQLServer代理服务，此服务负责清除过期的Session，若没有开服务，则Session不会过期。</p>
+
+
+<p>使用SQLServer在机器重启后Session不会丢失。        </p>
+
+
+<p>Web.config配置：</p>
+
+
+<p>&lt;sessionState mode=&quot;SQLServer&quot; sqlConnectionString=&quot;server=DBIpAddress; uid=myid; pwd=mypwd;&quot;/&gt;</p>
+
+
+<p> </p>
+
+
+<p>数据库配置：</p>
+
+
+<p>使用aspnet_regsql.exe工具</p>
+
+
+<p>ASP.NET 2.0版本后微软提供了aspnet_regsql.exe工具可以方便的配置Session数据库.该工具位于 Web 服务器上的"系统根目录\Microsoft.NET\Framework\版本号"文件夹中.</p>
+
+
+<p>使用举例:</p>
+
+
+<p>aspnet_regsql.exe -S . -U sa -P 123456 -ssadd -sstype p</p>
+
+
+<p>-S参数:</p>
+
+
+<p>表示数据库实例名称. 可以用"."表示本机.</p>
+
+
+<p>-U和-P参数:</p>
+
+
+<p>表示用户名和密码.</p>
+
+
+<p>-E参数:</p>
+
+
+<p>可以再-U –P 与 -E中选择一组. –E表示以当前系统用户通过windows身份验证登录数据库, -U -P则是使用SqlServer用户登录数据库.</p>
+
+
+<p>-ssadd / –ssremove 参数:</p>
+
+
+<p>-ssadd表示是添加Session数据库, -ssremove表示移除Session数据库.</p>
+
+
+<p>sstype 参数说明:</p>
+
+
+<table border="1" width="641" cellpadding="0">
+<tbody>
+<tr>
+<td width="69" valign="top">
+<p><span style="font-size:10pt">t</span></p>
+</td>
+<td width="567" valign="top">
+<p><span style="font-size:10pt">将会话数据存储到 SQL Server tempdb 数据库中。这是默认设置。如果将会话数据存储到 tempdb 数据库中，则在重新启动 SQL Server 时将丢失会话数据。</span></p>
+</td>
+</tr>
+<tr>
+<td width="69" valign="top">
+<p><span style="font-size:10pt">p</span></p>
+</td>
+<td width="567" valign="top">
+<p><span style="font-size:10pt">将会话数据存储到 ASPState 数据库中，而不是存储到 tempdb 数据库中。</span></p>
+</td>
+</tr>
+<tr>
+<td width="69" valign="top">
+<p><span style="font-size:10pt">c</span></p>
+</td>
+<td width="567" valign="top">
+<p><span style="font-size:10pt">将会话数据存储到自定义数据库中。如果指定 c 选项，则还必须使用 -d 选项包括自定义数据库的名称。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><span style="font-size:12pt"> </span></p>
+
+
+<p align="left">sessionState参数说明：</p>
+
+
+<table border="1" width="629" cellpadding="0" style="width:629px;height:2781px">
+<tbody>
+<tr>
+<td width="194" valign="bottom">
+<p><span style="font-size:10pt">属性 </span></p>
+</td>
+<td width="500" valign="bottom">
+<p><span style="font-size:10pt">说明 </span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">allowCustomSqlDatabase </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 Boolean 属性。</span></p>
+<p><span style="font-size:10pt">指定会话状态 SQL 数据库是否可以是自定义数据库（而不是 ASP.NET 默认数据库）。如果为 false，则不能指定初始目录或数据库作为 sqlConnectionString 属性的值。默认会话状态 SQL 数据库为 ASPState 数据库。有关更多信息，请参见会话状态模式。</span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为 false。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">cookieless </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 HttpCookieMode 属性。</span></p>
+<p><span style="font-size:10pt">指定对于 Web 应用程序使用 Cookie 的方式。</span></p>
+<p><span style="font-size:10pt">cookieless 属性可以为下列可能值之一。默认值为 UseCookies。</span></p>
+<table border="1" width="97%" cellpadding="0">
+<tbody>
+<tr>
+<td width="147" valign="bottom">
+<p><span style="font-size:10pt">值 </span></p>
+</td>
+<td width="329" valign="bottom">
+<p><span style="font-size:10pt">说明 </span></p>
+</td>
+</tr>
+<tr>
+<td width="147" valign="top">
+<p><span style="font-size:10pt">AutoDetect </span></p>
+</td>
+<td width="329" valign="top">
+<p><span style="font-size:10pt">ASP.NET 确定请求浏览器或请求设备是否支持 Cookie。如果请求浏览器或请求设备支持 Cookie，则 AutoDetect 使用 Cookie 来保留用户数据；否则，将在查询字符串中使用一个标识符。如果浏览器或设备支持 Cookie，但当前禁用了 Cookie，则请求功能仍会使用 Cookie。</span></p>
+</td>
+</tr>
+<tr>
+<td width="147" valign="top">
+<p><span style="font-size:10pt">UseCookies </span></p>
+</td>
+<td width="329" valign="top">
+<p><span style="font-size:10pt">无论浏览器或设备是否支持 Cookie，都使用 Cookie 来保留用户数据。</span></p>
+</td>
+</tr>
+<tr>
+<td width="147" valign="top">
+<p><span style="font-size:10pt">UseDeviceProfile </span></p>
+</td>
+<td width="329" valign="top">
+<p><span style="font-size:10pt">ASP.NET 根据 HttpBrowserCapabilities 设置来确定是否使用 Cookie。如果 HttpBrowserCapabilities 设置指示浏览器或设备支持 Cookie，将使用 Cookie；否则，将在查询字符串中使用一个标识符。</span></p>
+</td>
+</tr>
+<tr>
+<td width="147" valign="top">
+<p><span style="font-size:10pt">UseUri </span></p>
+</td>
+<td width="329" valign="top">
+<p><span style="font-size:10pt">无论浏览器或设备是否支持 Cookie，调用功能都使用查询字符串来存储标识符。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p align="left"><span style="font-size:10pt"> </span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">cookieName </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 String 属性。</span></p>
+<p><span style="font-size:10pt">指定存储会话标识符的 Cookie 的名称。 </span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为 "ASP.NET_SessionId"。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">customProvider </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 String 属性。</span></p>
+<p><span style="font-size:10pt">指定用于存储和检索会话状态数据的自定义会话状态提供程序的名称。该提供程序在 providers 元素中指定。仅当会话状态模式设置为 Custom 值时，才使用该提供程序。有关更多信息，请参见会话状态模式。</span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为空字符串 ("")。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">mode </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 SessionStateMode 属性。</span></p>
+<p><span style="font-size:10pt">指定存储会话状态值的位置。有关更多信息，请参见会话状态模式。</span></p>
+<p><span style="font-size:10pt">mode 属性可以为下列可能值之一。默认值为 InProc。</span></p>
+<table border="1" width="97%" cellpadding="0">
+<tbody>
+<tr>
+<td width="103" valign="bottom">
+<p><span style="font-size:10pt">值 </span></p>
+</td>
+<td width="373" valign="bottom">
+<p><span style="font-size:10pt">说明 </span></p>
+</td>
+</tr>
+<tr>
+<td width="103" valign="top">
+<p><span style="font-size:10pt">Custom </span></p>
+</td>
+<td width="373" valign="top">
+<p><span style="font-size:10pt">会话状态将使用自定义数据存储区来存储会话状态信息。</span></p>
+</td>
+</tr>
+<tr>
+<td width="103" valign="top">
+<p><span style="font-size:10pt">InProc </span></p>
+</td>
+<td width="373" valign="top">
+<p><span style="font-size:10pt">会话处于正在处理 ASP.NET 辅助进程的状态。</span></p>
+</td>
+</tr>
+<tr>
+<td width="103" valign="top">
+<p><span style="font-size:10pt">Off </span></p>
+</td>
+<td width="373" valign="top">
+<p><span style="font-size:10pt">会话状态被禁用。</span></p>
+</td>
+</tr>
+<tr>
+<td width="103" valign="top">
+<p><span style="font-size:10pt">SQLServer </span></p>
+</td>
+<td width="373" valign="top">
+<p><span style="font-size:10pt">会话状态将使用进程外 SQL Server 数据库来存储状态信息。</span></p>
+</td>
+</tr>
+<tr>
+<td width="103" valign="top">
+<p><span style="font-size:10pt">StateServer </span></p>
+</td>
+<td width="373" valign="top">
+<p><span style="font-size:10pt">会话状态将使用进程外 ASP.NET 状态服务来存储状态信息。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p align="left"><span style="font-size:10pt"> </span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">partitionResolverType </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 String 属性。</span></p>
+<p><span style="font-size:10pt">指定在哪里存储会话状态。如果 partitionResolverType 属性中指定了值，则忽略 sqlConnectionString 和 stateConnectionString 属性。PartitionResolverType 属性返回的连接字符串将用于每个请求，为请求的其余部分连接到适当的服务器位置。如果连接字符串无效，ASP.NET 将引发一个异常，该异常与当配置的服务器连接字符串无效时引发的异常相同。该属性用于在 SQL 或状态服务器模式下在多个后端节点上划分会话状态数据。</span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为空字符串。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">regenerateExpiredSessionId </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 Boolean 属性。</span></p>
+<p><span style="font-size:10pt">指定当客户端指定了过期的会话 ID 时是否重新发出会话 ID。默认情况下，当启用了 regenerateExpiredSessionId 时，仅为 cookieless 模式重新发出会话 ID。有关更多信息，请参见 IsCookieless。 </span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为 true。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">sqlCommandTimeout </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 TimeSpan 属性。</span></p>
+<p><span style="font-size:10pt">指定使用 SQL Server 会话状态模式的 SQL 命令的持续时间超时（秒）。持续时间超时是 SQL 命令可以处于空闲状态的时间（秒），超过此时间之后，该命令将被取消。 </span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为 0:00:30（30 秒）。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">sqlConnectionString </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 String 属性。</span></p>
+<p><span style="font-size:10pt">为运行 SQL Server 的计算机指定连接字符串。该属性在 mode 属性设置为 SQLServer 值时是必需的。有关更多信息，请参见会话状态模式。</span></p>
+<table border="1" width="97%" cellpadding="0">
+<tbody>
+<tr>
+<td width="476" valign="bottom">
+<p><span style="font-size:10pt">注意</span></p>
+</td>
+</tr>
+<tr>
+<td width="476" valign="top">
+<p><span style="font-size:10pt">若要在使用 SQLServer 模式时提高您的应用程序的安全性，请使用受保护的配置来加密配置的 sessionState 节，以帮助保护 sqlConnectionString 值。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size:10pt">默认值为 "data source=127.0.0.1;Integrated Security=SSPI"。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">stateConnectionString </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 String 属性。</span></p>
+<p><span style="font-size:10pt">指定远程存储会话状态的服务器名称或地址以及端口。端口值必须为 42424。当 mode 为 StateServer 值时，该属性是必需的。确保运行 ASP.NET 状态服务的服务器是存储会话状态信息的远程服务器。该服务随 ASP.NET 一起安装，默认情况下为 %SystemRoot%\Microsoft.NET\Framework\VersionNumber\aspnet_state.exe。有关更多信息，请参见会话状态模式。</span></p>
+<table border="1" width="97%" cellpadding="0">
+<tbody>
+<tr>
+<td width="476" valign="bottom">
+<p><span style="font-size:10pt">注意</span></p>
+</td>
+</tr>
+<tr>
+<td width="476" valign="top">
+<p><span style="font-size:10pt">若要在使用 StateServer 模式时提高您的应用程序的安全性，请使用受保护的配置来加密配置的 &lt;sessionState&gt; 节，以帮助保护 stateConnectionString 值。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span style="font-size:10pt">默认值为 "tcpip=127.0.0.1:42424"。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">stateNetworkTimeout </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 TimeSpan 属性。</span></p>
+<p><span style="font-size:10pt">指定 Web 服务器与状态服务器之间的 TCP/IP 网络连接可以处于空闲状态的时间（秒），超过此时间后，请求将被取消。该属性在 mode 属性设置为 StateServer 值时使用。</span></p>
+<p><span style="font-size:10pt">默认值为 10 秒。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">timeout </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 TimeSpan 属性。</span></p>
+<p><span style="font-size:10pt">指定在放弃一个会话前该会话可以处于空闲状态的分钟数。对于进程内和状态服务器模式，timeout 属性不能设置为大于 525,601 分钟（1 年）的值。</span></p>
+<p><span style="font-size:10pt">会话 timeout 配置设置仅适用于 ASP.NET 页。更改会话 timeout 值不会影响 ASP 页的会话超时时间。同样，更改 ASP 页的会话超时时间不会影响 ASP.NET 页的会话超时时间。</span></p>
+<p><span style="font-size:10pt">默认值为 20 分钟。</span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">useHostingIdentity </span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的 Boolean 属性。</span></p>
+<p><span style="font-size:10pt">指定会话状态将恢复为宿主标识还是使用客户端模拟。</span></p>
+<p><span style="font-size:10pt">如果为 true，ASP.NET 将使用下列进程凭据之一来连接会话状态存储区： </span></p>
+<p><span style="font-size:10pt">宿主进程；对于 Microsoft Internet 信息服务 [IIS] 5 和 5.1 版为 ASPNET，对于 Microsoft Windows Server 2003 则为 NETWORK SERVICE。</span></p>
+<p><span style="font-size:10pt">应用程序模拟标识，当使用了以下配置时使用此凭据： </span></p>
+<p><span style="font-size:10pt">&lt;identity impersonate=&quot;true&quot; userName=&quot;user&quot; password=&quot;pwd&quot; /&gt; </span></p>
+<p><span style="font-size:10pt">如果为 false，ASP.NET 将使用目前与当前请求的操作系统线程关联的凭据来连接会话状态存储区。对于客户端模拟，ASP.NET 将使用与浏览器协商的安全凭据来连接会话状态存储区。如果为 false，ASP.NET 在连接会话状态存储区时不会恢复为进程标识或应用程序模拟标识。有关更多信息，请参见 ASP.NET 模拟。</span></p>
+<p><span style="font-size:10pt">此属性是 .NET Framework 2.0 版中的新属性。</span></p>
+<p><span style="font-size:10pt">默认值为 true。</span></p>
+<table border="1" width="97%" cellpadding="0">
+<tbody>
+<tr>
+<td width="476" valign="bottom">
+<p><span style="font-size:10pt">注意</span></p>
+</td>
+</tr>
+<tr>
+<td width="476" valign="top">
+<p><span style="font-size:10pt">在 .NET Framework 1.1 版中，如果 mode 属性设置为 SQLServer，并且客户端模拟有效，则 ASP.NET 使用来自 ASP.NET 客户端模拟的客户端凭据连接到运行 SQL Server 的计算机。 </span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p align="left"><span style="font-size:10pt"> </span></p>
+</td>
+</tr>
+<tr>
+<td width="194" valign="top">
+<p><span style="font-size:10pt">继承的属性</span></p>
+</td>
+<td width="500" valign="top">
+<p><span style="font-size:10pt">可选的属性。</span></p>
+<p><span style="font-size:10pt">由所有节元素继承的属性。</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>作者：xinhaijulan<br>出处：<a href="http://xinhaijulan.cnblogs.com/">http://xinhaijulan.cnblogs.com</a><br>本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。</p>
+
+
+<p><img src="http://www.cnblogs.com/xinhaijulan/aggbug/1805116.html?type=1" width="1" height="1" alt=""><p>评论: 6　<a href="http://www.cnblogs.com/xinhaijulan/archive/2010/08/21/1805116.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/xinhaijulan/archive/2010/08/21/1805116.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/71550/">美国人最需要什么？——电视正渐渐成为生活非必需品</a><span style="color:gray">(2010-08-21 19:55)</span><br>· <a href="http://news.cnblogs.com/n/71549/">马化腾的住房观是一代白领的指引</a><span style="color:gray">(2010-08-21 19:53)</span><br>· <a href="http://news.cnblogs.com/n/71548/">连接 Facebook 至 Messenger 用户数: 800 万</a><span style="color:gray">(2010-08-21 19:47)</span><br>· <a href="http://news.cnblogs.com/n/71547/">webOS 2.0 新机继续仰赖 iPhone 游戏？</a><span style="color:gray">(2010-08-21 19:43)</span><br>· <a href="http://news.cnblogs.com/n/71546/">传媒大亨吴征出任酷6董事长 憧憬下一个十年</a><span style="color:gray">(2010-08-21 19:19)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/nick4/archive/2010/08/19/1803393.html">十年技术，不要再迷茫</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

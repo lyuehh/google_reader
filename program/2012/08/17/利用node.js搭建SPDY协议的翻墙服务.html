@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>利用node.js搭建SPDY协议的翻墙服务</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>利用node.js搭建SPDY协议的翻墙服务</h2>
+<p class="meta">17 Aug 2012</p>
+
+<div class="post">
+<h2>利用node.js搭建SPDY协议的翻墙服务</h2>
+
+<h3>by snnn</h3>
+
+<h3>at 2012-08-17 00:10:28</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7959.html">http://www.udpwork.com/item/7959.html</a></h3>
+
+<p>我之前一直是使用ssh –D的方式翻墙，但是这么做有个缺点，需要在用户的机器上安装一个软件，并且ssh会经常断（即使加了keep alive）。后来我一直在想，为什么不直接走http或者socks协议呢？我觉得主要原因是：通信没有加密。</p>
+
+
+<p>Chrome开了一个名为<a href="http://www.chromium.org/developers/design-documents/secure-web-proxy">Secure Web Proxy</a>的项目，旨在让浏览器支持HTTPS协议的proxy server。目前不光chrome，firefox也支持了。此外，Chrome还引入了一个名为SPDY的协议，通过对HTTPS做略微的修改，使得在单个SSL连接上可以同时传输多个HTTP请求。因为减少了HTTPS握手次数，可以大大提高proxy的相应次数。</p>
+
+
+<p>综上所述，用SPDY协议来翻墙，比ssh -D好多了！</p>
+
+
+<p>最近我从网上找了一段代码，发现可以很快速的利用node.js搭建一个SPDY协议的proxy server，下面分享给大家：</p>
+
+
+<p>首先,安装node.js，从这里下载<a href="http://nodejs.org/download/" title="http://nodejs.org/download/">http://nodejs.org/download/</a>对应的包。如果是Linux，直接解压缩即可，不需要root权限。</p>
+
+
+<p>然后下载proxy程序文件</p>
+
+
+<p>[app@www proxy]$ wget<a href="http://www.sunchangming.com/d/12641">http://www.sunchangming.com/d/12641</a>
+<br>
+[app@www proxy]$ unzip 12641</p>
+
+
+<p>然后准备一对SSL key，我是从<a href="http://www.startssl.com/">http://www.startssl.com/</a>申请的。你也可以用openssl自己随便生一个自签名证书，但是必须让每个使用你的proxy的人安装这个CA证书到信任列表里。所以我建议还是找startssl申请吧。</p>
+
+
+<p>启动参数很简单</p>
+
+
+<p>/home/app/node/bin/spdyproxy -k /home/app/startssl/private.key -c /home/app/startssl/mycert.pem -p 4433 -U xxx -P xxxxx</p>
+
+
+<p>-k: ssl证书的私钥
+<br>
+-c:  ssl 证书
+<br>
+-p: 端口号
+<br>
+-U: 用户名
+<br>
+-P: 密码</p>
+
+
+<p>然后是client端。最简单的方式是启动chrome的时候直接加上--proxy-server=https://www.myproxyserver.com:4433 。高级点的，可以自己写个脚本生PAC配置文件，从而根据域名来判断是否需要走代理服务器。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7959.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7959.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7959.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

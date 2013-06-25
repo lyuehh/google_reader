@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>事件处理程序的执行上下文</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>事件处理程序的执行上下文</h2>
+<p class="meta">11 Sep 2012</p>
+
+<div class="post">
+<h2>事件处理程序的执行上下文</h2>
+
+<h3>by snandy</h3>
+
+<h3>at 2012-09-10 17:45:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/snandy/archive/2012/09/10/2679103.html">http://www.cnblogs.com/snandy/archive/2012/09/10/2679103.html</a></h3>
+
+<p>以下五种方式添加事件</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&lt;!doctype html&gt;<br>&lt;html&gt;<br>    &lt;head&gt;<br>        &lt;title&gt;事件处理程序的执行上下文&lt;/title&gt;<br>        &lt;meta charset=&quot;utf-8&quot;&gt;<br>        &lt;style&gt;<br>        div {<br>        background: gold;<br>        margin: 10px;<br>        }<br>        &lt;/style&gt;<br>    &lt;/head&gt;<br>    &lt;body&gt;<br>    &lt;!-- 内联事件代码 --&gt;<br>    &lt;div id=&quot;d1&quot; onclick=&quot;alert(this.tagName)&quot;&gt;DIV1&lt;/div&gt;<br>    &lt;!-- 内联一个函数 --&gt;<br>    &lt;div id=&quot;d2&quot; onclick=&quot;fn()&quot;&gt;DIV2&lt;/div&gt;<br>    &lt;!-- DOM 0 --&gt;<br>    &lt;div id=&quot;d3&quot;&gt;DIV3&lt;/div&gt;<br>    &lt;!-- DOM 2 --&gt;<br>    &lt;div id=&quot;d4&quot;&gt;DIV4&lt;/div&gt;<br>    &lt;!-- IE低版本 --&gt;<br>    &lt;div id=&quot;d5&quot;&gt;DIV5&lt;/div&gt;<br>    <br>    &lt;script&gt;<br>    function $(id) {return document.getElementById(id)}<br>var d1 = $('d1'), d2 = $('d2'), d3 = $('d3'), d4 = $('d4'), d5 = $('d5')<br><br>// 事件处理程序<br>    function fn() {<br>    if (this.tagName) {<br>    alert(this.tagName)<br>    } else {<br>    alert(this)<br>    }<br>    }<br>    <br>    // DOM 0 (All Browsers)<br>    d3.onclick = fn<br><br>    // DOM 2 (IE9/10, FF, Safari, Chrome, Opera)<br>    try {<br>    d4.addEventListener('click', fn, false)<br>    } catch(e) {}<br><br>// 低版本IE (IE6/7/8, Opera)<br>try {<br>d5.attachEvent('onclick', fn)<br>}catch(e){}<br><br>    &lt;/script&gt;<br>    &lt;/body&gt;<br>&lt;/html&gt;<br></div>
+
+
+<p> </p>
+
+
+<p>结果如下：</p>
+
+
+<ol><li><span>内联HTML (element) </span></li><li><span>内联HTML fn (window)</span></li><li><span>DOM-0级onXXX (element)</span></li><li><span>DOM-2级addEventListener (element)</span></li><li><span>IE低版本attachEvent </span>(IE6/7/8: window, Opera: element)</li></ol>
+
+
+<p><img src="http://www.cnblogs.com/snandy/aggbug/2679103.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2012/09/10/2679103.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

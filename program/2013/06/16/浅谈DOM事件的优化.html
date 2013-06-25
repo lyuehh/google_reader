@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>浅谈DOM事件的优化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>浅谈DOM事件的优化</h2>
+<p class="meta">16 Jun 2013</p>
+
+<div class="post">
+<h2>浅谈DOM事件的优化</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2013-06-15 19:01:36</h3>
+
+<h3>original <a href="http://stylechen.com/dom-event-optimize.html">http://stylechen.com/dom-event-optimize.html</a></h3>
+
+<p>在 JavaScript 程序的开发中，经常会用到一些频繁触发的 DOM 事件，如 mousemove、resize，还有不是那么常用的鼠标滚轮事件：mousewheel (在 Firefox 中，滚轮事件为 DOMMouseScroll)。</p>
+
+
+<p>浏览器为了确保这些事件能够及时响应，触发的频率会比较高，具体的触发频率各浏览器虽然有出入，但出入不大。很多时候在需要注重性能的场景下使用这些事件会想各种办法对事件的触发频率进行优化，下面说说我的一些优化方法。</p>
+
+
+<h3>mousemove 在拖拽中的优化</h3>
+
+
+<p>拖拽( Drag )是很常见的一个功能，在浏览器还没实现原生的拖拽之前，通过 mousedown、mousemove、mouseup 3种事件类型就可以模拟出拖拽效果来，当然这里不谈如何去实现一个拖拽功能。</p>
+
+
+<p>mousemove 事件在拖拽的应用中既要确保拖拽的流畅度，又要确保拖拽时的性能，如何保持两者的平衡呢？</p>
+
+
+<p>可以通过设置一个计数器来去掉一半的 mousemove 事件的触发，代码如下：</p>
+
+
+<pre>
+var count = 0;
+
+elem.onmousemove = function(){
+    count++;
+    
+    // 当计数器为偶数的时候不执行mousemove
+    if( count % 2 === 0 ){
+        return;
+    }
+    
+    // 实现拖拽功能的代码...
+};
+</pre>
+
+
+<p>上面只是增加了很少的几行代码，通过判断计数器是否为偶数，就可以去掉一半的 mousemove 事件执行的次数，同时拖拽功能的流畅度基本不受影响。</p>
+
+
+<h3>mousemove 模拟 mouseenter 效果</h3>
+
+
+<p>最近碰到这么一个需求，需要在图片上绑定一个事件，当鼠标移动到图片上时对图片进行放大，绝大多数人的第一反应就是直接使用 mouseenter 事件来处理。但是使用 mouseenter 事件会带来误触发，尽管可以使用定时器来配合也还是会有误触发，因为图片对于 mouseenter 的触发区域是比较大的，当鼠标划过一张 200*200 尺寸的图片时，此时给 mouseenter 设置一个 500 毫秒的延时，效果可能达不到预期。对交互方式做进一步的优化，当鼠标快速划过图片时不触发事件，只有鼠标短暂的停留在图片上时才触发事件。通过对 mousemove 添加一个定时器就可以实现该效果。代码如下：</p>
+
+
+<pre>
+var timer,
+    move = function(){
+        clearTimeout( timer );
+        // 设置一个较短的定时器
+        timer = setTimeout(function(){
+            // 这里是实现图片放大的代码...
+        }, 200 );
+    };
+    
+img.onmousemove = move;
+img.onmouseout = function(){
+    clearTimeout( timer );
+};
+</pre>
+
+
+<p>鼠标频繁的移动触发的 mousemove 事件会清除掉上一次添加的定时器，只有当鼠标停留时间超过设置的 200 毫秒才会触发事件，当然在鼠标移开的时候一定要记得清除掉定时器。<a href="http://image.so.com/i?q=%E8%8D%B7%E8%8A%B1&amp;src=srp">360图片搜索</a>就采用了这种触发方式，这样就不会再有误触发了。</p>
+
+
+<h3>resize 事件的优化</h3>
+
+
+<p>resize 是在浏览器窗口大小改变的时候触发的事件，通常改变一次会触发 2、3 次 resize 事件，对于 IE6/7 resize 更容易被触发。resize 事件通常用于当窗口改变大小时，网页的布局也会根据窗口大小进行自适应布局。自适应布局如果对性能的消耗比较大，那么就要尤为注意 resize 触发的频率。同样使用定时器来实现。</p>
+
+
+<pre>
+var throttle = function( fn, timeout ){        
+    var timer;
+    
+    return function(){
+        var self = this,
+            args = arguments;
+
+        clearTimeout( timer );
+
+        timer = setTimeout(function(){
+            fn.apply( self, args );
+        }, timeout );
+    };
+};
+
+window.onresize = throttle(function(){
+    // 自适应布局的代码...
+}, 100 );
+</pre>
+
+
+<p>通过反复的调试，发觉给 resize 添加一个 100 毫秒的延迟的效果会比较理想，既能保证事件的及时性，又能达到优化的目的。</p>
+
+
+<h3>mousewheel 事件的优化</h3>
+
+
+<p>mousewheel 是鼠标滚轮滚动时触发的事件，在 Firefox 中该事件名为 DOMMouseScroll，在一些场合下，比如通过鼠标滚轮来控制 lightbox 组件图片的前后切换，又或者通过鼠标滚轮来放大和缩小地图。鼠标滚轮通常都会比较灵活，可能一次会滚动好几次，但是在具体的应用中这种太灵活的滚动在前面提到过的场景中必然会有误触发。直接将上面封装好的 throttle 函数拿过来稍微改下时间间隔同样能达到优化效果。</p>
+
+
+<pre>
+window.onmousewheel = throttle(function(){
+    // 滚轮滚动时的操作代码...
+}, 200 );
+</pre>
+
+
+<p>鼠标滚轮设置 200 毫秒的延迟会有较理想的效果。</p>
+
+
+<p>以上的一些优化方法大多是通过定时器来实现的，关键还是看如何灵活运用了。这些优化并不限于性能上的优化，还有交互效果上的优化，说到底就是以前端的角度出发，从细节入手来提升用户体验。</p>
+
+
+<div>原载于：雨夜带刀’s Blog<br>
+本文链接：<a href="http://stylechen.com/dom-event-optimize.html" title="浅谈DOM事件的优化">http://stylechen.com/dom-event-optimize.html</a><br>
+如需转载请以链接形式注明原载或原文地址。
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

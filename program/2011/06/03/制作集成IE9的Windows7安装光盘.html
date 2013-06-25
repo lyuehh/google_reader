@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>制作集成IE9的Windows7安装光盘</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>制作集成IE9的Windows7安装光盘</h2>
+<p class="meta">03 Jun 2011</p>
+
+<div class="post">
+<h2>制作集成IE9的Windows7安装光盘</h2>
+
+<h3>by 软件盒子客服</h3>
+
+<h3>at 2011-06-02 18:22:01</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/itopdog/~8287987/518796815/6206870/1/item.html">http://item.feedsky.com/~feedsky/itopdog/~8287987/518796815/6206870/1/item.html</a></h3>
+
+<h2><a href="http://www.itopdog.cn/software-tech/windows7-with-ie9.html"> 如何将IE9集成到Windows 7</a> ?</h2>
+
+
+<h3>制作思路：</h3>
+
+
+<p style="padding-left:30px"><span style="font-size:large">1、</span>使用命令参数将离线版IE9安装包解包；</p>
+
+
+<p style="padding-left:30px"><span style="font-size:large">2、</span>将IE9集成到<a title="Windows 7 With SP1  MSDN版 含简体中文版" href="http://www.itopdog.cn/utilities-operating-systems/windows/windows7-with-sp1.html"> Windows 7 </a>镜像中的“install.wim”中；</p>
+
+
+<p style="padding-left:30px"><span style="font-size:large">3、</span>使用制作好的“install.wim”替换原文件，生成集成IE9的Windows7安装镜像。</p>
+
+
+<h3>所需文件及工具：</h3>
+
+
+<p><strong><a title="Internet Explorer 9 简体中文正式版" href="http://www.itopdog.cn/networking-software/browser/ie9.html">微软官方IE9离线安装包</a>、<a title="UltraISO Premium Edition" href="http://www.itopdog.cn/audio-video/burn-software/ultraiso.html">UltraISO</a></strong>、DISM(Windows 7系统中已存在)。</p>
+
+
+<p>以上文件及工具在软件盒子都可以下载，点击相应工具的名称即可下载。</p>
+
+
+<h2>开始制作：</h2>
+
+
+<h3>1、提取IE9离线安装包文件：</h3>
+
+
+<p>将下载完成的IE9离线安装包重命名为“<strong>IE9</strong>”（只是为了使用命令参数时方便），放在本地磁盘<strong>F:\IE9</strong>文件夹中（你可以随意设置此路径），以管理员身份打开命令提示符，运行如下命令：</p>
+
+
+<p style="background-color:#ffffcc;padding-left:30px;border:thin dashed #66cc00"><strong>F:</strong><br>
+<strong>CD IE9</strong><br>
+<strong>IE9.exe /x:.</strong></p>
+
+
+<p>将会得到如下图所示的几个新文件:<strong> IE9_SUPPORT、IE9-Win7、ielangpack-CHS、SQMAPI.DLL </strong></p>
+
+
+<p><img title="Windows 7 集成 IE9" src="http://photo.staticsdo.com/a1/356/395/488/56235-999767931-8.jpg" alt="Windows 7 集成 IE9" width="632" height="320"></p>
+
+
+<h3>2、提取<a title="Windows 7 With SP1  MSDN版 含简体中文版" href="http://www.itopdog.cn/utilities-operating-systems/windows/windows7-with-sp1.html">Windows 7 安装光盘</a>中的 INSTALL.WIM映像文件：</h3>
+
+
+<p><strong><a title="UltraISO Premium Edition" href="http://www.itopdog.cn/audio-video/burn-software/ultraiso.html">点击下载 UltraISO</a></strong> ,使用<a title="UltraISO Premium Edition" href="http://www.itopdog.cn/audio-video/burn-software/ultraiso.html">UltraISO</a>来提取系统ISO中的INTALL.WIM文件到<strong>F:/IE9</strong>文件夹下，具体操作方法见下图：</p>
+
+
+<p><img title="Windows 7 集成 IE9" src="http://photo.staticsdo.com/a1/476/466/210/56236-999767931-8.jpg" alt="Windows 7 集成 IE9" width="674" height="456"></p>
+
+
+<h3>3、使用<a href="http://www.itopdog.cn/software-tech/windows7-with-ie9.html">DISM</a>命令行工具集成IE9到INSTALL.WIM：</h3>
+
+
+<p>DISM是<a href="http://www.itopdog.cn/software-tech/windows7-with-ie9.html">Windows 7的系统封装</a>工具，也是<strong> <a title="GImageX 2.0.17 中文版,ImageX一键恢复, 两款微软imagex的GUI版本" href="http://www.itopdog.cn/utilities-operating-systems/backup-software/gimagex.html">ImageX</a></strong> 的升级版，我们可以在Windows 7中直接使用，首先在F：\IE9文件夹中创建一个名为<strong>WIM</strong>的空文件夹，然后以管理员身份运行cmd,输入以下命令：</p>
+
+
+<p style="background-color:#ffffcc;padding-left:30px;border:thin dashed #66cc00"><strong>dism /get-wiminfo /wimfile:f:\ie9\install.wim</strong></p>
+
+
+<p>//获取映像中的Windows 7 版本信息。</p>
+
+
+<p style="background-color:#ffffcc;padding-left:30px;border:thin dashed #66cc00"><strong>DISM /MOUNT-WIM /WIMFILE:F:\IE9\INSTALL.WIM /NAME:”WINDOWS 7 PROFESSIONAL” /MOUNTDIR:F:\IE9\WIM</strong></p>
+
+
+<p>//挂载（Mount）映像中的“<strong>WINDOWS 7 PROFESSIONAL</strong>”的文件到F:\IE9\WIM文件夹中。（<strong>你可以选择其它版本</strong>）</p>
+
+
+<p style="background-color:#ffffcc;padding-left:30px;border:thin dashed #66cc00"><strong>DISM /IMAGE:F:\IE9\WIM /ADD-PACKAGE /PACKAGEPATH:F:\IE9\IE9-WIN7.CAB /PACKAGEPATH:F:\IE9\IELANGPACK-CHS.CAB</strong></p>
+
+
+<p>//将IE9-Win7.cab和IELANGPACK-CHS.CAB这两个从IE9安装包中释放的文件（剩下的两个文件可以无视）添加到F:\IE9\WIM文件夹中。</p>
+
+
+<p style="background-color:#ffffcc;padding-left:30px;border:thin dashed #66cc00"><strong>DISM /UNMOUNT-WIM /MOUNTDIR:F:\IE9\WIM /COMMIT</strong></p>
+
+
+<p>//卸载（unmount）之前挂载的映像文件，并将F:\IE9\WIM内所有文件保存为”INSTALL.WIM”文件，并替换原有的INSTALL.WIM为已集成IE9的”INSTALL.WIM”文件。</p>
+
+
+<p><img title="Windows 7 集成 IE9" src="http://photo.staticsdo.com/a1/284/194/459/56237-999767931-8.jpg" alt="Windows 7 集成 IE9" width="725" height="1175"></p>
+
+
+<h2>使用制作好的“install.wim”替换原文件，生成集成IE9的Windows7安装镜像。</h2>
+
+
+<p>使用<a title="UltraISO Premium Edition" href="http://www.itopdog.cn/audio-video/burn-software/ultraiso.html">UltraISO</a>将制作好的“install.wim”替换原文件，然后另存为新的ISO文件即可，当然你也可以使用<a title="UltraISO Premium Edition" href="http://www.itopdog.cn/audio-video/burn-software/ultraiso.html">UltraISO</a>把它记录成 <a href="http://www.itopdog.cn/software-tech/windows7-with-ie9.html">集成IE9的Windows7安装光盘</a>。如果你没有光驱，想安装Windows 7请参阅</p>
+
+
+<p><strong><a href="http://www.itopdog.cn/utilities-operating-systems/windows/windows7-setup.html">没有光驱一样可以简单快速的安装Windows 7</a></strong></p>
+
+
+<p><img src="http://www1.feedsky.com/t1/518796815/itopdog/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/itopdog/~8287987/518796815/6206870/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

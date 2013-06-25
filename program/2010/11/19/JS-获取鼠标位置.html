@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JS 获取鼠标位置</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JS 获取鼠标位置</h2>
+<p class="meta">19 Nov 2010</p>
+
+<div class="post">
+<h2>JS 获取鼠标位置</h2>
+
+<h3>by sofish</h3>
+
+<h3>at 2010-11-19 00:03:03</h3>
+
+<h3>original <a href="http://sofish.de/1498">http://sofish.de/1498</a></h3>
+
+<p>对于一切关于位置和宽高的东西，在 JS 都特别麻烦。好在由于某些原因，需要用到的地方也很少。这也成为了不去了解的借口。今晚回来瞄一下书。看一下获取鼠标位置的兼容写法。</p>
+
+
+<p>虽然 JS 不会像 CSS 那么难搞，但兼容一直是最不爽的。还好有 PPK 老师和 Google 老师。简单来说，精简为这个表：</p>
+
+
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>参考点</th>
+<th>浏览器兼容性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClientX, ClientY</td>
+<td>document</td>
+<td>IE</td>
+</tr>
+<tr>
+<td>PageX, PageY</td>
+<td>window</td>
+<td>sane browsers</td>
+</tr>
+<tr>
+<td colspan="3">其他的LayerX, LayerY, OffsetX, OffsetY, ScreenX, ScreenY, x, y 都 TM 是浮云，不用理会</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>然后，再看一个 Demo 吧：<a href="http://www.sofish.de/file/demo/mousePosition.html">点这里点这里！</a> (把你的鼠标放在页面上乱划吧)</p>
+
+
+<p> </p>
+
+
+<p>============</p>
+
+
+<p>好吧，这算是个分割线。其实一直挺想写博客的。不过有时候华数网通很不给力，编辑器也很不给力。MB。让我写不成。今晚是搞了很久，才上得了博客，写了几百只字。真是，RP啊，长相啊，浮云啊。SHIT。</p>
+
+
+<p>话说，最近收获不少。只是，白天在公司都比较忙，晚上回来又晚，有很多分享也都偏向于发 tweet。博客就一天天没去理她了。其实，这是不行滴。</p>
+
+
+<p>感觉年轻人就应该多写写（虽然已经大叔年龄了），写下来和思考得到的结果差异总是很大。就像 PPK 说的，记下来分享，让他自己收获很多。是的，特别是写 DEMO 的时候。为了对得起读者，就要多方面测试。这其实也给自己积累了不少经验。或许，你也一样。</p>
+
+
+<p>少年。有空就记下来吧。</p>
+
+
+<p><hr>©2011 <a href="http://sofish.de" title="幸福收藏夹">幸福收藏夹</a>. 版权所有,转载务必注明. 幸福收藏夹域名已经更新为：<a href="http://sofish.de" title="幸福收藏夹">sofish.de</a> .</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/459365710/sofish/feedsky/s.gif?r=http://sofish.de/1498" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/sofish/459365710/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/sofish/459365710/art01.gif"></a></p><p><a href="http://feed.feedsky.com/~flare/sofish?a=212aae6cf7280fbd2cb4a3cadb80c1f3"><img src="http://feed.feedsky.com/~flare/sofish?i=212aae6cf7280fbd2cb4a3cadb80c1f3" border="0"></a><a href="http://feed.feedsky.com/~flare/sofish?a=e3a28928f4b746df2c5ff1341b680fe2"><img src="http://feed.feedsky.com/~flare/sofish?i=e3a28928f4b746df2c5ff1341b680fe2" border="0"></a><a href="http://feed.feedsky.com/~flare/sofish?a=a5a01abe225fcd4bd24fa47b91b1df4a"><img src="http://feed.feedsky.com/~flare/sofish?i=a5a01abe225fcd4bd24fa47b91b1df4a" border="0"></a><a href="http://feed.feedsky.com/~flare/sofish?a=3063ea6591aa772b0e60b9fdbbb17aae"><img src="http://feed.feedsky.com/~flare/sofish?i=3063ea6591aa772b0e60b9fdbbb17aae" border="0"></a><a href="http://feed.feedsky.com/~flare/sofish?a=fb71c88060d9b2d778e22c3e04cf31c6"><img src="http://feed.feedsky.com/~flare/sofish?i=fb71c88060d9b2d778e22c3e04cf31c6" border="0"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

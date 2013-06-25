@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go中的系统Signal处理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Go中的系统Signal处理</h2>
+<p class="meta">22 Sep 2012</p>
+
+<div class="post">
+<h2>Go中的系统Signal处理</h2>
+
+<h3>by bigwhite</h3>
+
+<h3>at 2012-09-21 16:56:41</h3>
+
+<h3>original <a href="http://tonybai.com/2012/09/21/signal-handling-in-go/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=signal-handling-in-go">http://tonybai.com/2012/09/21/signal-handling-in-go/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=signal-handling-in-go</a></h3>
+
+<p>我们在生产环境下运行的系统要求优雅退出，即程序接收退出通知后，会有机会先执行一段清理代码，将收尾工作做完后再真正退出。我们采用系统Signal来 通知系统退出，即kill pragram-pid。我们在程序中针对一些系统信号设置了处理函数，当收到信号后，会执行相关清理程序或通知各个子进程做自清理。kill -9强制杀掉程序是不能被接受的，那样会导致某些处理过程被强制中断，留下无法恢复的现场，导致消息被破坏，影响下次系统启动运行。</p>
+
+
+<p> 最近用<a href="http://golang.org">Golang</a>实现的一个代理程序也需要优雅退出，因此我尝试了解了一下<a href="http://tonybai.com/2012/08/17/hello-go/">Golang</a>中对系统Signal的处理方式，这里和大家分享。Golang 的系统信号处理主要涉及os包、os.signal包以及syscall包。其中最主要的函数是signal包中的Notify函数：</p>
+
+
+<p> <font face="Courier New">func Notify(c chan&lt;- os.Signal, sig …os.Signal)</font></p>
+
+
+<p> 该函数会将进程收到的系统Signal转发给channel c。转发哪些信号由该函数的可变参数决定，如果你没有传入sig参数，那么Notify会将系统收到的所有信号转发给c。如果你像下面这样调用Notify：</p>
+
+
+<p> <font face="Courier New">signal.Notify(c, syscall.SIGINT, syscall.SIGUSR1, syscall.SIGUSR2)</font></p>
+
+
+<p> 则Go只会关注你传入的Signal类型，其他Signal将会按照默认方式处理，大多都是进程退出。因此你需要在Notify中传入你要关注和处理的Signal类型，也就是拦截它们，提供自定义处理函数来改变它们的行为。</p>
+
+
+<p> 下面是一个较为完整的例子：</p>
+
+
+<p> <font face="Courier New">//signal.go</font></p>
+
+
+<p> <font face="Courier New">package main</font></p>
+
+
+<p> import &quot;fmt&quot;<br>
+    import &quot;time&quot;<br>
+    import &quot;os&quot;<br>
+    import &quot;os/signal&quot;<br>
+    import &quot;syscall&quot;</p>
+
+
+<p> type signalHandler func(s os.Signal, arg interface{})</p>
+
+
+<p> type signalSet struct {<br>
+        m map[os.Signal]signalHandler<br>
+    }</p>
+
+
+<p> func signalSetNew()(*signalSet){<br>
+        ss := new(signalSet)<br>
+        ss.m = make(map[os.Signal]signalHandler)<br>
+        return ss<br>
+    }</p>
+
+
+<p> func (set *signalSet) register(s os.Signal, handler signalHandler) {<br>
+        if _, found := set.m[s]; !found {<br>
+            set.m[s] =  handler<br>
+        }<br>
+    }</p>
+
+
+<p> func (set *signalSet) handle(sig os.Signal, arg interface{})(err error) {<br>
+        if _, found := set.m[sig]; found {<br>
+            set.m[sig](sig, arg)<br>
+            return nil<br>
+        } else {<br>
+            return fmt.Errorf(&quot;No handler available for signal %v&quot;, sig)<br>
+        }</p>
+
+
+<p>     panic(&quot;won&#39;t reach here&quot;)<br>
+    }</p>
+
+
+<p> func main() {<br>
+        go sysSignalHandleDemo()<br>
+        time.Sleep(time.Hour) // make the main goroutine wait!<br>
+    }</p>
+
+
+<p> func sysSignalHandleDemo() {<br>
+        ss := signalSetNew()<br>
+        handler := func(s os.Signal, arg interface{}) {<br>
+            fmt.Printf(&quot;handle signal: %v\n&quot;, s)<br>
+        }</p>
+
+
+<p>     ss.register(syscall.SIGINT, handler)<br>
+        ss.register(syscall.SIGUSR1, handler)<br>
+        ss.register(syscall.SIGUSR2, handler)</p>
+
+
+<p>     for {<br>
+            c := make(chan os.Signal)<br>
+            var sigs []os.Signal<br>
+            for sig := range ss.m {<br>
+                sigs = append(sigs, sig)<br>
+            }<br>
+            signal.Notify(c)<br>
+            sig := &lt;-c</p>
+
+
+<p>         err := ss.handle(sig, nil)<br>
+            if (err != nil) {<br>
+                fmt.Printf(&quot;unknown signal received: %v\n&quot;, sig)<br>
+                os.Exit(1)<br>
+            }<br>
+        }<br>
+    }</p>
+
+
+<p> 上例中Notify函数只有一个参数，没有传入要关注的sig，因此程序会将收到的所有类型Signal都转发到channel c中。build该源文件并执行程序：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">$&gt; go build signal.go<br>
+    $&gt; signal</span></p>
+
+
+<p> 在另外一个窗口下执行如下命令：<br>
+    <span style="font-family:courier new,courier,monospace">$&gt; ps -ef|grep signal<br>
+    tonybai  25271  1087  0 16:27 pts/1    00:00:00 signal<br>
+    $&gt; kill -n 2 25271<br>
+    $&gt; kill -n 12 25271<br>
+    $&gt; kill 25271</span></p>
+
+
+<p> 我们在第一个窗口会看到如下输出：<br>
+    <span style="font-family:courier new,courier,monospace">$&gt; signal<br>
+    handle signal: interrupt<br>
+    handle signal: user defined signal 2<br>
+    unknown signal received: terminated</span></p>
+
+
+<p> 在sysSignalHandleDemo中我们也可以为Notify传入我们所关注的Signal集合：</p>
+
+
+<p> <font face="Courier New">signal.Notify(c, sigs…)</font></p>
+
+
+<p> 这样只有在该集合中的信号我们才能捕获，收到未在集合中的信号时，程序多直接退出。上面只是一个Demo，只是说明了我们可以捕捉到我们所关注的信号，并未体现程序如何优雅退出，不同程序的退出方式不同，这里没有通用方法，就不细说了，你的程序需要你专门的设计。</p>
+
+
+<p> 另外我们生产环境下的程序多是以Daemon守护进程的形式运行的。我们用C实现的程序多参考“<a href="http://book.douban.com/subject/1788421/">Unix高级编程</a>”中的方法将程序转为Daemon Process，但在Go中目前尚提供相关方式，网上有一些实现，但据说都不理想。更多的Go开发者建议不要在代码中实现Daemon转换，建议直接利用 第三方工具。比如在<a href="http://ubuntu.com">Ubuntu</a>下我们可以使用start-stop-daemon这个小程序轻松将你的程序转换为Daemon：</p>
+
+
+<p> $&gt; start-stop-daemon –start –pidfile ./signal.pid –startas /home/tonybai/test/go/signal –background -m<br>
+    $&gt; start-stop-daemon –stop –pidfile ./signal.pid –startas /home/tonybai/test/go/signal</p>
+
+
+<p> 这里注意：只有加上-m选项，pidfile才能成功创建。</p>
+
+
+<p> start-stop-daemon在<a href="http://www.debian.org">Debian</a>系的Linux发行版中都是默认自带的。但在<a href="http://www.redhat.com">Redhat</a>系Linux发行版中却没有该工具，我们可以自行安装：</p>
+
+
+<p> <font face="Courier New">wget -c http://developer.axis.com/download/distribution/apps-sys-utils-start-stop-daemon-IR1_9_18-2.tar.gz<br>
+    tar -xzf apps-sys-utils-start-stop-daemon-IR1_9_18-2.tar.gz<br>
+    cd apps/sys-utils/start-stop-daemon-IR1_9_18-2<br>
+    gcc start-stop-daemon.c -o start-stop-daemon</font></p>
+
+
+<p> 切换到root下<br>
+    <font face="Courier New">cp start-stop-daemon /sbin/<br>
+    chmod +x /sbin/start-stop-daemon</font></p>
+
+
+<p> 另外Go 1.0.2提供的二进制安装包直接在Redhat 5.6(Linux tonybai 2.6.18-238.el5 #1 SMP Sun Dec 19 14:22:44 EST 2010 x86_64 x86_64 x86_64 GNU/Linux)下面运行出错，提示无法找到GLIBC 2.7版本。目前解决这一问题的方法似乎只有从源码编译安装。进入到$GOROOT/src下，执行./all.bash即可。重现编译链接后的go可执 行程序则运行一切正常。</p>
+
+
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p>
+
+
+<p><img src="http://www1.feedsky.com/t1/688958477/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/09/21/signal-handling-in-go/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=signal-handling-in-go" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

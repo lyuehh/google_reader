@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>实用的系统引导修复工具-NTBOOTautofix 2.5.2下载</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>实用的系统引导修复工具-NTBOOTautofix 2.5.2下载</h2>
+<p class="meta">14 Jan 2013</p>
+
+<div class="post">
+<h2>实用的系统引导修复工具-NTBOOTautofix 2.5.2下载</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-01-14 09:31:10</h3>
+
+<h3>original <a href="http://blog.epinv.com/post/3293_%e5%ae%9e%e7%94%a8%e7%9a%84%e7%b3%bb%e7%bb%9f%e5%bc%95%e5%af%bc%e4%bf%ae%e5%a4%8d%e5%b7%a5%e5%85%b7-ntbootautofix-2-5-2%e4%b8%8b%e8%bd%bd.html">http://blog.epinv.com/post/3293_%e5%ae%9e%e7%94%a8%e7%9a%84%e7%b3%bb%e7%bb%9f%e5%bc%95%e5%af%bc%e4%bf%ae%e5%a4%8d%e5%b7%a5%e5%85%b7-ntbootautofix-2-5-2%e4%b8%8b%e8%bd%bd.html</a></h3>
+
+<p>NTBOOTautofix是一个小巧<span><a href="http://blog.epinv.com/" title="实用">实用</a></span>的<strong>系统引导修复工具</strong>。系统用久了难免遇见<strong>系统不能引导</strong>的情况，特别是那些喜欢安装双系统的童鞋，也许会经常性的遇见安装好一个系统后，其中一个系统却进不去的情况吧？这时候你难道重新格式化分区？重新安装系统么？这也许是最麻烦的办法，其实出现这些<strong>系统不能引导</strong>的情况，我们利用NTBOOTautofix<strong>系统引导修复工具</strong>就可以轻松解决问题。NTBOOTautofix不但支持<strong>双系统引导自动修复</strong>，还支持手动<strong>修复系统引导</strong>。</p>
+
+
+<p>--------------------------------------------------------------------------------</p>
+
+
+<p><b>使用方法：</b><b></b></p>
+
+
+<p>* 非安装软件，直接双击运行，傻瓜式修复，可运行于32位和64位系统和WINPE系统</p>
+
+
+<p>* &quot;自动修复&quot;自动判断和系统引导有关的条件并自动修复程序支持的盘符上的NT系统引导，无需用户手工干预</p>
+
+
+<p>* &quot;高级&quot;只供特殊需要的朋友，参看下面应用实例中的更改活动分区盘符后修复</p>
+
+
+<p>* 由于不少PE使用各种手段调整了系统默认盘符，程序未必准确判定活动分区，所以在PE中修复时推荐使用&quot;高级&quot;再选定活动分区后进行修复，如在PE中进行过调整/重分区操作，推荐重启后再使用本工具</p>
+
+
+<p>* 默认禁用windows8的Metro引导菜单(v2.2.9开始)，如需恢复Metro引导菜单，v2.5.2的两种方法操作：</p>
+
+
+<p>方法1. “高级”，“查看/管理BCD引导配置”，管理 Windows8，把bootmenupolicy这一行值修改为Standard - Metro引导开启（如本来为Standard则修改两次），再点击“默认”。</p>
+
+
+<p>方法2. 手动修复，只开启METRO引导并修复Windows8，其它系统跳过修复。</p>
+
+
+<p>* Win8多系统时推荐在Win8中关闭快速启动或管理员身份运行命令提示符后执行Powercfg -h off关闭休眠以免出现引导菜单冲突</p>
+
+
+<p>* 没关闭休眠功能时，在Win8中修复后会出现无法关机，重启一次即可</p>
+
+
+<p>* <b>部分对分区的操作会影响工具对nt5.x(2000/XP/2003)的修复结果，如Ghost32的恢复/磁盘管理调整分区/PM、ADDS的调整分区等，如需修复NT5.x的引导菜单且使用了这类操作，推荐重启后再进行修复，否则有可能出现HAL.DLL或NTOSKRNL.EXE错误，需重启后再次修复。</b><b></b></p>
+
+
+<p>--------------------------------------------------------------------------------</p>
+
+
+<p><b>适用范围：</b><b>- </b><b>自动修复/手动修复</b><b></b></p>
+
+
+<p><b>1.</b>引导菜单/引导文件丢失修复：</p>
+
+
+<p>* 适用所有NT5.x（2000/XP/2003）和NT6.x（Vista/2008/Win7/2008r2/win8）</p>
+
+
+<p><b>2.SYSPREP封装系统（Ghost系统）的辅助安装 - 参看</b><b>“</b><b>9.实例 - Ghost系统安装</b><b>”</b></p>
+
+
+<p><b>3.</b>修复其他因BCD相关引起的故障</p>
+
+
+<p>* Win7/2008r2/Win8中 BCD 的修复计算机（Windows Recovery Environment）菜单丢失</p>
+
+
+<p>* Win7/2008r2中 BCD 引起的3D引导画面丢失（变成VISTA滚动条引导画面）</p>
+
+
+<p>* BCD 引起的引导菜单选择界面乱码现象</p>
+
+
+<p><b>4.</b>系统盘符或磁盘ID变化引起的无法进入系统桌面的修复</p>
+
+
+<p><b>5.</b>系统BCD非法的强制修复 - 现象：Vista/2008/Win7/2008r2中 -</p>
+
+
+<p>* 运行msconfig后&quot;启动&quot;或&quot;引导&quot;栏空白</p>
+
+
+<p>*<b> </b>管理员身份运行命令提示符中后运行BCDEDIT等和BCD相关的操作提示出错</p>
+
+
+<p>* 系统属性的&quot;启动和故障恢复&quot;窗口无法配置&quot;默认操作系统&quot;和&quot;等待时间&quot;</p>
+
+
+<p>* 其他软件无法添加/删除/修改基于 BCD 管理的新引导菜单</p>
+
+
+<p>注: 5的这种情况是否要强制修复自行决定。</p>
+
+
+<p>--------------------------------------------------------------------------------</p>
+
+
+<p><b>高级子菜单功能介绍：</b></p>
+
+
+<p><b>1.</b>自选定引导分区：修复结果将指向自选 定引导分区</p>
+
+
+<p><b>2.</b>写引导/主引导程序：可对指定的分区(磁盘)写入NT5.x和NT6.x的引导或NT6.x的主引导</p>
+
+
+<p><b>3</b><b>.</b>修复系统盘符：自动修复/手动修复已经自动处理此功能，也可以用这个功能手工处理</p>
+
+
+<p><b>4.</b>查看/管理BCD：可以对BCD引导配置文件进行查看和一些常用的修改操作。</p>
+
+
+<p><b>5</b><b>.</b>更改BCD区域：修复操作将以这个设定修复BCD菜单中的默认区域语言</p>
+
+
+<p>--------------------------------------------------------------------------------</p>
+
+
+<p><b>修复效果：</b><b></b></p>
+
+
+<p><b>* </b>程序根据当前系统non-Unicode设置自动显示中/英界面</p>
+
+
+<p><b>* </b>修复时存在原BCD或Boot.ini时程序将予备份，备份文件名/路径在修复完成后给出提示</p>
+
+
+<p><b>* </b>NT5.x菜单在boot.ini中以&quot;Microsoft Windows Server 2003 x86&quot;形式存在</p>
+
+
+<p><b>* </b>NT6.x菜单在BCD中以&quot;Windows Server (R) 2008 Standard x86&quot;形式存在</p>
+
+
+<p><b>* </b>根据当前系统non-Unicode设置决定修复后的引导菜单中/英优先级</p>
+
+
+<p><b>* </b>自动修复不自动删除NT5.x的Boot.ini和NT6.x的BCD中的多余的引导菜单</p>
+
+
+<p><b>* </b>因为nt6系统精简版的精简程度无从判断，所以不保证能修复精简版系统引导故障</p>
+
+
+<p>--------------------------------------------------------------------------------</p>
+
+
+<p><b>本工具应用实例</b></p>
+
+
+<p>NT5.0=Win2000；NT5.1=XP；NT5.2=WIN2003；NT5.x=2000/XP/2003</p>
+
+
+<p>NT6.0=Vista/2008；NT6.1=Win7/2008r2；NT6.2=Win8/Server2012</p>
+
+
+<p>NT6.x=Vista/2008/Win7/2008r2/Win8 </p>
+
+
+<p>以下实例中系统描述以上为准，各位朋友自行区分；盘符问题只为实例说明，无需挑刺</p>
+
+
+<p><b>自动修复/手动修复：</b><b></b></p>
+
+
+<p><b>----------------</b></p>
+
+
+<p><b>1. </b>格式化活动分区重装NT5.x/NT6.x后丢失其他分区NT5.x/NT6.x的引导菜单 -&gt; 直接选择“自动修复/手动修复”</p>
+
+
+<p><b>2. </b>先装NT6.x后装NT5.x的最快速解决方案：例 - 已有Win7系统，XP光盘引导安装XP至另一分区，完成安装后在XP中直接&quot;自动修复/手动修复&quot;即可修复双引导菜单。<b></b></p>
+
+
+<p><b>3. </b>系统盘符或磁盘ID引起的无法进入桌面情况 -&gt; 直接“自动修复/手动修复”（也可以用高级菜单中的“修复系统盘符”进行手工修复）</p>
+
+
+<p><b>4. </b>双硬盘引导切换：例 - 双硬盘，硬盘1装NT5.x，硬盘2装NT6.x，各自独立系统，切换系统时需用开机热键或BIOS更改硬盘引导次序，现需添加引导菜单以实现固定硬盘引导 -&gt; 硬盘1系统引导，选择自动修复/手动修复，添加硬盘2中NT6.x引导菜单在硬盘1中，反之亦然。</p>
+
+
+<p><b>5. </b>系统分区搬迁：例 - 把活动分区的NT5.x搬至D盘，腾出活动分区装NT6.x -&gt; Ghost处理NT5.x至D盘，再格式化并装NT6.x至活动分区，再在完成安装后的NT6.x中使用本工具并选择&quot;自动修复/手动修复&quot;</p>
+
+
+<p><b>6. </b>imagex方式系统安装NT6.x：例 - 当前系统中用imagex /apply...方式解压NT6.x的wim文件至某ntfs分区，再用本工具&quot;自动修复/手动修复&quot;。</p>
+
+
+<p><b>7. </b>添加vhd系统菜单：NT6.1系统中挂载vhd，挂然成功后象本地硬盘一样&quot;自动修复/手动修复&quot;添加相应引导菜单。非NT6.1系统一样可以挂载vhd后添加，这里不详谈</p>
+
+
+<p><b>8. </b>修改引导菜单显示：当只有一个NT5.x和n个NT6.x系统时，如对&quot;早期版本windows&quot;或&quot;Earlier Version of Windows&quot;菜单感到不爽，直接&quot;自动修复/手动修复&quot;将自动修改相应菜单为实际系统类型模式</p>
+
+
+<p><b>9. 实例 - Ghost系统安装（不谈常见的安装至活动分区的情况）</b><b></b></p>
+
+
+<p>* 当前系统/WinPE使用Ghost32/Ghost64/Ghostexp或DOS下使用Ghost把相应的gho文件恢复/提取至目标分区，目标分区可以为逻辑分区或非活动主分区，用本工具的“自动修复/手动修复”功能修复相应分区的Win系统即可。如果Ghost安装的系统为NT5.x且使用了Ghost32或Ghost64进行恢复，则推荐重启后再进行相应的修复操作(参看上面使用方法中的粗体字)</p>
+
+
+<p><b>10.</b>和文中适用范围相关的都可以直接使用“自动修复/手动修复”功能</p>
+
+
+<p><b>高级-更改活动分区盘符：</b><b></b></p>
+
+
+<p><b>--------------------</b></p>
+
+
+<p><b>供PE和特殊需要的朋友使用，如果连活动分区的概念都搞不清楚的话请别使用此功能</b><b></b></p>
+
+
+<p><b>注意：此功能会重写 MBR 和 PBR</b><b></b></p>
+
+
+<p><b>* </b>体验工具修复效果：例 - 选“高级”，选另一非活动分区盘符，开始修复/手动修复，这样修复的结果引导文件和引导配置文件都存放在选择的分区中，不影响活动分区的引导，再在界面</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

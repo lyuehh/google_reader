@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>破而后立 -- 看Google如何超越网页性能优化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>破而后立 -- 看Google如何超越网页性能优化</h2>
+<p class="meta">12 Nov 2010</p>
+
+<div class="post">
+<h2>破而后立 -- 看Google如何超越网页性能优化</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-11-12 11:31:31</h3>
+
+<h3>original <a href="http://limu.iteye.com/blog/809630">http://limu.iteye.com/blog/809630</a></h3>
+
+<p>        还是网站性能优化的话题,大家都知道YSlow34条,前阵子我分享了<a href="http://limu.iteye.com/blog/755628">在Yslow 34 Rules之后 -- 网站性能优化思路和进展</a>,我将网站性能优化的思路分浏览器和HTTP两大块,简单画了画.主要说明我们做优化先要知道我们真正要的是什么?肯定不只是YSlow高分而已.
+<br>
+<br><img src="http://dl.iteye.com/upload/attachment/344960/3be9520f-d6e6-352b-8948-53b88f7261b1.png">
+<br>
+<br>        接下来分享了<a href="http://limu.iteye.com/blog/765173">Facebook的BigPipe技术分析</a>,说明在Rules被默认遵守的情况下,如何求得更劲爆的优化结果?那就明确自己想要的,然后结合自己的站点精耕细作.如是才有"大水管子"这样几近神作的优化方案产生.
+<br>
+<br>        今天忍不住说说Google.当然不是说<a href="http://code.google.com/speed/page-speed/">PageSpeed</a>这个"山寨更牛掰"的YSlow.说说当网页性能优化碰到Google这个睥睨天下的主儿会有怎样的火花.
+<br>
+<br>        我们将网页性能优化分为浏览器和HTTP两部分.浏览器慢怎么办?HTTP慢怎么办?这两个问题Google的答案是:新做个浏览器!新制定一个网络通信协议!破而后立,真正的突破了固有的浏览器和HTTP范畴,可以实现的就太多了.
+<br>
+<br><strong>新浏览器Chrome</strong>:
+<br>        大家会觉得,破掉了意义有多大,chrome浏览器2年多了覆盖量又有多少?但从另一个角度看Chrome的出现最大程度的带动了JavaScript引擎的提速.现在如果不重写JS引擎,让JS运行速度接近或超过Chrome,好意思Release一个浏览器的新版本么?记忆犹新的是在v8发布之后,<a href="http://www.cnbeta.com/articles/64083.htm">微软Sliverlight未来的竞争对手迅速从flash转向JavaScript.</a>,这绝对是我这类Jser喜欢看到的消息.
+<br>        Chrome是一个如此活跃的浏览器,如今已经有了7的稳定版,8的测试版,9的开发版...依托这个平台Google可以不再依赖Gear这种给别人打补丁的模式,迅速的将其想法实现.比如HTML5,比如后面介绍的几项革新.
+<br>
+<br><strong>新协议SPDY</strong>
+<br>        <a href="http://dev.chromium.org/spdy/spdy-whitepaper">SPDY(http://dev.chromium.org/spdy/)</a>,Google研发的新一代网络通信协议.Google宣称SPDY比HTTP快两倍.SPDY的核心是一个在网络间传输内容的应用层协议，其特点是即便在多重数据流传输时依然拥有极小的延迟，请求分优先级，可对HTTP报头做压缩。
+<br>        多重数据流:相当于协议原生支持的<a href="http://yuiblog.com/blog/2008/10/17/loading-yui/">combo</a>.很好的解决了链接过多的问题.同时也相当于原生的Streaming的支持,<a href="http://limu.iteye.com/blog/765173">BigPipe</a>和<a href="http://www.ibm.com/developerworks/cn/web/wa-lo-comet/">Comet</a>都是基于Streaming.
+<br>        请求优先级:现在越来越多的页面靠大量的外联JS和异步Ajax支持.而当前XHR,JS和图片都是通过一样的HTTP载入,特别是XHR和JSONP异步的脚本加载请求常常会和图片请求并发,那么相互之间的必然存在浏览器资源竞争.在淘宝搜索结果页的最近一次优化的一个目标就是通过请求顺序的重排,一定程度缓解页面加载时图片请求对JSONP请求的严重影响.优化前问题在IE6下尤其明显,4k的JSONP请求,在HTTP的接收数据阶段竟然用了400ms.SPDY在协议级别优先级定义可以完美的解决这个问题.
+<br>        HTTP报头压缩:弥补了Gzip不能压缩HTTP头的遗憾.
+<br>        所以我们看到我们面向HTTP做的很多优化,SPDY都考虑到并提供了更好的解决方案.而SPDY是否能让信息在传输过程中被拦截,解析,过滤变得更难是另一个让人感兴趣的话题.
+<br>
+<br><strong>新的视频图像格式WebM,WebP</strong>
+<br>        <a href="http://www.guao.hk/posts/vp8-open-sourced-and-google-introducing-webm-open-web-media-project.html">WebM</a>包括:VP8：高质量的视频编码，以BSD式的免费授权形式提供给所有人使用.Vorbis：开源并已经被广泛部署使用的音频编码.一个基于Matroska子集的视频容器.<a href="http://adactio.com/articles/1704/">HTML5通过标签嵌套的方式让网页各种视频格式之间优雅降级</a>,WebM的推广不成问题.
+<br>        <a href="http://www.guao.hk/posts/google-offers-jpeg-alternative-for-faster-web.html">WebP</a>比JPEG多压缩40%容量的图片格式,与WebM同样开源.关于WebP的推广,我想甚至可以参照Gzip的模式,当浏览器accept-webp的时候,server端把webp发回去.在图片CDN源可以在第一次接到accept-webp请求时把jpeg转换为webp并缓存起来.
+<br>
+<br>        如何做网页性能优化?Chrome,SPDY,WebM,WebP等等就是<a href="http://it.sohu.com/20101026/n276518099.shtml">手握全球6.4%流量的巨头</a>给出的答案.肯定还有很多我还不知道,但这些已足够激动人心..</p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://limu.iteye.com/blog/809630#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://limu.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

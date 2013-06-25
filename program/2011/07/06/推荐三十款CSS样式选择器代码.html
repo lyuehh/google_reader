@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>推荐三十款CSS样式选择器代码</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>推荐三十款CSS样式选择器代码</h2>
+<p class="meta">06 Jul 2011</p>
+
+<div class="post">
+<h2>推荐三十款CSS样式选择器代码</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-07-06 03:53:17</h3>
+
+<h3>original <a href="http://www.ued163.com/?p=1654">http://www.ued163.com/?p=1654</a></h3>
+
+<p>来自: <a href="http://www.feedzshare.com/b/13787/2">163 UED Team - FeedzShare</a>  
+<br>发布时间:2011年07月05日,  已有 2 人推荐 </p>
+
+
+<hr><div><p>你也许已经掌握了id、class、后台选择器这些基本的<strong>css选择器</strong>。但这远远不是css的全部。下面向大家系统的解析css中30个最常用的选择器，包括我们最头痛的浏览器兼容性问题。掌握了它们，才能真正领略css的巨大灵活性。</p>
+
+
+<p>1.<br>
+<span>* {margin: 0; padding: 0;} </span><br>
+星状选择符会在页面上的每一个元素上起作用。web设计者经常用它将页面中所有元素的margin和padding设置为0。</p>
+
+
+<p>*选择符也可以在子选择器中使用。<br>
+<span>#container * { border: 1px solid black;} </span><br>
+上面的代码中会应用于id为container元素的所有子元素中。</p>
+
+
+<p>除非必要，我不建议在页面中过的的使用星状选择符，因为他的作用域太大，相当耗浏览器资源。</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>2. #X<br>
+<span>#container {width: 960px;margin: auto; } </span><br>
+井号作用域有相应id的元素。id是我们最常用的css选择器之一。id选择器的优势是精准，高优先级（优先级基数为100，远高于class的10），作为javascript脚本钩子的不二选择，同样缺点也很明显优先级过高，重用性差，所以在使用id选择器前，我们最好问下自己，真的到了非用id选择器的地步？</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>3.  .X</p>
+
+
+<p><span>.error {color: red;} </span></p>
+
+
+<p>这是一个class(类)选择器。class选择器与id选择器的不同是class选择器能作用于期望样式化的一组元素。</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>4. X Y</p>
+
+
+<p><span>li a { text-decoration: none;} </span></p>
+
+
+<p>这也是我们最常用的一种选择器——后代选择器。用于选取X元素下子元素Y，要留意的点是，这种方式的选择器将选取其下所有匹配的子元素，无视层级，所以有的情况是不宜使用的，比如上述的代码去掉li下的所有a的下划线，但li里面还有个ul，我不希望ul下的li的a去掉下划线。使用此后代选择器的时候要考虑是否希望某样式对所有子孙元素都起作用。这种后代选择器还有个作用，就是创建类似命名空间的作用。比如上述代码样式的作用域明显为li。</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>5. X</p>
+
+
+<p><span>a { color: red; }  </span><br>
+<span>ul { margin-left: 0; } </span></p>
+
+
+<p>标签选择器。使用标签选择器作用于作用域范围内的所有对应标签。优先级仅仅比*高。</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>6. X:visited和X:link</p>
+
+
+<p><span>a:link { color: red; }   </span><br>
+<span>a:visted { color: purple; } </span></p>
+
+
+<p>使用:link伪类作用于未点击过的链接标签。:hover伪类作用于点击过的链接。<br>
+兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>7. X+Y</p>
+
+
+<p><span>ul + p {color: red;} </span></p>
+
+
+<p>相邻选择器，上述代码中就会匹配在ul后面的第一个p，将段落内的文字颜色设置为红色。(只匹配第一个元素)</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>8. X&gt;Y</p>
+
+
+<p><span>div#container &gt; ul { border: 1px solid black;} </span></p>
+
+
+<p><span>&lt;div id=”container”&gt;</span><br>
+<span>      &lt;ul&gt;</span><br>
+<span>         &lt;li&gt; List Item</span><br>
+<span>           &lt;ul&gt;</span><br>
+<span>              &lt;li&gt; Child &lt;/li&gt;</span><br>
+<span>           &lt;/ul&gt;</span><br>
+<span>         &lt;/li&gt;</span><br>
+<span>         &lt;li&gt; List Item &lt;/li&gt;</span><br>
+<span>         &lt;li&gt; List Item &lt;/li&gt;</span><br>
+<span>         &lt;li&gt; List Item &lt;/li&gt;</span><br>
+<span>      &lt;/ul&gt; </span><br>
+<span>  &lt;/div&gt; </span></p>
+
+
+<p>子选择器。与后代选择器X Y不同的是，子选择器只对X下的直接子级Y起作用。在上面的css和html例子中，div#container&gt;ul仅对container中最近一级的ul起作用。从理论上来讲X &gt; Y是值得提倡选择器，可惜IE6不支持。<br>
+兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>9. X ~ Y</p>
+
+
+<p><span>ul ~ p { color: red;}</span><br>
+相邻选择器，与前面提到的X+Y不同的是，X~Y匹配与X相同级别的所有Y元素，而X+Y只匹配第一个。</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>10. X[title]</p>
+
+
+<p><span>a[title] { color: green;} </span></p>
+
+
+<p>属性选择器。比如上述代码匹配的是带有title属性的链接元素。</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>11. X[title="foo"]</p>
+
+
+<p><span>a[href="http://www.Fantizi5.com"] { color: #1f6053; } </span></p>
+
+
+<p>属性选择器。 上面的代码匹配所有拥有href属性，且href为<a title="繁体字转换" href="http://www.Fantizi5.com">http://www.Fantizi5.com</a>的所有链接。</p>
+
+
+<p>这个功能很好，但是多少又有些局限。如果我们希望匹配href包含css9.net的所有链接该怎么做呢？看下一个选择器。<br>
+兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>12. X[title*="<a title="繁体字转换" href="http://www.Fantizi5.com">http://www.Fantizi5.com</a>"]</p>
+
+
+<p><span>a[href*="<a title="繁体字转换" href="http://www.Fantizi5.com">http://www.Fantizi5.com</a>"] {color: #1f6053;} </span><br>
+属性选择器。正如我们想要的，上面代码匹配的是href中包含”<a title="繁体字转换" href="http://www.Fantizi5.com">http://www.Fantizi5.com</a>“的所有链接。</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>13. X[href^="http"]</p>
+
+
+<p><span>a[href^="http"] {background: url(path/to/external/icon.png) no-repeat; padding-left: 10px;} </span></p>
+
+
+<p>属性选择器。上面代码匹配的是href中所有以http开头的链接。<br>
+兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>13. X[href$=".jpg"]</p>
+
+
+<p><span>a[href^="http"] { background: url(path/to/external/icon.png) no-repeat;padding-left: 10px;} </span></p>
+
+
+<p>属性选择器。在属性选择器中使用$，用于匹配结尾为特定字符串的元素。在上面代码中匹配的是所有链接到扩展名为.jpg图片的链接。（注意，这里仅仅是.jpg图片，如果要作用于所有图片链接该怎么做呢，看下一个选择器。）</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>14. X[data-*="foo"]</p>
+
+
+<p>在上一个选择器中提到如何匹配所有图片链接。如果使用X[href$=".jpg"]实现，需要这样做：</p>
+
+
+<p><span>a[href$=".jpg"],</span><br>
+<span>a[href$=".jpeg"],</span><br>
+<span>a[href$=".png"],</span><br>
+<span>a[href$=".gif"] {</span><br>
+<span>     color: red;</span><br>
+<span>  } </span></p>
+
+
+<p>看上去比较麻烦。另一个解决办法是为所有的图片链接加一个特定的属性，例如‘data-file’</p>
+
+
+<p>html代码</p>
+
+
+<p>&lt;a href=”path/to/image.jpg” data-filetype=”image”&gt; 图片链接 &lt;/a&gt;</p>
+
+
+<p>css代码如下：</p>
+
+
+<p><span>a[data-filetype="image"] {</span><br>
+<span>      color: red;</span><br>
+<span>   } </span></p>
+
+
+<p>这样所有链接到图片的链接字体颜色为红色。</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>15. X[foo~="bar"]</p>
+
+
+<p>属性选择器。属性选择器中的波浪线符号可以让我们匹配属性值中用空格分隔的多个值中的一个。看下面例子：</p>
+
+
+<p>html代码</p>
+
+
+<p>&lt;a href=”path/to/image.jpg” data-info=”external image”&gt; Click Me, Fool &lt;/a&gt;</p>
+
+
+<p>css代码</p>
+
+
+<p>a[data-info~="external"] {<br>
+      color: red;<br>
+   }<br>
+a[data-info~="image"] {<br>
+      border: 1px solid black;<br>
+   }</p>
+
+
+<p>在上面例子中，匹配data-info属性中包含“external”链接的字体颜色为红色。匹配data-info属性中包含“image”的链接设置黑色边框。</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>17. X:checked</p>
+
+
+<p>checked伪类用来匹配处于选定状态的界面元素，如radio、checkbox。</p>
+
+
+<p>input[type=radio]:checked {<br>
+      border: 1px solid black;<br>
+   }</p>
+
+
+<p>上面代码中匹配的是所有处于选定状态的单选radio，设置1px的黑色边框。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>18. X:after和X:before</p>
+
+
+<p>这两个伪类与content结合用于在元素的前面或者后面追加内容，看一个简单的例子：</p>
+
+
+<p>h1:after {content:url(/i/logo.gif)}</p>
+
+
+<p>上面的代码实现了在h1标题的后面显示一张图片。</p>
+
+
+<p>我们也经常用它来实现清除浮动，写法如下：</p>
+
+
+<p>.clearfix:after {<br>
+       content: “”;<br>
+       display: block;<br>
+       clear: both;<br>
+       visibility: hidden;<br>
+       font-size: 0;<br>
+       height: 0;<br>
+      }      <br>
+.clearfix {<br>
+      *display: inline-block;<br>
+     _height: 1%;<br>
+   }</p>
+
+
+<p>19. X:hover</p>
+
+
+<p>div:hover {<br>
+     background: #e3e3e3;<br>
+   }</p>
+
+
+<p>:hover伪类设定当鼠标划过时元素的样式。上面代码中设定了div划过时的背景色。</p>
+
+
+<p>需要注意的是，在ie 6中，:hover只能用于链接元素。</p>
+
+
+<p>这里分享一个经验，在设定链接划过时出现下滑线时，使用border-bottom会比text-decoration显得更漂亮些。代码如下：</p>
+
+
+<p>a:hover {<br>
+    border-bottom: 1px solid black;<br>
+   }</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>20. X:not(selector)</p>
+
+
+<p>div:not(#container) {<br>
+      color: blue;<br>
+   }</p>
+
+
+<p>否定伪类选择器用来在匹配元素时排除某些元素。在上面的例子中，设定除了id为container的div元素字体颜色为blue。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>21. X::pseudoElement</p>
+
+
+<p>::伪类用于给元素片段添加样式。比如一个段落的第一个字母或者第一行。需要注意的是，这个::伪类只能用于块状元素。</p>
+
+
+<p>下面的代码设定了段落中第一个字母的样式：</p>
+
+
+<p>p::first-letter {<br>
+      float: left;<br>
+      font-size: 2em;<br>
+      font-weight: bold;<br>
+      font-family: cursive;<br>
+      padding-right: 2px;<br>
+   }</p>
+
+
+<p>下面的代码中设定了段落中第一行的样式：</p>
+
+
+<p>p::first-line {<br>
+      font-weight: bold;<br>
+      font-size: 1.2em;<br>
+  }</p>
+
+
+<p>兼容浏览器：IE6+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>（IE6竟然支持，有些意外啊。）</p>
+
+
+<p>22. X:nth-child(n)</p>
+
+
+<p>li:nth-child(3) {<br>
+      color: red;<br>
+   }</p>
+
+
+<p>这个伪类用于设定一个序列元素（比如li、tr）中的第n个元素（从1开始算起）的样式。在上面例子中，设定第三个列表元素li的字体颜色为红色。</p>
+
+
+<p>看一个更灵活的用法，在下面例子中设定第偶数个元素的样式，可以用它来实现隔行换色：</p>
+
+
+<p>tr:nth-child(2n) {<br>
+      background-color: gray;<br>
+   }</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari</p>
+
+
+<p>23. X:nth-last-child(n)</p>
+
+
+<p>li:nth-last-child(2) {<br>
+      color: red;<br>
+   }</p>
+
+
+<p>与X:nth-child(n)功能类似，不同的是它从一个序列的最后一个元素开始算起。上面例子中设定倒数第二个列表元素的字体颜色。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>24. X:nth-of-type(n)</p>
+
+
+<p>ul:nth-of-type(3) {<br>
+      border: 1px solid black;<br>
+   }</p>
+
+
+<p>与X:nth-child(n)功能类似，不同的是它匹配的不是某个序列元素，而是元素类型。例如上面的代码设置页面中出现的第三个无序列表ul的边框。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari</p>
+
+
+<p>25. X:nth-last-of-type(n)</p>
+
+
+<p>ul:nth-last-of-type(3) {<br>
+      border: 1px solid black;<br>
+   }</p>
+
+
+<p>与X:nth-of-type(n)功能类似，不同的是它从元素最后一次出现开始算起。上面例子中设定倒数第三个无序列表的边框</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>26. X:first-child</p>
+
+
+<p>:first-child伪类用于匹配一个序列的第一个元素。我们经常用它来实现一个序列的第一个元素或最后一个元素的上（下）边框，如：</p>
+
+
+<p>ul:nth-last-of-type(3) {<br>
+      border: 1px solid black;<br>
+   }</p>
+
+
+<p>兼容浏览器：IE7+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>27. X:last-child</p>
+
+
+<p>ul &gt; li:last-child {<br>
+      border-bottom:none;<br>
+  }<br>
+与:first-child类似，它匹配的是序列中的最后一个元素。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>28. X:only-child</p>
+
+
+<p>div p:only-child {<br>
+      color: red;<br>
+   }<br>
+这个伪类用的比较少。在上面例子中匹配的是div下有且仅有一个的p，也就是说，如果div内有多个p，将不匹配。</p>
+
+
+<p>&lt;div&gt;&lt;p&gt; My paragraph here. &lt;/p&gt;&lt;/div&gt;</p>
+
+
+<p>&lt;div&gt;<br>
+      &lt;p&gt; Two paragraphs total. &lt;/p&gt;<br>
+      &lt;p&gt; Two paragraphs total. &lt;/p&gt;<br>
+&lt;/div&gt;<br>
+在上面代码中第一个div中的段落p将会被匹配，而第二个div中的p则不会。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>29. X:only-of-type</p>
+
+
+<p>li:only-of-type {<br>
+      font-weight: bold;<br>
+   }</p>
+
+
+<p>这个伪类匹配的是，在它上级容器下只有它一个子元素，它没有邻居元素。例如上面代码匹配仅有一个列表项的列表元素。</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera</p>
+
+
+<p>30. X:first-of-type</p>
+
+
+<p>:first-of-type伪类与:nth-of-type(1)效果相同，匹配出现的第一个元素。我们来看个例子：</p>
+
+
+<p>&lt;div&gt;<br>
+      &lt;p&gt; My paragraph here. &lt;/p&gt;<br>
+      &lt;ul&gt;<br>
+         &lt;li&gt; List Item 1 &lt;/li&gt;<br>
+         &lt;li&gt; List Item 2 &lt;/li&gt;<br>
+      &lt;/ul&gt;<br>
+      &lt;ul&gt;<br>
+         &lt;li&gt; List Item 3 &lt;/li&gt;<br>
+         &lt;li&gt; List Item 4 &lt;/li&gt;<br>
+      &lt;/ul&gt;<br>
+  &lt;/div&gt;</p>
+
+
+<p>在上面的html代码中，如果我们希望仅匹配List Item 2列表项该如何做呢：</p>
+
+
+<p>方案一：</p>
+
+
+<p>ul:first-of-type &gt; li:nth-child(2) {<br>
+      font-weight: bold;<br>
+  }</p>
+
+
+<p>方案二：</p>
+
+
+<p>p + ul li:last-child {<br>
+      font-weight: bold;<br>
+   }</p>
+
+
+<p>方案三：</p>
+
+
+<p>ul:first-of-type li:nth-last-child(1) {<br>
+      font-weight: bold;<br>
+   }</p>
+
+
+<p>兼容浏览器：IE9+、Firefox、Chrome、Safari、Opera。</p>
+
+
+<p>总结：</p>
+
+
+<p>如果你正在使用老版本的浏览器，如IE 6，在使用上面<strong>css选择器</strong>时一定要注意它是否兼容。不过，这不应成为阻止我们学习使用它的理由。在设计时，你可以参考浏览器兼容性列表，也可以通过脚本手段让老版本的浏览器也支持它们。</p>
+
+
+<p>推荐：<a href="http://www.Fantizi5.com">繁体字网</a>毛仔（<a href="http://www.ued163.com">Ued</a>精华）</p>
+
+
+<p></div><img src="http://img.tongji.linezing.com/1017243/tongji.gif"><img src="http://img.tongji.linezing.com/855372/tongji.gif"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

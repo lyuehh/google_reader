@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>获取 WAN IP</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>获取 WAN IP</h2>
+<p class="meta">07 Sep 2011</p>
+
+<div class="post">
+<h2>获取 WAN IP</h2>
+
+<h3>by shuge.lee</h3>
+
+<h3>at 2011-09-07 13:05:28</h3>
+
+<h3>original <a href="http://linuxtoy.org/archives/get-wan-ip.html">http://linuxtoy.org/archives/get-wan-ip.html</a></h3>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/r45t08ks0fj6sr7aa7q8jurtt8/468/60#http%3A%2F%2Flinuxtoy.org%2Farchives%2Fget-wan-ip.html" width="100%" height="60" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p>命令行下获取 WAN IP 。<span></span></p>
+
+
+
+
+<p>如果你在 router 或者 firewall 后面，你直接查询 interface ，拿到可能不是 WAN 的 IP 。</p>
+
+
+
+
+<p>很久很久以前的一个版本，把它们贴到 .bashrc (Bash 专用) 或者 .profile (非 Bash 专用)里面去</p>
+
+
+
+
+<p><code>alias myip='curl -s www.123cha.com | grep -o "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}" | head -n 1'</code></p>
+
+
+
+
+<p>. .bashrc 或者 . .profile 即可生效，输入 myip 就能拿到 WAN IP。</p>
+
+
+
+
+<p><a href="http://twitter.com/#!/muzuiget">@muzuiget</a> 同学今天提到的另外一个简化版本</p>
+
+
+
+
+<p><code>curl ifconfig.me</code></p>
+
+
+
+
+<p>muzuiget 同学说后者有风险可能会被封。我觉得不会，拿个 WAN IP 跟他妈派对有毛关系？</p>
+
+
+
+
+<p>我觉得 ifconfig.me 版本更 pythonic 些，返回 MIME 的是 text/plain，比前一个的 text/html 要快、干净。</p>
+
+
+
+
+<p>csslayer 同学对此文也有贡献。</p>
+
+
+
+
+<p>扩展阅读： <a href="http://forum.ubuntu.org.cn/viewtopic.php?f=21&amp;t=288217&amp;start=0">获取计算机外网ip的几种写法</a></p>
+
+
+
+
+<p>（完）</p>
+
+
+<pre><code>&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;分类: &lt;a href="http://linuxtoy.org/category/cli" title="View all posts in Cli" rel="category tag"&gt;Cli&lt;/a&gt;,  &lt;a href="http://linuxtoy.org/category/tips" title="View all posts in Tips" rel="category tag"&gt;Tips&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/get-wan-ip.html"&gt;永久链接&lt;/a&gt; |
+&lt;a href="http://delicious.com/save?url=http://linuxtoy.org/archives/get-wan-ip.html&amp;amp;title=%E8%8E%B7%E5%8F%96%20WAN%20IP"&gt;收藏到 del.icio.us&lt;/a&gt; | 
+&lt;a href="mailto:?Subject=Check+This+Out&amp;amp;body=I+think+you&amp;#39;ll+like+this:+http://linuxtoy.org/archives/get-wan-ip.html"&gt;Email 给好友&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/get-wan-ip.html#comments"&gt;35 评论&lt;/a&gt; |
+&lt;a href="http://linuxtoy.org/faq/donate"&gt;捐助本站&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

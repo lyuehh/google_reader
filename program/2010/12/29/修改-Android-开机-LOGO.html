@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>修改 Android 开机 LOGO</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>修改 Android 开机 LOGO</h2>
+<p class="meta">29 Dec 2010</p>
+
+<div class="post">
+<h2>修改 Android 开机 LOGO</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-12-29 11:57:08</h3>
+
+<h3>original <a href="http://my.oschina.net/zhang3/blog/11637">http://my.oschina.net/zhang3/blog/11637</a></h3>
+
+<ol>
+<li>制作 initlogo.rle # 使用ImageMagick自带的convert命令，进行raw格式转换
+convert -depth 8 logo.png rgb:logo.raw</li>
+</ol>
+
+
+<h1>android自带的rgb2565工具,对raw文件进行rle565格式转换</h1>
+
+<p>$out/host/linux-x86/bin/rgb2565 -rle initlogo.rle</p>
+
+<h1>然后将initlogo.rle拷贝到android系统根目录,也就是root目录...</h1>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

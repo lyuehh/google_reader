@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>构建web前端异常监控系统–FdSafe</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>构建web前端异常监控系统–FdSafe</h2>
+<p class="meta">28 Oct 2012</p>
+
+<div class="post">
+<h2>构建web前端异常监控系统–FdSafe</h2>
+
+<h3>by 王涛</h3>
+
+<h3>at 2012-10-27 22:51:54</h3>
+
+<h3>original <a href="http://www.aliued.cn/2012/10/27/%e6%9e%84%e5%bb%baweb%e5%89%8d%e7%ab%af%e5%bc%82%e5%b8%b8%e7%9b%91%e6%8e%a7%e7%b3%bb%e7%bb%9f-fdsafe.html">http://www.aliued.cn/2012/10/27/%e6%9e%84%e5%bb%baweb%e5%89%8d%e7%ab%af%e5%bc%82%e5%b8%b8%e7%9b%91%e6%8e%a7%e7%b3%bb%e7%bb%9f-fdsafe.html</a></h3>
+
+<h2><strong>前言：</strong></h2>
+
+
+<p>如果你碰巧是一名前端开发，而又碰巧在维护着一个对可用性有极高要求的站点，那么也许你我有过共同的苦恼：如何在第一时间发现线上出现的前端异常？毕竟前端不是每天都可以过网页裸奔节，线上的Javascript错误也足以让用户抓狂地拿起他们的投诉电话。。。每天心惊胆战发布的日子不好过吧？</p>
+
+
+<p>是时候改变下了，让心惊胆战见鬼去吧！我的目标很简单：要在用户和boss发现异常之前就彻底修复问题，其余的时间充分地享受高质量生活:）</p>
+
+
+<h2><strong>一：前端异常监控系统的构建目标</strong></h2>
+
+
+<p>在对被监控页面无侵入的前提下，提供7*24小时全天候的监控任务，第一时间发现“裸奔”、“半裸奔”页面或是有Javascript异常抛出的页面，并给网站前端负责人提供短信、邮件等方式的报警服务。</p>
+
+
+<p>可以说，前端异常监控系统主要是解决两大异常情况：a. 页面上有javascript异常  b. 各种因素造成的页面的样式丢失。我先分别介绍下两种这两种异常的解决思路：</p>
+
+
+<h2><strong>二：Javascript的异常监控</strong></h2>
+
+
+<p>由于客户端浏览器环境的不同，在开发环境中能够工作的代码，并非就能够在用户的电脑上正常运行，各种畸形浏览器造成的问题弄得我们很头大，如果能像后端开发那样可以随时地查看服务器端错误日志就好了！可为什么不呢？</p>
+
+
+<p>Javascript语言自身就提供了try catch的异常处理语法，我们假以利用的话，就能够在增强前端应用鲁棒性的同时，又可以把捕获到的异常抛送给前端异常监控系统，以错误日志的形式记录到数据库中。</p>
+
+
+<p>给应用添加异常处理功能，我们是可以充分发挥javascript语言是动态语言这一优势的。我可不想为了添加异常处理而在代码中写N多的try-catch语句。 我的思路是：通过Javascript类模块在应用中注册的时候，遍历类模块中的每个函数，然后统一的加上try-catch处理，这样前端里面的所有函数就都在异常处理的范围之内了。怎么样，是不是要比Java等静态语言cool很多？ 代码示例如下：<br>
+<span></span><br>
+<a href="http://www.aliued.cn/wp-content/uploads/2012/10/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.jpg"><img src="http://www.aliued.cn/wp-content/uploads/2012/10/%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86.jpg" alt="" width="841" height="447"></a></p>
+
+
+<p>有了以上的全局异常处理函数之后，解决线上的Javascript异常就是小菜一碟，只需要定义好错误message的格式，并在catch语句中向异常监控系统的固定接口发送请求即可。我们可以在错误消息中发送关于错误的浏览器信息，JS模块信息，函数信息，或具体的错误消息等，要传送哪些信息全看你自己的需要。在FdSafe异常监控系统中，我们传输了如下错误信息：</p>
+
+
+<p><a href="http://www.aliued.cn/wp-content/uploads/2012/10/JS%E5%BC%82%E5%B8%B82.jpg"><img src="http://www.aliued.cn/wp-content/uploads/2012/10/JS%E5%BC%82%E5%B8%B82.jpg" alt="" width="706" height="250"></a></p>
+
+
+<p> </p>
+
+
+<h2><strong>三：样式丢失的异常监控</strong></h2>
+
+
+<p>如果你的页面在不该裸奔的时候突然裸奔了，那就是严重的可用性问题，需要前端同学在第一时间定位问题并迅速修复。引发“裸奔”的可能性很多，也许是CSS文件404了，也许是CSS文件@import url的问题，但是最终的表象只有一个，那就是页面样式突然发生极大改变。</p>
+
+
+<p>在fdsafe系统中，我们使用了图片对比的方法来探测线上页面发生“裸奔”的现象，原理上很简单：对于被监控页面的URL，我们让监控系统保留其前一天页面被浏览器渲染后的截图，然后让监控系统周期性的定时抓取线上页面的截图，两张图片做相似度对比，如果相似度差值超过一定的阈值，则会触发报警条件。</p>
+
+
+<p>页面的截图我们是使用QT的webkit内核渲染并截取的，当然也推荐使用selenium的浏览器截图功能。而图片相似度的算法很多，我们最终采用的是OpenCV中的cvCompareHist算法。</p>
+
+
+<h2><strong>四：其它的异常监控</strong></h2>
+
+
+<p>除了样式丢失及javascript异常之外，前端还是有很多其它异常可以通过系统来监控的，比如说JS、CSS文件的404错误，HTML源码的闭合异常，或JS、CSS文件的压缩异常等。fdSafe系统能够通过添加插件的方式来提供对不同异常的监控，然后统一汇总到异常日志中。</p>
+
+
+<p> </p>
+
+
+<h2><strong>五：系统总体框架图</strong></h2>
+
+
+<p>搭建前端的异常监控系统，自然也要体现我们前端的特色，后台的系统我们是基于NodeJS来实现的，它主要完成两个功能：</p>
+
+
+<p>1）定时抓取被监控页面的HTML源码，并分析是否存在页面样式丢失异常或是其它异常。</p>
+
+
+<p>2）接受来自用户浏览器发送的Javascript异常。</p>
+
+
+<p>一旦异常发生，且超出设定的允许阈值，则触发报警条件，给负责人发送报警短信，系统原理图如下：</p>
+
+
+<p><a href="http://www.aliued.cn/wp-content/uploads/2012/10/monitor-framework.jpg"><img src="http://www.aliued.cn/wp-content/uploads/2012/10/monitor-framework.jpg" alt="" width="751" height="417"></a></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<h2><strong>六：总结</strong></h2>
+
+
+<p>随着web应用朝着富客户端方向的发展，前端应用的可用性重要性越来越高，搭建前端异常监控系统的必要性也是越来也高，希望本文能够给大家提供一些思路上的启发。有疑问或建议，欢迎探讨：terence.wangt@alibaba-inc.com</p>
+
+
+<p> </p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

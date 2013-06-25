@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>CSS团队精神：CSS最佳实践团队开发</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>CSS团队精神：CSS最佳实践团队开发</h2>
+<p class="meta">09 Jan 2013</p>
+
+<div class="post">
+<h2>CSS团队精神：CSS最佳实践团队开发</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-01-08 22:14:53</h3>
+
+<h3>original <a href="http://blog.jobbole.com/32053/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=css%25e5%259b%25a2%25e9%2598%259f%25e7%25b2%25be%25e7%25a5%259e%25ef%25bc%259acss%25e6%259c%2580%25e4%25bd%25b3%25e5%25ae%259e%25e8%25b7%25b5%25e5%259b%25a2%25e9%2598%259f%25e5%25bc%2580%25e5%258f%2591">http://blog.jobbole.com/32053/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=css%25e5%259b%25a2%25e9%2598%259f%25e7%25b2%25be%25e7%25a5%259e%25ef%25bc%259acss%25e6%259c%2580%25e4%25bd%25b3%25e5%25ae%259e%25e8%25b7%25b5%25e5%259b%25a2%25e9%2598%259f%25e5%25bc%2580%25e5%258f%2591</a></h3>
+
+<p>英文原文：<a href="http://msdn.microsoft.com/en-us/magazine/ff679957.aspx">Be a CSS Team Player: CSS Best Practices for Team-Based Development</a>，编译：<a href="http://www.w3cplus.com/css/CSS-best-practices-for-team-based-development.html">w3cplus – D姐</a></p>
+
+
+<p>你有过多少次接手别人开发过的项目，却发现作者的代码思路一团糟吗？或是你跟几个团队成员合作开发，他们每个人都有自己书写代码的方式吗？或是你重新回顾你多年前开发的项目，不记得当初是怎么想的？</p>
+
+
+<p>我总是遇到这种事情。事实上，我最近在修复供应商提供facepalm-inducing的css上花费了将近300个小时。这300个小时，使我充满了挫败感，不仅是因为我自己，还有我的团队成员的原因。而且他占用了本应该花费在新项目上的宝贵时间和资源</p>
+
+
+<p>如果供应商在他的css中已经遵循了一些基本的指导方针。那么将会为他节省宝贵的时间和金钱，更不用说我会已更好的状态去对待他。在本文中,你将学习书写CSS的最佳实践来帮助你避免不一致和冗余;实际上,这样制定标准,简化了团队开发的工作。</p>
+
+
+<p><strong><span style="font-size:1em">结构化</span></strong></p>
+
+
+<p>书写好的css的基础是有良好的结构。这样的css可以帮助我以及任何将来要更新这段代码的人，更好的理解并快速定位到要找的样式上。</p>
+
+
+<p>在开始写样式前，我先定义了一个css文件结构，根据页面中不同内容部分划分的区块。通常，这些结构是每个网站通用的:</p>
+
+
+<p>1.Header</p>
+
+
+<p>2.Navigation</p>
+
+
+<p>3.Main content</p>
+
+
+<p>4.Sidebar</p>
+
+
+<p>5.Footer</p>
+
+
+<p>在我的样式文件里，我添加了必要的注释，以标明每个部分的样式从哪里开始</p>
+
+
+<pre>/*---GLOBAL---*/
+/*---HEADER---*/
+/*---NAV---*/
+/*---CONTENT---*/
+/*---SIDEBAR---*/
+/*---FOOTER---*/</pre>
+
+
+<p>注意第一个注释global的部分，他不是针对于网站的特定内容，而是针对网站上的通用样式，例如布局结构，以及标题、段落、列表和链接等基础样式。</p>
+
+
+<p>在样式头部设置通用的样式，有助于全站更好的继续共有样式，并在需要时覆盖即可。</p>
+
+
+<p><strong>越多的css就需要越多的组织</strong></p>
+
+
+<p>在创建超大型的网站，处理相当多的css时，我就会给每个区块里添加二级注释。例如，在global里我定义这样的二级结构分类：</p>
+
+
+<pre>/*---GLOBAL---*/
+  /*--Structure--*/
+  /*--Typographic--*/
+  /*--Forms--*/
+  /*--Tables--*/
+/*---HEADER---*/
+/*---NAV---*/
+  /*--Primary--*/       
+  /*--Secondary--*/  
+  /*---CONTENT---*/  
+/*---SIDEBAR---*/  
+/*---FOOTER---*/</pre>
+
+
+<p>同样你也看到了我给NAV也添加了二级注释，分别为主导航和次导航。</p>
+
+
+<p>事实上，对于很少css的小型网站，我通常是不使用二级注释的。但是对于大型的css文件，二级注释被证实是很管用的。</p>
+
+
+<p><strong>自由格式化</strong></p>
+
+
+<p>你使用的注释格式完全取决于你。以上你看到的例子是我和我的团队很钟爱的方式。也有些人喜欢用两行定义他们的注释格式：</p>
+
+
+<pre>/*   HEADER      
+------------------------------*/</pre>
+
+
+<p>另一些人使用特殊字符如‘=’，作为<a href="http://stopdesign.com/archive/2005/05/03/css-tip-flags.html">搜索字符</a>的标记:</p>
+
+
+<pre>/*   =Header      
+------------------------------*/</pre>
+
+
+<p>一些人不使用二级注释，他们用一种完全不同的结构，不是根据页面内容划分，而是用元素的类型划分如：headers，images，lists等等。关键是用你喜欢的格式去定义并一直这么使用。</p>
+
+
+<p>想根据内容元素划分？没问题。想要小写注释，那就去做。不想使用二级注释缩进？那就不用.不喜欢连字符想用时间？ok。你只需要做对于你和你的团队最有意义的事情就好。</p>
+
+
+<p><strong>交流注释用法</strong></p>
+
+
+<p>我们已经了解了注释的结构，但是你应该就这如何使用注释的问题跟你团队的同事交流一下。</p>
+
+
+<p><strong>什么时间，谁做了什么</strong></p>
+
+
+<p>作为团队成员的一份子，很有必要在团队成员之间交流已经写好的css文件的相关细节。在我的团队里，我们在css文件的头部添加了一些css文件创建和更新信息的摘要注释。</p>
+
+
+<pre>/*----TITLE: Main screen styles | AUTHOR: EPL | UPDATED: 03/23/10 by EPL----*/</pre>
+
+
+<p>在处理多个样式表时，头部的信息是有用的。如一个屏幕，一个用于打印，一个用于移动甚至是关于ie的hack写法。作者的信息让团队成员知道一旦css出了问题应该去找谁。而更新信息让团队了解谁最后做的更新以及更新时间。</p>
+
+
+<p>至于你的摘要注释，仅需要包含对你团队有用的信息。如果你不需要作者信息，跳过。如果想要版权声明加上。我甚至见过摘要里面有地址和联系信息的。</p>
+
+
+<pre>/*---- IE6 screen styles (ie6.css)  Company ABC 1234 Avenue of the Americas New York, NY 10020 http://companyabc.com  Updated: 03/23/10 by EPL ----*/</pre>
+
+
+<p><strong>颜色值</strong></p>
+
+
+<p>我遇到过的最有用的css注释之一是网站用到的颜色值。</p>
+
+
+<pre>/*---COLORS: Green #b3d88c | Blue #0075b2 | Light Gray #eee | Dark Gray #9b9e9e | Orange #f26522 | Teal #00a99d | Yellow #fbc112---*/</pre>
+
+
+<p>颜色值在开发阶段很有用，节省你测试颜色和从其他样式里查找的时间。你不需要知道这个十六进制值是不是蓝色，你只需要找到这个颜色值，然后复制粘贴即可。</p>
+
+
+<p>在我的团队里，我们在css文件头部添加通用的颜色值，要在所有样式声明和注释前，摘要注释后面添加。我们也尝试保持关键字尽可能简单方便维护，但是他到底有多复杂完全取决于你。</p>
+
+
+<p>格式也全取决于你。你可以让所有定义的颜色值放在一行显示，也可以把他们分成多行显示:</p>
+
+
+<pre>/*---COLORS      
+Green #b3d88c      
+Blue #0075b2      
+Light Gray #eee      
+Dark Gray #9b9e9e      
+Orange #f26522      
+Teal #00a99d      
+Yellow #fbc112 
+---*/</pre>
+
+
+<p>同样，找到一个最好的有利于你需要的格式，一旦定义好就要保持他的一致性。</p>
+
+
+<p><strong>开发和调试</strong></p>
+
+
+<p>有时候在我开发的过程中，不得不徘徊在我的css 和团队其他成员之间。而这时注释就派上用场了。当我有时冥思苦想为什么css在ie下会有这样的bug，我就只需要走开即可。</p>
+
+
+<p>你或是你的同事做个笔记，包括可能的样式，和没有解决的困惑：</p>
+
+
+<pre>/*--//--Styling for link states is pending new changes from designer, please don&#39;t edit | EPL 03/23/10--\\--*/ 
+a, a:link, a:visited {    
+  color:#0075b2;     
+  text-decoration:none;
+}  
+ 
+a:hover, a:focus, a:active {    
+  color:#b3d88c;
+}</pre>
+
+
+<pre>为了让他们与众不同，我通常用一种不同于其他注释的格式，同时让他们尽可能的详细。还是使用最适合你的格式。&lt;/span&gt;</pre>
+
+
+<p>不过记住，一旦你完成开发和调试工作，这些注释就没有用了。他们既不跟你的工作有关，也不跟你的css有关，他们的存在只会增大你的文件体积。</p>
+
+
+<p><strong>样式重置</strong></p>
+
+
+<p><a href="http://coding.smashingmagazine.com/2007/09/21/css-frameworks-css-reset-design-from-scratch/">样式重置</a>已经很流行。他们出现在样式文件的头部，用来设置html元素在跨<span><a href="http://blog.jobbole.com/12749/" title="浏览器">浏览器</a></span>显示的基本样式:</p>
+
+
+<pre>/*---RESET---*/ 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {    
+  margin: 0;    
+  padding: 0;    
+  border: 0;    
+  outline: 0;    
+  font-weight: inherit;    
+  font-style: inherit;    
+  font-size: 100%;    
+  font-family: inherit;    
+  vertical-align: baseline; 
+}</pre>
+
+
+<p>以上的例子摘自Eric Meyer的<a href="http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/">重置文档</a>，这个我也经常用。但是我倾向于去掉我用不到的标签，我也建议你这样做。比如我的团队构建的网站里面几乎没有&lt;kbd&gt;,也没有&lt;iframe&gt;,&lt;applet&gt;或是包含以上的一些元素。</p>
+
+
+<p>所以，我去掉这些元素选择器。虽然在页面加载或是文件体积上只有很小的不同，但是我感觉这样有助于，避免团队成员间对于不使用的标签的困扰。</p>
+
+
+<p>如果我不想要覆盖浏览器的内置样式，我也可以编辑重置样式表，例如如何处理无序列表。在这种情况下，我确保这些元素不包含在样式表声明里。</p>
+
+
+<p>不过，我应该澄清一下，css重置并不适用于所有人。你有很多<a href="http://snook.ca/archives/html_and_css/no_css_reset/">不使用他的理由</a>，这由你决定。如果你要重置样式，要保持你的重置样式表尽量干净和特殊。</p>
+
+
+<p><strong>命名约定</strong></p>
+
+
+<p>最头疼的事情之一是，遇到其他人写的css，而且是定义的类名和id名毫无意义的那种。例如像下面这样：</p>
+
+
+<pre>.f23 {    
+  background: #fff;    
+  border: 1px solid #ff0;    
+  font-weight: bold;    
+  padding: 10px; 
+}</pre>
+
+
+<p>我根本不知道.f23是什么意思。甚至更糟的是都没有任何形式的注释。我不知道.f23代表什么内容。是标题？主要内容？还是导航？</p>
+
+
+<p>这种情况，尤其是对于大型网站，就可能浪费大量的时间去查找出现这个类名的标签位置。如果作者用一个约定好的名字命名，如那些有意义的，那些基于内容的样式的：</p>
+
+
+<pre>.alert {    
+  background: #fff;    
+  border: 1px solid #ff0;    
+  font-weight: bold;    
+  padding: 10px;
+}</pre>
+
+
+<p>如你所见，类名.alert提供的上下文信息要比用一个随机数组成的类名提供的信息多。</p>
+
+
+<p>不仅仅是上下文，有语意的命名还可以节约时间。考虑到一个公司品牌的频繁更换，如果你开发的css使用表现的类名而不是语义化的类名和id名，那么在寻找、维护css时，你将比预期花费更多的时间。</p>
+
+
+<p>例如，如果你给网站上一块内容，定义一个bluebox的类名，使用了公司logo的蓝色基调。然后公司重组了，他们现在用红色基调的logo，这时你的.blueBox就没有意义啦。所以你不仅需要更新样式表的十六进制颜色值，还需要修改标签中的所有引用到blueBox的地方。</p>
+
+
+<p>相反如果你用callOut作为类名（或是同样有意义的名字），你会省去手头的很多工作量。</p>
+
+
+<p><strong>类名滥用</strong></p>
+
+
+<p>在css 的使用中，我倾向于能少则少的原则。不能因为你可以给每个元素指定类名，就意味着你就应该给每个元素指定类名。</p>
+
+
+<p>在我修复供应商糟糕的css过程中，发现类名被滥用了，出现在许多本来不需要的地方。例如每一个lable标签就定义一个lable类名，每一个form就定义一个form。但是我们的设计和结构中只需要给一个form元素设置样式，它里面也只包含一个label元素。</p>
+
+
+<pre>form.form {    
+  float: right;    
+  margin: 0;    
+  padding: 5px; 
+} 
+
+label.label {    
+  clear: both;    
+  float: left;    
+  text-align: right;    
+  width: 145px;
+}</pre>
+
+
+<p>由此产生的css本身和他造成的冗余并不可怕，可怕的是他造成的困惑。作为一个设计师看到了这个form类，可能猜想是不是其他样式表里也定义了叫form的类名，然后去查找根本不存在的样式，这就是我时间浪费的原因。</p>
+
+
+<p><strong>类名不等于特异性</strong></p>
+
+
+<p>上面只是一个简单的例子。一个我遇到的有关类名更疯狂的例子是渴望给予元素特殊性</p>
+
+
+<pre>&lt;div id=&quot;feature&quot;&gt;  
+  &lt;ul&gt;     
+    &lt;li&gt;&lt;a href=&quot;#newServices&quot;&gt;New Services&lt;/a&gt;&lt;/li&gt;     
+    &lt;li&gt;&lt;a href=&quot;#newProducts&quot;&gt;New Products&lt;/a&gt;&lt;/li&gt;  
+  &lt;/ul&gt; 
+&lt;/div&gt;</pre>
+
+
+<p>注意到tabs的类名应用到了上面结构中的每一个标记？导致如下的css目录列表:</p>
+
+
+<pre>div.tabs ul.tabs li.tabs {    
+  float: left;    
+  font-weight: bold;    
+  padding: 3px; 
+}</pre>
+
+
+<p>对于li最简便的解决方法应该是这样：</p>
+
+
+<pre>#feature li {    
+  float: left;    
+  font-weight: bold;    
+  padding: 3px;
+}</pre>
+
+
+<p>如果你的元素定义样式不需要类名，那就不要用。用的太多类名，不仅使你的结构和css很臃肿，也失去了他们在css 中的意义。</p>
+
+
+<p>你也许注意到了在最后的例子中，我仅使用了# feature作为选择器而不是div#feature。只有在为了区别其他选择器的情况下，添加div才合适，否则只会给你的团队带来负担。而且尽量少用特殊的声明，也为日后覆盖任何样式提供方便。</p>
+
+
+<p><strong>多类</strong></p>
+
+
+<p>最后一点，我不喜欢多类，你也许还有印象。虽然我不提倡使用不必要，多余的类名，但是对于通过多类保持元素表现的共用，我可是一个忠实的粉丝，然而可能有一些理解的不同之处：</p>
+
+
+<pre>.announcement {    
+  background: #eee;    
+  border: 1px solid #007b52;
+  color: #007b52;    
+  font-weight: bold;    
+  padding: 10px;
+}  
+
+.newsAnnouncement {    
+  background: #eee;    
+  border: 1px solid #007b52;
+  color: #007b52;    
+  float: right;    
+  font-weight: bold;    
+  padding: 10px; 
+}</pre>
+
+
+<p>上面的两个声明，除了.newsAnnouncement多了一个浮动外，都完全一样。所以我大可像下面这样而不是重复写相同的样式:</p>
+
+
+<pre>.announcement {    
+  background: #eee;    
+  border: 1px solid #007b52;
+  color: #007b52;    
+  font-weight: bold;    
+  padding: 10px;
+}  
+
+.floatR {    
+  float:right; 
+}</pre>
+
+
+<p>然后给我的新闻内容添加两个类名</p>
+
+
+<pre>&lt;div class=&quot;announcement floatR&quot;&gt;</pre>
+
+
+<p>但是且慢，我不是说过要根据约定好的名字而不是根据表现命名吗？没错，但是凡事总有个例外。</p>
+
+
+<p>是的，.floatR是一个表现类名，但是他适用于这种情况，而且可以用于其他需要多类的情况，所以这是我的团队经常使用的方法。</p>
+
+
+<p><strong>分组选择器</strong></p>
+
+
+<p>在我的300个小时的折磨里，遇到的另一个问题是完全相同的样式出现在多个样式表里，而唯一的区别就是声明他们的选择器不同：</p>
+
+
+<pre>#productFeature {    
+  background: #fff;    
+  border: 1px solid #00752b;    
+  float: left;    
+  padding: 10px; 
+}  
+
+#contactFeature {    
+  background: #fff;    
+  border: 1px solid #00752b;    
+  float: left;    
+  padding: 10px; 
+}
+
+#serviceFeature {    
+  background: #fff;    
+  border: 1px solid #00752b;    
+  float: left;    
+  padding: 10px; 
+}</pre>
+
+
+<p>这不仅使得css文件体积过于臃肿，也使维护成了噩梦。解决方法就是合并他们成一个样式声明：</p>
+
+
+<pre>#productFeature, #contactFeature, #serviceFeature {    
+  background: #fff;    
+  border: 1px solid #00752b;    
+  float: left;    
+  padding: 10px; 
+}</pre>
+
+
+<p>现在如果要更新样式只需要修改一个声明而不是三个。</p>
+
+
+<p>一行还是多行书写？</p>
+
+
+<p>本文中出现的所有css实例都是用的多行的格式，每一对属性和值占单独一行。这个是广泛使用的约定，不仅是在css文件中，也多出现在书里和文章里。许多人认为他的可读性很好，这也就是什么我在本文使用他的原因。</p>
+
+
+<p>然而在和团队的工作中，尤其是大型的css文件，我是将样式写成一行:</p>
+
+
+<pre>.alert {background: #fff; border: 1px solid #ff0; font-weight: bold; padding: 10px;}</pre>
+
+
+<p>就我个人和我的团队而言，觉得单行的可读性更好。当你查找css时多行样式就变得很麻烦，相比较而言单行查找更容易。</p>
+
+
+<p>对于你和你的团队，选择最合适你的团队的格式，并一直使用他。</p>
+
+
+<p><strong>需要依照字母顺序排列吗？</strong></p>
+
+
+<p>一些人建议将每个声明按照字母表的顺序排列，方便快速查找一个属性。以前我对这样的事情并不在意，但是经过处理供应商混乱的css之后，我意识到将一些思想应用到样式声明的组织中是个很好的主意。</p>
+
+
+<p>尽管我发现按照字母表排序很有用，但是我还是会根据上下文来组织哪些属性放在一起。比如，我喜欢将所有的盒模型属性放在一起。如果我使用了绝对定位，我就把这些属性放在一起:</p>
+
+
+<pre>#logo {    
+  border: 1px solid #000;    
+  margin: 0;    
+  padding: 0;    
+  position: absolute;    
+  top: 5px;    
+  right: 3px; 
+}</pre>
+
+
+<p>这里没有对错之分，仅仅是决定用哪种属性的排序并一直用它就好了。</p>
+
+
+<p><strong>使用简写</strong></p>
+
+
+<p>使用css简写一直是认为可以提高你的css水平的方法。他同时也适用于团队，它不仅可以有助于浏览，而且可以方便设置大家遵守的标准。这样就减少了花费在思考和书写样式的时间。</p>
+
+
+<p><strong>0值</strong></p>
+
+
+<p>如果你使用0值，没有必要给他指定单位:</p>
+
+
+<pre>margin: 2px 3px 0px 4px</pre>
+
+
+<p>变成</p>
+
+
+<pre>margin: 2px 3px 0 4px</pre>
+
+
+<p><strong>颜色模式</strong></p>
+
+
+<p>十六进制颜色值如果是由三对数组成，可以从每组中抽出一个数组成该颜色值的简写:</p>
+
+
+<pre>color: #ff0000</pre>
+
+
+<p>写成</p>
+
+
+<pre>color: #f00</pre>
+
+
+<p><strong>盒模型属性</strong></p>
+
+
+<p>盒模型中的margin，padding，border如果四边值相同，可以合并:</p>
+
+
+<pre>padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px</pre>
+
+
+<p>合并成</p>
+
+
+<pre>padding: 5px</pre>
+
+
+<p>如果上下，左右值一样，你只需要写两个就够了：</p>
+
+
+<pre>padding: 5px 10px 5px 10px</pre>
+
+
+<p>合并成</p>
+
+
+<pre>padding: 5px 10px</pre>
+
+
+<p><strong>字体属性</strong></p>
+
+
+<p>多条字体属性可以合并成一条</p>
+
+
+<pre>font-style:italic; font-weight:bold; font-size: 90%; font-family: Arial, Helvetica, sans-serif;</pre>
+
+
+<p>合并成</p>
+
+
+<pre>font: italic bold 90% Arial, Helvetica sans-serif</pre>
+
+
+<p><strong>背景色属性</strong></p>
+
+
+<p>背景属性也是可以合并的</p>
+
+
+<pre>background-color:#fff; background-image: url(logo.png); background-repeat: no-repeat; background-position: 0 10%;</pre>
+
+
+<p>合半成</p>
+
+
+<pre>background: #f00 url(logo.png) no-repeat 0 10%</pre>
+
+
+<p>请注意最后两个例子，字体和背景属性。属性值的声明顺序要按照w3c的标准来。</p>
+
+
+<p><strong>验证，验证，再验证</strong></p>
+
+
+<p>虽然一些人认为验证css需要指定一个很好的验证规则，这一点我不强求但是他绝对是有要求的。验证能够确保你的工作，是否准备好分享给团队的其他成员，所以他应该满足下面要求：</p>
+
+
+<p>1.容易开发和故障排除</p>
+
+
+<p>2.保证现在和未来的浏览器显示一致</p>
+
+
+<p>3.保证页面的快速加载</p>
+
+
+<p>4.作为可访问性的一部分</p>
+
+
+<p>5.把他正确的写出来</p>
+
+
+<p>我建议使用<a href="http://jigsaw.w3.org/css-validator/">W3C CSS验证服务</a>。</p>
+
+
+<p><strong>压缩工具</strong></p>
+
+
+<p>如果你的团队关心文件大小，页面加载和带宽的话，你应该考虑使用一个压缩工具。它主要是用来去除不必要的注释，空格。这里有一些压缩工具可以考虑：</p>
+
+
+<p>1.<a href="http://www.cssdrive.com/index.php/main/csscompressor/">CSS Compressor</a></p>
+
+
+<p>2.<a href="http://www.cssoptimiser.com/">CSS Optimizer</a></p>
+
+
+<p>3.<a href="http://www.codebeautifier.com/">Code Beautifer</a></p>
+
+
+<p>4.<a href="http://csstidy.sourceforge.net/">CSS Tidy</a></p>
+
+
+<p>我不建议在开发的过程中压缩文件，因为压缩可以减小你的文件大小，同时也削弱了你和团队之间协同开发和处理css 的能力。因为他去掉了具有可读性的所有注释和空格，所以应该把压缩作为产品上线的最后一道工序。</p>
+
+
+<p><strong>冰山一角</strong></p>
+
+
+<p>本文中提到的只是少数基础实践，他们可以帮助你和团队高效的工作。遵循这些准则可以进一步完善你的css。如果你很感兴趣的话，我推荐你阅读下面的文章:</p>
+
+
+<p>1.<a href="http://css-tricks.com/different-ways-to-format-css/">Different Ways to Format CSS</a></p>
+
+
+<p>2.<a href="http://css-tricks.com/unique-pages-unique-css-files/">Unique Pages, Unique CSS Files</a></p>
+
+
+<p>3.<a href="http://css-tricks.com/single-line-vrs-multi-line-css/">Single-line vs. Multi-line CSS</a></p>
+
+
+<p>4.<a href="http://blog.neatlysliced.com/2009/01/css-property-order-convention/">CSS Property Order Convention</a></p>
+
+
+<p>5.<a href="http://www.cherny.com/webdev/53/on-http-page-load-times-multiple-file-requests-and-deferred-javascript">On HTTP: Page Load Times, Multiple File Requests and Deferred JavaScript</a></p>
+
+
+<p>6.<a href="http://www.stevesouders.com/blog/2009/04/09/dont-use-import/">Don’t Use @import</a></p>
+
+
+<p>7.<a href="http://www.456bereastreet.com/archive/200502/efficient_css_with_shorthand_properties/">Efficient CSS with shorthand properties</a></p>
+
+
+<p>8.<a href="http://css-tricks.com/css-sprites/">CSS Sprites: What They Are, Why They’re Cool, and How To Use Them</a></p>
+
+
+<p>9.<a href="http://www.slideshare.net/stubbornella/object-oriented-css">Object Oriented CSS</a></p>
+
+
+<p><strong>遵守黄金定律</strong></p>
+
+
+<p>不管你是工作在一个团队中，还是作为外包或是作为团队的唯一成员，这些css准则将为你日后成为一个优秀的团队成员打好坚实的基础，它不仅节约你的开发时间，也避免了不必要的沮丧情绪。</p>
+
+
+<p><strong>译者手语：</strong>初次翻译前端技术博文，整个翻译依照原文线路进行，并在翻译过程略加了个人对技术的理解。如果翻译有不对之处，还烦请同行朋友指点。谢谢！</p>
+
+
+<p> </p>
+
+
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/31147/">CSS架构</a></li><li><a href="http://blog.jobbole.com/22186/">SASS用法指南</a></li><li><a href="http://blog.jobbole.com/16375/">10个便利的CSS代码在线生成器</a></li><li><a href="http://blog.jobbole.com/19714/">Zen Coding: 一种快速编写HTML/CSS代码的方法</a></li><li><a href="http://blog.jobbole.com/31926/">CSS基线之道</a></li><li><a href="http://blog.jobbole.com/10408/">如何将页脚固定在页面底部</a></li><li><a href="http://blog.jobbole.com/28088/">爱上朴实的CSS细节</a></li><li><a href="http://blog.jobbole.com/1173/">8个非常有用的CSS工具</a></li><li><a href="http://blog.jobbole.com/23223/">简讯：W3C 发布 CSS 选择器 API 规范</a></li><li><a href="http://blog.jobbole.com/14681/">前端是否应该将CSS和JS分开设置两个不同岗位</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

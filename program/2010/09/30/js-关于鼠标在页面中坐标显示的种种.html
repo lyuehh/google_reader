@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>js 关于鼠标在页面中坐标显示的种种</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>js 关于鼠标在页面中坐标显示的种种</h2>
+<p class="meta">30 Sep 2010</p>
+
+<div class="post">
+<h2>js 关于鼠标在页面中坐标显示的种种</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-09-29 20:32:24</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/775445">http://www.javaeye.com/topic/775445</a></h3>
+
+<p><strong><span style="color:red">首先先看一段代码</span></strong>
+<br><pre name="code">
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function mouseCoordination(michael){
+    //以下主要是对不同浏览器进行兼容操作
+     if(michael.pageX || michael.pageY){
+//IE不支持pageX之类的 这里主要是对于chrome 和firefox之类的浏览器
+      return {x:michael.pageX, y:michael.pageY};
+      }
+      else return {
+//以下是IE浏览器的操作动作 至于为什么这么写 待会看图就会明白
+       x:michael.clientX + document.body.scrollLeft - document.body.clientLeft,
+       y:michael.clientY + document.body.scrollTop  - document.body.clientTop
+       };</p>
+
+<p>}</p>
+
+<p>function mouseMove(michael){
+   michael = michael || window.event; //不知为什么 显示出来 就是多了个michael 应该前面变量只有一个michael的
+    var mouseCoo = mouseCoordination(michael);
+    document.getElementById(&#39;xCoordination&#39;).value = mouseCoo.x;
+    document.getElementById(&#39;yCoordination&#39;).value = mouseCoo.y;
+}
+document.onmousemove = mouseMove;
+&lt;/script&gt;
+X坐标:&lt;input id=&quot;xCoordination&quot; type=&quot;text&quot; /&gt;  Y坐标:&lt;input id=&quot;yCoordination&quot; type=&quot;text&quot; /&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br><strong><span style="color:red">关于javascript中clientX，pageX，offsetX，x，layerX，screenX,offsetLeft之类的图解说明</span></strong>
+<br><img src="http://hduyou.javaeye.com/upload/picture/pic/73258/d6d867a7-1c3d-3c58-886b-ccb5952faa91.gif">
+<br>
+<br><strong><span style="color:red">对clientX等的文字说明</span></strong>
+<br><strong><span style="color:brown">offsetTop
+<br>获取对象相对于版面或由 offsetParent 属性指定的父坐标的计算顶端位置。
+<br>offsetLeft
+<br>获取对象相对于版面或由 offsetParent 属性指定的父坐标的计算左侧位置。
+<br>offsetHeight
+<br>获取对象相对于版面或由父坐标 offsetParent 属性指定的父坐标的高度。
+<br>IE、Opera 认为 offsetHeight = clientHeight + 滚动条 + 边框。
+<br>NS、FF 认为 offsetHeight 是网页内容实际高度，可以小于 clientHeight。
+<br>offsetWidth
+<br>获取对象相对于版面或由父坐标 offsetParent 属性指定的父坐标的宽度。
+<br>offsetParent
+<br>获取定义对象 offsetTop 和 offsetLeft 属性的容器对象的引用。
+<br> clientHeight
+<br>获取对象的高度，不计算任何边距、边框、滚动条或可能应用到该对象的补白。
+<br>大家对 clientHeight 都没有什么异议，都认为是内容可视区域的高度，也就是说页面浏览器中可以看到内容的这个区域的高度，一般是最后一个工具条以下到状态栏以上的这个区域，与页面内容无关。
+<br>clientLeft
+<br>获取 offsetLeft 属性和客户区域的实际左边之间的距离。
+<br>clientTop
+<br>获取 offsetTop 属性和客户区域的实际顶端之间的距离。
+<br>clientWidth
+<br>获取对象的宽度，不计算任何边距、边框、滚动条或可能应用到该对象的补白。
+<br>SCROLL属性
+<br>scroll
+<br>设置或获取滚动是否关闭。
+<br>scrollHeight
+<br>获取对象的滚动高度。
+<br>scrollLeft
+<br>设置或获取位于对象左边界和窗口中目前可见内容的最左端之间的距离。
+<br>scrollTop
+<br>设置或获取位于对象最顶端和窗口中可见内容的最顶端之间的距离。
+<br>scrollWidth
+<br>获取对象的滚动宽度。event属性
+<br>x
+<br>设置或获取鼠标指针位置相对于父文档的 x 像素坐标。
+<br>screenX
+<br>设置或获取获取鼠标指针位置相对于用户屏幕的 x 坐标</span></strong>
+<br><strong><span style="color:red">W3C关于screen给出的例子</span></strong>
+<br><pre name="code">
+&lt;html&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function show_coords(event)
+  {
+  x=event.screenX
+  y=event.screenY
+  alert(&quot;X coords: &quot; + x + &quot;, Y coords: &quot; + y)
+  }
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body onmousedown=&quot;show_coords(event)&quot;&gt;</p>
+
+<p>&lt;p&gt;Click in the document. An alert box will alert
+the x and y coordinates of the cursor.&lt;/p&gt;</p>
+
+<p>&lt;/body&gt;
+&lt;/html&gt;</p>
+
+<p></pre>
+<br><strong><span style="color:brown">offsetX
+<br>设置或获取鼠标指针位置相对于触发事件的对象的 x 坐标。
+<br>clientX
+<br>设置或获取鼠标指针位置相对于窗口客户区域的 x 坐标，其中客户区域不包括窗口自身的控件和滚动条</span></strong>
+<br><strong>W3C对于client给出的例子</strong>
+<br><pre name="code">
+&lt;html&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function show_coords(event)
+  {
+  x=event.clientX
+  y=event.clientY
+  alert(&quot;X coords: &quot; + x + &quot;, Y coords: &quot; + y)
+  }
+&lt;/script&gt;
+&lt;/head&gt;</p>
+
+<p>&lt;body onmousedown=&quot;show_coords(event)&quot;&gt;</p>
+
+<pre><code>&amp;lt;p&amp;gt;Click in the document. An alert box will alert 
+</code></pre>
+
+<p>the x and y coordinates of the mouse pointer.&lt;/p&gt;</p>
+
+<p>&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br>
+<br>
+<br><strong><span style="color:brown">我们这里说说四种浏览器对 document.body 的 clientHeight、offsetHeight 和 scrollHeight 的解释，这里说的是 document.body，如果是 HTML 控件，则又有不同，点击这里查看。
+<br>这四种浏览器分别为IE（Internet Explorer）、NS（Netscape）、Opera、FF（FireFox）。
+<br>clientHeight
+<br>大家对 clientHeight 都没有什么异议，都认为是内容可视区域的高度，也就是说页面浏览器中可以看到内容的这个区域的高度，一般是最后一个工具条以下到状态栏以上的这个区域，与页面内容无关。
+<br>offsetHeight
+<br>IE、Opera 认为 offsetHeight = clientHeight + 滚动条 + 边框。 NS、FF 认为 offsetHeight 是网页内容实际高度，可以小于 clientHeight。
+<br>scrollHeight
+<br>IE、Opera 认为 scrollHeight 是网页内容实际高度，可以小于 clientHeight。 NS、FF 认为 scrollHeight 是网页内容高度，不过最小值是 clientHeight。 简单地说
+<br>clientHeight 就是透过浏览器看内容的这个区域高度。
+<br>
+<br>
+<br>NS、FF 认为 offsetHeight 和 scrollHeight 都是网页内容高度，只不过当网页内容高度小于等于 clientHeight 时，scrollHeight 的值是 clientHeight，而 offsetHeight 可以小于 clientHeight。
+<br>IE、Opera 认为 offsetHeight 是可视区域 clientHeight 滚动条加边框。scrollHeight 则是网页内容实际高度。
+<br>同理
+<br>clientWidth、offsetWidth 和 scrollWidth 的解释与上面相同，只是把高度换成宽度即可。
+<br>但是
+<br>FF 在不同的 DOCTYPE 中对 clientHeight 的解释不同， xhtml 1 trasitional 中则不是如上解释的。其它浏览器则不存在此问题。</span></strong>
+<br><strong>  <span style="color:darkred">
+<br>pageX/pageY:
+<br>
+<br>鼠标相对于整个页面的X/Y坐标。
+<br>
+<br>IE不支持！
+<br>
+<br>offsetX/offsetY:
+<br>
+<br>得出的结果跟pageX/pageY一样，既然如此，它有什么存在价值？因为：
+<br>
+<br>只有IE支持！相当于IE下的pageX,pageY.
+<br>
+<br>screenX/screenY:
+<br>
+<br>就是鼠标在屏幕上的坐标。screenX,screenY的最大值不会超过你的屏幕分辨率。
+<br>clientX/clientY：
+<br>
+<br>事件发生时鼠标在浏览器内容区域的X/Y坐标（不包含滚动条）。浏览器内容区域即浏览器窗口中用来显示网页的可视区域，注意这个可视，也就是说需要拖动滚动条才能看到的区域不算。当你将浏览器窗口缩小时，clientX/clientY的最大值也会缩小，但始终，它们的最大值不会超过你浏览器可视区域。
+<br>
+<br>特别说明：IE下此属性不规范，它们的最小值不是0而是2，也就是说IE下的clientX/clientY与火狐下的始终大2px</span></strong>
+<br>
+<br></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://hduyou.javaeye.com"&gt;hduyou&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/775445" style="color:red"&gt;已有 &lt;strong&gt;2&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

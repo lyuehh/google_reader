@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Windows安全认证是如何进行的？[Kerberos篇]</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Windows安全认证是如何进行的？[Kerberos篇]</h2>
+<p class="meta">25 Jan 2011</p>
+
+<div class="post">
+<h2>Windows安全认证是如何进行的？[Kerberos篇]</h2>
+
+<h3>by Artech</h3>
+
+<h3>at 2011-01-24 21:57:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html">http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html</a></h3>
+
+<p><p>最近一段时间都在折腾安全（Security）方面的东西，比如Windows认证、非对称加密、数字证书、数字签名、TLS/SSL、WS-Security等。如果时间允许，我很乐意写一系列的文章与广大网友分享、交流。对于很多读者来说，今天讨论的可能是一个既熟悉、又陌生的话题——Windows认证。</p>  <blockquote>   <p>目录      <br>一、Kerberos认证简介       <br>二、如何获得“认购权证”？       <br>三、如何通过“认购权证”购买“入场券”？       <br>四、凭票入场</p> </blockquote>  <h1><font size="4"><font style="font-weight:bold">一、Kerberos认证简介</font></font></h1>  <p><a href="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242156364484.png"><img style="background-image:none;border-right-width:0px;margin:0px 0px 0px 10px;padding-left:0px;padding-right:0px;display:inline;float:right;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="image" border="0" alt="image" align="right" src="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242156509558.png" width="335" height="225"></a>Windows认证协议有两种<font color="#ff0000">NTLM</font>（NT LAN Manager）和<font color="#ff0000">Kerberos</font>，前者主要应用于用于Windows NT 和 Windows 2000 Server（or Later） 工作组环境，而后者则主要应用于Windows 2000 Server（or Later） 域（Domain）环境。Kerberos较之NTLM更高效、更安全，同时认证过程也相对复杂。Kerberos这个名字来源于希腊神话，是冥界守护神兽的名字。Kerberos是一个三头怪兽，之所以用它来命名一种完全认证协议，是因为整个认证过程涉及到三方：客户端、服务端和<font color="#ff0000">KDC</font>（Key Distribution Center）。在Windows域环境中，KDC的角色由<font color="#ff0000">DC</font>（Domain Controller）来担当。</p>  <p>某个用户采用某个域帐号登录到某台主机，并远程访问处于相同域中另一台主机时，如何对访问者和被访问者进行身份验证（这是一种双向的验证）？这就是Kerberos需要解决的场景。接下来我尽量以比较直白的语言来介绍我所知道的Kerberos认证的整个流程。</p>  <p>Kerberos实际上是一种<font color="#ff0000">基于票据（Ticket）</font>的认证方式。客户端要访问服务器的资源，需要首先购买服务端认可的票据。也就是说，客户端在访问服务器之前需要预先买好票，等待服务验票之后才能入场。在这之前，客户端需要先买票，但是这张票不能直接购买，需要一张<font color="#ff0000">认购权证</font>。客户端在买票之前需要预先获得一张认购权证。这张认购权证和进入服务器的入场券均有KDC发售。右图（点击看大图）一张图基本揭示了Kerberos整个认证的过程。</p>  <h1><font size="4"><font style="font-weight:bold">二、如何获得“认购权证”？</font></font></h1>  <p><a href="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242156546399.png"><img style="background-image:none;border-right-width:0px;margin:0px 9px 0px 0px;padding-left:0px;padding-right:0px;display:inline;float:left;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="image" border="0" alt="image" align="left" src="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242157015664.png" width="335" height="192"></a>首先，我们来看看客户端如何获得“认购权证”。这里的认购权证有个专有的名称——<font color="#ff0000">TGT</font>（Ticket Granting Ticket），而TGT的是KDC一个重要的服务——认证服务（<font color="#ff0000">KAS</font>：Kerberos Authentication Service）。当某个用户通过输入域帐号和密码试图登录某台主机的时候，本机的Kerberos服务会向KDC的认证服务发送一个认证请求。该请求主要包括两部分内容，明文形式的<font color="#ff0000">用户名</font>和经过加密的用于证明访问者身份的<font color="#ff0000">Authenticator</font>（我实在找不到一个比较贴切的中文翻译没，Authenticator在这里可以理解为仅限于验证双反预先知晓的内容，相当于联络暗号）。</p>  <p>当KDC接收到请求之后，通过<font color="#ff0000">AD</font>获取该用户的信息。通过获取的密码信息生成一个秘钥对Authenticator进行解密。如果解密后的内容和已知的内容一致，则证明请求着提供的密码正确，即确定了登录者的真实身份。</p>  <p>KAS成功认证对方的身份之后，会先生成一个用于确保该用户和KDC之间通信安全的会话秘钥——<font color="#ff0000">Logon Session Key</font>，并采用该<font color="#ff0000">用户密码派生的秘钥</font>进行加密。KAS接着为该用户创建“认购权证”——<font color="#ff0000">TGT</font>。TGT主要包含两方面的内容：用户相关信息和<font color="#ff0000">Logon Session Key</font>，而整个TGT则通过<font color="#ff0000">KDC自己的密钥</font>进行加密。最终，被不同密钥加密的Logon Session Key和TGT返回给客户端。（以上的内容对应流程图中的步骤1、2）</p>  <h1><font size="4"><font style="font-weight:bold">三、如何通过“认购权证”购买“入场券”？</font></font></h1>  <p><a href="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242157023288.png"><img style="background-image:none;border-right-width:0px;padding-left:0px;padding-right:0px;display:inline;float:right;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="image" border="0" alt="image" align="right" src="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242157112675.png" width="346" height="195"></a>经过上面的步骤，客户端获取了购买进入同域中其他主机入场券的“认购凭证”——<font color="#ff0000">TGT</font>，以及<font color="#ff0000">Logon Session Key</font>，它会在本地缓存此TGT和Logon Session Key。如果现在它需要访问某台服务器的资源，它就需要凭借这张TGT向KDC购买相应的入场券。这里的入场券也有一个专有的名称——服务票据（ST：<font color="#ff0000">Service Ticket</font>）。</p>  <p>具体来说，ST是通过KDC的另一个服务<font color="#ff0000">TGS</font>（Ticket Granting Service）出售的。客户端先向TGS发送一个ST购买请求，该请求主要包含如下的内容：<font color="#ff0000">客户端用户名</font>；<font color="#ff0000">通过Logon Session Key加密的Authenticator</font>；<font color="#ff0000">TGT和访问的服务器（其实是服务）名</font>。</p>  <p>TGS接收到请求之后，现通过<font color="#ff0000">自己的密钥</font>解密TGT并获取Logon Session Key，然后通过Logon Session Key解密Authenticator，进而验证了对方的真实身份。</p>  <p>TGS存在的一个根本的目有两点：其一是避免让用户的密码客户端和KDC之间频繁传输而被窃取。其二是因为密码属于Long Term Key（我们一般不会频繁的更新自己的密码），让它作为加密密钥的安全系数肯定小于一个频繁变换得密钥（Short Term Key）。而这个Short Term Key就是Logon Session Key，它确保了客户端和KDC之间的通信安全。</p>  <p>TGS完成对客户端的认证之后，会生成一个用于确保客户端-服务器之间通信安全的会话秘钥——<font color="#ff0000">Service Session Key</font>，该会话秘钥通过Logon Session Key进行加密。然后出售给客户端需要的入场券——<font color="#ff0000">ST</font>。ST主要包含两方面的内容：客户端用户信息和Service Session Key，整个ST通过服务器密码派生的秘钥进行加密。最终两个被加密的Service Session Key和ST回复给客户端。（以上的内容对应流程图中的步骤3、4）</p>  <h1><font size="4"><font style="font-weight:bold">四、凭票入场</font></font></h1>  <p><a href="http://images.cnblogs.com/cnblogs_com/artech/201101/20110124215712266.png"><img style="background-image:none;border-right-width:0px;margin:0px 10px 0px 0px;padding-left:0px;padding-right:0px;display:inline;float:left;border-top-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top:0px" title="image" border="0" alt="image" align="left" src="http://images.cnblogs.com/cnblogs_com/artech/201101/201101242157156594.png" width="392" height="141"></a>客户端接收到TGS回复后，通过缓存的<font color="#ff0000">Logon Session Key</font>解密获取<font color="#ff0000">Service Session Key</font>。同时它也得到了进入服务器的入场券——<font color="#ff0000">ST</font>。那么它在进行服务访问的时候就可以借助这张ST凭票入场了。该Serivce Session Key和ST会被客户端缓存。</p>  <p>但是，服务端在接收到ST之后，如何确保它是通过TGS购买，而不是自己伪造的呢？这很好办，不要忘了ST是通过<font color="#ff0000">自己密码派生的秘钥</font>进行加密的。具体的操作过程是这样的，除了ST之外，服务请求还附加一份通过<font color="#ff0000">Service Session Key</font>加密的Authenticator。服务器在接收到请求之后，先通过<font color="#ff0000">自己密码派生的秘钥</font>解密ST，并从中提取Service Session Key。然后通过提取出来的Service Session Key解密Authenticator，进而验证了客户端的真实身份。</p>  <p>实际上，到目前为止，服务端已经完成了对客户端的验证，但是，整个认证过程还没有结束。谈到认证，很多人都认为只是服务器对客户端的认证，实际上在大部分场合，我们需要的是<font color="#ff0000">双向验证（Mutual Authentication）</font>——访问者和被访问者互相验证对方的身份。现在服务器已经可以确保客户端是它所声称的那么用户，客户端还没有确认它所访问的不是一个钓鱼服务呢。</p>  <p>为了解决客户端对服务器的验证，服务要需要将<font color="#ff0000">解密后的Authenticator</font>再次用Service Session Key进行加密，并发挥给客户端。客户端再用缓存的Service Session Key进行解密，如果和之前的内容完全一样，则可以证明自己正在访问的服务器和自己拥有相同的Service Session Key，而这个会话秘钥不为外人知晓<span style="line-height:24px;font-family:verdana,&#39;ms song&#39;,宋体,arial,微软雅黑,helvetica,sans-serif;font-size:12px"></span>（以上的内容对应流程图中的步骤5、6）</p>  <p>以上的内容仅仅讲述的是基于Kerberos的Windows认证的大体流程，并不涉及到一些细节的东西，比如如何确保时间的同步，如何抵御Replay Attack等。此外，由于本文对Windows底层的知识有限，不能确保所有的内容都是完全正确，如有错误，还往不吝指正。</p>  <p><a href="http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html">Windows安全认证是如何进行的？[Kerberos篇]</a>    <br><a href="http://www.cnblogs.com/artech/archive/2011/01/25/NTLM.html">Windows安全认证是如何进行的？[NTLM篇]</a></p><img src="http://www.cnblogs.com/artech/aggbug/1943531.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/artech/">Artech</a> 发表于 2011-01-24 21:57 <a href="http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html">原文链接</a></p><p>评论: 24　<a href="http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/artech/archive/2011/01/24/kerberos.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/89474/">惠普 webOS 平板 Topaz 规格、功能细节流出</a><span style="color:gray">(2011-01-25 15:18)</span><br>· <a href="http://news.cnblogs.com/n/89473/">疑似PSP2官方照曝光</a><span style="color:gray">(2011-01-25 15:11)</span><br>· <a href="http://news.cnblogs.com/n/89472/">微软MSE 2.0首次更新 杀毒引擎版本升级</a><span style="color:gray">(2011-01-25 15:10)</span><br>· <a href="http://news.cnblogs.com/n/89471/">为什么起床后不能收邮件？</a><span style="color:gray">(2011-01-25 15:09)</span><br>· <a href="http://news.cnblogs.com/n/89470/">适合网页设计师的 9 个 Chrome 扩展</a><span style="color:gray">(2011-01-25 15:06)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/89309/">为什么不创新</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

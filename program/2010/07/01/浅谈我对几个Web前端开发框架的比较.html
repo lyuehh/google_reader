@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>浅谈我对几个Web前端开发框架的比较</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>浅谈我对几个Web前端开发框架的比较</h2>
+<p class="meta">01 Jul 2010</p>
+
+<div class="post">
+<h2>浅谈我对几个Web前端开发框架的比较</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-01 09:39:55</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/703155">http://www.javaeye.com/topic/703155</a></h3>
+
+<p>原文请见 <a href="http://chrisx.javaeye.com/blog/697596">http://chrisx.javaeye.com/blog/697596</a>
+<br>
+<br><span style="font-size:medium"><span style="color:red">强调一下，这篇日志主要还是针对想学前端开发的新朋友写的，不是说我有什么独特见解，而是比较客观的状态，就各种框架的异同和应用场合，需要注意的地方做简单描述，不做具体深入分析，有的地方比较抽象，对于抽象之处大家可以到网上或各大高手博客中深入学习，当然也可以与我继续探讨。</span></span>
+<br><span style="font-size:small">
+<br>一直以来对Web前端开发兴趣颇深，用过一些框架产品。在JavaEye上看到一些刚接触前端开发朋友的疑问，犹豫这些产品的前景利弊，不知从何入手。想把自己的一点经验分享给大家，如有不到位之处请一起来纠正。
+<br>
+<br><span style="color:blue"><strong>jQuery</strong></span>
+<br>1. 绝对的万金油，核心js只有50K，占用带宽小，门户网站、管理系统，用在哪都可以。
+<br>2. jQuery是对js底层dom操作封装最薄的一个框架，没有大量的专有对象，多为提供函数进行dom操作。<span style="color:red">准确的说，它不是偏重于富客户端的框架，而是侧重于对js dom编程。下面几种才是完整的富客户端的框架。</span>
+<br>3. 我认为它最大的三个亮点，一是支持CSS3的大量选择符，想定位或选择一个html元素简直轻而易举。二是灵活便捷的Ajax请求和回调操作。三是事件绑定功能，内部封装了很多事件，想统一为一个页面上的一些元素添加事件很方便，这也提高了复用性和可维护性，避免了页面中出现大量的html属性。合理的编码可以使html与js, css分离开，便于维护。
+<br>4. 此外它也封装了很多常用的操作，例如节点的添加删除、常用的动画效果、逻辑判断比较等等。避免了直接使用dom api进行繁琐的操作。
+<br>5. 本身提供了可扩展的函数，可以自己编写插件与核心jQuery对象进行集成使用。这也是常用的手段，只要你理解js面向对象编程，熟悉jQuery API，就能写出很多定制的插件，复用在各种地方。
+<br>6. 至于jQueryUI，与其他框架不一样的地方在于，它很少用js去生成html，而是把现有的html通过jQueryUI的API加工成想要的效果，关于这点是好是坏，我觉得就是见仁见智的问题了，没有必要争论什么。
+<br>7. 新生的jQuery EasyUI不错。
+<br>8. 如果今后的更新都保持现在这种模式，我认为它的前景很乐观，什么时候javascript完蛋了才轮到它玩完。
+<br>
+<br><span style="color:blue"><strong>ExtJS</strong></span>
+<br>1. 一整套带有UI的js库，封装得很多，很厚，核心js就600多K，这么大的东西门户网站当然就别想了，里面的效果当然也不会运用到门户网站，所以它是专门为管理系统而生的。因为局域网不会有带宽问题。
+<br>2. 它与jQuery不同，基本上是纯用js来生成html的，页面里只需引入各个ExtJS库和你自己写的js，不会出现很多html内容，body里基本没什么。所以优化就显得重要了，不然会严重浪费资源。
+<br>3. UI就不说了，大家都认可，本来就是为UI而生，它可以做出来桌面级程序的效果。一般来说，一个管理系统的项目如果用Ext，基本就从始至终都是Ext做了，不会像jQuery那样，哪想要了就加在哪，很随意。Ext更像一个整体(虽然它也可以拆开用，不过麻烦，不建议)。
+<br>4. 提供了对其他js框架的适配，像对jQuery, prototype等。没实际应用过，就不说了。
+<br>5. 理解js面向对象编程在ext中很重要，如果你觉得用jQuery时了解简单的dom和css即可，那你在这就吃大亏了，Ext处处离不开对象的概念。
+<br>6. Ext的UI开发类似C#，有很多控件。不同的是，你要全部自己手写，所以开发量较大。现在虽然有Ext Designer可视化工具，但其效果并不很好，生成的代码有的往往不是想要的，不易维护，真做起来还是自己写更方便。
+<br>7. 团队开发时，必须保证做UI的人每人都会Ext，而且深入应用过，因为Ext项目是整体，不适于参杂html替代。
+<br>8. Ext项目在IE系列浏览器上不可用，相当卡，我想这不是Ext本身的问题，所谓内存泄露等问题现在早已解决了，而且不是关键所在。我开很多网页同时用IE8看jQuery.net官网时有时也会卡，试想他们官网肯定做到很好的优化了吧，jQuery既是如此，何况Ext。反观其他浏览器，FireFox, Chrome等浏览Ext项目都很流畅，所以应该是浏览器对js解析不同造成的。
+<br>9. 版权问题，Ext运用在商业项目中是收费的。
+<br>
+<br><span style="color:blue"><strong>Flex  [自己也是在学习中，不敢妄言，以后深入应用后再做补充]</strong></span>
+<br>1. Adobe平台的，基于ActionScript实现，用在哪都行，但偏重于内网管理系统，用在门户网站就相当于在线玩Flash游戏，loading...
+<br>2. 与Ext不同，它有健壮的可视化开发工具Flash Builder，可以同C#一样进行拖拽布局，生成一种xml，也便于维护。
+<br>3. 编译后生成swf文件直接嵌入html即可，提高安全性，浏览时同flash，需要flash player。
+<br>4. 与Ext相同，也是属于一个整体，有丰富的控件库。
+<br>5. 这条纯属个人观点，HTML5不支持插入对象，也就意味着不能插入swf文件，难道Flex就完蛋了？虽然HTML5不支持Flash是客观事实，但HTML5的统一为时尚远，各大浏览器对HTML5的支持，Adobe是否会有对策，这些会怎么样现在都不好说，HTML5与HTML4并行应该会有很长一段时间，至少Flex在现在是一个名列前茅的好产品，所以我选择了它。
+<br>
+<br><span style="color:blue"><strong>SilverLighting</strong></span>
+<br>微软平台的，只能用在Asp.net中。同样，除了jQuery，Asp.net也不适合与以上等框架集成，因为Asp.net是事件驱动，这些框架都是为消息驱动而生的，勉强应用只会事倍功半，丧失.net本身的优势。
+<br>
+<br><span style="color:red"><strong>js面向对象编程我一直在提，其实并不难理解，关于这点应该学习下，很有必要。它涉及到代码复用、功能扩展、对象继承、闭包、优化等很多问题，能省去不少编码，便于维护，还能不改变框架源代码而实现不同的功能。</strong></span>
+<br>
+<br>闲话不多说了，希望能给刚走进前端开发的朋友一点帮助。以后可能还会就js面向对象编程再写一篇日志，有兴趣可以来看看。我的QQ是421557193，有兴趣可以与我交流，请注明是IT同行。
+<br></span></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://chrisx.javaeye.com"&gt;chrisx&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/703155" style="color:red"&gt;已有 &lt;strong&gt;2&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

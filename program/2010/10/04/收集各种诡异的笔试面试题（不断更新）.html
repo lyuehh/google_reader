@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>收集各种诡异的笔试面试题（不断更新）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>收集各种诡异的笔试面试题（不断更新）</h2>
+<p class="meta">04 Oct 2010</p>
+
+<div class="post">
+<h2>收集各种诡异的笔试面试题（不断更新）</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-03 22:05:26</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/777002">http://www.javaeye.com/topic/777002</a></h3>
+
+<p>
+</p>
+
+
+<div style="color:#000000;font-family:verdana,&#39;courier new&#39;;font-size:14px;background-color:#ffffff;line-height:1.5;margin:8px">
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">要想找到一份好工作，笔试面试这关必须得通过。且先不说您的能力怎么样，有时觉得笔试面试就如同英语考试。一个“英语很好”的人，比如可以很流利的说英语，跟老外交流，然而，让他参加考研之类的英语考试，未必能够得到很高的分数，因为这类题本身就很诡异，考试需要有一定的技巧才行。当然，考试还是能够反映一个人的水平的。类似的，如果您很牛，但要找到一份好工作，好好复习一下笔试面试的知识还是很必要的，因为难免出现一些“诡异”的题目，这些题目中的做法可能实际应用中，你永远也见不到。今天<a href="http://www.beijixing001.com/">polaris</a>收集一些“诡异”的笔试面试题分享给大家，这些题目本身没有多大意义，主要是明白为什么结果是这样，明白其原理。这些题目大部分是Java语言的，如果涉及到其他语言会特别说明。</p>
+<h2 style="font-size:1.5em"><a href="http://www.beijixing001.com/?p=588">1、int j = 0；j = j++； 问j现在等于多少？</a></h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">没见过此题的人，大部分人可能得到的结果是：1。 然而，运行的结果会令您彻底失望。这是什么原因呢？原来Java编译器处理后缀++或--时是这么处理的：java的编译器在遇到j＋＋和j- -的时候会重新为变量运算分配一块内存空间，以存放原始的值，而在完成了赋值运算之后，将这块内存释放掉。即JAVA先将i的值保存到临时内存空间中，然后处理++，即原来的j加1，此时原来的j变成1，然后再执行赋值，将内存空间中所存放的原来的值赋回给j，所以j仍然是0。C#和Java的结果是一样的。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">相反，C/C++不是这么处理的：C中是通过寄存器作中转先把j的值赋给它本身，再执行++的操作，这样结果就是1了。</p>
+<h2 style="font-size:1.5em"><a href="http://www.beijixing001.com/?p=588">2、一道邪恶的Java基础题——来自JavaEye的网友</a></h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">题目是：</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">
+</p>
+<pre name="code">String a = &quot;abc&quot;; 
+String b = &quot;abc&quot;; 
+System.out.println(&quot;====&gt;&quot;+ a==b ); </pre>
+
+<p> </p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">请问输出结果是true还是false？</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">这道题只要稍微仔细点就能够做出来。当然，我想大部分人可能都会掉入出题者的圈套中。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">这道题目其实就是考察您是否细心以及运算符优先级。“+”的优先级高于“==”，因而打印语句先执行“+”操作，这样实际上比较的是&quot;====&gt;abc&quot;与&quot;abc&quot;，很明显会返回false。不过此题有一种人可能会做对，即认为a==b返回的是false。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">其实此题可以改得更难点，即改为System.out.println(""+ a==b ); 当然结果还是一样的，只是多考察了一个知识点："" + a 与 b是否指向同一个对象。String永远是面试官最喜欢考的知识点。为了加深对String的理解，polaris出了另外几个“诡异”的关于String的题目，看您能做对几个？点击查看<a href="http://www.beijixing001.com/?p=576">《通过六个题目彻底掌握String笔试面试题》</a></p>
+<h2 style="font-size:1.5em"><a href="http://www.beijixing001.com/?p=588">3、try中包含return语句，finally是否还执行，在return之前还是之后？</a></h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">这道题也许没有那么邪恶，而且这道题是各种Java笔试大全中都可以看到的一道题。然而，由这道题，您有没有更深入地考虑更多的问题。在此polaris进行一下引申，看如下代码：</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">
+</p>
+<pre name="code">public static boolean get() {
+    try {
+           return  false;
+    } finally {
+           return  true;
+    }
+}</pre>
+
+<p> </p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">请大家思考一个问题，return的具体实现是怎样的？如果返回false，为什么；如果返回是true，又是为什么呢？给个你认为正确答案的理由出来。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">我们都知道，try中包含return语句，finally仍然会执行，且在return之前执行（其实，对这个答案polaris不是很赞同，就像JavaEye上有人详细分析一道题：构造了几个String对象一样。polaris觉得出这样的题目也是很没有水准的）。如果答案是在return之前执行，那为什么上面的代码返回结果却是true，如何解释？</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">这道题目本身没有什么意义，题目本身不是很严谨，对finally语句中是什么内容没有说明，内容不一样，答案会不一样。return语句执行做了什么？如果finally中的语句包含break;continue等又会是什么样的结果？</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">根据《JVM Specification 3.0》的4.9.6节，在try中的return真正返回之前，会将false保存到一个临时变量（假设为var）中，然后执行finally，在执行finally子句的任何语句之前，会将var中的值取出，如果finally中没有抛出异常或return、break、continue等语句，则在finally执行完后返回var（相当于返回去完成try中return的执行），如果finally中有return，var值会被覆盖，返回结果是finllay子句中return的值，如果是异常或break、continue等则执行相应的操作而不是返回。更详细解释参考JVM规范或《深入理解JAVA虚拟机（第二版）》。</p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px"> </p>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px"><span style="font-size:18pt"><a href="http://www.beijixing001.com/">到polaris的博客查看更多</a></span></p>
+<h2 style="font-size:1.5em">更新记录</h2>
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px">完成于2010/10/3 16:10，由于polaris水平有限，如有疏忽，敬请指正。</p>
+<div><br></div>
+</div>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://polaris1119.javaeye.com"&gt;polaris1119&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/777002" style="color:red"&gt;已有 &lt;strong&gt;2&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

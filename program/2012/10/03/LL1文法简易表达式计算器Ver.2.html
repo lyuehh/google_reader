@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>LL1文法简易表达式计算器Ver.2</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>LL1文法简易表达式计算器Ver.2</h2>
+<p class="meta">03 Oct 2012</p>
+
+<div class="post">
+<h2>LL1文法简易表达式计算器Ver.2</h2>
+
+<h3>by misakamm</h3>
+
+<h3>at 2012-10-03 00:45:52</h3>
+
+<h3>original <a href="http://blog.misakamm.org/p/417">http://blog.misakamm.org/p/417</a></h3>
+
+<p>这个版本应该是作为简单计算器的最后一个版本了。这个版本支持除了(,;)以外的运算符自定义，函数自定义。而函数视为普通的变量的一种类型，可以重新赋值，写的自定义类型支持区分左右值，支持三种类型：integer, float, string，可以做类型转换，支持.运算（加的自定义），于是支持”abc”.len这种语法。并且允许函数返回自身，而正因为示例自定义代码中的swap函数返回函数本身，于是支持swap(a,b)(c,d)(e,f)成组交换这种语法糖果。。。</p>
+
+
+<p>文法：<br>
+TK-&gt;E;TK|E<br>
+E -&gt;NE’<br>
+E’-&gt;E2E’|e<br>
+E2-&gt;lNE3|rEE3|e<br>
+E3-&gt;lEE3|rEE3|e<br>
+N -&gt;sN|T<br>
+T -&gt;V(E)T’|V(E)T’|VT’<br>
+T’-&gt;xT’|e<br>
+V -&gt;VAR|(E)<br>
+F -&gt;EF’<br>
+F’-&gt;,EF’|e<br>
+至于出现了E2E3这货，是我考虑的不全面弄成的奇葩（各种结合性优先级把我弄晕了），现在懒得改了，下个版本直接重写解决掉，下个版本将想办法支持定义函数，和作用域（当然下个版本已经不算是计算器了，足够作为一个独立语言了，只要满足图灵完全。。。当然前提是如果做成功的话）</p>
+
+
+<p>源代码及演示链接 <span></span> ideone.com/lQJ5p</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

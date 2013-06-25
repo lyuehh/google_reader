@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>集成 IE9 到 Win 7 SP1 安装镜像</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>集成 IE9 到 Win 7 SP1 安装镜像</h2>
+<p class="meta">16 Mar 2011</p>
+
+<div class="post">
+<h2>集成 IE9 到 Win 7 SP1 安装镜像</h2>
+
+<h3>by 起衣</h3>
+
+<h3>at 2011-03-15 16:53:23</h3>
+
+<h3>original <a href="http://isouth.org/archives/319.html">http://isouth.org/archives/319.html</a></h3>
+
+<p>那些细节的，之前的准备，后续的处理，都请参照<a title="Win 7  SP1 的整合" href="http://isouth.org/archives/318.html">之前一篇文章</a>，这里只说一下处理 IE9 的部分。某些文件的放置，也不再交代了，过程中能够看出来的。操作环境为 win 7 sp1 x86。</p>
+
+
+<p>1、将下载回来的 ie9 的 exe 安装文件解包出来。我在M盘建立个ie9的文件夹，然后放入 IE-Windows7-x86-chs.exe。<code>IE9-Windows7-x86-chs.exe /x:.</code>解压出来的 3 个 CAB 文件和一个 DLL 文件。</p>
+
+
+<p>2、挂载安装镜像的 install.wim。<code>DISM /Mount-Wim /WimFile:.\install.wim /Name:&quot;Windows 7 ULTIMATE&quot; /MountDir:.\wim</code>3、将 IE9 添加进离线的系统映像里。<code>DISM /Image:.\wim /Add-Package /PackagePath:.\ie9\IE9-Win7.CAB /PackagePath:.\ie9\ielangpack-CHS.CAB</code>这里只需要添加进两个包便可，也可以在 PackagePath 后指定文件夹，但是添加 IE9_SUPPORT.CAB 会出错的，不需要。</p>
+
+
+<p>4、卸载映像像，<code>DISM /Unmount-Wim /MountDir:.\wim /commit</code>5、优化映像并放回安装文件夹里。<code>imagex /export .\install.wim 1 .\sp1\sources\install.wim</code>这样原本 2.09 个 G 左右了的映像能优化到 2G 左右,比之前 1.98G 的映像只增加了 200M 。</p>
+
+
+<p>6、重新封装，见之前的文章啦~</p>
+
+
+<p>最后，还有部分操作的截图，如果不出意外，成功安装的系统便已经是 IE9 了，更新历史里有 IE9 和中文语言包。</p>
+
+
+<p>  <span></span>
+<p><a href="http://images.isouth.org/2011/03/ie9in2win7sp1.png"><img style="margin:0px auto;display:block" title="ie9in2win7sp1" src="http://images.isouth.org/2011/03/ie9in2win7sp1-t.png"></a></p>
+<p>本文链接: <a href="http://isouth.org/archives/319.html" title="集成 IE9 到 Win 7 SP1 安装镜像" rel="bookmark license"> http://isouth.org/archives/319.html</a> , 转载请注明出处，此外还可以<a href="http://isouth.org/feed/" rel="external nofollow" title="订阅 iSouth 的 RSS Feed">订阅我</a>。</p><h3>相关日志 <small>Relate Posts</small></h3><ul><li><a href="http://isouth.org/archives/327.html" title="Windows 下更改网卡物理地址 (June 10, 2011)">Windows 下更改网卡物理地址</a></li><li><a href="http://isouth.org/archives/326.html" title="给embr添加IE9所支持的新特性 (May 19, 2011)">给embr添加IE9所支持的新特性</a></li><li><a href="http://isouth.org/archives/318.html" title="Win 7 SP1 的整合 (February 27, 2011)">Win 7 SP1 的整合</a></li><li><a href="http://isouth.org/archives/314.html" title="My To-Do List (December 19, 2010)">My To-Do List</a></li><li><a href="http://isouth.org/archives/303.html" title="Win7所有语言包下载地址 (November 29, 2010)">Win7所有语言包下载地址</a></li></ul></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

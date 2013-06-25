@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>rails render partial 参数 变量说明</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>rails render partial 参数 变量说明</h2>
+<p class="meta">14 Jun 2011</p>
+
+<div class="post">
+<h2>rails render partial 参数 变量说明</h2>
+
+<h3>by 夜鸣猪</h3>
+
+<h3>at 2011-06-14 01:13:28</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1084702">http://hlee.iteye.com/blog/1084702</a></h3>
+
+<p>这里的conventions总是容易记不清楚 就是locals collection object
+<br>
+<br>
+<br>1. 默认参数
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;account&quot; %&gt;</pre>
+<br>默认本地有个变量@account, 传递过去，render到的partial（_account.erb）有个变量account
+<br>
+<br>2. 单独参数 locals
+<br>locals传递一组hash参数hash 值是本地的变量，hash的key是partial里的变量
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;account&quot;, :locals =&gt; { :account =&gt; @buyer } %&gt;</p>
+
+<p>&lt;% for ad in @advertisements %&gt;
+  &lt;%= render :partial =&gt; &quot;ad&quot;, :locals =&gt; { :ad =&gt; ad } %&gt;
+&lt;% end %&gt; </pre>
+<br>上面两个render分别
+<br>传递本地变量@buyer到<em>account.erb里叫account的参数
+<br>传递本地变量ad到</em>ad.erb里叫ad
+<br>
+<br>3
+<br>
+<br>根据1默认参数下面两个是一样的
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;contract&quot;, :locals =&gt; { :contract  =&gt; @contract } %&gt;</p>
+
+<p>&lt;%= render :partial =&gt; &quot;contract&quot; %&gt;</pre>
+<br>
+<br>
+<br>4. as使用
+<br>
+<br>用来改变传递之后，partial里变量的名称，如下，render方式是一样的。
+<br>
+<br><pre name="code">
+&lt;%= render :partial =&gt; &quot;contract&quot;, :as =&gt; :agreement</p>
+
+<p>&lt;%= render :partial =&gt; &quot;contract&quot;, :locals =&gt; { :agreement =&gt; @contract }</pre>
+<br>传递@contract到_contract.erb里，partial里的变量名为agreement
+<br>
+<br>5. object使用
+<br>
+<br>object最简单，就是把一个变量原名传递到partial里，<span style="color:blue">
+<br>所以什么都记不清楚的时候，就用object多写点都能表达</span>
+<br>
+<br>如下：
+<br><pre name="code">
+&lt;%= render :partial =&gt; &quot;account&quot;, :object =&gt; @buyer %&gt;</p>
+
+<p>&lt;% for ad in @advertisements %&gt;
+  &lt;%= render :partial =&gt; &quot;ad&quot;, :object =&gt; ad %&gt;
+&lt;% end %&gt;</pre>
+<br>传递@buyer到<em>account.erb的partial里变量名还是@buyer
+<br>传递ad到</em>ad.erb的partial里变量名还是ad
+<br>
+<br>6 object和as合用
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;contract&quot;, :object =&gt; @contract, :as =&gt; :contract %&gt;</p>
+
+<p>&lt;%= render :partial =&gt; &quot;contract&quot; %&gt;</pre>
+<br>
+<br>7 collection
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;ad&quot;, :collection =&gt; @advertisements %&gt;</pre>
+<br>
+<br>@advertisements是一个array，partial里<em>ad.erb有个ad变量是@advertisements的成员。就是</em>ad.erb不用写loop只是一条广告显示。
+<br>
+<br><pre name="code">&lt;%= render :partial =&gt; &quot;ad&quot;, :collection =&gt; @advertisements, :spacer_template =&gt; &quot;ad_divider&quot; %&gt;</pre>
+<br>同上，循环显示<em>ad.erb </em>ad_divider.erb 显示@advertisements.size次其中partial_ad_counter是默认计数器表示第几条广告
+<br><span style="color:darkred">
+<br>8 默认</span>
+<br>
+<br>看你要partial的变量是一组记录还是一条记录，会对应约定用locals和collection
+<br><pre name="code"></p>
+
+<h1>@account是一条记录</h1>
+
+<h1>&lt;%= render :partial =&gt; &quot;accounts/account&quot;, :locals =&gt; { :account =&gt; @account} %&gt;</h1>
+
+<p>&lt;%= render :partial =&gt; @account %&gt;</p>
+
+<h1>@posts是一组记录</h1>
+
+<h1>&lt;%= render :partial =&gt; &quot;posts/post&quot;, :collection =&gt; @posts %&gt;</h1>
+
+<p>&lt;%= render :partial =&gt; @posts %&gt;</pre>
+<br>这是很人性的约定，可有时候就是忘了
+<br>
+<br>9 一些漂亮的简写
+<br>
+<br><pre name="code">#&lt;%= render :partial =&gt; &quot;account&quot; %&gt;可用下面代替
+&lt;%= render &quot;account&quot; %&gt;</p>
+
+<h1>&lt;%= render :partial =&gt; &quot;account&quot;, :locals =&gt; { :account =&gt; @buyer } %&gt;可用下面代替</h1>
+
+<p>&lt;%= render &quot;account&quot;, :account =&gt; @buyer %&gt;</p>
+
+<h1>@account是一条记录</h1>
+
+<h1>&lt;%= render :partial =&gt; &quot;accounts/account&quot;, :locals =&gt; { :account =&gt; @account } %&gt;可用下面代替</h1>
+
+<p>&lt;%= render(@account) %&gt;</p>
+
+<h1>@posts是一组记录</h1>
+
+<h1>&lt;%= render :partial =&gt; &quot;posts/post&quot;, :collection =&gt; @posts %&gt;可用下面代替</h1>
+
+<p>&lt;%= render(@posts) %&gt;</pre>
+<br>
+<br>10 layout
+<br>
+<br><pre name="code">
+&lt;%# app/views/users/index.html.erb &amp;&gt;
+Here&#39;s the administrator:
+&lt;%= render :partial =&gt; &quot;user&quot;, :layout =&gt; &quot;administrator&quot;, :locals =&gt; { :user =&gt; administrator } %&gt;</p>
+
+<p>Here&#39;s the editor:
+&lt;%= render :partial =&gt; &quot;user&quot;, :layout =&gt; &quot;editor&quot;, :locals =&gt; { :user =&gt; editor } %&gt;</p>
+
+<p>&lt;%# app/views/users/_user.html.erb &amp;&gt;
+Name: &lt;%= user.name %&gt;</p>
+
+<p>&lt;%# app/views/users/_administrator.html.erb &amp;&gt;
+&lt;div id=&quot;administrator&quot;&gt;
+  Budget: $&lt;%= user.budget %&gt;
+  &lt;%= yield %&gt;
+&lt;/div&gt;</p>
+
+<p>&lt;%# app/views/users/_editor.html.erb &amp;&gt;
+&lt;div id=&quot;editor&quot;&gt;
+  Deadline: &lt;%= user.deadline %&gt;
+  &lt;%= yield %&gt;
+&lt;/div&gt;</p>
+
+<p></pre>
+<br>
+<br>参考文档：
+<br><a href="http://apidock.com/rails/ActionController/Base/render">http://apidock.com/rails/ActionController/Base/render</a>
+<br><a href="http://johnnyhg.iteye.com/blog/499182">http://johnnyhg.iteye.com/blog/499182</a>
+<br><a href="http://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to">http://apidock.com/rails/ActionView/Helpers/UrlHelper/link_to</a></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://hlee.iteye.com/blog/1084702#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

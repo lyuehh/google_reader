@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>caja 原理 : 前端</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>caja 原理 : 前端</h2>
+<p class="meta">02 Sep 2011</p>
+
+<div class="post">
+<h2>caja 原理 : 前端</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-09-01 16:48:06</h3>
+
+<h3>original <a href="http://yiminghe.iteye.com/blog/1162494">http://yiminghe.iteye.com/blog/1162494</a></h3>
+
+<p>    作为前端开放的基础安全保证，<a href="http://code.google.com/p/google-caja/">caja</a> 是目前比较合适的运行机制，包括前端运行环境以及后端编译环境，这次先整体介绍下 caja 在前端是如何屏蔽外部模块代码对整体应用的影响 （注意：官方文档较少，以下为自己理解，难免偏颇）.</p>
+
+
+<h1>组成部分</h1>
+
+
+<p>1. 整体运行环境：隔离模块与宿主环境，并提供外部应用与模块的沟通机制.</p>
+
+
+<p> </p>
+
+
+<p>2. 提供 ecmascript5 以及 dom2 的全平台兼容实现，注入到运行环境中。</p>
+
+
+<p> </p>
+
+
+<p>     es5 部分通过直接修改本地原生对象原型实现，运行时直接使用原生对象，这种做法<a href="http://perfectionkills.com/extending-built-in-native-objects-evil-or-not/">值得推荐</a>。</p>
+
+
+<p> </p>
+
+
+<p>      其中比较重要的是：模拟实现 es5 中的<a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/defineProperty">属性描述符</a>，结合后端编译，用户的所有读写操作都会经过 caja 前端运行环境监测，是 caja 安全保证的核心机制.</p>
+
+
+<p> </p>
+
+
+<p>     dom 兼容部分则并不是<a href="http://perfectionkills.com/whats-wrong-with-extending-the-dom/">直接修改宿主 dom 原型</a>，而是自行构造了一系列 javascript 实现的 dom 类，使用组合模式，将操作增强并委托到对应的原生节点，然后将这些 dom 类注入到模块运行环境。用户程序对 dom 节点的操作都要经过 caja 运行环境的转发，便于控制。</p>
+
+
+<p> </p>
+
+
+<p>3. html/css parser ，包含了简易的 html/css parser，对用户的 html，css进行必要的过滤以及添加自定义规则，最常见的是</p>
+
+
+<p> </p>
+
+
+<p> 1. 防止 id 冲突，经过过滤后，每个 id 都改写为全局唯一的标志.</p>
+
+
+<p> </p>
+
+
+<p> 2. 拦截随意跳转，监控代码的可能跳出点( src , href ...).</p>
+
+
+<p> </p>
+
+
+<p> 3. 代码模块化机制，后端将用户代码编译为模块化单元，前端通过模块化机制加载并初始化用户代码。实现代码广泛采用了 <a href="http://wiki.commonjs.org/wiki/Promises">promise </a>.</p>
+
+
+<h1>运行机制</h1>
+
+
+<p>caja 中的每个模块表示为一段 html，css，javascript 的结合体，外部应用嵌入多个模块，caja 保证每个模块的独立性与安全性：</p>
+
+
+<p> </p>
+
+
+<p>1.不能访问平台的相关特性.(window.location，cookie )</p>
+
+
+<p>2.不能污染全局。( 全局变量，原生对象，宿主对象 )</p>
+
+
+<p>3.节点操作限于模块内部.</p>
+
+
+<p> </p>
+
+
+<p>运行过程中，caja 的整体运行环境会对每个将要加载的模块创建一个 runtime iframe，每个runtime iframe 都加载了 es5 兼容环境脚本以及 caja 模块机制脚本，由模块机制脚本加载对应的编译后用户模块代码并运行.</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>除了一个模块一个 runtime iframe，所有模块都共享一个 tame iframe ，该 tame iframe 加载 dom 兼容层脚本，caja 运行环境负责调用 tame iframe 为每个 runtime iframe 建立一个以模块根节点为 body 的虚假的 dom 环境，再将该环境融入到 runtime iframe 中，因此所有模块的 dom 节点类都是一样的，环境都是从tame iframe中产生的拥有不同 body 节点的不同实例.</p>
+
+
+<p> </p>
+
+
+<p><img src="http://dl.iteye.com/upload/attachment/547799/2367fb9c-5092-30ef-8c5d-aee38fd00753.png" alt=""></p>
+
+
+<p> </p>
+
+
+<h2>一些讨论点</h2>
+
+
+<p>1. 由于 caja 中对所有的原生 dom 都组合包装了一层兼容实现，但最终运行都要转交给原生的 dom 节点，而不同模块间原生 dom 节点本来就共享一个宿主环境，因此 dom 兼容在所有模块间共享是合适的.</p>
+
+
+<p> </p>
+
+
+<p>2. 每个模块都有自己的运行环境，存放虚假 dom 容器以及 es5 环境，通过每个模块运行在一个单独的 iframe，那么可以将该环境放在对应模块的 iframe 中，每个用户模块代码可以在自己的 iframe 内对一个统一环境变量进行操作，不需要模块间区分。</p>
+
+
+<p> </p>
+
+
+<p>3.外部应用与模块间沟通通过 tame iframe 进行，外部应用数据 tame 后进入模块内执行，模块数据 untame 后回到外部应用，确保模块内都是包装过的内容，用户代码不能直接访问到原生数据.</p>
+
+
+<h1>示例</h1>
+
+
+<h2>用户模块代码</h2>
+
+
+<pre name="code">&lt;style type=&quot;text/css&quot;&gt;
+    #xx {
+        color: red !important;
+    }
+&lt;/style&gt;
+
+&lt;span id=&#39;xx&#39;&gt;&lt;/span&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    document.getElementById(&quot;xx&quot;).innerHTML=&#39;wow!&#39;;
+&lt;/script&gt;</pre>
+
+
+<p> </p>
+
+
+<h2>编译后代码</h2>
+
+
+<p> </p>
+
+
+<pre name="code">___.loadModule({
+    // 模块启动
+    'instantiate': function (___, IMPORTS___) {
+        // html 子模块
+        return ___.prepareModule({
+            'instantiate': function (___, IMPORTS___) {
+                var dis___ = IMPORTS___;
+                var moduleResult___;
+                moduleResult___ = ___.NO_RESULT; {
+                    // html parser 必要修改   
+                    IMPORTS___.htmlEmitter___.emitStatic('\x3cspan id=\"id_2___\"\x3e\x3c/span\x3e');
+                }
+                return moduleResult___;
+            },           
+        }).instantiate___(___, IMPORTS___),
+        // css 模块
+        ___.prepareModule({
+            'instantiate': function (___, IMPORTS___) {
+                var dis___ = IMPORTS___;
+                var moduleResult___, el___, emitter___;
+                moduleResult___ = ___.NO_RESULT; {
+                    // css parser 必要修改
+                    IMPORTS___.emitCss___(['.', ' #xx-', ' {\n  color: red !important\n}'].join(IMPORTS___.getIdClass___()));
+                    emitter___ = IMPORTS___.htmlEmitter___;
+                    el___ = emitter___.byId('id_2___');
+                    emitter___.setAttr(el___, 'id', 'xx-' + IMPORTS___.getIdClass___());
+                    el___ = emitter___.finish();
+                }
+                return moduleResult___;
+            },
+        }).instantiate___(___, IMPORTS___),
+       // javascript 子模块
+        ___.prepareModule({
+            'instantiate': function (___, IMPORTS___) {
+                var dis___ = IMPORTS___;
+                var moduleResult___, x0___, x1___;
+                moduleResult___ = ___.NO_RESULT;
+                try {
+                    {
+                        // 从运行环境中取出必要数据运行
+                        moduleResult___ = (x1___ = (x0___ = IMPORTS___.document_v___ ? IMPORTS___.document : ___.ri(IMPORTS___, 'document'), x0___.getElementById_m___ ? x0___.getElementById('xx') : x0___.m___('getElementById', ['xx'])), x1___.innerHTML_w___ === x1___ ? (x1___.innerHTML = 'wow!') : x1___.w___('innerHTML', 'wow!'));
+                    }
+                } catch(ex___) {}
+                return moduleResult___;
+            },</pre>
+
+
+<p> </p>
+
+
+<p>上述代码运行于各自模块的 runtime iframe ，其中 IMPORTS__ 即为对应模块的运行环境，外部应用也可导入一部分 api 到此环境。</p>
+
+
+<p> </p>
+
+
+<h2>嵌入代码</h2>
+
+
+<p> </p>
+
+
+<p>最终动态嵌入到主应用的代码为：</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre name="code">&lt;style type=&quot;text/css&quot;&gt;.CajaGadget-0___ #xx-CajaGadget-0___ {
+  color: red !important
+}&lt;/style&gt;
+
+&lt;div title=&quot;&amp;lt;Untrusted Content Title&amp;gt;&quot; class=&quot;caja_innerContainer___ CajaGadget-0___ vdoc-body___&quot;&gt;&lt;span id=&quot;xx-CajaGadget-0___&quot;&gt;wow!&lt;/span&gt;&lt;/div&gt;</pre>
+
+
+<p> </p>
+
+<p>可见经过 html/css parse 后避免了 id 冲突，而 js 加载后直接执行掉了，页面上并不存在。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<h2>PPT</h2>
+
+
+<p><a href="http://www.slideshare.net/yiminghe/caja-kaha-introduction">Caja "Ka-ha" Introduction</a></p>
+
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://yiminghe.iteye.com/blog/1162494#comments" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://yiminghe.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

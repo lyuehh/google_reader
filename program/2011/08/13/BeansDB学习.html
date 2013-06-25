@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>BeansDB学习</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>BeansDB学习</h2>
+<p class="meta">13 Aug 2011</p>
+
+<div class="post">
+<h2>BeansDB学习</h2>
+
+<h3>by oldj</h3>
+
+<h3>at 2011-08-12 21:38:54</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/oldj/~8217290/592396272/6320477/1/item.html">http://item.feedsky.com/~feedsky/oldj/~8217290/592396272/6320477/1/item.html</a></h3>
+
+<p>　　最近学习了一下豆瓣的分布式 Key/Value 存储系统 BeansDB（v0.5.3）。</p>
+
+
+
+
+<p>　　BeansDB 的作者 Davies 写的关于 BeansDB 的介绍：《<a href="http://www.douban.com/note/122507891/">beansdb卷土重来</a>》。<br>
+　　BeansDB 的项目主页：<a href="http://code.google.com/p/beansdb/">http://code.google.com/p/beansdb/</a>。<br>
+　　用户手册：<a href="http://code.google.com/p/beansdb/wiki/UserGuide">http://code.google.com/p/beansdb/wiki/UserGuide</a>。<br>
+　　下载地址：<a href="http://code.google.com/p/beansdb/downloads/list">http://code.google.com/p/beansdb/downloads/list</a>。</p>
+
+
+
+
+<p>　　下载之后参照用户手册上的说明编译安装即可，非常简单。</p>
+
+
+
+
+<p>　　启动 BeansDB 也很简单，如：</p>
+
+
+
+
+<pre>
+beansdb -d -p 7900 -H testdb
+</pre>
+
+
+
+
+<p>　　其中 -p 指定端口，-H 指定数据文件存放的目录。</p>
+
+
+
+
+<p>　　BeansDB 发布版中带有 Python 接口，用法如下（来自官网手册）：</p>
+
+
+
+
+<pre>
+#python
+from dbclient import Beansdb
+
+cfg = {
+  "localhost:7901": range(16),
+  "localhost:7902": range(16),
+  "localhost:7903": range(16),
+}
+
+db = Beansdb(cfg, 16)
+db.set('key', 'value')
+v = db.get('key')
+db.delete('key')
+</pre>
+
+
+
+
+<p>　　BeansDB 非常简单，基本上它只有三个操作：set、get以及delete。它甚至没有直接提供遍历所有 key 的方法，遍历所有 key 的话，需要 get('@')，然后继续遍历，不过，在数据量很大的情况下，这个遍历可能会花比较长的时间。</p>
+
+
+
+
+<p>　　BeansDB 采用了 <a href="http://downloads.basho.com/papers/bitcask-intro.pdf">Bitcask</a> 设计，将所有 key 的信息都保存在内存中。这样的好处是查找会特别快，但一个直接的缺点就是机器的内存限制了能存放的 key 的数目的上限。根据《beansdb卷土重来》中的介绍，一个 key 大约占用 20 字节，这样一台 8G 内存的服务器将可以存储约 4 亿个 key。当然，key 所对应的 value 是存储在硬盘上的。</p>
+
+
+
+
+<p>　　BeansDB 比较适合存储中等大小的写入后就很少变化的内容，比如图片；不适合存储大量小碎片内容或会频繁更改的内容，比如日志；也不适合存储太大的文件，根据作者 Davies 的说法，BeansDB 默认设置单文件不超过 50M，实际上用它存储超过 10M 的文件感觉都不太合适。</p>
+
+
+
+
+<p>　　另外，随着硬盘越来越便宜，目前各大 NoSQL 存储系统似乎都不太关心硬盘的占用量，为了追求写入速度，普遍使用追加的方式写新数据，当一个 key 的值发生变化时，系统只是在硬盘上追加一条记录，并不会把原来的值从硬盘上删除。这样一来，如果你存储的内容经常变化，一段时间后，你会发现硬盘占用量只增不减。</p>
+
+
+
+
+<p>　　请教了作者 Davies 之后，关于这个问题得到以下解决方案：</p>
+
+
+
+
+<blockquote style="font-style:italic;color:#333;padding-left:2em">
+<p>　　目前没有提供相关工具，可以用telnet 来控制：</p>
+
+<pre>
+telnet localhost 7900
+flush_all 0
+</pre>
+
+<p>　　这样对应的节点就会执行优化操作，tail -f /var/log/beansdb.log 能看到优化的信息，如果运行的时候设置的Log文件的话。</p>
+</blockquote>
+
+
+
+
+<p>　　总的来说，BeansDB 安装和使用都非常简单，性能也不错，而且是国人开发的。如果有类似于大量图片存储这样的需求，可以尝试一下。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/592396272/oldj/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/oldj/~8217290/592396272/6320477/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

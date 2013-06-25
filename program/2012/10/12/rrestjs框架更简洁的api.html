@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>rrestjs框架更简洁的api</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>rrestjs框架更简洁的api</h2>
+<p class="meta">12 Oct 2012</p>
+
+<div class="post">
+<h2>rrestjs框架更简洁的api</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2012-10-11 23:28:20</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/601174402012911112350717">http://snoopyxdy.blog.163.com/blog/static/601174402012911112350717</a></h3>
+
+<div><div>之前@d4rkl0rd 同学写了一篇rrestjs框架的文章：</div><div><a rel="nofollow" href="http://cnodejs.org/topic/505c33ee10ccdf8077088e0a">《我与rrestjs的相遇，是惊喜，是开始》</a></div><div>让我很欣慰啊，虽然现在用rrestjs开发项目的TX不多，但是还是有那些愿意尝试并不断给我意见的朋友，衷心的感谢他们。比如@a272121742就给了我很多api方面的修改意见。</div><div><br></div><div>最近发布了rrestjsv0.9版本，增加一些功能和修复了bug，从而使api也更加简洁，想从另外一个方面让大家对node.js有个认识，除了expressjs，还有rrestjs轻量级框架可供选择啊。</div><div><br></div><div>我们先来看下一个简单的hello world服务器的代码.<br><br><div><pre><p></p><div>var http = require('http'),</div><div>rrest = require('rrestjs'),</div><div>server = http.createServer(function(req, res){//完全原生的node.js手册代码风格，没有学习门槛</div><div>        res.send(&#39;hello world everyone!&#39;); //rrestjs封装了一个res.send方法，用来响应请求</div><div>}).listen(3000);</div><p></p></pre></div></div><div><div>大家可以看到上述代码，只不过多了一行require('rrestjs')，而其他完全与node.js官网的示例一模一样，这也是rrestjs称作轻量级的原因，完全没有侵入您的代码。</div><div><br></div><div>node.js可以充分的利用cpu个数，来启动cluster。利用rrestjs框架您只需要在config配置文件中设置如下，即可轻松开启多个进程，并且进程间会由rrestjs自动完成心跳和内存监控，一旦发现异常将自动重启子进程。</div></div><div><br></div><div><pre><p></p><div>isCluster:false, //是否开启多进程集群</div><div>ClusterNum:4, //开启的进程数</div><p></p></pre></div><div><span style="color:rgb(51,51,51);font-family:&#39;Helvetica Neue&#39;,Georgia,Helvetica,Arial,sans-serif;line-height:22px">您的服务器代码，就是上述hello world代码无需任何改动。只需要在前面加上一行载入配置文件即可：</span> </div><div><span style="color:rgb(51,51,51);font-family:&#39;Helvetica Neue&#39;,Georgia,Helvetica,Arial,sans-serif;line-height:22px"><br></span></div><div><pre><p></p><div>module.exports.conf= require('./config/multi.conf.js');//只需要加入这行载入配置文件</div><div>var http = require('http'),</div><div>    rrest = require(&#39;rrestjs&#39;),</div><div>    server = http.createServer(function(req, res){</div><div>            res.send(&#39;hello world everyone!&#39;);</div><div>    }).listen(3000);</div><p></p></pre></div><div><div>当然您还不必担心多cluster的session内存共享工作，rrestjs已经帮您自动同步内存session信息了，但是还是建议您利用rrestjs自带的mongodb的session功能存储</div><div><br></div><div>当您只开启1个cluster时，rrestjs框架会进入开发者模式，当配置文件中的目录里的文件发生改变时，cluster将自动重启，免去您频繁的CTRL+C和上+enter了</div><div><br></div><div>之前有TX议论是try{}catch{}好还是路由表好，我在0.9版本里为rrestjs新增加了一项简单的路由表控制，比如：</div></div><div><br></div><div><pre><p></p><div>var conf = module.exports.conf= require('./config/post.conf.js');</div><div>conf.manualRouter = {//手动路由</div><div>    &quot;get:/user/face&quot;:function(req, res){res.send(&#39;change face&#39;)},</div><div>    &quot;post:put:/user/info&quot;:function(req, res){res.send(&#39;get not access!&#39;)},</div><div>    &quot;/user/all&quot;:function(req, res){</div><div>        if(!req.session.count) req.session.count = 0</div><div>        res.send(&#39;all can access!&#39;+(req.session.count++));</div><div>            },</div><div>}</div><div>var http = require('http'),</div><div>    rrest = require(&#39;../&#39;),</div><div>    server = http.createServer(function (req, res){ //这里依然是主入口</div><div>        if(req.pathname === &#39;/&#39;){//匹配是否请求根目录</div><div>            res.send(&#39;hello world&#39;) </div><div>            return false; //这里return false表示不再转发到下面路由表</div><div>        }//如果不是访问根目录，则去匹配路由表</div><div><br></div><div>    }).listen(rrest.config.listenPort);</div><p></p></pre></div><div><p style="margin-top:0px;margin-bottom:9px;font-family:&#39;Helvetica Neue&#39;,Georgia,Helvetica,Arial,sans-serif;line-height:22px;color:rgb(51,51,51)">简单说明一下：路由表的设置是这样规定的<br>方法:方法:URL路径</p><p style="margin-top:0px;margin-bottom:9px;font-family:&#39;Helvetica Neue&#39;,Georgia,Helvetica,Arial,sans-serif;line-height:22px;color:rgb(51,51,51)">rrestjs也是支持类似try和catch的路由的，这样速度更快。</p><p style="margin-top:0px;margin-bottom:9px;line-height:22px;font-family:&#39;Helvetica Neue&#39;,Georgia,Helvetica,Arial,sans-serif;color:rgb(51,51,51)"></p><pre><div><div> module.exports.conf = require(&#39;./config/config&#39;);//加载配置文件，必须放在rrestjs加载之前</div><div> var http = require(&#39;http&#39;), </div><div> rrest = require(&#39;rrestjs&#39;),</div><div> server = http.createServer(function (req, res){</div><div>        //这里是主入口，可以根据您的需要自由添加一些东西</div><div>          try{</div><div>           require(&#39;./controller/&#39;+req.path[0])[req.path[1]](req, res);</div><div>                  //这里是核心部分，执行指定控制器中的指定方法，将req和res传参进去</div><div>            }</div><div>         catch(err){ </div><div>             restlog.info(err);//rrestjs封装的日志方法</div><div>             res.r404(); //相应定义好的404页面</div><div>         }</div><div> }).listen(3000);</div></div><p></p></pre></div><div><div>安装rrestjs的方法也非常简单：</div><div>npm install rrestjs</div><div>即可，也可以去github上下载：</div><div><a rel="nofollow" href="https://github.com/DoubleSpout/rrestjs">https://github.com/DoubleSpout/rrestjs</a></div><div>rrestjs官网：<a rel="nofollow" href="http://www.rrestjs.com">www.rrestjs.com</a></div><div>基于rrestjs框架制作的轻博客：<a rel="nofollow" href="http://www.wujb.net">www.wujb.net</a></div><div><br></div><div>非常感谢您对rrestjs框架提供宝贵意见和bug。</div></div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

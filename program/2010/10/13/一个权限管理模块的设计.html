@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一个权限管理模块的设计</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一个权限管理模块的设计</h2>
+<p class="meta">13 Oct 2010</p>
+
+<div class="post">
+<h2>一个权限管理模块的设计</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-12 16:52:25</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/782709">http://www.javaeye.com/topic/782709</a></h3>
+
+<p> </p>
+
+
+<p><a name="OLE_LINK9"><span style="font-family:宋体">一个用户权限管理模块的设计思路：</span><span lang="EN-US"></span></a></p>
+
+
+<p><span><strong><span style="font-family:宋体;color:black" lang="EN-US">1. </span></strong></span><span><strong><span style="font-family:宋体;color:black">权限资源（功能资源）<span lang="EN-US"></span></span></strong></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span>系统的所有权限信息。权限具有上下级关系，是一个树状的结构。如下：<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:36.45pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">系统管理<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:57.75pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>l<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">单位管理<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">查看单位<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">添加单位<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">修改单位<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">删除单位</span></span></p>
+
+
+<p> </p>
+
+<p style="margin-left:57.75pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>l<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">部门管理<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">查看部门<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">添加<a name="OLE_LINK4"></a><a name="OLE_LINK3"><span>部门</span></a><span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">修改单位<span lang="EN-US"></span></span></span></p>
+
+
+<p style="margin-left:84.0pt"><span>&lt;!--[if !supportLists]--&gt;<span style="font-family:Wingdings;color:black" lang="EN-US"><span>u<span style="font:7.0pt &quot;Times New Roman&quot;">  </span></span></span>&lt;!--[endif]--&gt;<span style="font-family:宋体;color:black">删除<span>单位<span lang="EN-US"></span></span></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span lang="EN-US"> </span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体;color:black">对于每个权限，又存在两种情况：<span lang="EN-US">1</span>可访问；<span lang="EN-US">2</span>可授权，部分表中采用拥有类型做判断<span lang="EN-US">(0</span>可访问，<span lang="EN-US">1</span>即可访问也可授权<span lang="EN-US">) </span></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体;color:black" lang="EN-US"> </span></span></p>
+
+
+<p><span><strong><span style="font-family:宋体;color:black" lang="EN-US">2. </span></strong></span><span><strong><span style="font-family:宋体;color:black">用户<span lang="EN-US"></span></span></strong></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span>系统的具体操作者，用户可以自己拥有权限信息，可以归属于<span lang="EN-US">0</span>～<span lang="EN-US">n</span>个角色，可属于<span lang="EN-US">0</span>～<span lang="EN-US">n</span>个组。他的权限集是自身具有的权限<span lang="EN-US">+</span>所属的各角色具有的权限<span lang="EN-US">+</span>所属的各组具有的权限的合集。它与权限、角色、组之间的关系都是<span lang="EN-US">n</span>对<span lang="EN-US">n</span>的关系。<span lang="EN-US"></span></span></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span lang="EN-US"> </span></span></p>
+
+
+<p><span><strong><span style="font-family:宋体;color:black" lang="EN-US">3. </span></strong></span><span><strong><span style="font-family:宋体;color:black">角色<span lang="EN-US"></span></span></strong></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span>为了对拥有相似权限的用户进行分类管理，因此定义角色，例如：超级管理员，一般管理员、一般用户等角色。在这里同时也让角色具有上下级关系，形成树状视图，父级角色的权限是自身及它的所有子角色的权限的综合。<span lang="EN-US"></span></span></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span lang="EN-US"> </span></span></p>
+
+
+<p><span><strong><span style="font-family:宋体;color:black" lang="EN-US">4. </span></strong></span><span><strong><span style="font-family:宋体;color:black">组<span lang="EN-US"></span></span></strong></span></p>
+
+
+<p style="text-indent:15.75pt"><span><span>为了更好地管理用户，对用户进行分组归类，简称为用户分组。组也具有上下级关系，<a name="OLE_LINK6"></a><a name="OLE_LINK5"><span>可以形成树状视图。在实际</span></a>应用中，我们知道，组也可以具有自己的<a name="OLE_LINK8"></a><a name="OLE_LINK7"><span>角色信息</span></a>、权限信息。<span lang="EN-US"></span></span></span></p>
+
+
+<p><span><span style="font-family:宋体;color:black">就好比是<span lang="EN-US">javaeye</span>中的圈子，一个圈子可以拥有多个会员，同时一个会员也可以加入多个圈子，对于不同的圈子又有不同的权限信息。<span lang="EN-US">(</span>组的解释：例如一个公司中，不同的部门即可划分不同的组来进行权限的分配<span lang="EN-US">)</span></span></span></p>
+
+
+<p><span><span style="font-family:宋体;color:black" lang="EN-US"> </span></span></p>
+
+
+<p><span><span style="font-family:宋体">针对以上描述，结构关系如下：</span><span lang="EN-US"></span></span></p>
+
+
+<p><img src="http://dl.javaeye.com/upload/attachment/329758/56e3c821-ebc5-30a6-af33-1fdf42149a4a.jpg" alt="" width="648" height="511"></p>
+
+
+<p style="text-indent:21.0pt"><span><span lang="EN-US"> </span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体">整个模块分为组权限管理、角色权限管理、用户权限管理。</span><span lang="EN-US"></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体">其中组权限管理：组权限</span><span lang="EN-US"> = </span></span><span><span style="font-family:宋体">所属角色的权限合集</span><span lang="EN-US"> + </span></span><span><span style="font-family:宋体">组自身的权限。</span><span lang="EN-US"></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体">角色权限管理：角色权限</span><span lang="EN-US"> = </span></span><span><span style="font-family:宋体">角色自身权限。</span><span lang="EN-US"></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span style="font-family:宋体">用户权限管理：用户权限</span><span lang="EN-US"> = </span></span><span><span style="font-family:宋体">所属角色权限合集</span><span lang="EN-US"> + </span></span><span><span style="font-family:宋体">所属组权限合集</span><span lang="EN-US"> + </span></span><span><span style="font-family:宋体">用户自身权限。</span><span lang="EN-US"></span></span></p>
+
+
+<p style="text-indent:21.0pt"><span><span lang="EN-US"> </span></span></p>
+
+
+<p style="text-indent:21.1pt"><span><strong><span style="font-family:宋体">注意：因为组和角色都具有上下级关系，所以下级的组或角色的权限只能在自己的直属上级的权限中选择，下级的组或者角色的总的权限都不能大于直属上级的总权限。</span><span lang="EN-US"></span></strong></span></p>
+
+
+<p style="text-indent:21.1pt"><span><strong><span lang="EN-US"> </span></strong></span></p>
+
+
+<p><span><span style="font-family:宋体">欢迎大家拍砖，给点建议。</span></span><span lang="EN-US"></span></p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://chenyunhong.javaeye.com"&gt;chenyunhong&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/782709" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

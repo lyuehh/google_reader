@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>spring源码分析－controller的线程安全</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>spring源码分析－controller的线程安全</h2>
+<p class="meta">07 Jul 2010</p>
+
+<div class="post">
+<h2>spring源码分析－controller的线程安全</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-06 16:26:57</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/706741">http://www.javaeye.com/topic/706741</a></h3>
+
+<p>  大家都知道，struts1.2由于是线程安全的，每一个请求都去实例化一个action，造成大量并发时的资源浪费。
+<br>  struts2在这一点上做了改进，每个action都是一个singleton，所有的请求都是请求同一个action实例。这样在一定程度上能节约资源，但又有安全问题。最常见的就是在action中声明有块状的实例变量，因为这一点是不被提倡的。如果一定要声明，那一定要加上同步块。
+<br>  那么在spring mvc中的controller是不是线程安全的呢？答案是否定的。controller在默认情况下也是非线程安全的，我们来看看源码：
+<br>
+<br><pre name="code"> * @author John A. Lewis
+ * @author Juergen Hoeller
+ * @since 2.0
+ * @see ResourceAwareController
+ * @see EventAwareController
+ */
+public abstract class AbstractController extends PortletContentGenerator implements Controller {</p>
+
+<pre><code>[color=red]private boolean synchronizeOnSession = false;[/color]&lt;/pre&gt;
+</code></pre>
+
+<p><br>
+<br>由上面源码可知，controller默认是非安全的。
+<br>
+<br><pre name="code">   public void handleActionRequest(ActionRequest request, ActionResponse response) throws Exception {
+        // Delegate to PortletContentGenerator for checking and preparing.
+        check(request, response);</p>
+
+<pre><code>    // Execute in synchronized block if required.
+            //只有synchronizeOnSession设置为true，才会同步处理请求
+    if (this.synchronizeOnSession) {
+        PortletSession session = request.getPortletSession(false);
+        if (session != null) {
+            synchronized (session) {
+                handleActionRequestInternal(request, response);
+                return;
+            }
+        }
+    }
+
+    handleActionRequestInternal(request, response);
+}&lt;/pre&gt;
+</code></pre>
+
+<p><br>
+<br>只有手工设置controller的synchronizeOnSession值为true，才会被同步处理。
+<br>
+<br>因此，我们在使用spring mvc 的contrller时，应避免在controller中定义实例变量。</p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://jakoes.javaeye.com"&gt;jakoes&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/706741" style="color:red"&gt;已有 &lt;strong&gt;4&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

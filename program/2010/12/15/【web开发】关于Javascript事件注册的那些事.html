@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【web开发】关于Javascript事件注册的那些事</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【web开发】关于Javascript事件注册的那些事</h2>
+<p class="meta">15 Dec 2010</p>
+
+<div class="post">
+<h2>【web开发】关于Javascript事件注册的那些事</h2>
+
+<h3>by 周尚武</h3>
+
+<h3>at 2010-12-14 19:04:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/275095923/archive/2010/12/14/1905970.html">http://www.cnblogs.com/275095923/archive/2010/12/14/1905970.html</a></h3>
+
+<p><p>Javascript由于使用浏览器平台众多，所以它自然而然有很多语言特性都会有些故事，今天与大家一起分享一下关于事件的那些事，事件注册大致可以分为以下三类方法。</p>
+<p>一、传统事件注册方式其实是个很好方式,而且大部分时候都表现的很好。</p>
+<p>优点很多：</p>
+<p>1、 不用分支，有最好的兼容性。</p>
+<p>2、 this指向触发事件的元素，这点很重要。</p>
+<p>缺点也是有地：</p>
+<p>一个元素只能绑定一个事件处理函数。</p>
+<p>只支持冒泡，不支持捕获阶段，不过这捕获我还真不知道怎么用。</p>
+<p> </p>
+<p>二、W3C 的addEventListener方法看起来也很不错。对应移除方法为removeEventListener</p>
+<p>优点也有很多</p>
+<p>1、 this指向触发事件的元素，这点很重要。</p>
+<p>2、 可以绑定任意多个处理函数。</p>
+<p>3、 可以支持冒泡与捕获，不过我只用它的冒泡。</p>
+<p>缺点很显然是ie不行,得用下面提到的attachEvent。</p>
+<p> </p>
+<p>三、IE的attachEvent。对应方法为detachEvent</p>
+<p>优点：</p>
+<p>1、 我这里就提一个，可以绑定多个处理函数。因为实在没有太多的优点。</p>
+<p>缺点：</p>
+<p>1、 最大的缺点，事件处理函数内this指向的window,真不知道为什么要这样搞。谁告诉我一下。</p>
+<p>2、 绑定时要用onxx形式如：window.attachEvent(”onload”,handler);</p>
+<p> </p>
+<p>总结来说，比较大的差异在于：</p>
+<p>IE的事件处理函数要得到event对象，得从window.event那里取，w3c可以从事件处理函数的第一个参数得到。IE注册事件要用onxx的形式，w3c不用。</p>
+<p>通过上面一些差异性的了解，我想下面要写一对addEvent,removeEvent方法就没有什么问题了，通过走不同的分支即可以实现。并且通过闭包特性也能很好的解决this指向的问题。</p>
+<p> </p>
+<div>
+<pre><div><span style="color:#000000">function addEvent(obj, type, fn){<br>    </span><span style="color:#0000ff">if</span><span style="color:#000000"> (obj.attachEvent) {<br>        obj[type </span><span style="color:#000000">+</span><span style="color:#000000"> fn] </span><span style="color:#000000">=</span><span style="color:#000000"> function(){<br>            fn.call(obj, window.</span><span style="color:#0000ff">event</span><span style="color:#000000">);</span><span style="color:#008000">//</span><span style="color:#008000">同时解决this关键字与event对象的问题</span><span style="color:#008000"><br></span><span style="color:#000000">        };<br>        obj.attachEvent(</span><span style="color:#800000">'</span><span style="color:#800000">on</span><span style="color:#800000">'</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> type, obj[type </span><span style="color:#000000">+</span><span style="color:#000000"> fn]);<br>    }<br>    </span><span style="color:#0000ff">else</span><span style="color:#000000"> {<br>        obj.addEventListener(type, fn, </span><span style="color:#0000ff">false</span><span style="color:#000000">);<br>    }<br>}<br><br>function removeEvent(obj, type, fn){<br>    </span><span style="color:#0000ff">if</span><span style="color:#000000"> (obj.detachEvent) {<br>        obj.detachEvent(</span><span style="color:#800000">'</span><span style="color:#800000">on</span><span style="color:#800000">'</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> type, obj[type </span><span style="color:#000000">+</span><span style="color:#000000"> fn]);<br>        obj[type </span><span style="color:#000000">+</span><span style="color:#000000"> fn] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">;<br>    }<br>    </span><span style="color:#0000ff">else</span><span style="color:#000000"> {<br>        obj.removeEventListener(type, fn, </span><span style="color:#0000ff">false</span><span style="color:#000000">);<br>    }<br>}</span></div></pre>
+</div>
+<p> </p>
+<p>当然上面这种obj[type + fn ]确实不是很好，您有时间去改进下，但是这里我不推荐使用这种方法，而是推荐使用传统方式来做事件管理，优点那是相当的多，使用传统方式有更好更广的兼容性，不用去记不同的接口，this问题不用单独处理。</p>
+<p> </p>
+<div>
+<pre><div><span style="color:#000000">var Event </span><span style="color:#000000">=</span><span style="color:#000000"> {<br>    guid:</span><span style="color:#800080">1</span><span style="color:#000000">,<br>    addEvent:function(elem,type,fn){<br>        fn.guid </span><span style="color:#000000">=</span><span style="color:#000000"> Event.guid</span><span style="color:#000000">++</span><span style="color:#000000">;<br>        elem.events </span><span style="color:#000000">=</span><span style="color:#000000"> elem.events </span><span style="color:#000000">||</span><span style="color:#000000"> {};<br>        var handler </span><span style="color:#000000">=</span><span style="color:#000000"> elem.events[type];<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000">(</span><span style="color:#000000">!</span><span style="color:#000000">handler){<br>            handler </span><span style="color:#000000">=</span><span style="color:#000000"> elem.events[type] </span><span style="color:#000000">=</span><span style="color:#000000"> {};<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000">(elem[</span><span style="color:#800000">"</span><span style="color:#800000">on</span><span style="color:#800000">"</span><span style="color:#000000">+</span><span style="color:#000000">type]){<br>                handler[</span><span style="color:#800080">0</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> elem[</span><span style="color:#800000">"</span><span style="color:#800000">on</span><span style="color:#800000">"</span><span style="color:#000000">+</span><span style="color:#000000">type];<br>            }<br>        }<br>        handler[fn.guid] </span><span style="color:#000000">=</span><span style="color:#000000"> fn;<br>        elem[</span><span style="color:#800000">"</span><span style="color:#800000">on</span><span style="color:#800000">"</span><span style="color:#000000">+</span><span style="color:#000000">type] </span><span style="color:#000000">=</span><span style="color:#000000"> Event.fireEvent;<br>    },<br>    fireEvent:function(e){<br>        e </span><span style="color:#000000">=</span><span style="color:#000000"> e </span><span style="color:#000000">||</span><span style="color:#000000"> Event.fixEvent(window.</span><span style="color:#0000ff">event</span><span style="color:#000000">);<br>        var handlers </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.events[e.type];<br>        var returnValue </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>        </span><span style="color:#0000ff">for</span><span style="color:#000000"> (var i </span><span style="color:#0000ff">in</span><span style="color:#000000"> handlers) {<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (handlers[i].call(</span><span style="color:#0000ff">this</span><span style="color:#000000">, e) </span><span style="color:#000000">===</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">) {<br>                returnValue </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>            }<br>        }<br>        </span><span style="color:#0000ff">return</span><span style="color:#000000"> returnValue;<br>    },<br>    removeEvent:function(elem,type,fn){<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (elem.events </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> elem.events[type]) {<br>            delete elem.events[type][fn.guid];<br>        }<br>    },<br>    clearEvent:function(elem,type){<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (elem.events </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> elem.events[type]) {<br>            elem.events[type] </span><span style="color:#000000">=</span><span style="color:#000000"> {};<br>        }<br>    },<br>    fixEvent:function(e){<br>        </span><span style="color:#008000">//</span><span style="color:#008000">光标相对于页面</span><span style="color:#008000"><br></span><span style="color:#000000">        e.pageX </span><span style="color:#000000">=</span><span style="color:#000000"> e.clientX </span><span style="color:#000000">+</span><span style="color:#000000"> document.body.scrollLeft;<br>        e.pageY </span><span style="color:#000000">=</span><span style="color:#000000"> e.clientY </span><span style="color:#000000">+</span><span style="color:#000000"> document.body.scrollLeft;<br>        </span><span style="color:#008000">//</span><span style="color:#008000">光标相对于触发事件的对象</span><span style="color:#008000"><br></span><span style="color:#000000">        e.layerX </span><span style="color:#000000">=</span><span style="color:#000000"> e.offsetX;<br>        e.layerY </span><span style="color:#000000">=</span><span style="color:#000000"> e.offsetY;<br>        e.preventDefault </span><span style="color:#000000">=</span><span style="color:#000000"> function(){<br>            e.returnValue </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>        }<br>        e.stopPropagation </span><span style="color:#000000">=</span><span style="color:#000000"> function(){<br>            e.cancelBubble </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>        }<br>        </span><span style="color:#0000ff">return</span><span style="color:#000000"> e;<br>    }<br>}</span></div></pre>
+</div>
+<p>看完了全文，希望您会了,祝学习愉快！</p>
+<p> </p>
+<p> </p><img src="http://www.cnblogs.com/275095923/aggbug/1905970.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/275095923/">周尚武</a> 发表于 2010-12-14 19:04 <a href="http://www.cnblogs.com/275095923/archive/2010/12/14/1905970.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/275095923/archive/2010/12/14/1905970.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/275095923/archive/2010/12/14/1905970.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/84585/">Mozilla要重新发明浏览器</a><span style="color:gray">(2010-12-14 18:25)</span><br>· <a href="http://news.cnblogs.com/n/84584/">做有市场思维的开发人员</a><span style="color:gray">(2010-12-14 18:22)</span><br>· <a href="http://news.cnblogs.com/n/84583/">Hudson逃离Oracle</a><span style="color:gray">(2010-12-14 18:18)</span><br>· <a href="http://news.cnblogs.com/n/84582/">Opera技术布道专家谢子斌谈HTML5</a><span style="color:gray">(2010-12-14 18:16)</span><br>· <a href="http://news.cnblogs.com/n/84581/">商业周刊：腾讯的成长令互联网权贵感到震惊</a><span style="color:gray">(2010-12-14 18:14)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/allenlooplee/archive/2010/12/14/1905184.html">WP7有约（二）：课后作业</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

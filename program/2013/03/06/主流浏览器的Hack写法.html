@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>主流浏览器的Hack写法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>主流浏览器的Hack写法</h2>
+<p class="meta">06 Mar 2013</p>
+
+<div class="post">
+<h2>主流浏览器的Hack写法</h2>
+
+<h3>by Airen</h3>
+
+<h3>at 2013-03-05 17:05:23</h3>
+
+<h3>original <a href="http://www.w3cplus.com/css/browser-hacks.html">http://www.w3cplus.com/css/browser-hacks.html</a></h3>
+
+<div><div><div><p>此处的“hack”并非是网络中很神秘的组织“黑客”，而是使用他们可以帮助你解决浏览器下一些怪异和特殊的bug。很多时候对于这样的讨论也非常多，比如说在您的代码中应不应该使用hack？甚至延伸到使用“hack”是一个优秀的前端人员？其实，有时候是逼不得以，必须为之。</p>
+<p>有关于hack的使用方法和种类，互联系网上成千上万，比较典型的介绍有：</p>
+<ol><li>
+        <a href="http://www.w3cplus.com/css/create-css-browers-hacks">浏览器兼容之旅的第二站:各浏览器的Hack写法</a></li>
+    <li>
+        <a href="http://paulirish.com/2009/browser-specific-css-hacks/">Browser CSS Hacks</a></li>
+    <li>
+        <a href="http://blog.keithclark.co.uk/moving-ie-specific-css-into-media-blocks/">Moving IE specific CSS into @media blocks</a></li>
+    <li>
+        <a href="http://www.thespanner.co.uk/2009/01/29/detecting-browsers-javascript-hacks/">Detecting browsers javascript hacks</a></li>
+    <li>
+        <a href="http://css-tricks.com/snippets/css/browser-specific-hacks/">Browser Specific Hacks</a></li>
+    <li>
+        <a href="http://www.webmonkey.com/2010/02/browser-specific_css_hacks/">Browser-Specific CSS Hacks</a></li>
+    <li>
+        <a href="http://www.webdevout.net/css-hacks">CSS hacks</a></li>
+</ol><p>大家平时看得多的应该是IE浏览器的hack写法比较多，但对于现代浏览器，比如说Safari、Chrome、Firefox等浏览器的hack写法并不多见，甚至有的不知道怎么写。如果您是属于后者，根本不知道各浏览器下具有哪些hack手段，不要着急。因为<a href="https://twitter.com/HugoGiraudel">Hugo Giraudel</a>和<a href="https://twitter.com/TimPietrusky">Tim Pietrusky</a>将各浏览器下的hack写整理放在了<a href="http://browserhacks.com/">Browserhacks.com</a>之上。当然也要非常感谢<a href="http://paulirish.com/2009/browser-specific-css-hacks/">Paul Irish</a>和<a href="https://gist.github.com/983116">Nicolas Gallagher</a>所做的补充与说明。为了国内前端开发者更好的查阅，我将<a href="http://browserhacks.com/">Browserhacks.com</a>上有关于各种浏览器的hack写法搬移到w3cplus上，以供大家翻阅与查找。</p>
+<h4>
+    一、Chrome浏览器</h4>
+<p><strong>选择器Hack</strong></p>
+<pre>
+/* Chrome 24- and Safari 5- */
+::made-up-pseudo-element, .selector {
+  代码放在这里
+}   
+</pre>
+<p><strong>媒体查询Hacks</strong></p>
+<pre>
+/* Chrome, Safari 3+ */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  代码放在这里    
+}   
+</pre>
+<p><strong>JavaScript Hack</strong></p>
+<pre>
+/* Chrome */
+var isChrome = Boolean(window.chrome);  
+</pre>
+<h4>
+    二、Firefox浏览器</h4>
+<p><strong>属性选择器Hack</strong></p>
+<pre>
+/* Firefox 1.5 */
+body:empty .selector {
+ 样式代码放这里
+}
+/* Firefox 2+ */
+.selector, x:-moz-any-link {
+ 样式代码放这里  
+}
+/* Firefox 3+ */
+.selector, x:-moz-any-link; x:default {
+ 样式代码放这里  
+}
+/* Firefox 3.5+ */
+body:not(:-moz-handler-blocked) .selector {
+ 样式代码放这里  
+}   
+</pre>
+<p><strong>媒体查询Hack</strong></p>
+<pre>
+/* Firefox 3.5+, IE 9/10, Opera */
+@media screen and (min-resolution: +72dpi) {
+ 样式代码放这里      
+}
+/* Firefox 3.6+ */
+@media screen and (-moz-images-in-menus:0) {
+ 样式代码放这里      
+}
+/* Firefox 4+ */
+@media screen and (min--moz-device-pixel-ratio:0) {
+ 样式代码放这里      
+}   
+</pre>
+<p><strong>JavaScript Hack</strong></p>
+<pre>
+/* Firefox */
+var isFF = !!navigator.userAgent.match(/firefox/i);
+
+/* Firefox 2 - 13 */
+var isFF = Boolean(window.globalStorage);
+
+/* Firefox 2/3 */
+var isFF = /a/[-1]=='a';
+
+/* Firefox 3 */
+var isFF = (function x(){})[-5]=='x';   
+</pre>
+<p><strong>混合型Hack</strong></p>
+<pre>
+/* Firefox 3+ */
+@-moz-document url-prefix() {
+ 样式代码放这里      
+}   
+</pre>
+<h4>
+    三、Opera浏览器</h4>
+<p><strong>属性选择器Hack</strong></p>
+<pre>
+/* Opera 9.25, Safari 2/3.1 */
+*|html[xmlns*=""] .selector {
+ 样式代码放这里  
+}
+
+/* Opera 9.27 and below, Safari 2 */
+html:first-child .selector {
+ 样式代码放这里  
+}
+
+/* Opera 9.5+ */
+noindex:-o-prefocus, .selector {
+ 样式代码放这里  
+}   
+</pre>
+<p><strong>媒体查询Hack</strong></p>
+<pre>
+/* Opera 7 */
+@media all and (min-width: 0px){
+ 样式代码放这里      
+}
+
+/* Opera 12- */
+@media all and (-webkit-min-device-pixel-ratio:10000), not all and (-webkit-min-device-pixel-ratio:0) {
+ 样式代码放这里      
+}
+
+/* Opera, Firefox 3.5+, IE 9/10 */
+@media screen and (min-resolution: +72dpi) {
+ 样式代码放这里      
+}
+
+/* Opera, IE 8/9/10 */
+@media screen {
+ 样式代码放这里      
+}   
+</pre>
+<p><strong>JavaScript Hack</strong></p>
+<pre>
+/* Opera 9.64- */
+var isOpera = /^function \(/.test([].sort);
+
+/* Opera 12- */
+var isOpera = Boolean(window.opera);    
+</pre>
+<h4>
+    四、Safari浏览器</h4>
+<p><strong>属性选择器Hack</strong></p>
+<pre>
+/* Safari 2/3 */
+html[xmlns*=""] body:last-child .selector {
+ 样式代码放这里      
+} 
+html[xmlns*=""]:root .selector  {
+ 样式代码放这里      
+}
+
+/* Safari 2/3.1, Opera 9.25 */
+*|html[xmlns*=""] .selector {
+ 样式代码放这里      
+}
+
+/* Safari 5- and Chrome 24- */
+::made-up-pseudo-element, .selector {
+ 样式代码放这里      
+}   
+</pre>
+<p><strong>媒体查询Hack</strong></p>
+<pre>
+/* Safari */
+var isSafari = /a/.__proto__=='//'; 
+</pre>
+<h4>
+    五、IE浏览器</h4>
+<p><strong>选择器Hack</strong></p>
+<pre>
+/* IE 6 and below */
+* html .selector  {
+ 样式代码放这里      
+} 
+.suckyie6.selector {
+ 样式代码放这里      
+} /* .suckyie6 can be any unused class */
+
+/* IE 7 and below */
+.selector, {
+ 样式代码放这里      
+}
+
+/* IE 7 */
+*:first-child+html .selector {
+  样式代码放这里 
+} 
+.selector, x:-IE7 {
+ 样式代码放这里      
+} 
+*+html .selector {
+ 样式代码放这里      
+} 
+
+/* Everything but IE 6 */
+html &gt; body .selector {
+ 样式代码放这里      
+}
+
+/* Everything but IE 6/7 */
+html &gt; /**/ body .selector {
+  样式代码放这里 
+}
+head ~ /* */ body .selector {
+ 样式代码放这里      
+}
+
+/* Everything but IE 6/7/8 */
+:root *&gt; .selector {
+ 样式代码放这里      
+} 
+body:last-child .selector {
+ 样式代码放这里      
+} 
+body:nth-of-type(1) .selector {
+ 样式代码放这里      
+} 
+body:first-of-type .selector {
+ 样式代码放这里      
+}   
+</pre>
+<p><strong>属性/属性值 Hack</strong></p>
+<pre>
+/* IE 6 */
+.selector { _color: blue; } 
+.selector { -color: blue; }
+
+/* IE 6/7 - any combination of these characters: 
+ ! $ &amp; * ( ) = % + @ , . / ` [ ] # ~ ? : &lt;  &gt; | */
+.selector { !color: blue; } 
+.selector { $color: blue; } 
+.selector { &amp;color: blue; } 
+.selector { *color: blue; } 
+/* ... */
+
+/* IE 6/7 - acts as an !important */
+.selector { color: blue !ie; } 
+/* string after ! can be anything */
+
+/* IE 8/9 */
+.selector { color: blue\0/; } 
+/* must go at the END of all rules */
+
+/* IE 9/10 */
+.selector:nth-of-type(1n) { color: blue\9; }
+
+/* IE 6/7/8/9/10 */
+.selector { color: blue\9; } 
+.selector { color/*\**/: blue\9; }
+
+ /* Everything but IE 6 */
+.selector { color/**/: blue; }
+</pre>
+<p><strong>媒体查询Hack</strong></p>
+<pre>
+/* IE 6/7 */
+@media screen\9 {
+ 样式代码放这里      
+}
+
+/* IE 6/7/8 */
+@media \0screen\,screen\9 {
+ 样式代码放这里      
+}
+
+/* IE 8 */
+@media \0screen {
+ 样式代码放这里      
+}
+
+/* IE 8/9/10 &amp; Opera */
+@media screen\0 {
+ 样式代码放这里      
+}
+
+/* IE 9/10, Firefox 3.5+, Opera */
+@media screen and (min-resolution: +72dpi) {
+ 样式代码放这里      
+}
+
+/* IE 9/10 */
+@media screen and (min-width:0\0) {
+ 样式代码放这里      
+}
+
+/* IE 10+ */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+ 样式代码放这里      
+}
+
+/* Everything but IE 6/7/8 */
+@media screen and (min-width: 400px) {
+ 样式代码放这里      
+}
+</pre>
+<p><strong>JavaScript Hack</strong></p>
+<pre>
+/* IE &lt;= 8 */
+var isIE = &#39;\v&#39;==&#39;v&#39;;   
+</pre>
+<pre>
+/* IE 6 */
+(checkIE = document.createElement(&quot;b&quot;)).innerHTML = &quot;&lt;!--[if IE 6]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&quot;; 
+var isIE = checkIE.getElementsByTagName(&quot;i&quot;).length == 1; 
+</pre>
+<pre>
+/* IE 7 */
+(checkIE = document.createElement(&quot;b&quot;)).innerHTML = &quot;&lt;!--[if IE 7]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&quot;; 
+var isIE = checkIE.getElementsByTagName(&quot;i&quot;).length == 1;
+navigator.appVersion.indexOf(&quot;MSIE 7.&quot;)!=-1   
+</pre>
+<pre>
+/* IE 8 */
+(checkIE = document.createElement(&quot;b&quot;)).innerHTML = &quot;&lt;!--[if IE 8]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&quot;; 
+var isIE = checkIE.getElementsByTagName(&quot;i&quot;).length == 1; 
+</pre>
+<pre>
+/* IE 9 */
+(checkIE = document.createElement(&quot;b&quot;)).innerHTML = &quot;&lt;!--[if IE 9]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&quot;; 
+var isIE = checkIE.getElementsByTagName(&quot;i&quot;).length == 1; 
+</pre>
+<pre>
+/* IE 10 */
+var isIE = eval(&quot;/*@cc_on!@*/false&quot;) &amp;&amp; document.documentMode === 10; 
+
+/* IE 10 */
+var isIE = document.body.style.msTouchAction != undefined;
+</pre>
+<p>上面列出各个浏览器下hack的写法，当然在实际运用之中并不建议使用hack。如果你的页面需要hack来处理时，请先检查你的css或者js，如果实在无法达到要求，在考虑使用hack来处理。</p>
+<p><strong>特别声明：</strong>以上展示的hack代码均来自于：<a href="http://browserhacks.com/">http://browserhacks.com/</a></p>
+<p>如需转载，请遵守<a href="http://www.w3cplus.com/page/661.html">W3cplus版权声明</a>，烦请注明出处：<a href="http://www.w3cplus.com/css/browser-hacks.html">http://www.w3cplus.com/css/browser-hacks.html</a></p>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/8.html">html&amp;css</a></li></ul></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/80.html">hack</a></li></ul></div>
+
+
+<div><div><div><div>
+      <div>4</div>
+                  <a href="http://www.w3cplus.com/vote/node/664/1/vote/alternate/fIyr55CDJdsHzhmnPlCNw829Xn4uHHIX2BOywEImAVM/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/720333949/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css/browser-hacks.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

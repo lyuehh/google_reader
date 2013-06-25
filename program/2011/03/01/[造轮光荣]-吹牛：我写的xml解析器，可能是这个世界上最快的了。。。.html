@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[造轮光荣] 吹牛：我写的xml解析器，可能是这个世界上最快的了。。。</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[造轮光荣] 吹牛：我写的xml解析器，可能是这个世界上最快的了。。。</h2>
+<p class="meta">01 Mar 2011</p>
+
+<div class="post">
+<h2>[造轮光荣] 吹牛：我写的xml解析器，可能是这个世界上最快的了。。。</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-03-01 14:44:47</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/935613">http://www.javaeye.com/topic/935613</a></h3>
+
+<p><span style="color:blue"><span style="font-size:large">解析超级简单。  XmlTree tree=XmlParser.parse(String xml);
+<br>返回一个树对象， 是一个树形数据结构，使用就是比ArrayList复杂那么一点点..
+<br>（XmlTree对象的使用方式 ：http://www.javaeye.com/topic/935876）
+<br>可能对下面的代码有点疑惑 ，有个Xml.parserXml(xml); 还有个XmlParser.parse(xml),
+<br>前一个使用的是jdk官方解析包， 后一个是自己写的。 两个解析后返回对象完全相同。
+<br>对比速度，经过多次测试，几乎任何xml解析速度都快 4-5倍， 下的xml重复解析1万此，
+<br>耗时400毫秒（我的机器，cpu 1.6G,intel）。</span></span>
+<br>
+<br>
+<br>
+<br><pre name="code">import java.util.List;</p>
+
+<p>import org.open4j.io.Reader;
+import org.open4j.nxml.XmlParser;
+import org.open4j.xml.Xml;
+import org.open4j.xml.XmlNode;
+import org.open4j.xml.XmlTree;</p>
+
+<p>public class TestXml
+{</p>
+
+<pre><code>public static void main(String[] args) 
+{
+    String xml=Reader.loadFileUtf(&amp;quot;d://test.xml&amp;quot;);
+
+    Xml.parseXml(xml);
+    XmlParser.parse(xml);
+
+    XmlTree tree=null;
+
+
+    long d=System.currentTimeMillis();
+
+    /****
+     * 这个解析器，使用jdk官方解析器，解析完毕，返回XmlTree（自定义数据结构） 对象
+     */
+    for(int i=0;i&amp;lt;10000;++i){
+        tree=Xml.parseXml(xml);
+    }
+
+    System.out.println(System.currentTimeMillis()-d);
+
+
+
+    /****
+     * 这个使用的自己写的解析器， 解析结果和上一个完全相同。
+     */
+    long d2=System.currentTimeMillis();
+    for(int i=0;i&amp;lt;10000;++i){
+        tree=XmlParser.parse(xml);
+    }
+    System.out.println(System.currentTimeMillis()-d2);
+
+    /****
+     * 这里使用 tree对象示例
+     * 获得 节点name的子节点，文本对象 &amp;quot;张三&amp;quot;
+     */
+
+
+    tree=XmlParser.parse(&amp;quot;&amp;lt;root&amp;gt;&amp;lt;user id=&amp;#39;w1&amp;#39;&amp;gt;&amp;lt;/user&amp;gt;&amp;lt;user id=&amp;#39;w2&amp;#39;&amp;gt;&amp;lt;name&amp;gt;张三&amp;lt;/name&amp;gt;&amp;lt;/user&amp;gt;&amp;lt;/root&amp;gt;&amp;quot;);
+    XmlNode root=tree.getRoot();// 获得根节点
+
+    List&amp;lt;XmlNode&amp;gt; list=root.getChildrenByTagName(&amp;quot;user&amp;quot;);
+
+    XmlNode user2=list.get(1);// 第2个user节点
+
+    System.out.println(user2.getAttributes().get(&amp;quot;id&amp;quot;));
+
+    String zhang3=user2.
+    getChildrenByTagName(&amp;quot;name&amp;quot;).get(0) // 这里是获得user2 的tagName 为 name的子节点， 只有一个，当然是 get(0)
+    .getChildren().get(0).toString();// user2的子节点是String类的对象  &amp;quot;张三&amp;quot;
+
+    System.out.println(zhang3);
+
+
+}
+</code></pre>
+
+<p>}</pre>
+<br>
+<br>
+<br>
+<br>解析的xml 为：
+<br>
+<br><pre name="code">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE node[]&gt;</p>
+
+<p>&lt;root&gt;</p>
+
+<pre><code>&amp;lt;![CDATA[ooooooo]]&amp;gt;
+&amp;lt;!-- apple orange对对对&amp;amp;&amp;amp;&amp;amp; --&amp;gt;
+&amp;lt;国家 name=&amp;quot;中国&amp;quot;/&amp;gt;
+
+
+&amp;lt;node id=&amp;quot;皇帝&amp;quot;&amp;gt;
+    &amp;lt;node name=&amp;quot;刘备&amp;quot;&amp;gt;
+        &amp;lt;node name=&amp;#39;张\\飞&amp;#39;&amp;gt;
+            &amp;lt;node name=&amp;quot;兵1&amp;quot; &amp;gt;
+            &amp;lt;!-- 卡机爱就爱看 --&amp;gt;
+            &amp;lt;/node&amp;gt;
+            &amp;lt;node name=&amp;quot;兵2&amp;quot; /&amp;gt;
+            &amp;lt;node name=&amp;quot;兵3&amp;quot; /&amp;gt;
+        &amp;lt;/node&amp;gt;
+        &amp;lt;node name=&amp;#39;关羽&amp;#39;&amp;gt;
+            &amp;lt;node name=&amp;quot;1兵1&amp;quot; /&amp;gt;
+            &amp;lt;node name=&amp;quot;1兵2&amp;quot; /&amp;gt;
+            &amp;lt;node name=&amp;quot;1兵3&amp;quot; /&amp;gt;
+        &amp;lt;/node&amp;gt;
+    &amp;lt;/node&amp;gt;
+    &amp;lt;node name=&amp;quot;曹操&amp;quot;&amp;gt;
+        &amp;lt;node name=&amp;#39;李典&amp;#39;&amp;gt;
+            &amp;lt;node name=&amp;quot;2兵11&amp;quot; /&amp;gt;
+            &amp;lt;node name=&amp;quot;2兵2&amp;quot; /&amp;gt;
+            &amp;lt;node name=&amp;quot;2兵3&amp;quot; /&amp;gt;
+        &amp;lt;/node&amp;gt;
+    &amp;lt;/node&amp;gt;
+&amp;lt;/node&amp;gt;
+&amp;lt;apple&amp;gt;22&amp;lt;/apple&amp;gt;
+</code></pre>
+
+<p>&lt;/root&gt;</p>
+
+<p>&lt;!--apple--&gt;
+</pre>
+<br>
+<br>
+<br><span style="color:blue">
+<br><span style="font-size:large">运行结果：
+<br>2141
+<br>406
+<br>w2
+<br>张三
+<br>
+<br>》》》可以看出快了大概5倍</span></span>
+<br>
+<br>
+<br><span style="font-size:large">
+<br>
+<br>ps; 代码发表在google code 上了，项目名为open4j, 无需密码。
+<br>org.open4j.nxml包里面为解析代码， 下面有jar包，加入您的路径就能用</span>[color=red][/color]
+<br></p>
+
+<p>  <br><br>
+  <ul>
+    本文附件下载:</p>
+
+<pre><code>  &lt;li&gt;&lt;a href="http://dl.javaeye.com/topics/download/286ba08f-bfac-3880-b1a6-ebb5c813d5e0"&gt;open4j.0.05.jar&lt;/a&gt; (309.7 KB)&lt;/li&gt;
+
+  &lt;li&gt;&lt;a href="http://dl.javaeye.com/topics/download/cccee3a3-ce7e-38fc-8385-83245dc50df4"&gt;op.location.jar&lt;/a&gt; (540 Bytes)&lt;/li&gt;
+
+  &lt;li&gt;&lt;a href="http://dl.javaeye.com/topics/download/4a3bb841-adfd-3b82-847c-3a800601a493"&gt;test.xml.zip&lt;/a&gt; (469 Bytes)&lt;/li&gt;
+</code></pre>
+
+<p>  </ul></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://fyf-008.javaeye.com"&gt;fyf_008&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/935613" style="color:red"&gt;已有 &lt;strong&gt;16&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

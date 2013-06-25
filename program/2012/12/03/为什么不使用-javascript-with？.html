@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>为什么不使用 javascript with？</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>为什么不使用 javascript with？</h2>
+<p class="meta">03 Dec 2012</p>
+
+<div class="post">
+<h2>为什么不使用 javascript with？</h2>
+
+<h3>by Jun.lu</h3>
+
+<h3>at 2012-12-03 11:49:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/idche/archive/2012/12/03/2799355.html">http://www.cnblogs.com/idche/archive/2012/12/03/2799355.html</a></h3>
+
+<p>众所周知大家对 with 都没什么好感，而且不推荐使用。</p>
+
+
+<p>可以收集到的理由有：</p>
+
+
+<p>下面几条来自 《javascript权威指南》 第 5 版本。</p>
+
+
+<p> 　　1：使用with的语句很难优化。<br>　　2：使用with语句速度要比不使用with语句的等价代码的速度慢得多。<br>　　3：在with语句中的函数定义和变量初始化可能产生令人惊讶，和直觉相抵触的行为。<br>　　4：90%(或者更高比例)的with应用场景都可以用其他更好的方式代替。</p>
+
+
+<p>如何证明以上观点。</p>
+
+
+<p>　　第一点貌似没有什么好的代码实例。（欢迎大家提供）</p>
+
+
+<p>　　第2点：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> a =<span style="color:#000000"> {<br>            a:{<br>                a:{<br>                    a:{<br>                        a:{<br>                            a:{<br>                                a:{<br>                                    b:</span>1<span style="color:#000000"><br>                                }<br>                            }<br>                        }<br>                    }<br>                }<br>            }<br>        };<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">取值与赋值 10000</span><br>        <span style="color:#0000ff">function</span><span style="color:#000000"> noWith(){<br>            </span><span style="color:#0000ff">var</span> obj = a.a.a.a.a.a.a, i=100000, j = 0<span style="color:#000000">;<br>            </span><span style="color:#0000ff">for</span>(; i; i--<span style="color:#000000">){<br>                j </span>=<span style="color:#000000"> obj.b;<br>                obj.b </span>=<span style="color:#000000"> i;<br>            }<br>        }<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">取值与赋值 10000</span><br>        <span style="color:#0000ff">function</span><span style="color:#000000"> yesWith(){<br>            </span><span style="color:#0000ff">var</span> i=100000, j = 0<span style="color:#000000">;<br>            </span><span style="color:#0000ff">with</span><span style="color:#000000">( a.a.a.a.a.a.a ){<br>                </span><span style="color:#0000ff">for</span>(; i; i--<span style="color:#000000">){<br>                    j </span>=<span style="color:#000000"> b;<br>                    b </span>=<span style="color:#000000"> i;<br>                }<br>            }<br>        }<br>        <br>        <br>        </span><span style="color:#0000ff">var</span> t = <span style="color:#0000ff">new</span><span style="color:#000000"> Date().getTime();<br>        </span><span style="color:#008000">//</span><span style="color:#008000">noWith();</span><br><span style="color:#000000">        yesWith();<br>        console.log(</span><span style="color:#0000ff">new</span> Date().getTime() -<span style="color:#000000"> t);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">运行上面两个函数, 对一个比较深的对象取值与赋值 100000 次</span><br>        <br>        <span style="color:#008000">//</span><span style="color:#008000">不使用with: 0-3毫秒（chrome浏览器，可能是V8太NB，我自己都不信了），换了Firefox 大约是7-10毫秒</span><br>        <span style="color:#008000">//</span><span style="color:#008000">使用with: 120-130毫秒之间(chrome)， 110-120毫秒(Firefox)</span><br>        <br>        <span style="color:#008000">//</span><span style="color:#008000">结论：使用with进行大量运算确实存在一些性能问题，但是10W次的运算估计也很少遇到，大家自己权衡。</span></div>
+
+
+<p> </p>
+
+
+<p>　　第3点：</p>
+
+
+<p>　　</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> useWith(){<br>            </span><span style="color:#0000ff">var</span> obj =<span style="color:#000000"> {<br>                item:{</span><span style="color:#008000">//</span><span style="color:#008000">姑且把这个对象叫做 this1</span><br>                    key:1<span style="color:#000000"><br>                }<br>            };<br>            <br>            </span><span style="color:#0000ff">with</span><span style="color:#000000">( obj.item ){<br>            <br>                obj.item </span>=<span style="color:#000000"> {<br>                    key : </span>2<span style="color:#000000"><br>                };<br>                <br>                console.log( key ); </span><span style="color:#008000">//</span><span style="color:#008000">1,  你悲剧的访问到了1</span><br>                <span style="color:#008000">//</span><span style="color:#008000">理由：with 已经确定了当前 this 指向了 this1, </span><br>                <span style="color:#008000">//</span><span style="color:#008000">在访问 key 的时候不会重新读取 obj.item 新的指针。</span><br>                <span style="color:#008000">//</span><span style="color:#008000">疑问：本来在 obj.item 被重新赋值的时候就应该把 this1 的这个对象抛弃了(它已经没有存在引用了)，那么最后一句key的访问结束内存会被回收吗？</span><br><span style="color:#000000">            }<br>        }<br>        <br>        useWith();</span></div>
+
+
+<p>看到 javascript 第6版上的例子：（一个更加悲剧的with使用）</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> c =<span style="color:#000000">{};<br>        <br>        </span><span style="color:#0000ff">with</span><span style="color:#000000">(c){<br>            x </span>= 111<span style="color:#000000">;<br>        }<br><br>        console.log(c.x); </span><span style="color:#008000">//</span><span style="color:#008000"> undefined</span><br>        console.log(window.x); <span style="color:#008000">//</span><span style="color:#008000"> 111</span></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>　　第4点：</p>
+
+
+<p>　　可以想象with是帮你保存一个this指针而不用重复书写，我们当然也可以用一个变量来保存这个指针。</p>
+
+
+<p>　　故大部分with的应用场景可以有替代方案是可以做到的。</p>
+
+
+<p>为什么做这个测试？</p>
+
+
+<p>　　只是想弄的明白些，或者接收更多人的看法。</p>
+
+
+<p><img src="http://www.cnblogs.com/idche/aggbug/2799355.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/idche/archive/2012/12/03/2799355.html">本文链接</a></p><p><a href="http://www.cnblogs.com/idche/archive/2012/12/03/2799355.html">继续阅读 »</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

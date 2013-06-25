@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>给 connect 的 static 模块加上url路径前缀</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>给 connect 的 static 模块加上url路径前缀</h2>
+<p class="meta">14 Jul 2012</p>
+
+<div class="post">
+<h2>给 connect 的 static 模块加上url路径前缀</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-07-14 10:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/07/14/2591139.html">http://www.cnblogs.com/rubylouvre/archive/2012/07/14/2591139.html</a></h3>
+
+<p>估计我们使用 connect 都会很自然地按照官方的例子使用静态文件模块 static:</p>
+
+
+<pre>var connect = require('connect');connect(  connect.static(__dirname),  function (req, res) {    res.writeHead(200, {'Content-Type': 'text/plain'});    res.end('Hello World\n');  }).listen(8124);console.log('Server running at http://127.0.0.1:8124/');</pre>
+
+
+<p><strong>基准性能</strong></p>
+
+
+<p>为了评测<span> static </span>的性能，我们需要又一个基准对比。</p>
+
+
+<p><strong>官方最纯洁的 helloworld</strong></p>
+
+
+<p>我们使用 nodejs 官方文档给出的 helloworld 做最基础的参照：</p>
+
+
+<pre>ar http = require('http');http.createServer(function (request, response) {  response.writeHead(200, {'Content-Type': 'text/plain'});  response.end('Hello World\n');}).listen(8124);console.log('Server running at http://127.0.0.1:8124/');</pre>
+
+
+<p><strong>最纯洁的 connect helloworld</strong></p>
+
+
+<p>不使用任何中间件模块</p>
+
+
+<pre>var connect = require('connect');connect(function (req, res) {  res.writeHead(200, {'Content-Type': 'text/plain'});  res.end('Hello World\n');}).listen(8124);console.log('Server running at http://127.0.0.1:8124/');</pre>
+
+
+<p><strong>结合<a href="http://nodejs.org/docs/latest/api/domain.html"> domain </a>模块的 connect helloworld</strong></p>
+
+
+<pre>var connect = require('connect');var createDomain = require('domain').create;connect(  function (req, res, next) {    var domain = createDomain();    domain.on('error', function (err) {      console.log('errrrrr', err);      res.statusCode = 500;      res.end(err.message + '\n');      domain.dispose();    });    domain.run(next);  },  function (req, res, next) {    if (req.url === '/error') {      process.nextTick(function () {        res.end('params: ' + req.query.abc);      });      return;    }    res.writeHead(200, {'Content-Type': 'text/plain'});    res.end('Hello World\n');  }).listen(8124);console.log('Server running at http://127.0.0.1:8124/');</pre>
+
+
+<p><strong>测试结果</strong></p>
+
+
+<p>官方最纯洁的 helloworld: 7851.56 qps</p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          78123 hitsAvailability:         100.00 %Elapsed time:           9.95 secsData transferred:         0.89 MBResponse time:            0.00 secsTransaction rate:      7851.56 trans/secThroughput:           0.09 MB/secConcurrency:            9.93Successful transactions:       78123Failed transactions:             0Longest transaction:          0.09Shortest transaction:         0.00</pre>
+
+
+<p>最纯洁的 connect helloworld: 6808.19 qps</p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          78123 hitsAvailability:         100.00 %Elapsed time:           9.95 secsData transferred:         0.89 MBResponse time:            0.00 secsTransaction rate:      7851.56 trans/secThroughput:           0.09 MB/secConcurrency:            9.93Successful transactions:       78123Failed transactions:             0Longest transaction:          0.09Shortest transaction:         0.00</pre>
+
+
+<p>使用 domain 模块的 connect helloworld: 5601.35 qps</p>
+
+
+<p><a href="https://speakerdeck.com/u/felixge/p/domains-in-node-08">domain demo for express</a></p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          65699 hitsAvailability:         100.00 %Elapsed time:           9.65 secsData transferred:         0.75 MBResponse time:            0.00 secsTransaction rate:      6808.19 trans/secThroughput:           0.08 MB/secConcurrency:            9.96Successful transactions:       65699Failed transactions:             0Longest transaction:          0.05Shortest transaction:         0.00</pre>
+
+
+<p>带 static 的 connect helloworld: 3636.98 qps</p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          34915 hitsAvailability:         100.00 %Elapsed time:           9.60 secsData transferred:         0.40 MBResponse time:            0.00 secsTransaction rate:      3636.98 trans/secThroughput:           0.04 MB/secConcurrency:            9.97Successful transactions:       34915Failed transactions:             0Longest transaction:          0.06Shortest transaction:         0.00</pre>
+
+
+<p><strong>为什么性能降低了50%</strong></p>
+
+
+<p>晕，为什么加上了 static 模块，性能会降低了50％这么多？</p>
+
+
+<p>查看<a href="http://www.senchalabs.org/connect/static.html#send"> static.send()</a> 源代码:</p>
+
+
+<pre>// &quot;hidden&quot; fileif (!hidden &amp;&amp; &#39;.&#39; == basename(path)[0]) return next();fs.stat(path, function(err, stat){  // mime type  type = mime.lookup(path);  // ignore ENOENT  if (err) {    if (fn) return fn(err);    return (&#39;ENOENT&#39; == err.code || &#39;ENAMETOOLONG&#39; == err.code)      ? next()      : next(err);  // redirect directory in case index.html is present  } else if (stat.isDirectory()) {    if (!redirect) return next();    res.statusCode = 301;    res.setHeader(&#39;Location&#39;, url.pathname + &#39;/&#39;);    res.end(&#39;Redirecting to &#39; + url.pathname + &#39;/&#39;);    return;  }</pre>
+
+
+<p>static 模块每次都需要一次文件IO，判断文件是否存在，这是多么损耗性能啊。</p>
+
+
+<p><strong>增加静态文件url路径前缀</strong></p>
+
+
+<p>既然找到性能问题所在，就可以解决此问题了。对症下药，无需让所有请求都经过 static 处理即可。</p>
+
+
+<p>给 static 增加一个url前缀判断，例如<span style="color:red"> /public/images/logo.jpg </span>只有前缀是 /public 的 url 请求才需要进入 static 模块处理。</p>
+
+
+<p>那么我们改进后的代码应该是这样的:</p>
+
+
+<pre>var connect = require('connect');var app = connect();app.use('/public', connect.static(__dirname));app.use(function (req, res) {  res.writeHead(200, {'Content-Type': 'text/plain'});  res.end('Hello World\n');}).listen(8124);console.log('Server running at http://127.0.0.1:8124/');</pre>
+
+
+<p>性能如何？ wow 6749.03 qps, 几乎和 connect hellowrold 一致。done!</p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          66073 hitsAvailability:         100.00 %Elapsed time:           9.79 secsData transferred:         0.76 MBResponse time:            0.00 secsTransaction rate:      6749.03 trans/secThroughput:           0.08 MB/secConcurrency:            9.97Successful transactions:       66073Failed transactions:             0Longest transaction:          0.03Shortest transaction:         0.00</pre>
+
+
+<p>重现一下之前的性能问题，访问 /public/foo 即可重现。</p>
+
+
+<pre>$ siege -b -c10 -t10S http://127.0.0.1:8124/public/foo** SIEGE 2.72** Preparing 10 concurrent users for battle.The server is now under siege...Lifting the server siege...      done.Transactions:          37773 hitsAvailability:         100.00 %Elapsed time:           9.59 secsData transferred:         0.43 MBResponse time:            0.00 secsTransaction rate:      3938.79 trans/secThroughput:           0.05 MB/secConcurrency:            9.97Successful transactions:       37773Failed transactions:             0Longest transaction:          0.05Shortest transaction:         0.00</pre>
+
+
+<p><strong>有爱</strong></p>
+
+
+<p>记得给 connect.static 加上一个url路径前缀喔!</p>
+
+
+<p>^_^ 希望本文对你有用。</p>
+
+
+<p><a href="http://cnodejs.org/topic/4fce14e0e5e72c25180b51d1">原贴的链接</a></p>
+
+
+<p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2591139.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/07/14/2591139.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

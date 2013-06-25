@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]JavaScript中的两个0</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]JavaScript中的两个0</h2>
+<p class="meta">11 Dec 2012</p>
+
+<div class="post">
+<h2>[译]JavaScript中的两个0</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-12-10 21:24:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/12/10/2777099.html">http://www.cnblogs.com/ziyunfei/archive/2012/12/10/2777099.html</a></h3>
+
+<p>原文:<a href="http://www.2ality.com/2012/03/signedzero.html">http://www.2ality.com/2012/03/signedzero.html</a></p>
+
+
+<hr><blockquote><p>译者注:文章开始之前,先看道题:</p><p><a href="http://www.reddit.com/r/javascript/comments/14kx9e/puzzle_a_b_1a_1b_a/">Puzzle: A === B; 1/A &lt; 1/B; A = ?</a></p><p>你知道A等于什么吗?</p></blockquote><p>JavaScript中有两个0:-0和+0.本文解释了为什么会这样,以及它会产生哪些影响.</p><h3>1. 带符号的0<p>数字需要被编码才能进行数字化存储.举个例子,假如我们要将一个整数编码为4位的二进制数,使用原码(sign-and-magnitude)方法,则最高位是符号位(0代表正,1代表负),剩下的三位表示大小(具体的值).因此,−2和+2会编码成为下面这样:</p><blockquote> 二进制的1010表示十进制的−2 <br>    二进制的0010表示十进制的+2</blockquote><p>这就意味着将会有两个零:1000(-0)和0000(0).</p><p>在JavaScript中,所有的数字都是浮点数,都是根据<a href="http://zh.wikipedia.org/wiki/IEEE_754">IEEE 754标准</a>中的浮点数算法以双精度格式被编码.这个标准中正负号的处理方式类似于原码(sign-and-magnitude)方法中整数的编码方式,所以也有正负零.</p><p>JavaScript做了不少工作来故意隐藏存在有两个零的事实.</p><p><strong>2. 隐藏0的符号</strong></p><p>在JavaScript中,如果你写个0,则意味着就是+0.但是即使你写−0,引擎也会显示为0.无论你在任何的浏览器命令行或Node.js REPL中执行,都会这样显示:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; -0<br>0</div><blockquote><p>译者注:SpiderMonkey shell(js)以及v8 shell(d8)都会显示出-0.</p><p><img src="http://images.cnitblog.com/blog/116671/201212/21095211-2702fba6b7b949f4bbb43a20aa75a26e.png" alt=""></p></blockquote><p>原因是标准的<tt>toString()方法会将两种零都转换成相同的</tt><tt>"0"</tt>.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; (-0<span style="color:#000000">).toString()<br></span>'0'<br>&gt; (+0<span style="color:#000000">).toString()<br></span>'0'  </div><p>严格相等运算符也让我们有了"只存在一个零"的错觉.连严格相等都无法区分开,这给我们区分它们带来了很大困难(在某些少有的情况下,你的确需要区分它们).</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; +0 === -0<br><span style="color:#0000ff">true</span></div><p>小于号和大于号运算符也类似,它们也认为这两个零是相等的.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; -0 &lt; +0<br><span style="color:#0000ff">false</span><br>&gt; +0 &lt; -0<br><span style="color:#0000ff">false</span></div><p><strong>3. 零的正负号对计算结果的影响</strong></p><p><span lang="zh-CN"><span>0</span><span>的正负号</span><span>很少会</span><span>影响</span><span>计算</span><span>的</span><span>结果</span><span>.</span></span>并且我们通常能见到的0都是+0.只有极少数操作会产生−0的结果,而且其中大多数操作都必须刻意传入-0才有可能得到-0的结果.本节会演示几个0的正负号影响计算结果的例子.对于每个例子,想想能不能利用它们来区分开−0和+0,最终的解决方案将会在第四节中给出.为了能让一个零的正负号显示出来,我们使用下面的这个函数.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> signed(x) {<br>    </span><span style="color:#0000ff">if</span> (x === 0<span style="color:#000000">) {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> isNegativeZero()函数将会在下面给出</span><br>        <span style="color:#0000ff">return</span> isNegativeZero(x) ? "-0" : "+0"<span style="color:#000000">;<br>    } </span><span style="color:#0000ff">else</span><span style="color:#000000"> {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 否则,使用数字原生的toSting方法</span><br>        <span style="color:#0000ff">return</span><span style="color:#000000"> Number.prototype.toString.call(x);<br>    }<br>}</span></div><p><strong>3.1. 两个零相加</strong></p><p>引用自ES5 11.6.3 "加法运算符作用于数字的情况":</p><blockquote>两个负零的和是−0.两个正零或者一个正零和一个负零的和是+0.</blockquote><p>例如:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; signed(-0 + -0<span style="color:#000000">)<br></span>'-0'<br>&gt; signed(-0 + +0<span style="color:#000000">)<br></span>'+0'</div><p>-0和-0的和仍然是-0,+0和-0的和仍然是+0,我们仍无法利用它们的和来区分正负0.</p><p><strong>3.2. 乘零</strong></p><p>用零乘以一个有穷数,结果的正负号符合一般规则:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; signed(+0 * -5<span style="color:#000000">)<br></span>'-0'<br>&gt; signed(-0 * -5<span style="color:#000000">)<br></span>'+0'</div><p>用零乘以一个无穷数的结果是<tt>NaN</tt>:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; -Infinity * +0<span style="color:#000000"><br>NaN</span></div><p><strong>3.3. 除以零</strong></p><p>你可以用零除任何非零的数字(包括无穷大).返回的结果是无穷大,正负号也符合一般规则.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; 5 / +0<span style="color:#000000"><br>Infinity<br></span>&gt; 5 / -0<br>-<span style="color:#000000">Infinity<br></span>&gt; -Infinity / +0<br>-Infinity</div><p>需要注意的是<tt>-Infinity和</tt><tt>+Infinity可以使用</tt><tt>===来区分</tt>.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; -Infinity ===<span style="color:#000000"> Infinity<br></span><span style="color:#0000ff">false</span></div><p>用零除零结果是<tt>NaN</tt>:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; 0 / 0<span style="color:#000000"><br>NaN<br></span>&gt; +0 / -0<span style="color:#000000"><br>NaN</span></div><p><strong>3.4. Math.pow()</strong></p><p>下面的表格列出了,当第一个参数是零时,函数<tt>Math.pow()的返回结果</tt>:</p><blockquote> pow(+0, y&lt;0) → +∞ <br>    pow(−0, odd y&lt;0) → −∞ <br>    pow(−0, even y&lt;0) → +∞</blockquote><p>试验一下:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; Math.pow(+0, -1<span style="color:#000000">)<br>Infinity<br><br></span>&gt; Math.pow(-0, -1<span style="color:#000000">)<br></span>-Infinity</div><p><strong>3.5. Math.atan2()</strong></p><p>下面的表格列出了,当有参数为零时,函数<tt>Math.atan2()的返回结果</tt>:</p><blockquote> atan2(+0, +0) → +0 <br>    atan2(+0, −0) → +π <br>    atan2(−0, +0) → −0 <br>    atan2(−0, −0) → −π <br>    <br>    atan2(+0, x&lt;0) → +π <br>    atan2(−0, x&lt;0) → −π <br></blockquote><p>根据上表,可以得出好几种办法来判断出一个零的正负号.例如:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; Math.atan2(-0, -1<span style="color:#000000">)<br></span>-3.141592653589793<br>&gt; Math.atan2(+0, -1<span style="color:#000000">)<br></span>3.141592653589793</div><p><tt>atan2函数是少有的几个参数不为零却能产生-0结果的操作之一</tt>:</p><blockquote> atan2(y&gt;0, +∞) → +0 <br>    atan2(y&lt;0, +∞) → −0</blockquote><p>因此:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; signed(Math.atan2(-1<span style="color:#000000">, Infinity))<br></span>'-0'</div><p><strong>3.6. Math.round()</strong></p><p><tt>Math.round()</tt>是另外一个<tt>参数不为零却产生-0结果的操作</tt>:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; signed(Math.round(-0.1<span style="color:#000000">))<br></span>'-0'</div><p><strong>4. 区分这两个零</strong></p><p>判断一个零是正还是负的标准解法是用它除1,然后看计算的结果是<tt>-Infinity还是</tt><tt>+Infinity</tt>:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> isNegativeZero(x) {<br>    </span><span style="color:#0000ff">return</span> x === 0 &amp;&amp; (1/x &lt; 0);<br>}</div><p>除了上面讲的几种解法.还有<a href="http://www.wirfs-brock.com/allen/posts/128">一个解法</a>来自Allen Wirfs-Brock(译者注:TC39编辑,ES标准就是他写出来的.):</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> isNegativeZero(x) {<br>    </span><span style="color:#0000ff">if</span> (x !== 0) <span style="color:#0000ff">return</span> <span style="color:#0000ff">false</span><span style="color:#000000">;<br>    </span><span style="color:#0000ff">var</span> obj =<span style="color:#000000"> {};<br>    Object.defineProperty(obj, </span>'z', { value: -0, configurable: <span style="color:#0000ff">false</span><span style="color:#000000"> });<br>    </span><span style="color:#0000ff">try</span><span style="color:#000000"> {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 如果x的值和z属性的当前值不相等的话,就会抛出异常.</span><br>        Object.defineProperty(obj, 'z'<span style="color:#000000">, { value: x });<br>    } </span><span style="color:#0000ff">catch</span><span style="color:#000000"> (e) {<br>        </span><span style="color:#0000ff">return</span> <span style="color:#0000ff">false</span><span style="color:#000000"><br>    };<br>    </span><span style="color:#0000ff">return</span> <span style="color:#0000ff">true</span><span style="color:#000000">;<br>}</span></div><p>解释:通常情况下,你不能重新定义一个不可配置的对象属性,否则会抛出异常:</p>    TypeError: Cannot redefine property: z<p>可是,如果你重新定义属性时指定的属性特性的值与该特性当前的值相等,则JavaScript会忽略掉这个重定义操作,不会抛出异常.其中在判断两个值是否相等时使用的运算不是<tt>===</tt>,而是一个称之为SameValue的内部算法,该算法可以区分开-0和+0.你可以从Wirfs-Brock的原文中了解更多细节(冻结一个对象会让该对象的所有属性变的不可配置).</p><p><strong>5. 总结</strong></p><p>通过本文我们知道了,由于JavaScript中数字正负号的编码方式,导致了JavaScript中存在有两个不同符号的零.不过,−0的负号通常会被引擎有意隐藏起来,我们也最好假装只有一个零存在.这主要是因为,正负零之间的区别几乎不会影响到我们正常的计算操作.即便是严格相等运算符<tt>===也不能区分开它们</tt>.如果你的确需要区分一个零到底是正还是负,文中也给出了几种解决方法.需要注意的是,这种存在有两个零的怪异表现并不是JavaScript的错误,这只是遵循了IEEE 754中关于浮点数的标准.</p><p><strong>6. 相关链接</strong></p><ul><li><a href="http://www.2ality.com/2012/02/js-integers.html">Integers and shift operators in JavaScript</a></li><li><a href="http://www.2ality.com/2012/03/displaying-numbers.html">Displaying numbers in JavaScript</a></li><li><a href="http://www.cnblogs.com/ziyunfei/archive/2012/09/20/2694477.html">[译]JavaScript:"更"严格的相等</a></li></ul><img src="http://www.cnblogs.com/ziyunfei/aggbug/2777099.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/12/10/2777099.html">本文链接</a></p></h3>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

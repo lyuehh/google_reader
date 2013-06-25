@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>趣题：老鼠与毒药问题的推广</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>趣题：老鼠与毒药问题的推广</h2>
+<p class="meta">27 May 2011</p>
+
+<div class="post">
+<h2>趣题：老鼠与毒药问题的推广</h2>
+
+<h3>by Matrix67</h3>
+
+<h3>at 2011-05-27 12:27:57</h3>
+
+<h3>original <a href="http://www.matrix67.com/blog/archives/4361">http://www.matrix67.com/blog/archives/4361</a></h3>
+
+<p>    今天的趣题来源于 <a href="javascript:void(0);">IBM Ponder This 三月份的谜题</a>。</p>
+
+
+<p>    大家应该都听说过这个老题目：有 1000 个一模一样的瓶子，其中有 999 瓶是普通的水，有一瓶是毒药。任何喝下毒药的生物都会在一星期之后死亡。现在，你只有 10 只小白鼠和一星期的时间，如何检验出哪个瓶子里有毒药？</p>
+
+
+<p>    这个问题的答案也堪称经典：把瓶子从 0 到 999 依次编号，然后全部转换为 10 位二进制数。让第一只老鼠喝掉所有二进制数右起第一位是 1 的瓶子，让第二只老鼠喝掉所有二进制数右起第二位是 1 的瓶子，等等。一星期后，如果第一只老鼠死了，就知道毒药瓶子的二进制编号中，右起第一位是 1 ；如果第二只老鼠没死，就知道毒药瓶子的二进制编号中，右起第二位是 0 ⋯⋯每只老鼠的死活都能确定出 10 位二进制数的其中一位，由此便可知道毒药瓶子的编号了。</p>
+
+
+<p>    现在，有意思的问题来了：如果你有两个星期的时间（换句话说你可以做两轮实验），为了从 1000 个瓶子中找出毒药，你最少需要几只老鼠？注意，在第一轮实验中死掉的老鼠，就无法继续参与第二次实验了。</p>
+
+
+<p><span></span></p>
+
+
+<p> <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+ <br>
+    答案：7 只老鼠就足够了。事实上，7 只老鼠足以从 3<sup>7</sup> = 2187 个瓶子中找出毒药来。首先，把所有瓶子从 0 到 2186 编号，然后全部转换为 7 位三进制数。现在，让第一只老鼠喝掉所有三进制数右起第一位是 2 的瓶子，让第二只老鼠喝掉所有三进制数右起第二位是 2 的瓶子，等等。一星期之后，如果第一只老鼠死了，就知道毒药瓶子的三进制编号中，右起第一位是 2 ；如果第二只老鼠没死，就知道毒药瓶子的三进制编号中，右起第二位不是 2，只可能是 0 或者 1 ⋯⋯也就是说，每只死掉的老鼠都用自己的生命确定出了，三进制编号中自己负责的那一位是 2 ；但每只活着的老鼠都只能确定，它所负责的那一位不是 2 。于是，问题就归约到了只剩一个星期时的情况。在第二轮实验里，让每只活着的老鼠继续自己未完成的任务，喝掉它负责的那一位是 1 的所有瓶子。再过一星期，毒药瓶子的三进制编号便能全部揭晓了。</p>
+
+
+<p>    类似地，我们可以证明， n 只小白鼠 t 周的时间可以从 (t+1)<sup>n</sup> 个瓶子中检验出毒药来。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/523828861/matrix67/feedsky/s.gif?r=http://www.matrix67.com/blog/archives/4361" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

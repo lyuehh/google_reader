@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>hyk-proxy0.9.2发布 – 4月2日, 2011更新</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>hyk-proxy0.9.2发布 – 4月2日, 2011更新</h2>
+<p class="meta">03 Apr 2011</p>
+
+<div class="post">
+<h2>hyk-proxy0.9.2发布 – 4月2日, 2011更新</h2>
+
+<h3>by iGFW</h3>
+
+<h3>at 2011-04-03 12:14:16</h3>
+
+<h3>original <a href="http://igfw.tk/archives/2057">http://igfw.tk/archives/2057</a></h3>
+
+<h3>Version 0.9.2.1 – 4月4日, 2011</h3>
+
+
+<ul>
+<li>Bug修复:一个GAE Client导致CPU占用100%的bug</li>
+</ul>
+
+
+<p>更多，更完善的https选项支持，包括https proxy<br>
+支持自定义的.appspot.com到任意域名/IP的映射设置（无需修改系统host文件）<br>
+重用已连接的HTTP(S)长连接以提高性能<br>
+支持设置本地proxy的下一跳Google服务地址（部分企业内网无法访问appspot情况可用）</p>
+
+
+<p><span></span>GAE Client支持自定义appid的域名映射到任意地址/IP, eg<br>
+修改&lt;hyk-proxy&gt;/plugins/gae/etc/GoogleMappingHosts.txt<br>
+添加映射规则，可填多项，注意”#”开头的行是注释，不生效：<br>
+xyz.appspot.com=www.google.com.hk<br>
+abc.appspot.com=203.208.39.104</p>
+
+
+<p>GAE Client支持设置local proxy的下一跳Google服务地址<br>
+某些内网环境下必须设置固定proxy才能访问外网，而此proxy无法访问appspot，不过却可以访问某些Google服务，这种情况下可以设置local proxy的下一跳Google服务地址<br>
+编辑修改&lt;hyk-proxy&gt;/plugins/gae/etc/hyk-proxy-gae-conf.xml<br>
+在local proxy配置中增加nextHopGoogleServer的配置，eg：<br>
+&lt;localProxy&gt;<br>
+&lt;host&gt;proxy.abc.com&lt;/host&gt;<br>
+&lt;port&gt;80&lt;/port&gt;<br>
+&lt;nextHopGoogleServer&gt;www.google.com.hk&lt;/nextHopGoogleServer&gt;<br>
+&lt;/localProxy&gt;</p>
+
+
+<p>GAE Client完整支持HTTPS</p>
+
+
+<p><strong>下载地址</strong>：<a href="http://code.google.com/p/hyk-proxy/downloads/list">http://code.google.com/p/hyk-proxy/downloads/list</a></p>
+
+
+<p><strong>使用方法</strong>：<a href="http://code.google.com/p/hyk-proxy/">http://code.google.com/p/hyk-proxy/</a></p>
+
+
+<p><strong>连接方法</strong>：</p>
+
+
+<p>1、通过google https proxy 连接，默认使用https代理mail.google.com端口443来连接。</p>
+
+
+<p>2、通过谷歌中国连接，设置http代理203.208.39.22（谷歌北京IP）端口80来连接。</p>
+
+
+<p>3、自定义appid的域名映射到谷歌IP连接，即原来的hosts+https方法<a href="http://igfw.tk/archives/1964">http://igfw.tk/archives/1964</a></p>
+
+
+<p>4、使用XMPP2GAE模式绕道XMPP服务连接，设置Connection Mode为XMPP，点击New填写你的XMPP服务用户名和密码（以gmail为例用户名应该填写abc@gmail.com然后填密码abc），保存设置连接hyk-proxy即可。</p>
+
+
+<p>5、设置国外代理的下一跳Google服务地址来连接，也就是先使用国外代理服务器连接Google服务地址然后再连接.appspot.com，</p>
+
+
+<blockquote><p>编辑修改&lt;hyk-proxy&gt;/plugins/gae/etc/hyk-proxy-gae-conf.xml<br>
+在local proxy配置中增加nextHopGoogleServer的配置，如：<br>
+&lt;localProxy&gt;<br>
+&lt;host&gt;202.181.174.252&lt;/host&gt;<br>
+&lt;port&gt;80&lt;/port&gt;<br>
+&lt;nextHopGoogleServer&gt;www.google.com.hk&lt;/nextHopGoogleServer&gt;<br>
+&lt;/localProxy&gt;</p></blockquote>
+
+
+<p>然后连接即可。（其中202.181.174.252为你找的可用的国外代理，80是其端口）</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

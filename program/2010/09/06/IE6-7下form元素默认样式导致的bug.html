@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IE6/7下form元素默认样式导致的bug</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IE6/7下form元素默认样式导致的bug</h2>
+<p class="meta">06 Sep 2010</p>
+
+<div class="post">
+<h2>IE6/7下form元素默认样式导致的bug</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-09-06 14:30:42</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/756601">http://www.javaeye.com/topic/756601</a></h3>
+
+<p>Bug重现</p>
+
+
+<p> </p>
+
+
+<pre name="code">&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body style=&quot;padding:0 400px;&quot;&gt;
+            
+&lt;div style=&quot;height:20px;border:1px solid gray;&quot;&gt;&lt;/div&gt;
+&lt;div style=&quot;border:1px solid #878787;border-top:0;&quot;&gt;
+    &lt;form&gt;
+        &lt;input type=&quot;text&quot; /&gt;
+    &lt;/form&gt;       
+&lt;/div&gt;
+            
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>IE6/7下以上两个div会断开，大概有10-20个px</p>
+
+
+<p> </p>
+
+
+<p>IE8/Firefox3.6/Safari4/Chrome7 dev/Opera10 则不会断开</p>
+
+
+<p> </p>
+
+
+<p>去掉form或将form换成div则不会，初以为是form在IE6/7下的莫名bug，经路神，猪大肠等指点明白了。</p>
+
+
+<p> </p>
+
+
+<p>首先，IE6/7下form的默认样式中margin不为0， 分别为1.12em 0，14.25pt 0。</p>
+
+
+<p>见：<a href="http://css-class.com/test/css/defaults/UA-style-sheet-defaults.htm">http://css-class.com/test/css/defaults/UA-style-sheet-defaults.htm</a></p>
+
+
+<p> </p>
+
+
+<p>再次，form的margin会发生塌陷，跑到父元素的外了，因此两个div之间断裂出现空白了。</p>
+
+
+<p> </p>
+
+
+<p>关于margin塌陷见css 8.3.1：<a href="http://www.w3.org/TR/CSS2/box.html#collapsing-margins">http://www.w3.org/TR/CSS2/box.html#collapsing-margins</a></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>因此，写css reset时莫忘了重置form元素。</strong></p>
+
+
+<p> </p>
+
+
+<p>感谢他们两个。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://snandy.javaeye.com"&gt;zhouyrt&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/756601" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>解决Firefox中Flash 11.3 崩溃bug</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>解决Firefox中Flash 11.3 崩溃bug</h2>
+<p class="meta">28 Jun 2012</p>
+
+<div class="post">
+<h2>解决Firefox中Flash 11.3 崩溃bug</h2>
+
+<h3>by asins</h3>
+
+<h3>at 2012-06-27 19:45:45</h3>
+
+<h3>original <a href="http://nootn.com/blog/Program/51/">http://nootn.com/blog/Program/51/</a></h3>
+
+<p>一名视频网站的前端人员，firefox无法使用那绝对是场灾难，这两天我就经历了这么一场，原因为flash自动升级到11.3版本出现与Firefox无法兼容导致浏览器崩溃。</p>
+
+
+
+
+<p>flash 11.3这次升级特地针对Firefox提供了沙箱功能，但附加了这个bug给我们</p>
+
+
+
+
+<p>解决Firefox中Flash 11.3 崩溃bug就是关掉这沙箱功能就OK了，方法如下：</p>
+
+
+
+
+<p>Ctrl+r打开目录</p>
+
+
+
+
+<pre><code>%WINDIR%\System32\Macromed\Flash（32位操作系统）
+%WINDIR%\SysWOW64\Macromed\Flash（64位操作系统）
+</code></pre>
+
+
+
+
+<p>找到 mms.cfg 文件，用记事本打开，新增一行：</p>
+
+
+
+
+<pre><code>ProtectedMode=0
+</code></pre>
+
+
+
+
+<p>保存退出，OK了。</p>
+
+
+
+
+<p>方法来自论坛的帖子 http://www.firefox.net.cn/forum/viewtopic.php?f=5&amp;t=44101</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

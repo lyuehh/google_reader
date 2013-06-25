@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>HTML5以及WebGL</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>HTML5以及WebGL</h2>
+<p class="meta">26 Jul 2010</p>
+
+<div class="post">
+<h2>HTML5以及WebGL</h2>
+
+<h3>by 李嘉昱</h3>
+
+<h3>at 2010-07-25 23:08:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html">http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/jyli/"><img src="http://pic.cnblogs.com/face/u50207.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/jyli/">李嘉昱</a> 发表于 2010-07-25 23:08 <a href="http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html">原文链接</a> 阅读: 771 评论: 2</p>
+
+
+<p><strong>注：</strong>【转载请注明文章来源、保持原样】</p>
+
+
+<p>出处：<a title="view: HTML5以及WebGL" href="http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html">http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html</a>            <span style="color:red">请</span><br>作者：李嘉昱</p>
+
+
+<p> </p>
+
+
+<p>首先来看下<b>HTML5</b>提供的新特性</p>
+
+
+<ul>
+<li>Web Socket 定义了一套API, 允许网页能够使用Web Socket协议来和远程主机进行双工通信。  </li>
+<li>Web Storage 定义了一套API, 能够在Web客户端以key-value的形式对数据进行持久化存储。  </li>
+<li>Web SQL<b> </b>定义了一套API, 能够将数据存储在数据库，并使用类似SQL的方式进行查询。  </li>
+<li>Web Workers<b> </b>定义了一套API，能够允许脚本运行于后台，进行类似于线程化的操作。  </li>
+<li>WebGl 定义了一套API, 能够允许在网页中使用类似于Open GL，实际上是一套基于OpenGL ES 2.0的3d图形API。这些API是通过HTML 5的canvas标签来使用的。 </li>
+</ul>
+
+
+<p>从上面可以看出WebGl实际上是HTML5提供的新特征的一部分，通过Html5的canvas元素来展现。</p>
+
+
+<p>这样页面开发人员利用canvas标签就可以开辟出一片类似于div的区域，从而能够在这块区域中实现3d渲染，使用方式类似于普通OpenGL的使用方式。</p>
+
+
+<p>实际上，canvas标签也是在html5中出现的，最先开始支持的是2d图形绘制，现在又开始有了基于WebGl的3d绘制。</p>
+
+
+<p>游戏Quake II实现了基于WebGL的移植，这样通过浏览器就能够玩Quake这样的较大型3d游戏。</p>
+
+
+<p>实际上更确切的说Quake II是基于HTML5的游戏。</p>
+
+
+<p>下面是WebGL版Quake使用的到的HTML5技术要素：</p>
+
+
+<ul>
+<li>WebGL用于3d渲染。  </li>
+<li>HTML Audio用于音频。  </li>
+<li>Local Storage API用于本地持久化存储。  </li>
+<li>Web Socket用于网络通信。 </li>
+</ul>
+
+
+<p>当然，Quake能在Browser上运行，也是离不了JavaScript的。</p>
+
+
+<p>目前，HTML5已经得到了很大程度上的推动，虽然还是在草案阶段，但主流浏览器均对其采取积极支持态度。</p>
+
+
+<p>在最新的浏览器上已经可以看到很多HTML5的特性，Google和Apple是其中的重要推手。</p>
+
+
+<p>从HTML5的新特征和以及使用上来看，不难看出为何Google和Apple如此的热衷于HTML5。</p>
+
+
+<p> </p>
+
+
+<p>如果想亲自尝试一下在自己机子上Build，并且run一下的话，可以参考如下步骤</p>
+
+
+<p><a title="http://code.google.com/p/quake2-gwt-port/wiki/BuildingAndRunning" href="http://code.google.com/p/quake2-gwt-port/wiki/BuildingAndRunning">http://code.google.com/p/quake2-gwt-port/wiki/BuildingAndRunning</a></p>
+
+
+<p>我在ubuntu上尝试了一下，并把步骤更清晰的记录如下：</p>
+
+
+<p><strong>step 1</strong> <br>sudo apt-get install mercurial <br>sudo apt-get install vorbis-tools <br>sudo apt-get install openjdk-6-jdk <br>sudo apt-get install lame </p>
+
+
+<p><strong>step 2</strong> <br>hg clone <a href="https://quake2-gwt-port.googlecode.com/hg/">https://quake2-gwt-port.googlecode.com/hg/</a> quake2-gwt-port <br>cd quake2-gwt-port </p>
+
+
+<p><strong>step 3</strong> <br>./build-dedicated-server (will build the tools and the client and server code). <br>    * If you run into memory issues, try export MAVEN_OPTS=-Xmx512m </p>
+
+
+<p><strong>step 4</strong> <br>./install-resources (will download, unpack, and convert the original Quake II demo resources). <br>cp -r maven-build/server/target/gwtquake/war/gwtquake war <br>    * Due to a glitch in our maven build files, you currently also need cp -r maven-build/server/target/gwtquake/war/gwtquake war. We are fixing this. </p>
+
+
+<p><br><strong>step 5 <br></strong>./run-dedicated-server [port] (will run the local Quake II server). </p>
+
+
+<p><strong>step 6</strong> <br>./chromium --enable-webgl </p>
+
+
+<p><strong>step 7 <br></strong><a href="http://localhost:8080/GwtQuake.html">http://localhost:8080/GwtQuake.html</a> <br>Navigate to: <a href="http://localhost:8080/GwtQuake.html">http://localhost:8080/GwtQuake.html</a> (or whatever port you specified to the server). </p>
+
+
+<p>记得使用chromium。</p>
+
+
+<p> </p>
+
+
+<p>另外不过不想这么麻烦的话，也可以直接去尝试在线版的，搜一下，应该有不少的，</p>
+
+
+<p>比如这个：<a href="http://tatari.se:8080/GwtQuake.html">http://tatari.se:8080/GwtQuake.html</a></p>
+
+
+<p>遇到什么问题，可参考<a title="http://playwebgl.com/games/quake-2-webgl/" href="http://playwebgl.com/games/quake-2-webgl/">http://playwebgl.com/games/quake-2-webgl/</a></p>
+
+
+<p> </p>
+
+
+<p>最后share一个使用Browser玩的Quake视频</p>
+
+
+<p>
+
+
+
+
+</p>
+
+
+<p><img src="http://www.cnblogs.com/jyli/aggbug/1784902.html?type=1" width="1" height="1" alt=""><p>评论: 2　<a href="http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/jyli/archive/2010/07/25/1784902.html#commentform">发表评论</a></p><p><a href="http://www.cnblogs.com/cmt/archive/2010/06/08/1753881.html">购买博客园2010T恤，留下2010年的纪念</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/69260/">开心网流量下降 寻找生存新法则</a><span style="color:gray">(2010-07-26 11:42)</span><br>· <a href="http://news.cnblogs.com/n/69258/">财经国家周刊：iPad入华受阻背后</a><span style="color:gray">(2010-07-26 11:40)</span><br>· <a href="http://news.cnblogs.com/n/69257/">微软以及云计算的现状(信息视图)</a><span style="color:gray">(2010-07-26 11:38)</span><br>· <a href="http://news.cnblogs.com/n/69256/">Polymath（博学者）：全新的IT职位</a><span style="color:gray">(2010-07-26 11:17)</span><br>· <a href="http://news.cnblogs.com/n/69255/">Web Farm Framework 2.0 For IIS 7的测试版发布</a><span style="color:gray">(2010-07-26 11:16)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/69179/">腾讯：搅局者还是终结者？</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

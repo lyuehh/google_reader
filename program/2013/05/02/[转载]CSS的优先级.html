@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[转载]CSS的优先级</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[转载]CSS的优先级</h2>
+<p class="meta">02 May 2013</p>
+
+<div class="post">
+<h2>[转载]CSS的优先级</h2>
+
+<h3>by 晴方好玲</h3>
+
+<h3>at 2013-05-02 15:00:08</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_897db7b50101b4ed.html">http://blog.sina.com.cn/s/blog_897db7b50101b4ed.html</a></h3>
+
+<div style="padding-top:15px;margin:20px 0;border:none;border-top:1px dotted #ccc"><div style="margin-bottom:12px"><span style="margin-right:25px"><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_6c07dac30100lij0.html" title="CSS的优先级">CSS的优先级</a></span><span><strong>作者：</strong><a href="http://blog.sina.com.cn/u/1812454083" title="yychao">yychao</a></span></div><div><div>1、标有"!important"的规则拥有1级优先级</div>
+<div>2、标有"style"属性的规则拥有2级优先级</div>
+<div>3、附有"id"的规则拥有3级优先级</div>
+<div>4、附有"class"的规则拥有4级优先级</div>
+<div>5、标签名"如：p、div、h1"直接定义的规则拥有5级优先级</div>
+<div>   </div>
+<div>1）同一级别的规则，遵守"最近优先"的原则</div>
+<div>2）作者定义的规则优先级高于浏览器默认的规则</div>
+<div><br></div>
+<div>如：!important &gt; style &gt; #id
+&gt; .class &gt; 标签选择符 &gt;
+通配符</div>
+<div><br></div>
+<div>网上有人用"吨"来形容CSS的优先权重，看下图:</div>
+<div><br></div>
+<div><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://static7.photo.sina.com.cn/orignal/6c07dac3h910d37d877d6"><img src="http://static7.photo.sina.com.cn/middle/6c07dac3h910d37d877d6&amp;690" width="522" height="256"></a></div>
+<div><br></div>
+<div><a href="http://blog.photo.sina.com.cn/showpic.html#url=http://static7.photo.sina.com.cn/orignal/6c07dac3h910d37d877d6"></a>基本原则：</div>
+<div><br></div>
+<div>
+<div>一、标签#id &gt; #id; 标签.class &gt;
+.class;</div>
+<br>
+<div style="border:1px dashed #e6e6e6;background:#f7f7f7;padding:5px;color:#666">
+<div><b>id:</b></div>
+<div>p#id-tit{</div>
+<div>  
+ font-size:18px;</div>
+<div>}</div>
+<div>#id-tit-one{</div>
+<div>  
+ font-size:12px;</div>
+<div>}</div>
+<div>&lt;p
+id=&quot;id-tit&quot;&gt;测试文字&lt;/p&gt;</div>
+<div>&lt;p
+id=&quot;id-tit-one&quot;&gt;测试文字&lt;/p&gt;</div>
+<div><br></div>
+<div><b>class:</b></div>
+<div>p.class-tit{</div>
+<div>  
+ color:red;</div>
+<div>}</div>
+<div>.class-tit-one{</div>
+<div>  
+ color:blue;</div>
+<div>}</div>
+<div>&lt;p
+class=&quot;class-tit&quot;&gt;测试文字&lt;/p&gt;</div>
+<div>&lt;p
+class=&quot;class-tit-one&quot;&gt;测试文字&lt;/p&gt;</div>
+</div>
+<div><br></div>
+<div>二、具体情况要多测试</div>
+<br>
+<div style="border:1px dashed #e6e6e6;background:#f7f7f7;padding:5px;color:#666">
+<div>#all{</div>
+<div>  
+ color:red;</div>
+<div>}</div>
+<div>.one .two .three{</div>
+<div>  
+ color:blue;</div>
+<div>}</div>
+<div>.three{</div>
+<div>  
+ color:green;</div>
+<div>}</div>
+<div>//文字是什么颜色？如果给第2段加上","号会如何?</div>
+<div>.one, .two, .three{</div>
+<div>  
+ color:blue;</div>
+<div>}</div>
+<div>//这就需要具体情况具体测试，光靠猜往往会出乎你的意料。</div>
+<div>&lt;div id=&quot;all&quot;&gt;</div>
+<div>  
+ &lt;span
+class=&quot;one&quot;&gt;</div>
+<div>    
+   &lt;span
+class=&quot;two&quot;&gt;</div>
+<div>    
+     
+ &lt;span
+class=&quot;three&quot;&gt;</div>
+<div>    
+     
+     测试文字</div>
+<div>    
+     
+ &lt;/span&gt;</div>
+<div>    
+ 
+ &lt;/span&gt;</div>
+<div>  
+ &lt;/span&gt;</div>
+<div>&lt;/div&gt;</div>
+</div>
+<div><br></div>
+<div>  
+ 看了CSS的优先规则似乎很清晰，但看了上面的例子感觉又糊涂了，抓破了头皮也没用，WEB开发存在着很多隐含的问题，只有发现一个记录一个，多学习多测试，掌握规律就好。</div>
+<div><br></div>
+<br></div></div></div>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=9"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

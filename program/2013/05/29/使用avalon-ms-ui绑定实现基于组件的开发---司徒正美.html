@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用avalon ms-ui绑定实现基于组件的开发 - 司徒正美</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用avalon ms-ui绑定实现基于组件的开发 - 司徒正美</h2>
+<p class="meta">29 May 2013</p>
+
+<div class="post">
+<h2>使用avalon ms-ui绑定实现基于组件的开发 - 司徒正美</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2013-05-29 10:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/29/3105270.html">http://www.cnblogs.com/rubylouvre/archive/2013/05/29/3105270.html</a></h3>
+
+<p>让日子过得轻松，必须让代码不断往上抽象。avalon的一切就是为这个崇高的目的而迸进——操作数据即操作DOM，远离DOM进行前端开发。javascript之所以在生命的前十年碌碌无为，都是因为开发者被这些兼容性问题搞怕了。在前十年，人们都是用着那些很底层的原生DOM方法，JS方法进行编程，效率异常低下。随着Prototype.js, jQuery等库的出现， 把几乎所有能封装都给封装了， 我们的生活才变得美好起来。但开发企业内部管理系统，却鲜有听说用jQuery来搞，大家都爱用开箱即用的EXT UI框架。UI组件无疑是比jQuery这些DOM操作对象强上一截，是更高程度的抽象与封装。但组件的制定性一般很差，比如说zTree，它就使用插件化来进行扩展。对于目前业界给出的方案，avalon是怎么做的呢？</p>
+
+
+<p>首先，像ms-class, ms-hover, ms-on其实是在jQuery的事情，不同的是，它没有依赖Sizzle这些动则上千行的选择器引擎，而是通过扫描与转换绑定属性实现。绑定属性会转换一个求值函数，求值函数内部与ViewModel挂钩，因此能即时同步，外部套着一个DOM操作函数，比如说ms-class，就是根据求值函数的返回值的真假来调用toggleClass， ms-hover则是通过绑定mouseenter, mouseleave来toggleClass, ms-checked是处理表单元素的checked属性， ms-visible负责元素的显示隐藏， ms-if负责将元素移出或插入DOM……短短一个绑定属性就包含非常高密度的DOM操作，比jQuery更加write less, do more, do simple!这个园子已经有人在用我的avalon，反映都是很不错的，当然也提了不少改进见意。</p>
+
+
+<p>其次是组件层面，avalon与angular一样，提供面向组件的开发，但比angular用法简单多了。avalon参考了bootstrap这个twitter开发的UI库，利用data-*属性进行功能定制（当然，它还有其他形式的配置方式）。并且像bootstrap那样，只要引入JS，在相关元素上添加ms-ui="组件名"，元素节点就会转换为UI组件，一行代码也不用你写。</p>
+
+
+<p>ms-ui绑定能给我们带来以下好处：将元素上的绑定属性减到最少，只需添加ms-ui="组件名"，或最多添加data-id="xxx"， 保证对HTML最少限度的干扰。也就是说，美工与前端有了非常明确的分工。而data-id中的值则是对应ViewModel的ID，我们可以通过此ID在avalon.models[ID]中取得ViewModel，从而实现操作数据即操作DOM。</p>
+
+
+<p>基于组件，使得我们的表现层变成由一个个“积木”堆积而成。Page规则转向如何协调这些组件的运作，而不是盯着一个个元素节点。不过avalon已经帮你搞定了大部分了。比如说，基本URL远程请求不同的资源，然后转换为ViewModel，然后生成某个页面的区域。还有消息中心（也叫事件中心），由于ViewModel本来就是用观察者模式实现的，一个活生生的消息中心，你不需再造轮子。随着我们项目的深入，我们积累的各种积木也就越来越多，也就是，我们的工作就越轻松，工作效率也就越来越高。</p>
+
+
+<p>与其他UI库不一样的，avalon编写UI太简单，太方便了，这得益于它强大的双向绑定机制。</p>
+
+
+<p>拿avalon.tabs组件的源码举例吧：</p>
+
+
+<p><br>(function(avalon) {<br>    var defaults = {<br>        active: 0,<br>        event: "click", //可以使用click, mouseover<br>        collapsible: false,<br>        bottom: false,<br>        removable: false<br>    };<br>    avalon.ui.tabs = function(element, id, opts) {<br>        var el, tabsParent, tabs = [], tabpanels = [];<br>        var $element = avalon(element);<br>        //1,设置参数对象options = defaults + opts + $element.data()<br>        var options = avalon.mix({}, defaults);<br>        if (typeof opts === "object") {<br>            avalon.mix(options, opts.$json || opts);<br>        }<br>        avalon.mix(options, $element.data());<br>        <br>        $element.addClass("ui-tabs ui-widget ui-widget-content ui-corner-all");<br><br>        //2, 清空它内部所有节点，并收集其内容，构建成tabs与tabpanels两个数组<br>        while (el = element.firstChild) {<br>            if (!tablist &amp;&amp; (el.tagName === &quot;UL&quot; || el.tagName === &quot;OL&quot;)) {<br>                tabsParent = el;<br>            }<br>            if (el.tagName === "DIV") {<br>                tabpanels.push(el.innerHTML);<br>            }<br>            element.removeChild(el);<br>        }<br><br>        for (var i = 0; el = tabsParent.children[i++]; ) {<br>            tabs.push(el.innerHTML);<br>        }<br>        //3 设置动态模板<br>        var tablist = &#39;&lt;ul class=&quot;ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header&quot;&#39; +<br>                &#39; ms-class-ui-corner-all=&quot;!bottom&quot;  ms-class-ui-corner-bottom=&quot;bottom&quot; ms-each-tab=&quot;tabs&quot;&gt;&#39; +<br>                &#39;&lt;li class=&quot;ui-state-default&quot; &#39; +<br>                ' ms-class-ui-corner-top="!bottom"' +<br>                ' ms-class-ui-corner-bottom="bottom"' +<br>                ' ms-class-ui-tabs-active="active == $index"' +<br>                ' ms-class-ui-state-active="active == $index"' +<br>                ' ms-' + options.event + '="activate"' +<br>                ' ms-hover="ui-state-hover"' + // float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;这样jquery ui没有封装进去<br>                &#39; &gt;&lt;span class=&quot;ui-icon ui-icon-close&quot; style=&quot;float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;&quot; ms-if=&quot;true&quot; ms-click=&quot;remove&quot;&gt;&lt;/span&gt;&lt;/li&gt;&lt;/ul&gt;&#39;;<br>        var panels = &#39;&lt;div ms-each-panel=&quot;tabpanels&quot; &gt;&lt;div class=&quot;ui-tabs-panel ui-widget-content&quot;&#39; +<br>                ' ms-class-ui-corner-bottom="!bottom"' +<br>                &#39; ms-visible=&quot;active == $index&quot; &gt;&lt;/div&gt;&lt;/div&gt;&#39;;<br>        //4 构建组建的ViewModel<br>        var model = avalon.define(id, function(vm) {<br>            vm.active = options.active;<br>            vm.collapsible = options.collapsible;<br>            vm.tabs = tabs;<br>            vm.tabpanels = tabpanels;<br>            vm.removable = options.removable;<br>            vm.activate = function(e) {<br>                e.preventDefault();<br>                vm.active = this.$scope.$index;<br>            };<br>            vm.remove = function(e) {<br>                e.preventDefault();<br>                var index = this.$scope.$index;<br>                vm.tabs.removeAt(index);<br>                vm.tabpanels.removeAt(index);<br>                avalon.nextTick(function() {<br>                    vm.active = 0;<br>                });<br>            };<br>            vm.bottom = options.bottom;<br>        });<br>        <br>        avalon.nextTick(function() {<br>            //5 当这一波扫描过来,再将组建的DOM结构插入DOM树,并绑定ms-*属性,然后开始扫描<br>            element.innerHTML = options.bottom ? panels + tablist : tablist + panels;<br>            element.setAttribute("ms-class-ui-tabs-collapsible", "collapsible");<br>            element.setAttribute("ms-class-tabs-bottom", "bottom");<br>            avalon.scan(element, model);<br>        });<br>        return model;<br>    };<br>})(window.avalon);<br><p>它基本分为五个步骤，首先怎么也有5个参数给你传过来，element为绑定了ms-ui的元素节点，id为data-id的值，没有框架为你随机生成一个，opts，这个是ms-ui-optsName="uiName"的一个参数，opts就是框架在众多ViewModel通过hasOwnerProperty操作分别出来的参数对象。然后第一步，就是设置配置对象，它由defaults + opts + $element.data()组成，制定性应该非常强与灵活。</p><p>第二步，将element元素的内部节点进行处理，有时它们也有绑定属性，但我们不需要立即处理它们——扫描器是从上到下扫描，扫描过后来移除它们，因此阻止它们此时被扫描到——最好方法是将它们移出DOM树。这个过程可能还要做些操作，随你喜欢。</p><p>第三步，编写UI的HTML结构。</p><p>第四步，定义ViewModel，这时它的ID为我们上面的传参。</p><p>第五步，重新开始扫描，但这时，我们不需要整个页面都扫描了，只从这个元素开始就行。</p><p>有关这个tabs的示例可到<a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/12/3073433.html">这里</a>查看。</p><p>这里有两个重点，一个是扫描。扫描总是从上到下，从左到右，想让它不被扫描，有三个办法，ms-skip，这几乎是永久性的，ms-important，只有ViewModel匹配才进行此区域，最后一个是移出DOM树。扫描不但是为了转换绑定，还起到存储这些关键节点的作用（竟然这些节点做了绑定，说明要通过JS处理，而在以前这些都是通过选择器引擎来做，但一般的jQueryer很少自觉将它们缓存起来，每次用到时都重新选择，不断地遍历DOM树）。第二个是UI组件的ViewModel的构建，它是我们远离DOM编程的关键。它拥有所有关键参数与方法，相当于后端的XML配置文件。当然你也可以什么也不做，defaults其实已经调试好一切了。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/3105270.html?type=1" width="1" height="1" alt=""><br><p>本文链接：<a href="http://www.cnblogs.com/rubylouvre/archive/2013/05/29/3105270.html">http://www.cnblogs.com/rubylouvre/archive/2013/05/29/3105270.html</a>，转载请注明。</p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

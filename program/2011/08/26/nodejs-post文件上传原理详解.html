@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>nodejs-post文件上传原理详解</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>nodejs-post文件上传原理详解</h2>
+<p class="meta">26 Aug 2011</p>
+
+<div class="post">
+<h2>nodejs-post文件上传原理详解</h2>
+
+<h3>by neekey</h3>
+
+<h3>at 2011-08-25 20:59:57</h3>
+
+<h3>original <a href="http://cnodejs.org/blog/?p=2207">http://cnodejs.org/blog/?p=2207</a></h3>
+
+<p>基础知识 浅谈HTTP中Get与Post的区别 HTTP请求报文格式： 简单介绍下，如下图： 其中请求报文中的开始行和首部行包含了常见的各种信息，比如http协议版本，方法（GET/POST），accept-language，cookie等等。 而’实体主体’一般在post中使用，比如我们用表单上传文件，文件数据就是在这个’实体主体’当中。 引子 写这篇教程的起因是因为在学习nodejs的过程中，想要自己实现一些文件上传的功能，于是不得不去研究POST。 如果你写过一点PHP，那么你肯定记得，在PHP里面，进行文件上传的时候，我们可以直接使用全局变量 $_FILE[&#39;name&#39; ]来获取已经被临时存储的文件信息。 但是实际上，POST数据实体，会根据数据量的大小进行分包传送，然后再从这些数据包里面分析出哪些是文件的元数据，那些是文件本身的数据。 PHP是底层做了封装，但是在nodejs里面，这个看似常见的功能却是需要自己来实现的。这篇文章主要就是介绍如何使用nodejs来解析post数据。 正文 总体上来说，对于post文件上传这样的过程，主要有以下几个部分： 获取http请求报文肿的头部信息，我们可以从中获得是否为POST方法，实体主体的总大小，边界字符串等，这些对于实体主体数据的解析都是非常重要的 获取POST数据（实体主体） 对POST数据进行解析 将数据写入文件 获取http请求报文头部信息 利用nodejs中的 http.ServerRequest中获取1): request.method 用来标识请求类型 request.headers 其中我们关心两个字段： content-type 包含了表单类型和边界字符串（下面会介绍）信息。 content-length post数据的长度 关于content-type get请求的headers中没有content-type这个字段 post 的 content-type 有两种 application/x-www-form-urlencoded 这种就是一般的文本表单用post传地数据，只要将得到的data用querystring解析下就可以了 multipart/form-data 文件表单的传输，也是本文介绍的重点 获取POST数据 前面已经说过，post数据的传输是可能分包的，因此必然是异步的。post数据的接受过程如下： var postData = &#39;&#39;; request.addListener(&quot;data&quot;, function(postDataChunk) { // 有新的数据包到达就执行 postData += postDataChunk; console.log(&quot;Received [...]</p>
+
+<div style="border:1px solid #ccc;font-size:14px;margin:27px auto"><div style="padding:7px 10px;border-bottom:1px dotted #ccc">关于作者</div><div style="height:129px;overflow:hidden"><a href="http://42qu.com/-10070945" style="color:#000;text-decoration:none;float:right"><img src="http://p4.42qu.us/219/295/45351.jpg" style="padding:3px;width:219px;height:123px;margin:0;background:transparent;border:0;border-left:1px dotted #ccc"></a><div style="text-align:left;line-height:23px;margin-right:226px"><div style="padding:5px 10px"><div style="overflow:hidden;margin:2px 0;float:left;font-size:14px"><a href="http://42qu.com/-10070945" style="text-decoration:none">倪云建</a>, 淘宝UED, 前端研发工程师</div><div style="clear:left"></div></div></div></div><div style="text-align:right;border-top:1px dotted #ccc;padding:10px"><div style="float:left"><a href="http://10070945.42qu.com/link/30085" style="margin-right:7px;text-decoration:none">Blog</a> <a href="http://10070945.42qu.com/link/30083" style="margin-right:7px;text-decoration:none">豆瓣</a> <a href="http://10070945.42qu.com/link/30084" style="margin-right:7px;text-decoration:none">新浪微博</a> </div><div><a href="http://42qu.com/-10070945/pay?title=nodejs-post%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D2207&amp;rel=blog" style="text-decoration:none;margin-right:17px">向文章付费</a> <a href="http://42qu.com/-10070945/pay?title=nodejs-post%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%8E%9F%E7%90%86%E8%AF%A6%E8%A7%A3&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D2207&amp;cid=1&amp;rel=blog" style="text-decoration:none;margin-right:16px">请作者吃饭</a></div></div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

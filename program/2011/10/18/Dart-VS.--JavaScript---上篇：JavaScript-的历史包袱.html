@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Dart VS.  JavaScript - 上篇：JavaScript 的历史包袱</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Dart VS.  JavaScript - 上篇：JavaScript 的历史包袱</h2>
+<p class="meta">18 Oct 2011</p>
+
+<div class="post">
+<h2>Dart VS.  JavaScript - 上篇：JavaScript 的历史包袱</h2>
+
+<h3>by Thruth</h3>
+
+<h3>at 2011-10-18 10:18:23</h3>
+
+<h3>original <a href="http://www.guao.hk/posts/dart-vs-javascript-side-a-javascripts-legacy-problems.html">http://www.guao.hk/posts/dart-vs-javascript-side-a-javascripts-legacy-problems.html</a></h3>
+
+<p><em>敬告：本文作者没写过上万行的代码，文中信息全部为道听途说，未经查证；文中观点可能偏颇狭隘一根筋，谨做抛砖引玉之用。望达者查之，读者自重，喷者迅猛。</em></p>
+
+
+<p><a title="Google 正式发布适合打造网页应用的 Dart 编程语言" href="http://www.guao.hk/posts/google-unveils-dart-its-new-programming-language-for-building-web-applications.html">Google 近日推出 Dart 语言</a>，剑指大红大紫的 JavaScript。为什么 Google 挑了这个看着不软的柿子，Dart 能不能顺利推倒傲娇的 JavaScript，这篇文章主要分析这两个口水侧漏的问题。</p>
+
+
+<h4>JavaScript 和 Google 的蜜月</h4>
+
+
+<p>JavaScript 本来是 Netscape 的小打小闹，可作为网页动态脚本的开先河者，它第一个实现了对网页动态指指画画的功能，必然随着 Web 壮大而壮大。2005 年，AJAX 兴起，网络应用形胜，JavaScript 更是如日中天。尽管其它脚本语言(e.g.VBScript, Perl等)能实现相同功能，JavaScript 是唯一一个跨平台跨设备浏览器都支持的语言。<a title="Coding Horror" href="http://www.codinghorror.com/blog/">知名科技 Blog 抠腚好弱</a>甚至说，所有能用 JavaScript 实现的，必将被 JavaScript 实现。</p>
+
+
+<p>回顾 AJAX 的兴起，Google 扮演了重要的推手角色。几个标志性网络服务 Gmail, Google Maps, Google Group，甚至 Google 搜索建议，都采用了 AJAX 实现。用户端无需安装任何插件，便有交互效果。榜样的力量是无穷的，Google 的服务充分展现了 AJAX 的潜力，之后就是大家一拥而上，将 AJAX 捧到聚光灯下。考虑到 JavaScript 在 AJAX 之前都是小打小闹，验证个表单什么的，被人认为不堪大用。如果当时你说自己会 JavaScript 都没人搭理你，怎么也要懂个 ASP/JSP 才拿得出手。当然也不是说 JavaScript 可有可无。就去年，我在网上订机票，把身份证号填成手机号，竟然就注册成功了，结果最后空姐不让我登机！妈的，2010 年了，在网页上加个 JavaScript 表单验证会死么？分辨身份证号码和手机号码是尼玛世界级难题么？跑题了，总之还是 Google 把 JavaScript 从小萝莉带入青春期。</p>
+
+
+<p>AJAX 应用越来越多，JavaScript 代码越来越多，短板也暴露的越来越明显众所周知，评判编程语言的标准和评判男人的标准不一样。其中重要的一个标准是看编程语言有多快（严格地说，编程语言无快慢之分，编程语言的实现才有。为了语言简洁，本文用编程语言快慢代指。）。而 JavaScript 最大的问题是，太！慢！了！</p>
+
+
+<p>作为脚本语言，没有事先编译，性能完全靠浏览器里的 JavaScript 引擎。Google 在芬兰找了一个团队，闭门造车两年打造出 V8 JavaScript 引擎，内置入 Chrome 浏览器。而 Chrome 在 08 年横空出世，用几百上千倍的 JavaScript 速度分数秒杀了当时市场上一切其它浏览器。自然，后来其它浏览器纷纷跟上，苹果搞了 Safari Nitro 引擎，Mozilla 更新了各种猴子 JavaScript 引擎，连 IE 也不甘落后，搞出 Chakan 引擎各种提速，这货虽说不比 Google Chrome V8 的速度，也聊胜于无。终于，JavaScript 引擎性能的突破使其能够满足现代网络应用部署的需要。这次，Google 把 JavaScript 从含苞待放的青春前期催熟到青春后期。</p>
+
+
+<p>吊诡的是，如今推出 Dart 语言的团队便包含当年开发 V8 引擎的团队。他们对 JavaScript 的评价是：“JavaScript 语言与生具来的残疾是无法通过进化改善的。”</p>
+
+
+<p>就是说，感情破裂了。</p>
+
+
+<h4>JavaScript 的非主流本质</h4>
+
+
+<p>究其原因，最大的瓶颈源于 JavaScript 是非主流语言的本质。</p>
+
+
+<p>JavaScript 是基于原型(Prototype-based)的编程语言，而现在最主流的对象编程语言都是基于类(Class-based)的。两者根本的区别在于，迥异的视角产生的不同方法论。。。</p>
+
+
+<p>不严谨地说，基于类的语言逻辑来自分类学(Taxonomy)，自上而下进行实现。程序员先要理清楚各种类之间的关系，定义好各种类，才能写出类下面的实例（可用对象）。而基于原型的语言逻辑来自认知论，举一反三进行实现，更符合人类正常认知的模式。程序员先关注几个个例的具体行为，之后再分类使用。不恰当比喻说明，如果让基于类的语言写出一个男人，要先找到人类。然后创建一个男人子类，子类具有人类一切属性且有男性性征。之后在男人子类创建出具体的男人甲。而基于原型的语言，可以先观察女人和公猿，然后删删减减拼拼凑凑得到一个男人的原型，之后按照原形创建一个男人乙。</p>
+
+
+<p>可以看出，基于类的编程主要方法是继承，男人子类继承了人类所有属性，男人甲拥有男人子类所有属性并赋了值，比如身高 175 体重 300 斤。而原型编程主要方法是克隆，男人原型克隆了女人的智商和皮肤属性，公猿的性腺和嗓音属性等等其它不细说了，请自行脑补。</p>
+
+
+<p>计算机科学史上，先出现的是基于类的语言，后来才有基于原型的语言。前者在对象编程领域一直是主流，大学里教的主要是这个，多数研究也集中在这个领域。而原型编程，虽说由于 JavaScript 的存在使用的很多，但和基于类的编程相比还是非主流状态。这就导致了一些相对劣势。</p>
+
+
+<p>由于缺乏对类的支持，而很多开发人员又习惯基于类编程。很多 JavaScript 库模拟了自己的类对象，便于开发人员调用。看上去现在两全齐美了，其实没有。关键问题是，性能。</p>
+
+
+<p>拜 Google 所赐，JavaScript 拥有目前世界上最有技术含量最复杂的脚本引擎，速度和其它脚本语言相比无以匹敌。Google 对 JavaScript 的最主要提速来自 JIT(Just-in-time) 编译，把 JavaScript 预编译成机器码，在执行时直接调用机器码提升效率。可跟传统编译语言比起来，性能不可同日而语；甚至比 JAVA, C# 也略逊一筹。</p>
+
+
+<p>事实上，JavaScript 引擎相当复杂，且提速越来越难。这也跟 JavaScript 非主流原型编程有关。</p>
+
+
+<p>基于类的语言，同类实例的数据结构和方法都相同，男人甲乙丙丁都有身高体重胸围，无非是数值区别。这种情况下，脚本引擎只需要优化该类一次，生成本地码，之后反复套用，自然会有效率性能提升。</p>
+
+
+<p>而原型语言不同，没有类的概念。传统原型语言引擎的经典方法是给出一个大字典(HashMap)，每次调用具体数值都去查字典，如此操作费时费力。可如果引擎按照类语言进行预编译，又不知道编译出来的本地码后面是否被频繁调用。有时甚至得不偿失，花在预编译上的时间还未必比查字典少。Google 的 V8 引擎则另辟蹊径，分析发现 90% 的JavaScript object 是有规律可循的。于是他们总结规律，人为地生成隐藏类，对隐藏类进行优化编译。当扫描的符合条件 JavaScript 代码时，自动调用事先编译好的机器码执行。</p>
+
+
+<p>现在你知道原型语言 JavaScript 为开发者和引擎造成了多大的拧巴。这种复杂性带来的维护成本上升，开发门槛提高。要是用了主流类语言，不会有这么多麻烦。</p>
+
+
+<p>JavaScript 本身缺乏很多特性，如不支持 Static Typing，调试维护相对困难；调用多个第三方库难以保证不冲突；内置库太迷你等等等等。当然这些都有解决方法。事实是，大多数 JavaScript 的粉丝也承认，JavaScript 是有一些缺陷的。</p>
+
+
+<p>于是有了<a title="Google Dart" href="http://www.dartlang.org/"> Google Dart 语言</a>，最核心的特性 1)基于类 2)可选类型（支持 dynamic/static typing）3)丰富内置库 4)开发工具丰富。分别对应了上文提到的 JavaScript 缺陷。</p>
+
+
+<p>下篇待续：Dart 的今生来世，主要分析 Dart 能否推倒青春后期的 JavaScript。</p>
+
+
+<hr>
+
+
+<p><small>© Thruth 发表于 <a href="http://www.guao.hk">谷奥——探寻谷歌的奥秘 ( http://www.guao.hk )</a>, 2011.  |
+<a href="http://www.guao.hk/posts/dart-vs-javascript-side-a-javascripts-legacy-problems.html#comments">24 条评论</a> |
+<a href="http://www.guao.hk/posts/dart-vs-javascript-side-a-javascripts-legacy-problems.html">永久链接</a> |
+<a href="http://google.org.cn/about/">关于谷奥</a> |
+<a href="http://google.org.cn/submit/">投稿/爆料</a><br>
+Post tags: <a href="http://www.guao.hk/tag/ajax" rel="tag">AJAX</a>, <a href="http://www.guao.hk/tag/dart" rel="tag">DART</a>, <a href="http://www.guao.hk/tag/javascript" rel="tag">JavaScript</a>
+</small></p>
+
+
+<p><img src="http://img.tongji.linezing.com/1105192/tongji.php" border="0" width="0" height="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

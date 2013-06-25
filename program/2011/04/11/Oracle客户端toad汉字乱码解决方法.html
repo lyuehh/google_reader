@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Oracle客户端toad汉字乱码解决方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Oracle客户端toad汉字乱码解决方法</h2>
+<p class="meta">11 Apr 2011</p>
+
+<div class="post">
+<h2>Oracle客户端toad汉字乱码解决方法</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-04-11 12:14:02</h3>
+
+<h3>original <a href="http://www.iteye.com/topic/997202">http://www.iteye.com/topic/997202</a></h3>
+
+<p>应一直受服务端编码和客户端编码要一致误导，结果害了我半个小时时间，来解决这个小问题，现在把解决记录一下，以备忘记：
+<br>
+<br>出现中文乱码的主要原因是字符集不同。在Oracle中，我们关心三个地方的字符集：
+<br>
+<br>先来查看一下数据库字符集：
+<br>在Oracle中可能使用Select userenv('language') from dual;或者：Select name, value$ from props$;查看。
+<br>
+<br>l Oracle服务器内部的字符集
+<br>修改方法：
+<br>connect sys/chang_on_install
+<br>update props$　set value$='TRADITIONAL CHINESE_TAIWAN.AL32UTF8'where name='NLS_CHARACTERSET';
+<br>commit;
+<br>
+<br>2 NLS_LANG变量里保存的字符集
+<br>
+<br>这个是Oracle设置的一个变量。在Windows中，这个变量保存在注册表中：
+<br>HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\HOME0 保存着NLS_LANG变量。
+<br>
+<br>在Unix/Linux中，则需要自己进行设置，在.profile里面加上 NLS_LANG=AMERICAN_AMERICA.ZHS16GBK
+<br>export NLS_LANG
+<br>
+<br>3 客户端应用的字符集
+<br>
+<br>下面是我用到的字符集
+<br>american_america.AL32UTF8
+<br>TRADITIONAL CHINESE_TAIWAN.ZHT16MSWIN950
+<br>TRADITIONAL CHINESE_TAIWAN.AL32UTF8
+<br>AMERICAN_AMERICA.WE8ISO8859P1
+<br>AMERICAN_AMERICA.ZHS16GBK
+<br>
+<br>特别注意：如果服务端编码为AL32UTF8，那么客户端就应该安装自己环境来设置字符编码。
+<br>比如我有一个服务器端，其中两个客户端一个为简体，一个为繁体：
+<br>服务器端字符集设置：american_america.AL32UTF8
+<br>简体客户端字符集设置：AMERICAN_AMERICA.ZHS16GBK
+<br>繁体客户端字符集设置：TRADITIONAL CHINESE_TAIWAN.ZHT16MSWIN950
+<br>
+<br>这样toad和sqlplus不论在繁体还是简体都可以正常显示汉字了。</p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://seekweel.iteye.com"&gt;seekweel&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系ItEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.iteye.com/topic/997202" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ItEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

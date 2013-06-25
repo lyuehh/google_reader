@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>谈谈面试与面试题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>谈谈面试与面试题</h2>
+<p class="meta">06 May 2013</p>
+
+<div class="post">
+<h2>谈谈面试与面试题</h2>
+
+<h3>by 刘志成</h3>
+
+<h3>at 2013-05-06 10:15:45</h3>
+
+<h3>original <a href="http://blog.jobbole.com/39191/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e8%25b0%2588%25e8%25b0%2588%25e9%259d%25a2%25e8%25af%2595%25e4%25b8%258e%25e9%259d%25a2%25e8%25af%2595%25e9%25a2%2598">http://blog.jobbole.com/39191/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e8%25b0%2588%25e8%25b0%2588%25e9%259d%25a2%25e8%25af%2595%25e4%25b8%258e%25e9%259d%25a2%25e8%25af%2595%25e9%25a2%2598</a></h3>
+
+<p>来源：<a title="https://github.com/wintercn/blog/issues/4" href="https://github.com/wintercn/blog/issues/4">wintercn</a>，作者微博：<a title="http://weibo.com/wintercn" href="http://weibo.com/wintercn">@寒冬winter</a></p>
+
+
+<p>起因，某日<span><a href="http://forum.jobbole.com/showthread.php/3620" title="Google的面试题，电话面试和招聘流程介绍">电话面试</a></span>之后满心郁闷的我发了两条微博：</p>
+
+
+<p><span style="color:#888888">面试的时候问个css的position属性能刷掉一半的人这是啥情况……</span></p>
+
+
+<p><span style="color:#888888">其实这问题我本来打算的是可以顺着一路扯到normal flow、containing block、bfc、margin collapse，base line，writing mode，bidi，这样一路问下去的，奈何第一个问题（亲我真的只问了position有哪些取值和行为啊）就悲剧了……</span></p>
+
+
+<p>其中的一些回复让我认为非常有必要写这样一篇文章来说说面试和面试题的事情。</p>
+
+
+<h2>关于题目</h2>
+
+
+<p>什么样的面试题是好的？我认为有三点衡量指标：</p>
+
+
+<ul>
+<li>区分度</li>
+<li>深度</li>
+<li>覆盖范围</li>
+</ul>
+
+
+<p>是的，请注意我并没有使用“难度”这个词，因为这三个指标都与难度有关系。</p>
+
+
+<p><span style="color:#888888">css的position属性有哪些取值，它们的行为是什么？</span></p>
+
+
+<p>这个题目几乎是我每次必问的，因为这个题区分度、深度和覆盖范围都很高。这个题的答案可以分成不同的层级:</p>
+
+
+<ul>
+<li>position属性常用的取值static、relative以及absolute和它们的基本行为是每个前端都应该掌握的。这包括relative和absolute的定位原点。</li>
+<li>fixed旧版本IE不支持，但是一个对技术有热情的工程师也是应该了解的。</li>
+<li>有过研究工程师可以知道absolute的containing block计算方式跟正常流不同，当然如果没读过标准的话，表述方式不一定是这样。</li>
+<li>对CSS布局有深入研究的工程师会知道position跟display、margin collapse、overflow、float这些特性相互叠加后的行为。</li>
+</ul>
+
+
+<p>区分度可以让题目可以适用于入门级到专家级的各种面试者，深度可以保证有深度研究的面试者可以展示他们的才能，覆盖范围可以有效地了解面试者擅长的方向。</p>
+
+
+<p>网上抱怨面试官以出难题展示自己技术为乐的声音颇多，虽然不排除这样的可能性，但是我认为这样抱怨的人多半自己没有做过面试官，实际上多数公司面试往往任务量很大，几乎不会有什么玩乐的心情。题目偏、难、怪的情况多半可能是面试官不太负责任随便从网上搜索”大公司面试题”来的——图省事是个比戏弄靠谱的多的动机。</p>
+
+
+<h2>关于过程</h2>
+
+
+<p>比起笔试，面试的最大好处是可以根据面试者的水平调节题目的难度，即使一个题目中，也可以通过提示和追问来调整难度。</p>
+
+
+<p>一般来说，当面试者遇到困难或者长时间思考时，面试官应当给予提示来节约时间，而当面试者给出的答案不够具体或者回答得过于轻松时，可以适当追问。在我的微博中</p>
+
+
+<p><span style="color:#888888">其实这问题我本来打算的是可以顺着一路扯到normal flow、containing block、bfc、margin collapse，base line，writing mode，bidi，这样一路问下去的，奈何第一个问题（亲我真的只问了position有哪些取值和行为啊）就悲剧了……</span></p>
+
+
+<p>我提到了一些我准备的追问内容，这些知识点从前到后越来越细致，也越来越偏，从最开始的box排布，到后面的行模型，再到文本排版，基本上是网页排版从整体到细节的顺序。</p>
+
+
+<p>当面试者前面回答的答案足够完美，我就会进行追问，确保问到我开始不懂或者面试者开始不懂为止，这样可以大大延展题目的区分度和深度。</p>
+
+
+<h2>关于评判</h2>
+
+
+<p>首先我希望表达的一点，就是面试的评判跟学校里的考试完全是两回事，太多的人把面试当做考试而把注意力放在题目上。</p>
+
+
+<p>事实上面试中未必是所有题目全都回答”正确”就一定会通过或者较高评价。面试是面试官和面试者双方”挖掘与展示才能”的过程，参考前面提到的面试过程，全部回答正确的情况很可能是因为面试官不感兴趣懒得追问。</p>
+
+
+<p>对于面试官而言，基本评判原则就是”我要不要这个人做我的同事？”，多数情况下，这个答案会非常清楚。一些题目是充分的，也就是”回答对了说明这个人具有可以依靠的才能”，一些题目则是必要的，也就是”回答错了说明这个人无法胜任我们的工作”。</p>
+
+
+<p>在position一题的评判上，我一般认为能够答对static、relative以及absolute就已经可以达到必要标准。而因为CSS layout是我最擅长的部分（虽然还是很烂……），又考虑到误差，当面试者能回答80%以上的追问，我就会认为面试者水平远高于我，在工作中能够作为CSS方面的专家来依靠。</p>
+
+
+<p>我在面试中之所以感到沮丧，是因为大部分的人仅仅在position的基本行为上就已经错了，多数人的回答都是笼统的”绝对定位”和”相对定位”两个词，问及具体行为我得到了五花八门的答案，甚至有看上去经历相当资深的工程师把absolute和relative搞混的。</p>
+
+
+<p>而微博上一些人说”属性可以google搜索”则更离谱，position在CSS布局中是相当基础的知识，对它的行为理解深度实际上代表了一个工程师对于CSS布局系统的理解，这个理解需要长时期的学习，绝对不是可以临时google得来的。正如同考人英语，若是不认识visibility尚可以解释说确实没怎么用过，而不会写英文字母v则说明这个人根本没学过英语。</p>
+
+
+<h2>关于题目类型</h2>
+
+
+<p>面试题有很多种类型：项目细节、知识型问题，开放性问题，案例问题以及传说中的Funny Question。事实上网络上流传甚广的”大公司面试题”，往往是Funny Question，而它们真正的应用，在任何公司都是非常少见和谨慎的。</p>
+
+
+<p>一些人提到，面试应该更注重“考察能力”。是的，我认为</p>
+
+
+<p><span style="color:#888888">web前端工程师的竞争力 = web前端知识 + 能力 能力 = 编程能力 + 工程能力 + 架构能力</span></p>
+
+
+<p>这其中不包括所谓的学习能力，因为我认为学习能力是通过已有知识来体现的，如果一个具有超强学习能力的人来应聘web前端工程师但是他具有如此强的学习能力却连position这么重要的属性都没学会，那是不是下一步该要求这人附上证明自己没有精神疾病的诊断书？</p>
+
+
+<p>工程能力和架构能力一般针对层级较高的工程师，所以一般来讲所谓能力考察就是编程能力，然后呢，编程能力一般考查方式就是案例问题，也就是传说中的——<code>“算!法!题!”</code>（当然我曾提到，它们与其说是算法题，不如说是稍微复杂点的小程序，它们之所以看上去不太有用是因为出题的人为了避免理解麻烦剥掉了实际的业务场景，毕竟各个公司的业务都不是一句两句可以讲清楚的）。</p>
+
+
+<p>所以我估计教育我”考察能力”的各位,真的碰上这种题要骂死我了……</p>
+
+
+<p>在题目类型的使用上，电话面试中我会以项目细节和知识性问题为主，一般当面面试中会使用案例问题（写程序或者架构case），开放性问题和Funny Question几乎不用。</p>
+
+
+<p>考察能力的问题，一般我会控制在一道左右，最多不会超过两道题，因为这种问题往往非常消耗精力，过多会引起面试者抱怨。（当然有的公司专门这么干，同一天三轮技术面一轮AA面，每一轮都有算法题——这公司就是万恶的M$哈哈哈）</p>
+
+
+<blockquote><p>PS. position那道题目，我是不怕漏的，如果你要认真准备这道题的答案的话，基本等于学好了CSS的布局了，有兴趣的同学可以写篇文章并且发送简历到我的邮箱csf178 [at] gmail.com 写得好的话电话面试可以省了哦~ 阿里无线前端期待你的加入！</p></blockquote>
+
+
+<h4>相关文章</h4>
+
+
+<ul>
+<li><a href="http://blog.jobbole.com/21508/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/02/job-interview-300x219-150x150.jpg" alt="理想的技术面试过程"></a><a href="http://blog.jobbole.com/21508/">理想的技术面试过程</a></li>
+<li><a href="http://blog.jobbole.com/25486/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/08/bg2012081702-150x150.jpg" alt="面试时如何向公司提问？"></a><a href="http://blog.jobbole.com/25486/">面试时如何向公司提问？</a></li>
+<li><a href="http://blog.jobbole.com/29194/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/03/job-interview-300x219-150x150.jpg" alt="关于面试你不知道的几点"></a><a href="http://blog.jobbole.com/29194/">关于面试你不知道的几点</a></li>
+<li><a href="http://blog.jobbole.com/30432/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/11/baidu-recruiting-150x150.jpg" alt="北漂面试之百度+惠普H3C"></a><a href="http://blog.jobbole.com/30432/">北漂面试之百度+惠普H3C</a></li>
+<li><a href="http://blog.jobbole.com/1585/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2011/10/%E8%BF%91%E6%9C%9F%E9%9D%A2%E8%AF%95%E6%84%9F%E5%8F%97-150x150.png" alt="面试测试题"></a><a href="http://blog.jobbole.com/1585/">近期面试感受</a></li>
+<li><a href="http://blog.jobbole.com/6602/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/06/javascript-logo.png" alt="如何面试Javascript工程师"></a><a href="http://blog.jobbole.com/6602/">如何面试Javascript工程师</a></li>
+<li><a href="http://blog.jobbole.com/38819/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/04/26111533-d1d73208f2914186a5817be977351683-150x150.jpg" alt="一位张江男曲折的出国梦"></a><a href="http://blog.jobbole.com/38819/">一位张江男曲折的出国梦</a></li>
+<li><a href="http://blog.jobbole.com/932/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/30.jpg" alt="为什么新人不会编程"></a><a href="http://blog.jobbole.com/932/">为什么新人不会编程</a></li>
+<li><a href="http://blog.jobbole.com/30002/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/11/facebook-recruitment-150x150.jpg" alt="CatChen：面试体验 Facebook 篇"></a><a href="http://blog.jobbole.com/30002/">CatChen：面试体验 Facebook 篇</a></li>
+<li><a href="http://blog.jobbole.com/6237/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/career-logo.jpg" alt="前端招聘与前端卖身的困境"></a><a href="http://blog.jobbole.com/6237/">前端招聘与前端卖身的困境</a></li>
+</ul>
+
+
+<p><a href="http://blog.jobbole.com/39191/">谈谈面试与面试题</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

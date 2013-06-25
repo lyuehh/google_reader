@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JS 3D 模型</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JS 3D 模型</h2>
+<p class="meta">01 Nov 2011</p>
+
+<div class="post">
+<h2>JS 3D 模型</h2>
+
+<h3>by editor</h3>
+
+<h3>at 2011-11-01 13:32:02</h3>
+
+<h3>original <a href="http://stblog.baidu-tech.com/?p=1031">http://stblog.baidu-tech.com/?p=1031</a></h3>
+
+<p>最近断断续续地写出了这么个东西：<a href="http://ucren.com/demos/d3d/index.html">http://ucren.com/demos/d3d/index.html</a>。</p>
+
+
+<p>这是一个简单的 JS 3D 模型，能跑在包括 IE6 的所有浏览器上，结合一下 tween 缓动算法，理论上已经可以完美模拟像 <a href="http://www.cu3ox.com/">http://www.cu3ox.com/</a> 这个网站上方 banner 的各种变换效果了。<span></span></p>
+
+
+<p>介绍一下实现细节，矢量绘图仍然用的是 Raphael 库，Raphael 我在《<a href="http://ucren.com/blog/archives/33">如何用 JS 实现 3D 赛车效果</a>》这篇文章里有过介绍。此外，我参考了大量关于三维透视的文章，在下面的一些实现上用到了很多相关知识。</p>
+
+
+<h3>坐标系</h3>
+
+
+<p>我们通常用一根带原点和正方向箭头的直线来表示数轴，数轴就是一个一维坐标系，两条在原点处相交并互相垂直的数轴就形成了二维坐标系，也叫平面直角坐标系，它用两个参数 x,y 来表示平面上一个点的位置，在平面直角坐标系上，加入一条经过原点且垂直于该平面的数轴就形成了三维坐标系，它用三个参数 x,y,z 来表示空间中一个点的位置。三维坐标系分为<a href="http://baike.baidu.com/view/1253523.htm">左手坐标系</a>和<a href="http://baike.baidu.com/view/2939423.htm">右手坐标系</a>两种，为了实现的方便，本例采用左手坐标系做为场景。</p>
+
+
+<h3>场景类 Sence</h3>
+
+
+<p>场景你可以理解为存放物体的一个有限大的空间，本例的场景可以添加任意多个不同的物体（比如长方体等），场景支持任意方向的旋转，对于旋转，本例场景的实现分为以下三种方式，他们分别是绕场景中任意一个参考点的 x 轴、y 轴和 z 轴旋转。场景发生旋转后的效果是遍历场景中每一个物体，使物体发生相对于参考点做相应的旋转。</p>
+
+
+<h3>渲染器类 Renderer</h3>
+
+
+<p>渲染器你可以理解成一部照相机，由一个位于场景中或场景外的某一个地点的人拍摄，输出的照片就是渲染器的产物。渲染器涉及到两个重要的参数：人的位置和照相机景深等。拍涉到的照片会直接输出到一个 &lt;div&gt; 容器上，电脑前的您就能看到物体了，如果在场景中的物体不断发生位置变化的同时，渲染器也在一直做拍照的工作，那么您将看到物体的动画过程，渲染器可以支持 vml/svg 或 canvas 等多种绘图适配器。</p>
+
+
+<h3>长方体类 Cuboid</h3>
+
+
+<p>为了实现长方体，本例中又加了三个重要的辅助类，他们是点类（Point）、线类（Line）和面类（Face）,一个长方体由六个面确定，一个面由四条边线确定，一条边线由两个线头点确定。本例中，一个场景内的任意一个长方体都能单独进行旋转、位移等操作，在对体操作时，归根结底要落到组成体的每一个关键点的位置运算上。所以点是最重要的基础类，虽然它只能做位置变化的操作，但由它构成的每一个物体将会在点位置发生规则变化后产生很神奇的效果。</p>
+
+
+<h3>关于画家算法</h3>
+
+
+<p>渲染器工作时，会从他的角度上能看到的所有物体都描绘出来，即用 2D 的手法去描述 3D 的物体。这里涉及一个问题，离观察者越近的物体会挡住或部分挡住离得远的物体，同样的，在同一个物体上的多个面，离观察者越近的面会挡住或部分挡住离得远的面。本例采用<a href="http://zh.wikipedia.org/wiki/%E7%94%BB%E5%AE%B6%E7%AE%97%E6%B3%95">画家算法</a>来解决这个问题，“画家算法”表示头脑简单的画家首先绘制距离较远的场景，然后用绘制距离较近的场景覆盖较远的部分。画家算法里有多种实现，最常见的也最简单的是深度排序，本例用的也是深度排序，首先令每个面都具有中心点，再根据中心点的 z 轴坐标由大到小对面进行排序，排完序后的面即是离观察者由远及近的一个顺序，最后再逐个面进行渲染即可。</p>
+
+
+<p style="text-align:right">by huangzhilong</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

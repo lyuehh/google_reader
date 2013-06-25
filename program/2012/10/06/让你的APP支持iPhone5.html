@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>让你的APP支持iPhone5</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>让你的APP支持iPhone5</h2>
+<p class="meta">06 Oct 2012</p>
+
+<div class="post">
+<h2>让你的APP支持iPhone5</h2>
+
+<h3>by 唐巧</h3>
+
+<h3>at 2012-10-05 16:18:00</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8188.html">http://www.udpwork.com/item/8188.html</a></h3>
+
+<h2>前言</h2>
+
+
+<p>国庆节前，为了支持iPhone5的屏幕分辨率(640象素 x 1136象素)，我尝试着升级粉笔网<a href="http://itunes.apple.com/cn/app/fen-bi-wang/id551540593">iPhone客户端</a>。整个过程花了大概一天的时间，我把这个过程总结下来，希望对大家有帮助。</p>
+
+
+<h2>升级准备</h2>
+
+
+<p>为了支持iPhone5，我们首先需要准备以下工具和资源：</p>
+
+
+<ol><li>下载最新版的XCode4.5</li>
+<li>让美术同学提供640 x 1136分辨率的启动画面，640 x 1136分辨率的程序截图（用于在app store中显示）</li>
+<li>由于iPhone5使用的A6处理器采用了新的armv7s架构，所以如果你使用了第三方的静态链接库，需要下载对应支持armv7s的版本。我们由于使用了第三方的数据统计工具Flurry，所以下载更新了Flurry的静态链接库。</li>
+<li>如果你的显示器分辨率太小，将无法显示完整的iPhone5模拟器，可选的解决办法是换个更大的显示器或者把显示器竖起来，象我这样:</li>
+</ol>
+
+
+<p><img src="http://blog.devtang.com/images/iphone5support-1.jpg"></p>
+
+
+<p>另外还有一个简单的办法，可以在启动模拟器后，用快捷键command+3(50%)，command+2(75%), command+1(100%)，来调整模拟器的显示比例，谢谢<a href="http://weibo.com/arcsystemworks">Superrr一一</a>提供的方法，比我的简单多了。</p>
+
+
+<h2>具体升级步骤如下</h2>
+
+
+<h4>升级启动画面和第三方链接库</h4>
+
+
+<p>升级启动画面，将美术同学提供的640 x 1136分辨率的启动画面图片，命名为Default-568h@2x.png，添加到工程中即可。</p>
+
+
+<p>升级第三方链接库，这个只需要用新的第三方链接库替换掉以前的即可。如果你使用了例如opencv这种需要自己编译对应版本链接库的开源库，那么替换之前，需要自己先用xcode4.5编译其armv7s版本的静态链接库。</p>
+
+
+<h4>调整xib文件</h4>
+
+
+<p>粉笔网客户端的界面基本上都是顶部是UINavigationBar, 底部是UITabBar或UIToolBar，中间是UITableView。</p>
+
+
+<p>对于这一类界面，调整起来非常简单，只需要将UITableView设置成高度自动扩展的Autosizing方式，如下图所示：</p>
+
+
+<p><img src="http://blog.devtang.com/images/autosizing-1.png"></p>
+
+
+<p>对于底部的UIToolBar，Autosizing设置成靠底部对齐的方式即可。如下图所示：</p>
+
+
+<p><img src="http://blog.devtang.com/images/autosizing-2.png"></p>
+
+
+<h4>代码调整</h4>
+
+
+<p>有一些界面元素的位置是用代码来设置的，例如“发表笔记”界面中浮动贴在输入法键盘上面的各种可选操作的UIToolbar。因为键盘的高度在不同的输入法下是不一样的，所以需要用代码动态调整。</p>
+
+
+<p>我的调整代码如下：</p>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td>
+<td><pre>// 说明：keyboardWillShow函数和keyboardWillHide函数分别监听了
+// UIKeyboardWillShowNotification和UIKeyboardWillHideNotification
+
+- (void) keyboardWillShow:(NSNotification *)notification {
+    NSDictionary * info = [notification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    float textViewHeight = UI_SCREEN_HEIGHT - UI_STATUS_BAR_HEIGHT - UI_NAVIGATION_BAR_HEIGHT - UI_TOOL_BAR_HEIGHT - kbSize.height;
+    [UIView animateWithDuration:0.3 animations:^{
+        _textView.frame = CGRectMake(0, UI_NAVIGATION_BAR_HEIGHT, UI_SCREEN_WIDTH, textViewHeight);
+        _toolbar.frame = CGRectMake(0, UI_NAVIGATION_BAR_HEIGHT + textViewHeight, UI_SCREEN_WIDTH, UI_TOOL_BAR_HEIGHT);
+    }];
+}
+
+- (void) keyboardWillHide:(NSNotification *)notification {
+    CGSize kbSize = CGSizeMake(320, 216);
+    float textViewHeight = UI_SCREEN_HEIGHT - UI_STATUS_BAR_HEIGHT - UI_NAVIGATION_BAR_HEIGHT - UI_TOOL_BAR_HEIGHT - kbSize.height;
+    [UIView animateWithDuration:0.3 animations:^{
+        _textView.frame = CGRectMake(0, UI_NAVIGATION_BAR_HEIGHT, UI_SCREEN_WIDTH, textViewHeight);
+        _toolbar.frame = CGRectMake(0, UI_NAVIGATION_BAR_HEIGHT + textViewHeight, UI_SCREEN_WIDTH, UI_TOOL_BAR_HEIGHT);
+    }];
+}
+</pre></td>
+</tr>
+</table>
+</div>
+
+
+<p>可以看到，我将设备的各种高度都定义成了宏，这里的宏UI_SCREEN_HEIGHT表示整个设备的高度，以前这个宏的值是固定的480，现在因为iPhone5中高度值变了，所以我们将这个宏定义改成了如下的值，这样，所有相关的用代码实现的界面位置调整都搞定了。我的UI相关的宏定义如下：</p>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td>
+<td><pre>#define UI_NAVIGATION_BAR_HEIGHT        44
+#define UI_TOOL_BAR_HEIGHT              44
+#define UI_TAB_BAR_HEIGHT               49
+#define UI_STATUS_BAR_HEIGHT            20
+#define UI_SCREEN_WIDTH                 320
+// 将以下宏定义的值从480改成[[UIScreen mainScreen] bounds].size.height
+#define UI_SCREEN_HEIGHT                ([[UIScreen mainScreen] bounds].size.height)
+</pre></td>
+</tr>
+</table>
+</div>
+
+
+<p>如果你以前没有将这些设备的高度值抽取成宏，我建议你通过查找替换，先将所有用到480的地方修改成宏，然后再增加上面的宏定义即可。</p>
+
+
+<p>当然，也有一些调整稍微复杂一些，例如粉笔网首页的上拉加载更多，需要判断上拉高度是否到达阈值，这些也是和设备高度相关的。这些阈值信息以前可能就直接写成和高度相关的值，例如220什么的，这些通过直接查找480还没法直接找到。</p>
+
+
+<p>对于这些问题，只能是通过在模拟器中测试，发现问题，然后再把这些“Magic Number”替换成用上面提到的宏计算的公式。例如我们的上拉加载更多的阈值宏定义如下：</p>
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+</pre></td>
+<td><pre>#define LOAD_MORE_TEXT_HEIGHT 77
+// 显示文字阈值
+#define LOAD_MORE_THRESHOLD (UI_SCREEN_HEIGHT - UI_STATUS_BAR_HEIGHT - UI_NAVIGATION_BAR_HEIGHT - UI_TAB_BAR_HEIGHT - LOAD_MORE_TEXT_HEIGHT)
+// 刷新阈值
+#define LOAD_MORE_MAX       (LOAD_MORE_THRESHOLD + 10.0)
+</pre></td>
+</tr>
+</table>
+</div>
+
+
+<h4>提交应用</h4>
+
+
+<p>基本上就是以上这些调整工作了，完了之后用Xcode4.5编译后提交审核，并且在itunes connect中设置iPhone5屏幕尺寸的app介绍截图即可。业界传言说对于支持iPhone5的程序，苹果在应用审核的时候会优先进行，我不知道是否是真的，不过我们的应用确实只用了5天时间就通过了审核，这是我个人遇到过的最快的一次审核。</p>
+
+
+<p>祝大家国庆节玩得开心～</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8188.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8188.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8188.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一段自动搜索所有SVN工作目录进行更新的PowerShell脚本</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一段自动搜索所有SVN工作目录进行更新的PowerShell脚本</h2>
+<p class="meta">02 Dec 2010</p>
+
+<div class="post">
+<h2>一段自动搜索所有SVN工作目录进行更新的PowerShell脚本</h2>
+
+<h3>by Ivony...</h3>
+
+<h3>at 2010-12-02 13:39:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/Ivony/archive/2010/12/02/1894372.html">http://www.cnblogs.com/Ivony/archive/2010/12/02/1894372.html</a></h3>
+
+<p><p>首先给出这个脚本，其实很简单，但我差不多花了四五个小时才调试成功：</p>  <p>dir -r |?{ $_.Mode -like &quot;*d*&quot;} |cd -passthru |?{ (gci -force |%{ $_ -as [string] }) -contains &quot;.svn&quot; } |%{gl; svn cleanup; svn update }</p>  <p> </p>  <p>然后我来一段段的解释：</p>  <p> </p>  <p>dir –r</p>  <p>dir是Get-ChildItem的别名，这里的-r是-Recurse的缩写，PowerShell脚本所有参数和命令都不区分大小写，并且在没有歧义的前提下可以缩写。</p>  <p>这个指令的含义就是获取当前位置（省略-Path参数默认就是当前目录）所有子项，并且递归获取子项的子项。也就是类似于dir /s的效果，只不过这里会返回这些项（文件或目录）供后面的使用而不是显示在屏幕上了事。</p>  <p> </p>  <p>然后是|?{ $_.Mode –like “*d*” }</p>  <p>|是管道操作符，意思是把前面指令的输出当作后面指令的输入，后面的指令是?，这个?是Where-Object的别名，所以其实你可以写成这样：</p>  <p>Get-ChildItem | Where-Object { …</p>  <p>当然这样太罗嗦了。Where-Object有很多参数，帮助中是这样说的：</p>  <p>Where-Object [-FilterScript] &lt;scriptblock&gt; [-InputObject &lt;psobject&gt;] [&lt;CommonParameters&gt;]</p>  <p>其中 –InputObject 这个参数是管道输入，换言之通过管道运算符传来的东西会被自动当成这个参数后面的&lt;psoobject&gt;，每个PowerShell的指令的输入参数都不同，你可以通过help where-object –full看到这些信息：</p>  <p><font face="新宋体">......</font></p>  <p><font face="新宋体">-InputObject &lt;psobject&gt;      <br>    指定要筛选的对象。还可将对象通过管道传递给 Where-Object。</font></p>  <p><font face="新宋体">    是否必需?                    False      <br>    位置?                        named       <br>    默认值       <br>    是否接受管道输入?            true (ByValue)       <br>    是否接受通配符?              False</font></p>  <p><font face="新宋体">......</font></p>  <p>注意这里的是否接受管道输入是true，有些PowerShell指令有多个接受管道输入的参数，那他们一般都会是互斥的。</p>  <p> </p>  <p>OK，现在我们知道dir -r的结果会被当作Where-Object的-InputObject参数了，这个Where-Object的主要用途就是从输入中筛选符合条件的项，这里的筛选脚本是花括号里面括起来的东西：</p>  <p>{ $_.Mode –like “*d*” }</p>  <p> </p>  <p>$_代表迭代的每一项，也就是dir -r结果里面的每一项，那么这里是判断每一项的Mode属性是不是包含一个”d”字符，也就是这个东西是不是目录。</p>  <p> </p>  <p>筛选后的结果会被发送给|cd -passthru</p>  <p>cd是Set-Location的别名，也就是改变当前工作目录。结合前面的脚本，这里等于会让PowerShell到当前目录的所有子目录去跑一圈，不过如果只是跑一圈不干活那这个脚本是什么意义都没有的。所以cd带了一个参数叫做 -passthru。这个参数的意思是在执行完改变工作目录的操作后，把输入继续抛到后面去执行。</p>  <p> </p>  <p>那么后面是最关键的部分了：</p>  <p>|?{ (gci -force |%{ $_ -as [string] }) -contains &quot;.svn&quot; } </p>  <p>这里又是一个Where-Object筛选，它执行的脚本是：</p>  <p>{ (gci -force |%{ $_ -as [string] }) -contains &quot;.svn&quot; }</p>  <p> </p>  <p>一点点来解释，gci是Get-ChildItem的另一个别名（一开始的dir也是Get-ChildItem），-force参数告诉gci就算是隐藏的项也要取出来。请注意这里的gci被包在了{}脚本块里面，所以他没有什么管道输入，和一开始的dir一样，他是用空的-Path参数来执行的，换言之这里的gci其实就是gci . -force。由于前面有一个cd操作，所以这里的.会是所有的子目录。</p>  <p>也就是说：</p>  <p>第一个dir -r结合筛选会获取当前目录所有子代目录，</p>  <p>然后cd -passthru会改变工作目录到每一个子代</p>  <p>在每一个子代，又都会执行gci来获取所有子文件（目录）。</p>  <p> </p>  <p>gci的结果被管道到%{ $_ -as [string] }，%是ForEach-Object的别名，ForEach-Object和Where-Object类似，只不过Where-Object是对每一项执行一个判断，只返回符合条件的项，而ForEach-Object是对每一项执行一个操作返回操作结果，也就类似于LINQ是select和where的区别。</p>  <p> </p>  <p>这个操作是 -as [string]也就是把项变成字符串，也就是文件名（目录名）</p>  <p> </p>  <p>(gci |%{ $_ -as [string] })</p>  <p>经过这个复杂的操作后，gci的结果就由文件（目录）集合变成了字符串集合，这个时候再对其执行 -contains &quot;.svn&quot;，判断这个字符串集合里面有没有&quot;.svn&quot;这样的字符串。换言之，有没有名为.svn的文件或目录。</p>  <p> </p>  <p>所以{ (gci |%{ $_ -as [string] }) -contains &quot;.svn&quot; }这个脚本的结果就是，这个目录的子文件（目录）包不包含&quot;.svn&quot;，因为只有包含.svn的才是svn的工作目录。</p>  <p> </p>  <p>接下来执行的操作就比较简单了：</p>  <p>|%{gl; svn cleanup; svn update } </p>  <p> </p>  <p>对于筛选出来的结果（此时结果已经不重要了，因为已经通过cd设置为了工作位置，所以里面没有$_了）执行一段脚本。</p>  <p>gl是Get-Location的缩写，也就是获取当前的位置，执行这个操作主要是为了显示一下当前在哪个目录干活。</p>  <p>然后执行svn cleanup和svn update。</p>  <p> </p>  <p>最后我把这些操作写成了一个VS的启动脚本，这样每次通过这个脚本启动VS就能确保我的项目都是最新的了：</p>  <p><font face="Consolas">$logsfile = (&quot;$home\Documents\svn-update-logs&quot;, (get-date -format &quot;yyyyMMddHHmmss&quot;) -join &quot;\&quot;) , &quot;log&quot; -join &quot;.&quot;      <br>pushd       <br>cd 'C:\Users\Ivony\Documents\Visual Studio 2010\Projects'       <br>dir -r |?{ $_.Mode -like &quot;*d*&quot;} |cd -passthru |?{ (gci -force |%{ $_ -as [string] }) -contains &quot;.svn&quot; } |%{gl; svn cleanup; svn update }  | tee $logsfile       <br>popd       <br>echo &quot;completed.&quot; | tee $logsfile      <br>echo &quot;logs file: $logsfile&quot;       <br>echo &quot;starting IDE&quot;      <br>ii &quot;C:\Program Files\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe&quot;</font></p>  <p> </p>  <p> </p>  <p>希望对同样很懒的你有帮助。</p>  <p> </p>  <p>在这个基础上，也不难做出什么关机自动提交的脚本。。。。</p><img src="http://www.cnblogs.com/Ivony/aggbug/1894372.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/Ivony/">Ivony...</a> 发表于 2010-12-02 13:39 <a href="http://www.cnblogs.com/Ivony/archive/2010/12/02/1894372.html">原文链接</a></p><p>评论: 6　<a href="http://www.cnblogs.com/Ivony/archive/2010/12/02/1894372.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/Ivony/archive/2010/12/02/1894372.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/83238/">甲骨文总裁Larry Ellison爱对客户撒谎</a><span style="color:gray">(2010-12-02 22:57)</span><br>· <a href="http://news.cnblogs.com/n/83237/">美总务署将用Google云计算服务代替微软软件</a><span style="color:gray">(2010-12-02 22:57)</span><br>· <a href="http://news.cnblogs.com/n/83236/">Facebook CEO扎克伯格周日将亮相CBS节目</a><span style="color:gray">(2010-12-02 22:52)</span><br>· <a href="http://news.cnblogs.com/n/83235/">新华社与盛大网络签署全面战略合作协议</a><span style="color:gray">(2010-12-02 22:52)</span><br>· <a href="http://news.cnblogs.com/n/83234/">Chrome Canary 即将飞向 Mac 和 Linux 平台？</a><span style="color:gray">(2010-12-02 22:49)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/MichaelPeng/archive/2010/12/02/1893999.html">金山安全卫士代码批评</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

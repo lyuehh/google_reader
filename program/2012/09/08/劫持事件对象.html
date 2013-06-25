@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>劫持事件对象</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>劫持事件对象</h2>
+<p class="meta">08 Sep 2012</p>
+
+<div class="post">
+<h2>劫持事件对象</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-09-08 15:40:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/08/2664480.html">http://www.cnblogs.com/rubylouvre/archive/2012/09/08/2664480.html</a></h3>
+
+<p>在JS框架，事件系统的回调那个事件对象一般不是真正的事件对象。因为为了兼容IE，我们要为了它加上许多W3C属性，即使在标准浏览器下，也有许多事件也仿造出来，比如FF下的DOMMouseScroll要变mousewheel， chrome下的mouseover要变mouseenter……有太多东西要兼容了，</p>
+
+
+<p><br>&lt;!DOCTYPE HTML&gt;<br>&lt;html&gt;<br>    &lt;head&gt;<br>        &lt;title&gt;&lt;/title&gt;<br>        &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;<br>        &lt;style&gt;<br>            html,body{<br>                height:100%;<br>                background:green;<br><br>            }<br>        &lt;/style&gt;<br>        &lt;script&gt;<br>            window.onload = function(){<br>                Event.prototype.xxx = "自定义属性1"<br>                document.addEventListener("click", function(e){<br>                    console.log(e);<br>                    console.log(e.xxx);<br>                    console.log(e.yyy)<br>                    console.log(e.zzz)<br>                });<br>                var event = document.createEvent("MouseEvent");<br>                event.initEvent("click", true, true,"xxx");<br>                event.yyy = "自定义属性2"<br>                Object.defineProperty(event,"zzz", {<br>                    value:"自定义属性3",<br>                    writable:true,<br>                    configurable:true<br>                });<br>                document.body.dispatchEvent(event)<br>            }<br>        &lt;/script&gt;<br>    &lt;/head&gt;<br>    &lt;body&gt;<br><br>    &lt;/body&gt;<br>&lt;/html&gt;<br><br><p>经测试只要是支持addEventListener的浏览器都能绑上这三个属性。</p><p>我们甚至可以通过事件描述符修改事件类型</p><br>  Object.defineProperty(event,"type", {<br>                    value:"自定义属性4",<br>                    writable:true,<br>                    configurable:true<br>                });<br><img src="http://www.cnblogs.com/rubylouvre/aggbug/2664480.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/08/2664480.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

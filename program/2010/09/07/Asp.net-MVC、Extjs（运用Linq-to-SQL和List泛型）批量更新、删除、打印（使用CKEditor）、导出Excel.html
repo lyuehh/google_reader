@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Asp.net MVC、Extjs（运用Linq to SQL和List泛型）批量更新、删除、打印（使用CKEditor）、导出Excel</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Asp.net MVC、Extjs（运用Linq to SQL和List泛型）批量更新、删除、打印（使用CKEditor）、导出Excel</h2>
+<p class="meta">07 Sep 2010</p>
+
+<div class="post">
+<h2>Asp.net MVC、Extjs（运用Linq to SQL和List泛型）批量更新、删除、打印（使用CKEditor）、导出Excel</h2>
+
+<h3>by 夜雨瞳</h3>
+
+<h3>at 2010-09-07 02:29:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/yongfeng/archive/2010/09/07/1820201.html">http://www.cnblogs.com/yongfeng/archive/2010/09/07/1820201.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/yongfeng/"><img src="http://pic.cnblogs.com/face/u114370.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/yongfeng/">夜雨瞳</a> 发表于 2010-09-07 02:29 <a href="http://www.cnblogs.com/yongfeng/archive/2010/09/07/1820201.html">原文链接</a> 阅读: 1511 评论: 15</p>
+
+
+<p><span style="font-size:14pt"><strong><span style="color:#000000">1、批量操作思想的大概模型：</span></strong></span></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090700102649.png" height="645" width="885"></p>
+
+
+<p>更新：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090702375967.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090702381933.jpg"></p>
+
+
+<p>删除：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090702400144.jpg"></p>
+
+
+<p><span style="font-size:14pt"><strong><span style="color:#000000">2、导出Excel的特点</span></strong></span></p>
+
+
+<p>按<span style="color:#ff0000">页面渲染</span>来导出数据</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090700253486.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090700255012.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090700273169.jpg"></p>
+
+
+<p><strong><span style="font-size:14pt">3、打印（运用的是CKEditor）</span></strong></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090701354656.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090701360179.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090701362464.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090701364811.jpg"></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/ruby_matlab/201009/2010090701371525.jpg"></p>
+
+
+<p> </p>
+
+
+<p><strong><span style="font-size:14pt">4、一些程序解释说明</span></strong></p>
+
+
+<p style="padding-left:30px">4.1<a href="http://www.cnblogs.com/luyinghuai/archive/2008/06/24/1228817.html">@page指令 validateRequest的作用</a></p>
+
+
+<p style="padding-left:30px">    在 Web应用程序中，要阻止依赖于恶意输入字符串的黑客攻击，约束和验证用户输入是必不可少的。跨站点脚本攻击就是此类攻击的一个示例。其他类型的恶意数据或不需要的数据可以通过各种形式的输入在请求中传入。通过在应用程序中的较低级别限制允许通过的数据类型，就可以阻止不希望的事件，即使当使用代码的程序员没有恰当地使用合适的验证技术时也是如此。</p>
+
+
+<p style="padding-left:30px">当请求验证检测到潜在的恶意客户端输入时，会引发此异常来中止请求处理。请求中止能够指示危害您的应用程序安全的企图，例如跨站点脚本攻击。强烈建议让您的应用程序显式地检查与请求中止有关的所有输入。不过，您也可以通过将 <a href="http://msdn.microsoft.com/zh-cn/library/ydy4x04a%28VS.80%29.aspx">@ Page</a> 指令中的 <strong>validateRequest</strong> 属性设置为 <strong>false</strong> 来禁用请求验证，如下面的示例所示： </p>
+
+
+<p style="padding-left:30px"> <tt>&lt;%@ Page validateRequest=&quot;false&quot; %&gt;</tt> </p>
+
+
+<p style="padding-left:30px">要禁用应用程序的请求验证，必须修改应用程序的 Web.config 文件或创建一个 Web.config 文件，并将 <strong>pages</strong> 节的 <strong>validateRequest</strong> 属性设置为 <strong>false</strong>，如下面的示例所示： </p>
+
+
+<div style="padding-left:30px">
+<pre>&lt;configuration&gt;<p>&lt;system.web&gt; </p><p>&lt;pages validateRequest=&quot;false&quot; /&gt; </p><p>&lt;/system.web&gt; </p><p style="padding-left:30px">&lt;/configuration&gt;</p><p style="padding-left:30px"> </p><div><pre>        [AcceptVerbs(HttpVerbs.Post)]
+        [ValidateInput(false)]//将它导出excel的验证设置为false
+        public ActionResult ExportGrid()
+        {
+            if (Request[&quot;ExportContent&quot;] != &quot;&quot;)
+            {
+
+                string tmpFileName = &quot;export.xls&quot;;
+                string tmpContent = Request[&quot;ExportContent&quot;];//获取传递上来的文件内容  
+                if (Request[&quot;ExportFile&quot;] != &quot;&quot;)
+                {
+                    tmpFileName = Request[&quot;ExportFile&quot;];//获取传递上来的文件名  
+                    tmpFileName = System.Web.HttpUtility.UrlEncode(Request.ContentEncoding.GetBytes(tmpFileName));//处理中文文件名的情况   
+                }
+
+                Response.Write(&quot;&amp;lt;script&amp;gt;document.close();&amp;lt;/script&amp;gt;&quot;);
+                Response.Clear();
+                Response.Buffer = true;
+                Response.ContentType = &quot;application/vnd.ms-excel&quot;;
+                Response.AddHeader(&quot;Content-Disposition&quot;, &quot;attachment;filename=\&quot;&quot; + tmpFileName + &quot;\&quot;&quot;);
+
+                Response.Charset = &quot;&quot;;
+
+                System.IO.StringWriter tmpSW = new System.IO.StringWriter();
+                System.Web.UI.HtmlTextWriter tmpHTW = new System.Web.UI.HtmlTextWriter(tmpSW);
+                tmpHTW.WriteLine(tmpContent);
+                Response.Write(tmpSW.ToString());
+                Response.End();
+            }
+
+            return View();
+        }
+</pre>
+</div>
+<p> </p>
+<br><br>
+<p>4.2 将<span style="color:#ff0000">前台的数据转换为Json字符串</span> 传送 给后台进行<span style="color:#ff0000">List泛型反序列化</span>，需要一些凑合的函数或者方法</p>
+<p>
+<div>
+<pre>Ext.namespace(&quot;StrToJson&quot;);
+StrToJson.ToJsonUpdateRecord = function(items) {
+    var jsonData = &quot;[&quot;;
+    for (i = 0; i &lt; items.length; i++) {
+        record = items[i];
+        if (record.dirty) {
+            jsonData += Ext.util.JSON.encode(record.data) + &quot;,&quot;;
+        }
+    }
+    jsonData = jsonData.substring(0, jsonData.length - 1) + &quot;]&quot;;
+    return jsonData;
+}
+</pre>
+</div>
+ </p>
+<p>4.3 对ExtJs官方提供的ExportToGrid.js的文件，可以自己进行部分的改动。</p>
+<p> </p>
+<div>
+<pre>var Base64 = (function() {
+    // Private property
+    var keyStr = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=&quot;;
+
+    // Private method for UTF-8 encoding
+    function utf8Encode(string) {
+        string = string.replace(/\r\n/g,&quot;\n&quot;);
+        var utftext = &quot;&quot;;
+        for (var n = 0; n &lt; string.length; n++) {
+            var c = string.charCodeAt(n);
+            if (c &lt; 128) {
+                utftext += String.fromCharCode(c);
+            }
+            else if((c &gt; 127) &amp;&amp; (c &lt; 2048)) {
+                utftext += String.fromCharCode((c &gt;&gt; 6) | 192);
+                utftext += String.fromCharCode((c &amp; 63) | 128);
+            }
+            else {
+                utftext += String.fromCharCode((c &gt;&gt; 12) | 224);
+                utftext += String.fromCharCode(((c &gt;&gt; 6) &amp; 63) | 128);
+                utftext += String.fromCharCode((c &amp; 63) | 128);
+            }
+        }
+        return utftext;
+    }
+
+    // Public method for encoding
+    return {
+        encode : (typeof btoa == &#39;function&#39;) ? function(input) {
+            return btoa(utf8Encode(input));
+        } : function (input) {
+            var output = &quot;&quot;;
+            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+            var i = 0;
+            input = utf8Encode(input);
+            while (i &lt; input.length) {
+                chr1 = input.charCodeAt(i++);
+                chr2 = input.charCodeAt(i++);
+                chr3 = input.charCodeAt(i++);
+                enc1 = chr1 &gt;&gt; 2;
+                enc2 = ((chr1 &amp; 3) &lt;&lt; 4) | (chr2 &gt;&gt; 4);
+                enc3 = ((chr2 &amp; 15) &lt;&lt; 2) | (chr3 &gt;&gt; 6);
+                enc4 = chr3 &amp; 63;
+                if (isNaN(chr2)) {
+                    enc3 = enc4 = 64;
+                } else if (isNaN(chr3)) {
+                    enc4 = 64;
+                }
+                output = output +
+                keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+                keyStr.charAt(enc3) + keyStr.charAt(enc4);
+            }
+            return output;
+        }
+    };
+})();
+
+Ext.override(Ext.grid.GridPanel, {
+    getExcelXml: function(includeHidden) {
+        var worksheet = this.createWorksheet(includeHidden);
+        var totalWidth = this.getColumnModel().getTotalWidth(includeHidden);
+        return &#39;&lt;xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;&gt;&#39; +
+            &#39;&lt;ss:Workbook xmlns:ss=&quot;urn:schemas-microsoft-com:office:spreadsheet&quot; xmlns:x=&quot;urn:schemas-microsoft-com:office:excel&quot; xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot;&gt;&#39; +
+            &#39;&lt;o:DocumentProperties&gt;&lt;o:Title&gt;&#39; + this.title + &#39;&lt;/o:Title&gt;&lt;/o:DocumentProperties&gt;&#39; +
+            &#39;&lt;ss:ExcelWorkbook&gt;&#39; +
+            &#39;&lt;ss:WindowHeight&gt;&#39; + worksheet.height + &#39;&lt;/ss:WindowHeight&gt;&#39; +
+            &#39;&lt;ss:WindowWidth&gt;&#39; + worksheet.width + &#39;&lt;/ss:WindowWidth&gt;&#39; +
+            &#39;&lt;ss:ProtectStructure&gt;False&lt;/ss:ProtectStructure&gt;&#39; +
+            &#39;&lt;ss:ProtectWindows&gt;False&lt;/ss:ProtectWindows&gt;&#39; +
+            &#39;&lt;/ss:ExcelWorkbook&gt;&#39; +
+            &#39;&lt;ss:Styles&gt;&#39; +
+            &#39;&lt;ss:Style ss:ID=&quot;Default&quot;&gt;&#39; +
+            &#39;&lt;ss:Alignment ss:Vertical=&quot;Top&quot; ss:WrapText=&quot;1&quot; /&gt;&#39; +
+            &#39;&lt;ss:Font ss:FontName=&quot;arial&quot; ss:Size=&quot;10&quot; /&gt;&#39; +
+            &#39;&lt;ss:Borders&gt;&#39; +
+            //边框颜色
+            &#39;&lt;ss:Border ss:Color=&quot;#000000&quot; ss:Weight=&quot;1&quot; ss:LineStyle=&quot;Continuous&quot; ss:Position=&quot;Top&quot; /&gt;&#39; +
+            &#39;&lt;ss:Border ss:Color=&quot;#000000&quot; ss:Weight=&quot;1&quot; ss:LineStyle=&quot;Continuous&quot; ss:Position=&quot;Bottom&quot; /&gt;&#39; +
+            &#39;&lt;ss:Border ss:Color=&quot;#000000&quot; ss:Weight=&quot;1&quot; ss:LineStyle=&quot;Continuous&quot; ss:Position=&quot;Left&quot; /&gt;&#39; +
+            &#39;&lt;ss:Border ss:Color=&quot;#000000&quot; ss:Weight=&quot;1&quot; ss:LineStyle=&quot;Continuous&quot; ss:Position=&quot;Right&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Borders&gt;&#39; +
+            &#39;&lt;ss:Interior /&gt;&#39; +
+            &#39;&lt;ss:NumberFormat /&gt;&#39; +
+            &#39;&lt;ss:Protection /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:ID=&quot;title&quot;&gt;&#39; +
+            &#39;&lt;ss:Borders /&gt;&#39; +
+            &#39;&lt;ss:Font /&gt;&#39; +
+            &#39;&lt;ss:Alignment ss:WrapText=&quot;1&quot; ss:Vertical=&quot;Center&quot; ss:Horizontal=&quot;Center&quot; /&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;@&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:ID=&quot;headercell&quot;&gt;&#39; +
+            &#39;&lt;ss:Font ss:Bold=&quot;1&quot; ss:Size=&quot;10&quot; /&gt;&#39; +
+            &#39;&lt;ss:Alignment ss:WrapText=&quot;1&quot; ss:Horizontal=&quot;Center&quot; /&gt;&#39; +
+            &#39;&lt;ss:Interior ss:Pattern=&quot;Solid&quot; ss:Color=&quot;#A3C9F1&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:ID=&quot;even&quot;&gt;&#39; +
+            //这里是表格中奇数行的背景色,默认为#FFFFFF白色
+            &#39;&lt;ss:Interior ss:Pattern=&quot;Solid&quot; ss:Color=&quot;#FFFFFF&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;even&quot; ss:ID=&quot;evendate&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;yyyy-mm-dd&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;even&quot; ss:ID=&quot;evenint&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;0&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;even&quot; ss:ID=&quot;evenfloat&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;0.00&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:ID=&quot;odd&quot;&gt;&#39; +
+            //这里是表格中偶数行的背景色,默认为#FFFFFF白色
+            &#39;&lt;ss:Interior ss:Pattern=&quot;Solid&quot; ss:Color=&quot;#FFFFFF&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;odd&quot; ss:ID=&quot;odddate&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;yyyy-mm-dd&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;odd&quot; ss:ID=&quot;oddint&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;0&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;ss:Style ss:Parent=&quot;odd&quot; ss:ID=&quot;oddfloat&quot;&gt;&#39; +
+            &#39;&lt;ss:NumberFormat ss:Format=&quot;0.00&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Style&gt;&#39; +
+            &#39;&lt;/ss:Styles&gt;&#39; +
+            worksheet.xml +
+            &#39;&lt;/ss:Workbook&gt;&#39;;
+    },
+
+    createWorksheet: function(includeHidden) {
+        // Calculate cell data types and extra class names which affect formatting
+        var cellType = [];
+        var cellTypeClass = [];
+        var cm = this.getColumnModel();
+        var totalWidthInPixels = 0;
+        var colXml = &#39;&#39;;
+        var headerXml = &#39;&#39;;
+        var visibleColumnCountReduction = 0;
+        var colCount = cm.getColumnCount();
+        for (var i = 0; i &lt; colCount; i++) {
+            if ((cm.getDataIndex(i) != &#39;&#39;)
+                &amp;&amp; (includeHidden || !cm.isHidden(i))) {
+                var w = cm.getColumnWidth(i)
+                totalWidthInPixels += w;
+                //这里做一些判断，将一些网络参数如‘操作’过滤
+                if (cm.getColumnHeader(i) === &quot;&quot; || cm.getDataIndex(i)===&quot;operate&quot;) {
+                    cellType.push(&quot;None&quot;);
+                    cellTypeClass.push(&quot;&quot;);
+                    ++visibleColumnCountReduction;
+                }
+                else
+                {
+                    colXml += &#39;&lt;ss:Column ss:AutoFitWidth=&quot;1&quot; ss:Width=&quot;&#39; + w + &#39;&quot; /&gt;&#39;;
+                    headerXml += &#39;&lt;ss:Cell ss:StyleID=&quot;headercell&quot;&gt;&#39; +
+                        &#39;&lt;ss:Data ss:Type=&quot;String&quot;&gt;&#39; + cm.getColumnHeader(i) + &#39;&lt;/ss:Data&gt;&#39; +
+                        &#39;&lt;ss:NamedCell ss:Name=&quot;Print_Titles&quot; /&gt;&lt;/ss:Cell&gt;&#39;;
+                    var fld = this.store.recordType.prototype.fields.get(cm.getDataIndex(i));
+                    switch(fld.type) {
+                        case &quot;int&quot;:
+                            cellType.push(&quot;Number&quot;);
+                            cellTypeClass.push(&quot;int&quot;);
+                            break;
+                        case &quot;float&quot;:
+                            cellType.push(&quot;Number&quot;);
+                            cellTypeClass.push(&quot;float&quot;);
+                            break;
+                        case &quot;bool&quot;:
+                        case &quot;boolean&quot;:
+                            cellType.push(&quot;String&quot;);
+                            cellTypeClass.push(&quot;&quot;);
+                            break;
+                        case &quot;date&quot;:
+                            cellType.push(&quot;DateTime&quot;);
+                            cellTypeClass.push(&quot;date&quot;);
+                            break;
+                        default:
+                            cellType.push(&quot;String&quot;);
+                            cellTypeClass.push(&quot;&quot;);
+                            break;
+                    }
+                }
+            }
+        }
+        var visibleColumnCount = cellType.length - visibleColumnCountReduction;
+
+        var result = {
+            height: 9000,
+            width: Math.floor(totalWidthInPixels * 30) + 50
+        };
+
+        // Generate worksheet header details.
+        var t = &#39;&lt;ss:Worksheet ss:Name=&quot;&#39; + this.title + &#39;&quot;&gt;&#39; +
+            &#39;&lt;ss:Names&gt;&#39; +
+            &#39;&lt;ss:NamedRange ss:Name=&quot;Print_Titles&quot; ss:RefersTo=&quot;=\&#39;&#39; + this.title + &#39;\&#39;!R1:R2&quot; /&gt;&#39; +
+            &#39;&lt;/ss:Names&gt;&#39; +
+            &#39;&lt;ss:Table x:FullRows=&quot;1&quot; x:FullColumns=&quot;1&quot;&#39; +
+            &#39; ss:ExpandedColumnCount=&quot;&#39; + (visibleColumnCount + 2) +
+            &#39;&quot; ss:ExpandedRowCount=&quot;&#39; + (this.store.getCount() + 2) + &#39;&quot;&gt;&#39; +
+            colXml +
+//            &#39;&lt;ss:Row ss:Height=&quot;38&quot;&gt;&#39; +
+//            &#39;&lt;ss:Cell ss:StyleID=&quot;title&quot; ss:MergeAcross=&quot;&#39; + (visibleColumnCount - 1) + &#39;&quot;&gt;&#39; +
+//            &#39;&lt;ss:Data xmlns:html=&quot;http://www.w3.org/TR/REC-html40&quot; ss:Type=&quot;String&quot;&gt;&#39; +
+//            &#39;&lt;html:B&gt;&#39;+
+//            //表头标题
+//            //&#39;Generated by ExtJS&#39;
+//            &#39;&lt;/html:B&gt;&lt;/ss:Data&gt;&lt;ss:NamedCell ss:Name=&quot;Print_Titles&quot; /&gt;&#39; +
+//            &#39;&lt;/ss:Cell&gt;&#39; +
+//            &#39;&lt;/ss:Row&gt;&#39; +
+            &#39;&lt;ss:Row ss:AutoFitHeight=&quot;1&quot;&gt;&#39; +
+            headerXml +
+            &#39;&lt;/ss:Row&gt;&#39;;
+
+        // Generate the data rows from the data in the Store
+        for (var i = 0, it = this.store.data.items, l = it.length; i &lt; l; i++) {
+            t += &#39;&lt;ss:Row&gt;&#39;;
+            var cellClass = (i &amp; 1) ? &#39;odd&#39; : &#39;even&#39;;
+            r = it[i].data;
+            var k = 0;
+            for (var j = 0; j &lt; colCount; j++) {
+                if ((cm.getDataIndex(j) != &#39;&#39;)
+                    &amp;&amp; (includeHidden || !cm.isHidden(j))) {
+
+                    var v = r[cm.getDataIndex(j)];
+                    if (typeof cm.config[j].renderer == &#39;function&#39; &amp;&amp; cellType[k] != &#39;DateTime&#39;) {
+                        var m = {};
+                        v = cm.config[j].renderer(v, m, it[i], i, j, this.store);
+                        var re = /&lt;[^&gt;]+&gt;/g;
+                        if (v) {
+                            v = v.toString().replace(re, &#39;&#39;);
+                        }
+                        else {
+                            v = &#39;&#39;;
+                        }
+                    }
+
+                    if (cellType[k] !== &quot;None&quot;) {
+                        t += &#39;&lt;ss:Cell ss:StyleID=&quot;&#39; + cellClass + cellTypeClass[k] + &#39;&quot;&gt;&lt;ss:Data ss:Type=&quot;&#39; + cellType[k] + &#39;&quot;&gt;&#39;;
+                        if (cellType[k] == &#39;DateTime&#39;) {
+                            t += v.format(&#39;Y-m-d&#39;);
+                        } else {
+                            t += v;
+                        }
+                        t +=&#39;&lt;/ss:Data&gt;&lt;/ss:Cell&gt;&#39;;
+                    }
+                    k++;
+                }
+            }
+            t += &#39;&lt;/ss:Row&gt;&#39;;
+        }
+
+        result.xml = t + &#39;&lt;/ss:Table&gt;&#39; +
+            &#39;&lt;x:WorksheetOptions&gt;&#39; +
+            &#39;&lt;x:PageSetup&gt;&#39; +
+            &#39;&lt;x:Layout x:CenterHorizontal=&quot;1&quot; x:Orientation=&quot;Landscape&quot; /&gt;&#39; +
+            &#39;&lt;x:Footer x:Data=&quot;Page &amp;P of &amp;N&quot; x:Margin=&quot;0.5&quot; /&gt;&#39; +
+            &#39;&lt;x:PageMargins x:Top=&quot;0.5&quot; x:Right=&quot;0.5&quot; x:Left=&quot;0.5&quot; x:Bottom=&quot;0.8&quot; /&gt;&#39; +
+            &#39;&lt;/x:PageSetup&gt;&#39; +
+            &#39;&lt;x:FitToPage /&gt;&#39; +
+            &#39;&lt;x:Print&gt;&#39; +
+            &#39;&lt;x:PrintErrors&gt;Blank&lt;/x:PrintErrors&gt;&#39; +
+            &#39;&lt;x:FitWidth&gt;1&lt;/x:FitWidth&gt;&#39; +
+            &#39;&lt;x:FitHeight&gt;32767&lt;/x:FitHeight&gt;&#39; +
+            &#39;&lt;x:ValidPrinterInfo /&gt;&#39; +
+            &#39;&lt;x:VerticalResolution&gt;600&lt;/x:VerticalResolution&gt;&#39; +
+            &#39;&lt;/x:Print&gt;&#39; +
+            &#39;&lt;x:Selected /&gt;&#39; +
+            &#39;&lt;x:DoNotDisplayGridlines /&gt;&#39; +
+            &#39;&lt;x:ProtectObjects&gt;False&lt;/x:ProtectObjects&gt;&#39; +
+            &#39;&lt;x:ProtectScenarios&gt;False&lt;/x:ProtectScenarios&gt;&#39; +
+            &#39;&lt;/x:WorksheetOptions&gt;&#39; +
+            &#39;&lt;/ss:Worksheet&gt;&#39;;
+        return result;
+    }
+});
+
+</pre>
+</div>
+<p> </p>
+</pre>
+</div>
+
+
+<p style="padding-left:30px"><strong><span style="font-size:14pt">5、总结</span></strong></p>
+
+
+<p style="padding-left:30px">这个EditorGridPanelr做的缺点很多。</p>
+
+
+<p style="padding-left:60px">5.1、在EditorGridPanel的批量更新上，用了SQL的update语句，因为Linq的批量更新上，转化后的SQL语句在效率上还是有些缺憾的。当然，这样子写程序<span style="color:#ff0000">有违背了程序之美</span>。其中，批量更新网上有不少的例子，如：<a href="http://www.aneyfamily.com/terryandann/post/2008/04/batch-updates-and-deletes-with-linq-to-sql.aspx">http://www.aneyfamily.com/terryandann/post/2008/04/batch-updates-and-deletes-with-linq-to-sql.aspx</a>，但是因为能力有限，所以只能用自己的方法解决一些像这样子的问题。</p>
+
+
+<p style="padding-left:60px">5.2、在导出Excel时，暂时我<span style="color:#ff0000">只做了导出当前的页面</span>，没有考虑导出全部的页面。而且，也试过了几个浏览器，如firefox、IE等，但是<span style="color:#ff0000">不完全兼容</span>。firefox可以导出，IE7、IE8也可以。</p>
+
+
+<p style="padding-left:60px">5.3、打印工作做得不大好，可以打印选中的记录，<span style="color:#ff0000">却打印不了“根据页面渲染后”（如减少列，按姓名、编号==排序）</span>。在很多方面上做得还是不够完整。</p>
+
+
+<p style="padding-left:60px">5.4、直接用SQL的Update语句，要是断电的话，那怎么办？更新数据更新到一半？所以在异常捕获方面也做得不大好，很乐意大家提出建议。</p>
+
+
+<p style="padding-left:60px"> </p>
+
+
+<p style="padding-left:30px"><span style="color:#000000;font-size:14pt"><strong>6、以下是相关配置和使用的环境：</strong></span></p>
+
+
+<p style="padding-left:60px">win7系统</p>
+
+
+<p style="padding-left:60px">vs2008 sp1</p>
+
+
+<p style="padding-left:60px">SQL2005</p>
+
+
+<p style="padding-left:60px">.NET FrameWork3.5</p>
+
+
+<p style="padding-left:60px"><span style="color:#ff0000">extjs3.2版本</span></p>
+
+
+<p style="padding-left:60px"><span style="color:#ff0000">ckeditor3.4版本</span></p>
+
+
+<p style="padding-left:60px"><span style="color:#ff0000"><br></span></p>
+
+
+<p style="padding-left:30px"><strong><span style="color:#000000;font-size:14pt">7.下载</span></strong></p>
+
+
+<p style="padding-left:60px"><span style="color:#000000">因为源代码没有加入Extjs和ckeditor，所以这部分添加麻烦读者自己到它们的官方网站下载了。</span></p>
+
+
+<p style="padding-left:60px">Extjs官方下载包：<a href="http://www.sencha.com/products/js/">http://www.sencha.com/products/js/</a><span style="color:#000000"> </span></p>
+
+
+<p style="padding-left:60px"><span style="color:#000000">ckeditor官方下载包：</span><a href="http://ckeditor.com/download">http://ckeditor.com/download</a></p>
+
+
+<p style="padding-left:60px">源代码下载包：<a href="http://files.cnblogs.com/yongfeng/ExtJs_ASPMVC_Batch_Operation.rar">http://files.cnblogs.com/yongfeng/ExtJs_ASPMVC_Batch_Operation.rar</a></p>
+
+
+<p><img src="http://www.cnblogs.com/yongfeng/aggbug/1820201.html?type=1" width="1" height="1" alt=""><p>评论: 15　<a href="http://www.cnblogs.com/yongfeng/archive/2010/09/07/1820201.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/yongfeng/archive/2010/09/07/1820201.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73505/">环球企业家：亚马逊出手</a><span style="color:gray">(2010-09-07 21:39)</span><br>· <a href="http://news.cnblogs.com/n/73509/">Google 代码搜索升级，新增 Chromium 订制版</a><span style="color:gray">(2010-09-07 21:31)</span><br>· <a href="http://news.cnblogs.com/n/73508/">福布斯：3PAR的真正价值</a><span style="color:gray">(2010-09-07 21:20)</span><br>· <a href="http://news.cnblogs.com/n/73507/">原谷歌中国高管陶宁已加盟创新工场</a><span style="color:gray">(2010-09-07 21:19)</span><br>· <a href="http://news.cnblogs.com/n/73506/">谷歌Chrome 6提速17% 仍逊于Opera和Safari</a><span style="color:gray">(2010-09-07 21:18)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2010/09/07/1820392.html">博客园电子期刊2010年8月刊发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>http权威指南观后小结</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>http权威指南观后小结</h2>
+<p class="meta">22 Nov 2012</p>
+
+<div class="post">
+<h2>http权威指南观后小结</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2012-11-21 22:46:05</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/601174402012102110625394">http://snoopyxdy.blog.163.com/blog/static/601174402012102110625394</a></h3>
+
+<div>http权威指南买了已经快2个月了，前些天把这本厚书终于看完了，总体感觉是一本系统学习http协议的教程，不过很多东西都讲的很浅，没有深入，而且翻译的真是逆天了，有些地方完全不通顺，特别是前几章。<div>看完这本书收获还是有的，小结一下。</div><div><br></div><div>1、重定向</div><div>我们常说的302重定向，就是指服务器返回http状态码为302，然后带http头里面有loaction告诉浏览器跳转到哪里。然后这个重定向其实还有些学问的。</div><div>301(Moved Permanetly),可以理解为永久跳转，可以被搜索引擎抓取利用</div><div>302(Found),临时跳转，将来对此资源的请求还应该使用老的url地址</div><div>303(See Other),表示资源被转移到了其他首部，这里和302的主要区别在于支持post方法，例如当一个post请求发送到服务端，服务端如果相应302状态吗，则浏览器会发送一个get请求到location标示的url去，而303状态码则会将post发送到location标示的首部曲</div><div>304(Not Modified),表示not-modify，不返回实体，告诉浏览器读取本地缓存即可</div><div>305(Use Proxy),表示必须通过代理来访问某一个资源，代理的位置由头部location指出，</div><div>307(Temporary Redirect), 与302相似，属于临时跳转，预留给http/1.1客户端使用</div><div><br></div><div>2、tcp慢启动</div><div>TCP协议著名的Nagle算法，可以有效的防止数量巨大但是体积很小的数据包在网络中传递从而降低服务端的性能。但是Nagle本身也可能引发一些http性能问题，小的http报文无法填充满分组，可能会因等待永远都无法到来的额外数据产生延迟，通常在100-200毫秒左右。所以很多应用程序都带有TCP_NODELAY的配置来禁用Nagle算法。</div><div><br></div><div>3、代理和网关</div><div>我们有时候对这2个名词的理解可能不是很准确，严格的说代理是连接2个或多个使用相同协议的应用程序，而网关则是连接2个或多个使用不同协议的端点。网关扮演的是协议转换器的角色。</div><div><br></div><div>4、vary首部</div><div>相信很多用过google的pagespeed进行测试过的同学都碰到过需要在资源相应头上加上vary首部。那么vary首部到底是什么东西呢？</div><div>vary主要作用是给缓存服务器使用的，可以告诉缓存服务器依据客户端的请求头中的哪一项或者哪几项来进行缓存。比如我们有一份文档是多国语言版本的，但是资源的地址却是一个，"/doc/download/13"</div><div>客户端第一次请求这个地址，由于缓存服务器上没有这个文档的缓存，所以直接将请求转发到了原始服务器，原始服务器根据用户的accept-language请求头得到用户期望得到的语言，比如是 fr, en;q=0.8。则原始服务器返回整个文档给缓存服务器，并且带上vray: accept-language，这样缓存服务器在以后收到同样accept-language为fr的请求时就不会再去原始服务器上拿原文档了，而是直接响应fr法文的文档给客户端，但是如果用户想要的是jp日文呢，则原始服务器会重复之前的动作，获取原文档，并且根据vary的头部accept-language来进行缓存该文档。</div><div><br></div><div>5、host首部</div><div>很多web服务器包括nginx，apache等能够在一台服务器上绑定多个域名而不出现冲突就是依靠http请求头的host首部。比如我们把很多域名，如www.a.com.www.b.com等都绑定了同一个IP地址，用户的http请求就会发送到web服务器，但是web服务器不知道将这个请求转发给谁，于是web服务器就根据http请求头host来转发这个请求。这样就做到了一台服务器一个IP让多个域名共享了。</div><div><br></div><div>其他一些比如缓存什么的都是http协议的重点这里就不累述了</div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>对大宋下一代高端通信系统设计的七个展望</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>对大宋下一代高端通信系统设计的七个展望</h2>
+<p class="meta">15 Jun 2011</p>
+
+<div class="post">
+<h2>对大宋下一代高端通信系统设计的七个展望</h2>
+
+<h3>by 陈怀临</h3>
+
+<h3>at 2011-06-15 09:21:03</h3>
+
+<h3>original <a href="http://www.tektalk.org/2011/06/14/%e5%af%b9%e4%b8%8b%e4%b8%80%e4%bb%a3%e9%ab%98%e7%ab%af%e9%80%9a%e4%bf%a1%e7%b3%bb%e7%bb%9f%e8%ae%be%e8%ae%a1%e7%9a%84%e4%b8%83%e4%b8%aa%e5%b1%95%e6%9c%9b/">http://www.tektalk.org/2011/06/14/%e5%af%b9%e4%b8%8b%e4%b8%80%e4%bb%a3%e9%ab%98%e7%ab%af%e9%80%9a%e4%bf%a1%e7%b3%bb%e7%bb%9f%e8%ae%be%e8%ae%a1%e7%9a%84%e4%b8%83%e4%b8%aa%e5%b1%95%e6%9c%9b/</a></h3>
+
+<p>高端通信系统设计从来就是一个困难的话题。一个优秀的系统设计往往决定了其竞争力和相应的生命周期。</p>
+
+
+<p>本文试图阐述笔者对下一代高端通信系统设计的一些展望。抛豆腐引砖块，其目的是通过读者的评论，使得美军，共军，国军，伪军等的知识和经验可以共享。使得Open Source的精神发扬光大。</p>
+
+
+<p><strong>1。 LDF Rule（Legacy Decides Future）</strong><br>
+系统都是演变的，而非设计的。一个好的系统设计必须首先满足对历史系统，历史代码的演进路标。否则，就是在做Science，而非Engineering。这方面最大的挑战就是在哪个release去掉哪些历史遗留问题。改良的代价一定是小于革命。</p>
+
+
+<p>在这个第一重要的法则里，要求的是系统设计师必须了解细节。需要能进能出［想歪了的同学请自己惩罚一下自己邪恶的心灵］。要的是能bottom up。然后在bottom up的基础上，进行top down的设计。缺一不可。只能bottom inside，是一个单纯的工程师；只能top through就是一个玩胶片的大忽悠。</p>
+
+
+<p><strong>2。 CDMD Convergence Rule</strong><br>
+（Control Plane，Data Plane，Management Plane and Debug Plane Convergence）<br>
+这个rule类似与我大宋气功中的一句经典法则：人身无处不丹田。啥意思呢？<br>
+控制平面，数据平面，管理平面，调试平面都将是一个逻辑的概念，而非一个物理的实体，例如控制平面卡，数据平面卡。。。</p>
+
+
+<p>上述的各个Plane都是你中有我，我中有你。［想歪了的同学请自己惩罚一下自己邪恶的心灵］。</p>
+
+
+<p>在任何一个环节都需要有相应的逻辑部分。整体系统的任何一个平面是通过分布在系统各个环节中的子平面来共同构成的。</p>
+
+
+<p>这方面最大的挑战是：系统架构师必须对分布式系统的设计非常过敏，sorry，敏感。</p>
+
+
+<p>在分布式系统设计中，一个最重要的理论悖论是： 在分布式系统中，在任何时刻，在任何一个节点上，是无法知道当时的全局状态的。</p>
+
+
+<p>这是啥意思呢？</p>
+
+
+<p>就是，除了上帝，你在一个时刻点T2i，是不可能知道Ti时刻系统其他信息的。你能知道的信息只能是T（i＋Delta）。这个Delta就是通信开销所带来的。</p>
+
+
+<p>大白话就是，杨小姐（杨贵妃），从理论上，Y从来就没有吃过新鲜的荔枝，no matter驿道上的马儿跑的有多快。</p>
+
+
+<p>在这个分布式天生的死穴问题上，带来的问题是最多的。</p>
+
+
+<p>作为系统架构师，必须对时序逻辑（Temporal Logic）有所掌握。Otherwise, 系统设计一定是漏洞十出。</p>
+
+
+<p>另外，分布式系统的nature决定了任何全局算法的优化一定不是最优的，而是次优的。<br>
+在CDMD Convergence的设计基础上，一个很大的演变就是：C，D，M，D的计算资源的自适应（Adaptive）的调配。而非静态的划分。</p>
+
+
+<p>要充分利用计算池的模型，Processing on Demand。</p>
+
+
+<p><strong>3。CTP（Close To Port, Close To Packet， Close To Payload） Rule</strong><br>
+计算或者存储能力一定要离端口（Port）近，离数据（Packet Descriptor和Payload）近。越远，越歇火。 当官是要离党中央近。做系统是要离Traffic近。</p>
+
+
+<p>这里的一个设计Case study 是：要充分利用系统中线卡，处理卡，I/O卡上的计算能力。这些计算能力是离端口最近的，对Traffic而言，是Local Bus的距离，而非Interconnect的长途跋涉。</p>
+
+
+<p>计算是分布的。分布计算的集合就是系统的总体计算和（或）处理能力。</p>
+
+
+<p><strong>4。 CCNUMA Adoption Rule</strong><br>
+CCNUMA一定会被广泛的用在将来的高端通信系统中。</p>
+
+
+<p>只有CCNUMA的应用，才能达到分布式技术的同时，又能支持历史系统，CDMD的融合和Close to Port的法则。</p>
+
+
+<p>在CCNUMA系统设计中，必须对Memory的分布非常敏感。跨Interconnect，例如QPI，的过分存取，一定是带来硬伤。</p>
+
+
+<p>系统架构师必须对Cache，L1，L2，和L3和ccNUMA－Interconnect，例如QPI等一些知识有足够的积累和实战能力。否则，很难把握CCNUMA系统。</p>
+
+
+<p><strong>5。 Hybrid Model Rule</strong><br>
+ASIC，FPGA等等不会消亡。消亡的是你革命的心。任何设计都是一个性价比的折衷。<br>
+天下没有最美丽的女子；只有最适合你的女人。<br>
+在这个设计法则方面，要格外注意ASIC或者FPGA上的控制CPU的计算能力的浪费。<br>
+在CCNUMA的基础上，所有的CPU的整合就是一个CPU。所不同的是处理的数据可以不同而已。</p>
+
+
+<p><strong>6。 MapReduce Rule</strong></p>
+
+
+<p>经典的并行计算的MIMD模型应该被广泛的应用。</p>
+
+
+<p>多个计算流形成一个计算池；<br>
+多个数据流形成一个数据池。</p>
+
+
+<p>MapReduce不应该只是Loosely Coupled Distributed Computing的宠儿，例如Google，Facebook。</p>
+
+
+<p>MapReduce的思想精髓应该，而且也会被广泛的应用在高端通信系统（Tightly Coupled Distributed Computing）的设计上。</p>
+
+
+<p><strong>7。 x86＋ zero－overhead Linux </strong><br>
+x86＋Linux的在通信系统中一定会得到广泛的应用。从而使得通信系统能够迅速的实现，更为重要的是，支持大量的3rd party的应用。</p>
+
+
+<p>任何不adopt Linux／Unix的力量都是错误的。历史的将来会证明这一点。。。</p>
+
+
+<p>应用决定一切。 Linux的强大中的强大就是无数的应用。</p>
+
+
+
+
+<div>
+    <a href="http://www.jiathis.com/share/">分享到：</a>
+    <a title="分享到新浪微博">新浪微博</a>
+    <a title="分享到QQ空间">QQ空间</a>
+    <a title="分享到开心网">开心</a>
+    <a title="分享到人人网">人人</a>
+    <a title="分享到微软Live">Live</a>
+    <a title="分享到Digg">Digg</a>
+    <a title="分享到Facebook">FB</a>
+    <a title="分享到Twitter">Twitter</a>
+
+
+</div>
+
+
+<p><br><img src="http://www1.feedsky.com/t1/523842523/tektalk/feedsky/s.gif?r=http://www.tektalk.org/2011/06/14/%e5%af%b9%e4%b8%8b%e4%b8%80%e4%bb%a3%e9%ab%98%e7%ab%af%e9%80%9a%e4%bf%a1%e7%b3%bb%e7%bb%9f%e8%ae%be%e8%ae%a1%e7%9a%84%e4%b8%83%e4%b8%aa%e5%b1%95%e6%9c%9b/" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

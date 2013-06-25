@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>微软面试题之64</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>微软面试题之64</h2>
+<p class="meta">03 Dec 2010</p>
+
+<div class="post">
+<h2>微软面试题之64</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-12-03 14:21:54</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/832545">http://www.javaeye.com/topic/832545</a></h3>
+
+<ol>
+<li>寻找丑数。
+<br>题目：我们把只包含因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数，但14不是，因为它包含因子7。习惯上我们把1当做是第一个丑数。 求按从小到大的顺序的第1500个丑数。
+<br>分析：这是一道在网络上广为流传的面试题，据说google曾经采用过这道题。
+<br><pre name="code">
+package microsoft;</li>
+</ol>
+
+
+<p>import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;</p>
+
+<p>/<em>*
+ * 64. 寻找丑数。&lt;br/&gt;
+ * 题目：我们把只包含因子2、3和5的数称作丑数（Ugly Number）。例如6、8都是丑数， 但14不是，因为它包含因子7。&lt;br/&gt;
+ * 习惯上我们把1当做是第一个丑数。 求按从小到大的顺序的第1500个丑数。&lt;br/&gt;
+ * 分析：这是一道在网络上广为流传的面试题，据说google曾经采用过这道题。
+ </em>/
+public class Question64 {
+    private static int num = 1500;</p>
+
+<pre><code>/**
+ * 最基础的方法
+ */
+public static void method1() {
+    long l = System.currentTimeMillis();
+    long temp;
+    int time = 0;
+    for (long i = 1;; i++) {
+        temp = i;
+        while (temp % 2 == 0) {
+            temp /= 2;
+        }
+        while (temp % 3 == 0) {
+            temp /= 3;
+        }
+        while (temp % 5 == 0) {
+            temp /= 5;
+        }
+        if (temp == 1) {
+            time++;
+            // System.out.println(time + &amp;quot;:&amp;quot; + i);
+            if (time == num) {
+                break;
+            }
+        }
+    }
+    System.out.println(System.currentTimeMillis() - l);
+}
+
+public static void method2() {
+    // 初始化
+    long l = System.currentTimeMillis();
+    Set set = new HashSet&amp;lt;Integer&amp;gt;();
+    set.add(1);
+    for (int i = 1; i &amp;lt; Integer.MAX_VALUE / 5; i++) {
+        if (set.contains(i)) {
+            set.add(2 * i);
+            set.add(3 * i);
+            set.add(5 * i);
+        }
+    }
+    // 遍历
+    int time = 0;
+    for (int i = 1; i &amp;lt; Integer.MAX_VALUE; i++) {
+        if (set.contains(i)) {
+            time++;
+            // System.out.println(time + &amp;quot;:&amp;quot; + i);
+            if (time == num) {
+                break;
+            }
+        }
+    }
+    System.out.println(System.currentTimeMillis() - l);
+}
+
+public static void method3() {
+    // 初始化
+    long l = System.currentTimeMillis();
+    Set set = new HashSet&amp;lt;Integer&amp;gt;();
+    set.add(1);
+    for (int i = 1; i &amp;lt; Integer.MAX_VALUE / 5; i++) {
+        if (set.contains(i)) {
+            set.add(2 * i);
+            set.add(3 * i);
+            set.add(5 * i);
+        }
+    }
+    // 排序
+    List list = new ArrayList(set);
+    Collections.sort(list);
+    // System.out.println(list.get(1499));
+    System.out.println(System.currentTimeMillis() - l);
+}
+
+public static void main(String[] args) {
+    method1();
+    method2();
+    method3();
+}
+</code></pre>
+
+<p>}
+</pre>
+<br>运行结果：
+<br><pre name="code">
+192782
+94687
+30891
+</pre></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://lyw985.javaeye.com"&gt;lyw985&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/832545" style="color:red"&gt;已有 &lt;strong&gt;20&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

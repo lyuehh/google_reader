@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>经改进的基于nodejs的新浪微博2.0 SDK</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>经改进的基于nodejs的新浪微博2.0 SDK</h2>
+<p class="meta">15 Sep 2012</p>
+
+<div class="post">
+<h2>经改进的基于nodejs的新浪微博2.0 SDK</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2012-09-14 16:15:22</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064733/6618683/1/item.html">http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064733/6618683/1/item.html</a></h3>
+
+<p></p>
+
+
+<div>
+<h1><a name="经改进的基于nodejs的新浪微博2.0_sdk">经改进的基于nodejs的新浪微博2.0 SDK</a></h1>
+<div>
+</div>
+<h2><a name="git_地址">git 地址</a></h2>
+<div>
+<p>
+<a href="https://bitbucket.org/xinyu198736/node-weibo2/wiki/Home" title="https://bitbucket.org/xinyu198736/node-weibo2/wiki/Home" rel="nofollow">https://bitbucket.org/xinyu198736/node-weibo2/wiki/Home</a>
+</p>
+</div>
+<h2><a name="安装">安装</a></h2>
+<div>
+<pre>
+npm install weibov2
+</pre>
+</div>
+<h2><a name="特性">特性</a></h2>
+<div>
+<p>市面上的weibo nodejs sdk 不少，但是有些是1.0，有些2.0的大部分功能不够完善，用的人少，所以有问题也很少改进。
+</p>
+<p>
+这个模块是根据weibo-v2.js（<a href="https://github.com/vzhishu/node-weibo-v2" title="https://github.com/vzhishu/node-weibo-v2" rel="nofollow">https://github.com/vzhishu/node-weibo-v2</a>）改进而来。有以下改进。</p>
+<ul>
+<li>
+<div> 支持从本地发图片，也就是upload，目前看到的2.0的nodejs sdk，发现这个功能都没有实现的。我参考一个1.0的框架实现了此功能。</div>
+</li>
+<li>
+<div> 支持url缩短，url缩短需要向sdk传入多个索引名相同的配置属性，js不支持，在此模块中，多个相同索引名的属性，只需要这样传入：</div>
+</li>
+</ul>
+<pre><span>var</span> prefix=<span>&quot;&quot;</span>
+<span>var</span> option=<span>{</span>
+    access_token:token
+<span>}</span>
+<span>for</span><span>(</span><span>var</span> i=<span>0</span>;i<span>&lt;</span>reg_result.<span>length</span>;i++<span>)</span><span>{</span>
+    option<span>[</span>prefix+<span>&quot;url_long&quot;</span><span>]</span>=reg_result<span>[</span>i<span>]</span>
+    prefix+=<span>&quot;__multi__&quot;</span>
+<span>}</span>
+api.<span>statuses</span>.<span>shorten</span><span>(</span>option,<span>function</span><span>(</span>_d<span>)</span><span>{</span>
+<span>//...</span>
+<span>}</span><span>)</span>
+<span>}</span><span>}</span><span>}</span></pre>
+<p>在模块内发出请求之前会把所有的<em>multi</em>替换成空，以此实现传入多个相同名字的参数。</p>
+<ul>
+<li>
+<div> 原来的weibo-v2.js里面有很多特殊的空字符，导致js完全执行不了，会一直报错，而且很多json的最后都写着逗号，编辑器会一直报错。所以我觉得这个模块挺坑爹的，对这些问题都做了改进，可以正常运行。</div>
+</li>
+<li>
+<div> 错误处理，weibo-v2.js里面不光没有做统一的错误处理，还把返回的json格式打乱了，做了统一处理，每次callback，如果第二个参数存在，就说明api返回了错误，error即为返回的错误json生成的对象。</div>
+</li>
+</ul>
+</div>
+<h2><a name="使用示例-上传图片和错误处理">使用示例-上传图片和错误处理</a></h2>
+<div>
+</div>
+</div>
+
+
+<p><span></span></p>
+
+
+<div>
+<pre><span>var</span> wb = require<span>(</span><span>'./lib/weibo-v2.js'</span><span>)</span>.<span>WeiboApi</span>;
+ <span>var</span> opts = <span>{</span>
+   app_key       :  config.<span>weibo_key</span> ,
+   app_secret    :  config.<span>weibo_secret</span>
+<span>}</span>;
+<span>var</span> api = <span>new</span> wb<span>(</span>opts<span>)</span>;
+<span>//上传图片</span>
+api.<span>statuses</span>.<span>upload</span><span>(</span><span>{</span>
+    access_token:token,
+    <span>status</span>:data.<span>content</span>
+<span>}</span>,data.<span>pic</span>,<span>function</span><span>(</span>_d,error<span>)</span><span>{</span>
+<span>if</span><span>(</span>error<span>)</span><span>{</span>console.<span>log</span><span>(</span><span>&quot; upload error :&quot;</span>+error<span>)</span>;return;<span>}</span>
+console.<span>log</span><span>(</span><span>&quot;upload success&quot;</span><span>)</span>
+<span>}</span><span>)</span></pre>
+<h2><a name="授权示例">授权示例</a></h2>
+<div>
+<p>以express和weibov2结合来示例：
+</p>
+<pre><span>var</span> weibo2 = require<span>(</span><span>'weibov2'</span><span>)</span>;
+<span>var</span> express = require<span>(</span><span>'express'</span><span>)</span>
+ 
+<span>var</span> app = express<span>(</span><span>)</span>;
+<span>//省略express初始化配置若干句</span>
+ 
+auth = <span>function</span><span>(</span>req, res<span>)</span> <span>{</span>
+    <span>var</span> opts = <span>{</span>
+        app_key       :  APP_KEY ,
+        app_secret    :  APP_SECRET ,
+        redirect_uri : <span>'http://'</span>+req.<span>host</span>+<span>':'</span>+PORT+<span>'/sina_auth_cb'</span>
+    <span>}</span>;
+    console.<span>log</span><span>(</span><span>'http://'</span>+req.<span>host</span>+<span>':'</span>+PORT+<span>'/sina_auth_cb'</span><span>)</span>
+    <span>var</span> api = <span>new</span> weibo2.<span>WeiboApi</span><span>(</span>opts<span>)</span>;
+    <span>var</span> auth_url = api.<span>getAuthorizeUrl</span><span>(</span><span>{</span>
+        redirect_uri : <span>'http://'</span>+req.<span>host</span>+<span>':'</span>+PORT+<span>'/sina_auth_cb'</span>
+    <span>}</span><span>)</span>;
+    console.<span>log</span><span>(</span>auth_url<span>)</span>;
+    res.<span>writeHead</span><span>(</span>
+        <span>302</span>,
+        <span>{</span>
+            <span>'Location'</span>: auth_url
+        <span>}</span>
+        <span>)</span>;
+    res.<span>end</span><span>(</span><span>)</span>;
+<span>}</span>;
+ 
+sina_auth_cb = <span>function</span><span>(</span>req, res, query_info<span>)</span> <span>{</span>
+    <span>var</span> code = req.<span>query</span>.<span>code</span>;
+    <span>if</span><span>(</span><span>!</span>code<span>)</span> <span>{</span>
+        req.<span>session</span>.<span>index_error</span>=<span>&quot;授权失败，请重试！（code获取失败）&quot;</span>
+        res.<span>redirect</span><span>(</span><span>'/'</span><span>)</span>;
+        <span>return</span>;
+    <span>}</span>;
+    console.<span>log</span><span>(</span>code<span>)</span>
+    <span>var</span> opts = <span>{</span>
+        app_key       :  APP_KEY ,
+        app_secret    :  APP_SECRET ,
+        <span>'redirect_uri'</span> : <span>'http://'</span>+req.<span>host</span>+<span>':'</span>+PORT+<span>'/sina_auth_cb'</span>
+    <span>}</span>;
+    <span>var</span> api = <span>new</span> weibo2.<span>WeiboApi</span><span>(</span>opts<span>)</span>;
+    api.<span>accessToken</span><span>(</span>
+    <span>{</span>
+        code : code
+    <span>}</span>,
+    <span>function</span><span>(</span>data<span>)</span> <span>{</span>
+ 
+        <span>var</span> access_token=data.<span>access_token</span>
+        api.<span>users</span>.<span>show</span><span>(</span><span>{</span>
+            uid:data.<span>uid</span>,
+            access_token:data.<span>access_token</span>
+        <span>}</span>,<span>function</span><span>(</span>d<span>)</span><span>{</span>
+            <span>var</span> user=d;
+ 
+            console.<span>log</span><span>(</span><span>&quot;oauth success! userid:&quot;</span>+user.<span>id</span><span>)</span>
+            <span>//将用户id和用户名存储到cookie，下次无需认证直接可以使用。</span>
+            res.<span>cookie</span><span>(</span><span>&quot;userid&quot;</span>, user.<span>id</span>,<span>{</span>
+                expires: <span>new</span> Date<span>(</span>Date.<span>now</span><span>(</span><span>)</span> + <span>604800000</span><span>)</span>,
+                httpOnly: <span>true</span>
+            <span>}</span><span>)</span>;
+            res.<span>cookie</span><span>(</span><span>&quot;username&quot;</span>, user.<span>name</span>,<span>{</span>
+                expires: <span>new</span> Date<span>(</span>Date.<span>now</span><span>(</span><span>)</span> + <span>604800000</span><span>)</span>,
+                httpOnly: <span>true</span>
+            <span>}</span><span>)</span>;
+            <span>//将用户的accesstoken存储到数据库，在后台可以直接用这两个信息发送微博，无需用户参与。</span>
+            <span>//。。。。</span>
+            <span>//认证成功跳转到oauth页面</span>
+            res.<span>redirect</span><span>(</span><span>'oauth'</span><span>)</span>;
+        <span>}</span><span>)</span>
+    <span>}</span>
+    <span>)</span>;
+ 
+<span>}</span>;
+ 
+app.<span>get</span><span>(</span><span>&quot;/auth&quot;</span>,auth<span>)</span>
+app.<span>get</span><span>(</span><span>&quot;/sina_auth_cb&quot;</span>,sina_auth_cb<span>)</span>
+<span>}</span><span>}</span><span>}</span></pre>
+</div>
+</div>
+
+
+<p></p>
+
+
+<p><img src="http://www1.feedsky.com/t1/703064733/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064733/6618683/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

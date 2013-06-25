@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>C#连接SQLite的...方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>C#连接SQLite的...方法</h2>
+<p class="meta">17 Sep 2010</p>
+
+<div class="post">
+<h2>C#连接SQLite的...方法</h2>
+
+<h3>by virus</h3>
+
+<h3>at 2010-09-17 13:24:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/virusswb/archive/2010/09/17/SQLite1.html">http://www.cnblogs.com/virusswb/archive/2010/09/17/SQLite1.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/virusswb/"><img src="http://pic.cnblogs.com/face/u24476.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/virusswb/">virus</a> 发表于 2010-09-17 13:24 <a href="http://www.cnblogs.com/virusswb/archive/2010/09/17/SQLite1.html">原文链接</a> 阅读: 1126 评论: 13</p>
+
+
+<p align="center"><span style="font-size:18pt"><strong>C#连接SQLite的...方法</strong></span></p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:14pt"><strong>1 SQLite简介</strong></span></p>
+
+
+<p>　　SQLite，是一款轻型的数据库，是遵守ACID的关联式数据库管理系统，它的设计目标是嵌入式的，而且目前已经在很多嵌入式产品中使用了它，它占用资源非常的低，在嵌入式设备中，可能只需要几百K的内存就够了。它能够支持Windows/Linux/Unix等等主流的操作系统，同时能够跟很多程序语言相结合，比如 Tcl、C#、PHP、Java等，还有ODBC接口，同样比起Mysql、PostgreSQL这两款开源世界著名的数据库管理系统来讲，它的处理速度比他们都快。SQLite第一个Alpha版本诞生于2000年5月. 至今已经有10个年头，SQLite也迎来了一个版本 SQLite 3已经发布。</p>
+
+
+<p>　　官方网站：<a href="http://www.sqlite.org/">http://www.sqlite.org/</a></p>
+
+
+<p>      详细简介：<a href="http://baike.baidu.com/view/19310.htm">http://baike.baidu.com/view/19310.htm</a></p>
+
+
+<p><span style="font-size:14pt"><strong>2 C#连接，操作SQLite数据库</strong></span></p>
+
+
+<p>　　</p>
+
+
+<p><strong style="font-size:12pt">2.1 结合</strong><a style="font-size:12pt" href="http://entlib.codeplex.com/"><strong>Enterprise Library</strong></a><strong style="font-size:12pt">连接，操作SQLite</strong></p>
+
+
+<p> 　　企业库是我们常用的框架之一，可以从<a href="http://entlib.codeplex.com/">http://entlib.codeplex.com/</a>下载。安装之后有源代码和chm的文档。最新版本目前是V5.0。里面的很多思想更值得我们程序员去研究，例如：如何设计可扩展的组建？</p>
+
+
+<p>　　企业库中的数据访问组件更是我们常用的数据访问组件之一。组件默认支持SQL Server和Oracle的数据库访问，支持自定义的扩展。</p>
+
+
+<p>　　使用企业库操作SQLite数据库，需要用到企业库的一个扩展组件，<a href="http://entlibcontrib.codeplex.com/">Enterprise Library Contrib</a> 。里面扩展了企业库的很多功能。其中对数据库的扩展包括了访问操作SQLite，让我们可以像在操作SQL SERVER那样，保持代码不用很大的修改，可以很容易的过渡到SQLite上。</p>
+
+
+<p>　　遗憾的是目前的这个entlib contrib的版本是V4.1，它只支持企业库的V4.1版本，也就是说它只能和V4.1版本的企业库的数据访问组件配合使用。否则会报错。</p>
+
+
+<p>　　在<a href="http://entlib.codeplex.com/">http://entlib.codeplex.com/</a>上也可以下载到历史版本，也就是可以下载到V4.1。</p>
+
+
+<p>　　用法也可以参考：<a href="http://www.eggheadcafe.com/tutorials/aspnet/ba7ea7a0-4e67-4863-941c-f4dadf9b7127/aspnet-using-sqlite-wit.aspx">ASP.NET: Using SQLite with Enterprise Library 3.1</a></p>
+
+
+<p>　　首先在web.config或者是app.config中添加如下配置</p>
+
+
+<p> </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#0000ff">&lt;</span><span style="color:#800000">configuration</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">configSections</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">section </span><span style="color:#ff0000">name</span><span style="color:#0000ff">="dataConfiguration"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">=&quot;Microsoft.Practices.EnterpriseLibrary.Data.Configuration.DatabaseSettings, Microsoft.Practices.EnterpriseLibrary.Data, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null /&gt;<br>  &lt;/configSections&gt;<br>  &lt;dataConfiguration defaultDatabase=&quot;</span></div>
+<div><span style="color:#0000ff"></span> </div>
+<div><span style="color:#ff0000">"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>     </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">providerMappings</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>      </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">add </span><span style="color:#ff0000">databaseType</span><span style="color:#0000ff">=&quot;EntLibContrib.Data.SQLite.SQLiteDatabase, EntLibContrib.Data.SqLite, Version=4.1.0.0, Culture=neutral, PublicKeyToken=null&quot;</span><span style="color:#ff0000"><br>        name</span><span style="color:#0000ff">="System.Data.SQLite"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">providerMappings</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">dataConfiguration</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">connectionStrings</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">add </span><span style="color:#ff0000">name</span><span style="color:#0000ff">="sqlite"</span><span style="color:#ff0000"> connectionString</span><span style="color:#0000ff">=&quot;Data Source=|DataDirectory|\db;Pooling=true;FailIfMissing=false&quot;</span><span style="color:#ff0000"><br>      providerName</span><span style="color:#0000ff">="System.Data.SQLite"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">connectionStrings</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br></span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">configuration</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br></span></div></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>　　上面的connectionstring配置节的db就是SQLite的数据库文件，将它放在Web应用的App_Data目录，|DataDirectory|就代表这个目录的位置，后面的就是文件名。</p>
+
+
+<p>　　剩下的就是我们使用企业库访问SQL Server是一样的了。</p>
+
+
+<p> </p>
+
+
+<div><span style="color:#0000ff"> </span></div>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">  Database db</span><span style="color:#000000">=</span><span style="color:#000000">DatabaseFactory.CreateDatabase (</span><span style="color:#800000">"</span><span style="color:#800000">ConnectionString</span><span style="color:#800000">"</span><span style="color:#000000">);<br>                DbCommand comm </span><span style="color:#000000">=</span><span style="color:#000000"> db.GetStoredProcCommand(</span><span style="color:#800000">"</span><span style="color:#800000">GetUserByID</span><span style="color:#800000">"</span><span style="color:#000000">);<br>                IDataReader reader </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">;<br>                db.AddInParameter(comm, </span><span style="color:#800000">"</span><span style="color:#800000">UserID</span><span style="color:#800000">"</span><span style="color:#000000">, DbType.String, </span><span style="color:#800000">"</span><span style="color:#800000">12</span><span style="color:#800000">"</span><span style="color:#000000">);<br>                </span><span style="color:#0000ff">using</span><span style="color:#000000"> (reader </span><span style="color:#000000">=</span><span style="color:#000000"> db.ExecuteReader(comm))<br>                {<br>                   <br>                }</span></div></div></div>
+
+
+<p> </p>
+
+
+<div></div>
+
+
+<p><strong style="font-size:12pt"> 2.2 使用SQLite.NET访问SQLite</strong></p>
+
+
+<p>　　SQLite.NET也是一个数据访问组件，其中的<strong>System.Data.SQLite </strong>就好像是.NET自带的<strong>System.Data.SqlClient一样。里面包含了connection、command等数据访问的常用对象，只是他们前面都有一个前缀sqlite。</strong></p>
+
+
+<p>　　<strong>下载地址：</strong><a href="http://sqlite.phxsoftware.com/">　　http://sqlite.phxsoftware.com/</a></p>
+
+
+<p> 　　添加<strong>System.Data.SQLite </strong>的引用之后。在配置文件（web.config or app.config）中添加如下配置</p>
+
+
+<p>　　</p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">  </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">system.data</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">DbProviderFactories</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>      </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">remove </span><span style="color:#ff0000">invariant</span><span style="color:#0000ff">="System.Data.SQLite"</span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>      </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">add </span><span style="color:#ff0000">name</span><span style="color:#0000ff">=&quot;SQLite Data Provider&quot;</span><span style="color:#ff0000"> invariant</span><span style="color:#0000ff">="System.Data.SQLite"</span><span style="color:#ff0000"> description</span><span style="color:#0000ff">=&quot;.Net Framework Data Provider for SQLite&quot;</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">=&quot;System.Data.SQLite.SQLiteFactory, System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139&quot;</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">DbProviderFactories</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br>  </span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">system.data</span><span style="color:#0000ff">&gt;</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>　　也就是添加一个DbProviderFactory的创建源，在代码中就可以使用DbProviderFactory类来创建SQLite的数据访问对象了。</p>
+
+
+<p> </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">DbProviderFactory fact </span><span style="color:#000000">=</span><span style="color:#000000"> DbProviderFactories.GetFactory(</span><span style="color:#800000">"</span><span style="color:#800000">System.Data.SQLite</span><span style="color:#800000">"</span><span style="color:#000000">);<br>                    </span><span style="color:#0000ff">using</span><span style="color:#000000"> (DbConnection conn </span><span style="color:#000000">=</span><span style="color:#000000"> fact.CreateConnection())<br>                    {<br>                        conn.ConnectionString </span><span style="color:#000000">=</span><span style="color:#000000"> System.Configuration.ConfigurationManager.ConnectionStrings[</span><span style="color:#800000">"</span><span style="color:#800000">sqlite</span><span style="color:#800000">"</span><span style="color:#000000">].ConnectionString;<br>                        conn.Open();<br>                        DbCommand comm </span><span style="color:#000000">=</span><span style="color:#000000"> conn.CreateCommand();<br>                        comm.CommandText </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">select * from customer</span><span style="color:#800000">"</span><span style="color:#000000">;<br>                        comm.CommandType </span><span style="color:#000000">=</span><span style="color:#000000"> CommandType.Text;<br>                        </span><span style="color:#0000ff">using</span><span style="color:#000000"> (IDataReader reader </span><span style="color:#000000">=</span><span style="color:#000000"> comm.ExecuteReader())<br>                        {<br>                            </span><span style="color:#0000ff">while</span><span style="color:#000000"> (reader.Read())<br>                            {<br>                                Response.Write(reader[</span><span style="color:#800080">0</span><span style="color:#000000">]);<br>                            }<br>                        }<br>                    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p><span style="font-size:12pt"><strong> 2.3 使用原生态的ADO.NET访问SQLite</strong></span></p>
+
+
+<p>　　原生态的访问，就是说直接用connection和command这些对象打开数据库，然后打开连接，进行数据的操作。</p>
+
+
+<p> </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000"> </span><span style="color:#0000ff">using</span><span style="color:#000000"> (DbConnection conn </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> SQLiteConnection( System.Configuration.ConfigurationManager.ConnectionStrings[</span><span style="color:#800000">"</span><span style="color:#800000">sqlite</span><span style="color:#800000">"</span><span style="color:#000000">].ConnectionString))<br>                    {<br>                        conn.Open();<br>                        DbCommand comm </span><span style="color:#000000">=</span><span style="color:#000000"> conn.CreateCommand();<br>                        comm.CommandText </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">select * from customer</span><span style="color:#800000">"</span><span style="color:#000000">;<br>                        comm.CommandType </span><span style="color:#000000">=</span><span style="color:#000000"> CommandType.Text;<br>                        </span><span style="color:#0000ff">using</span><span style="color:#000000"> (IDataReader reader </span><span style="color:#000000">=</span><span style="color:#000000"> comm.ExecuteReader())<br>                        {<br>                            </span><span style="color:#0000ff">while</span><span style="color:#000000"> (reader.Read())<br>                            {<br>                                Response.Write(reader[</span><span style="color:#800080">0</span><span style="color:#000000">]);<br>                            }<br>                        }<br>                    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p><span style="font-size:14pt"><strong> 3 SQLite的相关工具</strong></span></p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:12pt"><strong>3.1 SQLite Database Browser</strong></span></p>
+
+
+<p>　　</p>
+
+
+<p>　　既然SQLite是一个数据库，那么我们肯定想要一个GUI工具来操作这个数据库，进行管理。创建库、表、执行SQL语句等操作都可以在一个GUI上进行操作就好了。<a href="http://sqlitebrowser.sourceforge.net/">SQLite Database Browser</a>就是这样的一款工具，下载地址：<a href="http://sqlitebrowser.sourceforge.net/">http://sqlitebrowser.sourceforge.net/</a></p>
+
+
+<p>　　 <img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/virusswb/sqlite1.JPG" width="708" height="575"></p>
+
+
+<p> </p>
+
+
+<p>　　在上图中看到三个tab：Database Structure，Browser Data，Execute SQL。</p>
+
+
+<p>　　通过第一个可以查看数据库的结构，第二个可以浏览数据，第三个可以执行任何SQL语句，下面可以显示sql语句的执行结果。这个工具还可以进行数据库的管理工作。</p>
+
+
+<p><img src="http://www.cnblogs.com/virusswb/aggbug/1829180.html?type=1" width="1" height="1" alt=""><p>评论: 13　<a href="http://www.cnblogs.com/virusswb/archive/2010/09/17/SQLite1.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/virusswb/archive/2010/09/17/SQLite1.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/74684/">谷歌CEO施密特谈与Facebook苹果间对抗</a><span style="color:gray">(2010-09-18 00:27)</span><br>· <a href="http://news.cnblogs.com/n/74681/">传微软早已决定不与Verizon合作</a><span style="color:gray">(2010-09-17 23:03)</span><br>· <a href="http://news.cnblogs.com/n/74680/">微软IE9Beta新特性：Windows7导航更高效</a><span style="color:gray">(2010-09-17 22:37)</span><br>· <a href="http://news.cnblogs.com/n/74678/">百度收购番薯网 意在对抗盛大文学</a><span style="color:gray">(2010-09-17 21:42)</span><br>· <a href="http://news.cnblogs.com/n/74675/">巨亏的京东还能坚持多久</a><span style="color:gray">(2010-09-17 21:28)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/hegezhou_hot/archive/2010/09/17/1829510.html">Step by Step-构建自己的ORM系列-开篇</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

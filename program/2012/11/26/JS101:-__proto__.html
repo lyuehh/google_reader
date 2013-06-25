@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JS101: __proto__</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JS101: __proto__</h2>
+<p class="meta">26 Nov 2012</p>
+
+<div class="post">
+<h2>JS101: <strong>proto</strong></h2>
+
+<h3>by</h3>
+
+<h3>at 2012-11-26 08:00:00</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/dailyjs/~3/iGf8-YbXT3s/js101-proto">http://feedproxy.google.com/~r/dailyjs/~3/iGf8-YbXT3s/js101-proto</a></h3>
+
+<p>When I originally wrote about prototypes in <a href="http://dailyjs.com/2012/05/21/js101-prototype/">JS101: Prototypes</a> a few people were confused that I didn’t mention the <code>__proto__</code> property. One reason I didn’t mention it is I was sticking to standard ECMAScript for the most part, using the <a href="http://es5.github.com/">Annotated ECMAScript 5.1</a> site as a reference. It’s actually hard to talk about prototypes without referring to <code>__proto__</code>, though, because it serves a very specific and useful purpose.</p>
+
+
+
+
+<p>Recall that objects are created using constructors:</p>
+
+
+<div><pre><code><span>function</span> <span>User</span><span>()</span> <span>{</span>
+<span>}</span>
+
+<span>var</span> <span>user</span> <span>=</span> <span>new</span> <span>User</span><span>();</span>
+</code></pre>
+</div>
+
+
+<p>The <code>prototype</code> property can be used to add properties to instances of <code>User</code>:</p>
+
+
+<div><pre><code><span>function</span> <span>User</span><span>()</span> <span>{</span>
+<span>}</span>
+
+<span>User</span><span>.</span><span>prototype</span><span>.</span><span>greet</span> <span>=</span> <span>function</span><span>()</span> <span>{</span>
+  <span>return</span> <span>&#39;hello&#39;</span><span>;</span>
+<span>};</span>
+
+<span>var</span> <span>user</span> <span>=</span> <span>new</span> <span>User</span><span>();</span>
+<span>user</span><span>.</span><span>greet</span><span>();</span>
+</code></pre>
+</div>
+
+
+<p>So far so good. The original constructor can be referenced using the <code>constructor</code> property on an instance:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>,</span> <span>User</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>However, <code>user.prototype</code> is not the same as <code>User.prototype</code>. What if we wanted to get hold of the original prototype where the <code>greet</code> method was defined based on an instance of a <code>User</code>?</p>
+
+
+
+
+<p>That’s where <code>__proto__</code> comes in. Given that fact, we now know the following two statements to be true:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>,</span> <span>User</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>__proto__</span><span>,</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Unfortunately, <code>__proto__</code> doesn’t appear in ECMAScript 5 – so where does it come from? As noted by the <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/proto">documentation on MDN</a> it’s a non-standard property. Or is it? It’s included in <a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts#draft_specification_for_es.next_ecma-262_edition_6">Ecma-262 Edition 6</a>, which means whether it’s standard or not depends on the version of ECMAScript that you’re using.</p>
+
+
+
+
+<p>It follows that an instance’s constructor should contain a reference to the constructor’s prototype. If this is true, then we can test it using these assertions:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>.</span><span>prototype</span><span>,</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>.</span><span>prototype</span><span>,</span> <span>user</span><span>.</span><span>__proto__</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>The standards also define <a href="http://es5.github.com/#x15.2.3.2">Object.getPrototypeOf</a> – this returns the <em>internal property</em> of an object. That means we can use it to access the constructor’s prototype:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>Object</span><span>.</span><span>getPrototypeOf</span><span>(</span><span>user</span><span>),</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Putting all of this together gives this script which will pass in Node and Chrome (given a suitable assertion library):</p>
+
+
+<div><pre><code><span>var</span> <span>assert</span> <span>=</span> <span>require</span><span>(</span><span>&#39;assert&#39;</span><span>);</span>
+
+<span>function</span> <span>User</span><span>()</span> <span>{</span>
+<span>}</span>
+
+<span>var</span> <span>user</span> <span>=</span> <span>new</span> <span>User</span><span>();</span>
+
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>__proto__</span><span>,</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>,</span> <span>User</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>.</span><span>prototype</span><span>,</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>user</span><span>.</span><span>constructor</span><span>.</span><span>prototype</span><span>,</span> <span>user</span><span>.</span><span>__proto__</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>Object</span><span>.</span><span>getPrototypeOf</span><span>(</span><span>user</span><span>),</span> <span>User</span><span>.</span><span>prototype</span><span>);</span>
+</code></pre>
+</div>
+
+
+<h3>Internal Prototype</h3>
+
+
+
+
+<p>The confusion around <code>__proto__</code> arises because of the term <strong>internal prototype</strong>:</p>
+
+
+
+
+<blockquote>
+<p>All objects have an internal property called [[Prototype]]. The value of this property is either <code>null</code> or an object and is used for implementing inheritance.</p>
+</blockquote>
+
+
+
+
+<p>Internally there <em>has</em> to be a way to access the constructor’s prototype to correctly implement inheritance – whether or not this is available to us is another matter. Why is accessing it useful to us? In the wild you’ll occasionally see people setting an object’s <code>__proto__</code> property to make objects look like they inherit from another object. This <a href="https://github.com/joyent/node/blob/b207e24bcd168a5ca538476ee0b3b0960cdc6759/lib/assert.js">used to be the case in Node’s assertion module</a>, but Node’s <code>util.inherits</code> method is a more idiomatic way to do it:</p>
+
+
+<div><pre><code><span>// Compare to: assert.AssertionError.__proto__ = Error.prototype;</span>
+<span>util</span><span>.</span><span>inherits</span><span>(</span><span>assert</span><span>.</span><span>AssertionError</span><span>,</span> <span>Error</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>This was changed in <a href="https://github.com/joyent/node/commit/9eddaebb79ff1954b7ecdb209587d7db6554580d">assert: remove unnecessary use of __proto__</a>.</p>
+
+
+
+
+<h3>The Constructor’s Prototype</h3>
+
+
+
+
+<p>The <code>User</code> example’s internal prototype is set to <code>Function.prototype</code>:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>User</span><span>.</span><span>__proto__</span><span>,</span> <span>Function</span><span>.</span><span>prototype</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>If you’re about to put on your hat, pick up your briefcase, and walk right out the door: hold on a minute. You’re coming to the end of the chain – the prototype chain that is:</p>
+
+
+<div><pre><code><span>assert</span><span>.</span><span>equal</span><span>(</span><span>User</span><span>.</span><span>__proto__</span><span>,</span> <span>Function</span><span>.</span><span>prototype</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>Function</span><span>.</span><span>prototype</span><span>.</span><span>__proto__</span><span>,</span> <span>Object</span><span>.</span><span>prototype</span><span>);</span>
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>Object</span><span>.</span><span>prototype</span><span>.</span><span>__proto__</span><span>,</span> <span>null</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Remember that the <code>__proto__</code> property is the <em>internal prototype</em> – this is how JavaScript’s inheritance chain is implemented. Every <code>User</code> inherits from <code>Function.prototype</code> which in turn inherits from <code>Object.prototype</code>, and <code>Object.prototype</code>’s internal prototype is <code>null</code> which allows the inheritance algorithm to know it has reached the end of the chain.</p>
+
+
+
+
+<p>Therefore, adding a method to <code>Object.prototype</code> will make it available to every object. <a href="http://es5.github.com/#x15.2.4">Properties of the Object Prototype Object</a> include <code>toString</code>, <code>valueOf</code>, and <code>hasOwnProperty</code>. That means instances of the <code>User</code> constructor in the previous example will have these methods.</p>
+
+
+
+
+<h3>Pithy Closing Remark</h3>
+
+
+
+
+<p>JavaScript’s inheritance model is not class-based. Joost Diepenmaat’s post, <a href="http://joost.zeekat.nl/constructors-considered-mildly-confusing.html">Constructors considered mildly confusing</a>, summarises this as follows:</p>
+
+
+
+
+<blockquote>
+<p>In a class-based object system, typically classes inherit from each other, and objects are instances of those classes. … constructors do nothing like this: in fact constructors have their own [[Prototype]] chain completely separate from the [[Prototype]] chain of objects they initialize.</p>
+</blockquote>
+
+
+
+
+<p>Rather than visualising JavaScript objects as “classes”, try to think in terms of two parallel lines of <em>prototype chains</em>: one for constructors, and one for initialised objects.</p>
+
+
+
+
+<h3>References</h3>
+
+
+
+
+<ul>
+<li><a href="https://github.com/joyent/node">Node’s source</a></li>
+
+<li><a href="http://es5.github.com/#x15.2.4">Annotated ECMAScript 5.1</a></li>
+
+<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts#draft_specification_for_es.next_ecma-262_edition_6">Ecma-262 Edition 6</a></li>
+
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Object/proto">Mozilla’s <strong>proto</strong> documentation</a></li>
+
+<li><a href="http://joost.zeekat.nl/constructors-considered-mildly-confusing.html">Constructors considered mildly confusing</a></li>
+</ul>
+
+
+<p>   <img src="http://feeds.feedburner.com/~r/dailyjs/~4/iGf8-YbXT3s" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

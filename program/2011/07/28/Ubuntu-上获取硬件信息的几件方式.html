@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ubuntu 上获取硬件信息的几件方式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ubuntu 上获取硬件信息的几件方式</h2>
+<p class="meta">28 Jul 2011</p>
+
+<div class="post">
+<h2>Ubuntu 上获取硬件信息的几件方式</h2>
+
+<h3>by riku</h3>
+
+<h3>at 2011-07-28 09:33:48</h3>
+
+<h3>original <a href="http://wowubuntu.com/hardinfo.html">http://wowubuntu.com/hardinfo.html</a></h3>
+
+<p>在 <a href="http://wowubuntu.com">Ubuntu</a> 上我们可以通过以下几种工具来获取机器的硬件信息。</p>
+
+
+<p>1. lshw 和 lshw-GTK</p>
+
+
+<p>安装:</p>
+
+
+<blockquote>
+<pre>sudo apt-get install lshw lshw-gtk</pre>
+</blockquote>
+
+
+<pre>lshw 是命令行工具，可以获取 BIOS、主板、CPU 及内存等信息。而 lshw-GTK 则是 lshw 的图形前端，</pre>
+
+
+<pre><a href="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_002.png"><img title="20110728_002" src="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_002.png" alt="" width="452" height="320"></a></pre>
+
+
+<pre>2. hardinfo</pre>
+
+
+<pre>安装：</pre>
+
+
+<blockquote>
+<pre>sudo apt-get install hardinfo</pre>
+</blockquote>
+
+
+<pre>hardinfo 也是图形工具，除了可以显示硬件信息外，还可以显示操作系统信息，比如内核版本、计算机名，桌面环境、内核模块等等。</pre>
+
+
+<pre><a href="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_003.png"><img title="20110728_003" src="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_003.png" alt="" width="422" height="416"></a></pre>
+
+
+<pre>3. sysinfo</pre>
+
+
+<pre>安装</pre>
+
+
+<blockquote>
+<pre>sudo apt-get install sysinfo</pre>
+</blockquote>
+
+
+<pre>sysinfo 同样也是图形工具，是 hardinfo 的轻量级替代品，它可以显示系统、CPU 、内存、存储、主板、显卡、网络等一系列的详细信息。</pre>
+
+
+<pre><a href="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_004.png"><img title="20110728_004" src="http://wowubuntu.com/wp-content/uploads/2011/07/20110728_004.png" alt="" width="417" height="323"></a></pre>
+
+
+<pre>除此之外，获取系统硬件信息的方法还有： lspci, dmidecode, lsusb (获取 USB 信息), "cat /proc/cpuinfo" (获取 CPU 信息), hwinfo 等等。</pre>
+
+
+<pre>- 消息<a href="http://www.webupd8.org/2011/07/how-to-get-hardware-information-in.html">来源</a></pre>
+
+
+<h1>本文采用<a href="http://creativecommons.org/licenses/by/2.5/cn/">CC协议</a>进行授权，转载本文请注明<a href="http://wowubuntu.com/hardinfo.html" title="Permalink">本文链接<a>。/  15  条留言</h1>
+
+<hr>
+
+
+<ul>
+<li><p><a href="http://twitter.com/ubuntu_tips">Twitter</a>
+/ <a href="https://www.google.com/profiles/wowubuntucom">Buzz</a>
+/ <a href="http://t.sina.com.cn/utips">微博</a>
+/ <a href="http://ask.wowubuntu.com">问答</a>
+/ <a href="http://wowubuntu.com/submit">投稿</a>
+/ <a href="http://wowubuntu.com/join">加入我们</a> wow0slx6bcs721xo1udcc<br>- 高性价比 <a href="http://wowubuntu.com/vps.html">Ubuntu VPS</a> / 本站架设于<a href="http://www.photonvps.com/billing/aff.php?aff=129"> PhotonVPS </a> / 定制 <a href="http://tto.me/kfstee">Ubuntu T-Shirt</a><table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both"></p>
+
+<p>  <tr>
+      <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+  </tr></p>
+
+<pre><code>      &lt;tr&gt;
+          &lt;td style="margin:0!important;padding:0!important;line-height:20px!important"&gt;
+              &lt;img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif"&gt;
+              &lt;a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fhardware-info.html&amp;amp;from=http%3A%2F%2Fwowubuntu.com%2Fhardinfo.html"&gt;
+                  &lt;font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important"&gt;Linux 用命令行查看硬件信息&lt;/font&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style="margin:0!important;padding:0!important;line-height:20px!important"&gt;
+              &lt;img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif"&gt;
+              &lt;a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fcomponent-catalog.html&amp;amp;from=http%3A%2F%2Fwowubuntu.com%2Fhardinfo.html"&gt;
+                  &lt;font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important"&gt;Canonical 发布 Ubuntu/Linux 硬件兼容列表&lt;/font&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style="margin:0!important;padding:0!important;line-height:20px!important"&gt;
+              &lt;img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif"&gt;
+              &lt;a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fbanshee175.html&amp;amp;from=http%3A%2F%2Fwowubuntu.com%2Fhardinfo.html"&gt;
+                  &lt;font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important"&gt;Banshee 1.7.5 发布，改善硬件支持&lt;/font&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style="margin:0!important;padding:0!important;line-height:20px!important"&gt;
+              &lt;img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif"&gt;
+              &lt;a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fubuntu-cn.html&amp;amp;from=http%3A%2F%2Fwowubuntu.com%2Fhardinfo.html"&gt;
+                  &lt;font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important"&gt;Ubuntu 预计明年4月推出中国定制版&lt;/font&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style="margin:0!important;padding:0!important;line-height:20px!important"&gt;
+              &lt;img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif"&gt;
+              &lt;a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwowubuntu.com%2Fuhs2010.html&amp;amp;from=http%3A%2F%2Fwowubuntu.com%2Fhardinfo.html"&gt;
+                  &lt;font size="-1" color="#333333" style="line-height:1.65em;font-size:13px!important"&gt;2010 Ubuntu 硬件高峰会议在台北举行&lt;/font&gt;
+              &lt;/a&gt;
+          &lt;/td&gt;
+      &lt;/tr&gt;
+</code></pre>
+
+<p>  <tr>
+      <td align="right">
+          <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+              <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+          </a>
+      </td>
+  </tr>
+</table></a></a></p></li>
+</ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

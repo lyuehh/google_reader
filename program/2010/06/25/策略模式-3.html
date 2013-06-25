@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>策略模式-3</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>策略模式-3</h2>
+<p class="meta">25 Jun 2010</p>
+
+<div class="post">
+<h2>策略模式-3</h2>
+
+<h3>by 云飞龙行</h3>
+
+<h3>at 2010-06-24 22:10:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/sjms/archive/2010/06/24/1764757.html">http://www.cnblogs.com/sjms/archive/2010/06/24/1764757.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/sjms/">云飞龙行</a> 发表于 2010-06-24 22:10 <a href="http://www.cnblogs.com/sjms/archive/2010/06/24/1764757.html">原文链接</a> 阅读: 392 评论: 0</p>
+
+
+<h2 style="text-align:center">3  模式讲解</h2>
+
+
+<h3>3.1  认识策略模式</h3>
+
+
+<p><strong>（1）策略模式的功能<br></strong>        策略模式的功能是把具体的算法实现，从具体的业务处理里面独立出来，把它们实现成为单独的算法类，从而形成一系列的算法，并让这些算法可以相互替换。<br>        策略模式的重心不是如何来实现算法，而是如何组织、调用这些算法，从而让程序结构更灵活、具有更好的维护性和扩展性。</p>
+
+
+<p><br><strong>（2）策略模式和if-else语句<br></strong>        看了前面的示例，很多朋友会发现，每个策略算法具体实现的功能，就是原来在if-else结构中的具体实现。<br>没错，其实多个if-elseif语句表达的就是一个平等的功能结构，你要么执行if，要不你就执行else，或者是elseif，这个时候，if块里面的实现和else块里面的实现从运行地位上来讲就是平等的。<br>        而策略模式就是把各个平等的具体实现封装到单独的策略实现类了，然后通过上下文来与具体的策略类进行交互。<br>因此多个if-else语句可以考虑使用策略模式。</p>
+
+
+<p><br><strong>（3）算法的平等性<br></strong>        策略模式一个很大的特点就是各个策略算法的平等性。对于一系列具体的策略算法，大家的地位是完全一样的，正是因为这个平等性，才能实现算法之间可以相互替换。<br>        所有的策略算法在实现上也是相互独立的，相互之间是没有依赖的。<br>        所以可以这样描述这一系列策略算法：<strong>策略算法是相同行为的不同实现</strong>。</p>
+
+
+<p><br><strong>（4）谁来选择具体的策略算法</strong><br>        在策略模式中，可以在两个地方来进行具体策略的选择。<br>        一个是在客户端，在使用上下文的时候，由客户端来选择具体的策略算法，然后把这个策略算法设置给上下文。前面的示例就是这种情况。<br>        还有一个是客户端不管，由上下文来选择具体的策略算法，这个在后面讲容错恢复的时候给大家演示一下。</p>
+
+
+<p><br><strong>（5）Strategy的实现方式</strong><br>        在前面的示例中，Strategy都是使用的接口来定义的，这也是常见的实现方式。但是如果多个算法具有公共功能的话，可以把Strategy实现成为抽象类，然后把多个算法的公共功能实现到Strategy里面。</p>
+
+
+<p><br><strong>（6）运行时策略的唯一性</strong><br>        运行期间，策略模式在每一个时刻只能使用一个具体的策略实现对象，虽然可以动态的在不同的策略实现中切换，但是同时只能使用一个。</p>
+
+
+<p><strong>（7）增加新的策略<br></strong>        在前面的示例里面，体会到了策略模式中切换算法的方便，但是增加一个新的算法会怎样呢？比如现在要实现如下的功能：对于公司的“战略合作客户”，统一8折。<br>        其实很简单，策略模式可以让你很灵活的扩展新的算法。具体的做法是：先写一个策略算法类来实现新的要求，然后在客户端使用的时候指定使用新的策略算法类就可以了。<br>        还是通过示例来说明。先添加一个实现要求的策略类，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 具体算法实现，为战略合作客户客户计算应报的价格</p>
+<p align="left"> */</p>
+<p align="left">public class CooperateCustomerStrategy implements Strategy{</p>
+<p align="left">    public double calcPrice(double goodsPrice) {</p>
+<p align="left">       System.<em>out</em>.println("对于战略合作客户，统一8折");</p>
+<p align="left">       return goodsPrice*0.8;</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><br>然后在客户端指定使用策略的时候指定新的策略算法实现，示例如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">public class Client2 {</p>
+<p align="left">    public static void main(String[] args) {</p>
+<p align="left">       //1：选择并创建需要使用的策略对象</p>
+<p align="left">      <strong> Strategy strategy = new CooperateCustomerStrategy ();</strong></p>
+<p align="left">       //2：创建上下文</p>
+<p align="left">       Price ctx = new Price(strategy); </p>
+<p align="left">       </p>
+<p align="left">       //3：计算报价</p>
+<p align="left">       double quote = ctx.quote(1000);</p>
+<p align="left">       System.<em>out</em>.println("向客户报价："+quote);</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>        除了加粗部分变动外，客户端没有其他的变化。 </p>
+
+
+<p>        运行客户端，测试看看，好好体会一下。<br>        除了客户端发生变化外，已有的上下文、策略接口定义和策略的已有实现，都不需要做任何的修改，可见能很方便的扩展新的策略算法。</p>
+
+
+<p><br><strong>（8）策略模式调用顺序示意图<br></strong>        策略模式的调用顺序，有两种常见的情况，一种如同前面的示例，具体如下：</p>
+
+
+<p>        a：先是客户端来选择并创建具体的策略对象</p>
+
+
+<p>        b：然后客户端创建上下文</p>
+
+
+<p>        c：接下来客户端就可以调用上下文的方法来执行功能了，在调用的时候，从客户端传入算法需要的参数</p>
+
+
+<p>        d：上下文接到客户的调用请求，会把这个请求转发给它持有的Strategy</p>
+
+
+<p>这种情况的调用顺序示意图如图3所示：<br><img src="http://pic002.cnblogs.com/img/sjms2010/201006/2010062422073841.gif"></p>
+
+
+<p> 图3  策略模式调用顺序示意图一</p>
+
+
+<p>        策略模式调用还有一种情况，就是把Context当做参数来传递给Strategy，这种方式的调用顺序图，在讲具体的Context和Strategy的关系时再给出。<br> </p>
+
+
+<h3>3.2  容错恢复机制</h3>
+
+
+<p>        容错恢复机制是应用程序开发中非常常见的功能。那么什么是容错恢复呢？简单点说就是：程序运行的时候，正常情况下应该按照某种方式来做，如果按照某种方式来做发生错误的话，系统并不会崩溃，也不会就此不能继续向下运行了，而是有容忍出错的能力，不但能容忍程序运行出现错误，还提供出现错误后的备用方案，也就是恢复机制，来代替正常执行的功能，使程序继续向下运行。<br>        举个实际点的例子吧，比如在一个系统中，所有对系统的操作都要有日志记录，而且这个日志还需要有管理界面，这种情况下通常会把日志记录在数据库里面，方便后续的管理，但是在记录日志到数据库的时候，可能会发生错误，比如暂时连不上数据库了，那就先记录在文件里面，然后在合适的时候把文件中的记录再转录到数据库中。<br>        对于这样的功能的设计，就可以采用策略模式，把日志记录到数据库和日志记录到文件当作两种记录日志的策略，然后在运行期间根据需要进行动态的切换。<br>        在这个例子的实现中，要示范由上下文来选择具体的策略算法，前面的例子都是由客户端选择好具体的算法，然后设置到上下文中。<br>        下面还是通过代码来示例一下。<br>（1）先定义日志策略接口，很简单，就是一个记录日志的方法，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 日志记录策略的接口</p>
+<p align="left"> */</p>
+<p align="left">public interface LogStrategy {</p>
+<p align="left">    /**</p>
+<p align="left">     * 记录日志</p>
+<p align="left">     * @param msg 需记录的日志信息</p>
+<p align="left">     */</p>
+<p align="left">    public void log(String msg);</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><br>（2）实现日志策略接口，先实现默认的数据库实现，假设如果日志的长度超过长度就出错，制造错误的是一个最常见的运行期错误，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 把日志记录到数据库</p>
+<p align="left"> */</p>
+<p align="left">public class DbLog implements LogStrategy{</p>
+<p align="left">    public void log(String msg) {      </p>
+<p align="left">       <strong>//</strong><strong>制造错误</strong><strong></strong></p>
+<p align="left"><strong>       if(msg!=null &amp;&amp; msg.trim().length()&gt;5){</strong></p>
+<p align="left"><strong>           int a = 5/0;</strong></p>
+<p align="left"><strong>       }</strong></p>
+<p align="left">       System.<em>out</em>.println("现在把 '"+msg+"' 记录到数据库中");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>接下来实现记录日志到文件中去，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 把日志记录到文件</p>
+<p align="left"> */</p>
+<p align="left">public class FileLog implements LogStrategy{</p>
+<p align="left">    public void log(String msg) {</p>
+<p align="left">       System.<em>out</em>.println("现在把 '"+msg+"' 记录到文件中");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>（3）接下来定义使用这些策略的上下文，注意这次是在上下文里面实现具体策略算法的选择，所以不需要客户端来指定具体的策略算法了，示例代码如下：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/sjms2010/201006/2010062422082364.gif"><br> </p>
+
+
+<p>（4）看看现在的客户端，没有了选择具体实现策略算法的工作，变得非常简单，故意多调用一次，可以看出不同的效果，示例代码如下：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/sjms2010/201006/2010062422085079.gif"><br> </p>
+
+
+<p> （5）小结一下，通过上面的示例，会看到策略模式的一种简单应用，也顺便了解一下基本的容错恢复机制的设计和实现。在实际的应用中，需要设计容错恢复的系统一般要求都比较高，应用也会比较复杂，但是基本的思路是差不多的。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p style="text-align:center"><span style="font-size:18pt">未完待续......</span></p>
+
+
+<p><img src="http://www.cnblogs.com/sjms/aggbug/1764757.html?type=1" width="1" height="1" alt=""><p>评论: 0　<a href="http://www.cnblogs.com/sjms/archive/2010/06/24/1764757.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/sjms/archive/2010/06/24/1764757.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66955/">Twitter采用新网络安全标准 希望隐私案和解</a><span style="color:gray">(2010-06-25 09:29)</span><br>· <a href="http://news.cnblogs.com/n/66954/">雅虎搜索业务高管将离职 曾坚定支持搜索战略</a><span style="color:gray">(2010-06-25 09:25)</span><br>· <a href="http://news.cnblogs.com/n/66953/">我完全支持云计算，但不要让它成为一个噱头</a><span style="color:gray">(2010-06-25 08:12)</span><br>· <a href="http://news.cnblogs.com/n/66952/">Android 2.2 for Intel 夏天公布</a><span style="color:gray">(2010-06-25 08:10)</span><br>· <a href="http://news.cnblogs.com/n/66951/">盛大“出海”</a><span style="color:gray">(2010-06-25 07:46)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/06/24/1764597.html">C#会重蹈覆辙吗？反射及元数据的性能问题</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>node.js 文件操作</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>node.js 文件操作</h2>
+<p class="meta">28 Nov 2011</p>
+
+<div class="post">
+<h2>node.js 文件操作</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2011-11-28 09:17:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/28/2264717.html">http://www.cnblogs.com/rubylouvre/archive/2011/11/28/2264717.html</a></h3>
+
+<p><p>既然到了后台，只要你有权限就可以为所欲为了！</p>
+<h3>创建文件夹</h3>
+<pre>
+//fs.js
+var fs = require('fs');
+fs.mkdirSync('a', 0755);
+fs.mkdirSync('a/b', 0755);
+fs.mkdirSync('a/b/c', 0755);
+</pre>
+<p>那么它会在fs.js所在目录中创建一个a目录，a目录下再创建b目录，b目录下创建c目录。mkdirSync是一个同步方法，拥有三个参数，第一个是路径，第二个是<a href="http://hi.baidu.com/zhang_js521/blog/item/6976d10e2ca7d5fa36d122d6.html">目录权限</a>，第三个是回调</p>
+<p>但这样做有点不妥，如果指定目录已存在，就报错。如果要建立多级目录，一层层判定此目录是否存在，立即会陷入“回调地狱”的境地。虽然node.js对于IO操作的方法都提供了两个版本，一个是同步的，一个是异步的。想了想，搞出我自己的mkdirSync函数，实现比<a href="https://github.com/substack/node-mkdirp/blob/master/index.js">mkdirp</a>的作者好很多。</p>
+<pre>
+
+
+var fs = require(&#39;fs&#39;);
+
+function mkdirSync(url,mode,cb){
+    var path = require(&quot;path&quot;), arr = url.split(&quot;/&quot;);
+    mode = mode || 0755;
+    cb = cb || function(){};
+    if(arr[0]===&quot;.&quot;){//处理 ./aaa
+        arr.shift();
+    }
+    if(arr[0] == &quot;..&quot;){//处理 ../ddd/d
+        arr.splice(0,2,arr[0]+&quot;/&quot;+arr[1])
+    }
+    function inner(cur){
+        if(!path.existsSync(cur)){//不存在就创建一个
+            fs.mkdirSync(cur, mode)
+        }
+        if(arr.length){
+            inner(cur + &quot;/&quot;+arr.shift());
+        }else{
+            cb();
+        }
+    }
+    arr.length &amp;&amp; inner(arr.shift());
+}
+//测试代码
+mkdirSync(&quot;aaa/ddd/dd&quot;,0,function(e){
+    if(e){
+        console.log(&#39;出错了&#39;);
+    }else{
+        console.log(&quot;创建成功&quot;)
+    }
+});
+</pre>
+<p>有关目录的创建的讨论，详见<a href="http://stackoverflow.com/questions/5308514/prescriptive-nodejs">这里</a></p>
+<h3>创建文件与写入内容</h3>
+<p>创建文件的方法fs.open(path, flags, [mode], [callback])好像所有语言都很一致，可能是想与最原始的C语言的方法保持一致。这是个异步方法，其同步版本，与其他同步方法一样，就是少了个回调。说一下flags中w与a的不同，w会把已存在的同名文件删除再创建一个，因此要注意。</p>
+
+<pre>
+fs.open("test.txt", "w");
+</pre>
+<p>写入内容。这有几种方法，比如fs.write，不过它的第一个参数要求类型为Buffer，而fs.openSync不是返回一个Buffer，因此它不能与fs.write配合使用。</p>
+<pre>
+//fs.js
+var fs = require('fs');
+
+fs.open("test.txt","w",0644,function(e,fd){
+    if(e) throw e;
+    fs.write(fd,"first fs!",0,'utf8',function(e){
+        if(e) throw e;
+        fs.closeSync(fd);
+    })
+});
+</pre>
+<p>这时，我们就创建一个文本文件，里面写入"first fs"。不过open中间那两个参数的不是必要的。我们可以再搞一个fs2.js脚本</p>
+<pre>
+//fs2.js
+var fs = require('fs');
+fs.open("test.txt","a",0644,function(e,fd){
+    if(e) throw e;
+    fs.write(fd,"second fs!",function(e){
+        if(e) throw e;
+        fs.closeSync(fd);
+    })
+});
+</pre>
+<p>执行它，它会在test.txt追加"second fs"这句话。</p>
+<p>fs的open, write, close有点像我们在浏览器对document的操作。此外，还有fs.writeFile与fs.writeFileSync，可惜它们不能做追加内容的操作。</p>
+<pre>
+
+var fs = require('fs');
+
+fs.writeFile("test.txt","third fs!",function(e){//会先清空原先的内容
+    if(e) throw e;
+})
+
+</pre>
+<h3>删除目录或文件</h3>
+<pre>
+var fs = require('fs');
+fs.rmdir("aaa",function(e){
+    if(e){
+        console.log(e)
+    }
+})
+/**
+{ stack: [Getter/Setter],
+  arguments: undefined,
+  type: undefined,
+  message: 'ENOTEMPTY, Directory not empty \'aaa\'',
+  errno: 39,
+  code: 'ENOTEMPTY',
+  path: 'aaa' }
+*/
+</pre>
+<p>报错，缘由是之前我们还为aaa创建了子目录，必须逐个删除，实在不人性化，于是又造了一个轮子。</p>
+<pre>
+var fs = require('fs');
+
+var rmdirSync = (function(){
+    function iterator(url,dirs){
+        var stat = fs.statSync(url);
+        if(stat.isDirectory()){
+            dirs.unshift(url);//收集目录
+            inner(url,dirs);
+        }else if(stat.isFile()){
+            fs.unlinkSync(url);//直接删除文件
+        }
+    }
+    function inner(path,dirs){
+        var arr = fs.readdirSync(path);
+        for(var i = 0, el ; el = arr[i++];){
+            iterator(path+"/"+el,dirs);
+        }
+    }
+    return function(dir,cb){
+        cb = cb || function(){};
+        var dirs = [];
+
+        try{
+            iterator(dir,dirs);
+            for(var i = 0, el ; el = dirs[i++];){
+                fs.rmdirSync(el);//一次性删除所有收集到的目录
+            }
+            cb()
+        }catch(e){//如果文件或目录本来就不存在，fs.statSync会报错，不过我们还是当成没有异常发生
+            e.code === "ENOENT" ? cb() : cb(e);
+        }
+    }
+})();
+
+rmdirSync("aaa",function(e){
+    console.log("!!!"+e)
+    console.log("删除aaa目录以及子目录成功")
+})
+
+</pre>
+<p>上面的rmdirSync还可以分解出一个方法，取得给定目录下的所有目录与文件。</p>
+<pre>
+var fs = require('fs');
+var getAllFolersAndFiles = (function(){
+    function iterator(url, folders, files){
+        var stat = fs.statSync(url);
+        if(stat.isDirectory()){
+            folders.unshift(url);//收集目录
+            inner(url,folders, files);
+        }else if(stat.isFile()){
+            files.unshift(url);//收集文件
+        }
+    }
+    function inner(path,folders,files){
+        var arr = fs.readdirSync(path);
+        for(var i = 0, el ; el = arr[i++];){
+            iterator(path+"/"+el,folders,files);
+        }
+    }
+    return function(dir){
+        var folders = [], files = [];
+        try{
+            iterator(dir,folders,files);
+        }catch(e){
+        }finally{
+            return {
+                folders : folders,
+                files   : files
+            }
+        }
+    }
+})()
+</pre>
+<p>如果我们只想取得指定目下的所有文件，还可以更精简些！</p>
+<pre>
+function getAllFiles(root) {
+  var result = [], files = fs.readdirSync(root)
+  files.forEach(function(file) {
+    var pathname = root+ "/" + file
+      , stat = fs.lstatSync(pathname)
+    if (stat === undefined) return
+
+    // 不是文件夹就是文件
+    if (!stat.isDirectory()) {
+      result.push(pathname)
+    // 递归自身
+    } else {
+      result = result.concat(getAllFiles(pathname))
+    }
+  });
+  return result
+}
+</pre>
+<h3>监听文件的改动</h3>
+<p>就是使用watchFile及其同步版本。</p>
+<pre>
+var fs = require("fs"),
+sys = require("util");
+fs.open("aaa.js","w",0644,function(e,fd){
+    fs.writeSync(fd,"console.log(1111);");
+    fs.closeSync(fd);
+})
+
+fs.watchFile("aaa.js", function(curr, prev) {
+  sys.puts("\n\ttest_file.txt has been edited");
+  sys.puts("\tThe current mtime is: " + curr.mtime);
+  sys.puts("\tThe previous mtime was: " + prev.mtime + "\n");
+});
+
+fs.open("aaa.js","a",0644,function(e,fd){
+    fs.writeSync(fd,"console.log(2222)");
+    fs.closeSync(fd);
+});
+</pre>
+<p>此外，node.js还提供了修改了目录文件权限的操作，但这些都是不值一提。自己看看文档就会了。</p>
+<img src="http://www.cnblogs.com/rubylouvre/aggbug/2264717.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rubylouvre/">司徒正美</a> 发表于 2011-11-28 09:17 <a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/28/2264717.html">原文链接</a></p><p>评论: 7　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/28/2264717.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/rubylouvre/archive/2011/11/28/2264717.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/125293/">2011年，身在互联网的你收获几何？</a><span style="color:gray">(2011-12-14 23:10)</span><br>· <a href="http://news.cnblogs.com/n/125292/">苹果在移动芯片领域大幅领先Intel</a><span style="color:gray">(2011-12-14 23:07)</span><br>· <a href="http://news.cnblogs.com/n/125291/">Google给大学生的建议：没有这16个产品你会失败</a><span style="color:gray">(2011-12-14 23:06)</span><br>· <a href="http://news.cnblogs.com/n/125290/">2011年网络和IT行业的25个重大新闻</a><span style="color:gray">(2011-12-14 23:04)</span><br>· <a href="http://news.cnblogs.com/n/125289/">高盛发布研究报告看空雅虎</a><span style="color:gray">(2011-12-14 22:53)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/leslies2/archive/2011/12/12/2272722.html">结合领域驱动设计的SOA分布式软件架构</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://q.cnblogs.com/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

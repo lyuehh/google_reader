@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Silverlight游戏开发心得（2）——调度器的其他话题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Silverlight游戏开发心得（2）——调度器的其他话题</h2>
+<p class="meta">17 Jun 2010</p>
+
+<div class="post">
+<h2>Silverlight游戏开发心得（2）——调度器的其他话题</h2>
+
+<h3>by 向恺然</h3>
+
+<h3>at 2010-06-17 14:20:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/GameCode/archive/2010/06/17/1759516.html">http://www.cnblogs.com/GameCode/archive/2010/06/17/1759516.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/GameCode/"><img src="http://pic.cnblogs.com/face/u129547.png" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/GameCode/">向恺然</a> 发表于 2010-06-17 14:20 <a href="http://www.cnblogs.com/GameCode/archive/2010/06/17/1759516.html">原文链接</a> 阅读: 815 评论: 1</p>
+
+
+<p><span style="font-size:10pt">　　上篇文章的访问量竟然超过了1000，哈哈，还从来没有这么多人看过我的文章呢。虽然在公司内部，我十分看重交流，互相汲取经验，避免重复造轮子的事情发生，但在这之外，还没有过如此多的人来看自己的东西。</span></p>
+
+
+<p><span style="font-size:10pt">　　我仍然要强调一个事情，虽然已经强调多遍：朋友们，如果你打算腾出你宝贵的时间来看我写的文章，那么请你一定腾出更多的时间去实践一下，用代码来实践这一切。这要比阅读困难的多，我只花了个把小时就读完了调度器这个章节，但我却花了整整一个月来实现它。但也只有在这样的过程中，才能够学习到属于自己的东西——“实践出真知”。</span></p>
+
+
+<p><span style="font-size:10pt">　　<strong>I : 调度器的扩展</strong></span></p>
+
+
+<p><span style="font-size:10pt">　　在上篇文章里，我向大家展示了一个简单调度器的结构。在这个基础上，能够做的事情还很多。其中性能的均衡是很重要的一点。建议大家看看这篇文章</span><a href="http://www.cnblogs.com/GameCode/archive/2010/06/11/1756463.html"><span style="font-size:10pt">《游戏里的时钟》</span></a><span style="font-size:10pt">。里面那张消去波峰的图很有意思，当然那是一种理想情况，但并非没有可能做到。首先我们要得到系统的负载情况；在Silverlight 中这一点很容易做到；如果您对Silverlight 的API很熟悉，就能够想起来这个 Analytics 类，其实即便不熟悉也没有关系，随时可以查阅Silverlight文档----“Manual is your friend .” 更好的办法就是写成一个工具类，放在那里随时，可以调用。一旦得到CPU的负载，接下来的事情就好办多了，这时候就体现了调度器的强大，在调度器的结构里，需要执行的是一个个在队列里的时间任务和帧任务，还有每帧都执行一次，永不停息的渲染任务。（在实际的开发中，如果有必要，你也可以定义更多的任务类型。）或许某一段特殊的时间内，CPU的负载极高，达到你设置的警戒线了，比如60%，游戏里的人物变得很卡，这是非常糟糕的事情，这个时候就有必要进行一下时钟调节。</span></p>
+
+
+<p><span style="font-size:10pt">　　在简单调度器里，任务队列的任务是无条件得到执行的，那么现在，可能只有在CPU负载不超过警戒线的情况下得以执行，否则就会进行调节：调节的手段是多样的；调节的策略根据具体的情况而来。你可以简单的在高于警戒线的时候就略过一些任务；也可以把任务的帧间隔/时间间隔拉的更长，比如2帧执行一次的任务，可以是3帧执行一次，甚至你可以把那个永不停息的渲染任务停止，这都取决于你的具体情况。应该说，这里不仅仅是调度器的问题了，还需要很多其他的模块相配合，但最终是在调度器这里得到解决的。或许现在我要赞美一下调度器了，在开发过程中有这样一个单独的出口是多么美妙的事情呀。</span></p>
+
+
+<p><span style="font-size:10pt">　　据一个例子说明在游戏里调度器的性能调节：在游戏里新登录的时候，在出生地那里总是聚集着很多的人，这时候游戏会变得很卡，虽然你会很快离开这里到其他地方去冒险，但很卡，运动的很慢，离开这个地方都变得困难。这时候我们可以执行一个“视觉重点”的调节策略，假设你的注意力都集中在以你为中心的一小块区域上，对于其他区域你是不那么关心的，虽然随着你四处走动，这个区域在变化，就像你在舞台上被一盏灯照着一样。那么我们就可以调节调度器，把这个区域内的任务都照常执行，但在这个区域外的任务进行调节，注意，这个时候的调节也是要非常小心的，并不是越多越好，其实应该说是越少越好，比如你可以把其他人物的动画渲染帧频放慢，可以取消一些场景特效，但你无论如何都要保证你的网络数据包如期发送。我们需要找到负载最大的任务，但并不是说就要调节它，如果这个任务是非常的重要，那么可怕就要在其他地方想办法了。这都取决于你的游戏具体情况。应该说，设计一套良好的调节策略是不容易的。</span></p>
+
+
+<p><span style="font-size:10pt">　　在进行你的调节策略时，还需要防止一点，就是调节震荡的产生；比如你现在的CPU负载超过了警戒线，决定把A任务忽略执行，A任务被忽略后，CPU负载很快下降，此时系统觉得一切正常了，于是把一切都恢复了，A任务同样也得以恢复；结果CPU又马上超过负载，于是系统就在警戒线的两侧开始震荡，这不是我们希望的，要避免这些，要把调整量限制的更为合适，或者改进效果统计分析。</span></p>
+
+
+<p><span style="font-size:10pt"><strong>　　II：多线程</strong></span></p>
+
+
+<p><span style="font-size:10pt">　　摩尔定律不再起作用后，并行编程的重要性怎么提都为过。</span></p>
+
+
+<p><span style="font-size:10pt">　　我要说一个令人沮丧的事情，在目前的结构和经验中，整体都是基于单线程的。都在探讨高效的算法，精巧的结构。但对于并行，提的不多，经验也少。我也尝试在游戏里引入并行，我必须要承认，这很难。当然了，对于我困难的事情，对于各位来说，或许很容易，毕竟我不是一个“Smart Guy”。调度器基于任务系统的结构，还是给我们使用多线程提供了方便的。首先，需要拆分代码中过于庞杂的函数。 比如在这个方法里 public void ExecuteFrame()，执行力帧任务队列，时间任务队列，还有渲染任务。如果把帧任务队列和时间任务队列拆分出来，就可以建立两个线程来分别执行他们。我要提到的一点就是，避免在不同的线程里执行和UI相关联的事情，即便使用异步委托取得了跨线程的操作权限，得到的结果仍然是阻塞的，串行的，这并没有多少意义。在设计的过程中，应该小心的辨别，分拆得到任务的执行顺序和关联关系，尽量避免竞争资源，逻辑处理放在前面（只要不涉及UI的时候，Silverlight还是可以真正多线程并行处理的），UI的渲染可以统一执行。</span></p>
+
+
+<p><span style="font-size:10pt"> 　　这里涉及的种种问题，恐怕只有在实践中慢慢体会了，我希望自己这块砖抛出来，能吸引片片美玉飞来，大家共同探讨探讨。</span></p>
+
+
+<p><span style="font-size:10pt">在这里我把自己写的一个CPU统计的工具类分享给大家。</span></p>
+
+
+<p><span style="font-size:10pt"></span></p>
+
+
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span>
+<div>
+<pre><div><span style="color:#000000">  </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> CPUCounter<br>    {<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> TextBlock txtCpuLoader;<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> Canvas _canvas;<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> System.Windows.Threading.DispatcherTimer dt;<br>        </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> Analytics analytics;<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000">此方法使IE的状态栏上显示FPS<br>        </span><span style="color:#008000">//</span><span style="color:#008000">大部分教程提到要在Html里面添加 &lt;param name=&quot;EnableFrameRateCounter&quot; value=&quot;true&quot;/&gt;，<br>        </span><span style="color:#008000">//</span><span style="color:#008000">但我的实验结果是添加与否都会显示FPS，但IE的安全设置要修改</span><span style="color:#008000"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> ShowFrameFrequency(</span><span style="color:#0000ff">bool</span><span style="color:#000000"> _showFrequency, </span><span style="color:#0000ff">int</span><span style="color:#000000"> _maxFrameRate)<br>        {<br>            System.Windows.Interop.SilverlightHost host </span><span style="color:#000000">=</span><span style="color:#000000"> Application.Current.Host;<br>            System.Windows.Interop.Settings settings </span><span style="color:#000000">=</span><span style="color:#000000"> host.Settings;<br>            settings.EnableFrameRateCounter </span><span style="color:#000000">=</span><span style="color:#000000"> _showFrequency;<br>            settings.MaxFrameRate </span><span style="color:#000000">=</span><span style="color:#000000"> _maxFrameRate;<br>        }<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000">添加一个CPU统计到指定的Canvas上面，可以指定颜色大小和位置<br>        </span><span style="color:#008000">//</span><span style="color:#008000">这个统计器是自启动的</span><span style="color:#008000"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> AddCPULoader(Canvas _rootCanvas, </span><span style="color:#0000ff">int</span><span style="color:#000000"> _fontSize, Color _color, Point _pos)<br>        {<br>            _canvas </span><span style="color:#000000">=</span><span style="color:#000000"> _rootCanvas;<br>            txtCpuLoader </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> TextBlock()<br>            {<br>                FontSize </span><span style="color:#000000">=</span><span style="color:#000000"> _fontSize,<br>                Foreground </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> SolidColorBrush(_color),<br>                FontWeight </span><span style="color:#000000">=</span><span style="color:#000000"> FontWeights.Bold<br>            };<br><br>            _canvas.Children.Add(txtCpuLoader);<br>            Canvas.SetLeft(txtCpuLoader, _pos.X);<br>            Canvas.SetTop(txtCpuLoader, _pos.Y);<br>            dt </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> System.Windows.Threading.DispatcherTimer();<br>            dt.Interval </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> TimeSpan(</span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">1</span><span style="color:#000000">);<br>            analytics </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Analytics();<br>            dt.Tick </span><span style="color:#000000">+=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> EventHandler(PrintTxt);<br>            dt.Start();<br>        }<br><br>        </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> PrintTxt(</span><span style="color:#0000ff">object</span><span style="color:#000000"> sender, EventArgs e)<br>        {<br>            txtCpuLoader.Text </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">CourseCPU:</span><span style="color:#800000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> GetSuitableDouble(analytics.AverageProcessLoad, </span><span style="color:#800080">2</span><span style="color:#000000">) </span><span style="color:#000000">+</span><span style="color:#000000"><br>                          </span><span style="color:#800000">"</span><span style="color:#800000">%      AllCPU:</span><span style="color:#800000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> GetSuitableDouble(analytics.AverageProcessorLoad, </span><span style="color:#800080">2</span><span style="color:#000000">) </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">%</span><span style="color:#800000">"</span><span style="color:#000000">;<br>        }<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000">卸载CPU统计器</span><span style="color:#008000"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> RemoveCPULoader()<br>        {<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (_canvas </span><span style="color:#000000">!=</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>            {<br>                _canvas.Children.Remove(txtCpuLoader);<br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (dt </span><span style="color:#000000">!=</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                {<br>                    dt.Tick </span><span style="color:#000000">-=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> EventHandler(PrintTxt);<br>                    dt.Stop();<br>                }<br>            }<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000"> GetSuitableDouble(</span><span style="color:#0000ff">double</span><span style="color:#000000"> _d, </span><span style="color:#0000ff">int</span><span style="color:#000000"> _digit)<br>        {<br>            </span><span style="color:#0000ff">string</span><span style="color:#000000"> result </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">string</span><span style="color:#000000">.Empty;<br>            </span><span style="color:#0000ff">int</span><span style="color:#000000"> d </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000">)(_d </span><span style="color:#000000">*</span><span style="color:#000000"> Math.Pow(</span><span style="color:#800080">10</span><span style="color:#000000">, _digit));<br>            </span><span style="color:#0000ff">double</span><span style="color:#000000"> dd </span><span style="color:#000000">=</span><span style="color:#000000"> d </span><span style="color:#000000">/</span><span style="color:#000000"> Math.Pow(</span><span style="color:#800080">10</span><span style="color:#000000">, _digit);<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (dd </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">)<br>            {<br>                </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> _digit; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br>                {<br>                    result </span><span style="color:#000000">+=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">0</span><span style="color:#800000">"</span><span style="color:#000000">;<br>                }<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> (</span><span style="color:#800000">"</span><span style="color:#800000">0.</span><span style="color:#800000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> result);<br>            }<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (dd.ToString().Length </span><span style="color:#000000">!=</span><span style="color:#000000"> d.ToString().Length </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">)<br>            {<br>                result </span><span style="color:#000000">=</span><span style="color:#000000"> dd.ToString().PadRight(d.ToString().Length </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">, </span><span style="color:#800000">'</span><span style="color:#800000">0</span><span style="color:#800000">'</span><span style="color:#000000">);<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> result;<br>            }<br>            result </span><span style="color:#000000">=</span><span style="color:#000000"> dd.ToString();<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> result;<br>        }<br>    }</span></div></pre>
+</div>
+</div>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/GameCode/aggbug/1759516.html?type=1" width="1" height="1" alt=""><p>评论: 1　<a href="http://www.cnblogs.com/GameCode/archive/2010/06/17/1759516.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/GameCode/archive/2010/06/17/1759516.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35721/">众里寻你千百度，百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66471/">一个 Android 用户对苹果 WWDC 的看法</a><span style="color:gray">(2010-06-17 21:07)</span><br>· <a href="http://news.cnblogs.com/n/66470/">360与百度 大战一触即发？</a><span style="color:gray">(2010-06-17 21:04)</span><br>· <a href="http://news.cnblogs.com/n/66469/">Outlook短信功能向Android与iPhone开放接口</a><span style="color:gray">(2010-06-17 20:58)</span><br>· <a href="http://news.cnblogs.com/n/66468/">人人网：70%人在世界杯期间产生消费行为</a><span style="color:gray">(2010-06-17 20:03)</span><br>· <a href="http://news.cnblogs.com/n/66467/">苹果iPad应用程序2个月时间突破1万个</a><span style="color:gray">(2010-06-17 17:48)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/miloyip/archive/2010/06/14/Kinematics_ParticleSystem.html">用JavaScript玩转游戏物理：运动学模拟与粒子系统</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

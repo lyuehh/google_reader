@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>自我描述的语句</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>自我描述的语句</h2>
+<p class="meta">28 Feb 2012</p>
+
+<div class="post">
+<h2>自我描述的语句</h2>
+
+<h3>by oldj</h3>
+
+<h3>at 2012-02-27 20:58:34</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/oldj/~8217290/640450474/6320477/1/item.html">http://item.feedsky.com/~feedsky/oldj/~8217290/640450474/6320477/1/item.html</a></h3>
+
+<p>　　自我描述的语句指这样一种语句：它的内容就是对它本身的描述。（废话……）比如下面这句句子：</p>
+
+
+
+
+<p style="font-style:italic">　　这是一段自我描述的语句，除了标点符号外，它共包含125个字符，其中33个“个”，29个“2”，5个“3”，3个“符”，3个“5”，2个“一”，2个“它”，2个“包”，2个“的”，2个“标”，2个“了”，2个“我”，2个“外”，2个“含”，2个“中”，2个“是”，2个“1”，2个“段”，2个“点”，2个“描”，2个“9”，2个“字”，2个“这”，2个“句”，2个“除”，2个“自”，2个“语”，2个“共”，2个“述”，2个“号”，2个“其”。</p>
+
+
+
+
+<p>　　这句话是我用一段 Python 脚本生成的，生成原理大致如下：</p>
+
+
+
+
+<p>　　1、给出一个模板，让句子的各个内容知道自己该出现在哪个部位；<br>
+　　2、根据当前信息，生成句子；<br>
+　　3、将当前句子作为输入，再次执行第 2 步的操作；<br>
+　　4、直到句子各部分内容的信息都正确。</p>
+
+
+
+
+<p>　　简单来说，就是一个不断迭代修正的过程。</p>
+
+
+
+
+<p>　　其中需要注意的是，每次迭代时应该尽量只改动一个地方，以免两处同时变化相互影响，造成死循环；另外，如果句子中有多处地方需要修正，尽量随机选取一处进行修正，而不要按一定顺序进行修正，同样是为了减少陷入死循环的风险。</p>
+
+
+
+
+<p>　　不过，即使如此，某些情况下还是有可能陷入死循环，比如如果某一步得到了下面这样的句子：</p>
+
+
+
+
+<p style="font-style:italic">　　这句很 2 的话包含 3 个“2”。</p>
+
+
+
+
+<p>　　上面这句话明显是错误的，因为其中只有两个“2”。那么，我们把那个“3”改为“2”，是不是就对了呢？很容易发现，如果我们做了这样的改动之后，句子将变成：</p>
+
+
+
+
+<p style="font-style:italic">　　这句很 2 的话包含 2 个“2”。</p>
+
+
+
+
+<p>　　这时，句子中又包含三个“2”了。像这样的句子就似乎无法简单地改为正确的自我描述语句，因为无论如何改都会陷入死循环。</p>
+
+
+
+
+<p>　　最后，我用来生成最上面的那句自我描述语句的 Python 脚本如下：</p>
+
+
+
+
+<pre>
+# -*- coding: utf-8 -*-
+
+import random
+
+class SelfDesc(object):
+
+    ignore_chars = u&quot;，。“”&quot;
+
+    def __init__(self, template):
+
+        self.template = template
+        self.length = 0
+        self.detail = &quot;&quot;
+        self.content = &quot;&quot;
+        self.chars = &quot;&quot;
+        self.char_count = {}
+        self.makeContent()
+        self.char_count = self.getCharCount()
+        self.getCharCount()
+        self.makeContent()
+
+
+    def __str__(self):
+
+        return self.content
+
+
+    def makeContent(self):
+
+        self.makeDetail()
+        self.content = self.template.replace(u&quot;{length}&quot;, u&quot;%d&quot; % self.length)\
+            .replace(u&quot;{detail}&quot;, self.detail)
+        self.getChars()
+
+
+    def getChars(self):
+
+        chars = self.content
+        for c in self.ignore_chars:
+            chars = chars.replace(c, &quot;&quot;)
+
+        self.chars = chars
+        return chars
+
+
+    def getLength(self):
+
+        self.length = len(self.chars)
+
+
+    def getCharCount(self):
+
+        d = {}
+        for c in self.chars:
+            if c in self.ignore_chars:
+                continue
+            d.setdefault(c, 0)
+            d[c] += 1
+
+        return d
+
+
+    def makeDetail(self):
+
+        d = self.char_count
+        items = d.items()
+        items.sort(key=lambda x: -x[1])
+
+        s = []
+        for c, n in items:
+            s.append(u&quot;%d个“%s”&quot; % (n, c))
+
+        self.detail = u&quot;，&quot;.join(s)
+
+
+    def correct(self):
+
+        print &quot;-&quot; * 50
+
+        char_count = self.getCharCount()
+        items = char_count.items()
+        random.shuffle(items)
+        for c, n in items:
+            if n &lt;= 1 and c in self.char_count:
+                del self.char_count[c]
+                continue
+
+            if self.char_count.get(c) == n:
+                continue
+            else:
+                self.char_count[c] = n
+                return True
+
+        else:
+            len = self.length
+            self.getLength()
+
+            if len != self.length:
+                return True
+
+        return False
+
+
+    def generate(self):
+
+        icount = 0
+        while self.correct():
+            icount += 1
+            self.makeContent()
+            print u&quot;#%d %s&quot; % (icount, self)
+
+
+def main():
+
+    template = u&quot;这是一段自我描述的语句，除了标点符号外，它共包含{length}个字符，其中{detail}。&quot;
+    sd = SelfDesc(template)
+    sd.generate()
+    print u&quot;%s&quot; % sd
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+
+</pre>
+
+
+<p><img src="http://www1.feedsky.com/t1/640450474/oldj/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/oldj/~8217290/640450474/6320477/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

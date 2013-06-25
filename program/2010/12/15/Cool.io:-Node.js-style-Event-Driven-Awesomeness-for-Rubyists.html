@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Cool.io: Node.js-style Event Driven Awesomeness for Rubyists</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Cool.io: Node.js-style Event Driven Awesomeness for Rubyists</h2>
+<p class="meta">15 Dec 2010</p>
+
+<div class="post">
+<h2>Cool.io: Node.js-style Event Driven Awesomeness for Rubyists</h2>
+
+<h3>by Peter Cooper</h3>
+
+<h3>at 2010-12-15 09:04:54</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/RubyInside/~3/3dvUCyoUHFs/cool-io-node-js-for-rubyists-4071.html">http://feedproxy.google.com/~r/RubyInside/~3/3dvUCyoUHFs/cool-io-node-js-for-rubyists-4071.html</a></h3>
+
+<p><img src="http://www.rubyinside.com/wp-content/uploads/2010/12/cooldude.png" width="86" height="94" alt="cooldude.png" style="float:left;margin-right:12px;margin-bottom:12px;border:1px #000000 solid">Been missing esteemed rapper and author Coolio (real name <i>Tony Arcieri</i>) recently? He's been busy studying Ruby and building <a href="http://coolio.github.com/">Cool.io</a> (or <a href="https://github.com/tarcieri/cool.io">GitHub repo</a>), a <a href="http://nodejs.org/">Node.js</a> and <a href="http://sinatrarb.com/">Sinatra</a> inspired "event framework" for Ruby powered by <a href="http://software.schmorp.de/pkg/libev.html">libev</a>. Think <a href="http://rubyeventmachine.com/">EventMachine</a> but with a cuter, Sinatra-style API. <i>cool.io</i> isn't exactly new, though, it's a rewrite-meets-rebrand of <a href="http://www.ruby-forum.com/topic/136583">Rev</a> (which started life back in 2007).</p>
+
+
+<blockquote>Cool.io (formerly known as Rev, and pronounced like Coolio of Gangster's Paradise fame) is an event framework for Ruby built on libev, the same library that provides high performance asynchronous I/O for Node.js. Cool.io is great for building TCP clients and servers which handle large numbers of connections and are primarily I/O bound. Cool.io also provides APIs for filesystem monitoring.
+<p>Cool.io is an alternative to EventMachine, albeit one which using Ruby's own native I/O primitives rather than reinventing them, and does as much as possible in Ruby instead of C, which should make it easier for interested contributors to hack on.</p></blockquote>
+
+
+<p><cite>Tony Arcieri</cite></p>
+
+
+<p>You can install cool.io with <code>gem install cool.io</code> (it just feels <i>weird</i> to have a period in a gem name, no?) and be up and running quickly with cool.io's default example script:</p>
+
+
+<pre><span>require</span> <span>'</span><span>rubygems</span><span>'</span>
+<span>require</span> <span>'</span><span>cool.io</span><span>'</span>
+
+<span>ADDR</span> <span>=</span> <span>'</span><span>127.0.0.1</span><span>'</span>
+<span>PORT</span> <span>=</span> <span>4321</span>
+
+<span>cool</span><span>.</span><span>io</span><span>.</span><span>server</span> <span>ADDR</span><span>,</span> <span>PORT</span> <span>do</span>
+  <span>on_connect</span> <span>do</span>
+    <span>puts</span> <span>"</span><span><span>#{remote_addr}</span>:<span>#{remote_port}</span> connected</span><span>"</span>
+  <span>end</span>
+
+  <span>on_close</span> <span>do</span>
+    <span>puts</span> <span>"</span><span><span>#{remote_addr}</span>:<span>#{remote_port}</span> disconnected</span><span>"</span>
+  <span>end</span>
+
+  <span>on_read</span> <span>do</span> <span>|</span><span>data</span><span>|</span>
+    <span>write</span> <span>data</span>
+  <span>end</span>
+<span>end</span>
+
+<span>puts</span> <span>"</span><span>Echo server listening on <span>#{ADDR}</span>:<span>#{PORT}</span></span><span>"</span>
+<span>cool</span><span>.</span><span>io</span><span>.</span><span>run</span></pre>
+
+
+<p>This program listens on localhost at port 4321, accepts connections, and echos data back to them. You could make it serve up Web pages (especially through Rainbows), have it share data between clients to make a chat system or.. whatever you like.</p>
+
+
+<p>Unlike a non-event driven single threaded daemon, a cool.io powered daemon can take multiple connections and manage them simultaneously without needing to fork or create extra threads. In this respect it's similar to EventMachine although it doesn't use EventMachine at all (but cutely has an <a href="https://github.com/tarcieri/cool.io/blob/master/lib/cool.io/eventmachine.rb">EventMachine emulator</a> baked in) and is developed mostly in Ruby rather than C.</p>
+
+
+<p>Want to know more? <a href="http://coolio.github.com/">cool.io's snazzy homepage</a> is the place to start.</p>
+
+
+<div>
+<a href="http://feeds.feedburner.com/~ff/RubyInside?a=3dvUCyoUHFs:NQctjQ7U6b8:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/RubyInside?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/RubyInside?a=3dvUCyoUHFs:NQctjQ7U6b8:3H-1DwQop_U"><img src="http://feeds.feedburner.com/~ff/RubyInside?i=3dvUCyoUHFs:NQctjQ7U6b8:3H-1DwQop_U" border="0"></a> <a href="http://feeds.feedburner.com/~ff/RubyInside?a=3dvUCyoUHFs:NQctjQ7U6b8:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/RubyInside?i=3dvUCyoUHFs:NQctjQ7U6b8:F7zBnMyn0Lo" border="0"></a> <a href="http://feeds.feedburner.com/~ff/RubyInside?a=3dvUCyoUHFs:NQctjQ7U6b8:gIN9vFwOqvQ"><img src="http://feeds.feedburner.com/~ff/RubyInside?i=3dvUCyoUHFs:NQctjQ7U6b8:gIN9vFwOqvQ" border="0"></a>
+</div>
+
+
+<p><img src="http://feeds.feedburner.com/~r/RubyInside/~4/3dvUCyoUHFs" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

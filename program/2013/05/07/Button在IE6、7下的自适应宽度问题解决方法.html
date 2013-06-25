@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Button在IE6、7下的自适应宽度问题解决方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Button在IE6、7下的自适应宽度问题解决方法</h2>
+<p class="meta">07 May 2013</p>
+
+<div class="post">
+<h2>Button在IE6、7下的自适应宽度问题解决方法</h2>
+
+<h3>by 晴方好玲</h3>
+
+<h3>at 2013-05-07 11:27:11</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_897db7b50101b7mq.html">http://blog.sina.com.cn/s/blog_897db7b50101b7mq.html</a></h3>
+
+<p>写一个Button，有两种方式：其一，直接button标签；其二，input type=”button”。</p>
+
+
+<p>
+不管哪种方式，Button的宽度在IE6、7下总是不能完美，接下来我们演示一个普通的Button，你可以用IE6或者IE7浏览器看看其显示宽度，然后对比Chrome或者IE8等浏览器，你会发现Bug的所在。</p>
+
+
+<p><strong>1、一个普通的Button:</strong></p>
+
+
+
+
+<p>可以很直接的看到Button的两边有空隙，当然，这个空隙是无法用padding:0来解决的。</p>
+
+
+<p>通常，不少同学会想到给该Button定义一个width:100px。</p>
+
+
+<p><strong>2、width:150px的Button：</strong></p>
+
+
+
+
+<pre style="BorDer-BoTToM:rgb(204,204,204) 1px solid;BorDer-LeFT:rgb(204,204,204) 4px solid;pADDinG-BoTToM:10px;BACKGroUnD-CoLor:rgb(254,254,254);MArGin:15px 0px;pADDinG-LeFT:12px;pADDinG-riGHT:12px;FonT:100 12px/18px monaco,andale mono,courier new;WorD-WrAp:break-word;CoLor:rgb(68,68,68);WorD-BreAK:break-all;BorDer-Top:rgb(204,204,204) 1px solid;BorDer-riGHT:rgb(204,204,204) 1px solid;pADDinG-Top:10px;font-size-adjust:none;font-stretch:normal">
+
+.<font face="Courier New"><span style="CoLor:rgb(17,119,0)">demo-button01</span>{<span style="CoLor:rgb(0,0,0)">width</span>:<span style="CoLor:rgb(17,102,68)">150px</span></font>;}
+</pre>
+
+
+<p>恭喜，你是对的。但是，我们必须这个Button自适应宽度呢？</p>
+
+
+<p>好吧，加个width:auto试试。</p>
+
+
+<p><strong>3、width:auto的Button：</strong></p>
+
+
+
+
+<pre style="BorDer-BoTToM:rgb(204,204,204) 1px solid;BorDer-LeFT:rgb(204,204,204) 4px solid;pADDinG-BoTToM:10px;BACKGroUnD-CoLor:rgb(254,254,254);MArGin:15px 0px;pADDinG-LeFT:12px;pADDinG-riGHT:12px;FonT:100 12px/18px monaco,andale mono,courier new;WorD-WrAp:break-word;CoLor:rgb(68,68,68);WorD-BreAK:break-all;BorDer-Top:rgb(204,204,204) 1px solid;BorDer-riGHT:rgb(204,204,204) 1px solid;pADDinG-Top:10px;font-size-adjust:none;font-stretch:normal">
+
+.<font face="Courier New"><span style="CoLor:rgb(17,119,0)">demo-button02</span>{<span style="CoLor:rgb(0,0,0)">width</span>:<span style="CoLor:rgb(17,102,68)">auto</span></font>;}
+</pre>
+
+
+<p>哦也，还是不行！下面试试网上提供的一种方法。</p>
+
+
+<p><strong>4、width:auto;overflow:visible;的Button：</strong></p>
+
+
+
+
+<pre style="BorDer-BoTToM:rgb(204,204,204) 1px solid;BorDer-LeFT:rgb(204,204,204) 4px solid;pADDinG-BoTToM:10px;BACKGroUnD-CoLor:rgb(254,254,254);MArGin:15px 0px;pADDinG-LeFT:12px;pADDinG-riGHT:12px;FonT:100 12px/18px monaco,andale mono,courier new;WorD-WrAp:break-word;CoLor:rgb(68,68,68);WorD-BreAK:break-all;BorDer-Top:rgb(204,204,204) 1px solid;BorDer-riGHT:rgb(204,204,204) 1px solid;pADDinG-Top:10px;font-size-adjust:none;font-stretch:normal">
+
+.<font face="Courier New"><span style="CoLor:rgb(17,119,0)">demo-button03</span>{<span style="CoLor:rgb(0,0,0)">width</span>:<span style="CoLor:rgb(17,102,68)">auto</span>;<span style="CoLor:rgb(0,0,0)">overflow</span>:<span style="CoLor:rgb(17,102,68)">visible</span></font>;}
+</pre>
+
+
+<p>Yes，可行！还有一个方法如下：</p>
+
+
+
+
+<pre style="BorDer-BoTToM:rgb(204,204,204) 1px solid;BorDer-LeFT:rgb(204,204,204) 4px solid;pADDinG-BoTToM:10px;BACKGroUnD-CoLor:rgb(254,254,254);MArGin:15px 0px;pADDinG-LeFT:12px;pADDinG-riGHT:12px;FonT:100 12px/18px monaco,andale mono,courier new;WorD-WrAp:break-word;CoLor:rgb(68,68,68);WorD-BreAK:break-all;BorDer-Top:rgb(204,204,204) 1px solid;BorDer-riGHT:rgb(204,204,204) 1px solid;pADDinG-Top:10px;font-size-adjust:none;font-stretch:normal">
+
+.<font face="Courier New"><span style="CoLor:rgb(17,119,0)">demo-button04</span>{<span style="CoLor:rgb(0,0,0)">width</span>:<span style="CoLor:rgb(17,102,68)">1</span>;<span style="CoLor:rgb(0,0,0)">overflow</span>:<span style="CoLor:rgb(17,102,68)">visible</span></font>;}
+</pre>
+
+
+<p>但个人觉得width:1的写法很二，所以摒弃之。</p>
+
+
+<p><strong>结语：</strong></p>
+
+
+<p>如果你要问问什么IE6、7下会出现这样的问题，解决Button自适应宽度的最佳办法是<span style="CoLor:rgb(0,128,0)">width:auto;overflow:visible;</span></p>
+
+
+<p>参考：</p>
+
+
+<p><a href="http://jehiah.cz/a/button-width-in-ie">http://jehiah.cz/a/button-width-in-ie</a></p>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=7"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

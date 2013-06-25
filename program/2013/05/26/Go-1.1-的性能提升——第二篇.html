@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go 1.1 的性能提升——第二篇</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Go 1.1 的性能提升——第二篇</h2>
+<p class="meta">26 May 2013</p>
+
+<div class="post">
+<h2>Go 1.1 的性能提升——第二篇</h2>
+
+<h3>by Codefor</h3>
+
+<h3>at 2013-05-26 01:15:44</h3>
+
+<h3>original <a href="http://blog.jobbole.com/40164/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=go-1-1-%25e7%259a%2584%25e6%2580%25a7%25e8%2583%25bd%25e6%258f%2590%25e5%258d%2587-%25e7%25ac%25ac%25e4%25ba%258c%25e7%25af%2587">http://blog.jobbole.com/40164/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=go-1-1-%25e7%259a%2584%25e6%2580%25a7%25e8%2583%25bd%25e6%258f%2590%25e5%258d%2587-%25e7%25ac%25ac%25e4%25ba%258c%25e7%25af%2587</a></h3>
+
+<p>这是探讨最近发布的Go1.1性能提升三篇系列文章中的第二篇。</p>
+
+
+<p>在<a href="http://blog.jobbole.com/39728/">第一篇</a>中，我们探讨了amd64平台上的性能提升，以及所有平台受益于运行时和编译器前端性能优化得到的普遍性能提升。</p>
+
+
+<p>这篇文章中，我将主要着重于运行在386机器上Go1.1的性能。文章中的评测结果源自<a href="https://github.com/davecheney/autobench/blob/master/linux-386-d5666bad617d-vs-e570c2daeaca.txt">linux-386-d5666bad617d-vs-e570c2daeaca.txt</a>。</p>
+
+
+<p> </p>
+
+
+<h3>Go1 在linux/386平台的基准测试</h3>
+
+
+<p>谈到性能，8g编译器是个短板。386开发模型中，可用的通用寄存器数目较少，及其诡异使用限制对编译和优化带来了很大挑战。然而，这阻挡不了Rémy Oudompheng在Go1.1开发过程中对8g编译器作出许多重大贡献。</p>
+
+
+<p>首先，古怪的387浮点数模型被弃用（除非你运行在非常古老的带有GO386=387开关的硬件上），并由SSE2指令取代。</p>
+
+
+<p>其次，Rémy做了很多努力，从6g迁移了代码生成优化的代码到8g（同时也迁移到了5g，arm编译器）。涉及迁移的代码包括编译器前端、垃圾收集，以及引入了一个将<a href="https://codereview.appspot.com/6819123">除法重写为简单的移位和乘法操作的框架</a></p>
+
+
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-386-go1.png" rel="lightbox[40164]" title="linux-386-go1"><img title="linux-386-go1" src="http://cdn2.jobbole.com/2013/05/linux-386-go1.png" alt=""></a></p>
+
+
+<p>整体上看，这台机器上的linux/386结果显示出了和linux/amd64一样的性能提升，甚至某些基准测试项还超过了后者。然而，和linux/amd64不一样的是，Gzip和Gob基准测试中，linux/386性能没有衰退。</p>
+
+
+<p>BinaryTree17 和 Fannkuch11这两个测试项轻微地性能衰退，应该是由因为垃圾收集器变得更加精确引起的。垃圾收集器更加精确，引入了一些额外的记账信息来记录分配在堆上的对象的大小和类型，进而反映在以上基准测试中。</p>
+
+
+<p> </p>
+
+
+<h3>net/http 基准测试</h3>
+
+
+<p><a href="http://blog.jobbole.com/39728/">之前一篇</a>linux/amd64文章中展示出来的net包中的性能提升在linux/386平台一样存在。ClientServer基准测试的性能提升并没有像amd64那样被标出来，然而，由于运行时和net包结合的更加紧密，整体上仍然表现出显著的性能改善。</p>
+
+
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-386-http.png" rel="lightbox[40164]" title="linux-386-http"><img title="linux-386-http" src="http://cdn2.jobbole.com/2013/05/linux-386-http.png" alt=""></a></p>
+
+
+<h3>Runtime 微基准测试</h3>
+
+
+<p>和<a href="http://blog.jobbole.com/39728/">第一篇</a>的amd64基准测试一样，runtime微基准测试显示出了有好有坏的结果。一些低层次的操作变的稍微慢一些，同时，其他一些操作，如map，性能有显著提升。</p>
+
+
+<p><a href="http://cdn2.jobbole.com/2013/05/linux-386-runtime.png" rel="lightbox[40164]" title="linux-386-runtime"><img title="linux-386-runtime" src="http://cdn2.jobbole.com/2013/05/linux-386-runtime.png" alt=""></a></p>
+
+
+<p>最后这两个基准测试，截断在下面，是因为他们性能提升太多了，屏幕容不下。这个性能提升主要归功于<a href="https://codereview.appspot.com/8056043/">这个变化</a>，其为strings，bytes，runtime包引入了一个更快的低层次的Equals操作。结果不言自明。</p>
+
+
+<pre>benchmark                                  old MB/s   new MB/s  speedup
+BenchmarkCompareStringBigUnaligned         29.08      1145.48   39.39x
+BenchmarkCompareStringBig                  29.09      1253.48   43.09x</pre>
+
+
+<p> </p>
+
+
+<h3>结论</h3>
+
+
+<p>虽然8g不是gc系列编译器中的最好的，（Ken Thompson自己也曾说，386平台基本上没有多余可用的寄存器），linux/386很容易就实现了之前声称的30%-40%的性能提升。甚至在一些基准测试中，相比Go1.0，linux/386打败了linux/amd64</p>
+
+
+<p>除此之外，由于内存使用的减少，现在所有的编译器在编译时只需要大概之前一半的内存，这样的直接结果就是Go1.1比Go1.0编译速度提高了30%。 我鼓励你去审查autobench代码库中的基准测试数据。如果你有能力，请提交你自己的测试结果。</p>
+
+
+<p>在这个系列的最后一篇文章中我将关注Go1.1给arm平台带来的性能提升。我向你保证，最后一篇的将是最精彩的。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>英文原文：<a href="http://dave.cheney.net/2013/05/25/go-11-performance-improvements-part-2" rel="home">Dave Cheney</a>，感谢<a href="http://weibo.com/codefor">@Codefor</a> 的热心翻译。如果其他朋友也有不错的原创或译文，可以尝试<a href="http://blog.jobbole.com/tougao/">推荐给伯乐在线</a>。</p>
+
+
+<p>译文链接：<a href="http://blog.jobbole.com/40164/">http://blog.jobbole.com/40164/</a></p>
+
+
+<p><span style="color:#ff0000">【非特殊说明，转载必须在正文中标注并保留原文链接、译文链接和译者等信息，谢谢合作！】</span></p>
+
+
+<h4>相关文章</h4>
+
+
+<ul>
+<li><a href="http://blog.jobbole.com/39728/">Go 1.1 的性能提升——第一篇</a></li>
+<li><a href="http://blog.jobbole.com/40448/">Go1.1性能提升——第三篇</a></li>
+<li><a href="http://blog.jobbole.com/39567/">Go 语言 1.1 版发布</a></li>
+<li><a href="http://blog.jobbole.com/37257/">Go 1.1 介绍</a></li>
+<li><a href="http://blog.jobbole.com/10110/">从零到 Go：Google感恩节火鸡涂鸦开发纪实</a></li>
+<li><a href="http://blog.jobbole.com/36838/">我们是如何让服务器从30台缩减到2台的:从Ruby迁移到Go语言</a></li>
+<li><a href="http://blog.jobbole.com/35304/">Goroutine背后的系统知识</a></li>
+<li><a href="http://blog.jobbole.com/36480/">Go在谷歌：以软件工程为目的的语言设计</a></li>
+<li><a href="http://blog.jobbole.com/14386/">使用Go语言一段时间的感受</a></li>
+<li><a href="http://blog.jobbole.com/31328/">Vim 加 Gmail 变身 Vmail</a></li>
+</ul>
+
+
+<p><a href="http://blog.jobbole.com/40164/">Go 1.1 的性能提升——第二篇</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

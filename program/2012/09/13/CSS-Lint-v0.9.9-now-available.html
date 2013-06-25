@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>CSS Lint v0.9.9 now available</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>CSS Lint v0.9.9 now available</h2>
+<p class="meta">13 Sep 2012</p>
+
+<div class="post">
+<h2>CSS Lint v0.9.9 now available</h2>
+
+<h3>by Nicholas C. Zakas</h3>
+
+<h3>at 2012-09-13 05:13:34</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/nczonline/~3/EelnNmJp5aY/">http://feedproxy.google.com/~r/nczonline/~3/EelnNmJp5aY/</a></h3>
+
+<p>CSS Lint v0.9.9 is now available both on the command line and at the <a href="http://csslint.net">web site</a>. This release is mostly a maintenance release with a few small features added in. This lays the groundwork for an eventual 1.0.0 release, but that doesn’t preclude the possibility of a 0.9.10 release before then. There’s still a lot of work to do on the parser to make it fully CSS3 compliant, and if you’re interested in helping out, please take a look at the separate <a href="https://github.com/nzakas/parser-lib">GitHub</a> repository.</p>
+
+
+<p>The biggest change to CSS Lint in this release are for the command line. The first change is the ability to specify some rules to ignore. This was requested by Zack Leatherman via Twitter, and fits in nicely with the options to set rules as warnings or errors. The intend to specify this to ignore is that you want to use all of the default settings except for omitting a few rules. The syntax is as follows:</p>
+
+
+<pre><code>csslint --ignore=important,ids file.css</code></pre>
+
+
+<p>The <code>--ignore</code> option follows the same format as <code>--warnings</code> and <code>--errors</code>, using a comma-delimited list of rules to ignore. Read more in the <a href="http://www.nczonline.net/blog">documentation</a>.</p>
+
+
+<p>The second change to the CLI is the ability to specify a configuration file with default options for CSS Lint. CSS Lint will look for the file named <code>.csslintrc</code> in the current working directory and use those options. The file is in the same format as the command line arguments so that you can do something like this:</p>
+
+
+<pre><code>--errors=important,ids
+--format=checkstyle-xml</code></pre>
+
+
+<p>As long as this is in the current working directory when CSS Lint is run, those options will be picked up and used by default. Any  options that are passed in on the command line will override those in the file.</p>
+
+
+<p>For more information about the CLI, see the <a href="https://github.com/stubbornella/csslint/wiki/Command-line-interface">documentation</a>.</p>
+
+
+<p>In addition to that, we had several other small changes:</p>
+
+
+<ul>
+<li>Jos Hirth fixed several bugs, including some bugs in tests.</li>
+<li>Jonathan Barnett contributed a JUnit XML output format to allow easier integration with CI environments.</li>
+<li>Zach Leatherman removed references to Microsoft-specific vendor prefixes that will not be supported in Internet Explorer 10.</li>
+</ul>
+
+
+<p>The last piece of news for this release is that CSS Lint is now on <a href="http://travis-ci.org/stubbornella/csslint">Travis CI</a>, so you can always keep up to date as to the latest status of the build. Of course, we welcome all contributions from the community on <a href="https://github.com/stubbornella/csslint">GitHub</a>, which is why we have an extensive <a href="https://github.com/stubbornella/csslint/wiki/Developer-Guide">Developer Guide</a> to help you get setup and ready to submit your changes. Enjoy!</p>
+
+
+<div>
+<a href="http://feeds.feedburner.com/~ff/nczonline?a=EelnNmJp5aY:OE_r49HQVVU:yIl2AUoC8zA"><img src="http://feeds.feedburner.com/~ff/nczonline?d=yIl2AUoC8zA" border="0"></a> <a href="http://feeds.feedburner.com/~ff/nczonline?a=EelnNmJp5aY:OE_r49HQVVU:V_sGLiPBpWU"><img src="http://feeds.feedburner.com/~ff/nczonline?i=EelnNmJp5aY:OE_r49HQVVU:V_sGLiPBpWU" border="0"></a> <a href="http://feeds.feedburner.com/~ff/nczonline?a=EelnNmJp5aY:OE_r49HQVVU:qj6IDK7rITs"><img src="http://feeds.feedburner.com/~ff/nczonline?d=qj6IDK7rITs" border="0"></a> <a href="http://feeds.feedburner.com/~ff/nczonline?a=EelnNmJp5aY:OE_r49HQVVU:F7zBnMyn0Lo"><img src="http://feeds.feedburner.com/~ff/nczonline?i=EelnNmJp5aY:OE_r49HQVVU:F7zBnMyn0Lo" border="0"></a>
+</div>
+
+
+<p><img src="http://feeds.feedburner.com/~r/nczonline/~4/EelnNmJp5aY" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一个简单的加载系统</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一个简单的加载系统</h2>
+<p class="meta">21 Nov 2012</p>
+
+<div class="post">
+<h2>一个简单的加载系统</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-11-21 10:11:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2777681.html">http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2777681.html</a></h3>
+
+<p><br>var check = {}<br><br>require = function(name, callback){<br>    //name切割成多个模块名，然后转换为URL<br>    //for循环<br>    //这里会运行于iframe中<br>    var s = document.createElement("script")<br>    document.body.appendChild(s)<br>    s.src = name<br>    //for循环结束<br>    check[name] = callback //以后check[name]会对应一个对象<br>}<br>//这是执行回调<br>require.exec = function(factory, name, list){<br>  var ret = factory.apply(null, list || [])<br>  check<a href="ret">name</a><br>}<br>//这是模块用到define方法<br>define = function(name, callback, list){<br>    //这大大被简化了，还要从URL还原name，处理依赖列表<br>    var str = "require.exec(" + callback.toString() +",'"+name +"')"<br>    var s = document.createElement("script")<br>    document.body.appendChild(s)<br>    s.text = str;<br>}<br><img src="http://www.cnblogs.com/rubylouvre/aggbug/2777681.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2777681.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

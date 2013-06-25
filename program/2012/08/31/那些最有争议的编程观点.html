@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>那些最有争议的编程观点</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>那些最有争议的编程观点</h2>
+<p class="meta">31 Aug 2012</p>
+
+<div class="post">
+<h2>那些最有争议的编程观点</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-08-31 14:52:05</h3>
+
+<h3>original <a href="http://blog.jobbole.com/26256/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e9%2582%25a3%25e4%25ba%259b%25e4%25ba%2589%25e8%25ae%25ae%25e6%259c%2580%25e5%25a4%25a7%25e7%259a%2584%25e7%25bc%2596%25e7%25a8%258b%25e8%25a7%2582%25e7%2582%25b9">http://blog.jobbole.com/26256/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e9%2582%25a3%25e4%25ba%259b%25e4%25ba%2589%25e8%25ae%25ae%25e6%259c%2580%25e5%25a4%25a7%25e7%259a%2584%25e7%25bc%2596%25e7%25a8%258b%25e8%25a7%2582%25e7%2582%25b9</a></h3>
+
+<p>知名问答网站<a href="http://stackoverflow.com/">StackOverflow</a>之所以成功，合理的规则与严格执行是重要的原因，所以删帖是经常的。不过有时候执行得过严了，被删的问答不时会有惊艳之作。这不，他们的博客8月29日的文章<a href="http://programmers.blogoverflow.com/2012/08/20-controversial-programming-opinions/">“20个最受争议的编程观点”</a>说的就是这样一个被删帖。此文一出，立刻在 <a href="http://www.reddit.com/r/programming/comments/z0nng/20_controversial_programming_opinions/">Reddit/Programming</a>、<a href="http://news.ycombinator.com/item?id=4448327">Hacker News</a>等各大技术新闻站上引起了热议。</p>
+
+
+<p>实际上陈皓曾经翻译<a href="http://blog.jobbole.com/19511/">介绍过其中的十条</a>，但观点本身没有翻译。</p>
+
+
+<p>最初的问题“你最受争议的编程观点是什么？”（<a href="http://stackoverflow.com/questions/406760/whats-your-most-controversial-programming-opinion">这里</a>还能看到存档），由Jon Skeet在2009年1月提出。此人可不是无名小卒，C#社区大名鼎鼎的人物，多年微软MVP，所著《<a href="http://www.amazon.cn/gp/product/B006OI9JUE/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;camp=536&amp;creative=3200&amp;creativeASIN=B006OI9JUE&amp;linkCode=as2&amp;tag=vastwork-23">深入理解C#</a>》（英文版<em>C# in Depth</em>）一书是C#领域少数不可不读的名著（<a href="http://weibo.com/1560442584/eCuePworATJ">老赵就说过</a>C#他只推荐两本，这本和<em>CLR via C#</em>），现在Google英国公司任工程师（还真不知道他在那里干什么）。</p>
+
+
+<p>那么，这个问题当时都有哪些热门答案呢？顺序是随机的。</p>
+
+
+<p><strong>1、业余时间不会为了好玩而编程的<span><a href="http://blog.jobbole.com/821/" title="程序员的本质">程序员</a></span>，永远比不上那些以编程为乐的同学。</strong></p>
+
+
+<p>我认为即使是最聪明、最有才华的人，如果只是将编程作为工作，也永远成不了真正优秀的程序员。以编程为乐的人会在业余时也搞些小项目，或者弄弄各种不同的<span><a href="http://blog.jobbole.com/tag/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/" title="如何选择语言和编程语言排名相关文章">编程语言</a></span>和编程思想。</p>
+
+
+<p><strong>2、单元测试无助于编写优秀代码。</strong></p>
+
+
+<p>编写单元测试的唯一理由仅仅是确保已经能工作的代码不会出问题。先写测试或者按测试来写代码是无比荒谬的。如果在代码之前写测试，你都不知道边界情况是什么。虽然能让代码通过测试，但是在没有预见到的情况时还是会出问题。而且，好的开发人员会尽量降低内聚性，新增代码不可能使已有的出问题。</p>
+
+
+<p><strong>3、唯一能放之四海而皆准的最佳实践，是“用脑子思考”。</strong></p>
+
+
+<p>太多人喜欢追逐众多时髦技术，想方设法把各种方法、模式、框架用到不适合的地方。新技术和名人大牛的观点并等于适用于实际情况。</p>
+
+
+<p><strong>4、大多数代码中的注释实际上都是代码重复的恶性表现。</strong></p>
+
+
+<p>我们大部分时间是在维护其他人（或者我们自己）写的代码，而糟糕、错误、过时和误导性的注释肯定是代码中最令人纠结的东西之一。很多人最终会将它们干掉。应该把精力放在提高代码的可读性、必要时就<span><a href="http://www.amazon.cn/gp/product/B003BY6PLK/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=vastwork-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B003BY6PLK" title="重构" rel="nofollow">重构</a></span>、少用惯用法和奇技淫巧上。另外，许多教材还在宣扬什么注释甚至比代码还重要，结果导致了大量废话连篇的注释。</p>
+
+
+<p><strong>5、依赖Google没什么错。</strong></p>
+
+
+<p>这种言论肯定会让那些学富五车的饱学之士恼火。但是谁都需要查资料不是？正确答案就是正确答案，管它是来自哪本秘籍或者私相传授，还是Google出来的呢？重要的是能真正理解，并给出成功的编程解决方案，让客户和老板满意。</p>
+
+
+<p><strong>6、程序员不是生而平等的。</strong></p>
+
+
+<p>经理往往认为程序员A==程序员B，因为他们的年头差不多。实际上，一个开发者的效能可以是另一个的十倍甚至百倍。</p>
+
+
+<p><strong>7、我实在不能理解为什么Java是最适合大学教学的第一门语言。</strong></p>
+
+
+<p>首先，我相信第一门编程语言应该重在学习控制流和变量，而不是对象和语法。其次，我认为没有调试C/C++内存泄漏经验的人，根本无法完全理解Java的初衷。而且，自然的发展过程应该是从“我怎样做这事”到“我怎样找到能做这事的库”，而不是倒过来。</p>
+
+
+<p><strong>8、如果你只会一门语言，无论多么精通，仍然不是优秀的程序员。</strong></p>
+
+
+<p>有人认为，只要精通了C#、Java或者其他什么你学会的第一门语言，就足够了。我不敢苟同。我学习的每一种新语言，都教了不少编程新知，能够反过来用于工作中。任何人只局限于一种语言，都无法充分发挥自己的潜力。而且缺乏求知欲和探索意愿，都不符合优秀程序员的特质。</p>
+
+
+<p><strong>9、偶尔写写垃圾代码也无妨。</strong></p>
+
+
+<p>有时候一些特定任务，快而脏的代码能搞定就行了。模式、ORM、SRP（单一职责原则）啥的算了吧。</p>
+
+
+<p><strong>10、print语句是合法的调试方式。</strong></p>
+
+
+<p>我认为用 System.out.println 之类的输出语句调试代码挺好。这经常比正式的调试要快，而且可以比较不同运行的输出结果。但是投入生产环境之前一定要删除这些语句，或者将它们放入日志语句中。</p>
+
+
+<p><strong>11、你的工作是要把自己摘出来。</strong></p>
+
+
+<p>你写的软件都应该让其他任何开发人员花一点时间就能理解并接手。软件应该设计优雅，代码清晰和一致，格式干净，文档合适，每日构建，有恰当的版本管理。如果你被车撞了、被开了、辞职了，公司应该很快能有人很快替代你。如果不能，那你就太悲剧了。有意思的是，你越这样做，你对公司的价值越大。</p>
+
+
+<p>原帖下面有人评论：你如果无法被替代，也就无法升职啦。</p>
+
+
+<p><strong>12、getter和setter被极度滥用了。</strong></p>
+
+
+<p>成千上万的人都说公共字段是罪恶的，应该设为私有，提供getter和setter。我觉得其实没啥不同，除非程序是多线程的，或者访问方法中有业务或者展示逻辑（这可够怪的）。我并不是赞成用公共字段，只是反对用访问方法或者属性包一下，就号称封装、信息隐藏了。</p>
+
+
+<p><strong>13、SQL也是代码，请等而视之。</strong></p>
+
+
+<p>SQL和C#, Java或者其他对象、过程语言没什么不同，请注意代码的格式、可读性和可维护性。</p>
+
+
+<p><strong>14、UML图被高估了</strong>。</p>
+
+
+<p>有些图当然是有用的，比如Composite模式的类图。但许多UML图都毫无价值。</p>
+
+
+<p>CSDN编者注：记得Robert Martin在《<span><a href="http://www.amazon.cn/gp/product/B00116MMA8/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;camp=536&amp;creative=3200&amp;creativeASIN=B00116MMA8&amp;linkCode=as2&amp;tag=vastwork-23" title="敏捷软件开发(原则模式与实践) " rel="nofollow">敏捷软件开发</a></span>（C#版）》里讲UML时，基本上是讲一个图然后说，好像没什么用，我就没怎么用过……同一个问题下面还有一个相关的答案：代码==设计。认为高级语言代码比UML图和文档更有效。</p>
+
+
+<p><strong>15、可读性是代码最重要的方面。</strong></p>
+
+
+<p>比正确性还重要。可读的代码也容易修正，容易优化、修改、理解。而且其他开发者也能从中获益。</p>
+
+
+<p><strong>16、XML被大大高估了。</strong></p>
+
+
+<p>很多随波逐流跳上XML这黑船的人都没过脑子。XML用于Web应用不错，因为它本来就是干这个的。此外的问题定义、设计思路应该尽量不用XML。</p>
+
+
+<p><strong>17、软件开发只是一份工作而已。</strong></p>
+
+
+<p>我热爱软件开发， 我现在一家创业公司干，每周公司60小时，而且工资不高，只因为团队很棒，工作很有趣。但站得高一点来看，这仍然只是一份工作而已。它不如家庭、我的女友、其他朋友、幸福等等重要。要是有足够的钱，我宁愿去玩摩托、游艇或单板滑雪。许多开发者忘记了写程序不是最终目的，它只是为我们提供条件，去高高兴兴地做生命中最重要的事情。</p>
+
+
+<p>CSDN编者注：这条和第1条好像有点对着来嘛。</p>
+
+
+<p><strong>18、开发人员就应该能够写代码。</strong></p>
+
+
+<p>去年做了很多面试，我主要会测人们的思路，如何在白板上实现比较简单的算法。我往往从这样的问题开始：</p>
+
+
+<p><span style="color:#888888">已知Pi可以用函数4 * (1 – 1/3 + 1/5 – 1/7 + …) 计算，项越多越精确，请写一个函数，计算小数点后5位的Pi。</span></p>
+
+
+<p>这是一个10行C#就能搞定的问题。但许多面试者甚至毫无思路。所以我只好接着问这样的问题：</p>
+
+
+<p><span style="color:#888888">已知圆的面积是Pi乘以半径的平方，写一个函数计算。</span></p>
+
+
+<p>居然有超过半数的人无法用任何语言完成这个函数！唉，开发人员应该能够写代码，现在连这个都成有争议的观点了……</p>
+
+
+<p><strong>19、<span><a href="http://www.amazon.cn/gp/product/B001130JN8/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=vastwork-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B001130JN8" title="设计模式:可复用面向对象软件的基础" rel="nofollow">设计模式</a></span>弊大于利。</strong></p>
+
+
+<p>软件设计，尤其是好的软件设计千变万化，没法有意义地用模式去总结，尤其是那些大家记得住的几个模式，而且这些模式也太抽象了，其实没几个人真正记得住太多。所以设计模式其实没啥用。而另一方面呢，又有太多的人为设计模式的概念迷住，想方设法到处用——结果代码中往往除了一些毫无意义的单例和抽象工厂之外，几乎找不到什么设计。</p>
+
+
+<p><strong>20、代码少少益善。</strong></p>
+
+
+<p>如果用户看不到你的工作，才是做对了。荣耀在别处。</p>
+
+
+<p>其他比较热门的答案还有：</p>
+
+
+<p><strong>21. 性能真的很重要。</strong></p>
+
+
+<p><strong>22. 企业应用很滑稽。需要n年经验是胡扯。计算机科学学位课程纯忽悠。</strong>（<a href="http://stackoverflow.com/questions/406760/whats-your-most-controversial-programming-opinion/406825#406825">链接</a>）</p>
+
+
+<p><strong>23. </strong><strong>单元测试无助于编写好代码，软件工程大多数所谓的最佳实践都是为了防范烂程序员搞太多破坏。</strong>（<a href="http://stackoverflow.com/questions/406760/whats-your-most-controversial-programming-opinion/407014#407014">链接</a>）</p>
+
+
+<p><strong>24. 每个程序员都应该熟悉现代计算机的体系结构。</strong></p>
+
+
+<p><strong>25. 编写小方法。</strong></p>
+
+
+<p><strong>26. PHP真烂！</strong></p>
+
+
+<p><strong>27. C++是有史以来最差的语言之一。</strong>（<a href="http://stackoverflow.com/questions/406760/whats-your-most-controversial-programming-opinion/408396#408396">链接</a>）</p>
+
+
+<p><strong>28. 大多数职业程序员都很烂。</strong></p>
+
+
+<p><strong>29. 要想成为程序员，你得先学会打字。</strong></p>
+
+
+<p><strong>30. 编程之外的各种流程规矩越多，代码质量越差。</strong>（<a href="http://stackoverflow.com/questions/406760/whats-your-most-controversial-programming-opinion/408623#408623">链接</a>）</p>
+
+
+<p>资深的游戏程序员<span style="font-family:微软雅黑">James Hague（名博<a href="http://prog21.dadgum.com/">Prog21</a>是也）也看到此文，觉得这些观点都没啥太大争议性。他专门写了一篇博客，又提出了他自认为更具争议性的观点，其中不少观点指向他之前发表的其他文章：</span></p>
+
+
+<p><strong>31. 计算机科学专业应该只作为辅修学位。</strong></p>
+
+
+<p><strong>32. 新程序员还没有弄懂分解问题和将解决方法变成代码之前，就<a href="http://prog21.dadgum.com/93.html">给他们介绍面向对象</a>是大错特错。</strong></p>
+
+
+<p><strong>33. 复杂的编译器优化几乎都没什么价值，即使能得到更快的代码。它们会<a href="http://prog21.dadgum.com/136.html">大大降低编译速度</a>而且很可能产生难以处理的bug，使<a href="http://prog21.dadgum.com/40.html">性能问题的处理</a>更加困难。</strong></p>
+
+
+<p><strong>34. </strong><strong>不能允许</strong><strong>没有十年编程经验的人编写供他人使用的库。忽略此条，抱憾终身。</strong></p>
+
+
+<p><strong>35. <a href="http://prog21.dadgum.com/85.html">代码丑陋与否无关紧要</a>。有没有格式与代码是否工作、可靠没什么关系，可以让自动化工具来整理格式。</strong></p>
+
+
+<p><strong>36. <a href="http://prog21.dadgum.com/54.html">纯函数式编程没啥用</a>。但在命令式代码里杂用一些效果不错。</strong></p>
+
+
+<p><strong>37. 软件工程的既定思维反而会<a href="http://prog21.dadgum.com/87.html">阻碍你做出伟大作品</a>。</strong></p>
+
+
+<p> </p>
+
+
+<p>对这些编程观点你怎么看？你有什么值得争议的惊人之语吗，欢迎晒出来大家共赏析。</p>
+
+
+<p> </p>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/26283/" title="Bill Wagner：我得到的最佳编程建议">Bill Wagner：我得到的最佳编程建议</a></li><li><a href="http://blog.jobbole.com/26294/" title="VAL：把“hello”打印10次">VAL：把“hello”打印10次</a></li><li><a href="http://blog.jobbole.com/26279/" title="Russ Olsen：我得到的最佳编程建议">Russ Olsen：我得到的最佳编程建议</a></li><li><a href="http://blog.jobbole.com/22905/" title="Peter Norvig：自学编程，十年磨一剑">Peter Norvig：自学编程，十年磨一剑</a></li><li><a href="http://blog.jobbole.com/25564/" title="Rob Pike：我得到的最佳编程建议">Rob Pike：我得到的最佳编程建议</a></li><li><a href="http://blog.jobbole.com/25387/" title="编程总不容易">编程总不容易</a></li><li><a href="http://blog.jobbole.com/24649/" title="爸爸和无私编程十条诫律">爸爸和无私编程十条诫律</a></li><li><a href="http://blog.jobbole.com/19348/" title="编程需要知道多少数学知识？">编程需要知道多少数学知识？</a></li><li><a href="http://blog.jobbole.com/8517/" title="“老古董”也知道如何编程">“老古董”也知道如何编程</a></li><li><a href="http://blog.jobbole.com/22621/" title="为什么我还在编程">为什么我还在编程</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

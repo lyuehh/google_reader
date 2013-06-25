@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【分享】2.5KB-打造jquery的animate。(自定义动画)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【分享】2.5KB-打造jquery的animate。(自定义动画)</h2>
+<p class="meta">17 Jun 2010</p>
+
+<div class="post">
+<h2>【分享】2.5KB-打造jquery的animate。(自定义动画)</h2>
+
+<h3>by jelle</h3>
+
+<h3>at 2010-06-17 15:51:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/idche/archive/2010/06/17/1759605.html">http://www.cnblogs.com/idche/archive/2010/06/17/1759605.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/idche/"><img src="http://pic.cnblogs.com/face/u85181.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/idche/">jelle</a> 发表于 2010-06-17 15:51 <a href="http://www.cnblogs.com/idche/archive/2010/06/17/1759605.html">原文链接</a> 阅读: 841 评论: 2</p>
+
+
+<div style="width:1px;height:1px;overflow-x:hidden;overflow-y:hidden">第一篇文章是前几天写的。当时也不知道是不是发神经了。就模仿jquery的animate写了一个简单的动画实现方法。</div>
+
+
+<div style="width:1px;height:1px;overflow-x:hidden;overflow-y:hidden">后来发现还不错。不如继续写下去。这个版本基本上跟jquery的animate一样了。我是说效果基本上一样了。（效率还没测试过。）；</div>
+
+
+<div style="width:1px;height:1px;overflow-x:hidden;overflow-y:hidden">如果有专业测试人员 帮我测试下。</div>
+
+
+<div></div>
+
+
+<p><a href="http://www.cnblogs.com/idche/archive/2010/06/13/1758006.html">
+第一篇</a>文章是前几天写的。当时也不知道是不是发神经了。就模仿jquery的animate写了一个简单的动画实现方法。</p>
+
+
+<p>后来发现还不错。不如继续写下去。</p>
+
+
+<p>这个版本基本上跟jquery的animate一样了。</p>
+
+
+<p>我是说效果基本上一样了。（效率还没测试过。）；</p>
+
+
+<p>如果有专业测试人员 帮我测试下。</p>
+
+
+<p><strong>演示</strong></p>
+
+
+<div style="height:300px;width:500px">
+<div style="border:1px solid #ccc;width:10px;height:150px;color:#fff;background:#000;overflow:hidden">id:cc</div>
+</div>
+
+
+
+
+<p> </p>
+
+
+<p>
+
+jelle('cc').animate({width:'100px',height:'100px',opacity:0.1},2000,function(){this.style.backgroundColor='#000'}).delay(500).animate({width:'500px',opacity:1},2000);
+
+
+<br>
+
+jelle('cc').stop();
+
+<br>
+
+jelle('cc').animate({width:'+=150px'},500,function(){this.style.backgroundColor='#666'});
+
+</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>1：功能说明</strong></p>
+
+
+<p>　　兼容主流浏览器。</p>
+
+
+<p>     1：支持回调函数；</p>
+
+
+<p>　  2：支持级联动画调用；</p>
+
+
+<p>     3：支持delay动画队列延迟；</p>
+
+
+<p>　  4：支持stop停止动画；</p>
+
+
+<p>     5：支持opacity透明度变化；</p>
+
+
+<p>     6：支持+= -= *= /=操作；</p>
+
+
+<p>     7：支持单位操作(px, %);</p>
+
+
+<p><strong>2：使用说明</strong></p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#000000">jelle(A).animate(B, C, D);</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p>A:需要执行动画的dom元素ID；</p>
+
+
+<p>B:动画的主要参数传递{key,val,key2,val2};比如{width:'100px',height:'+=100px',opacity:0.5},</p>
+
+
+<p>    opacity--透明度变化  支持+=  -=  *= /=操作。</p>
+
+
+<p>C:动画执行用时，以毫秒为单位；[可选 默认500毫秒];</p>
+
+
+<p>D:回调函数;[可选]</p>
+
+
+<p> </p>
+
+
+<p><strong>3:方法说明</strong></p>
+
+
+<p>   1:animate()方法</p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#000000">jelle(</span><span style="color:#000000">'</span><span style="color:#000000">cc</span><span style="color:#000000">'</span><span style="color:#000000">).animate({width:</span><span style="color:#000000">'</span><span style="color:#000000">100px</span><span style="color:#000000">'</span><span style="color:#000000">},</span><span style="color:#000000">300</span><span style="color:#000000">,</span><span style="color:#0000ff">function</span><span style="color:#000000">(){alert(</span><span style="color:#000000">'</span><span style="color:#000000">完成</span><span style="color:#000000">'</span><span style="color:#000000">)});<br></span><span style="color:#008000">//</span><span style="color:#008000"> 是 cc 的宽度在300毫秒的时间变化到100px 动画结束 弹出 ‘完成’</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>  </strong> 2:stop()方法</p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#000000">jelle(</span><span style="color:#000000">'</span><span style="color:#000000">cc</span><span style="color:#000000">'</span><span style="color:#000000">).stop();<br></span><span style="color:#008000">//</span><span style="color:#008000">停止正在 cc 对象上播放的动画。</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>  3：delay（）方法</p>
+
+
+<p> </p>
+
+
+<div>
+<pre><div><span style="color:#000000">jelle(</span><span style="color:#000000">'</span><span style="color:#000000">cc</span><span style="color:#000000">'</span><span style="color:#000000">).delay(</span><span style="color:#000000">1000</span><span style="color:#000000">).animate({width:</span><span style="color:#000000">'</span><span style="color:#000000">100px</span><span style="color:#000000">'</span><span style="color:#000000">});<br></span><span style="color:#008000">//</span><span style="color:#008000">cc 的宽度发生变化 将被延迟1秒执行。</span></div></pre>
+</div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>我会一直把他完善下去。</strong></p>
+
+
+<p><strong><br></strong></p>
+
+
+<p><a href="http://files.cnblogs.com/idche/animate.rar">点击下载源码和压缩后的JS</a></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>压缩后的源码</span>
+<div>
+<pre><div><span style="color:#0000ff">var</span><span style="color:#000000"> jelle</span><span style="color:#000000">=</span><span style="color:#0000ff">function</span><span style="color:#000000">(h){</span><span style="color:#0000ff">var</span><span style="color:#000000"> a</span><span style="color:#000000">=</span><span style="color:#000000">document.getElementById(h),o</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">,e</span><span style="color:#000000">=</span><span style="color:#000000">{},l</span><span style="color:#000000">=</span><span style="color:#000000">10</span><span style="color:#000000">,k</span><span style="color:#000000">=</span><span style="color:#0000ff">function</span><span style="color:#000000">(b,c,g,d){</span><span style="color:#0000ff">return</span><span style="color:#000000">-</span><span style="color:#000000">g</span><span style="color:#000000">*</span><span style="color:#000000">(b</span><span style="color:#000000">/</span><span style="color:#000000">=d)*(b-2)+c},n=function(b,c){var g,d=</span><span style="color:#000000">/</span><span style="color:#000000">^</span><span style="color:#000000">([</span><span style="color:#000000">^</span><span style="color:#000000">\d]</span><span style="color:#000000">+</span><span style="color:#000000">)([\d.]</span><span style="color:#000000">+</span><span style="color:#000000">)</span><span style="color:#000000">/</span><span style="color:#000000">;if(d.test(b)){d=b.match(d);d[2]=parseFloat(d[2]);switch(d[1]){case "+=":g=d[2];break;case "-=":g=-d[2];break;case "*=":g=c*d[2]-c;break;case "</span><span style="color:#000000">/</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">:g=c/d[2]-c;break}return g}return parseFloat(b)-c};a.animate=a.animate||[];jelle[h]={};jelle[h].stop=true;e.entrance=function(b,c,g){setTimeout(function(){b(c[0],c[1],c[2])},g||0)};e.stop=function(){jelle[h].stop=<br>false;delete a.animate;document.getElementById(h).animate&amp;&amp;delete document.getElementById(h).animate;return e};e.queue=function(){if(a.animate&amp;&amp;++o==a.animate[0].length){o=0;a.animate[0].callback&amp;&amp;a.animate[0].callback.apply(a);if(a.animate.length&gt;1){a.animate[0].callback=a.animate[1].callback;a.animate=document.getElementById(h).animate||[];a.animate.shift();document.getElementById(h).animate=a.animate;for(var b=a.animate[0],c=0;c&lt;b.length;c++)b[c][0]===</span><span style="color:#000000">"</span><span style="color:#000000">opacity</span><span style="color:#000000">"</span><span style="color:#000000">?e.entrance(e.alpha,[b[c][1],b[c][2]],<br>l):e.entrance(e.execution,[b[c][0],b[c][1],b[c][2]],l)}else{a.animate.length=0;document.getElementById(h).animate.length=0}}};e.lazy=function(b){l=b;return e};e.execution=function(b,c,g){var d=(new Date).getTime(),f=g||500,j=parseFloat(a.style[b])||0,i=n(c,j),p=c.match(/\d+(.+)/)[1];(function(){var m=(new Date).getTime()-d;if(m&gt;f){m=f;a.style[b]=parseInt(k(m,j,i,f))+p;e.queue();return e}a.style[b]=parseInt(k(m,j,i,f))+p;jelle[h].stop&amp;&amp;setTimeout(arguments.callee,10)})()};e.animate=function(b,c,g){var d=<br>a.animate.length;a.animate[d]=[];a.animate[d].callback=g;for(var f in b){a.animate[d].push([f,b[f],c]);if(d==0)f==</span><span style="color:#000000">"</span><span style="color:#000000">opacity</span><span style="color:#000000">"</span><span style="color:#000000">?e.entrance(e.alpha,[b[f],c],l):e.entrance(e.execution,[f,b[f],c],l)}document.getElementById(h).animate=a.animate;return e};e.alpha=function(b,c){var g=(new Date).getTime(),d=c||500,f,j;if(document.defaultView){f=document.defaultView.getComputedStyle(a,null).opacity||1;j=n(b,f)*100;(function(){var i=(new Date).getTime()-g;if(i&gt;d){i=d;a.style.opacity=k(i,100*f,j,d)/100;e.queue();<br>return e}a.style.opacity=k(i,100*f,j,d)/100;jelle[h].stop&amp;&amp;setTimeout(arguments.callee,10)})()}else{f=a.currentStyle.filter?a.currentStyle.filter.match(/^alpha\(opacity=([\d\.]+)\)$/)[1]/100:1;j=n(b,f)*100;(function(){var i=(new Date).getTime()-g;if(i&gt;d){i=d;a.style.filter=</span><span style="color:#000000">"</span><span style="color:#000000">alpha(opacity</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">+k(i,100*f,j,d)+</span><span style="color:#000000">"</span><span style="color:#000000">)</span><span style="color:#000000">"</span><span style="color:#000000">;e.queue();return e}a.style.filter=</span><span style="color:#000000">"</span><span style="color:#000000">alpha(opacity</span><span style="color:#000000">=</span><span style="color:#000000">"</span><span style="color:#000000">+k(i,100*f,j,d)+</span><span style="color:#000000">"</span><span style="color:#000000">)</span><span style="color:#000000">"</span><span style="color:#000000">;jelle[h].stop&amp;&amp;setTimeout(arguments.callee,10)})()}};return e};</span></div></pre>
+</div>
+</div>
+
+
+<p> </p>
+
+
+<div></div>
+
+
+<p> </p>
+
+
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>未压缩源码</span>
+<div>
+<pre><div><span style="color:#000000">    </span><span style="color:#0000ff">var</span><span style="color:#000000"> jelle </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(id){<br>        </span><span style="color:#0000ff">var</span><span style="color:#000000"> $ </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(id){ </span><span style="color:#0000ff">return</span><span style="color:#000000"> document.getElementById(id); },<br>            elem </span><span style="color:#000000">=</span><span style="color:#000000"> $(id),</span><span style="color:#008000">//</span><span style="color:#008000">对象</span><span style="color:#008000"><br></span><span style="color:#000000">            f </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">, _this </span><span style="color:#000000">=</span><span style="color:#000000"> {}, lazy </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">10</span><span style="color:#000000">, lazyque </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">10</span><span style="color:#000000">,</span><span style="color:#008000">//</span><span style="color:#008000"> f动画计数器 lazy动画延迟 lazyque队列延迟</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000"> 算子你可以改变他来让你的动画不一样</span><span style="color:#008000"><br></span><span style="color:#000000">            tween </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(t, b, c, d){ </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#000000">-</span><span style="color:#000000"> c </span><span style="color:#000000">*</span><span style="color:#000000"> (t </span><span style="color:#000000">/</span><span style="color:#000000">= d) * (t - 2) + b},</span><span style="color:#000000"><br></span><span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000"> adv 用于+= -= *= /=操作</span><span style="color:#008000"><br></span><span style="color:#000000">            adv </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(val, b){<br>                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> va, re</span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">/</span><span style="color:#000000">^([^\d]+)([\d.]+)</span><span style="color:#000000">/</span><span style="color:#000000"> ;<br>                        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (re.test(val)){<br>                            </span><span style="color:#0000ff">var</span><span style="color:#000000"> reg </span><span style="color:#000000">=</span><span style="color:#000000"> val.match(re);<br>                                reg[</span><span style="color:#000000">2</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> parseFloat(reg[</span><span style="color:#000000">2</span><span style="color:#000000">]);<br>                                </span><span style="color:#0000ff">switch</span><span style="color:#000000"> ( reg[</span><span style="color:#000000">1</span><span style="color:#000000">] ){<br>                                        </span><span style="color:#0000ff">case</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">+=</span><span style="color:#000000">'</span><span style="color:#000000">:<br>                                            va </span><span style="color:#000000">=</span><span style="color:#000000"> reg[</span><span style="color:#000000">2</span><span style="color:#000000">];<br>                                            </span><span style="color:#0000ff">break</span><span style="color:#000000">;<br>                                        </span><span style="color:#0000ff">case</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">-=</span><span style="color:#000000">'</span><span style="color:#000000">:<br>                                            va </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">-</span><span style="color:#000000">reg[</span><span style="color:#000000">2</span><span style="color:#000000">];<br>                                            </span><span style="color:#0000ff">break</span><span style="color:#000000">;<br>                                        </span><span style="color:#0000ff">case</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">*=</span><span style="color:#000000">'</span><span style="color:#000000">:<br>                                            va </span><span style="color:#000000">=</span><span style="color:#000000"> b</span><span style="color:#000000">*</span><span style="color:#000000">reg[</span><span style="color:#000000">2</span><span style="color:#000000">] </span><span style="color:#000000">-</span><span style="color:#000000"> b;<br>                                            </span><span style="color:#0000ff">break</span><span style="color:#000000">;<br>                                        </span><span style="color:#0000ff">case</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">/=</span><span style="color:#000000">'</span><span style="color:#000000">:<br>                                            va </span><span style="color:#000000">=</span><span style="color:#000000"> b</span><span style="color:#000000">/</span><span style="color:#000000">reg[2] - b;</span><span style="color:#000000"><br></span><span style="color:#000000">                                            </span><span style="color:#0000ff">break</span><span style="color:#000000">;<br>                                    }<br>                                </span><span style="color:#0000ff">return</span><span style="color:#000000"> va;<br>                            } <br>                        </span><span style="color:#0000ff">return</span><span style="color:#000000"> parseFloat(val) </span><span style="color:#000000">-</span><span style="color:#000000"> b;<br>                }<br>            </span><span style="color:#008000">//</span><span style="color:#008000"> elem.animate 读取用于当前dom元素上的动画队列</span><span style="color:#008000"><br></span><span style="color:#000000">            elem.animate </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate </span><span style="color:#000000">||</span><span style="color:#000000"> [];<br>            <br>            </span><span style="color:#008000">//</span><span style="color:#008000">stop 功能要使用的</span><span style="color:#008000"><br></span><span style="color:#000000">            jelle[id]</span><span style="color:#000000">=</span><span style="color:#000000"> {};<br>            jelle[id][</span><span style="color:#000000">'</span><span style="color:#000000">stop</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>            </span><span style="color:#008000">//</span><span style="color:#008000">alert(jelle[id]['stop'])</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000"> 统一队列入口 用于方便设置延迟，与停止</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.entrance </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(fn, ags, lazytime){<br>                    </span><span style="color:#008000">//</span><span style="color:#008000">fn 调用函数 ags 参数 lazytime 延迟时间</span><span style="color:#008000"><br></span><span style="color:#000000">                    setTimeout(</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                                            fn(ags[</span><span style="color:#000000">0</span><span style="color:#000000">], ags[</span><span style="color:#000000">1</span><span style="color:#000000">], ags[</span><span style="color:#000000">2</span><span style="color:#000000">]);<br>                                        }, (lazytime </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">));<br>                    <br>                }<br>                <br>            </span><span style="color:#008000">//</span><span style="color:#008000"> 停止动画 此方法还不能用</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.stop </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                    jelle[id][</span><span style="color:#000000">'</span><span style="color:#000000">stop</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>                    </span><span style="color:#0000ff">delete</span><span style="color:#000000"> elem.animate;<br>                    $(id).animate </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> </span><span style="color:#0000ff">delete</span><span style="color:#000000"> $(id).animate;<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                }<br>                <br>            </span><span style="color:#008000">//</span><span style="color:#008000"> 队列操作</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.queue </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                <br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (elem.animate </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> </span><span style="color:#000000">++</span><span style="color:#000000">f </span><span style="color:#000000">==</span><span style="color:#000000"> elem.animate[</span><span style="color:#000000">0</span><span style="color:#000000">].length){<br>                        f </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">;</span><span style="color:#008000">//</span><span style="color:#008000"> 清空计数器</span><span style="color:#008000"><br></span><span style="color:#000000">                        elem.animate[</span><span style="color:#000000">0</span><span style="color:#000000">].callback </span><span style="color:#000000">?</span><span style="color:#000000"> elem.animate[</span><span style="color:#000000">0</span><span style="color:#000000">].callback.apply(elem) : </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>                        <br>                        </span><span style="color:#008000">//</span><span style="color:#008000"> 判断是否有动画在等待执行</span><span style="color:#008000"><br></span><span style="color:#000000">                        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (elem.animate.length </span><span style="color:#000000">&gt;</span><span style="color:#000000"> </span><span style="color:#000000">1</span><span style="color:#000000">){<br>                                elem.animate[</span><span style="color:#000000">0</span><span style="color:#000000">].callback </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate[</span><span style="color:#000000">1</span><span style="color:#000000">].callback;<br>                                elem.animate </span><span style="color:#000000">=</span><span style="color:#000000"> $(id).animate </span><span style="color:#000000">||</span><span style="color:#000000"> [];</span><span style="color:#008000">//</span><span style="color:#008000"> 从dom对象上获取最新动画队列</span><span style="color:#008000"><br></span><span style="color:#000000">                                elem.animate.shift();</span><span style="color:#008000">//</span><span style="color:#008000"> 清除刚执行完的动画队列</span><span style="color:#008000"><br></span><span style="color:#000000">                                $(id).animate </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate;</span><span style="color:#008000">//</span><span style="color:#008000"> 把新的队列更新到dom</span><span style="color:#008000"><br></span><span style="color:#000000">                                </span><span style="color:#0000ff">var</span><span style="color:#000000"> ea </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate[</span><span style="color:#000000">0</span><span style="color:#000000">];<br>                                <br>                                </span><span style="color:#008000">//</span><span style="color:#008000"> 循环播放队列动画</span><span style="color:#008000"><br></span><span style="color:#000000">                                </span><span style="color:#0000ff">for</span><span style="color:#000000">(</span><span style="color:#0000ff">var</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> ea.length; i</span><span style="color:#000000">++</span><span style="color:#000000">){<br>                                    <br>                                    ea[i][</span><span style="color:#000000">0</span><span style="color:#000000">] </span><span style="color:#000000">===</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">opacity</span><span style="color:#000000">'</span><span style="color:#000000"> </span><span style="color:#000000">?</span><span style="color:#000000"> _this.entrance(_this.alpha, [ea[i][</span><span style="color:#000000">1</span><span style="color:#000000">], ea[i][</span><span style="color:#000000">2</span><span style="color:#000000">]], lazyque):<br>                                        _this.entrance(_this.execution, [ea[i][</span><span style="color:#000000">0</span><span style="color:#000000">], ea[i][</span><span style="color:#000000">1</span><span style="color:#000000">], ea[i][</span><span style="color:#000000">2</span><span style="color:#000000">]], lazyque);<br>                                        <br>                                    }<br>                            }</span><span style="color:#0000ff">else</span><span style="color:#000000">{<br>                                    elem.animate.length </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">; </span><span style="color:#008000">//</span><span style="color:#008000"> 队列清楚</span><span style="color:#008000"><br></span><span style="color:#000000">                                    $(id).animate.length </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">; </span><span style="color:#008000">//</span><span style="color:#008000"> 队列清楚</span><span style="color:#008000"><br></span><span style="color:#000000">                                }<br>        <br>                        }<br>                }<br>                <br>            </span><span style="color:#008000">//</span><span style="color:#008000">设置lazy方法，以后的队列动画延迟时间</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.delay </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(val){<br>                    lazyque </span><span style="color:#000000">=</span><span style="color:#000000"> val;<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                }<br>            </span><span style="color:#008000">//</span><span style="color:#008000">动画变化    </span><span style="color:#008000"><br></span><span style="color:#000000">            _this.execution </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(key, val, t){<br>                    </span><span style="color:#008000">//</span><span style="color:#008000">alert(val)</span><span style="color:#008000"><br></span><span style="color:#000000">                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> s </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">new</span><span style="color:#000000"> Date()).getTime(), d</span><span style="color:#000000">=</span><span style="color:#000000">t </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#000000">500</span><span style="color:#000000"> ,<br>                        b </span><span style="color:#000000">=</span><span style="color:#000000"> parseFloat(elem.style[key]) </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000"> ,<br>                        c </span><span style="color:#000000">=</span><span style="color:#000000"> adv(val, b) ,</span><span style="color:#008000">//</span><span style="color:#008000"> adv用于设置高级操作比如 += -= 等等</span><span style="color:#008000"><br></span><span style="color:#000000">                        un </span><span style="color:#000000">=</span><span style="color:#000000"> val.match(</span><span style="color:#000000">/</span><span style="color:#000000">\d+(.+)</span><span style="color:#000000">/</span><span style="color:#000000">)[</span><span style="color:#000000">1</span><span style="color:#000000">];</span><span style="color:#008000">//</span><span style="color:#008000"> 单位</span><span style="color:#008000"><br></span><span style="color:#000000">                        (</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                            </span><span style="color:#0000ff">var</span><span style="color:#000000"> t </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">new</span><span style="color:#000000"> Date()).getTime() </span><span style="color:#000000">-</span><span style="color:#000000"> s;<br>                            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (t </span><span style="color:#000000">&gt;</span><span style="color:#000000"> d){<br>                                t </span><span style="color:#000000">=</span><span style="color:#000000"> d;<br>                                elem.style[key] </span><span style="color:#000000">=</span><span style="color:#000000"> parseInt(tween(t, b, c, d)) </span><span style="color:#000000">+</span><span style="color:#000000"> un;<br>                                _this.queue(); </span><span style="color:#008000">//</span><span style="color:#008000"> 操作队列</span><span style="color:#008000"><br></span><span style="color:#000000">                                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                            }<br>                            elem.style[key] </span><span style="color:#000000">=</span><span style="color:#000000"> parseInt(tween(t, b, c, d)) </span><span style="color:#000000">+</span><span style="color:#000000"> un;<br>                            jelle[id][</span><span style="color:#000000">'</span><span style="color:#000000">stop</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> setTimeout(arguments.callee, lazy);<br>                            </span><span style="color:#008000">//</span><span style="color:#008000"> _this.entrance(arguments.callee,[1,1,1],lazy);</span><span style="color:#008000"><br></span><span style="color:#000000">                            </span><span style="color:#008000">//</span><span style="color:#008000"> arguments.callee 匿名函数递归调用</span><span style="color:#008000"><br></span><span style="color:#000000">                        })();<br>                }<br>            </span><span style="color:#008000">//</span><span style="color:#008000"> 入口</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.animate </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(sty, t, fn){<br>                    </span><span style="color:#008000">//</span><span style="color:#008000"> sty,t,fn 分别为 变化的参数key,val形式,动画用时,回调函数</span><span style="color:#008000"><br></span><span style="color:#000000">                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> len </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate.length;</span><span style="color:#008000">//</span><span style="color:#008000"> len查看动画队列长度</span><span style="color:#008000"><br></span><span style="color:#000000">                    elem.animate[len] </span><span style="color:#000000">=</span><span style="color:#000000"> [];<br>                    elem.animate[len].callback </span><span style="color:#000000">=</span><span style="color:#000000"> fn;<br>                    <br>                    </span><span style="color:#008000">//</span><span style="color:#008000">多key 循环设置变化</span><span style="color:#008000"><br></span><span style="color:#000000">                    </span><span style="color:#0000ff">for</span><span style="color:#000000">(</span><span style="color:#0000ff">var</span><span style="color:#000000"> i </span><span style="color:#0000ff">in</span><span style="color:#000000"> sty){<br>                        <br>                            elem.animate[len].push([i, sty[i], t]);<br>                            </span><span style="color:#0000ff">if</span><span style="color:#000000">(len </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">){<br>                            i </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">opacity</span><span style="color:#000000">'</span><span style="color:#000000"> </span><span style="color:#000000">?</span><span style="color:#000000"> _this.entrance(_this.alpha, [sty[i], t], lazyque) : <br>                                            _this.entrance(_this.execution, [i, sty[i], t], lazyque);<br>                            }<br>                        }<br>                    $(id).animate </span><span style="color:#000000">=</span><span style="color:#000000"> elem.animate;</span><span style="color:#008000">//</span><span style="color:#008000">把新的动画队列添加到dom元素上</span><span style="color:#008000"><br></span><span style="color:#000000">                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                }<br>            </span><span style="color:#008000">//</span><span style="color:#008000"> 透明度变化的代码</span><span style="color:#008000"><br></span><span style="color:#000000">            _this.alpha </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(val, t){<br>                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> s </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">new</span><span style="color:#000000"> Date()).getTime(),<br>                        d </span><span style="color:#000000">=</span><span style="color:#000000"> t </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#000000">500</span><span style="color:#000000">, b, c;<br>                    </span><span style="color:#0000ff">if</span><span style="color:#000000">( document.defaultView ){<br>                        b </span><span style="color:#000000">=</span><span style="color:#000000"> document.defaultView.getComputedStyle(elem,</span><span style="color:#0000ff">null</span><span style="color:#000000">)[</span><span style="color:#000000">'</span><span style="color:#000000">opacity</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#000000">1</span><span style="color:#000000">,<br>                        c </span><span style="color:#000000">=</span><span style="color:#000000"> adv(val,b) </span><span style="color:#000000">*</span><span style="color:#000000"> </span><span style="color:#000000">100</span><span style="color:#000000">;<br>                        (</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> t </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">new</span><span style="color:#000000"> Date()).getTime() </span><span style="color:#000000">-</span><span style="color:#000000"> s;<br>                                    </span><span style="color:#0000ff">if</span><span style="color:#000000">(t </span><span style="color:#000000">&gt;</span><span style="color:#000000"> d){<br>                                            t </span><span style="color:#000000">=</span><span style="color:#000000"> d;<br>                                            elem.style[</span><span style="color:#000000">'</span><span style="color:#000000">opacity</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> tween(t, (</span><span style="color:#000000">100</span><span style="color:#000000"> </span><span style="color:#000000">*</span><span style="color:#000000"> b), c, d) </span><span style="color:#000000">/</span><span style="color:#000000"> </span><span style="color:#000000">100</span><span style="color:#000000">;<br>                                            _this.queue(); </span><span style="color:#008000">//</span><span style="color:#008000"> 队列控制</span><span style="color:#008000"><br></span><span style="color:#000000">                                            </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                                        }<br>                                    elem.style[</span><span style="color:#000000">'</span><span style="color:#000000">opacity</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> tween(t, (</span><span style="color:#000000">100</span><span style="color:#000000"> </span><span style="color:#000000">*</span><span style="color:#000000"> b), c, d) </span><span style="color:#000000">/</span><span style="color:#000000"> </span><span style="color:#000000">100</span><span style="color:#000000">;<br>                                    jelle[id][</span><span style="color:#000000">'</span><span style="color:#000000">stop</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> setTimeout(arguments.callee, lazy);<br>                                  })()<br>                    }</span><span style="color:#0000ff">else</span><span style="color:#000000">{<br>                        b </span><span style="color:#000000">=</span><span style="color:#000000"> elem.currentStyle[</span><span style="color:#000000">'</span><span style="color:#000000">filter</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">?</span><span style="color:#000000"> <br>                            (elem.currentStyle[</span><span style="color:#000000">'</span><span style="color:#000000">filter</span><span style="color:#000000">'</span><span style="color:#000000">].match(</span><span style="color:#000000">/</span><span style="color:#000000">^alpha\(opacity=([\d\.]+)\)$</span><span style="color:#000000">/</span><span style="color:#000000">))[</span><span style="color:#000000">1</span><span style="color:#000000">]</span><span style="color:#000000">/</span><span style="color:#000000">100 : 1;</span><span style="color:#000000"><br></span><span style="color:#000000">                        c </span><span style="color:#000000">=</span><span style="color:#000000"> adv(val, b) </span><span style="color:#000000">*</span><span style="color:#000000"> </span><span style="color:#000000">100</span><span style="color:#000000">;<br>                        (</span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br>                                    </span><span style="color:#0000ff">var</span><span style="color:#000000"> t </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">new</span><span style="color:#000000"> Date()).getTime() </span><span style="color:#000000">-</span><span style="color:#000000"> s;<br>                                    </span><span style="color:#0000ff">if</span><span style="color:#000000">    (t </span><span style="color:#000000">&gt;</span><span style="color:#000000"> d){<br>                                            t </span><span style="color:#000000">=</span><span style="color:#000000"> d;<br>                                            elem.style[</span><span style="color:#000000">'</span><span style="color:#000000">filter</span><span style="color:#000000">'</span><span style="color:#000000">]</span><span style="color:#000000">=</span><span style="color:#000000">'</span><span style="color:#000000">alpha(opacity=</span><span style="color:#000000">'</span><span style="color:#000000">+</span><span style="color:#000000"> tween(t, (</span><span style="color:#000000">100</span><span style="color:#000000"> </span><span style="color:#000000">*</span><span style="color:#000000"> b), c, d) </span><span style="color:#000000">+</span><span style="color:#000000">'</span><span style="color:#000000">)</span><span style="color:#000000">'</span><span style="color:#000000">;<br>                                            _this.queue(); </span><span style="color:#008000">//</span><span style="color:#008000"> 队列控制</span><span style="color:#008000"><br></span><span style="color:#000000">                                            </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>                                        }<br>                                    elem.style[</span><span style="color:#000000">'</span><span style="color:#000000">filter</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">'</span><span style="color:#000000">alpha(opacity=</span><span style="color:#000000">'</span><span style="color:#000000">+</span><span style="color:#000000"> tween(t, (</span><span style="color:#000000">100</span><span style="color:#000000">*</span><span style="color:#000000">b) , c, d) </span><span style="color:#000000">+</span><span style="color:#000000">'</span><span style="color:#000000">)</span><span style="color:#000000">'</span><span style="color:#000000">;<br>                                    jelle[id][</span><span style="color:#000000">'</span><span style="color:#000000">stop</span><span style="color:#000000">'</span><span style="color:#000000">] </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> setTimeout(arguments.callee, lazy);<br>                                  })()<br>                        }<br>                }<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> _this;<br>        }<br></span></div></pre>
+</div>
+</div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>本文来自博客园 jelle 博客 <a href="http://www.cnblogs.com/idche/">http://www.cnblogs.com/idche/</a></p>
+
+
+<p>转载请注明。</p>
+
+
+<p><img src="http://www.cnblogs.com/idche/aggbug/1759605.html?type=1" width="1" height="1" alt=""><p>评论: 2　<a href="http://www.cnblogs.com/idche/archive/2010/06/17/1759605.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/idche/archive/2010/06/17/1759605.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35721/">众里寻你千百度，百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66485/">Google员工休息设备EnergyPod曝光</a><span style="color:gray">(2010-06-18 08:26)</span><br>· <a href="http://news.cnblogs.com/n/66484/">百思买因无法按时出货停止接受iPhone 4预订</a><span style="color:gray">(2010-06-18 08:24)</span><br>· <a href="http://news.cnblogs.com/n/66483/">Office2010刚上市 微软已开始开发Office2013</a><span style="color:gray">(2010-06-18 08:24)</span><br>· <a href="http://news.cnblogs.com/n/66482/">Windows VS Apple：手机游戏的未来</a><span style="color:gray">(2010-06-18 08:22)</span><br>· <a href="http://news.cnblogs.com/n/66481/">Twitter的设计原则</a><span style="color:gray">(2010-06-18 08:16)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/miloyip/archive/2010/06/14/Kinematics_ParticleSystem.html">用JavaScript玩转游戏物理：运动学模拟与粒子系统</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

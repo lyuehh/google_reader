@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>为ASP.NET MVC 2.0添加Razor模板引擎 (on .NET4)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>为ASP.NET MVC 2.0添加Razor模板引擎 (on .NET4)</h2>
+<p class="meta">11 Jul 2010</p>
+
+<div class="post">
+<h2>为ASP.NET MVC 2.0添加Razor模板引擎 (on .NET4)</h2>
+
+<h3>by 重典</h3>
+
+<h3>at 2010-07-10 18:09:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/chsword/archive/2010/07/10/razor_in_aspnet_mvc_2.html">http://www.cnblogs.com/chsword/archive/2010/07/10/razor_in_aspnet_mvc_2.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/chsword/"><img src="http://pic.cnblogs.com/face/u20526.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/chsword/">重典</a> 发表于 2010-07-10 18:09 <a href="http://www.cnblogs.com/chsword/archive/2010/07/10/razor_in_aspnet_mvc_2.html">原文链接</a> 阅读: 749 评论: 7</p>
+
+
+<p>根据ScottGu的博客记述（<a href="http://weblogs.asp.net/scottgu/archive/2010/07/02/introducing-razor.aspx">http://weblogs.asp.net/scottgu/archive/2010/07/02/introducing-razor.aspx</a>），在未来不久将会发布一个ASP.NET MVC 3.0的Preview版本，在这个版本中可以使用多个内置的模板引擎，以它发布出来的截图来看，其中包括NHaml，Spark以及微软刚刚发布的ASP.NET Web Pages（Razor）。 ASP.NET Web Pages包含在Web Matrix中，提供了一种新的模板模式，其扩展名为 .vbhtml/.cshtml，可以使用类似以下语法来做视图显示： </p>
+
+
+<pre>@{
+    var i = 11;
+}
+
+@(i+1)
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">br</span><span style="color:#0000ff">&gt;</span>
+
+@if (i%2==1){
+    <span style="color:#0000ff">&lt;</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span>true<span style="color:#0000ff">&lt;/</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span>
+}else{
+    <span style="color:#0000ff">&lt;</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span>false<span style="color:#0000ff">&lt;/</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span>
+}</pre>
+
+
+<p>输出结果为： </p>
+
+
+<pre>12
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">br</span><span style="color:#0000ff">&gt;</span>
+ 
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span>true<span style="color:#0000ff">&lt;/</span><span style="color:#800000">p</span><span style="color:#0000ff">&gt;</span></pre>
+
+
+<p>在不久之后Ms还会对此提供Visual Studio 高亮及智能感知支持。</p>
+
+
+<p>这种模板如此简捷，如果能用在现有的ASP.NET MVC 2.0上做为一个模板引擎是不错的。</p>
+
+
+<p>首先我们要安装ASP.NET Web Pages，下载地址：<a href="http://bbs.eice.com.cn/showtopic-409.aspx">http://bbs.eice.com.cn/showtopic-409.aspx</a> ，当然直接安装WebMatrix也是可以。</p>
+
+
+<p>安装之后在IIS中就会添加对cshtml及vbhtml的支持。</p>
+
+
+<p>安装后程序集文件会被复制到Program Files\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\Assemblies目录下。</p>
+
+
+<p>其中包括 </p>
+
+
+<pre>Microsoft.Data.dll
+Microsoft.Web.Infrastructure.dll
+Microsoft.Webpages.Compilation.dll
+Microsoft.Webpages.Configuration.dll
+Microsoft.Webpages.dll
+Microsoft.Webpages.Helpers.dll
+Microsoft.Webpages.Helpers.Toolkit.dll</pre>
+
+
+<p>下面我们就动手对ASP.NET MVC程序添加一个Razor的模板引擎：</p>
+
+
+<p>首先建立一个ASP.NET MVC的项目，然后对其中的Web.Config的system.web/compilation/assemblies节点上添加内容：</p>
+
+
+<pre><span style="color:#0000ff">&lt;</span><span style="color:#800000">add</span> <span style="color:#ff0000">assembly</span>=<span style="color:#0000ff">"Microsoft.WebPages.Compilation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span style="color:#0000ff">/&gt;</span>
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">add</span> <span style="color:#ff0000">assembly</span>=<span style="color:#0000ff">"Microsoft.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span style="color:#0000ff">/&gt;</span>
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">add</span> <span style="color:#ff0000">assembly</span>=<span style="color:#0000ff">"Microsoft.WebPages.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span style="color:#0000ff">/&gt;</span>
+<span style="color:#0000ff">&lt;</span><span style="color:#800000">add</span> <span style="color:#ff0000">assembly</span>=<span style="color:#0000ff">"Microsoft.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35"</span><span style="color:#0000ff">/&gt;</span></pre>
+
+
+<p><br>并对system.web/compilation/buildProviders添加内容：</p>
+
+
+<pre><span style="color:#0000ff">&lt;</span><span style="color:#800000">add</span> <span style="color:#ff0000">extension</span>=<span style="color:#0000ff">".cshtml"</span> <span style="color:#ff0000">type</span>=<span style="color:#0000ff">"Microsoft.WebPages.Compilation.InlinePageBuildProvider"</span> <span style="color:#0000ff">/&gt;</span></pre>
+
+
+<p> </p>
+
+
+<p>并引用相应的</p>
+
+
+<pre>Microsoft.Data.dll 
+Microsoft.Webpages.dll 
+Microsoft.Webpages.Helpers.dll 
+Microsoft.Webpages.Compilation.dll </pre>
+
+
+<p>几个文件</p>
+
+
+<p>准备工作做好了，下面就来实现相应的模板引擎，我们先来实现一个IView对象：</p>
+
+
+<pre><span style="color:#0000ff">public</span> <span style="color:#0000ff">class</span> WebPageView : IView
+    {
+        <span style="color:#0000ff">public</span> WebPageView(<span style="color:#0000ff">string</span> viewPath)
+            : <span style="color:#0000ff">this</span>(viewPath, <span style="color:#0000ff">null</span>)
+        {
+        }
+
+        <span style="color:#0000ff">public</span> WebPageView(<span style="color:#0000ff">string</span> viewPath, <span style="color:#0000ff">string</span> masterPath)
+        {
+            <span style="color:#0000ff">if</span> (<span style="color:#0000ff">string</span>.IsNullOrEmpty(viewPath))
+            {
+                <span style="color:#0000ff">throw</span> <span style="color:#0000ff">new</span> ArgumentException("<span style="color:#8b0000">viewPath can't null</span>", "<span style="color:#8b0000">viewPath</span>");
+            }
+            <span style="color:#0000ff">this</span>.ViewPath = viewPath;
+            <span style="color:#0000ff">this</span>.MasterPath = masterPath ?? <span style="color:#0000ff">string</span>.Empty;
+        }
+
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> Render(ViewContext viewContext, TextWriter writer)
+        {
+            <span style="color:#0000ff">if</span> (viewContext == <span style="color:#0000ff">null</span>)
+            {
+                <span style="color:#0000ff">throw</span> <span style="color:#0000ff">new</span> ArgumentNullException("<span style="color:#8b0000">viewContext</span>");
+            }
+            WebPage page = WebPage.CreateInstanceFromVirtualPath(<span style="color:#0000ff">this</span>.ViewPath);<span style="color:#008000">//load cshtml file</span>
+            <span style="color:#0000ff">if</span> (page == <span style="color:#0000ff">null</span>)
+            {
+                <span style="color:#0000ff">throw</span> <span style="color:#0000ff">new</span> InvalidOperationException("<span style="color:#8b0000">cshtml file not exists</span>");
+            }
+            <span style="color:#0000ff">else</span>
+            {
+                <span style="color:#0000ff">this</span>.RenderViewPage(viewContext, page);
+            }
+        }
+
+        <span style="color:#0000ff">private</span> <span style="color:#0000ff">void</span> RenderViewPage(ViewContext context, WebPage page)
+        {
+            <span style="color:#0000ff">if</span> (!<span style="color:#0000ff">string</span>.IsNullOrEmpty(<span style="color:#0000ff">this</span>.MasterPath))
+            {
+                page.LayoutPage = <span style="color:#0000ff">this</span>.MasterPath;
+            }
+            page.VirtualPath = <span style="color:#0000ff">this</span>.ViewPath;
+            page.ExecutePageHierarchy(CreatePageContext(context)
+                , context.HttpContext.Response.Output, <span style="color:#0000ff">null</span>);
+            <span style="color:#008000">//execute cshtml file</span>
+        }
+
+        <span style="color:#0000ff">internal</span> <span style="color:#0000ff">static</span> WebPageContext CreatePageContext(ViewContext content)
+        {
+            var pc = <span style="color:#0000ff">new</span> WebPageContext();
+            var t = pc.GetType();
+            t.InvokeMember("<span style="color:#8b0000">HttpContext</span>", BindingFlags.SetProperty | BindingFlags.NonPublic | BindingFlags.Instance
+                , <span style="color:#0000ff">null</span>, pc, <span style="color:#0000ff">new</span>[] { content.HttpContext });
+            t.InvokeMember("<span style="color:#8b0000">ViewContext</span>", BindingFlags.SetProperty
+                | BindingFlags.NonPublic | BindingFlags.Instance
+                , <span style="color:#0000ff">null</span>, pc, <span style="color:#0000ff">new</span>[] { content });
+            <span style="color:#0000ff">return</span> pc;
+        }
+
+        <span style="color:#808080">/// &lt;summary&gt;Gets or sets the master path.&lt;/summary&gt;</span>
+        <span style="color:#808080">/// &lt;returns&gt;The master path.&lt;/returns&gt;</span>
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">string</span> MasterPath { <span style="color:#0000ff">get</span>; <span style="color:#0000ff">private</span> <span style="color:#0000ff">set</span>; }
+
+        <span style="color:#808080">/// &lt;summary&gt;Gets or sets the view path.&lt;/summary&gt;</span>
+        <span style="color:#808080">/// &lt;returns&gt;The view path.&lt;/returns&gt;</span>
+        <span style="color:#0000ff">public</span> <span style="color:#0000ff">string</span> ViewPath { <span style="color:#0000ff">get</span>; <span style="color:#0000ff">private</span> <span style="color:#0000ff">set</span>; }
+    }</pre>
+
+
+<p> </p>
+
+
+<p>然后我们再来实现一个IViewEngine对象：</p>
+
+
+<pre>    <span style="color:#808080">/// &lt;summary&gt;</span>
+    <span style="color:#808080">/// WebPage View Engine</span>
+    <span style="color:#808080">/// &lt;/summary&gt;</span>
+    <span style="color:#0000ff">class</span> WebPageEngine : VirtualPathProviderViewEngine
+    {
+       
+        <span style="color:#0000ff">public</span> WebPageEngine()
+        {
+            <span style="color:#008000">// how to find the template path</span>
+            <span style="color:#0000ff">base</span>.MasterLocationFormats = <span style="color:#0000ff">new</span> <span style="color:#0000ff">string</span>[] { 
+                "<span style="color:#8b0000">~/Views/{1}/{0}.cshtml</span>", 
+                "<span style="color:#8b0000">~/Views/Shared/{0}.cshtml</span>" 
+            };
+            <span style="color:#0000ff">base</span>.AreaMasterLocationFormats = <span style="color:#0000ff">new</span> <span style="color:#0000ff">string</span>[] { 
+                "<span style="color:#8b0000">~/Areas/{2}/Views/{1}/{0}.cshtml</span>", 
+                "<span style="color:#8b0000">~/Areas/{2}/Views/Shared/{0}.cshtml</span>"
+            };
+            <span style="color:#0000ff">base</span>.ViewLocationFormats = <span style="color:#0000ff">new</span> <span style="color:#0000ff">string</span>[] { 
+                "<span style="color:#8b0000">~/Views/{1}/{0}.cshtml</span>", 
+               "<span style="color:#8b0000">~/Views/Shared/{0}.cshtml</span>"
+            };
+            <span style="color:#0000ff">base</span>.AreaViewLocationFormats = <span style="color:#0000ff">new</span> <span style="color:#0000ff">string</span>[] { 
+                "<span style="color:#8b0000">~/Areas/{2}/Views/{1}/{0}.cshtml</span>", 
+                "<span style="color:#8b0000">~/Areas/{2}/Views/Shared/{0}.cshtml</span>" 
+            };
+            <span style="color:#0000ff">base</span>.PartialViewLocationFormats = <span style="color:#0000ff">base</span>.ViewLocationFormats;
+            <span style="color:#0000ff">base</span>.AreaPartialViewLocationFormats = <span style="color:#0000ff">base</span>.AreaViewLocationFormats;
+        }
+
+        <span style="color:#0000ff">protected</span> <span style="color:#0000ff">override</span> IView CreatePartialView(ControllerContext controllerContext, <span style="color:#0000ff">string</span> partialPath)
+        {
+            <span style="color:#0000ff">return</span> <span style="color:#0000ff">new</span> WebPageView(partialPath, <span style="color:#0000ff">null</span>);
+        }
+
+        <span style="color:#0000ff">protected</span> <span style="color:#0000ff">override</span> IView CreateView(ControllerContext controllerContext, <span style="color:#0000ff">string</span> viewPath, <span style="color:#0000ff">string</span> masterPath)
+        {
+            <span style="color:#0000ff">return</span> <span style="color:#0000ff">new</span> WebPageView(viewPath, masterPath);
+        }
+
+    }</pre>
+
+
+<p> </p>
+
+
+<p>这样我们就实现了Razor的模板引擎了，我们只要在Global.asax中将模板引擎添加进去：</p>
+
+
+<pre>        <span style="color:#0000ff">protected</span> <span style="color:#0000ff">void</span> Application_Start()
+        {
+            AreaRegistration.RegisterAllAreas();
+            RegisterRoutes(RouteTable.Routes);
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(<span style="color:#0000ff">new</span> WebPageEngine());
+        }</pre>
+
+
+<p> </p>
+
+
+<p>并且将Global的基类改为WebPageHttpApplication：</p>
+
+
+<pre><span style="color:#0000ff">public</span> <span style="color:#0000ff">class</span> MvcApplication : WebPageHttpApplication
+{
+<span style="color:#008000">//...</span>
+}</pre>
+
+
+<p>这样整个程序就可以工作了</p>
+
+
+<p>我们在Views/Home下添加一个Index.cshtml：</p>
+
+
+<pre>@Html.ActionLink("<span style="color:#8b0000">Home</span>","<span style="color:#8b0000">index</span>","<span style="color:#8b0000">User</span>&quot;)
+&lt;br&gt;
+@ViewData[&quot;<span style="color:#8b0000">Message</span>"]</pre>
+
+
+<p> </p>
+
+
+<p>这样在我们访问/Home/Index的时候就可以得到ASP.NET MVC默认工程的HomeController.Index所生成的页面了：</p>
+
+
+<p>&lt;a href=&quot;http://www.cnblogs.com/User&quot;&gt;Home&lt;/a&gt; <br>&lt;br&gt; <br>欢迎使用 ASP.NET MVC!</p>
+
+
+<p> </p>
+
+
+<p>可见在这个模板引擎中，先天对ASP.NET MVC有良好的支持，本身已经集成了Helper、ViewData等诸多ASP.NET MVC的特性。</p>
+
+
+<p>让我们期待ASP.NET MVC 3.0及Razor对VS的支持吧</p>
+
+
+<p>8189E6B8-FBE4-4F01-8F9F-5687C0EA9F59</p>
+
+
+<p><img src="http://www.cnblogs.com/chsword/aggbug/1774937.html?type=1" width="1" height="1" alt=""><p>评论: 7　<a href="http://www.cnblogs.com/chsword/archive/2010/07/10/razor_in_aspnet_mvc_2.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/chsword/archive/2010/07/10/razor_in_aspnet_mvc_2.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/68016/">Twitter证实将推实时分析产品</a><span style="color:gray">(2010-07-11 09:09)</span><br>· <a href="http://news.cnblogs.com/n/68015/">苹果上海开业首日只见排队购买不见排队结账</a><span style="color:gray">(2010-07-11 09:07)</span><br>· <a href="http://news.cnblogs.com/n/68008/">谷歌力推低价Android手机的野心</a><span style="color:gray">(2010-07-10 22:58)</span><br>· <a href="http://news.cnblogs.com/n/68007/">Google 创始人 Larry Page 指责 Steve Jobs 说话 “太唐骏”</a><span style="color:gray">(2010-07-10 22:55)</span><br>· <a href="http://news.cnblogs.com/n/68006/">Chrome 扩展曝严重安全漏洞，可获取登陆用户名与密码</a><span style="color:gray">(2010-07-10 22:54)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/07/09/1774490.html">关于近期C#大论战的回应</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

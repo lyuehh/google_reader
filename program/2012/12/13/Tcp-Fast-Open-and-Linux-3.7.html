@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Tcp Fast Open and Linux 3.7</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Tcp Fast Open and Linux 3.7</h2>
+<p class="meta">13 Dec 2012</p>
+
+<div class="post">
+<h2>Tcp Fast Open and Linux 3.7</h2>
+
+<h3>by snnn</h3>
+
+<h3>at 2012-12-12 18:41:37</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8845.html">http://www.udpwork.com/item/8845.html</a></h3>
+
+<p>今天<a href="http://www.kernel.org/">Linux</a>3.7发布了,一个引人注目的特性是，包含了完整的对TCP Fast Open（TFO）的支持，client端以及server端。</p>
+
+
+<p>传统的TCP需要经过3次握手才能建立。假设我们要从服务器上用http协议下载一个图片</p>
+
+
+<p>C-&gt;S ： SYN</p>
+
+
+<p>S-&gt;C : SYN+ACK</p>
+
+
+<p>C-&gt;S : ACK+ http get request</p>
+
+
+<p>S-&gt;S : http response</p>
+
+
+<p>所以一个最简单的HTTP请求也需要2个round-trip time才能完成。比如从北京到加州的round-trip time大约是200ms左右，2 round-trip time 就是400ms左右。无论如何增加带宽，都无济于事。</p>
+
+
+<p>Google给出了一个解决方案，让第一个SYN包就携带数据，于是在一个RTT之内就能得到response。但是，这个看似很小的改动，实际应用起来却很不容易。</p>
+
+
+<p>首先，目前只有<a href="http://www.kernel.org/">Linux</a>支持了TFO，先给你的<a href="http://www.kernel.org/">Linux</a>升级kernel吧。</p>
+
+
+<p>其次，server和client的代码都得改。</p>
+
+
+<p>server在listen之前要设置TFO选项。</p>
+
+
+<p>int qlen = 5;                           
+<br>
+setsockopt(sfd, SOL_TCP, TCP_FASTOPEN, &amp;qlen, sizeof(qlen));</p>
+
+
+<p>client就复杂多了。去掉connect调用，send/write方法要改成sendto或者sendmsg。</p>
+
+
+<p>sendto(sfd, data, data_len, MSG_FASTOPEN,
+<br>
+                (struct sockaddr *) &amp;server_addr, addr_len);</p>
+
+
+<p>看完TFO的paper后，作为一个搞后台开发的程序员，我当时首先想的是，如果<a href="http://www.mysql.com/">MySQL</a>也启用TFO的话……</p>
+
+
+<p>我不知道你们怎么用MySQL的。JAVA程序员习惯用长连接，而PHP程序员习惯用短连接，我之前在某浪公司工作的时候，那边则是强烈要求使用短连接。短连接的原因是<a href="http://www.mysql.com/">MySQL</a>是按Connection分配内存资源（而非Query),短连接能提高内存利用率。但是另一方面，谁都知道，每次都打开、关闭TCP连接，进行身份认证，设置变量，会造成不必要的消耗，增大延迟。否则你告诉我，JAVA程序员干嘛非得去用连接池？</p>
+
+
+<p>但是TFO要适用在MySQL上还必须得修改MySQL协议。因为TFO允许因SYN包在传输中被duplicate导致一个request被server处理两次。这对数据库的修改操作来说是不可忍受的。最简洁的解决办法就是在协议的头部加上一串随机数，server端cache一下最近几秒收到过的，进行排重。另外，要是<a href="http://www.mysql.com/">MySQL</a>在协议层也加入Fast Open的考虑就好了。</p>
+
+
+<p>TFO的意义很深远，让我们可以把TCP当作UDP来用。重新考虑是否要保持长连接的问题。</p>
+
+
+<p>附: Google的原始论文<a href="http://research.google.com/pubs/pub37517.html" title="http://research.google.com/pubs/pub37517.html">http://research.google.com/pubs/pub37517.html</a></p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8845.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8845.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;1&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8845.html#reviews">评论: 1</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

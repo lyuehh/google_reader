@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Firefox OS 架构简析（1）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Firefox OS 架构简析（1）</h2>
+<p class="meta">27 Aug 2012</p>
+
+<div class="post">
+<h2>Firefox OS 架构简析（1）</h2>
+
+<h3>by 黑日白月</h3>
+
+<h3>at 2012-08-27 15:21:00</h3>
+
+<h3>original <a href="http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html">http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html</a></h3>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/r45t08ks0fj6sr7aa7q8jurtt8/300/250?ca=1&amp;fh=280#http%3A%2F%2Flinuxtoy.org%2Farchives%2Ffirefox-os-architecture-brief-1.html" width="100%" height="280" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p>十个月前，<a href="http://linuxtoy.org/archives/mozilla-boot-to-gecko-os.html">本站首次报道 Mozilla B2G 系统</a>。现在它已经成长为 Firefox OS，是时候去看看的它的架构了。<span></span></p>
+
+
+
+
+<p><a href="https://wiki.mozilla.org/B2G/Architecture">本文脱胎自 B2G 官方 Wiki 页面</a>，略过了其中代码示例的部分。为了方便理解，在部分描述时会跟当下流行的 Android 操作系统进行比较。</p>
+
+
+
+
+<p><strong>女神、壁虎和娃娃</strong></p>
+
+
+
+
+<p>Firefox OS 从架构上来讲具有了三个层面：</p>
+
+
+
+
+<p><strong>Gaia（盖亚，大地女神）</strong>：<strong>Firefox OS 的用户界面</strong>，包含了在开机之后所有用户能看到部分，比如锁屏、主屏幕、应用程序启动器、拨号器、短信、相机等等作为智能手机必须具备的。Gaia 完全使用 HTML、CSS 和 JavaScript 编写，使用成为<a href="http://linuxtoy.org/archives/webdriver-api-is-about-to-be-standardised-by-w3c.html">标准的 Web API</a> 的接口和底层设备关联。因此，Gaia 可以在任何实现了 Web API 的设备上运行，比如桌面浏览器。Firefox OS 上的第三方程序也是以类似的方式运行并与 Gaia 共存的。</p>
+
+
+
+
+<p><strong>Gecko（壁虎）</strong>：<strong>Firefox OS 的应用程序运行时环境</strong>，用 C++（不知道后期是否会转用 <a href="http://www.rust-lang.org/">Rust</a> ）实现了 Web API，供包括 Gaia 在内的应用程序使用，同时保证 Web API 可以在 Firefox OS 的目标硬件平台上运行。于是乎 Gecko 包含了必要的网络层，图像层、布局管理和 JavaScript 虚拟机以及移植层。</p>
+
+
+
+
+<p><strong>Gonk（蛋形娃娃）</strong>：<strong>Firefox OS 的操作系统底层</strong>，也是 Gecko 的一个目标移植平台，包含 Linux 内核和用户态的硬件抽象层，这一部分和 Android 以及嵌入式 Linux 共享了很多组件和驱动，比如 bluez, libusb 等。说是一个目标移植平台，是由于 Gecko 抽象层在理论上也可以运行在 Android 或者桌面操作系统上，不过由于 Firefox OS 项目主导了 Gonk 开发，可以提供一些其他系统上不具备的接口给 Gecko 使用，比如完整的电话通讯层。</p>
+
+
+
+
+<p><strong>光、信号和起源</strong></p>
+
+
+
+
+<p>和绝大多数 Android 手机一样，预装 Firefox OS 的手机在开机后也会首先由极小化的 <code>bootloader</code> 实现最初的引导操作，然后链式引导更高级别更复杂的引导器，最终实现内核的加载。这个过程具体如何与设备制造商有关，相应的 bootloader 操作很有可能重用现在各个厂商在 Android 设备上所用的私有 <code>fastboot</code> 协议实现。意味着只要适当调整 Firefox OS 所用的引导器，<strong>在 Android 手机上使用现有刷机工具刷入 Firefox OS 在技术上没有障碍</strong>。</p>
+
+
+
+
+<p>由于嵌入式领域还比较封闭，这个过程也会加载很可能是<strong>设备相关的私有调制解调器固件</strong>。于是乎在这个层面上 Firefox OS 和 Android 一样不是开放的。</p>
+
+
+
+
+<p>紧接的故事就是 Linux 内核的载入和 PID 1 号 <code>init</code> 进程的产生了，和一般嵌入式 Linux 的初始化没有太大差别。这里使用的 Linux 内核会紧随上游，不过也会吸纳厂商通过 <a href="http://source.android.com/">Android Open Source Project</a> 提交的一些尚未合并的设备相关代码。内核载入之后的大多数设备访问将通过 <code>sysfs</code> 的方式供用户态程序访问。</p>
+
+
+
+
+<p><strong>爬行动物时代</strong></p>
+
+
+
+
+<p>在这里，<code>b2g</code> 以主系统进程的形态被 init 进程激活，并通过 RPC 或者 Socket 的方式实现和其他负责诸如网络、无线电等功能的进程通讯。除此之外，<code>b2g</code> 还会通过 <code>dbus-daemon</code> 和 IPDL 这两种特殊的方式实现用户态进程间通讯。</p>
+
+
+
+
+<p><a href="http://www.freedesktop.org/wiki/Software/dbus">dbus</a> 不用赘述，用过任意一个现代桌面 Linux 发行版的用户对其都不陌生<del>最近合并入了 <a href="http://freedesktop.org/wiki/Software/systemd/">systemd</a> 成为其一部分，不过依然可以单独运行</del>。<a href="https://developer.mozilla.org/en-US/docs/IPDL">IPDL</a> 则是 <strong>Mozilla 特有的进程间通讯协议定义语言</strong>，允许在 C++ 进程间安全且有组织的传递消息。运行着 <code>libxul.so</code> 的<code>b2g</code> 进程将使用 <a href="https://developer.mozilla.org/en-US/docs/IPDL">IPDL</a> 启动一系列<strong>内容子进程</strong>，上层的网页程序和其他网页内容将在独立的内容子进程中运行，在技术上和现在 Firefox 浏览器的标签页处理类似。</p>
+
+
+
+
+<p>面对多媒体文件， Gecko 对于 OGG Vorbis 音频, OGG Theora 视频和 WebM 视频这些<strong>开放格式将提供原生支持</strong>，以后正式发布时为了 WebRTC 引入对 <a href="http://hacks.mozilla.org/2012/07/firefox-beta-15-supports-the-new-opus-audio-format/">Opus</a> 的支持也是完全有可能的。而对于私有格式将通过 <a href="https://github.com/cgjones/android-frameworks-base/tree/gingerbread-b2g/media/libstagefright">libstagefright</a> 的方式访问私有解码器和实现硬件加速。</p>
+
+
+
+
+<p><strong>感触、表现和尾巴</strong></p>
+
+
+
+
+<p>Gecko 负责将来自 Gonk 的各种输入事件解析成可供标准网页程序使用的 DOM 事件，包括按键、触屏操作等等，源自标准 Linux 输入设备 input-device。这些来自 Gecko 的 DOM API 由在 C++ 和 JavaScript 之间的外部函数接口和对象模型组成，使用普遍的 <a href="https://developer.mozilla.org/en-US/docs/XPIDL">XPIDL</a> 规定。</p>
+
+
+
+
+<p>网络通讯则分别交由 <code>wpa<em>supplicant</em></code> 和 RIL(Radio Interface Layer) 完成。和桌面 Linux 发行版一样，wpasupplicant 负责 WiFi 环境下的接入，Gecko 为其开发了附属的 <code>WifiWorker.js</code> 供网页程序了解 WiFi 连接状态。RIL 则负责广域网络的通讯，其中负责跟调制解调部分沟通的 <code>rild</code> 很可能是来自制造商的私有代码，<code>rildproxy</code> 则是一个为了安全考虑而设置的中间代理，起到连结 <code>rild</code> 和 <code>b2g</code> 的作用。同样，也有 <code>ril_worker.js</code> 暴露状态和操作接口供上层程序使用。</p>
+
+
+
+
+<p>和 Android 4.0+ 类似，<strong>Gecko 完全使用 OpenGL ES 2.0 实现混合</strong>。Gecko 会将页面的各个区域绘制入内存缓冲，然后调用 OpenGL 命令将内容混合并渲染于屏幕上。和 Android 早期借助 skia 实现的软件混合相比，Firebox OS 从一开始就依赖于 GPU 的渲染能力，其效果值得期待。</p>
+
+
+
+
+<p>在 Gecko 的最底层则是负责和目标系统交互的移植层。在这一部分包含针对不同目标系统的平台相关代码(Gonk，Android，OS X 等)，并将其统一化为可供 Gecko 上层子系统使用的 C++ API。</p>
+
+
+
+
+<p><em>更多内容敬请期待</em></p>
+
+
+<pre><code>&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;分类: &lt;a href="http://linuxtoy.org/category/embedded" title="View all posts in Embedded" rel="category tag"&gt;Embedded&lt;/a&gt;, &lt;a href="http://linuxtoy.org/category/featured-post" title="View all posts in Featured" rel="category tag"&gt;Featured&lt;/a&gt;, &lt;a href="http://linuxtoy.org/category/reviews" title="View all posts in Reviews" rel="category tag"&gt;Reviews&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html"&gt;永久链接&lt;/a&gt; |
+&lt;a href="http://delicious.com/save?url=http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html&amp;amp;title=Firefox%20OS%20%E6%9E%B6%E6%9E%84%E7%AE%80%E6%9E%90%EF%BC%881%EF%BC%89"&gt;收藏到 del.icio.us&lt;/a&gt; | 
+&lt;a href="mailto:?Subject=Check+This+Out&amp;amp;body=I+think+you&amp;#39;ll+like+this:+http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html"&gt;Email 给好友&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/firefox-os-architecture-brief-1.html#comments"&gt;11 评论&lt;/a&gt; |
+&lt;a href="http://linuxtoy.org/faq/donate"&gt;捐助本站&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

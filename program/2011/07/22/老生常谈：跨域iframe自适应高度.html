@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>老生常谈：跨域iframe自适应高度</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>老生常谈：跨域iframe自适应高度</h2>
+<p class="meta">22 Jul 2011</p>
+
+<div class="post">
+<h2>老生常谈：跨域iframe自适应高度</h2>
+
+<h3>by jefferkim</h3>
+
+<h3>at 2011-07-21 22:23:39</h3>
+
+<h3>original <a href="http://yoho88.cn/html/iframe-autoheight.html">http://yoho88.cn/html/iframe-autoheight.html</a></h3>
+
+<p>不得不承认，这是一个被人说烂了的话题，而我要说的也是最常见的跨域iframe自适应的方法（Iframe代理），今天结合淘宝的做法来讲下这个实现方法。<br>
+跨域iframe自适应高度的原理：很简单，假如3个页面，分别是主页面A.html，子页面B.html，代理页面C.html。我们总是希望子页面B.html高度变化时，作为它的外层A.html也跟着变高，不至于产生A.html不能完全展示B.html的内容。让我们看下这三者的关系：<br>
+其中A与B是跨域的，而A和C是同域的。它们的关系是：A包含B，B包含C。很显然A和B，以及B和C，因为跨域不能相互通信，而A和C同域，可以相互通信。为此我们就想到让C页面告诉A页面，B页面到底有多少高，这就是C.html作为Proxy.html的概念。因为B和C跨域的是不能相互通信，所以想在C页面中，直接window.parent.document.body.scrollHeight这样的操作是行不通的，一般浏览器会很温柔的告诉你：permission denied to call method 什么什么的。所以我们只能让B页面自己计算自身的高度，然后通过某种方法告诉C页面，再由C页面告诉A页面。<br>
+这里的一个方法就是在B页面生成一个Iframe节点，然后设置C页面的src属性，在这个地址上附加一个参数，即B页面计算出来的高度，然后C页面就可以通过window.location获取这个地址栏中的地址，提取出高度值，通过window.top找到A页面，设置A页面的Iframe的高度。<br>
+原理讲完了，看下淘宝的实现（不用怀疑，跟你能搜到的基本一样的）<br>
+B.html中可以看到这样一句（这时B.html只是指代子页面）</p>
+
+
+<pre>&lt;script data-proxy =&quot;http://i.taobao.com/proxy.htm&quot;  src=&quot;http://a.xx.cn/loader.js&quot;&gt;&lt;/script&gt;</pre>
+
+
+<p>先来看那个loader.js，我删了一些跟本文不怎么有关的东西，如下</p>
+
+
+<pre>
+var Loader = (function() {
+    var el, _h = 0,
+    doc = document;
+    return {
+        //init传递过来的proxy地址处理
+        send: function(proxy) {
+            //加个小延时来处理高度，一般不推荐一直监听所以没用setTimeInterval
+            setTimeout(function() {
+                //偷懒，不怎么判断各个浏览器了，直接加个40的调整量了
+                var sh = doc.body.offsetHeight + 40;
+                //如果高度有改动，
+                //则创建新的iframe填充到init函数中创建的div中，
+                //这样iframe又运行了一次
+                if (_h != sh) {
+                    _h = sh;
+                    el.innerHTML = '';
+                }
+            },
+            200);
+        },
+        init: function(proxy) {
+            //创建div并填充到document中，
+            el = doc.createElement("div") el.style.display = "none";
+            doc.body.appendChild(el);
+            //读取页面的script，
+            //并而且scripts[scripts.length - 1]来获取目标script，
+            //就是包含data-proxy的js，
+            //然后读取它的src，然后this.send进行先一步处理
+            var scripts = doc.getElementsByTagName('script');
+            var _proxyUrl = scripts[scripts.length - 1].getAttribute('data-proxy');
+            this.send(proxy || _proxyUrl);
+        }
+    };
+})();
+//Yui 2的ready，不用说了，你懂的
+YAHOO.util.Event.onDOMReady(function() {
+    Loader.init();
+});
+</pre>
+
+
+<p>好，再看下script文件中的参数data-proxy，这个参数放置代理页面，其中proxy.html中主要的代码如下： 这段js的作用操作形如下面这种iframe，下面的就是上一步生成的：</p>
+
+
+<pre>
+(function() {
+    //分割hash（就是#），它读取到了786，理论上要parseInt下
+    var height = window.location.hash.substring(1);
+    try {
+        //这个el返回的就是B.html的iframe的id为iframeB的元素，反正就是获得B.html
+        var el = window.top.document.getElementById('iframeB');
+        if (!el) return;
+        //把高度赋值给外层iframe B.html，大功告成
+        el.style.height = height + 'px';
+    } catch(e) {}
+})();
+</pre>
+
+
+<p>整个过程就是这样的，没用setTimeInterval是因为页面一般也很少有实时更新的，就是用于页面刷新进来就设置外层高度下，再说了setTimeInterval也有其他的一些注意点。<br>
+没有实时更新当然也有些麻烦：当你页面真要实时增高减小时就悲催了，所以你一般可以在某个改变页面高度时调用Loader.init()，不幸的是一般你会发生调用错误，第一步你就已经知道了var _proxyUrl = scripts[scripts.length - 1].getAttribute(‘data-proxy’); 获取最后一个script，它希望你将其放到页面底部，也就是说你要调用的js一般都在此文件前面就被引入了。<br>
+第一个修改方案是将 var Loader方式改为function Loader，但是这么一来就改动稍微大了些。<br>
+第二个方案就是将 var _proxyUrl = scripts[scripts.length - 1].getAttribute(‘data-proxy’);改为</p>
+
+
+<pre>var _proxyUrl = doc.getElementById('iframe_text').getAttribute('data-proxy');</pre>
+
+
+<p>，这样可以先用下。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

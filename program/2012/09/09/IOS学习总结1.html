@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IOS学习总结1</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IOS学习总结1</h2>
+<p class="meta">09 Sep 2012</p>
+
+<div class="post">
+<h2>IOS学习总结1</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-09 13:30:00</h3>
+
+<h3>original <a href="http://blog.lovemaple.info/blog/2012/09/09/learning-ios-summary-1/">http://blog.lovemaple.info/blog/2012/09/09/learning-ios-summary-1/</a></h3>
+
+<p>这里主要是自己学习基本的Objective-C语法和Xcode使用的总结。</p>
+
+
+
+
+<h2>Objective-C</h2>
+
+
+
+
+<h3>简介</h3>
+
+
+
+
+<p>Objective-C是一个混合类型的面向对象编程语言。</p>
+
+
+
+
+<p>之所以说他是混合的是因为静态类型和动态类型的编程方法在Objective-C中都很常见——Objective-C是C的超集，本身就有各种类型的声明，然后Apple给他添加了id这个可以代表一切的动态类型。</p>
+
+
+
+
+<h3>基本语法</h3>
+
+
+
+
+<p>我们用一段代码来演示他的基本语法特性，一个类的声明/实现文件。</p>
+
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+</pre></td><td><pre><code><span><span>// In the .h file:</span>
+</span><span>
+</span><span><span>@interface</span> <span>MyClass</span> <span>{</span>
+</span><span>    <span>// My Instance Variables</span>
+</span><span><span>}</span>
+</span><span>
+</span><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myPublicMethod</span><span>;</span>
+</span><span><span>+</span> <span>(</span><span>void</span><span>)</span><span>myClassMethod</span><span>;</span>
+</span><span><span>@end</span>
+</span></code></pre></td></tr></table></div></p>
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+<span>6</span>
+<span>7</span>
+<span>8</span>
+<span>9</span>
+<span>10</span>
+<span>11</span>
+<span>12</span>
+<span>13</span>
+<span>14</span>
+<span>15</span>
+<span>16</span>
+<span>17</span>
+<span>18</span>
+<span>19</span>
+<span>20</span>
+<span>21</span>
+<span>22</span>
+<span>23</span>
+</pre></td><td><pre><code><span><span>// And in the .m file:</span>
+</span><span>
+</span><span><span>@interface</span> <span>MyClass</span> <span>()</span>
+</span><span>
+</span><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myPrivateMethod</span><span>;</span>
+</span><span>
+</span><span><span>@end</span>
+</span><span>
+</span><span><span>@implementation</span> <span>MyClass</span>
+</span><span>
+</span><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myPublicMethod</span> <span>{</span>
+</span><span>    <span>// Implementation goes here</span>
+</span><span><span>}</span>
+</span><span>
+</span><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myPrivateMethod</span> <span>{</span>
+</span><span>    <span>// Implementation goes here</span>
+</span><span><span>}</span>
+</span><span>
+</span><span><span>+</span> <span>(</span><span>void</span><span>)</span><span>myClassMethod</span> <span>{</span>
+</span><span>    <span>// Implementation goes here</span>
+</span><span><span>}</span>
+</span><span>
+</span><span><span>@end</span>
+</span></code></pre></td></tr></table></div></p>
+
+<p>Obj-C的声明在<code>.h</code>文件中，实例变量、实例方法和类方法的声明都放在他里面。</p>
+
+
+
+
+<p>在<code>.m</code>文件中，我们需要给出实例方法和类方法的实现。代码非常的简单，然后我只对<code>.m</code>文件里面出现的<code>@interface</code>做简单的解释，因为在<code>.h</code>文件中声明的方法都是共有的，所以为了实现私有化，我们将它放到了<code>.m</code>文件中进行。</p>
+
+
+
+
+<h3>accessors and mutators</h3>
+
+
+
+
+<p>在java里面，他叫做getters and setters，Obj-C中仅仅是换了个名字而已。</p>
+
+
+
+
+<p>如何在Obj-C中为实例变量设置accessors and mutators呢？Apple早已为我们提供好了语法糖。分别在<code>.h</code>和<code>.m</code>中使用<code>@property int var</code>和<code>@synthesize var = _var</code>即可。</p>
+
+
+
+
+<p>详细的可以参考Apple的开发者文档——<a href="https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjectiveC/Chapters/ocProperties.html">Declared Properties</a>。</p>
+
+
+
+
+<h3>继承</h3>
+
+
+
+
+<p>子类化在IOS开发中非常常见，因为你的每一个view的controller类都必须继承<code>UIViewController</code>：</p>
+
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+<span>5</span>
+</pre></td><td><pre><code><span><span>#import &lt;UIKit/UIKit.h&gt;</span>
+</span><span>
+</span><span><span>@interface</span> <span>MyViewController</span> : <span>UIViewController</span>
+</span><span>
+</span><span><span>@end</span>
+</span></code></pre></td></tr></table></div></p>
+
+<p>那么多重继承呢？Obj-C中是不允许多重继承的，但是他采取了同Ruby/Python一样的策略使用了Mixin，不过Apple给他换了个名字叫<code>Protocols</code>。</p>
+
+
+
+
+<h2>Xcode</h2>
+
+
+
+
+<p>不得不说，Xcode是我用过的IDE中最好的，没有之一。静态类型的补全依靠编译器，Xcode早已做到。NB的是Xcode还有代码片段补全以及括号补全，他们的完成都只需要简单的tab键。</p>
+
+
+
+
+<p>下面介绍几个使用括号补全的技巧：</p>
+
+
+
+
+<h4>在大括号后面按回车可以补全大括号</h4>
+
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+</pre></td><td><pre><code><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myFunction</span>
+</span><span><span>{</span><span>↵</span>
+</span></code></pre></td></tr></table></div></p>
+
+<p>效果</p>
+
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+<span>2</span>
+<span>3</span>
+<span>4</span>
+</pre></td><td><pre><code><span><span>-</span> <span>(</span><span>void</span><span>)</span><span>myFunction</span>
+</span><span><span>{</span>
+</span><span>    <span>_</span>
+</span><span><span>}</span>
+</span></code></pre></td></tr></table></div></p>
+
+<h4>多重括号时只需要输入一个括号。</h4>
+
+
+
+
+<p>如下在init后按下<code>]</code>时Xcode会自动帮你添加好前面的括号。</p>
+
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+</pre></td><td><pre><code><span><span>myArray</span> <span>=</span> <span>[</span><span>NSArray</span> <span>alloc</span><span>]</span> <span>init_</span>
+</span></code></pre></td></tr></table></div></p>
+
+<p><span></span><div><table><tr><td><pre><span>1</span>
+</pre></td><td><pre><code><span><span>myArray</span> <span>=</span> <span>[[</span><span>NSArray</span> <span>alloc</span><span>]</span> <span>init</span><span>]</span><span>_</span>
+</span></code></pre></td></tr></table></div></p>
+
+<h3>有用的快捷键</h3>
+
+
+
+
+<ul>
+<li><code>Ctrl</code>+<code>I</code> -&gt; Indent Codeblocks</li>
+<li><code>Ctrl</code>+<code>⌘</code>+<code>up/down</code> -&gt; switch between .h and .m files</li>
+<li><code>Ctrl</code>+<code>⌘</code>+<code>left/right</code> -&gt; switch to next/previous window</li>
+<li><code>Ctrl</code>+<code>⌘</code>+<code>E</code> -&gt; rename a variable in a scope</li>
+<li><code>Ctrl</code>+<code>⌘</code>+<code>J</code> -&gt; jump to definition</li>
+<li><code>⌘</code>+<code>/</code> -&gt; comment/uncomment code blocks</li>
+<li><code>Alt</code>+<code>click</code> -&gt; show info about the clicked name</li>
+</ul>
+
+
+
+
+<h2>如何获取学习资料</h2>
+
+
+
+
+<p>Apple自带的文档确实很漂亮，看这些文档已经足够，看不进去时，Youtube视频也是很好的补充。你不用买市面上的任何一本书籍，Apple和M$不一样，他对开发者非常的友好。</p>
+
+
+
+
+<p>最后推荐下tiny4cocoa，里面有tiny制作的IOS开发视频。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

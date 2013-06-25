@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【原】提高网站加载速度的3项黄金守则</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【原】提高网站加载速度的3项黄金守则</h2>
+<p class="meta">02 Apr 2013</p>
+
+<div class="post">
+<h2>【原】提高网站加载速度的3项黄金守则</h2>
+
+<h3>by 白树</h3>
+
+<h3>at 2013-04-01 18:24:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/PeunZhang/archive/2013/04/01/2337900.html">http://www.cnblogs.com/PeunZhang/archive/2013/04/01/2337900.html</a></h3>
+
+<p>如何优化网页加载速度是每个前端开发工程师需要了解的，也是前端开发工程师需要具备的基本条件。</p>
+
+
+<p>优化网站加载速度的原理主要是<span style="color:#ff0000">减少网站文件的大小，减少HTTP请求数</span>。网站文件越小，浏览器加载页面会比较轻松，打开页面的速度也会提升；一个HTTP请求，对页面打开速度造成的延时大概是0.01秒，HTTP的请求数越多，网站打开的速度就会越慢。</p>
+
+
+<p>那么如何减少网站文件的大小，减少HTTP请求数呢？笔者做前端(重构方向)有2年多了，这里分享3项优化网站加载速度的方法，希望能给有需要的同学以及刚接触前端的初学者带来帮助~</p>
+
+
+<p>comm on！一起来优化你的网站~</p>
+
+
+<p><span style="font-size:18pt"><strong>1、优化图片</strong></span></p>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">使用Css Sprites（适用于大流量的网站）</span></strong></span></p>
+
+
+<p>其原理是把网页中一些背景图片整合到一张图片文件中，再利用CSS的"background"的进行背景定位。Css Sprites 最大的好处是减少http请求数，减轻服务器的压力，但使用它是需要付出"降低开发效率，增大维护成本的代价"，对流量小的网站带来的好处并不明显，使用它取决网站的流量。</p>
+
+
+<p>图片合成的工具如：Photoshop，输出样式的工具如：<a href="http://www.cnblogs.com/PeunZhang/archive/2013/01/30/2882683.html">LinrPStoolkit-5</a>、腾讯鬼哥的<a href="http://www.cssforest.org/blog/index.php?s=download">Css Sprites 样式生成工具</a>；这样做的好处是尽可能减少图片数，将HTTP请求减少到最低，减轻服务器的压力。</p>
+
+
+<p>示例：合并5张小图</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201303/28173355-01963decd6044e8c865b23d50af5e9c6.png" alt=""> <img src="http://images.cnitblog.com/blog/278431/201303/28173803-bc2294b917634a9094d3a90b4e4dca10.png" alt=""> <img src="http://images.cnitblog.com/blog/278431/201303/28173827-fc9a6f3a8067410b9ed27b88e6838241.png" alt=""> <img src="http://images.cnitblog.com/blog/278431/201303/28173858-244f5a19c2044c378770100cdf3232b9.png" alt=""> <img src="http://images.cnitblog.com/blog/278431/201303/28173921-c4d75282fcb54260b1f9641f5726590f.png" alt=""></p>
+
+
+<p>合并后的代码</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">.ico-1,.ico-2,.ico-3,.ico-4,.ico-5<br></span>{<span style="color:#ff0000"><br>display</span>:<span style="color:#0000ff">inline-block</span>;<span style="color:#ff0000"><br>background</span>:<span style="color:#0000ff"> url(img/ico.png) no-repeat</span>;<span style="color:#ff0000"><br>overflow</span>:<span style="color:#0000ff">hidden</span>;<br>}<span style="color:#800000"><br>.ico-1</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">106px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">104px</span>;<span style="color:#ff0000">background-position</span>:<span style="color:#0000ff">0 0</span>;}<span style="color:#800000"><br>.ico-2</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">44px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">104px</span>;<span style="color:#ff0000">background-position</span>:<span style="color:#0000ff">-107px 0</span>;}<span style="color:#800000"><br>.ico-3</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">25px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">104px</span>;<span style="color:#ff0000">background-position</span>:<span style="color:#0000ff">-152px 0</span>;}<span style="color:#800000"><br>.ico-4</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">44px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">52px</span>;<span style="color:#ff0000">background-position</span>:<span style="color:#0000ff">-178px 0</span>;}<span style="color:#800000"><br>.ico-5</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">44px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">51px</span>;<span style="color:#ff0000">background-position</span>:<span style="color:#0000ff">-178px -53px</span>;}</div>
+
+
+<p>合并后的Css sprite图片</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201303/28171405-93a0276264be4fc6820c982b6278c3cf.jpg" alt=""></p>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">给图片减肥</span></strong></span><br>保证图片不失真的前提，适当压缩是图片大小，不仅可以减少用户等待时间，降低公司带宽使用，节约成本。</p>
+
+
+<p>下面的截图是去年公司的一张轮播广告图，每张图片大小都超过100K左右，在0.5M低带宽下，最大一张等待了7秒，仅仅4张轮播广告图就等了20秒，这种情况用户还会继续等待吗？</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201304/01104200-10a5ec1fb7dc48cca3f2be105a2ba790.jpg" alt=""></p>
+
+
+<p>查了原因，了解这些图片从设计师给过来后，产品经理直接通过广告系统发布上线，并没有进行压缩图片，导致了用户在低网速情况下等待时间过久，无疑会流失很多用户。</p>
+
+
+<p><strong>如何压缩jpg图片呢？</strong></p>
+
+
+<p>这里以广告图为例，通常广告图的内容和色彩是比较丰富的jpg图片，jpg是<span>有损压缩格式，压缩的时候主要注意保证图片清晰为前提，把图像上一些人眼不敏感的细节去掉，来达到减少图片大型的效果。</span>使用最常见图片处理软件PS，存储为web所有格式(快捷键是alt+shift+ctrl+s)可压缩jpg图片。</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201304/01170631-ac47f6d9b6ee477fab035807c2533336.jpg" alt=""></p>
+
+
+<p>把图片质量调整为中，品质在45~60之间，可一定幅度减少jpg图片的大小，大家可以试试看。</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201303/28172743-8d9463249e674f428872d5ed6a1641e7.jpg" alt=""></p>
+
+
+<p><strong>如何压缩png图片呢？</strong></p>
+
+
+<p>一淘UX的一丝冰凉，有篇<a href="http://www.iyunlu.com/view/Front-end/60.html">png的秘密</a>，写得非常好，对png图片解释的非常详细，文章最后有png的各种压缩工具，这边我搬过来了，如下：</p>
+
+
+<p>推荐压缩工具 PngOptimizer （<a href="http://psydk.org/PngOptimizer">http://psydk.org/PngOptimizer</a>)<br>推荐压缩工具 Pngout (<a href="http://advsys.net/ken/utils.htm">http://advsys.net/ken/utils.htm</a>)<br>推荐压缩工具 雅虎: Smush.it（<a href="http://www.smushit.com/ysmush.it/">http://www.smushit.com/ysmush.it/</a>）</p>
+
+
+<p><span style="font-size:18pt"><span style="line-height:27px"><strong>2.优化HTML页面</strong></span></span></p>
+
+
+<p><span style="font-size:16px"><strong style="line-height:1.5"><span style="color:#99cc00;line-height:1.5">删除不必要的空白字符和注释</span></strong></span></p>
+
+
+<p><span style="font-size:14px;color:#000000"><span style="line-height:1.5">删除</span></span><span style="line-height:1.5">对执行结果无影响的空格、换行、tab和注释</span></p>
+
+
+<p><span style="font-size:16px"><strong style="line-height:1.5"><span style="color:#99cc00;line-height:1.5">减少DOM元素数量</span></strong></span></p>
+
+
+<p><span style="font-size:14px;color:#000000"><span style="line-height:1.5">HTML页面中节点数目越多需要下载更多数据，同时也意味着JavaScript遍历DOM的效率越慢，减少不必要的标签嵌套可提升页面性能。</span></span></p>
+
+
+<p><span style="font-size:16px"><strong style="line-height:1.5"><span style="color:#99cc00;line-height:1.5">使用连接式link缓存CSS<strong>和JS文件</strong></span></strong></span></p>
+
+
+<p>使用外部连接式link，加载CSS和JS文件，浏览器第一次访问页面后缓存他们，以后调用他们拥有更快的页面加载速度。<br>内置在HTML页面中的CSS和<span style="line-height:1.5">JS，</span><span style="line-height:1.5">会在每次请求中随HTML文档重新下载，这虽然减少了HTTP请求的次数，却增加了HTML文档的大小。从另一方面来说，如果外部文件中的CSS和JS被浏览器缓存，在没有增加HTTP请求次数的同时可以减少HTML文档的大小。</span></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">href</span><span style="color:#0000ff">="global.css?v=20130219"</span><span style="color:#ff0000"> rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span> <span style="color:#0000ff">/&gt;</span></div>
+
+
+<p><span style="color:#99cc00;font-size:16px"><strong>大型网站主页内置CSS和JS</strong></span></p>
+
+
+<p>比较适合使用内置代码的例外就是大型网站的主页，主页在一次打开中拥有较少（可能只有一次）的浏览量，<span style="line-height:1.5">采用了减少HTTP请求的方法，</span><span style="line-height:1.5">把CSS写到HTML文件里，而不采用外部调用的方法，也可以防止css没有加载完毕出现页面乱的现象，内置CSS和JS对于终端用户来说会加快响应时间，用户体验好。 </span></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">&lt;</span><span style="color:#800000">style </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/css"</span><span style="color:#0000ff">&gt;</span><span style="background-color:#f5f5f5;color:#800000"><br>......<br></span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">style</span><span style="color:#0000ff">&gt;</span><br><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">script </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/javascript"</span><span style="color:#0000ff">&gt;</span><span style="background-color:#f5f5f5;color:#000000"><br>......<br></span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">script</span><span style="color:#0000ff">&gt;</span></div>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">减少</span></strong><span style="color:#99cc00"><strong>css、js文件数目</strong></span></span></p>
+
+
+<p><span>CSS和JS文件可以合并的最好合并</span></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span>例如<br></span><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="reset.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="common.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="index.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="page.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">script </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/javascript"</span><span style="color:#ff0000"> src</span><span style="color:#0000ff">="page.js"</span><span style="color:#0000ff">&gt;&lt;/</span><span style="color:#800000">script</span><span style="color:#0000ff">&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">script </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/javascript"</span><span style="color:#ff0000"> src</span><span style="color:#0000ff">="v4.js"</span><span style="color:#0000ff">&gt;&lt;/</span><span style="color:#800000">script</span><span style="color:#0000ff">&gt;</span></div>
+
+
+<p>1.reset.css和common.css是公用的样式，可合并为global.css</p>
+
+
+<p>2.index.css和page.css为私有的样式，可合并为index.css</p>
+
+
+<p>3.page.js和v4.js为私有脚本，可以合并为index.js</p>
+
+
+<p>合并后：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="global.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">link </span><span style="color:#ff0000">rel</span><span style="color:#0000ff">="stylesheet"</span><span style="color:#ff0000"> type</span><span style="color:#0000ff">="text/css"</span><span style="color:#ff0000"> href</span><span style="color:#0000ff">="index.css"</span> <span style="color:#0000ff">/&gt;</span><br><span style="color:#0000ff">&lt;</span><span style="color:#800000">script  </span><span style="color:#ff0000">type</span><span style="color:#0000ff">="text/javascript"</span><span style="color:#ff0000"> src</span><span style="color:#0000ff">="index.js"</span><span style="color:#0000ff">&gt;&lt;/</span><span style="color:#800000">script</span><span style="color:#0000ff">&gt;</span></div>
+
+
+<p><span style="line-height:1.5">这样一来可以减少3个http请求</span></p>
+
+
+<p><span style="font-size:16px"><strong><span style="line-height:1.5;color:#99cc00">css放页头head标签中，js文件放页面底部</span></strong></span></p>
+
+
+<p>用户没有太多的耐心等待页面加载，我们可利用网页先展现给用户，后加载功能原则</p>
+
+
+<p>1.优先加载css：</p>
+
+
+<p>浏览器渲染HTML的顺序是从上到下，下载和渲染是同时进行的，在载入HTML元素之前，先加载css，可以避免HTML出现无样式状态，先将网页展现给用户</p>
+
+
+<p>2.最后加载js：</p>
+
+
+<p>如果js文件放到页面顶部，浏览器加载网页，加载js时，还没有加载HTML代码，网页显示为空白，脚本阻塞了HTML的加载，也可能会出现js捕捉不到操作的节点，就会报错</p>
+
+
+<p><span style="color:#99cc00;font-size:16px"><strong>网址后加反斜杠</strong></span></p>
+
+
+<p>有些网址，比如"https://www.tenpay.com/v2/mapp"，当服务器收到这样一个地址请求的时候，它需要花费时间去确定这个地址的文件类型。在网址后多加一个斜杠，让其变成"https://www.tenpay.com/v2/mapp/"，这样服务器就能一目了然地知道要访问该目录下的index文件，从而节省了加载时间。</p>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">img、table、iframe标签标明高度和宽度</span></strong></span></p>
+
+
+<p>例如网页上添加图片时，标明它们的高度和宽度，也就是height和width参数。如果浏览器没有找到这两个参数，它需要一边下载图片一边计算大小，如果图片很多，浏览器需要不断地调整页面。这不但影响速度，也影响浏览体验。<br>下面是一个比较友好的图片代码：<br>&lt;img width=&quot;120&quot; height=&quot;40&quot; src=&quot;logo.gif&quot; alt=&quot;logo&quot; /&gt;<br>当浏览器知道了高度和宽度参数后，即使图片暂时无法显示，页面上也会腾出图片的空位，然后继续加载后面的内容，从而加载时间快了，浏览体验也更好了。</p>
+
+
+<p><span style="font-size:18pt"><strong>3、优化CSS文件</strong></span></p>
+
+
+<p><span style="color:#99cc00;font-size:16px"><strong>不要在ID或者class选择器前使用标签名</strong></span><br><span style="line-height:1.5">一般写法：span.ico-peun</span><br>更好写法：.ico-peun<br><span style="font-size:16px"><strong><span style="color:#99cc00">尽量少使用层级关系，使用长命名</span></strong></span><br>一般写法：.main .line span.txt{...}<br>更好写法：.main-line-txt{...}</p>
+
+
+<p>为什么要这样写呢？<span style="color:#ff0000">浏览器CSS匹配不是从左到右进行查找，而是从右到左进行查找</span>。比如.main .line .txt{...}，浏览器的查找顺序如下：先查找html中所有class='txt'的span元素，找到后，再查找其父辈元素中是否有class="line"的元素，再判断.line的父元素中是否有class="main"元素，如果都存在则匹配上。 浏览器从右到左进行查找的好处是为了尽早过滤掉一些无关的样式规则和元素。</p>
+
+
+<p>长命名的写法有2个好处：一来可以减少代码量，二来可以提高选择器解析css代码的速度。</p>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">使用class代替层级关系</span></strong></span><br>一般写法：.main ul li a{display:block;}<br>更好写法：.block{display:block;}</p>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">CSS代码简写</span></strong></span></p>
+
+
+<p><span style="color:#000000">简写的好处是代码简练，提高开发速度，并减少多余的代码量</span></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">.test</span>{<span style="color:#ff0000"><br>      margin-top</span>:<span style="color:#0000ff"> 10px</span>;<span style="color:#ff0000"><br>      margin-right</span>:<span style="color:#0000ff"> 20px</span>;<span style="color:#ff0000"><br>      margin-bottom</span>:<span style="color:#0000ff"> 10px</span>;<span style="color:#ff0000"><br>      margin-left</span>:<span style="color:#0000ff"> 20px</span>;<br>}<span style="color:#800000"><br>简化为：<br>.test</span>{<span style="color:#ff0000">margin</span>:<span style="color:#0000ff"> 10px 20px 10px 20px</span>;}</div>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00;line-height:1.5">CSS代码一行式编码风格</span></strong><span style="color:#99cc00"><strong>，去掉不需要的空白字符（空格、换行、tab缩进）</strong></span></span></p>
+
+
+<p><span style="color:#000000;line-height:1.5">一行式的好处是有效减少css文件的行数和空白符，最终减少文件的大小</span></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">.test</span>{<span style="color:#ff0000"><br>      width</span>:<span style="color:#0000ff">50px</span>;<span style="color:#ff0000"><br>      height</span>:<span style="color:#0000ff">100px</span>;<span style="color:#ff0000"><br>      color</span>:<span style="color:#0000ff">#000000</span>;<br>}<span style="color:#800000"><br>简化为：<br>.test</span>{<span style="color:#ff0000">width</span>:<span style="color:#0000ff">50px</span>;<span style="color:#ff0000">height</span>:<span style="color:#0000ff">100px</span>;<span style="color:#ff0000">color</span>:<span style="color:#0000ff">#000000</span>;}</div>
+
+
+<p><span style="font-size:16px"><strong><span style="color:#99cc00">压缩css，最有效的减少文件大小(去除</span></strong><span style="color:#99cc00"><strong>注释、空白字符)</strong></span></span></p>
+
+
+<p>如把css文件复制成为2份，把其中一份保留原稿，令一份压缩并添加min后缀，并把压缩这份用于线上使用</p>
+
+
+<p><img src="http://images.cnitblog.com/blog/278431/201303/28181250-f16a12abb7494c2a86fab9d603b03cd1.jpg" alt=""></p>
+
+
+<p>常见压缩工具：<a href="http://yuicompressor.codeplex.com/downloads/get/558294">YUICompressor</a>，淘宝封装的css和js压缩工具TBCompressor，<a href="http://tool.chinaz.com/Tools/CssFormat.aspx">站长工具</a>等，都适合css和js文件的压缩，去掉不需要的空白字符（空格、换行、tab缩进）</p>
+
+
+<p><img src="http://www.cnblogs.com/PeunZhang/aggbug/2337900.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/PeunZhang/archive/2013/04/01/2337900.html">本文链接</a></p><p><a href="http://www.cnblogs.com/PeunZhang/archive/2013/04/01/2337900.html">继续阅读 »</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

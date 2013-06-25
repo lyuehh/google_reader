@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Backbone.js Screencasts, XDate, JavaScript BigInteger Library</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Backbone.js Screencasts, XDate, JavaScript BigInteger Library</h2>
+<p class="meta">24 Oct 2011</p>
+
+<div class="post">
+<h2>Backbone.js Screencasts, XDate, JavaScript BigInteger Library</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-10-24 07:00:00</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/dailyjs/~3/ZmYZABi22ac/backbone-screencasts-xdate-biginteger">http://feedproxy.google.com/~r/dailyjs/~3/ZmYZABi22ac/backbone-screencasts-xdate-biginteger</a></h3>
+
+<h3>Backbone.js Screencasts</h3>
+
+
+<p><img src="http://dailyjs.com/images/posts/backbone-js-screencasts.png" alt=""></p>
+
+
+<p><a href="http://backbonescreencasts.com/">Backbone.js Screencasts</a> is a commercial set of <a href="http://documentcloud.github.com/backbone/">Backbone.js</a> tutorials from <a href="http://30cubits.com/">30 Cubits</a> that costs $9 (until November 9th, then $18 thereafter) for 106 minutes of videos.  The videos cover the core Backbone.js functionality like views, routers, events, models, collections, and also how to use other JavaScript techniques alongside your Backbone.js code.</p>
+
+
+<p>There’s a preview of the content on Vimeo here: <a href="http://vimeo.com/30679945">Backbone.js Quickly – Preview</a>.</p>
+
+
+<h3>XDate</h3>
+
+
+<p><a href="http://arshaw.com/xdate/">XDate</a> (GitHub: <a href="https://github.com/arshaw/xdate">arshaw / xdate</a>, License: dual <em><span>MIT</span></em> and <em><span>GPL</span></em>) by Adam Shaw is a wrapper around <code>Date</code> that provides improved date parsing, formatting, and manipulation.  <a href="http://arshaw.com/xdate/#Formatting">XDate format strings</a> really help with formatting dates, which I find myself doing a lot lately in Node or single page applications.</p>
+
+
+<p>Here’s an example of XDate’s formatting method:</p>
+
+
+<div><pre><code><span>new</span> <span>XDate</span><span>(</span><span>2011</span><span>,</span> <span>0</span><span>,</span> <span>1</span><span>,</span> <span>6</span><span>,</span> <span>0</span><span>).</span><span>toString</span><span>(</span><span>&#39;d/M/yy h(:mm)TT&#39;</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>Another useful feature of this library is the set of <a href="http://arshaw.com/xdate/#Diffing">XDate diffing methods</a>.  They provide a friendly <span>API</span> around date subtraction.</p>
+
+
+<p>Most of XDate’s methods return an <code>XDate</code>, so it’s chainable too:</p>
+
+
+<div><pre><code><span>d1</span> <span>=</span> <span>new</span> <span>XDate</span><span>();</span>
+<span>d2</span> <span>=</span> <span>d1</span><span>.</span><span>clone</span><span>()</span>
+       <span>.</span><span>setUTCMode</span><span>(</span><span>true</span><span>)</span>
+       <span>.</span><span>setDate</span><span>(</span><span>1</span><span>)</span>
+       <span>.</span><span>addMonths</span><span>(</span><span>1</span><span>)</span>
+       <span>.</span><span>addYears</span><span>(</span><span>2</span><span>);</span>
+</code></pre>
+</div>
+
+
+<h3>JavaScript BigInteger Library</h3>
+
+
+<p>The <a href="http://silentmatt.com/biginteger/">JavaScript BigInteger Library</a> (GitHub: <a href="https://github.com/silentmatt/javascript-biginteger">silentmatt / javascript-biginteger</a>, License: <em><span>MIT</span></em>) by Matthew Crumley is a BigInteger library for JavaScript.  The author has written detailed blog posts on how the library works and the algorithms behind it:</p>
+
+
+<ul>
+    <li><a href="http://silentmatt.com/blog/2011/10/how-bigintegers-work/">How BigIntegers Work, part 1: Storage, Addition, and Subtraction</a></li>
+    <li><a href="http://silentmatt.com/blog/2011/10/how-bigintegers-work-part-2-multiplication/">How BigIntegers Work, part 2: Multiplication</a></li>
+</ul>
+
+
+<blockquote>
+<p>If you look at the source, you’ll probably notice that I’m actually using base 10000000, not base 10. I’m using decimal in these examples because it makes things clearer but everything works pretty much exactly the same way in any base. Using a larger base just makes things more efficient because you get 7 digits in each array entry.</p>
+</blockquote>
+
+
+<p>Matthew created this library to support his <a href="https://chrome.google.com/webstore/detail/npoipmeppdioagbkigdlnpmjphnolaog">Google Chrome Scientific Calculator</a>.</p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/dailyjs/~4/ZmYZABi22ac" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

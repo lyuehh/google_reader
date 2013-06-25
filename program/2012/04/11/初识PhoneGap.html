@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>初识PhoneGap</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>初识PhoneGap</h2>
+<p class="meta">11 Apr 2012</p>
+
+<div class="post">
+<h2>初识PhoneGap</h2>
+
+<h3>by josson</h3>
+
+<h3>at 2012-04-11 11:03:39</h3>
+
+<h3>original <a href="http://www.aliued.cn/2012/04/11/%e5%88%9d%e8%af%86phonegap.html">http://www.aliued.cn/2012/04/11/%e5%88%9d%e8%af%86phonegap.html</a></h3>
+
+<p><a href="http://www.aliued.cn/wp-content/uploads/2012/04/%E5%88%9D%E8%AF%86phonegap-banner%E5%89%AF%E6%9C%AC.jpg"><img src="http://www.aliued.cn/wp-content/uploads/2012/04/%E5%88%9D%E8%AF%86phonegap-banner%E5%89%AF%E6%9C%AC.jpg" alt="" title="初识phonegap-banner副本" width="680" height="240"></a></p>
+
+
+<p><strong>一、PhoneGap是什么？</strong></p>
+
+
+<p>PhoneGap是一个标准的开源框架，用PhoneGap开发移动应用是免费的，无论是商业或是开源；一个用基于HTML，CSS和JavaScript的，创建跨平台移动应用的<strong>快速开发平台</strong>。它使开发者能够利用iPhone、Android、Palm、Symbian、WP7、Bada和Blackberry智能手机的核心功能——包括地理定位，加速器，联系人，声音和振动等，此外PhoneGap拥有丰富的插件，可以以此扩展无限的功能。</p>
+
+
+<p>PhoneGap由Nitobi 公司创建，并于2011.10被Adobe收购，并捐赠给Apache基金组织，PhoneGap是唯一的一个支持7个平台的开源移动框架。框架提供了丰富接口用于访问移动设备本地API，能够让你用javascript轻松调用。当前最新版本：1.5。<a href="http://www.aliued.cn/wp-content/uploads/2012/04/1.png"><img src="http://www.aliued.cn/wp-content/uploads/2012/04/1.png" alt="" width="695"></a></p>
+
+
+<p>目前开发移动程序框架选择很多，如PhoneGap、Titanium、MonoTouch、Native App，兼容性越强的技术，成本越低，性能越差；兼容性越差的技术，成本越高，性能越好。PhoneGap是目前最被看好的：</p>
+
+
+<ul>
+<li> 兼容性：完全做到了Written Once，Run Everywhere!</li>
+<li>标准化：PhoneGap采用W3C标准，Web App直接运行！</li>
+<li>采用普通web开发技术：JavaScript+HTM5+CSS3。</li>
+</ul>
+
+
+<p> </p>
+
+
+<p>存在不足：</p>
+
+
+<ul>
+<li>性能，正常操作速度流畅，频繁操作响应会变慢。</li>
+<li>稳定性及资源占用方面，手动频繁操作会引起，响应速度变慢，webkit的WebView不能很好释放内存，导致内存占用上升，甚至会引起应用的crash。</li>
+</ul>
+
+
+<p>二、PhoneGap如何工作?</p>
+
+
+<p><span></span></p>
+
+
+<p>PhoneGap架构拥有强大的跨平台访问设备能力，但是其工作原理并不神秘，iPhone和Android平台共同点是都有内置的WebView组件，其具备两个特性：</p>
+
+
+<ul>
+<li>WebView组件实质是移动设备的内置浏览器</li>
+</ul>
+
+
+<p>WebView这个内置浏览器特性是Web能被打包成本地客户端的基础，可方便的用HTML5、CSS3页面布局，这是移动Web技术的优势相对于原生开发。</p>
+
+
+<ul>
+<li>WebView提供Web和设备本地API双向通信的能力</li>
+</ul>
+
+
+<p>PhoneGap针对不同平台的WebView做了扩展和封装，使WebView这个组件变成可访问设备本地API的强大浏览器，所以开发人员在PhoneGap框架下可通过JavaScript访问设备本地API。</p>
+
+
+<p><a href="http://www.aliued.cn/wp-content/uploads/2012/04/2.png"><img src="http://www.aliued.cn/wp-content/uploads/2012/04/2.png" alt="" width="695"></a></p>
+
+
+<p align="center">PhoneGap与设备本地API通信图</p>
+
+
+<p>一个成熟的PhoneGap技术客户端运行状况：应用运行在WebView组件上 -&gt; 通过PhoneGap在各平台的扩展 -&gt; 最终访问设备本地资源。</p>
+
+
+<p><a href="http://www.aliued.cn/wp-content/uploads/2012/04/3.png"><img src="http://www.aliued.cn/wp-content/uploads/2012/04/3.png" alt="" width="695"></a></p>
+
+
+<p align="center">PhoneGap架构图</p>
+
+
+<p>三、API指南</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/accelerometer.html">Accelerometer</a>点击进入设备的运动传感器。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/events.html">Events</a>通过JavaScript截获本地事件。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/camera.html">Camera</a>使用设备的摄像头采集照片。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/file.html">File</a>通过JavaScript截获本地文件系统。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/capture.html">Capture</a>使用设备的媒体采集应用程序采集媒体文件。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/geolocation.html">Geolocation</a>使得你的应用程序可以访问地理位置信息。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/compass.html">Compass</a>获取设备指向的方向。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/media.html">Media</a>录制和播放音频文件。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/connection.html">Connection</a>快速检查WiFi或蜂窝网络的信息。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/notification.html">Notification</a>设备的视觉、声音和触觉提醒。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/contacts.html">Contacts</a>和设备联系人数据库相关操作。</td>
+<td valign="top" width="277"><a href="http://www.phonegap.cn/api/ref/storage.html">Storage</a>截获设备的本地存储选项。</td>
+</tr>
+<tr>
+<td valign="top" width="284"><a href="http://www.phonegap.cn/api/ref/device.html">Device</a>收集设备的具体信息。</td>
+<td valign="top" width="277"></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>四、参考资料</p>
+
+
+<p><strong>1</strong><strong>、Javascript移动开发框架</strong></p>
+
+
+<ul>
+<li>jQuery Mobile：<a href="http://jquerymobile.com/">http://jquerymobile.com/</a></li>
+<li>jQTouch：<a href="http://jqtouch.com/preview/demos/main/#home">http://jqtouch.com</a></li>
+<li>Sencha Touch: <a href="http://mobile.51cto.com/Sencha-278623.htm">http://mobile.51cto.com/Sencha-278623.htm</a></li>
+</ul>
+
+
+<p>PhoneGap + 合适的javascript开发框架，轻松开发出原生风格的移动应用。选择哪种js框架，你可以通过:《<a href="http://mobile.51cto.com/web-321296.htm">三大移动Web开发框比较分析</a>》一文，选择适合的框架。</p>
+
+
+<p><strong>2</strong><strong>、PhoneGap社区</strong></p>
+
+
+<ul>
+<li>PhoneGap官网：<a href="http://phonegap.com/">http://phonegap.com/</a></li>
+<li>PhoneGap中国社区： <a href="http://www.phonegap.cn/">http://www.phonegap.cn</a></li>
+<li>PhoneGap中国： <a href="http://www.phonegapcn.com/">http://www.phonegapcn.com/</a></li>
+<li>51CTO专题（跨平台移动web中间件PhoneGap开发入门） ：<a href="http://mobile.51cto.com/hot-273792.htm">http://mobile.51cto.com/hot-273792.htm</a></li>
+</ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

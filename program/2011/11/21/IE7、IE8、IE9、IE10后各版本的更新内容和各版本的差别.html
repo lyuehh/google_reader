@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IE7、IE8、IE9、IE10后各版本的更新内容和各版本的差别</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IE7、IE8、IE9、IE10后各版本的更新内容和各版本的差别</h2>
+<p class="meta">21 Nov 2011</p>
+
+<div class="post">
+<h2>IE7、IE8、IE9、IE10后各版本的更新内容和各版本的差别</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-11-21 07:17:28</h3>
+
+<h3>original <a href="http://www.cnbeta.com/articles/162760.htm">http://www.cnbeta.com/articles/162760.htm</a></h3>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/31.htm"><img src="http://img.cnbeta.com/topics/Untitled.png" alt="Internet Explorer" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://haohetao.iteye.com/">匿名人士</a>的投递</b><br>
+在程序员的眼里，万恶的IE6的结束对他们而言是一种解脱，IE7首次开始完整支持W3C标准，从此之后IE的标准化之路就开始越走越顺，以下总结了IE7以后各版本的更新内容，和各版本的差别，作为Web开发人员解决浏览器兼容性问题的参考。</p>
+        <p><span style="font-weight:bold">IE7更新 </span><br>
+解决了IE6的一个float bug,见<a rel="nofollow" href="http://www.positioniseverything.net/explorer/peekaboo.html">http://www.positioniseverything.net/explorer/peekaboo.html</a><br>
+增强了CSS选择器支持<br>
+内置AJAX<br>
+透明PNG图片支持<br>
+微软官方更新说明<a rel="nofollow" href="http://www.microsoft.com/china/msdn/library/webservices/WebApp/IE7_RevGd.mspx?mfr=true">http://www.microsoft.com/china/msdn/library/webservices/WebApp/IE7_RevGd.mspx?mfr=true</a><br>
+<br style="font-weight:bold">
+<span style="font-weight:bold">IE8更新 </span><br>
+解决了所有浮动bug（可能是所有CSS Bug都解决了）,完全支持CSS2.1规则和选择器（这个是亮点，至少在CSS上完全符合W3C标准了） 
+具体见<a rel="nofollow" href="http://msdn.microsoft.com/library/cc304082.aspx">http://msdn.microsoft.com/library/cc304082.aspx</a><br>
+去掉了CSS 表达式 
+
+使用 -ms-厂商前缀表示IE专有属性，这一点向webkit和firefox学习了，值得表杨 
+
+修正了一系列DOM错误，更符合标准，但并没有新增支持 
+如getElementById的时候ID区分大小写，不会错把Name当ID，详细列表见 <a rel="nofollow" href="http://msdn.microsoft.com/library/dd433047.aspx">http://msdn.microsoft.com/library/dd433047.aspx</a><br>
+支持link标签的charset属性 
+
+AJAX支持增强 
+
+支持HTML5中的本地存储（挺先进的） 
+
+本地JSON对象支持（这个也挺先进） 
+
+增加UA兼容模式 
+
+增加了almost Stardards渲染模式 
+然而IE8仍然没有实现DOM L2,DOM L3和DOM L2 和 L3 事件处理（包括冒泡模型）的完整支持<br>
+微软官方更新说明<br>
+<a rel="nofollow" href="http://msdn.microsoft.com/library/cc288472%28VS.85%29.aspx#html">http://msdn.microsoft.com/library/cc288472%28VS.85%29.aspx#html</a><br>
+<br>
+<span style="font-weight:bold">IE9更新 </span><br>
+实现DOM L2,DOM L3和DOM L2 和 L3 事件处理（包括冒泡模型）的完整支持 
+
+HTML5和CSS3支持 
+opacity透明属性的支持<br>
+CSS3 2-D transforms<br>
+Canvas,video之类的就不说了<br>
+等等<br>
+Web 开放字体格式 (WOFF) 的支持 
+
+SVG原生支持 
+
+一系列JS Bug的修复（Jscript更符合ECMAScript标准 
+见<a rel="nofollow" href="http://blogs.msdn.com/b/ie/archive/2010/06/25/enhanced-scripting-in-ie9-ecmascript-5-support-and-more.aspx">http://blogs.msdn.com/b/ie/archive/2010/06/25/enhanced-scripting-in-ie9-ecmascript-5-support-and-more.aspx</a><br>
+和<a rel="nofollow" href="http://blogs.msdn.com/b/ie/archive/2010/03/26/standards-documentation-for-ie7-and-ie8.aspx">http://blogs.msdn.com/b/ie/archive/2010/03/26/standards-documentation-for-ie7-and-ie8.aspx</a><br>
+ <br>
+ECMAScript 5支持 
+
+在DOM中空白字符也作为独立的文本节点以保持与其它浏览器一致 
+见<a rel="nofollow" href="http://www.w3school.com.cn/xmldom/dom_mozilla_vs_ie.asp">http://www.w3school.com.cn/xmldom/dom_mozilla_vs_ie.asp</a><br>
+未知标签也能使用CSS样式 
+
+支持application/xhtml+xml的MIME 
+微软更新说明<br>
+<a rel="nofollow" href="http://msdn.microsoft.com/zh-cn/ie/ff468705">http://msdn.microsoft.com/zh-cn/ie/ff468705</a><br>
+ <br>
+<span style="font-weight:bold">IE10更新 </span><br>
+ECMAScript 5 Strict 模式支持 
+
+HTML5和CSS3增强 
+CSS3 3-D transforms(需要-ms-前缀，因为W3C还未定稿)<br>
+Websocket,webwork,file api<br>
+等等<br>
+SVG改进和增强 
+SVG滤境<br>
+DOM增强 
+大多是带ms前缀的增强（也是就IE专有的）<br>
+如触屏操作，手势事件<br>
+等等<br>
+不再支持IE10的UA兼容设置（因为从IE9开始已经完全符合W3C标准），但仍支持IE9和之前的UA兼容设置 
+微软更新说明<br>
+<a rel="nofollow" href="http://msdn.microsoft.com/en-us/ie/gg192966">http://msdn.microsoft.com/en-us/ie/gg192966</a><br>
+ <br>
+概括的说IE7只是对IE6的小小增强<br>
+IE8完全支持CSS2.1和选择器，DOM操作更符合W3C标准，但DOM支持仍不完整<br>
+IE9 完全支持DOM L1，DOM L2，Jscript更符合标准，ECMAScript5支持，HTML5，CSS3支持，SVG支持</p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

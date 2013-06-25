@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JRails Java ORM 终极解决方案</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JRails Java ORM 终极解决方案</h2>
+<p class="meta">10 Oct 2010</p>
+
+<div class="post">
+<h2>JRails Java ORM 终极解决方案</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-10 15:43:02</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/780453">http://www.javaeye.com/topic/780453</a></h3>
+
+<p>特点：开发速度快，代码量少，对比于Hibernate开发速度快80%以上。
+<br>
+<br><span style="font-size:small">
+<br>项目主页:  http://www.jrails.org
+<br>Blog: http://jack.jrails.org
+<br>svn checkout http://jrails-core.googlecode.com/svn/trunk/
+<br>
+<br>有兴趣投身开发团队的请留言给我。
+<br></span>
+<br><ul>
+<li>简单示例 1
+</li></ul>
+<br>配置全局数据库连接  src/config/db.properties
+<br><pre name="code">
+System.db = global_db
+global_db.datasource =org.apache.commons.dbcp.BasicDataSource
+global_db.driver = org.gjt.mm.mysql.Driver
+global_db.url = jdbc:mysql://localhost:3306/demo
+global_db.username = root
+global_db.password = root</p>
+
+<h1>声明数据表使用自动增长类型</h1>
+
+<h1>可以是Auto或者UUID</h1>
+
+<p>System.primaryKey.type = Auto</p>
+
+<h1>为true则插入数据后自动填充主键增长值</h1>
+
+<p>System.primaryKey.call = true</p>
+
+<p></pre>
+<br>
+<br>表名通常使用下划线命名规定，如product_item
+<br><pre name="code"></p>
+
+<p>DROP TABLE IF EXISTS <code>person</code>;
+CREATE TABLE <code>person</code> (
+  <code>id</code> int(11) NOT NULL AUTO_INCREMENT,
+  <code>name</code> varchar(10) DEFAULT NULL,
+  <code>age</code> int(11) DEFAULT NULL,
+  <code>sex</code> char(1) DEFAULT NULL,
+  <code>income</code> double DEFAULT NULL,
+  <code>phone</code> varchar(20) DEFAULT NULL,
+  <code>created_at</code> datetime DEFAULT NULL,
+  PRIMARY KEY (<code>id</code>)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+</pre>
+<br>
+<br>
+<br>Person 使用帕斯卡(pascal)命名法与表 person 绑定, 继承 ActiveRecord 实现键值映射
+<br><pre name="code">
+package app.model;</p>
+
+<p>import java.sql.SQLException;
+import javax.sql.DataSource;
+import java.util.Map;</p>
+
+<p>import org.apache.log4j.Logger;</p>
+
+<p>import org.rails.core.db.DataSourceHelper;
+import org.rails.core.model.ActiveRecord;
+import org.rails.core.model.ObjectNotFoundException;</p>
+
+<p>public class Person extends ActiveRecord {</p>
+
+<pre><code>public static DataSource gloDS;
+
+static{
+    try {
+        //获取db.properties设置的System.db
+        gloDS = DataSourceHelper.getSystemDataSource();
+    } catch (Exception e) {
+        Logger.getLogger(&amp;quot;Person&amp;quot;).error(e.getMessage(),e);
+    }
+}   
+
+public Person() {
+    super(gloDS);
+}
+
+public Person(Object id)
+        throws ObjectNotFoundException, SQLException {
+    super(gloDS, id);
+}
+
+public Person(Map&amp;lt;String, Object&amp;gt; m) {
+    super(gloDS, m);
+}
+</code></pre>
+
+<p>}</p>
+
+<p></pre>
+<br>
+<br>CRUD 示例
+<br><pre name="code">
+package test;</p>
+
+<p>import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;</p>
+
+<p>import org.rails.core.model.ObjectNotFoundException;
+import org.rails.core.model.attribute.AttributeException;</p>
+
+<p>import app.model.Person;
+import junit.framework.TestCase;</p>
+
+<p>public class CRUDTest extends TestCase {</p>
+
+<pre><code>public CRUDTest() {
+    super();
+}
+
+public CRUDTest(String name) {
+    super(name);
+}
+
+/**
+ * 测试插入操作
+ * @throws SQLException 
+ * @throws AttributeException 
+ */
+public void testCreate() throws AttributeException, SQLException{
+    Person person = new Person();
+    person.put("name","刘备");
+    person.put("age",36);
+    person.put("sex","M");
+    person.put("income",100000.89d);
+    person.put("phone","020-13812345678");
+    person.put("created_at",new Timestamp(new Date().getTime()));
+    assertEquals(true,person.create());
+}
+
+/**
+ * 测试查询操作,获取主键为 1 的对象
+ * @throws AttributeException
+ * @throws SQLException
+ * @throws ObjectNotFoundException
+ */
+public void testRead() throws AttributeException, 
+        SQLException, ObjectNotFoundException{
+    Person person = new Person(1);
+    System.out.println(person);
+    assertNotNull(person);
+}
+
+
+/**
+ * 测试更新操作
+ * @throws AttributeException
+ * @throws SQLException
+ * @throws ObjectNotFoundException
+ */
+public void testUpdate() throws AttributeException, 
+        SQLException, ObjectNotFoundException{
+    Person person = new Person(1);
+    person.put("name","刘备");
+    person.put("age",38);
+    person.put("income",106000.00d);
+    person.put("phone","010-888888888");
+    person.put("created_at",new Timestamp(new Date().getTime()));
+    assertEquals(true,person.update());
+}
+
+/**
+ * 测试删除操作
+ * @throws ObjectNotFoundException
+ * @throws SQLException
+ */
+public void testDelete() throws ObjectNotFoundException, SQLException{
+    Person person = new Person(1);
+
+    assertEquals(true,person.delete());
+}
+</code></pre>
+
+<p>}</p>
+
+<p></pre></p>
+
+<p>  <br><br>
+  <ul>
+    本文附件下载:</p>
+
+<pre><code>  &lt;li&gt;&lt;a href="http://dl.javaeye.com/topics/download/d398e1ab-4c64-3dd3-aaf3-87a2ebb34988"&gt;crud_demo101010.rar&lt;/a&gt; (1.3 MB)&lt;/li&gt;
+</code></pre>
+
+<p>  </ul></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://jrails.javaeye.com"&gt;jrails&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/780453" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

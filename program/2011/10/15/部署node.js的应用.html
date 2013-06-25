@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>部署node.js的应用</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>部署node.js的应用</h2>
+<p class="meta">15 Oct 2011</p>
+
+<div class="post">
+<h2>部署node.js的应用</h2>
+
+<h3>by mashihua</h3>
+
+<h3>at 2011-10-14 18:45:00</h3>
+
+<h3>original <a href="http://www.f2eskills.com/2011/10/deploy-nodejs-app/">http://www.f2eskills.com/2011/10/deploy-nodejs-app/</a></h3>
+
+<p>先吐槽一下:-) 。这个博客基本上归于月经帖了，主要是我碰上了“火星恐惧症”，症状表现为：担心要写的东西太老土太平常太小白或是已经被人看过写过，怕被别人说一点都没有体现在档的领导下应有的先进生产力的。国庆这些天在家做了反省，如果老是担心这种事的发生，就没办法在博客上交流了。什么别人的眼光，那都是浮云。</p>
+
+
+<p>＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝华丽的分割线＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝</p>
+
+
+<p><img src="http://farm3.static.flickr.com/2279/2202050456_ef975f1c90.jpg" alt="" width="310" height="232">最近Node.js很火，让很多的前端看到了可以直接从前端写到后端的希望。但是每次部署一个Node.js的应用却让前端苦恼不已。每次登陆服务器，用自己不熟悉的方式从版本控制仓库中拖下源代码，kill掉应用的进程，重起一个应用的守护进程。如果能够自动化的部署一个Node.js应用，而不需要去接触这些前端不太熟悉的Unix系统命令和管理。对于大家来说就是提升了生产力。Capistrano是一个强大的自动化部署工具，所以我们选用他来做自动化部署。并且我已经把做好了的一个部署脚本<a href="https://github.com/mashihua/Nodebot">Nodebot</a>提交到github上去，供大家参考。</p>
+
+
+<p>首先我们需要一个环境，分为两个环境：部署客户端环境和服务器环境。</p>
+
+
+<h3>部署客户端系统需求：</h3>
+
+
+<p>你可以用任何系统了，系统只要具备下面的4个软件就可。</p>
+
+
+<ol>
+<li>安装ruby。去<a href="http://www.ruby-lang.org/en/downloads/">http://www.ruby-lang.org/en/downloads/</a>下载适合你系统的ruby版本。</li>
+<li>安装rubygem。去<a href="http://rubyforge.org/projects/rubygems/">http://rubyforge.org/projects/rubygems/</a>下载最新版的RubyGems，解压后运行以下命令安装。 sudo ruby setup.rb</li>
+<li>安装Capistrano和Capistrano-etx。运行以下的命令安装。sudo gem install capistrano capistrano-ext</li>
+</ol>
+
+
+<p>这样你就拥有了在机器部署node.js应用的软件。然后你需要能够不使用密码直接登陆到服务器上。运行下面的命令：</p>
+
+
+<div>
+<div># Create a local ssh key</div>
+<ol>
+<li>
+<div>ssh-keygen
+</div>
+</li>
+<li>
+<div>#Copy key to server
+</div>
+</li>
+<li>
+<div>cat ~/.ssh/id_rsa.pub | ssh user@domain.com &quot;cat &gt;&gt; .ssh/authorized_keys&quot;</div>
+</li>
+</ol>
+</div>
+
+
+<p>这样你就可以不需要密码直接登陆到服务器。</p>
+
+
+<h3>服务器端系统需求：</h3>
+
+
+<p>当然要Unix一类的系统了，Nodebot需要具备upstart的系统（一个基于事件的守护进程管理系统）。虽然Node.js能跑在window上，但是那只适合开发环境，不适合生产环境。还要有下面的软件，你也可以下载Nodebot并在部署客户端运行命令cap  nodebot:setup 来自动化安装。</p>
+
+
+<ol>
+<li>安装scm软件。比如git，svn或hg，取决于你的node.js应用源代码管理软件。</li>
+<li>安装Node.js。没什么好说的，地球人都知道这是什么。</li>
+<li>安装npm。Node.js的一个包管理软件</li>
+<li>安装node-jake。一个javascript的代码构建工具，有点像make和rake。用来安装应用的依赖。</li>
+<li>具备upstart的系统，比如Ubantu。来做应用的守护进程。参看 <a href="http://upstart.ubuntu.com/">http://upstart.ubuntu.com/</a></li>
+</ol>
+
+
+<p>部署的登陆用户需要sudo权限，并且不需要提示输入密码。参考命令：</p>
+
+
+<div>
+<div>#Add a sudoer</div>
+<ol>
+<li>
+<div>sudo useradd -m foo
+</div>
+</li>
+<li>
+<div>#edit sudoer privilege
+</div>
+</li>
+<li>
+<div>sudo visudo</div>
+</li>
+</ol>
+</div>
+
+
+<p>出现编辑器时，插入下面一行，foo就是你新建的用户：</p>
+
+
+<pre>foo ALL=(ALL) NOPASSWD: ALL</pre>
+
+
+<p>然后在deploy.rb文件（下面会提到）里配置foo为部署用户。</p>
+
+
+<h3>部署客户端脚本</h3>
+
+
+<p>环境有了，那就要开工了。我们希望在服务器上的Node.js应用运行几个不同的环境：测试环境，开发环境，产品环境等。运行<code>capify .</code>命令会在当前的目录下产生一个文件和一个目录。在目录里有个deploy.rb，这是我们需要修改的文件。由于我们需要多个环境，所以我们引入了Capistrano-etx。</p>
+
+
+<div>
+<div>set :stages, %w[staging production]</div>
+<ol>
+<li>
+<div>set <span>:default_stage</span>, <span>&#39;staging&#39;</span></div>
+</li>
+<li>
+<div><span>require</span> <span>&#39;capistrano/ext/multistage&#39;</span></div>
+</li>
+</ol>
+</div>
+
+
+<p>我们设定了两个环境：staging和production，默认是staging环境。我们再在config目录下建一个deploy目录，里面放的两个.rb文件对应不同的环境配置.最后部署环境的目录下是这样的一个结构：</p>
+
+
+<pre>.
+├── Capfile
+└── config
+    ├── deploy
+    │   ├── production.rb
+    │   └── staging.rb
+    ├── deploy.rb
+    └── node.rb</pre>
+
+
+<p>deploy.rb文件看起来像这样。你需要设定host, repository,user和admin_user ： <div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-deploy-rb-L1">1</span>
+          <span rel="file-deploy-rb-L2">2</span>
+          <span rel="file-deploy-rb-L3">3</span>
+          <span rel="file-deploy-rb-L4">4</span>
+          <span rel="file-deploy-rb-L5">5</span>
+          <span rel="file-deploy-rb-L6">6</span>
+          <span rel="file-deploy-rb-L7">7</span>
+          <span rel="file-deploy-rb-L8">8</span>
+          <span rel="file-deploy-rb-L9">9</span>
+          <span rel="file-deploy-rb-L10">10</span>
+          <span rel="file-deploy-rb-L11">11</span>
+          <span rel="file-deploy-rb-L12">12</span>
+          <span rel="file-deploy-rb-L13">13</span>
+          <span rel="file-deploy-rb-L14">14</span>
+          <span rel="file-deploy-rb-L15">15</span>
+          <span rel="file-deploy-rb-L16">16</span>
+          <span rel="file-deploy-rb-L17">17</span>
+          <span rel="file-deploy-rb-L18">18</span>
+          <span rel="file-deploy-rb-L19">19</span>
+          <span rel="file-deploy-rb-L20">20</span>
+          <span rel="file-deploy-rb-L21">21</span>
+          <span rel="file-deploy-rb-L22">22</span>
+          <span rel="file-deploy-rb-L23">23</span>
+          <span rel="file-deploy-rb-L24">24</span>
+          <span rel="file-deploy-rb-L25">25</span>
+          <span rel="file-deploy-rb-L26">26</span>
+          <span rel="file-deploy-rb-L27">27</span>
+          <span rel="file-deploy-rb-L28">28</span>
+          <span rel="file-deploy-rb-L29">29</span>
+          <span rel="file-deploy-rb-L30">30</span>
+          <span rel="file-deploy-rb-L31">31</span>
+          <span rel="file-deploy-rb-L32">32</span>
+          <span rel="file-deploy-rb-L33">33</span>
+          <span rel="file-deploy-rb-L34">34</span>
+          <span rel="file-deploy-rb-L35">35</span>
+          <span rel="file-deploy-rb-L36">36</span>
+          <span rel="file-deploy-rb-L37">37</span>
+          <span rel="file-deploy-rb-L38">38</span>
+          <span rel="file-deploy-rb-L39">39</span>
+          <span rel="file-deploy-rb-L40">40</span>
+          <span rel="file-deploy-rb-L41">41</span>
+          <span rel="file-deploy-rb-L42">42</span>
+          <span rel="file-deploy-rb-L43">43</span>
+          <span rel="file-deploy-rb-L44">44</span>
+          <span rel="file-deploy-rb-L45">45</span>
+          <span rel="file-deploy-rb-L46">46</span>
+          <span rel="file-deploy-rb-L47">47</span>
+          <span rel="file-deploy-rb-L48">48</span>
+          <span rel="file-deploy-rb-L49">49</span>
+          <span rel="file-deploy-rb-L50">50</span>
+          <span rel="file-deploy-rb-L51">51</span>
+          <span rel="file-deploy-rb-L52">52</span>
+          <span rel="file-deploy-rb-L53">53</span>
+          <span rel="file-deploy-rb-L54">54</span>
+          <span rel="file-deploy-rb-L55">55</span>
+          <span rel="file-deploy-rb-L56">56</span>
+          <span rel="file-deploy-rb-L57">57</span>
+          <span rel="file-deploy-rb-L58">58</span>
+          <span rel="file-deploy-rb-L59">59</span>
+          <span rel="file-deploy-rb-L60">60</span>
+          <span rel="file-deploy-rb-L61">61</span>
+          <span rel="file-deploy-rb-L62">62</span>
+          <span rel="file-deploy-rb-L63">63</span>
+          <span rel="file-deploy-rb-L64">64</span>
+          <span rel="file-deploy-rb-L65">65</span>
+          <span rel="file-deploy-rb-L66">66</span>
+          <span rel="file-deploy-rb-L67">67</span>
+          <span rel="file-deploy-rb-L68">68</span>
+          <span rel="file-deploy-rb-L69">69</span>
+          <span rel="file-deploy-rb-L70">70</span>
+          <span rel="file-deploy-rb-L71">71</span>
+          <span rel="file-deploy-rb-L72">72</span>
+          <span rel="file-deploy-rb-L73">73</span>
+          <span rel="file-deploy-rb-L74">74</span>
+          <span rel="file-deploy-rb-L75">75</span>
+          <span rel="file-deploy-rb-L76">76</span>
+          <span rel="file-deploy-rb-L77">77</span>
+          <span rel="file-deploy-rb-L78">78</span>
+          <span rel="file-deploy-rb-L79">79</span>
+          <span rel="file-deploy-rb-L80">80</span>
+          <span rel="file-deploy-rb-L81">81</span>
+          <span rel="file-deploy-rb-L82">82</span>
+          <span rel="file-deploy-rb-L83">83</span>
+          <span rel="file-deploy-rb-L84">84</span>
+        </td>
+        <td>
+          <pre><div><span>##</span></div><div><span># Capistrano tasks for Ubantu.</span></div><div><span>#</span></div><div><span># Author: Shihua Ma http://f2eskills.com/</span></div><div> </div><div><span>set</span> <span>:stages</span><span>,</span> <span>%w[staging production]</span></div><div><span>set</span> <span>:default_stage</span><span>,</span> <span>&#39;staging&#39;</span></div><div><span>require</span> <span>&#39;capistrano/ext/multistage&#39;</span></div><div><span>#application name</span></div><div><span>set</span> <span>:application</span><span>,</span> <span>&quot;example&quot;</span></div><div><span>#start server script</span></div><div><span>set</span> <span>:node_file</span><span>,</span> <span>&quot;app.js&quot;</span></div><div><span>#deploy host</span></div><div><span>set</span> <span>:host</span><span>,</span> <span>&quot;hostname&quot;</span></div><div><span>#user name,must be a sudoer without prompting for password </span></div><div><span>set</span> <span>:user</span><span>,</span> <span>&quot;username&quot;</span></div><div><span>set</span> <span>:admin_runner</span><span>,</span> <span>user</span></div><div> </div><div> </div><div><span>set</span> <span>:repository</span><span>,</span> <span>&quot;git@git@github.com:mashihua/Nodebot.git&quot;</span></div><div><span>set</span> <span>:scm</span><span>,</span> <span>:git</span></div><div><span>set</span> <span>:deploy_via</span><span>,</span> <span>:remote_cache</span></div><div><span>role</span> <span>:app</span><span>,</span> <span>host</span></div><div><span>set</span> <span>:use_sudo</span><span>,</span> <span>true</span></div><div> </div><div><span>namespace</span> <span>:deploy</span> <span>do</span></div><div>  </div><div>  <span>desc</span> <span>&quot;Start node server&quot;</span></div><div>  <span>task</span> <span>:start</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span><span>,</span> <span>:except</span> <span>=&gt;</span> <span>{</span> <span>:no_release</span> <span>=&gt;</span> <span>true</span> <span>}</span> <span>do</span></div><div>    <span>run</span> <span>&quot;sudo start </span><span>#{</span><span>application</span><span>}</span><span>_</span><span>#{</span><span>node_env</span><span>}</span><span>&quot;</span></div><div>  <span>end</span></div><div>  </div><div>  <span>desc</span> <span>&quot;Stop node server&quot;</span></div><div>  <span>task</span> <span>:stop</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span><span>,</span> <span>:except</span> <span>=&gt;</span> <span>{</span> <span>:no_release</span> <span>=&gt;</span> <span>true</span> <span>}</span> <span>do</span></div><div>    <span>run</span> <span>&quot;sudo stop </span><span>#{</span><span>application</span><span>}</span><span>_</span><span>#{</span><span>node_env</span><span>}</span><span>&quot;</span></div><div>  <span>end</span></div><div>  </div><div>  <span>desc</span> <span>&quot;Restart node server&quot;</span></div><div>  <span>task</span> <span>:restart</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span><span>,</span> <span>:except</span> <span>=&gt;</span> <span>{</span> <span>:no_release</span> <span>=&gt;</span> <span>true</span> <span>}</span> <span>do</span></div><div>    <span>run</span> <span>&quot;sudo restart </span><span>#{</span><span>application</span><span>}</span><span>_</span><span>#{</span><span>node_env</span><span>}</span><span> || sudo start </span><span>#{</span><span>application</span><span>}</span><span>_</span><span>#{</span><span>node_env</span><span>}</span><span>&quot;</span></div><div>  <span>end</span></div><div> </div><div>  <span>desc</span> <span>&quot;Check required packages and install if packages are not installed&quot;</span></div><div>  <span>task</span> <span>:check_packages</span><span>,</span> <span>roles</span> <span>=&gt;</span> <span>:app</span> <span>do</span></div><div>    <span>run</span> <span>&quot;cd </span><span>#{</span><span>release_path</span><span>}</span><span> &amp;&amp; jake depends&quot;</span></div><div>  <span>end</span></div><div> </div><div>  <span>task</span> <span>:create_deploy_to_with_sudo</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span> <span>do</span></div><div>    <span>run</span> <span>&quot;sudo mkdir -p </span><span>#{</span><span>deploy_to</span><span>}</span><span>&quot;</span></div><div>    <span>run</span> <span>&quot;sudo chown </span><span>#{</span><span>admin_runner</span><span>}</span><span>:</span><span>#{</span><span>admin_runner</span><span>}</span><span> </span><span>#{</span><span>deploy_to</span><span>}</span><span>&quot;</span></div><div>  <span>end</span></div><div> </div><div>  <span>desc</span> <span>&quot;Update submodules&quot;</span></div><div>  <span>task</span> <span>:update_submodules</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span> <span>do</span></div><div>    <span>run</span> <span>&quot;cd </span><span>#{</span><span>release_path</span><span>}</span><span>; git submodule init &amp;&amp; git submodule update&quot;</span></div><div>  <span>end</span></div><div>  </div><div>  <span>task</span> <span>:write_upstart_script</span><span>,</span> <span>:roles</span> <span>=&gt;</span> <span>:app</span> <span>do</span></div><div>    <span>upstart_script</span> <span>=</span> <span>&lt;&lt;-</span><span>UPSTART</span></div><div><span>description &quot;#{application}&quot;</span></div><div> </div><div><span>start on startup</span></div><div><span>stop on shutdown</span></div><div> </div><div><span>script</span></div><div><span># We found $HOME is needed. Without it, we ran into problems</span></div><div><span>export HOME=&quot;/home/#{admin_runner}&quot;</span></div><div><span>export NODE_ENV=&quot;#{node_env}&quot;</span></div><div> </div><div><span>cd #{current_path}</span></div><div><span>exec sudo -u #{admin_runner} sh -c &quot;NODE_PATH=#{node_path} /usr/local/bin/node #{current_path}/#{node_file} #{application_port} &gt;&gt; #{shared_path}/log/#{node_env}.log 2&gt;&amp;1&quot;</span></div><div><span>end script</span></div><div><span>respawn</span></div><div><span>UPSTART</span></div><div> </div><div>  <span>put</span> <span>upstart_script</span><span>,</span> <span>&quot;/tmp/</span><span>#{</span><span>application</span><span>}</span><span>_upstart.conf&quot;</span></div><div>    <span>run</span> <span>&quot;sudo mv /tmp/</span><span>#{</span><span>application</span><span>}</span><span>_upstart.conf /etc/init/</span><span>#{</span><span>application</span><span>}</span><span>_</span><span>#{</span><span>node_env</span><span>}</span><span>.conf&quot;</span></div><div>  <span>end</span></div><div> </div><div><span>end</span></div><div> </div><div><span>before</span> <span>&#39;deploy:setup&#39;</span><span>,</span> <span>&#39;deploy:create_deploy_to_with_sudo&#39;</span></div><div><span>after</span> <span>&#39;deploy:setup&#39;</span><span>,</span> <span>&#39;deploy:write_upstart_script&#39;</span></div><div><span>after</span> <span>&quot;deploy:finalize_update&quot;</span><span>,</span> <span>&quot;deploy:update_submodules&quot;</span><span>,</span> <span>&quot;deploy:check_packages&quot;</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/e0ff608db553550c98bc0dddea1769c5f9b52488/deploy.rb" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-deploy-rb" style="float:right;margin-right:10px;color:#666">deploy.rb</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+<br>
+staging.rb环境文件看起来像这样。设定了应用的环境，git的branch，应用的监听端口和部署目录： <div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-staging-rb-L1">1</span>
+          <span rel="file-staging-rb-L2">2</span>
+          <span rel="file-staging-rb-L3">3</span>
+          <span rel="file-staging-rb-L4">4</span>
+          <span rel="file-staging-rb-L5">5</span>
+          <span rel="file-staging-rb-L6">6</span>
+          <span rel="file-staging-rb-L7">7</span>
+        </td>
+        <td>
+          <pre><div><span>set</span> <span>:node_env</span><span>,</span> <span>&quot;staging&quot;</span></div><div><span>#git repos branch</span></div><div><span>set</span> <span>:branch</span><span>,</span> <span>&quot;master&quot;</span></div><div><span>#listing port</span></div><div><span>set</span> <span>:application_port</span><span>,</span> <span>&quot;1603&quot;</span></div><div><span>#deploy path</span></div><div><span>set</span> <span>:deploy_to</span><span>,</span> <span>&quot;/srv/www/apps/</span><span>#{</span><span>application</span><span>}</span><span>/</span><span>#{</span><span>node_env</span><span>}</span><span>&quot;</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/2b8db32b9feff2145a9791623ae55a3adc1b411e/staging.rb" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-staging-rb" style="float:right;margin-right:10px;color:#666">staging.rb</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+<br>
+production.rb环境文件看起来像这样：<div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-production-rb-L1">1</span>
+          <span rel="file-production-rb-L2">2</span>
+          <span rel="file-production-rb-L3">3</span>
+          <span rel="file-production-rb-L4">4</span>
+          <span rel="file-production-rb-L5">5</span>
+          <span rel="file-production-rb-L6">6</span>
+          <span rel="file-production-rb-L7">7</span>
+        </td>
+        <td>
+          <pre><div><span>set</span> <span>:node_env</span><span>,</span> <span>&quot;production&quot;</span></div><div><span>#git repos branch</span></div><div><span>set</span> <span>:branch</span><span>,</span> <span>&quot;production&quot;</span></div><div><span>#listing port</span></div><div><span>set</span> <span>:application_port</span><span>,</span> <span>&quot;1604&quot;</span></div><div><span>#deploy path</span></div><div><span>set</span> <span>:deploy_to</span><span>,</span> <span>&quot;/srv/www/apps/</span><span>#{</span><span>application</span><span>}</span><span>/</span><span>#{</span><span>node_env</span><span>}</span><span>&quot;</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/922ad12f4a78c1eb0abf018c7949c7e21c4331c8/production.rb" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-production-rb" style="float:right;margin-right:10px;color:#666">production.rb</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+</p>
+
+
+<h3>主要命令：</h3>
+
+
+<ul>
+<li>cap -T 查看所有的task</li>
+<li>cap deploy:setup   设置staging环境，比如创建部署的目录等。staging是默认环境，命令等同于cap staging deploy:setup。调用production环境的命令cap production deploy:setup，第一个参数是环境名，第二个参数是任务名。</li>
+<li>cap nodebot:setup  安装系统一些软件和配置守护进程。上面已经介绍过。</li>
+<li>cap production deploy   部署 production环境的Node.js应用。包括从仓库取最新的代码，链接最新的代码到一个目录。重起应用的Server。</li>
+<li>cap deploy:stop, cap deploy:start和cap deploy:restart   停止，启动和重起staging环境的Server。</li>
+</ul>
+
+
+<h3>简单的Node.js应用：</h3>
+
+
+<p>我们用一个简单的Node.js应用来说明实际的效果，应用的目录结构就像这样：</p>
+
+
+<pre>.
+├── Jakefile.js
+├── app.js
+├── config
+│   └── requirements.json
+└── log</pre>
+
+
+<p>app.js  就是应用的启动脚本 <div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-app-js-L1">1</span>
+          <span rel="file-app-js-L2">2</span>
+          <span rel="file-app-js-L3">3</span>
+          <span rel="file-app-js-L4">4</span>
+          <span rel="file-app-js-L5">5</span>
+          <span rel="file-app-js-L6">6</span>
+          <span rel="file-app-js-L7">7</span>
+          <span rel="file-app-js-L8">8</span>
+          <span rel="file-app-js-L9">9</span>
+          <span rel="file-app-js-L10">10</span>
+          <span rel="file-app-js-L11">11</span>
+          <span rel="file-app-js-L12">12</span>
+          <span rel="file-app-js-L13">13</span>
+          <span rel="file-app-js-L14">14</span>
+        </td>
+        <td>
+          <pre><div><span>var</span> <span>express</span> <span>=</span> <span>require</span><span>(</span><span>&#39;express&#39;</span><span>);</span></div><div> </div><div><span>var</span> <span>app</span> <span>=</span> <span>express</span><span>.</span><span>createServer</span><span>();</span></div><div> </div><div><span>app</span><span>.</span><span>get</span><span>(</span><span>&#39;/&#39;</span><span>,</span> <span>function</span><span>(</span><span>req</span><span>,</span> <span>res</span><span>){</span></div><div>  <span>//the log will out put to log/{node_env}.log</span></div><div>  <span>console</span><span>.</span><span>log</span><span>(</span><span>&quot;Method:&quot;</span> <span>+</span> <span>req</span><span>.</span><span>method</span><span>);</span></div><div>  <span>//send text to agent</span></div><div>  <span>res</span><span>.</span><span>send</span><span>(</span><span>&#39;Hello World. NODE_ENV=&#39;</span> <span>+</span> <span>process</span><span>.</span><span>env</span><span>.</span><span>NODE_ENV</span><span>);</span></div><div><span>});</span></div><div> </div><div> </div><div><span>//listening on application_port where set by capistrano</span></div><div><span>app</span><span>.</span><span>listen</span><span>(</span><span>process</span><span>.</span><span>argv</span><span>[</span><span>2</span><span>]</span> <span>||</span> <span>3000</span><span>);</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/c1aa6973b6113b861b9942ab548579689f82422e/app.js" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-app-js" style="float:right;margin-right:10px;color:#666">app.js</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+<br>
+Jakefile.js  jake构建工具调用的脚本，在本例子中用来安装express <div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-jakefile-js-L1">1</span>
+          <span rel="file-jakefile-js-L2">2</span>
+          <span rel="file-jakefile-js-L3">3</span>
+          <span rel="file-jakefile-js-L4">4</span>
+          <span rel="file-jakefile-js-L5">5</span>
+          <span rel="file-jakefile-js-L6">6</span>
+          <span rel="file-jakefile-js-L7">7</span>
+          <span rel="file-jakefile-js-L8">8</span>
+          <span rel="file-jakefile-js-L9">9</span>
+          <span rel="file-jakefile-js-L10">10</span>
+          <span rel="file-jakefile-js-L11">11</span>
+          <span rel="file-jakefile-js-L12">12</span>
+          <span rel="file-jakefile-js-L13">13</span>
+          <span rel="file-jakefile-js-L14">14</span>
+        </td>
+        <td>
+          <pre><div><span>var</span> <span>fs</span> <span>=</span> <span>require</span><span>(</span><span>&#39;fs&#39;</span><span>);</span></div><div> </div><div><span>desc</span><span>(</span><span>&#39;Check and install required packages&#39;</span><span>);</span></div><div><span>task</span><span>(</span><span>&#39;depends&#39;</span><span>,</span> <span>[],</span> <span>function</span> <span>(</span><span>arg</span><span>)</span> <span>{</span></div><div>    <span>var</span> <span>npm</span> <span>=</span> <span>require</span><span>(</span><span>&#39;npm&#39;</span><span>);</span></div><div>    <span>npm</span><span>.</span><span>load</span><span>({},</span> <span>function</span> <span>(</span><span>err</span><span>)</span> <span>{</span></div><div>        <span>if</span> <span>(</span><span>err</span><span>)</span> <span>return</span> <span>commandFailed</span><span>(</span><span>err</span><span>);</span></div><div>        <span>npm</span><span>.</span><span>on</span><span>(</span><span>&quot;log&quot;</span><span>,</span> <span>function</span> <span>(</span><span>message</span><span>)</span> <span>{</span> <span>if</span><span>(</span><span>arg</span><span>)</span> <span>console</span><span>.</span><span>log</span><span>(</span><span>message</span><span>)</span> <span>})</span></div><div>        <span>var</span> <span>requirements</span> <span>=</span> <span>JSON</span><span>.</span><span>parse</span><span>(</span><span>fs</span><span>.</span><span>readFileSync</span><span>(</span><span>&#39;config/requirements.json&#39;</span><span>));</span></div><div>        <span>npm</span><span>.</span><span>commands</span><span>.</span><span>install</span><span>(</span><span>requirements</span><span>,</span> <span>function</span> <span>(</span><span>err</span><span>,</span> <span>data</span><span>)</span> <span>{</span></div><div>            <span>if</span> <span>(</span><span>err</span><span>)</span> <span>return</span> <span>commandFailed</span><span>(</span><span>err</span><span>);</span></div><div>        <span>});</span></div><div>    <span>});</span></div><div><span>},</span> <span>true</span><span>);</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/b0213bf058640fdfce8630aba7d5c179675ee8ee/Jakefile.js" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-jakefile-js" style="float:right;margin-right:10px;color:#666">Jakefile.js</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+<br>
+config/requirements.json  应用依赖的定义 <div>
+      <div>
+        <div>
+
+
+
+  <div>
+    <table cellpadding="0" cellspacing="0">
+      <tr>
+        <td>
+          <span rel="file-requirements-json-L1">1</span>
+        </td>
+        <td>
+          <pre><div><span>[</span> <span>&quot;express@2.4.7&quot;</span><span>]</span></div></pre>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+        </div>
+
+        <div>
+          <a href="https://gist.github.com/mashihua/1280889/raw/0be9a84a4a89e9b5645c023e21fd32e6bdfce802/requirements.json" style="float:right">view raw</a>
+          <a href="https://gist.github.com/mashihua/1280889#file-requirements-json" style="float:right;margin-right:10px;color:#666">requirements.json</a>
+          <a href="https://gist.github.com/mashihua/1280889">This Gist</a> brought to you by <a href="https://github.com">GitHub</a>.
+        </div>
+      </div>
+</div>
+<br>
+log  应用日志的输出</p>
+
+
+<p>实际部署的效果： <a href="http://xiaoya.me:1603/">staging环境</a>， <a href="http://xiaoya.me:1604/">production环境</a></p>
+
+
+<h2>结论：</h2>
+
+
+<p>使用<a href="https://github.com/mashihua/Nodebot">Nodebot</a>你可以轻松的部署你的Node.js应用。把你的焦点放到实际的需求中，而不用关心部署环境的建立和部署应用的麻烦，只许在部署客户端轻松的输入简单的命令。</p>
+
+
+<p>你或许喜欢</p>
+
+
+<ul><li>2011 年 12 月 13 日 -- <a href="http://www.f2eskills.com/2011/12/how-to-manage-your-nodejs-dependence/" title="如何使用NPM来管理你的依赖">如何使用NPM来管理你的依赖</a></li><li>2012 年 01 月 11 日 -- <a href="http://www.f2eskills.com/2012/01/v8hash-collision/" title="V8的Hash冲突问题">V8的Hash冲突问题</a></li><li>2010 年 11 月 05 日 -- <a href="http://www.f2eskills.com/2010/11/magic-data-uri-and-mhtml/" title="Data URI和MHTML的另类方法">Data URI和MHTML的另类方法</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

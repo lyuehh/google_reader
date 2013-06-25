@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>在SeaJS中实现html模板文件的加载（Temod介绍）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>在SeaJS中实现html模板文件的加载（Temod介绍）</h2>
+<p class="meta">01 Jul 2011</p>
+
+<div class="post">
+<h2>在SeaJS中实现html模板文件的加载（Temod介绍）</h2>
+
+<h3>by T2噬菌体</h3>
+
+<h3>at 2011-07-01 15:58:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/leoo2sk/archive/2011/07/01/temod-intro.html">http://www.cnblogs.com/leoo2sk/archive/2011/07/01/temod-intro.html</a></h3>
+
+<p>在<a href="http://www.cnblogs.com/leoo2sk/archive/2011/06/27/write-javascript-with-seajs.html">几天前的一篇文章</a>中，我介绍了JavaScript的模块化加载框架SeaJS。目前SeaJS支持js和css的模块化加载。在实际应用中，可能会遇到需要加载html页面模板文件的场景，例如我接触的某些应用使用<a href="http://template-toolkit.org/">Template Toolkit</a>（以下简称TT）写页面模板，然后由js载入TT模板后渲染输出，在这种纯JavaScript渲染的Web架构中，需要将tt文件（或其它格式html模板文件）作为模块载入。</p>
+
+
+<p><br><p>实现这一点的基本的方法是将tt文件内容看做一个长字符串，然后封装为纯Json格式的模块：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>define({<br>    html: &#39;&lt;div&gt;html&lt;/div&gt;&#39; //原html模板文件代码<br>});</pre><br></div><br></div><br></div><br></div><br></div><br><p>由于JavaScript不支持类似于<a href="http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc">php heredoc</a>那样的长字符串写法，所以手工做这种转换会比较纠结，而且还要处理特殊字符转义、html压缩等繁琐事情，当模板文件比较多时全手工实现费时费力还容易出错。所以我写了一个小工具<a href="https://github.com/ericzy/temod">temod</a>，temod可以将html或tt等页面模板文件编译成符合CommonJS规范的module，这样任何实现了CommonJS规范的模块加载框架（如SeaJS）就可以将编译好的文件作为普通模板加载进来。</p><br><p>Temod目前托管在GitHub上，访问地址是：<a href="https://github.com/ericzy/temod">https://github.com/ericzy/temod</a></p><br><h1>Temod使用简介</h1><br><h2>获取temod</h2><br><p>获取temod有两种方式，一是通过<a href="http://git-scm.com/">Git</a>获取整个temod git repository：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>git clone https://github.com/ericzy/temod.git</pre><br></div><br><p>或者也可以通过这个地址直接下载temod.js脚本：<a href="https://raw.github.com/ericzy/temod/master/bin/temod.js">https://raw.github.com/ericzy/temod/master/bin/temod.js</a>。例如在linux下可以通过wget获取：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>wget https://raw.github.com/ericzy/temod/master/bin/temod.js</pre><br></div><br><h2>运行temod</h2><br><p>Temod程序只有一个temod.js，这个脚本使用<a href="http://nodejs.org/">NodeJS</a>写成，不需要任何安装，直接使用NodeJS执行即可：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>node temod.js path/to/template/directory [option]</pre><br></div><br><p>temod.js的第一个参数为必须参数，是模板文件所在目录，可选参数option有如下几个：</p><br><p><span style="color:#4f81bd" color="#4f81bd"><strong>--compress=on|off</strong></span> —— 是否开启html代码压缩。如果设为on，则temod会将整个模板文件压缩成一个不换行字符串；如果设为off，则会将模板文件中每一行转为一个字符串，这些字符串组成数组，通过join输出页面，保持所有html代码格式。一般来说，前者节省带宽，而后者传给客户端的html源代码可读性更好。默认开启压缩。</p><br><p><strong><span style="color:#4f81bd" color="#4f81bd">--encoding=utf-8</span></strong> —— 模板文件和输出文件的编码，默认为utf-8。</p><br><p><span style="color:#4f81bd" color="#4f81bd"><strong>--ext=htm,html,tt,tpl,…</strong></span> —— 模板文件扩展名。这个选项指定了所有模板文件的扩展名，如果文件在模板文件目录里但不包含指定的扩展名，则不会被编译。多个扩展名之间用英文逗号隔开。默认为htm,html,tt,tpl。</p><br><p>temod会自动遍历指定的模板目录，生成一个与其结构一致的目录，名称为原目录名加“_build”，其中包含了所有编译好的文件，文件名为源文件名加“.js”。</p><br><h2>Temod使用示例</h2><br><p>下面给一个temod的使用示例。</p><br><p><a href="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011541568592.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="image" alt="image" src="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011541584853.png" border="0" height="162" width="169"></a></p><br><p>如上图所示，其中bin下放着temod.js，例子放在example下。example目录内部如下：</p><br><p><a href="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011541591397.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="image" alt="image" src="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011542012086.png" border="0" height="192" width="260"></a></p><br><p>刚开始没有template_build，这是一个编译生成的目录。其中template下放有一个模板文件content.tt：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>&lt;div&gt;<br>    &lt;p&gt;This is a Temod Sample.&lt;/p&gt;<br>    &lt;p&gt;&lt;a href=&quot;https://github.com/ericzy/temod&quot;&gt;Click here to visit home page&lt;/a&gt;&lt;/p&gt;<br>&lt;/div&gt;</pre><br></div><br><p>现在到bin目录下运行如下命令：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>node temod.js ../example/template --compress=on --ext=tt --encoding=utf-8</pre><br></div><br><p>或者省略默认参数也可以：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>node temod.js ../example/template</pre><br></div><br><p>这会在example下生成template_build目录，里面有个content.tt.js文件，内容如下：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>//This file was generated by temod (https://github.com/ericy/temod)<br><br>define({html: &#39;&lt;div&gt;&lt;p&gt;This is a Temod Sample.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/ericzy/temod&quot;&gt;Click here to visit home page&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&#39;});</pre><br></div><br><p>然后我们在js下写一个init.js模块，在这个模块中加载这个模板并做一些渲染操作：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>define(function(require, exports, module) {<br>    var tpl = require('../template_build/content.tt');<br><br>    document.body.innerHTML = tpl.html;<br>});</pre><br></div><br><p>最后在index.html中将init作为入口模块：</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>&lt;!DOCTYPE HTML&gt;<br>&lt;html lang=&quot;en&quot;&gt;<br>&lt;head&gt;<br>&lt;meta charset=&quot;UTF-8&quot;&gt;<br>&lt;title&gt;Temod Sample&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br><br>&lt;script src=&quot;./js/sea.js&quot; data-main=&quot;./js/init&quot;&gt;&lt;/script&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;</pre><br></div><br><p>访问index.html，则可看到如下效果：</p><br><p><a href="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011542028314.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border-width:0px" title="image" alt="image" src="http://images.cnblogs.com/cnblogs_com/leoo2sk/201107/201107011542036494.png" border="0" height="119" width="254"></a></p><br><p>如果不了解SeaJS，请看这篇文章：<a title="http://www.cnblogs.com/leoo2sk/archive/2011/06/27/write-javascript-with-seajs.html" href="http://www.cnblogs.com/leoo2sk/archive/2011/06/27/write-javascript-with-seajs.html">http://www.cnblogs.com/leoo2sk/archive/2011/06/27/write-javascript-with-seajs.html</a>。</p><br><p>需要这个例子的完整代码可以访问<a title="https://github.com/ericzy/temod/tree/master/example" href="https://github.com/ericzy/temod/tree/master/example">https://github.com/ericzy/temod/tree/master/example</a>。</p><img src="http://www.cnblogs.com/leoo2sk/aggbug/2095565.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/leoo2sk/archive/2011/07/01/temod-intro.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

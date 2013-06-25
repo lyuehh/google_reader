@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Unix目录结构的来历</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Unix目录结构的来历</h2>
+<p class="meta">06 Feb 2012</p>
+
+<div class="post">
+<h2>Unix目录结构的来历</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-02-06 12:50:03</h3>
+
+<h3>original <a href="http://www.ruanyifeng.com/blog/2012/02/a_history_of_unix_directory_structure.html">http://www.ruanyifeng.com/blog/2012/02/a_history_of_unix_directory_structure.html</a></h3>
+
+<p>Unix（包含Linux）的初学者，常常会很困惑，不明白目录结构的含义何在。</p>
+
+
+<p><img src="http://image.beekka.com/blog/201202/bg2012020601.jpg"></p>
+
+
+
+
+<p>举例来说，根目录下面有一个子目录/bin，用于存放二进制程序。但是，/usr子目录下面还有/usr/bin，以及/usr/local/bin，也用于存放二进制程序；某些系统甚至还有/opt/bin。它们有何区别？</p>
+
+
+
+
+<p>长久以来，我也感到很费解，不明白为什么这样设计。像大多数人一样，我只是根据<a href="http://www.pathname.com/fhs/pub/fhs-2.3.html">《Unix文件系统结构标准》</a>（Filesystem Hierarchy Standard），死记硬背不同目录的区别。</p>
+
+
+
+
+<p>昨天，我读到了Rob Landley的<a href="http://lists.busybox.net/pipermail/busybox/2010-December/074114.html">简短解释</a>，这才恍然大悟，原来Unix目录结构是历史造成的。</p>
+
+
+
+
+<p>话说1969年，<a href="http://www.ruanyifeng.com/blog/2009/06/unix_turns_40.html">Ken Thompson</a>和<a href="http://www.ruanyifeng.com/blog/2011/10/dennis_ritchie.html">Dennis Ritchie</a>在小型机PDP-7上发明了Unix。1971年，他们将主机升级到了PDP-11。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201202/bg2012020602.jpg"></p>
+
+
+
+
+<p>当时，他们使用一种叫做RK05的储存盘，一盘的容量大约是1.5MB。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201202/bg2012020603.jpg"></p>
+
+
+
+
+<p>没过多久，操作系统（根目录）变得越来越大，一块盘已经装不下了。于是，他们加上了第二盘RK05，并且规定第一块盘专门放系统程序，第二块盘专门放用户自己的程序，因此挂载的目录点取名为/usr。也就是说，根目录"/"挂载在第一块盘，"/usr"目录挂载在第二块盘。除此之外，两块盘的目录结构完全相同，第一块盘的目录（/bin,  /sbin, /lib, /tmp...）都在/usr目录下重新出现一次。</p>
+
+
+
+
+<p>后来，第二块盘也满了，他们只好又加了第三盘RK05，挂载的目录点取名为/home，并且规定/usr用于存放用户的程序，/home用于存放用户的数据。</p>
+
+
+
+
+<p>从此，这种目录结构就延续了下来。随着硬盘容量越来越大，各个目录的含义进一步得到明确。</p>
+
+
+
+
+<p>　　<strong>/</strong>：存放系统程序，也就是At&amp;t开发的Unix程序。</p>
+
+
+
+
+<p>　　<strong>/usr</strong>：存放Unix系统商（比如IBM和HP）开发的程序。</p>
+
+
+
+
+<p>　　<strong>/usr/local</strong>：存放用户自己安装的程序。</p>
+
+
+
+
+<p>　　<strong>/opt</strong>：在某些系统，用于存放第三方厂商开发的程序，所以取名为option，意为"选装"。</p>
+
+
+
+
+<p>（完）<br>
+</p>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#aad2f0;border-radius:10px"><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2012/02/a_history_of_unix_directory_structure.html">http://www.ruanyifeng.com/blog/2012/02/a_history_of_unix_directory_structure.html</a></li>
+<li>最后修改时间：2012年2月17日 11:08</li>
+<li>付费支持：<a href="https://mai.alipay.com/p.htm?id=2012010602227616"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" alt="支付宝担保交易" style="border:none;vertical-align:middle"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=2.99&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="paypal" style="border:none;vertical-align:middle"></a> </li>
+</ul></div>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;border-radius:10px"><p><a href="http://yipinzao.com/" style="border:none"><img src="http://www.ruanyifeng.com/blog/images/ad_yipinzao.jpg" style="border:none"></a>
+</p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

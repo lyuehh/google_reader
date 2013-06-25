@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>getCurrentScript的改进</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>getCurrentScript的改进</h2>
+<p class="meta">23 Jan 2013</p>
+
+<div class="post">
+<h2>getCurrentScript的改进</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2013-01-23 12:07:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html">http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html</a></h3>
+
+<p>第一版</p>
+
+
+<p><br>    function getCurrentScript(){<br>        if(DOC.currentScript){<br>            return DOC.currentScript.src<br>        }<br>        var nodes = head.getElementsByTagName("script")//只在head标签中寻找<br>        for (var i = 0, node; node = nodes[i++];) {<br>            if (  node.readyState === "interactive") {<br>                return  node.className = node.src;<br>            }<br>        }<br>    }<br><p>第二版</p><p>增加对firefox4-与chrome4+的支持</p><br><br>  function getCurrentScript() {<br>        //取得正在解析的script节点<br>        if(DOC.currentScript) { //firefox 4+<br>            return DOC.currentScript.src;<br>        }<br>        var stack, e, nodes = head.getElementsByTagName("script"); //只在head标签中寻找<br>        //  参考 https://github.com/samyk/jiagra/blob/master/jiagra.js<br>        try {<br>            a.b.c(); //强制报错,以便捕获e.stack<br>        } catch(e) {<br>            stack = e.stack;<br>        }<br>        if(stack) {<br>            // chrome IE10使用 at, firefox opera 使用 @<br>            e = stack.indexOf(' at ') !== -1 ? ' at ' : '@';<br>            while(stack.indexOf(e) !== -1) {<br>                stack = stack.substring(stack.indexOf(e) + e.length);<br>            }<br>            return stack.replace(/:\d+:\d+$/ig, "");<br>        }<br>        for(i = 0; node = nodes[i++];) {<br>            if( node.readyState === "interactive") {<br>                return node.className = node.src;<br>            }<br>        }<br>    }<br><p>第三版</p><p>有的e.stack最后只有行号没有出错位置，导致正则取值失败，fix bug</p><br><br> function getCurrentScript() {<br>        //取得正在解析的script节点<br>        if(DOC.currentScript) { //firefox 4+<br>            return DOC.currentScript.src;<br>        }<br>        //  参考 https://github.com/samyk/jiagra/blob/master/jiagra.js<br>        var stack, e, i, node;<br>        try {<br>            a.b.c(); //强制报错,以便捕获e.stack<br>        } catch(e) {<br>            stack = e.stack;<br>        }<br>        if(stack) {<br>            // chrome IE10使用 at, firefox opera 使用 @<br>            e = stack.indexOf(' at ') !== -1 ? ' at ' : '@';<br>            i = stack.lastIndexOf(e);<br>            var a = stack.slice(i+e.length).replace(/\s\s<em>$/,"").replace(/(:\d+)?:\d+$/i,"");<br>            return a<br>        }<br>        var nodes = head.getElementsByTagName("script"); //只在head标签中寻找<br>        for(i = 0; node = nodes[i++];) {<br>            if( node.readyState === "interactive") {<br>                return node.className = node.src;<br>            }<br>        }<br>    }<br><p>第四版</p><p>IE10最后一行与其他浏览器不同，需要转换思路去掉杂质</p><br><br>    function getCurrentScript() {<br>        //取得正在解析的script节点<br>        if(DOC.currentScript) { //firefox 4+<br>            return DOC.currentScript.src;<br>        }<br>        // 参考 https://github.com/samyk/jiagra/blob/master/jiagra.js<br>        var stack;<br>        try {<br>            a.b.c(); //强制报错,以便捕获e.stack<br>        } catch(e) {//safari的错误对象只有line,sourceId,sourceURL<br>            stack = e.stack;<br>            if(!stack &amp;&amp; window.opera){<br>                //opera 9没有e.stack,但有e.Backtrace,但不能直接取得,需要对e对象转字符串进行抽取<br>                stack = (String(e).match(/of linked script \S+/g) || []).join(" ");<br>            }<br>        }<br>        if(stack) {<br>            /**e.stack最后一行在所有支持的浏览器大致如下:<br>            </em>chrome23:<br>            * at http://113.93.50.63/data.js:4:1<br>            <em>firefox17:<br>            </em>@http://113.93.50.63/query.js:4<br>            <em>opera12:<br>            </em>@http://113.93.50.63/data.js:4<br>            <em>IE10:<br>            *  at Global code (http://113.93.50.63/data.js:4:1)<br>            </em>/<br>            stack = stack.split( /[@ ]/g).pop();//取得最后一行,最后一个空格或@之后的部分<br>            stack = stack[0] == "(" ? stack.slice(1,-1) : stack;<br>            return stack.replace(/(:\d+)?:\d+$/i, "");//去掉行号与或许存在的出错字符起始位置<br>        }<br>        var nodes = head.getElementsByTagName("script"); //只在head标签中寻找<br>        for(var i = 0, node; node = nodes[i++];) {<br>            if(node.readyState === "interactive") {<br>                return node.className = node.src;<br>            }<br>        }<br>    }<br><p>现应用于我的模块加载系统，鲁棒无比，兼容IE6-10，firefox3+, chrome, opera9+。对于safari，则使用慢一点的解析堆栈处理掉。如果大家想用，请记得把DOC，head都换成document。</p><p>相关链接：</p><ol>  <li><a href="http://www.cnblogs.com/rubylouvre/archive/2010/04/06/1705817.html">getBasePath 函数</a></li> <li><a href="http://www.cnblogs.com/rubylouvre/archive/2012/11/29/2794568.html">取到当前正在执行的script元素</a></li></ol><img src="http://www.cnblogs.com/rubylouvre/aggbug/2872618.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2013/01/23/2872618.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

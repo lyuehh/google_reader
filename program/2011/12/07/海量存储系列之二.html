@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>海量存储系列之二</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>海量存储系列之二</h2>
+<p class="meta">07 Dec 2011</p>
+
+<div class="post">
+<h2>海量存储系列之二</h2>
+
+<h3>by shenxun0whisper</h3>
+
+<h3>at 2011-12-07 00:45:59</h3>
+
+<h3>original <a href="http://rdc.taobao.com/team/jm/archives/1349">http://rdc.taobao.com/team/jm/archives/1349</a></h3>
+
+<p>http://rdc.taobao.com/team/jm/archives/1347 上一篇</p>
+
+
+<div>在上一篇里面，我们对数据库的抽象的组成原理进行了简单的描述。在这一篇里面，我们一起来看看，如何能够使用kv这样的工具。来完成关系代数运算。</div>
+
+
+<div>那么，让我们先来热热身:</div>
+
+
+<div>
+<div><img src="http://ww4.sinaimg.cn/mw600/693f0847jw1dncuiz38hij.jpg" alt=""></div>
+</div>
+
+
+<div>这是一组数据，以pk作为主键，user_id和Name是外key.</div>
+
+
+<div>那么，如果我要运行查询:Select * from tab where id = ?</div>
+
+
+<div>应该如何进行呢？</div>
+
+
+<div>这里需要一些额外的知识，在数据结构中，有那么一种结构，可以用于处理按照某个key找到value的过程，抽象来看，一种方法是二分查找法，一种方法是hash.</div>
+
+
+<div>如果各位是java用户，那么二分查找的实现可以认为是个TreeMap的实现，而Hash的方法则可以认为是hashMap的实现。如果是个c/cpp的用户，那么就二分查找就对应map实现。而hash实现则对应stl里面的hash_map。</div>
+
+
+<div>那么，这里的这个问题，我们就很容易可以解决了</div>
+
+
+<div>以id作为map的key,以其他数据作为value，把所有数据都放入到map里面，然后再使用id=1作为key,从map中找到对应的value返回即可。（这一个部分，我们在后面的章节里面还会介绍，现在大家只需要有个大概的印象即可）</div>
+
+
+<div>怎么样？是不是很简单？那么，我们来讨论更进一步的问题：</div>
+
+
+<div>如果我想找到符合Select * from tab where user_id = 0的所有结果，应该如何去作？</div>
+
+
+<div>仔细想想。那么第一种做法一定是这样。</div>
+
+
+<div>把整个集合内的所有数据，都拿出来，然后找到user_id的数字，如果user_id=0，那么就认为是符合要求的记录，直接返回。</div>
+
+
+<div>如果不是user_id=0，那么不匹配，丢弃这条记录即可。</div>
+
+
+<div>这样一定可以找到所有符合要求的记录。</div>
+
+
+<div>然而，这样作，带来的问题是，我有多少条记录，就需要进行多少次这样的匹配，那么，假设有100000000000000000条记录，就需要匹配这样多次，才能找到符合要求的记录。这是个悲剧。。</div>
+
+
+<div>那么，怎么解决这个悲剧呢？</div>
+
+
+<div>于是有些聪明人就又想起了map结构，hash或tree，不都可以按照k找到value么。那我们这里也可以利用这个map结构嘛。。</div>
+
+
+<div>
+<div><img src="http://ww4.sinaimg.cn/mw600/693f0847jw1dnhjrtc702j.jpg" alt=""></div>
+</div>
+
+
+<div>也就是说，以user_id作为key,id作为value，构建一个Map.不就又能进行快速查询了么。</div>
+
+
+<div>于是，就有了数据库最重要的一个结构“索引” 这种以外键作为key,主键作为value的东西，有个专有的名字，叫做二级索引。</div>
+
+
+<div>有了二级索引，我们的所有查询，都可以以接近O(LogN)(有序数据)，或O(1)的效率找到我们需要的数据。是不是很爽？</div>
+
+
+<div>但这不是银弹，你付出了空间成本，本质来说就是空间换时间的过程。同时，也会降低写入的效率。</div>
+
+
+<div>怎么样？理解了没？如果自认为对这些都了解了，那么我们再来看一个问题：</div>
+
+
+<div>
+<div><img src="http://ww1.sinaimg.cn/mw600/693f0847jw1dncv8h1b9rj.jpg" alt=""></div>
+</div>
+
+
+<div>如果我要找的是：Select …where user_id = ? And name = ‘袜子’</div>
+
+
+<div>应该怎么做呢？</div>
+
+
+<div>估计很多人都立刻又会想起那个Map，对的，但在这里，我想给出以下的几种查询的模式：</div>
+
+
+<div>1. 遍历所有数据，取出一条以后，查看user_id = 0 and name=’袜子’是否符合要求，如果符合，则返回数据。</div>
+
+
+<div>这是个合理的策略，空间最为节省，但带来的损耗是要遍历所有的数据。</div>
+
+
+<div>2. 如果有个user_id -&gt; pk的索引</div>
+
+
+<div>
+<div><img src="http://ww2.sinaimg.cn/mw600/693f0847jw1dnhjr9tbn6j.jpg" alt=""></div>
+</div>
+
+
+<div>，那么我们可以先按照user_id，找到一组符合要求的pk list.然后再根据pk list，再回到</div>
+
+
+<div>
+<div><img src="http://ww2.sinaimg.cn/mw600/693f0847jw1dncvdniqoej.jpg" alt=""></div>
+</div>
+
+
+<div>取出符合要求的数据后，判断name=‘袜子’这个条件，如果符合，就返回，不符合，就丢弃。</div>
+
+
+<div>这是个折衷策略，在空间和性能中，尽可能的找到个合理的区间的策略。</div>
+
+
+<div>题外话，这个“根据pk list，再回到pk=&gt;整个数据的kv表中，找出符合要求的数据后，判断name=‘袜子’这个条件，如果符合，就返回，不符合，就丢弃”的策略，在数据库有个专有名词，叫回表。</div>
+
+
+<div>3. 组合索引</div>
+
+
+<div>这是个新名词儿，但其实也是个很简单的概念。</div>
+
+
+<div>直接上图：</div>
+
+
+<div>
+<div><img src="http://ww3.sinaimg.cn/mw600/693f0847jw1dncvj1py2fj.jpg" alt=""></div>
+</div>
+
+
+<div> <img src="http://rdc.taobao.com/team/jm/wp-includes/images/smilies/icon_smile.gif" alt=":-)"> ，其实就是个很简单的策略，先比较user_id进行排序，如果user_id相同，那么比较name排序。</div>
+
+
+<div>这样，假定我们有100000条记录，属于100个用户，那么平均来看，每个用户就只有1000条记录了。</div>
+
+
+<div>原来要回表1000条记录才能找到符合要求的数据，而如果使用组合索引，这1000条，也可以使用O(log2N)或者O(1)的策略进行检索啦。</div>
+
+
+<div>在很多场景中，都能够提升效率和速度。但付出的是更多的存储空间。</div>
+
+
+<div>好啦，这篇就介绍到这里，留个题目给大家：</div>
+
+
+<div>
+<div><img src="http://ww3.sinaimg.cn/mw600/693f0847jw1dncvmoehk0j.jpg" alt=""></div>
+</div>
+
+
+<div>假设有这么一组数据，性别有4种，user_id是一对多的关系，如果我想查询</div>
+
+
+<div>select * from tab where user_id in (?,?,?,?) and 性别=’不明’</div>
+
+
+<div>如何进行索引构建能够获得比较好的效果呢？</div>
+
+
+<div><a href="http://rdc.taobao.com/team/jm/archives/1362">http://rdc.taobao.com/team/jm/archives/1362</a> 下一篇</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>数学公式生成器</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>数学公式生成器</h2>
+<p class="meta">12 Jul 2011</p>
+
+<div class="post">
+<h2>数学公式生成器</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-07-12 02:41:10</h3>
+
+<h3>original <a href="http://www.ruanyifeng.com/blog/2011/07/formula_online_generator.html">http://www.ruanyifeng.com/blog/2011/07/formula_online_generator.html</a></h3>
+
+<p>来自: <a href="http://www.feedzshare.com/b/2088/2">阮一峰的网络日志 - FeedzShare</a>  
+<br>发布时间:2011年07月11日,  已有 7 人推荐 </p>
+
+
+<hr><div><p>上一篇文章<a href="http://www.ruanyifeng.com/blog/2011/07/mathematical_constant_e.html">《数学常数e的含义》</a>，有很多数学公式。</p><p>但是，在网页上显示数学公式，是一件非常麻烦的事情。以下面的公式为例：</p>
+
+
+
+
+<p>　　<img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=(1%2B%5Cfrac%7B100%25%7D%7Bn%7D)%5En&amp;chs=50"></p>
+
+
+
+
+<p>怎样才能把这个公式放到网页上呢？</p>
+
+
+
+
+<p>传统的方式是，先在相关软件中把公式做出来，然后截图，再把图片贴到网页上，这样既麻烦又耗时。我就在想，有没有便捷的方法，可以生成数学公式。</p>
+
+
+
+
+<p>我知道，<a href="http://code.google.com/apis/chart/">Google Chart</a>接受<a href="http://en.wikipedia.org/wiki/TeX">TeX</a>语言，实时返回数学公式的图片。于是，我就用了一天时间，根据它的<a href="http://code.google.com/apis/chart/image/docs/gallery/formulas.html">API</a>，写出了一个<a href="http://www.ruanyifeng.com/webapp/formula.html">"数学公式生成器"</a>。</p>
+
+
+
+
+<p><a href="http://www.ruanyifeng.com/webapp/formula.html"><img src="http://image.beekka.com/blog/201107/bg2011071101.png"></a></p>
+
+
+
+
+<p>经过初步测试，我自我感觉很不错，觉得写作数学公式从此不再麻烦了。我把这个作品推荐给大家，欢迎试用。</p>
+
+
+
+
+<p>如果你懂得TeX语法，使用起来应该毫无困难。如果不懂，也没有关系，用起来很简单，下面我做一个初步介绍。</p>
+
+
+
+
+<p>对于简单的公式，可以直接在文本框输入，比如"y=2x+8"：</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071102.png"></p>
+
+
+
+
+<p>然后点击"查看"按钮，就会显示数学公式的图片，并且给出图片代码。</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071103.png"></p>
+
+
+
+
+<p>接着，就来看怎么生成本文开头那个稍微复杂一点的公式：</p>
+
+
+
+
+<p>　　<img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=(1%2B%5Cfrac%7B100%25%7D%7Bn%7D)%5En&amp;chs=50"></p>
+
+
+
+
+<p>首先，按照顺序输入左括号、1、+：</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071104.png"></p>
+
+
+
+
+<p>加号后面是一个分数，这时就要用到TeX语法了，点击菜单里的"结构"选项，选择"分数"那一栏：</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071105.png"></p>
+
+
+
+
+<p>文本框中就会插入"\frac{1}{2}"这样的结构：</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071106.png"></p>
+
+
+
+
+<p>在TeX语法中，斜杠开头的语句表示命令，所以"\frac"表示后面要生成分数；命令后面的大括号，表示命令的参数，"\frac"后面的第一个大括号表示分子，第二个大括号表示分母。现在，依次在"分子"中填入"100%"，在"分母"中填入"n"。</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071107.png"></p>
+
+
+
+
+<p>最后，加上右括号和"^n"。</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071108.png"></p>
+
+
+
+
+<p>点击"查看"按钮，这个公式就显示出来了。</p>
+
+
+
+
+<p>　　<img src="http://image.beekka.com/blog/201107/bg2011071109.png"></p>
+
+
+
+
+<p>其他公式的生成方法与其类似，大家可以自己摸索，任何时候都可以点击"查看"按钮，了解是否写错。</p>
+
+
+
+
+<p>TeX几乎可以写出所有的数学公式（查看MediaWiki的<a href="http://meta.wikimedia.org/wiki/Help:Formula">参考网页</a>），但是Google Chart只支持一部分的TeX语法，因此不保证所有时候都能得到想要的结果。</p>
+
+
+
+
+<p>除了Google Chart，还有另一些服务，也能生成数学公式的图片，比如<a href="http://www.mathtran.org/">mathtran.org</a>和<a href="http://mathurl.com">mathurl.com</a>，还有<a href="http://modis.ispras.ru/Lizorkin/math2image.html">这里</a>和<a href="http://www.codecogs.com/latex/eqneditor.php">这里</a>。</p>
+
+
+
+
+<p>（完）</p>
+
+
+<div><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2011/07/formula_online_generator.html">http://www.ruanyifeng.com/blog/2011/07/formula_online_generator.html</a></li>
+<li>最后修改时间：2011年7月12日 00:12</li>
+<li>付费支持（<a href="http://www.ruanyifeng.com/blog/2011/05/my_google_adsense_is_disabled.html">说明</a>）：<a href="https://lab.alipay.com/p.htm?id=2011051700196144"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" alt="支付宝担保交易"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.3&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="paypal"></a> </li>
+</ul></div>
+
+
+<p></div><img src="http://img.tongji.linezing.com/1017243/tongji.gif"><img src="http://img.tongji.linezing.com/855372/tongji.gif"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

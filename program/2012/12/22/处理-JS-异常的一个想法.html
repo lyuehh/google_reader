@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>处理 JS 异常的一个想法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>处理 JS 异常的一个想法</h2>
+<p class="meta">22 Dec 2012</p>
+
+<div class="post">
+<h2>处理 JS 异常的一个想法</h2>
+
+<h3>by sofish</h3>
+
+<h3>at 2012-12-21 17:30:36</h3>
+
+<h3>original <a href="http://sofish.de/2144">http://sofish.de/2144</a></h3>
+
+<p>可能由于网络、浏览器问题、缓存等原因，可能导致线上执行 js 的时候与开发环境并不一样，会抛出异常。js 异常基本上是前端开发工程师的家常便饭。如何记录，并使用它，却很少人关注。最近在考虑一个想法，基本上涉及到两步：收集和使用。</p>
+
+
+<h3>一、收集</h3>
+
+
+<p>对于 error 收集这一块，还是比较方便的，因为在各浏览器中都有一个接口：<code>window.onerror</code>：</p>
+
+
+<pre>window.onerror = function(errorMessage, scriptURL, lineNumber) {
+  alert(errorMessage, scriptURL, lineNumber)
+}
+</pre>
+
+
+<p>甚至中提供了 Stack Trace，比如在 <code>try/catch</code> 中还提供了 <code>e.stack</code>（各个浏览器不同，可以使用 <a href="https://github.com/eriwen/javascript-stacktrace">eriwen/javascript-stacktrace</a> 这个兼容库），试一下下面这段代码：</p>
+
+
+<p><span></span></p>
+
+
+<pre>try {
+  fn()
+} catch(e) {
+  alert(e.stack)
+}
+</pre>
+
+
+<p>所以收集这些错误还是比较方便的，这里需要注意的事，使用 <code>window.addEventListener('error', callback, isBubble)</code> 中 <code>callback</code> 的第一个参数并不是 <code>event</code>，而是一个 <code>Error object</code>。这样的话，为了方便，使用 <code>window.onerror</code> 是一个不错的选择，但通过 dot 操作符监听的事件是可以重载的，并且这段监听脚本理论上是放在所有 js 最前面的，所以需要考虑其中的风险。</p>
+
+
+<h3>二、使用</h3>
+
+
+<p>之前在支付宝的时候，线上 js 报错会变成一个邮件，发给前端开发 team，每个人自己认领、解决。其实这是一个不错的选择，也解决了最基本的问题：立即响应，修掉。不过也存在着一个问题，如果避免同样的错误？我的初步想法是这样的：</p>
+
+
+<ul>
+<li>以 URL 为单元，记录同一个页面的报错：方便统一解决</li>
+<li>记录错误包括：Page URL, User Agent, Script URL, Error Message 和 Line Number</li>
+<li>每个错误解决后，都可以在一个地方写解决方案，看到的人可以评论、加分，最终会存档起来，作为一个知识库，并用有方便的 api 可以使用这些知识库的内容</li>
+<li>在开发的时候，相同页面 <code>window.onerror</code> 的时候，通过插件，分析 Error Message 识别出类型，加上 URL 的判断，给予开发者提醒前人犯过的错误</li>
+<li>开发者可以订阅知识库上某些标签，自动接收邮件（当然也可以根据文件注释、mapping 等方式做更好的配对）</li>
+</ul>
+
+
+<p>为什么这样做？主要是为了解决下面的一些问题：</p>
+
+
+<ul>
+<li>形成知识库，开发者可以从中得到学习，特别是新人</li>
+<li>工具保证效率的提升和避免重复错误重复解决</li>
+<li>订阅保证通知更具针对性</li>
+</ul>
+
+
+<h3>三、注意点</h3>
+
+
+<h4>1. 收集的时候使用 POST 发送</h4>
+
+
+<p>有时候 Error Message 可能会比较长，而浏览器的 URL 长度是有限制的，如果存的错误不多的话，可以考虑用 GET 发送，但通常来说 POST 可以把所有数据都发送到后台。</p>
+
+
+<h4>2. 何时发送数据</h4>
+
+
+<p>建议在触发 <code>onerror</code> 的时候发送。在第一次有这个想法的时候，尝试着在 <code>onbeforeonload</code> 的时候发送，但 POST 请求还没 open 就已经被浏览器中断了。</p>
+
+
+<h4>3. 存于数据库以哪个作为索引比较好？</h4>
+
+
+<p>通常来说以 URL 可能会比较适合多数网站。但像百姓网、淘宝等 UGC 比较多的网站，可能需要变通一下以记录 URL。毕竟不同帖子不同 URL 都是同一套代码。</p>
+
+
+<p>那以 Error 作为索引呢？其实无论是那种，看自己需求选择吧。</p>
+
+
+<h4>4. 是否记录所有错误</h4>
+
+
+<p>这个也比较合适根据需求来看。百姓网有各种乱七八糟的报错可能都是来自到 baidu / Google 的 ad 外链。</p>
+
+
+<h3>四、结语</h3>
+
+
+<p>目前初步实现了一个收集的工具（<a href="https://github.com/sofish/stacktrace.js">sofish/stacktrace.js</a>）和<a href="http://sofish.de/#hash_store">存储方式</a>（以 URL 为索引），是否继续，还需要时间和进一步考虑，先发出来，抛砖引玉。</p>
+
+
+<h3>五、附录</h3>
+
+
+<p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

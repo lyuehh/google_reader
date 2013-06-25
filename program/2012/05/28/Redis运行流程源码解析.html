@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Redis运行流程源码解析</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Redis运行流程源码解析</h2>
+<p class="meta">28 May 2012</p>
+
+<div class="post">
+<h2>Redis运行流程源码解析</h2>
+
+<h3>by nosqlfan</h3>
+
+<h3>at 2012-05-28 14:07:48</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/nosqlfan/~8149226/652860894/6253001/1/item.html">http://item.feedsky.com/~feedsky/nosqlfan/~8149226/652860894/6253001/1/item.html</a></h3>
+
+<p>本文来自@<a href="http://weibo.com/vanchugame">凡趣科技 </a>pesiwang同学的投稿分享，对<a title="查看 Redis 的全部文章" href="http://blog.nosqlfan.com/tags/redis">Redis</a>运行流程，命令处理的内部实现进行了深入讲解。</p>
+
+
+<p>本文分析<span><a href="http://blog.nosqlfan.com/tags/%e6%ba%90%e7%a0%81" title="查看 源码 的全部文章">源码</a></span>基于 <a href="http://redis.googlecode.com/files/redis-2.4.7.tar.gz">Redis 2.4.7 stable</a> 版本。</p>
+
+
+<h3>概述</h3>
+
+
+<p><span><a href="http://blog.nosqlfan.com/tags/redis" title="查看 Redis 的全部文章">Redis</a></span>通过定义一个 struct redisServer 类型的全局变量server 来保存服务器的相关信息（比如：配置信息，统计信息，服务器状态等等）。启动时通过读取配置文件里边的信息对server进行初始化（如果没有指定配置文件，将使用默认值对sever进行初始化），初始化的内容有：起监听端口，绑定有新连接时的回调函数，绑定服务器的定时函数，虚拟内存初始化，log初始化等等。</p>
+
+
+<h3>启动</h3>
+
+
+<h4>初始化服务器配置</h4>
+
+
+<p>先来看看redis 的main函数的入口</p>
+
+
+<p>Redis.c：1694</p>
+
+
+<pre>int main(int argc, char **argv) {
+    time_t start;
+
+    initServerConfig();
+    if (argc == 2) {
+        if (strcmp(argv[1], &quot;-v&quot;) == 0 ||
+            strcmp(argv[1], &quot;--version&quot;) == 0) version();
+        if (strcmp(argv[1], &quot;--help&quot;) == 0) usage();
+        resetServerSaveParams();
+        loadServerConfig(argv[1]);
+    } else if ((argc &gt; 2)) {
+        usage();
+    } else {
+        ...
+    }
+    if (server.daemonize) daemonize();
+    initServer();
+    ...</pre>
+
+
+<ul>
+<li>initServerConfig初始化全局变量 server 的属性为默认值。</li>
+<li>如果命令行指定了配置文件， resetServerSaveParams重置对落地备份的配置（即重置为默认值）并读取配置文件的内容对全局变量 server 再进行初始化 ，没有在配置文件中配置的将使用默认值。</li>
+<li>如果服务器配置成后台执行，则对服务器进行 daemonize。</li>
+<li>initServer初始化服务器，主要是设置信号处理函数，初始化事件轮询，起监听端口，绑定有新连接时的回调函数，绑定服务器的定时函数，初始化虚拟内存和log等等。</li>
+<li>创建服务器监听端口。</li>
+</ul>
+
+
+<p>Redis.c：923</p>
+
+
+<pre>    if (server.port != 0) {
+        server.ipfd= anetTcpServer(server.neterr,server.port,server.bindaddr);
+        if (server.ipfd == ANET_ERR) {
+            redisLog(REDIS_WARNING, "Opening port %d: %s",
+                server.port, server.neterr);
+            exit(1);
+        }
+    }</pre>
+
+
+<ul>
+<li>anetTcpServer创建一个socket并进行监听，然后把返回的socket fd赋值给server.ipfd。</li>
+</ul>
+
+
+<h4>事件轮询结构体定义</h4>
+
+
+<p>先看看事件轮询的结构体定义</p>
+
+
+<p>Ae.h：88</p>
+
+
+<pre>/* State of an event based program */
+typedef struct aeEventLoop {
+    int maxfd;
+    long long timeEventNextId;
+    aeFileEvent events[AE_SETSIZE]; /* Registered events */
+    aeFiredEvent fired[AE_SETSIZE]; /* Fired events */
+    aeTimeEvent *timeEventHead;
+    int stop;
+    void *apidata; /* This is used for polling API specific data */
+    aeBeforeSleepProc *beforesleep;
+} aeEventLoop;</pre>
+
+
+<ul>
+<li>maxfd是最大的文件描述符，主要用来判断是否有文件事件需要处理(ae.c:293)和当使用select 来处理网络IO时作为select的参数(ae_select.c:50)。</li>
+<li>timeEventNextId 是下一个定时事件的ID。</li>
+<li>events[AE_SETSIZE]用于保存通过aeCreateFileEvent函数创建的文件事件，在sendReplyToClient函数和freeClient函数中通过调用aeDeleteFileEvent函数删除已经处理完的事件。</li>
+<li>fired[AE_SETSIZE]用于保存已经触发的文件事件，在对应的网络I/O函数中进行赋值（epoll,select,kqueue），不会对fired进行删除操作，只会一直覆盖原来的值。然后在aeProcessEvents函数中对已经触发的事件进行处理。</li>
+<li>timeEventHead 是定时事件链表的头，定时事件的存储用链表实现。</li>
+<li>Stop 用于停止事件轮询处理。</li>
+<li>apidata 用于保存轮询api需要的数据，即aeApiState结构体，对于epoll来说，aeApiState结构体的定义如下：</li>
+</ul>
+
+
+<pre>typedef struct aeApiState {
+    int epfd;
+    struct epoll_event events[AE_SETSIZE];
+} aeApiState;</pre>
+
+
+<ul>
+<li>beforesleep 是每次进入处理事件时执行的函数。</li>
+</ul>
+
+
+<h4>创建事件轮询</h4>
+
+
+<p>Redis.c：920</p>
+
+
+<pre>  server.el = aeCreateEventLoop();
+Ae.c：55
+aeEventLoop *aeCreateEventLoop(void) {
+    aeEventLoop *eventLoop;
+    int i;
+
+    eventLoop = zmalloc(sizeof(*eventLoop));
+    if (!eventLoop) return NULL;
+    eventLoop-&gt;timeEventHead = NULL;
+    eventLoop-&gt;timeEventNextId = 0;
+    eventLoop-&gt;stop = 0;
+    eventLoop-&gt;maxfd = -1;
+    eventLoop-&gt;beforesleep = NULL;
+    if (aeApiCreate(eventLoop) == -1) {
+        zfree(eventLoop);
+        return NULL;
+    }
+/* Events with mask == AE_NONE are not set. So let&#39;s initialize
+ * the vector with it. */
+    for (i = 0; i &lt; AE_SETSIZE; i++)
+        eventLoop-&gt;events[i].mask = AE_NONE;
+    return eventLoop;
+}</pre>
+
+
+<h4>绑定定时函数和有新连接时的回调函数</h4>
+
+
+<p>redis.c：973</p>
+
+
+<pre>aeCreateTimeEvent(server.el, 1, serverCron, NULL, NULL);
+if (server.ipfd &gt; 0 &amp;&amp;
+    aeCreateFileEvent(server.el,server.ipfd,AE_READABLE,
+acceptTcpHandler,NULL) == AE_ERR) oom(&quot;creating file event&quot;);</pre>
+
+
+<ul>
+<li>aeCreateTimeEvent创建定时事件并绑定回调函数serverCron，这个定时事件第一次是超过1毫秒就有权限执行，如果其他事件的处理时间比较长，可能会出现超过一定时间都没执行情况。这里的1毫秒只是超过后有可执行的权限，并不是一定会执行。第一次执行后，如果还要执行，是由定时函数的返回值确定的，在processTimeEvents（ae.c：219）中，当调用定时回调函数后，获取定时回调函数的返回值，如果返回值不等于-1，则设置定时回调函数的下一次触发时间为当前时间加上定时回调函数的返回值，即调用间隔时间。serverCron的返回值是100ms，表明从二次开始，每超过100ms就有权限执行。（定时回调函数serverCron用于更新lru时钟，更新服务器的状态，打印一些服务器信息，符合条件的情况下对hash表进行重哈希，启动后端写AOF或者检查后端写AOF或者备份是否完成，检查过期的KEY等等）</li>
+<li>aeCreateFileEvent创建监听端口的socket fd的文件读事件（即注册网络io事件）并绑定回调函数acceptTcpHandler。</li>
+</ul>
+
+
+<h4>进入事件轮询</h4>
+
+
+<p>初始化后将进入事件轮询</p>
+
+
+<p>Redis.c：1733</p>
+
+
+<pre>    aeSetBeforeSleepProc(server.el,beforeSleep);
+    aeMain(server.el);
+    aeDeleteEventLoop(server.el);</pre>
+
+
+<ul>
+<li>设置每次进入事件处理前会执行的函数beforeSleep。</li>
+<li>进入事件轮询aeMain。</li>
+<li>退出事件轮询后删除事件轮询，释放事件轮询占用内存aeDeleteEventLoop（不过没在代码中发现有执行到这一步的可能，服务器接到shutdown命令时通过一些处理后直接就通过exit退出了，可能是我看错了，待验证）。</li>
+</ul>
+
+
+<h4>事件轮询函数aeMain</h4>
+
+
+<p>看看aeMain的内容</p>
+
+
+<p>Ae.c：382</p>
+
+
+<pre>void aeMain(aeEventLoop *eventLoop) {
+    eventLoop-&gt;stop = 0;
+    while (!eventLoop-&gt;stop) {
+        if (eventLoop-&gt;beforesleep != NULL)
+            eventLoop-&gt;beforesleep(eventLoop);
+        aeProcessEvents(eventLoop, AE_ALL_EVENTS);
+    }
+}</pre>
+
+
+<ul>
+<li>每次进入事件处理前，都会调用设置的beforesleep，beforeSleep函数主要是处理被阻塞的命令和根据配置写AOF。</li>
+<li>aeProcessEvents处理定时事件和网络io事件。</li>
+</ul>
+
+
+<h4>启动完毕，等待客户端请求</h4>
+
+
+<p>到进入事件轮询函数后，redis的启动工作就做完了，接下来就是等待客户端的请求了。</p>
+
+
+<h3>接收请求</h3>
+
+
+<h4>新连接到来时的回调函数</h4>
+
+
+<p>在绑定定时函数和有新连接时的回调函数中说到了绑定有新连接来时的回调函数acceptTcpHandler，现在来看看这个函数的具体内容</p>
+
+
+<p>Networking.c：427</p>
+
+
+<pre>void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask) {
+    int cport, cfd;
+    char cip[128];
+    REDIS_NOTUSED(el);
+    REDIS_NOTUSED(mask);
+    REDIS_NOTUSED(privdata);
+
+    cfd = anetTcpAccept(server.neterr, fd, cip, &amp;cport);
+    if (cfd == AE_ERR) {
+        redisLog(REDIS_WARNING,&quot;Accepting client connection: %s&quot;, server.neterr);
+        return;
+    }
+    redisLog(REDIS_VERBOSE,&quot;Accepted %s:%d&quot;, cip, cport);
+    acceptCommonHandler(cfd);
+}</pre>
+
+
+<ul>
+<li>anetTcpAccept 函数 accept新连接，返回的cfd是新连接的socket fd。</li>
+<li>acceptCommonHandler 函数是对新建立的连接进行处理，这个函数在使用 unix socket 时也会被用到。</li>
+</ul>
+
+
+<h4>接收客户端的新连接</h4>
+
+
+<p>接下来看看anetTcpAccept函数的具体内容</p>
+
+
+<pre>Anet.c：330
+int anetTcpAccept(char *err, int s, char *ip, int *port) {
+    int fd;
+    struct sockaddr_in sa;
+    socklen_t salen = sizeof(sa);
+    if ((fd = anetGenericAccept(err,s,(struct sockaddr*)&amp;sa,&amp;salen)) == ANET_ERR)
+        return ANET_ERR;
+
+    if (ip) strcpy(ip,inet_ntoa(sa.sin_addr));
+    if (port) *port = ntohs(sa.sin_port);
+    return fd;
+}</pre>
+
+
+<p>再进去anetGenericAccept 看看</p>
+
+
+<p>Anet.c：313</p>
+
+
+<pre>static int anetGenericAccept(char *err, int s, struct sockaddr *sa, socklen_t *len) {
+    int fd;
+    while(1) {
+        fd = accept(s,sa,len);
+        if (fd == -1) {
+            if (errno == EINTR)
+                continue;
+            else {
+                anetSetError(err, "accept: %s", strerror(errno));
+                return ANET_ERR;
+            }
+        }
+        break;
+    }
+    return fd;
+}</pre>
+
+
+<ul>
+<li>anetTcpAccept 函数中调用anetGenericAccept 函数进行接收新连接，anetGenericAccept函数在 unix socket 的新连接处理中也会用到。</li>
+<li>anetTcpAccept 函数接收新连接后，获取客户端得ip，port 并返回。</li>
+</ul>
+
+
+<h4>创建redisClient进行接收处理</h4>
+
+
+<p>anetTcpAccept 运行完后，返回新连接的socket fd, 然后返回到调用函数acceptTcpHandler中，继续执行acceptCommonHandler 函数</p>
+
+
+<p>Networking.c：403</p>
+
+
+<pre>static void acceptCommonHandler(int fd) {
+    redisClient *c;
+    if ((c = createClient(fd)) == NULL) {
+        redisLog(REDIS_WARNING,&quot;Error allocating resoures for the client&quot;);
+        close(fd); /* May be already closed, just ingore errors */
+        return;
+    }
+    /* If maxclient directive is set and this is one client more... close the
+     * connection. Note that we create the client instead to check before
+     * for this condition, since now the socket is already set in nonblocking
+     * mode and we can send an error for free using the Kernel I/O */
+    if (server.maxclients &amp;&amp; listLength(server.clients) &gt; server.maxclients) {
+        char *err = &quot;-ERR max number of clients reached\r\n&quot;;
+
+        /* That&#39;s a best effort error message, don&#39;t check write errors */
+        if (write(c-&gt;fd,err,strlen(err)) == -1) {
+            /* Nothing to do, Just to avoid the warning... */
+        }
+        freeClient(c);
+        return;
+    }
+    server.stat_numconnections++;
+}</pre>
+
+
+<ul>
+<li>创建一个 redisClient 来处理新连接，每个连接都会创建一个 redisClient 来处理。</li>
+<li>如果配置了最大并发客户端，则对现有的连接数进行检查和处理。</li>
+<li>最后统计连接数。</li>
+</ul>
+
+
+<p>绑定有数据可读时的回调函数</p>
+
+
+<p>Networking.c：15</p>
+
+
+<pre>redisClient *createClient(int fd) {
+    redisClient *c = zmalloc(sizeof(redisClient));
+    c-&gt;bufpos = 0;
+
+    anetNonBlock(NULL,fd);
+    anetTcpNoDelay(NULL,fd);
+    if (aeCreateFileEvent(server.el,fd,AE_READABLE,
+        readQueryFromClient, c) == AE_ERR)
+    {
+        close(fd);
+        zfree(c);
+        return NULL;
+    }
+
+    selectDb(c,0);
+    c-&gt;fd = fd;
+    c-&gt;querybuf = sdsempty();
+c-&gt;reqtype = 0;
+...
+}</pre>
+
+
+<ul>
+<li>创建新连接的socket fd对应的文件读事件，绑定回调函数readQueryFromClient。</li>
+<li>如果创建成功，则对 redisClient 进行一系列的初始化，因为 redisClient 是通用的，即不管是什么命令的请求，都是通过创建一个 redisClient 来处理的，所以会有比较多的字段需要初始化。</li>
+</ul>
+
+
+<p>createClient 函数执行完后返回到调用处acceptCommonHandler函数，然后从acceptCommonHandler函数再返回到acceptTcpHandler函数。</p>
+
+
+<h4>接收请求完毕，准备接收客户端得数据</h4>
+
+
+<p>到此为止，新连接到来时的回调函数acceptTcpHandler执行完毕，在这个回调函数中创建了一个redisClient来处理这个客户端接下来的请求，并绑定了接收的新连接的读文件事件。当有数据可读时，网络i/o轮询（比如epoll）会有事件触发，此时绑定的回调函数readQueryFromClient将会调用来处理客户端发送过来的数据。</p>
+
+
+<h3>读取客户端请求的数据</h3>
+
+
+<p>在绑定有数据可读时的回调函数中的createClient函数中绑定了一个有数据可读时的回调函数readQueryFromClient函数，现在看看这个函数的具体内容</p>
+
+
+<p>Networking.c:874</p>
+
+
+<pre>void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask) {
+    redisClient *c = (redisClient*) privdata;
+    char buf[REDIS_IOBUF_LEN];
+    int nread;
+    REDIS_NOTUSED(el);
+    REDIS_NOTUSED(mask);
+
+    server.current_client = c;
+    nread = read(fd, buf, REDIS_IOBUF_LEN);
+    if (nread == -1) {
+        if (errno == EAGAIN) {
+            nread = 0;
+        } else {
+            redisLog(REDIS_VERBOSE, &quot;Reading from client: %s&quot;,strerror(errno));
+            freeClient(c);
+            return;
+        }
+    } else if (nread == 0) {
+        redisLog(REDIS_VERBOSE, &quot;Client closed connection&quot;);
+        freeClient(c);
+        return;
+    }
+    if (nread) {
+        c-&gt;querybuf = sdscatlen(c-&gt;querybuf,buf,nread);
+        c-&gt;lastinteraction = time(NULL);
+    } else {
+        server.current_client = NULL;
+        return;
+    }
+    if (sdslen(c-&gt;querybuf) &gt; server.client_max_querybuf_len) {
+        sds ci = getClientInfoString(c), bytes = sdsempty();
+
+        bytes = sdscatrepr(bytes,c-&gt;querybuf,64);
+        redisLog(REDIS_WARNING,&quot;Closing client that reached max query buffer length: %s (qbuf initial bytes: %s)&quot;, ci, bytes);
+        sdsfree(ci);
+        sdsfree(bytes);
+        freeClient(c);
+        return;
+    }
+    processInputBuffer(c);
+    server.current_client = NULL;
+}</pre>
+
+
+<ul>
+<li>调用系统函数read来读取客户端传送过来的数据，调用read后对读取过程中被系统中断的情况（nread == -1 &amp;&amp; errno == EAGAIN），客户端关闭的情况（nread == 0）进行了判断处理。</li>
+<li>如果读取的数据超过限制（1GB）则报错。</li>
+<li>读取完后进入processInputBuffer进行协议解析。</li>
+</ul>
+
+
+<h3>请求协议</h3>
+
+
+<p>从readQueryFromClient函数读取客户端传过来的数据，进入processInputBuffer函数进行协议解析，可以把processInputBuffer函数看作是输入数据的协议解析器</p>
+
+
+<p>Networking.c：835</p>
+
+
+<pre>void processInputBuffer(redisClient *c) {
+    /* Keep processing while there is something in the input buffer */
+    while(sdslen(c-&gt;querybuf)) {
+        /* Immediately abort if the client is in the middle of something. */
+        if (c-&gt;flags &amp; REDIS_BLOCKED || c-&gt;flags &amp; REDIS_IO_WAIT) return;
+
+        /* REDIS_CLOSE_AFTER_REPLY closes the connection once the reply is
+         * written to the client. Make sure to not let the reply grow after
+         * this flag has been set (i.e. don&#39;t process more commands). */
+        if (c-&gt;flags &amp; REDIS_CLOSE_AFTER_REPLY) return;
+
+        /* Determine request type when unknown. */
+        if (!c-&gt;reqtype) {
+            if (c-&gt;querybuf[0] == &#39;*&#39;) {
+                c-&gt;reqtype = REDIS_REQ_MULTIBULK;
+            } else {
+                c-&gt;reqtype = REDIS_REQ_INLINE;
+            }
+        }
+
+        if (c-&gt;reqtype == REDIS_REQ_INLINE) {
+            if (processInlineBuffer(c) != REDIS_OK) break;
+        } else if (c-&gt;reqtype == REDIS_REQ_MULTIBULK) {
+            if (processMultibulkBuffer(c) != REDIS_OK) break;
+        } else {
+            redisPanic(&quot;Unknown request type&quot;);
+        }
+
+        /* Multibulk processing could see a &lt;= 0 length. */
+        if (c-&gt;argc == 0) {
+            resetClient(c);
+        } else {
+            /* Only reset the client when the command was executed. */
+            if (processCommand(c) == REDIS_OK)
+                resetClient(c);
+        }
+    }
+}</pre>
+
+
+<ul>
+<li>Redis支持两种协议，一种是inline，一种是multibulk。inline协议是老协议，现在一般只在命令行下的redis客户端使用，其他情况一般是使用multibulk协议。</li>
+<li>如果客户端传送的数据的第一个字符时‘*’，那么传送数据将被当做multibulk协议处理，否则将被当做inline协议处理。Inline协议的具体解析函数是processInlineBuffer，multibulk协议的具体解析函数是processMultibulkBuffer。</li>
+<li>当协议解析完毕，即客户端传送的数据已经解析出命令字段和参数字段，接下来进行命令处理，命令处理函数是processCommand。</li>
+</ul>
+
+
+<h4>Inline请求协议</h4>
+
+
+<p>Networking.c：679</p>
+
+
+<pre>int processInlineBuffer(redisClient *c) {
+    ...
+}</pre>
+
+
+<ul>
+<li>根据空格分割客户端传送过来的数据，把传送过来的命令和参数保存在argv数组中，把参数个数保存在argc中，argc的值包括了命令参数本身。即set key value命令，argc的值为3。详细解析见<a href="http://redis.io/topics/protocol">协议详解</a></li>
+</ul>
+
+
+<h4>Multibulk请求协议</h4>
+
+
+<p>Multibulk协议比inline协议复杂，它是二进制安全的，即传送数据可以包含不安全字符。Inline协议不是二进制安全的，比如，如果set key value命令中的key或value包含空白字符，那么inline协议解析时将会失败，因为解析出来的参数个数与命令需要的的参数个数会不一致。</p>
+
+
+<p>协议格式</p>
+
+
+<pre>*&lt;number of arguments&gt; CR LF
+$&lt;number of bytes of argument 1&gt; CR LF
+&lt;argument data&gt; CR LF
+...
+$&lt;number of bytes of argument N&gt; CR LF
+&lt;argument data&gt; CR LF</pre>
+
+
+<p>协议举例</p>
+
+
+<pre>*3
+$3
+SET
+$5
+mykey
+$7
+myvalue</pre>
+
+
+<p>具体解析代码位于</p>
+
+
+<p>Networking.c：731</p>
+
+
+<pre>int processMultibulkBuffer(redisClient *c) {
+...
+}</pre>
+
+
+<p>详细解析见<a href="http://redis.io/topics/protocol">协议详解</a></p>
+
+
+<h3>处理命令</h3>
+
+
+<p>当协议解析完毕，则表示客户端的命令输入已经全部读取并已经解析成功，接下来就是执行客户端命令前的准备和执行客户端传送过来的命令</p>
+
+
+<p>Redis.c：1062</p>
+
+
+<pre>/* If this function gets called we already read a whole
+ * command, argments are in the client argv/argc fields.
+ * processCommand() execute the command or prepare the
+ * server for a bulk read from the client.
+ *
+ * If 1 is returned the client is still alive and valid and
+ * and other operations can be performed by the caller. Otherwise
+ * if 0 is returned the client was destroied (i.e. after QUIT). */
+int processCommand(redisClient *c) {
+...
+ /* Now lookup the command and check ASAP about trivial error conditions
+  * such as wrong arity, bad command name and so forth. */
+c-&gt;cmd = c-&gt;lastcmd = lookupCommand(c-&gt;argv[0]-&gt;ptr);
+...
+call(c);
+...
+}</pre>
+
+
+<ul>
+<li>lookupCommand先根据客户端传送过来的数据查找该命令并找到命令的对应处理函数。</li>
+<li>Call函数调用该命令函数来处理命令，命令与对应处理函数的绑定位于。</li>
+</ul>
+
+
+<p>Redi.c：72</p>
+
+
+<pre>struct redisCommand *commandTable;
+struct redisCommand readonlyCommandTable[] = {
+{"get",getCommand,2,0,NULL,1,1,1},
+...
+}</pre>
+
+
+<h3>回复请求</h3>
+
+
+<p>回复请求位于对应的命令中，以get命令为例</p>
+
+
+<p>T_string.c：67</p>
+
+
+<pre>void getCommand(redisClient *c) {
+    getGenericCommand(c);
+}</pre>
+
+
+<p>T_string.c：52</p>
+
+
+<pre>int getGenericCommand(redisClient *c) {
+    robj *o;
+
+    if ((o = lookupKeyReadOrReply(c,c-&gt;argv[1],shared.nullbulk)) == NULL)
+        return REDIS_OK;
+
+    if (o-&gt;type != REDIS_STRING) {
+        addReply(c,shared.wrongtypeerr);
+        return REDIS_ERR;
+    } else {
+        addReplyBulk(c,o);
+        return REDIS_OK;
+    }
+}</pre>
+
+
+<ul>
+<li>getGenericCommand在getset 命令中也会用到。</li>
+<li>lookupKeyReadOrReply是以读数据为目的查询key函数，并且如果该key不存在，则在该函数中做不存在的回包处理。</li>
+<li>如果该key存在，则返回该key对应的数据，addReply函数以及以addReply函数开头的都是回包函数。</li>
+</ul>
+
+
+<h4>绑定写数据的回调函数</h4>
+
+
+<p>接下来看看addReply函数里的内容</p>
+
+
+<p>Networking.c:190</p>
+
+
+<pre>void addReply(redisClient *c, robj *obj) {
+    if (_installWriteEvent(c) != REDIS_OK) return;
+    ...
+}</pre>
+
+
+<p>Networking.c:64</p>
+
+
+<pre>int _installWriteEvent(redisClient *c) {
+    if (c-&gt;fd &lt;= 0) return REDIS_ERR;
+    if (c-&gt;bufpos == 0 &amp;&amp; listLength(c-&gt;reply) == 0 &amp;&amp;
+        (c-&gt;replstate == REDIS_REPL_NONE ||
+         c-&gt;replstate == REDIS_REPL_ONLINE) &amp;&amp;
+        aeCreateFileEvent(server.el, c-&gt;fd, AE_WRITABLE,
+        sendReplyToClient, c) == AE_ERR) return REDIS_ERR;
+    return REDIS_OK;
+}</pre>
+
+
+<ul>
+<li>addReply函数一进来就先调用绑定写数据的回调函数installWriteEvent。</li>
+<li>installWriteEvent函数中创建了一个文件写事件和绑定写事件的回调函数为sendReplyToClient。</li>
+</ul>
+
+
+<h4>准备写的数据内容</h4>
+
+
+<p>addReply函数一进来后就绑定写数据的回调函数，接下来就是准备写的数据内容</p>
+
+
+<p>Networking.c：190</p>
+
+
+<pre>void addReply(redisClient *c, robj *obj) {
+    if (_installWriteEvent(c) != REDIS_OK) return;
+    redisAssert(!server.vm_enabled || obj-&gt;storage == REDIS_VM_MEMORY);
+
+    /* This is an important place where we can avoid copy-on-write
+     * when there is a saving child running, avoiding touching the
+     * refcount field of the object if it&#39;s not needed.
+     *
+     * If the encoding is RAW and there is room in the static buffer
+     * we&#39;ll be able to send the object to the client without
+     * messing with its page. */
+    if (obj-&gt;encoding == REDIS_ENCODING_RAW) {
+        if (_addReplyToBuffer(c,obj-&gt;ptr,sdslen(obj-&gt;ptr)) != REDIS_OK)
+            _addReplyObjectToList(c,obj);
+    } else {
+        /* FIXME: convert the long into string and use _addReplyToBuffer()
+         * instead of calling getDecodedObject. As this place in the
+         * code is too performance critical. */
+        obj = getDecodedObject(obj);
+        if (_addReplyToBuffer(c,obj-&gt;ptr,sdslen(obj-&gt;ptr)) != REDIS_OK)
+            _addReplyObjectToList(c,obj);
+        decrRefCount(obj);
+    }
+}</pre>
+
+
+<ul>
+<li>先尝试把要返回的内容添加到发送数据缓冲区中（redisClient-&gt;buf），如果该缓冲区的大小已经放不下这次想放进去的数据，或者已经有数据在排队（redisClient-&gt;reply 链表不为空），则把数据添加到发送链表的尾部。</li>
+</ul>
+
+
+<h4>给客户端答复数据</h4>
+
+
+<p>在绑定写数据的回调函数中看到绑定了回调函数sendReplyToClient，现在来看看这个函数的主要内容</p>
+
+
+<p>Networking.c：566</p>
+
+
+<pre>void sendReplyToClient(aeEventLoop *el, int fd, ...) {
+    ...
+while(c-&gt;bufpos &gt; 0 || listLength(c-&gt;reply)) {
+    ...
+    if(c-&gt;bufpos &gt; 0){
+        ...
+            nwritten=write(fd,...,c-&gt;bufpos-c-&gt;sentlen);
+            ...
+        } else {
+            o = listNodeValue(listFirst(c-&gt;reply));
+            ...
+            nwritten=write(fd,...,objlen-c-&gt;sentlen);
+            ...
+        }
+    }
+}</pre>
+
+
+<ul>
+<li>通过调用系统函数write给客户端发送数据，如果缓冲区有数据就把缓冲区的数据发送给客户端，缓冲区的数据发送完了，如果有排队数据，则继续发送。</li>
+</ul>
+
+
+<h3>退出</h3>
+
+
+<p>Redis 服务器的退出是通过shutdown命令来退出的，退出前会做一系列的清理工作</p>
+
+
+<p>Db.c：347</p>
+
+
+<pre>void shutdownCommand(redisClient *c) {
+    if (prepareForShutdown() == REDIS_OK)
+        exit(0);
+    addReplyError(c,"Errors trying to SHUTDOWN. Check logs.");
+}</pre>
+
+
+<h3>总结</h3>
+
+
+<p>框架从启动，接收请求，读取客户端数据，请求协议解析，处理命令，回复请求，退出对redis运行的整个流程做了一个梳理。对整个redis的运作和框架有了一个初步的了解。
+<div style="margin-top:20px;margin-left:70px;line-height:24px;border:1px solid #ccc;text-align:center;width:545px;background:#fff">
+<div style="font-size:16px;font-family:Verdana;background:#d20;color:#fff;float:left;border-radius:10px 0 10px 0;padding:3px 12px 4px;line-height:32px;margin-top:14px">42区 VPS</div>
+<div>
+42qu.com 云主机 , 卖给创业的你 。 <a href="http://vps.42qu.com/by/iammutex/rss" style="text-decoration:none;background:none;color:#02d">点击这里 , 查看详情</a>
+</div>
+</div>
+<p style="margin:0;padding:0;height:1px;overflow:hidden">
+    <a href="http://www.wumii.com/widget/relatedItems.htm" style="border:0"><img src="http://static.wumii.com/images/pixel.png" alt="无觅相关文章插件，快速提升流量" style="border:0;padding:0;margin:0"></a></p>
+<table cellspacing="0" cellpadding="2" border="0" width="100%" style="clear:both">
+    
+    <tr>
+        <td><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">相关文章：</font></b></td>
+    </tr>
+    
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4077.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4007.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis 常见的性能问题和解决方法</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2853.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4007.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis String类型实现原理</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4039.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4007.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">深入剖析Redis RDB持久化机制</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1413.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4007.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">深入Redis内部-Redis 源码讲解</font>
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td style="margin:0!important;padding:0!important;line-height:20px!important">
+                    <img border="0" src="http://static.wumii.com/images/widget/widget_solidPoint.gif">
+                    <a style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1694.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F4007.html">
+                        <font size="-1" color="#333333" style="line-height:1.65em;font-size:14px!important">Redis内存存储结构分析</font>
+                    </a>
+                </td>
+            </tr>
+    
+    <tr>
+        <td align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/652860894/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/652860894/6253001/1/item.html" border="0" height="0" width="0"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

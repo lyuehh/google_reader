@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>di: 查看磁盘使用情况</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>di: 查看磁盘使用情况</h2>
+<p class="meta">26 Dec 2012</p>
+
+<div class="post">
+<h2>di: 查看磁盘使用情况</h2>
+
+<h3>by Toy</h3>
+
+<h3>at 2012-12-26 15:10:18</h3>
+
+<h3>original <a href="http://linuxtoy.org/archives/di.html">http://linuxtoy.org/archives/di.html</a></h3>
+
+<p><a href="http://www.gentoo.com/di/">di</a> 即 disk information 之意，利用它你可以查看挂载文件系统的磁盘使用情况。与 <code>df</code> 相比，<code>di</code> 的结果更为详细，同时你能对输出有更多控制，如过滤、排序等。另外，<code>di</code> 也支持检查用户及组配额。<span></span></p>
+
+
+
+
+<p><strong><code>di</code> 用法举例</strong></p>
+
+
+
+
+<pre><code>di -a # 查看所有挂载文件系统的磁盘使用情况
+
+Filesystem         Mount               Size     Used    Avail %Used  fs Type   
+rootfs             /                   5.1G     2.4G     2.5G   52%  rootfs    
+/dev/mapper/debian /                   5.1G     2.4G     2.5G   52%  ext3      
+/dev/sda1          /boot             227.7M    18.8M   196.8M   14%  ext2      
+udev               /dev               10.0M     0.0M    10.0M    0%  devtmpfs  
+devpts             /dev/pts            0.0M     0.0M     0.0M    0%  devpts    
+/dev/mapper/debian /home              13.7G     1.2G    11.8G   14%  ext3      
+none               /home/xuxiaodon     0.0M     0.0M     0.0M    0%  vboxsf    
+none               /media/sf_wind      0.0M     0.0M     0.0M    0%  vboxsf    
+proc               /proc               0.0M     0.0M     0.0M    0%  proc      
+tmpfs              /run              101.0M     0.5M   100.5M    1%  tmpfs     
+tmpfs              /run/lock           5.0M     0.0M     5.0M    0%  tmpfs     
+tmpfs              /run/shm          202.0M     0.0M   202.0M    0%  tmpfs     
+sysfs              /sys                0.0M     0.0M     0.0M    0%  sysfs     
+tmpfs              /tmp             1000.0M   199.5M   800.5M   20%  tmpfs     
+rpc_pipefs         /var/lib/nfs/rp     0.0M     0.0M     0.0M    0%  rpc_pipefs
+
+di -x proc,tmpfs,sysfs # 排除 proc、tmpfs、sysfs 等
+
+Filesystem         Mount               Size     Used    Avail %Used  fs Type   
+rootfs             /                   5.1G     2.4G     2.5G   52%  rootfs    
+/dev/mapper/debian /                   5.1G     2.4G     2.5G   52%  ext3      
+/dev/sda1          /boot             227.7M    18.8M   196.8M   14%  ext2      
+udev               /dev               10.0M     0.0M    10.0M    0%  devtmpfs  
+devpts             /dev/pts            0.0M     0.0M     0.0M    0%  devpts    
+/dev/mapper/debian /home              13.7G     1.2G    11.8G   14%  ext3      
+none               /home/xuxiaodon     0.0M     0.0M     0.0M    0%  vboxsf    
+none               /media/sf_wind      0.0M     0.0M     0.0M    0%  vboxsf    
+rpc_pipefs         /var/lib/nfs/rp     0.0M     0.0M     0.0M    0%  rpc_pipefs
+
+di -I ext3 # 只显示 ext3 文件系统
+
+Filesystem         Mount               Size     Used    Avail %Used  fs Type
+/dev/mapper/debian /                   5.1G     2.4G     2.5G   52%  ext3   
+/dev/mapper/debian /home              13.7G     1.2G    11.8G   14%  ext3   
+</code></pre>
+
+
+
+
+<p>更多用法，可 <code>man di</code> 了解。</p>
+
+
+<pre><code>&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;分类: &lt;a href="http://linuxtoy.org/category/cli" title="View all posts in Cli" rel="category tag"&gt;Cli&lt;/a&gt;, &lt;a href="http://linuxtoy.org/category/apps/tools" title="View all posts in Tools" rel="category tag"&gt;Tools&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/di.html"&gt;永久链接&lt;/a&gt; |
+&lt;a href="http://delicious.com/save?url=http://linuxtoy.org/archives/di.html&amp;amp;title=di:%20%E6%9F%A5%E7%9C%8B%E7%A3%81%E7%9B%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"&gt;收藏到 del.icio.us&lt;/a&gt; | 
+&lt;a href="mailto:?Subject=Check+This+Out&amp;amp;body=I+think+you&amp;#39;ll+like+this:+http://linuxtoy.org/archives/di.html"&gt;Email 给好友&lt;/a&gt; | 
+&lt;a href="http://linuxtoy.org/archives/di.html#comments"&gt;14 评论&lt;/a&gt; |
+&lt;a href="http://linuxtoy.org/faq/donate"&gt;捐助本站&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

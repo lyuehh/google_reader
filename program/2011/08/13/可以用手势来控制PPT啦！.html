@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>可以用手势来控制PPT啦！</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>可以用手势来控制PPT啦！</h2>
+<p class="meta">13 Aug 2011</p>
+
+<div class="post">
+<h2>可以用手势来控制PPT啦！</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-08-12 19:29:35</h3>
+
+<h3>original <a href="http://www.guokr.com/article/57295/">http://www.guokr.com/article/57295/</a></h3>
+
+<div>
+<p>自从微软为Xbox360推出了Kinect体感控制器之后，各种破解应用层出不穷。现在微软已经发布了官方的SDK（软件开发工具包），果壳DIY编辑也不由一时手痒，想写一个用手势通过kinect控制ppt的程序，可上网一搜，发现已经有人写过了……于是就用了人家的源代码，把需要用到的软硬件打通了一遍，作为kinect的入门应用吧。</p>
+<table>
+<col>
+<col>
+<tbody valign="top">
+<tr><th>DIYer:</th><td>天蓝提琴，程序作者JoshB</td>
+</tr>
+<tr><th>制作时间:</th><td>10分钟</td>
+</tr>
+<tr><th>制作难度:</th><td>★☆☆☆☆</td>
+</tr>
+<tr><th>GEEK指数:</th><td>★★★★★</td>
+</tr>
+</tbody>
+</table>
+<div>
+<div><br></div>
+</div>
+<div>
+<p>双向电梯</p>
+<ul>
+<li><a href="http://www.guokr.com/#id2">1   硬件准备</a></li>
+<li><a href="http://www.guokr.com/#id3">2   软件准备</a></li>
+<li><a href="http://www.guokr.com/#id4">3   你需要做的</a></li>
+<li><a href="http://www.guokr.com/#ppt">4   如何操作PPT呢</a></li>
+<li><a href="http://www.guokr.com/#diyer">5   DIYer签到处</a></li>
+</ul>
+</div>
+<div>
+<div><br></div>
+</div>
+<div>
+<h1><a href="http://www.guokr.com/#id5">1   硬件准备</a></h1>
+<img alt="/gkimage/po/j5/on/poj5on.png" src="http://www.guokr.com/gkimage/po/j5/on/poj5on.png">
+<p>● 微软Kinect传感器。</p>
+<img alt="/gkimage/jp/0z/5z/jp0z5z.png" src="http://www.guokr.com/gkimage/jp/0z/5z/jp0z5z.png">
+<p>● Kinect专用电源适配器。如果是Xbox360同捆的kinect，需要为kinect连接电脑而额外购买一个电源适配器。如果是单独包装的kinect传感器，包装中自带了这个适配器，无需额外购买。</p>
+<blockquote>
+注意：Kinect的接口不是USB口，使用的电源功率也不同。</blockquote>
+<p>● 安装了Windows7的笔记本电脑。</p>
+<div>
+<div>详细配置要求如下：</div>
+<div>双核2.66GHz或者更快的中央处理器</div>
+<div>Windows7兼容的显卡，要求支持DirectX® 9.0c</div>
+<div>2G内存（推荐4G以上）</div>
+</div>
+</div>
+<div>
+<h1><a href="http://www.guokr.com/#id6">2   软件准备</a></h1>
+<p>（除win7外均可点击下载）</p>
+<div>
+<div>● Windows 7 (x86 or x64) 操作系统</div>
+<div>● <a href="http://go.microsoft.com/?LinkID=9709940">Visual C# 2010 Express</a></div>
+<div>● <a href="http://www.microsoft.com/downloads/info.aspx?na=41&amp;SrcFamilyId=9CFB2D51-5FF4-4491-B0E5-B386F32C0992&amp;SrcDisplayLang=zh-cn&amp;u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f1%2fB%2fE%2f1BE39E79-7E39-46A3-96FF-047F95396215%2fdotNetFx40_Full_setup.exe">Microsoft .NET Framework 4.0</a></div>
+<div>● <a href="http://kinectpowerpoint.codeplex.com/releases/view/70037#DownloadId=259307">Kinect Powerpoint Control</a> 本项目的核心程序,作者 <a href="http://www.codeplex.com/site/users/view/JoshB">JoshB</a> 。</div>
+<div>● <a href="http://www.microsoft.com/downloads/info.aspx?na=41&amp;srcfamilyid=bb0f72cb-b86b-46d1-bf06-665895a313c7&amp;srcdisplaylang=en&amp;u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f3%2f5%2f1%2f351B3C70-B7F4-4F86-94EA-5AECC3AB6B5C%2fx86%2fSpeechPlatformRuntime.msi">Microsoft Speech Runtime</a></div>
+<div>● <a href="http://www.microsoft.com/downloads/info.aspx?na=41&amp;srcfamilyid=1b1604d3-4f66-4241-9a21-90a294a5c9a4&amp;srcdisplaylang=en&amp;u=http%3a%2f%2fdownload.microsoft.com%2fdownload%2f1%2f7%2f7%2f177963E6-9F59-4497-AB55-1DCBB7139ACF%2fx86%2fMicrosoftSpeechPlatformSDK.msi">Microsoft Speech SDK</a></div>
+</div>
+<blockquote>
+这两个语音功能在程序中默认是关闭的，但是不安装的话无法运行程序。为了尊重原作者的程序，果壳DIY编辑就不放出的版本，只好请大家把这样个语音功能包也一起安装了吧。</blockquote>
+<div>
+<div>● 微软官方Kinect SDK: 这个SDK中包含了Kinect的Windows7驱动程序，选择对应的版本下载。不过这两个版本的内容是完全一样的…因为微软并没有开发X64的Kinect SDK。</div>
+</div>
+<p><a href="http://download.microsoft.com/download/3/C/B/3CB546D6-C04E-4097-9393-C81C51F7FDA2/KinectSDK32.msi">Kinect SDK x86</a></p>
+<p><a href="http://download.microsoft.com/download/3/C/B/3CB546D6-C04E-4097-9393-C81C51F7FDA2/KinectSDK64.msi">Kinect SDK x64</a></p>
+</div>
+<div>
+<h1><a href="http://www.guokr.com/#id7">3   你需要做的</a></h1>
+<p>● 下载完所有的程序之后，依次安装Visual C# 2010 Express, .Net Framework4.0, KinecSDK,  Speech Runtime, SpeechSDK。</p>
+<p>● 将Kinect通过专属电源适配器连上电脑的USB口。</p>
+<blockquote>
+注意：要先安装KinectSDK，再将Kinect和电脑连接起来，否则会导致驱动安装失败。</blockquote>
+<p>运行Visual C# 2010 Express，打开Kinect Powerpoint Control中的KinectPowerPointControl.sln文件，然后点F5运行程序，会出现如下窗口：</p>
+<img alt="/gkimage/e4/nl/2s/e4nl2s.png" src="http://www.guokr.com/gkimage/e4/nl/2s/e4nl2s.png">
+<p>这个程序追踪人的头和双手的位置（截图中的三个红色圆点）。</p>
+<img alt="/gkimage/oi/3z/2y/oi3z2y.png" src="http://www.guokr.com/gkimage/oi/3z/2y/oi3z2y.png">
+<p>当手臂平举时，手掌和头部之间的距离超过一个阈值，手掌处的红色小圆就会变成绿色大圆。每当左手红色小圆变成绿色大圆时，程序会输出一个“←”到Windows系统中当前激活的窗口，相当于点了一下键盘上的“←”键。右手相当于“→”键。</p>
+</div>
+<div>
+<h1><a href="http://www.guokr.com/#id8">4   如何操作PPT呢</a></h1>
+<dl>
+<dt>只要先运行这个程序，再播放PPT，此时这个kinect追踪的程序仍在在后台运行。当你伸出右手，ppt就向下翻页（和按下“→”相同）；当你伸出左手，ppt就向上翻页（和按下“←”相同）。这样一来，演讲的时候就不需要使用鼠标或者遥控器来控制ppt了哦~</dt>
+<dd>本品不适合讲到激动之处就手舞足蹈的人群使用……</dd>
+</dl>
+<p><a href="http://research.microsoft.com/en-us/um/redmond/projects/kinectsdk/guides.aspx">更多Kinect官方资料</a></p>
+</div>
+<div>
+<h1><a href="http://www.guokr.com/#id9">5   DIYer签到处</a></h1>
+<p>实际上这个程序还远未完善，比如它不能点击播放ppt中的多媒体文件。手上有kinect的同学可以尝试完善一下这个程序，然后准备一个题为“如何用手势控制PPT”的演讲来向大家展示你的成果。</p>
+<p>果壳DIY站QQ群：132647923（加入时请报上你在果壳的个人主页地址，以防广告ID）</p>
+<p>果壳DIY站微博: <a href="http://t.sina.com.cn/guokrdiy">http://t.sina.com.cn/guokrdiy</a></p>
+</div>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

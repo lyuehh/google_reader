@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IronRuby - 编写自动化测试脚本</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IronRuby - 编写自动化测试脚本</h2>
+<p class="meta">25 Jun 2010</p>
+
+<div class="post">
+<h2>IronRuby - 编写自动化测试脚本</h2>
+
+<h3>by 周 金根</h3>
+
+<h3>at 2010-06-25 10:43:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/zhoujg/archive/2010/06/25/1764961.html">http://www.cnblogs.com/zhoujg/archive/2010/06/25/1764961.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/zhoujg/"><img src="http://pic.cnblogs.com/face/u14032.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/zhoujg/">周 金根</a> 发表于 2010-06-25 10:43 <a href="http://www.cnblogs.com/zhoujg/archive/2010/06/25/1764961.html">原文链接</a> 阅读: 748 评论: 2</p>
+
+
+<p>　　在<b><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/11/1756514.html">使用VS2010的CodedUI来做自己的自动化测试框架</a></b>中我介绍过，我将使用IronRuby来编写自动化测试脚本，由于对IronRuby不熟悉，在开发中遇到过一些问题。我对这些问题之前也进行了blog分享，本篇我将给大家介绍一下如何使用IronRuby和CodedUI提高的自动化测试类库来编写我们自己的自动化测试脚本，后期会在<span style="font-size:12pt"><b><a href="http://openexpressapp.codeplex.com/">OpenExpressApp</a></b></span>主题中再介绍编写OpenTest.UI的一些过程，感兴趣的可以关注下。</p>
+
+
+<h3>运行环境</h3>
+
+
+<p>.Net Framework 4</p>
+
+
+<h3>找到CodedUI的自动化测试相关类库</h3>
+
+
+<p>　　CodedUI自动化相关测试类库放置在<b> Microsoft Visual Studio 10.0\Common7\IDE\PrivateAssemblies\</b> 文件夹中，具体每个程序集的内容我并不是很清楚，有对微软自动化测试框架感兴趣的可以去看看下，我现在还用不到就不研究了：）</p>
+
+
+<p><br><img src="http://pic002.cnblogs.com/img/zhoujg/201006/2010061116474526.jpg" height="183" width="515"></p>
+
+
+<p>   这里假定我们放到目录<span style="text-decoration:underline"><b>D:/GZJ/OpenExpressApp/Tool/OpenTest/dll</b></span></p>
+
+
+<h3>测试用例</h3>
+
+
+<p>　　这里我们拿一个大家都知道的window自带的记事本来做测试，路径为：C:/Windows/system32/calc.exe</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/zhoujg/201006/2010062510203913.jpg"></p>
+
+
+<h3>编写函数</h3>
+
+
+<p>由于查找button等功能可以复用，编写几个函数：</p>
+
+
+<p>
+<pre>def window(title)
+    win = WinWindow.new
+    win.SearchProperties["Name"] = title
+    win
+end
+
+def button(parent, title)
+    btn  = WinButton.new(parent);
+    btn.SearchProperties["Name"] = title
+    btn
+end
+</pre>
+</p>
+
+
+<h3>完整代码</h3>
+
+
+<p>
+<pre>$LOAD_PATH &lt;&lt; &#39;D:/GZJ/OpenExpressApp/Tool/OpenTest/dll&#39;
+
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Extension.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Extension.IE.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Extension.IE.Communication.Interop.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Extension.MSAA.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Extension.Uia.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Framework.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITesting.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITest.Playback.dll&quot;
+require &quot;Microsoft.VisualStudio.TestTools.UITesting.dll&quot;
+include Microsoft::VisualStudio::TestTools::UITesting
+include Microsoft::VisualStudio::TestTools::UITesting::WinControls
+
+def window(title)
+    win = WinWindow.new
+    win.SearchProperties[&quot;Name&quot;] = title
+    win
+end
+
+def button(parent, title)
+    btn  = WinButton.new(parent);
+    btn.SearchProperties[&quot;Name&quot;] = title
+    btn
+end
+
+Playback.Initialize()  ＃注意必须加这句，不然提示Playback的错误
+
+app = ApplicationUnderTest.Launch(&#39;C:/Windows/system32/calc.exe&#39;)
+
+calc_window = window(&quot;计算器&quot;)
+btn_1 = button(calc_window, &quot;1&quot;)
+btn_2 = button(calc_window, &quot;2&quot;)
+btn_add = button(calc_window, &quot;+&quot;)
+btn_equal = button(calc_window, &quot;=&quot;)
+btn_value = WinEdit.new(calc_window)
+
+Mouse.Click btn_1
+Mouse.Click btn_add
+Mouse.Click btn_2
+Mouse.Click btn_equal
+puts &quot;1+2=3:太高科技了，电脑算对了&quot; if btn_value.Text.to_i  == 3
+
+
+Keyboard.SendKeys(&quot;C&quot;);
+Keyboard.SendKeys(&quot;2&quot;);
+Keyboard.SendKeys(&quot;*&quot;);
+Keyboard.SendKeys(&quot;2&quot;);
+Keyboard.SendKeys(&quot;.&quot;);
+Keyboard.SendKeys(&quot;2&quot;);
+Keyboard.SendKeys(&quot;{ENTER}&quot;);
+puts &quot;2*2.2=4.4:受不了了，连小数和乘法都会了&quot; if btn_value.Text.to_f  == 4.4
+
+app.close
+
+Playback.Cleanup()
+</pre>
+</p>
+
+
+<h3>运行测试案例</h3>
+
+
+<p>运行后你可以看到，代码会把计算器打开，然后根据脚本编写意图点击和按键，最终输出结果。</p>
+
+
+<p>在NetBeans下查看测试结果：</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/zhoujg/201006/2010062510300729.jpg"></p>
+
+
+<p>在Dos窗口输出是乱码，不知道有谁知道如何更改这个窗口的字符编码？</p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/zhoujg/201006/2010062510395795.jpg"></p>
+
+
+<h3>注意的地方</h3>
+
+
+<ol>
+<li>文件使用UTF－8或者UTF8 without BOM格式<span style="color:#ff0000"> </span></li>
+<li><span style="color:#ff0000"><span style="color:#000000">必须调用</span>Playback.Initialize()</span></li>
+<li><span style="color:#ff0000"><span style="color:#000000">CodeUI的dll必须引用完整</span></span></li>
+</ol>
+
+
+<h3>之前写的IronRuby相关blog</h3>
+
+
+<ul>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/24/1762981.html">IronRuby － 快速在半小时学习Ruby基础知识</a></li>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/23/1763521.html">IronRuby - 文件编码惹的祸</a></li>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/23/1763866.html">IronRuby - 使用NetBeans编写IronRuby代码</a></li>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/13/1758024.html">IronRuby - 怎么就没有好用的IDE呢？？</a></li>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/11/1756517.html">IronRuby - 如何在VS2010下调试IronRuby代码</a></li>
+<li><a href="http://www.cnblogs.com/zhoujg/archive/2010/06/11/1756514.html">使用VS2010的CodedUI来做自己的自动化测试框架</a></li>
+</ul>
+
+
+<p> </p>
+
+
+<p>以上代码下载：<a href="http://files.cnblogs.com/zhoujg/TestCalc-Ruby.Net4.rar">http://files.cnblogs.com/zhoujg/TestCalc-Ruby.Net4.rar</a></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><b>欢迎转载，转载请注明：转载自</b><b><a href="http://zhoujg.cnblogs.com/">周金根</a> [ <a href="http://zhoujg.cnblogs.com/">http://zhoujg.cnblogs.com/</a> ]</b></p>
+
+
+<p><img src="http://www.cnblogs.com/zhoujg/aggbug/1764961.html?type=1" width="1" height="1" alt=""><p>评论: 2　<a href="http://www.cnblogs.com/zhoujg/archive/2010/06/25/1764961.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/zhoujg/archive/2010/06/25/1764961.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67007/">Symbian前CTO出走诺基亚 加盟导航公司TomTom</a><span style="color:gray">(2010-06-25 22:25)</span><br>· <a href="http://news.cnblogs.com/n/67006/">亚马逊三大举措或促eBooks今年赢利10亿美元</a><span style="color:gray">(2010-06-25 22:06)</span><br>· <a href="http://news.cnblogs.com/n/67005/">英特尔研究百亿亿次高性能计算</a><span style="color:gray">(2010-06-25 22:05)</span><br>· <a href="http://news.cnblogs.com/n/67004/">谷歌新版Chrome浏览器内置Adobe Flash</a><span style="color:gray">(2010-06-25 20:18)</span><br>· <a href="http://news.cnblogs.com/n/67003/">CSS3 媒介判断与 iPhone 4 视网膜显示屏</a><span style="color:gray">(2010-06-25 20:13)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/sumtec/archive/2010/06/25/1764838.html">C#确实是很“慢”——最后的疯狂</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

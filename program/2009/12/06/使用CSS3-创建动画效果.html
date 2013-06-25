@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用CSS3 创建动画效果</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用CSS3 创建动画效果</h2>
+<p class="meta">06 Dec 2009</p>
+
+<div class="post">
+<h2>使用CSS3 创建动画效果</h2>
+
+<h3>by wlsy</h3>
+
+<h3>at 2009-12-06 14:35:23</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/wlsy/~8021671/596111723/6130327/1/item.html">http://item.feedsky.com/~feedsky/wlsy/~8021671/596111723/6130327/1/item.html</a></h3>
+
+<p>在CSS3中新增了几个很好玩的东东：CSS Animation，CSS Transition 和 CSS Transform，顾名思义就是通过CSS来实现动画，过渡和变形。</p>
+
+
+<p>它们的出现足以让我很兴奋了，我不必要在去写那些复杂的JS代码，运用它们我能更简单的创建自己的想要的动画。</p>
+
+
+<h2>应用前景</h2>
+
+
+<p>伴随着CSS3的普及，这些特性被各大浏览器支持也只是时间上的问题。<span style="text-decoration:line-through">有消息称在Internet Explorer 9 中将更好的支持HTML5和CSS3</span> 从IE9预览版上看已经支持了。所以各位围观群众不必担心这只是昙花一现。以下是我就目前的浏览器支持状态统计的一个表格：</p>
+
+
+<p><span></span></p>
+
+
+<table border="0" cellspacing="0" cellpadding="2" width="685" align="center">
+<tbody>
+<tr>
+<td width="124" valign="top"></td>
+<td width="98" valign="top">IE8 -</td>
+<td width="159" valign="top">chrome&amp;safair</td>
+<td width="144" valign="top">firefox 3.5.5 *(3)</td>
+<td width="158" valign="top">opera 10.10- *(4)</td>
+</tr>
+<tr>
+<td width="124" valign="top">CSS Transiton</td>
+<td width="98" valign="top">X</td>
+<td width="159" valign="top">O</td>
+<td width="144" valign="top">X</td>
+<td width="158" valign="top">X</td>
+</tr>
+<tr>
+<td width="124" valign="top">CSS Animation</td>
+<td width="98" valign="top">X</td>
+<td width="159" valign="top">O</td>
+<td width="144" valign="top">X</td>
+<td width="158" valign="top">X</td>
+</tr>
+<tr>
+<td width="124" valign="top">2D Transform</td>
+<td width="98" valign="top">*(1)</td>
+<td width="159" valign="top">O</td>
+<td width="144" valign="top">O</td>
+<td width="158" valign="top">X</td>
+</tr>
+<tr>
+<td width="124" valign="top">3D Transform</td>
+<td width="98" valign="top">X</td>
+<td width="159" valign="top">*(2)</td>
+<td width="144" valign="top">X</td>
+<td width="158" valign="top">X</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><strong>备注</strong></p>
+
+
+<ul>
+<li>(1): IE可以通过滤镜来实现部分变形</li>
+<li>(2): 目前Windows下的webkit因不能调用GPU而不能支持部分3D Transform。</li>
+<li>(3): firefox3.7称将支持更多CSS3特性，不过最终是否支持Animation和3D Transform还不是很确定</li>
+<li>(4): oprea已经在表示在Presto2.3(opera内核)中将支持Transtion。可查看<a href="http://en.wikipedia.org/wiki/Presto_(layout_engine)#History_and_development">wiki</a></li>
+</ul>
+
+
+<p>接下来要开始了，各位看官准备好chrome或safair，演示和代码使用webkit的私有属性，let’s 干吧。</p>
+
+
+<h3>CSS Transition</h3>
+
+
+<p><p>这个能实现很舒服的过度效果，先看CSS代码片段：</p><br>
+<code><br>
+    .box {<br>
+        width: 200px;<br>
+        height: 200px;<br>
+        background: #ccc;<br>
+        -webkit-transition: all 1s ease-in-out; /*实现hover状态是backround的过渡*/<br>
+    }<br>
+    .box:hover {<br>
+        background: #333;<br>
+    }<br>
+</code></p>
+
+
+<p>你可以在<a href="http://wlsy.googlecode.com/svn/trunk/demo/css-animation/ani1.html">这里</a>看到这个演示，务必请用基于webkit的chrome或safair（以下同）。看完演示是不是很有兴趣想去学如何去使用了？</p>
+
+
+<p>transiton属性有这几个值：</p>
+
+
+<ul>
+<li>transition-property :* //指定过度的性质，比如transition-property：backgrond 就是只指定backgound参与这个过渡</li>
+<li>transition-duration:*//指定这个过渡的持续时间</li>
+<li>transition-delay:* //延迟过渡时间</li>
+<li>transition-timing-function:*//指定过度类型，有ease | linear | ease-in | ease-out | ease-in-out | cubic-bezier</li>
+</ul>
+
+
+<blockquote><p>
+    <strong>小贴士</strong></p>
+<ul>
+<li>linear   //线性过度</li>
+<li>ease-in   //由慢到快</li>
+<li>ease-out  //由快到慢</li>
+<li>ease-in-out //由慢到快在到慢</li>
+</ul>
+<p>timing-funciton的几种过度类型都是基于cubic-bezier的某些特定数值。比如ease-in-out的类型它也可以写成cubic-bezier(0.42, 0, 0.58, 1.0)。你可以在<a href="http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag">这里</a>看到 cubic-bezier曲线图</p>
+<p>Transiton和下面的Animation都是支持CSS伪类</p>
+</blockquote>
+
+
+<p>同样的，这些我们可以简写，拿上面的代码  -webkit-transition: all 1s ease-in-out; 包含了property , duration ,timing-fuction。</p>
+
+
+<p>
+参考资料：<br>
+<a href="http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag">CSS Transitions Module Level 3</a> （这个是w3c的官方文档，英语好的可以详细看看）<br>
+<a href="http://webkit.org/blog/138/css-animation/">http://webkit.org/blog/138/css-animation/</a> （这个webkit官方博客上的讲解，也有例子）</p>
+
+
+<p>怎么样，赶紧打开编辑器自己写写吧
+</p>
+
+
+<h3>CSS Animation</h3>
+
+
+<p>顾名思义，这个就能实现元素的动画效果，那时我就被震惊了，无数次那尼感叹。可以先看下<a href="http://wlsy.googlecode.com/svn/trunk/demo/css-animation/ani2.html">演示</a>，代码如下</p>
+
+
+<p><code><br>
+    @-webkit-keyframes title {<br>
+    0% { text-shadow:0px 0px 15px #000; }<br>
+    50% {<br>
+        text-shadow: 0px 0px 30px #3995bd;<br>
+        color: #aac7d4;<br>
+        margin-top:200px;<br>
+    }<br>
+    100% { text-shadow: 0px 0px 15px #000; }<br>
+    }<br>
+    h1 { -webkit-animation: title infinite ease-in-out 3s; }<br>
+</code></p>
+
+
+<p>animation有这几个属性：</p>
+
+
+<ul>
+<li>animation-name//属性名，就是我们定义的keyframes</li>
+<li>animation-duration //持续时间</li>
+<li>animation-timing-function //同上面的transition-timing-function</li>
+<li>animation-delay // 设置动画延迟</li>
+<li>animation-iteration-count //定义循环次数，infinite为无限</li>
+<li>animation-direction //定义动画方式</li>
+</ul>
+
+
+<p>这些同样是可以简写的。但真正让我觉的很爽的是keyframes 这个似乎有点象js里面的function，它能定义一个动画的转变过程供调用，过程为0%到100%或from(0%)到to(100%)，简单点说，只要你有想法，你想让元素在这个过程中以什么样的方式改变都是很简单的。</p>
+
+
+<p>你是不是已经开始蠢蠢欲动了？</p>
+
+
+<p>
+参考资料：<a href="http://www.w3.org/TR/2009/WD-css3-animations-20090320/">http://www.w3.org/TR/2009/WD-css3-animations-20090320/</a>
+</p>
+
+
+<h3>Transform</h3>
+
+
+<p>transform就是实现元素的变形，为什么放到最后？如果跟上面的CSS Animation结合起来是不是更酷呢？先看看这样一个<a href="http://wlsy.googlecode.com/svn/trunk/demo/css-animation/ani3.html">演示</a>，相信你不敢相信这只用CSS写出来的效果吧。</p>
+
+
+<p>transform有几种类型：</p>
+
+
+<ul>
+<li>scale(num,num) //尺寸，scale(2,3)即x轴方向放大两倍，y轴方向放大3被，同样的可单独写scaleX(2),scaleY(3)</li>
+<li>rotate(*deg) //旋转的角度<br>
+<blockquote><p>在2d  transform中 旋转角度俺当前的平面顺时针或逆时针旋转 。在3d transform中新增了 rotateX 和rotateY它们分别以y轴或x轴为中心进行旋转，同样可以简写称rotate(*,*)。目前已被chrome和safair支持</p></blockquote>
+</li>
+<li>skew（*deg）//倾斜角度，同样的有skewX和skewY 可简写为skew（*,*）</li>
+<li>translate //移动<br>
+<blockquote><p>在2d transform中 分为translateX 和translateY 简而言之就是元素网x轴或y轴的移动距离，而在3dtransform中新增了一个translateZ 及实现Z轴的移动，实现透视效果。目前在Windows系统上还没有浏览器支持，同样的这些可以简写。</p></blockquote>
+</li>
+</ul>
+
+
+<p>了解完这些用法后在去看看那个演示的源码，相信你肯定会惊叹transform和animation配合的动画效果了吧</p>
+
+
+<p>
+参考资料：</p>
+
+
+<ul>
+<li><a href="http://www.w3.org/TR/2009/WD-css3-2d-transforms-20090320/">http://www.w3.org/TR/2009/WD-css3-2d-transforms-20090320/</a> （w3c文档）</li>
+<li><a href="http://webkit.org/blog/386/3d-transforms/">3D Transforms</a> （webkit博客上的文章，所以在Windows下没法看到，不过那里有截图过过瘾，并有一个很酷在Windows下打了折扣的<a href="http://webkit.org/blog-files/3d-transforms/morphing-cubes.html">demo</a>哦）</li>
+<li><a href="http://www.zachstronaut.com/lab/isocube.html">http://www.zachstronaut.com/lab/isocube.html</a>(这个就是用transfrom实现的立方体)</li>
+</ul>
+
+
+<h3>结语</h3>
+
+
+<p>看到这些，你是否跟我一样期待HTML5和CSS3的快点普及呢？在运用这些新特性能快速而简单的创建原本需要复杂js来实现的动画效果，这是多么让人兴奋的。</p>
+
+
+<p>不过这些还是有那么些缺点的，CSS Animation的确很酷，但不得不提及它的资源占用问题，CSS transform的确很神奇，但不得不提及它的锯齿问题，当然了这些问题相信浏览器的开发者会逐渐改善的。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/596111723/wlsy/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/wlsy/~8021671/596111723/6130327/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

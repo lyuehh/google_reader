@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>奇淫技巧和西天取经</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>奇淫技巧和西天取经</h2>
+<p class="meta">22 Aug 2009</p>
+
+<div class="post">
+<h2>奇淫技巧和西天取经</h2>
+
+<h3>by lifesinger</h3>
+
+<h3>at 2009-08-22 12:18:42</h3>
+
+<h3>original <a href="http://lifesinger.org/blog/2009/08/the-harm-of-tricky-code/">http://lifesinger.org/blog/2009/08/the-harm-of-tricky-code/</a></h3>
+
+<p>题目：用 JavaScript 代码实现空位补零，比如 pad(12, 3) =&gt; 012</p>
+
+
+<p>实现一：</p>
+
+
+<pre>
+/* 平淡无奇法 */
+function pad(num, n) {
+    var i = (num + &quot;&quot;).length;
+    while(i++ &lt; n) num = &quot;0&quot; + num;
+    return num;
+}
+</pre>
+
+
+<p>上面的代码太平淡无奇，体现不了我的真实水平。于是有了实现二：</p>
+
+
+<pre>
+/* 神奇递归法 */
+function pad2(num, n) {
+    if ((num + &quot;&quot;).length &gt;= n) return num;
+    return pad2(&quot;0&quot; + num, n);
+}
+</pre>
+
+
+<p>神奇的递归，每次都能让 mm 投来赞美和钦慕的眼神~~</p>
+
+
+<p>然而，高手过招，讲究的是一招致命。<span></span>上面的代码居然用了两行，简直是侮辱。琢磨一下，一行神奇的代码涌上心头：</p>
+
+
+<pre>
+/* 奇淫技巧法 */
+function pad3(num, n) {
+    return (Array(n).join(0) + num).slice(-n);
+}
+</pre>
+
+
+<p>这次 mm 投来的是膜拜的眼神了，hiahia~~~</p>
+
+
+<p>=== 我不是空间分隔线，我是很长很长的时间分割线。经历了 n 年后 ===</p>
+
+
+<p>一日，秋高气爽，心旷神怡。与友闲坐菩提树下，把酒下棋。</p>
+
+
+<p>友曰：BP 君，自从你走后，可害苦了我。你留下的那些神奇代码，害我头发提前掉了 3 年。</p>
+
+
+<p>我大惊：此话怎讲？</p>
+
+
+<p>友一脸不堪回首：记得那个神奇的 pad3 函数不？在你走后 1 年内，公司的业务激增。pad3 有个 bug, 某些情况下会截取掉数字的前几位。比如 pad3(123456, 5), 返回的是 23456. 这 bug 被黑客发现了，导致了好几起大规模的钓鱼事件，公司损失上百万。当时老总勒令我一天内找出 bug 所在，老兄你的神奇代码却害得我花了 3 天才定位到。除了 pad3, 还有一个神奇的 xxoo9 函数，当时……</p>
+
+
+<p>老友还在絮絮叨叨，我听完第一段时，已黯然失魂。低头琢磨 pad3 的写法，的确存在截取 bug, 这用在交易系统，狂汗……</p>
+
+
+<p>与老友话别后，迫不及待地从 GoogleFace 的一朵云中取回当年的 pad3 和 xxoo9 等代码，一测试，大惊：</p>
+
+
+<p><a href="http://lifesinger.googlecode.com/svn/trunk/lab/2009/triky_code.html">tricky_code.html</a></p>
+
+
+<p>pad3 不仅存在截取字符 bug, 居然还有性能问题……</p>
+
+
+<p>一番激烈的思想斗争。</p>
+
+
+<p>迷迷茫茫中，遥见唐僧笑侃而至：</p>
+
+
+<blockquote><p>
+世人皆笑我罗嗦，我道世人看不透。<br>
+欲解此惑看来时，质朴简单是真知。
+</p></blockquote>
+
+
+<p>唐僧抛下一卷轴，大笑而去：</p>
+
+
+<pre>
+/* 质朴长存法 */
+function pad(num, n) {
+    var len = num.toString().length;
+    while(len &lt; n) {
+        num = &quot;0&quot; + num;
+        len++;
+    }
+    return num;
+}
+</pre>
+
+
+<p>观之，吾亦大笑，随唐僧取经去也……</p>
+
+
+<p>注：一直想写这样一篇文章。今天闲逛 51js, 偶然看到一贴：<a href="http://bbs.51js.com/viewthread.php?tid=85137">位数不够前面补 0 的问题</a>，于是立刻就有了这篇文章的构思。对于补零，我的奇淫反应是<code>return Array(n - ("" + num).length + 1).join(0) + num;</code>（也有 bug），和果果的类似，但考虑到震撼性（果果的 bug 更隐蔽），最后采用了果果的代码来举例。无论如何，感谢果果。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Android游戏中的多线程问题咨询</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Android游戏中的多线程问题咨询</h2>
+<p class="meta">28 Jun 2010</p>
+
+<div class="post">
+<h2>Android游戏中的多线程问题咨询</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-06-27 23:43:10</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/700460">http://www.javaeye.com/topic/700460</a></h3>
+
+<p>前段时间注册了market账号，最近一直在学习，在写一个游戏的时候遇到个问题，虽然其实不用多线程貌似游戏中的那点计算量也不会导致ANR啦，但是还是心中总想把这个疑问解决了，所以问一下。
+<br>
+<br>假设我有一千个很小的点需要画在屏幕上，让他们就像萤火虫一样飞，虽然点很小，但对一千个东西的飞行路劲的计算其实还是比较大的计算量吧？我就考虑到多线程，但是就想到两种方式，我个人觉得应该是第二种要好些，但是不敢确定，就想请教下各位。
+<br><span style="font-size:medium"><span style="color:red">第一种，最开始想当然想到的双线程：</span></span>
+<br>我用ArrayList来保存我的全部萤火虫，fireflyList里面就是我全部的萤火虫了，然后在主线程的onDraw里面画，用一个Timer来弄另一个线程，定时每50ms执行一次计算路径的update()方法，主线程自己还是每50ms Handler发个消息，然后在处理消息的方法里调一次invalidate()来让view用onDraw().
+<br><pre name="code">ArrayList&lt;Firefly&gt; fireflyList = new ArrayList&lt;Firefly&gt;(MAX_FIREFLY_COUNT); //MAX_FIREFLY_COUNT = 1000啦
+this.initializeFireflyList(fireflyList);
+</pre>
+<br>然后用两个方法来分别计算路径和将萤火虫画在屏幕上，
+<br><pre name="code">
+public FireflyView extends View{  <br/>
+    // ..... 不关键方法都省了</p>
+
+<pre><code>// 初始化那个timer的时候就把当前这个实例传过去，方便他调用方法
+FireFlyTimerTask timerTask = new FireFlyTimerTask(this);
+
+// 另一个线程，那个timerTask就用这个update方法来计算萤火虫路径，其实就是萤火虫的x和y啦
+public synchronized void update(){
+    for(Firefly updateFirefly : fireflyList){
+        updateFirefly.update(); // 都是叫每个萤火虫自己去计算自己下一个时刻的坐标的啦
+    }
+}
+
+// 然后在主线程的onDraw里画到屏幕上
+public synchronized void onDraw(Canvas canvas){
+    for(Firefly drawFirefly : fireflyList){
+        drawFirefly.draw(canvas); // 都是叫每个萤火虫自己去画自己啦
+    }
+}
+</code></pre>
+
+<p>}
+</pre>
+<br>
+<br>就这样，最开始我没看出问题，但是，后来仔细一想，发现晕，其实这个和单线程一模一样嘛，因为synchronized的原因，这两个方法根本没法同时执行……还是先update了然后再画……
+<br>
+<br><span style="font-size:medium"><span style="color:red">然后我就想了第二种</span></span>
+<br>我把萤火虫的坐标，全部从Firefly类里面搞出来了,让主线程不停的画，然后另一个线程不停的更新，等每次更新完了全部坐标之后就把刚刚更新的全部坐标复制一个备份出来，然后负责画图的线程就只用那个备份的。这样，就算两个线程冲突了，画图那个线程也只需要等待两个数组复制时间，比整个update的时间少多了。
+<br><pre name="code">ArrayList&lt;Firefly&gt; fireflyList = new ArrayList&lt;Firefly&gt;(MAX_FIREFLY_COUNT); //MAX_FIREFLY_COUNT = 1000啦
+int fireflyX[] = new int[MAX_FIREFLY_COUNT];  // 用来存放X
+int fireflyY[] = new int[MAX_FIREFLY_COUNT];  // 用来存放Y，以后画的时候就用这个x,y了
+this.initializeFireflyList(fireflyList, fireflyX, fireflyY);
+</pre>
+<br>然后就是整个View里面
+<br><pre name="code">
+public FireflyView extends View{  <br/>
+    // ..... 不关键方法都省了</p>
+
+<pre><code>// 初始化那个timer的时候就把当前这个实例传过去，方便他调用方法
+FireFlyTimerTask timerTask = new FireFlyTimerTask(this, fireflyX, fireflyY);
+
+// 另一个线程，那个timerTask就用这个copyXYArray方法来把已经更新完了的数据发过来，然后这边再弄个拷贝来用
+// 就可以避免冲突了
+public synchronized void copyXYArray(int x[], int y[]){
+    // System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length) 
+    System.arraycopy(x,0,fireflyX,0,MAX_FIREFLY_COUNT);
+    System.arraycopy(y,0,fireflyY,0,MAX_FIREFLY_COUNT);
+}
+
+// 然后在主线程的onDraw里画到屏幕上
+public synchronized void onDraw(Canvas canvas){
+        int fireflyIndex = 0;
+    for(Firefly drawFirefly : fireflyList){
+        // 因为我吧XY都拿出来了，所以画的时候就只有把参数传过去了
+        drawFirefly.draw(fireflyX[fireflyIndex], fireflyX[fireflyIndex],canvas); 
+
+        fireflyIndex++;
+    }
+}
+</code></pre>
+
+<p>}
+</pre>
+<br>TimerTask也就需要贴一下了。
+<br><pre name="code">
+public class GameTimerTask extends TimerTask {
+    private FireflyView fireflyView;
+    // 这两个数组就用来进行萤火虫实际坐标的计算
+    private int calculateX[] = new int[FireflyView.MAX_FIREFLY_COUNT];
+    private int calculateY[] = new int[FireflyView.MAX_FIREFLY_COUNT];</p>
+
+<pre><code>// 构造器而已
+public GameTimerTask(FireflyView fireflyView, int x[], int y[]){
+    // 这个引用是用来方便面把数据穿过去用的
+    this.fireflyView= fireflyView;
+
+    // 在最开始初始化这个task的时候就把传过来的坐标复制出来用，免得两个线程冲突
+    System.arraycopy(x,0,calculateX,0,FireflyView.MAX_FIREFLY_COUNT);
+    System.arraycopy(y,0,calculateY,0,FireflyView.MAX_FIREFLY_COUNT);       
+}
+
+
+@Override
+public void run() {
+    // 更新坐标，此时应该不影响另一个主线程的draw动作
+    this.updateXY();
+
+    // 坐标更新完了之后把新坐标给主线程复制一份，让他画。
+    // 不过如果这个时候主线程正在画图的话，这个调用也就只有阻塞了
+    fireflyView.copyXYArray(bufferX, bufferY);
+}
+</code></pre>
+
+<p>}</pre>
+<br>
+<br><span style="font-size:medium"><span style="color:red">========================================================================================</span></span>
+<br>问题就是，我觉得应该是第二种方法更好一些，但是第二种方法每次都要对数组进行一次复制，变相又加大了计算量
+<br>而且目前这种情况，如果主线程在画图的话，另一个线程还要等着，更新好的数据还是没法传过来的。如果要解决这个问题，就还需要再加一次arraycopy()，这样更加增大了操作。虽然网上搜了下，觉得arraycopy的效率还是挺高的，但是还是想咨询下。
+<br>
+<br>顺便还想了解下，对于多线程的操作究竟怎么样才好呢。
+<br>而且，如果使劲想，如果对对象的update太花时间，比如是整个对象draw周期的5倍，就是我们的主线程调用onDraw都画5次了，结果因为对象update太花时间，我们的update连一次都没做完。结果就是主线程五次onDraw画的都是同样的东西(因为没update嘛)，那我还不如单线程，等他update完了再画图……就感觉这样看来，两个线程根本就没有意义嘛？除了防止Application not response……
+<br>又或者，我们update算起来好快好快，我们在两次onDraw之间，update就已经完成了10次，这样onDraw画出来的东西实际就相当于掉帧掉了10帧，这样想起来，两个线程也没意义嘛……
+<br>这样想来，游戏虽然背景音乐啊之类还是需要多线程外，但对于在画面上显示的东西似乎多线程意义不大哦？就是说，如果我单线程来计算你的机器卡的话，我换成多线程计算你的也必然卡，没得悬念得(其实从计算机底层看也似乎确实是这样的嘛(暂时无视多核多CPU))……防Application not response的除外</p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://puhao7117441.javaeye.com"&gt;puhao7117441&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/700460" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>DOM 事件模型在各个浏览器中差异</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>DOM 事件模型在各个浏览器中差异</h2>
+<p class="meta">26 Nov 2010</p>
+
+<div class="post">
+<h2>DOM 事件模型在各个浏览器中差异</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-11-25 17:45:05</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/824745">http://www.javaeye.com/topic/824745</a></h3>
+
+<p>     网上搜“DOM事件模型”，文章非常多，在此写下仅仅是看到的那些文章的汇总，有错误欢迎指正。</p>
+
+
+<p> </p>
+
+
+<p>     关于DOM事件模型图就不发鸟，网上很多，而且比较简单，这里说明一些关于DOM事件模型在各个浏览器中一些差异之处。</p>
+
+
+<p> </p>
+
+
+<p>    DOM的事件分为两种：一个是捕捉性事件，一个是冒泡型事件，</p>
+
+
+<p> </p>
+
+
+<p>  <strong>1，addEventListner</strong>
+(el,"click",true);第三个参数如果是true的话， 就是声明为捕捉事件处理。则在事件下发的时候，会发生祖先元素对事件进行处理。在firefox2和safari9里面是如此，而在opera里面并不会如此。</p>
+
+
+<p>     这是因为firefox2和safari9并不是遵循DOM规范的，</p>
+
+
+<p>     规范中这么说明：</p>
+
+
+<p>        A capturing EventListener will not be triggered by events dispatched directly to the EventTarget upon which it is registered.</p>
+
+
+<p>     大意是说：DOM规范中陈述了捕捉型的事件不应该在目标元素上被执行，因为捕捉型事件的用意就是为了监测到达目标元素之前的事件。</p>
+
+
+<p> </p>
+
+
+<p>    在整个事件传播中，被执行的顺序是：<br>
+   1. 父元素中所有的捕捉型事件自上而下地执行 捕捉性事件。<br>
+   2. 目标元素的冒泡型事件  而firefox里面会进行捕捉型事件处理，而opera里面不会<br>
+   3. 父元素中所有的冒泡型事件自下而上地执行  。    </p>
+
+
+<p> </p>
+
+
+<p><strong>2，IE里面的事件模型：</strong>
+</p>
+
+
+<p>   IE下没有addEventListener，但是也有自己的attachEvent，即所谓的Microsoft Model。二者的实现基本相同只是attachEvent的第一个参数（事件类型）需要加”on”，而addEventListener不用，另外attachEvent因为不支持事件捕捉，所以也没有第三个参数。<br><br>
+然而，attachEvent还有一个很要命的问题：重复绑定事件。<br>
+IE上可以对该元素的事件进行多次同样的绑定。这也算是比较不好的地方。而其他浏览器则会在重复绑定的时候，检测而后只绑定一次。同理在detachEvent的时候。（有待验证）</p>
+
+
+<ul>
+<li> IE事件模型只起泡，不捕捉。起泡中断方法：window.event.cancelBubble=true;</li>
+<li> Event对象不是事件处理程序的函数参数，而是window的全局变量。window.event;</li>
+<li>事件注册函数:attachEvent()和反注册：detachEvent().  重复绑定的情况下，也需要多次detachEvent</li>
+</ul>
+
+
+<p> <br>
+ 在IE中使用event.cancelBubble = true; 来取消事件冒泡， 在Firefox中用stopPropagation()方法来停止事件冒泡， 即不要让别的元素看到该事件。 IE中关于event的获取是从window.event的方式获取，其目标通过event.srcElement 而firefox则使用event.target  。</p>
+
+
+<p> </p>
+
+
+<p><strong>3，Firefox中的onchang事件与IE中onchange事件、onpropertychange事件：</strong>
+</p>
+
+
+<ul>
+<li>对于checkbox、 input type="file"等元素，在Firefox中只要元素的内容一发生变化就触发onchang事件，而在IE中需等到元素失去焦点才触发 onchang事件；对于input type="text"，FF和IE下一样，都是失去焦点之后才触发onchang事件。</li>
+<li>IE中当元素的属性值或内容一发生变化(含JavaScript操作)就激发onpropertychange事件，Firefox无此事件。</li>
+</ul>
+
+
+<p>关于事件类型 各个浏览器的支持程度：下面网址大部分都涵盖了：</p>
+
+
+<p> </p>
+
+
+<p>     <a href="http://www.quirksmode.org/dom/events/">http://www.quirksmode.org/dom/events/</a>
+    </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://every-best.javaeye.com"&gt;every_best&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/824745" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

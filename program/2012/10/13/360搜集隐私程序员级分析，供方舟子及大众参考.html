@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>360搜集隐私程序员级分析，供方舟子及大众参考</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>360搜集隐私程序员级分析，供方舟子及大众参考</h2>
+<p class="meta">13 Oct 2012</p>
+
+<div class="post">
+<h2>360搜集隐私程序员级分析，供方舟子及大众参考</h2>
+
+<h3>by 匿名用户</h3>
+
+<h3>at 2012-10-12 17:40:07</h3>
+
+<h3>original <a href="http://www.freebuf.com/articles/terminal/5900.html">http://www.freebuf.com/articles/terminal/5900.html</a></h3>
+
+<p>小编：此文仅代表原作者观点，如有不客观，请仁者见仁。 【一把菜刀：360搜集隐私程序员级分析 供方舟子及大众参考】这几天方舟子vs360成了网上最热的话题，方舟子说：360你窃取用户隐私。360对于窃取隐私的回应是：你不懂IT，所以没资格指责。你人品还有问题。我懂it，但是我不指责，我来说说而已。那么360和用户隐私是什么关系？方舟子vs360和我又有什么关系？ 我来卖菜刀的，菜刀可以是武器也可以是工具。 我希望方舟子买我的菜刀为用户砍出一片互联网晴天。 我也希望360买我的菜刀，砍掉自己的错误行为，还用户一个安全的互联网天空。 我还希望用户也买我的菜刀，做出自己的选择。 下面就是一把菜刀，各位怎么使用就看自己的了。 我抓包时发现360安全卫士频繁上传大量的信息到服务器，经过分析后发现它会将大量用户使用其他软件的信息上传到服务器，用户无法知道上传信息的详情，即使取消‘加入云安全计划’，仍然不能阻止这些信息的上传。这些信息将会暴露用户的生活习惯、作息时间、以及比较私密的软件操作。 360安全卫士的这个收集功能具有很好的实时控制性，可以在云端发布指令，很短时间令客户端停止或开启收集功能，同时收集过程中产生的文件都会被自动删除。这使得这一收集行为具有非常好的隐蔽性。 由于360安全卫士在不同时段发布的安装包收集策略不一致，并非所有版本都具有一致的行为。下面是我对此次分析的产品包的详细信息。 产品版本： 360安全卫士 7.3.0.2003l 安装包大小：17.9 MB MD5： 8FB5774B68133D6CAAC3A2860187BE6F 下载地址： http://t.cn/zll3LVz 一、360安全卫士全面记录用户使用其他软件的行为信息 正常安装完360安全卫士后，进程防火墙会自动启动，并通过驱动层Hook所有运行程序所需的系统API，运行任意程序时拦截，然后通过appd.dll记录执行程序时间、身份ID、触发程序名、触发程序版本信息、执行程序名、执行程序版本信息等。 记录后通过ipcservice.dll将日志保存为C:\Documents and Settings[当前用户名]\ApplicationData\360safe\LogInfo\360_tmp_xxxx.log. 以下是一条记录的示例： &lt;t=2010-11-18 09:50:26&gt;&lt;m=6db5c3797939054df8dcb0ffbc4e1154&gt;&lt;p=ipc&gt;&lt;c=ad&gt;&lt;t=logprocess&gt;&lt;started=1&gt;&lt;src_path=C:\WINDOWS\explorer.exe&gt;&lt;src_cn=MicrosoftCorporation&gt;&lt;src_pn=Microsoft(R) Windows(R) OperatingSystem&gt;&lt;src_sn=Microsoft Windows Component Publisher&gt;&lt;src_in=explorer&gt;&lt;src_lc=(C)Microsoft Corporation. All rights reserved.&gt;&lt;dst_path=C:\ProgramFiles\AliWangWang\AliIM.exe&gt;&lt;dst_cn=Alibaba software (Shanghai)Corporation.&gt;&lt;dst_pn=AliIM 应用程序&gt;&lt;dst_sn=Alibaba(China) Co. Ltd.&gt;&lt;dst_in=NULL&gt;&lt;dst_lc=Alibaba software (Shanghai)Corporation. All rights reserved.&gt; 二、用户信息日志被360上传到云端服务器，并自动删除不留痕迹 360安全卫士会将收集到的日志合并打包到用户临时目录，上传到360部署的服务器上。 以下是360安全卫士上传文件时的抓包分析截图： 360安全卫士将C:\Documents and Settings[当前用户名]\Application Data\360safe\LogInfo\目录下的log记录合并后，立即删除相应log文件，并在用户临时目录（C:\Documents and [...]</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

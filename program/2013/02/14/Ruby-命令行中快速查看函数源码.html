@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ruby 命令行中快速查看函数源码</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ruby 命令行中快速查看函数源码</h2>
+<p class="meta">14 Feb 2013</p>
+
+<div class="post">
+<h2>Ruby 命令行中快速查看函数源码</h2>
+
+<h3>by Aiur</h3>
+
+<h3>at 2013-02-14 12:28:00</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/9244.html">http://www.udpwork.com/item/9244.html</a></h3>
+
+<p>如果要查看 ActiveRecord 的 update_attribute 函数的源代码，一个比较常见的方法是直接在 Rails 源码中搜索def update_attribute。博客<a href="http://pragmaticstudio.com/blog">The Pragmatic Studio</a>介绍了一个更方便的技巧，在 Ruby 命令行中就能启动编辑器直接访问。</p>
+
+
+<p>通过<a href="http://rdoc.info/stdlib/core/Object:method">Object#method</a>方法可以获得 update_attribute 方法的对象，而<a href="http://rdoc.info/stdlib/core/Method:source_location">Method#source_location</a>则返回这个方法定义的文件和位置。有了这个信息后，就能启动编辑器查看源代码了：</p>
+
+
+<div><table><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td>
+<td><pre>&gt; method = User.first.method(:update_attribute)
+  User Load (0.5ms)  SELECT `users`.* FROM `users` LIMIT 1
+=&gt; #&lt;Method: User(ActiveRecord::Persistence)#update_attribute&gt;
+
+&gt; location = method.source_location
+=&gt; [&quot;/Users/wyx/.rvm/gems/ruby-1.9.2-p180/gems/activerecord-3.2.11/lib/active_record/persistence.rb&quot;,
+ 177]
+
+&gt; `subl #{location[0]}:#{location[1]}`
+=&gt; &quot;&quot;
+</pre></td>
+</table>
+</div>
+
+
+<p>把这段代码封装成函数，加到 .pryrc 或者 .irbrc 中：</p>
+
+
+<div><table><td><pre>1
+2
+3
+4
+5
+</pre></td>
+<td><pre>def source_for(object, method)
+  location = object.method(method).source_location
+  `subl #{location[0]}:#{location[1]}` if location &amp;&amp; location[0] != &#39;(eval)&#39;
+  location
+end
+</pre></td>
+</table>
+</div>
+
+
+<p>如果要查看 User 的实例方法 update_attribute，可以直接在 pry / irb 中调用</p>
+
+
+<div><table><td><pre>1
+</pre></td>
+<td><pre>source_for(User.first, :update_attribute)</pre></td>
+</table>
+</div>
+
+
+<p>如果要使用其他编辑器，得把subl #{location[0]}:#{location[1]}换成这个编辑器对应的命令行：</p>
+
+
+<div><table><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td>
+<td><pre># TextMate
+mate #{location[0]} -l #{location[1]}
+
+# MacVim
+mvim #{location[0]} +#{location[1]}
+
+# Emacs
+emacs {location[0]} +#{location[1]}
+</pre></td>
+</table>
+</div>
+
+
+<p>原文链接：<a href="http://pragmaticstudio.com/blog/2013/2/13/view-source-ruby-methods">http://pragmaticstudio.com/blog/2013/2/13/view-source-ruby-methods</a></p>
+
+
+<p><a href="http://blog.yxwang.me/2013/02/view-ruby-source-in-shell/">⚓ Permalink</a></p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/9244.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/9244.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/9244.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

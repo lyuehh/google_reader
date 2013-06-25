@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>js获取滚动距离</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>js获取滚动距离</h2>
+<p class="meta">15 Aug 2012</p>
+
+<div class="post">
+<h2>js获取滚动距离</h2>
+
+<h3>by marvin</h3>
+
+<h3>at 2012-08-14 16:40:56</h3>
+
+<h3>original <a href="http://www.w3cplus.com/code/374.html">http://www.w3cplus.com/code/374.html</a></h3>
+
+<div><div><div><pre>/**
+ / THIRD FUNCTION
+ * getPageScroll() by quirksmode.com
+ *
+ * @return Array Return an array with x,y page scroll values.
+ */
+function ___getPageScroll() {
+    var xScroll, yScroll;
+    if (self.pageYOffset) {
+        yScroll = self.pageYOffset;
+        xScroll = self.pageXOffset;
+    } else if (document.documentElement &amp;&amp; document.documentElement.scrollTop) {     // Explorer 6 Strict
+        yScroll = document.documentElement.scrollTop;
+        xScroll = document.documentElement.scrollLeft;
+    } else if (document.body) {// all other Explorers
+        yScroll = document.body.scrollTop;
+        xScroll = document.body.scrollLeft; 
+    }
+    arrayPageScroll = new Array(xScroll,yScroll);
+    return arrayPageScroll;
+};</pre></div></div></div>
+
+
+<div><div><div><div>
+      <div>5</div>
+                  <a href="http://www.w3cplus.com/vote/node/374/1/vote/alternate/me3b4k6MjsB9JhhYlid8EN3T-K5sbGJptOq_G1B9iq0/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/158.html">js代码</a></li></ul></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/666585503/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/code/374.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

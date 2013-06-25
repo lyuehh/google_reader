@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>简析指针与多维数组</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>简析指针与多维数组</h2>
+<p class="meta">17 Jun 2013</p>
+
+<div class="post">
+<h2>简析指针与多维数组</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-06-17 09:16:35</h3>
+
+<h3>original <a href="http://tonybai.com/2013/03/28/pointer-and-multi-dimension-array-in-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=pointer-and-multi-dimension-array-in-c">http://tonybai.com/2013/03/28/pointer-and-multi-dimension-array-in-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=pointer-and-multi-dimension-array-in-c</a></h3>
+
+<p>上一篇文章中对<a href="http://tonybai.com/2013/03/23/multi-dimension-pointer-in-c/">多级指针</a>做了简要分析，其实只有当指针与多维数组以及函数联合在一起使用时，麻烦才算真正到来。</p>
+
+
+<p> <b>零、数组</b><b>与数组名</b></p>
+
+
+<p> <a href="http://en.wikipedia.org/wiki/C_(programming_language)">C语言</a>中的数组的一般声明形式如下：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">T arr_name[n]; /* T为类型，n为数组元素个数 */</span></p>
+
+
+<p> 从<b>内存布局</b>角度来说，数组T arr_name[n]就是内存中连续的内存单元，每个内存单元的长度为sizeof(T)，数组的起始内存单元地址为arr_name所在的内存地址， 同时也是数组第一个元素arr_name[0]的内存地址。</p>
+
+
+<p> C语言数组的<b>数组名</b>(arr_name)有这样的特点：arr_name = &amp;arr_name = *arr_name = 数组起始地址。见下面例子：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[5];</span></p>
+
+
+<p> printf(&quot;a = %p\n&quot;, a);<br>
+    printf(&quot;&amp;a = %p\n&quot;, &amp;a);<br>
+    printf(&quot;*a = %p\n&quot;, *a);</p>
+
+
+<p> 输出结果：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">a = 0xbfb146c0<br>
+    &amp;a = 0xbfb146c0<br>
+    *a = 0xbfb146c0</span></p>
+
+
+<p> C语言<b>数组与指针</b>有着紧密的联系。数组名本身的值就是数组的起始地址，有了地址，就有了指针存在的理由了。</p>
+
+
+<p> 1) 数组名可以被当作指针来用</p>
+
+
+<p>     <span style="font-family:courier new,courier,monospace">char a[5] = {1, 2, 3, 4, 5};<br>
+        printf(&quot;%d, %d, %d\n&quot;, *a, *(a+1), *(a+2)); // 输出1, 2, 3</span><br>
+       <br>
+        这种用法下，数组名相当于指向数组首地址的char*指针变量。</p>
+
+
+<p> 2) 数组名可以作为地址被赋值给兼容类型的指针变量<br>
+       <br>
+        <span style="font-family:courier new,courier,monospace">char a[5] = {1, 2, 3, 4, 5};<br>
+        char *p = a;<br>
+        printf(&quot;%d, %d, %d\n&quot;, *p, *(p+1), *(p+2)); //输出1, 2, 3</span></p>
+
+
+<p> 3) 数组名不可以被当作指针变量来赋值</p>
+
+
+<p>     <span style="font-family:courier new,courier,monospace">char a[5] = {1, 2, 3, 4, 5};<br>
+        char b[5] = {6, 7, 8, 9, 0};</span></p>
+
+
+<p>     a = b; //编译器提示错误：将‘char *’赋值给‘char[5]’时类型不兼容</p>
+
+
+<p>     数组名与指针变量不同：指针变量有单独的存储空间，其存储空间内存储的是指向的内存单元的地址，但数组名只是个&quot;代号&quot;而已，其没有单独的存储空间，其所 在内存地址中存储的是数组第一个元素的元素值，而不是一个地址。或者说数组名代表的是一个值类型，char a[5]中的a可理解为是一个char[5]的值类型变量。将一个数组指针变量值赋值给一个值变量显然是不合逻辑的，也是非法的。</p>
+
+
+<p> 4) 考虑到效率，数组无法被按值传递给函数<br>
+       <br>
+        虽然数组名可以理解为一个值类型变量，但将数组名传递给函数时，传递的不是数组的全部，而只是数组的首地址，这显然是有效率方面考虑的。如果是传递数组的 全部，那碰到大数组时，这个mem copy的效率显然是不可接受的。但通过这个首地址，函数内部也是可以访问和修改数组中的所有元素的。<br>
+       <br>
+    5) 函数形参中的数组变量将被转化为兼容类型指针变量对待</p>
+
+
+<p> 正如4)中所言，数组是以传址方式传入函数的。对于以数组变量作为形参的函数来说，在函数内部引用该参数时，会自动将该参数视为数组类型兼容的指 针变量，比如：<br>
+        <span style="font-family:courier new,courier,monospace">char a[5] = {1, 2, 3, 4, 5};</span></p>
+
+
+<p>     void foo(char a[5]) {<br>
+            printf(&quot;sizeof(a) = %d\n&quot;, sizeof(a));<br>
+        }</p>
+
+
+<p>     这是一个经典的C语言“陷阱”。foo形参中变量a已经转化为一个char*类型指针了。对该指针变量进行sizeof操作，所得的 size仅是一个指针的长度(在32bit编译下是4)，而不是a数组的长度(4 * 5)。</p>
+
+
+<p> <b>一、多维数组的理解</b></p>
+
+
+<p> C语言中管数组的数组(的数组的…)称为多维数组，虽然高于二维的多维数组并不经常使用和遇见。</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">T multi_arr_name[i][j][k];</span></p>
+
+
+<p> 多维数组也是数组，根据数组的理解，多维数组也是内存中连续分配的内存单元，只是这些物理分配的内存单元被从逻辑上看成是“行”、“列”以及各种 维度罢了。《<a href="http://book.douban.com/subject/2377310/">C专家编程</a>》中有一种理解方法：将数组看成是一种向量，也就是某种对象的一维数组；当其元素为其他数组时，这个向量也就是我们所说的 多维数组。</p>
+
+
+<p> 我们来结合例子理解一下多维数组，从低维到高维度逐步理解：</p>
+
+
+<p> 1) 一维数组</p>
+
+
+<p> char a[2];<br>
+    这是一个向量，拥有两个元素，向量中的元素类型为char。可以理解为：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[2]; &lt;=&gt; (char) a[2];</span></p>
+
+
+<p> 2) 二维数组</p>
+
+
+<p> char a[2][3];<br>
+    这是一个向量，拥有两个元素，向量中的元素类型为char[3]。可以理解为：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[2][3]; &lt;=&gt; (char[3]) a[2];</span></p>
+
+
+<p> 3) 三维数组</p>
+
+
+<p> char a[2][3][5];<br>
+    这是一个向量，拥有两个元素，向量中的元素类型为char[3][5]。可以理解为：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[2][3][5]; &lt;=&gt; (char[3][5]) a[2];</span></p>
+
+
+<p> 4) N维数组</p>
+
+
+<p> char a[i][j][k]…[z];<br>
+    这是一个向量，拥有i个元素，向量中的元素类型为char[j][k]…[z]。可以理解为：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[i][j][k]…[z]; &lt;=&gt; (char [j][k]…[z]) a[i];</span></p>
+
+
+<p> <b>二、与数组类型兼容</b><b>的指针类型</b></p>
+
+
+<p> 假设有下面这样一个数组：</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[2][3];</span></p>
+
+
+<p> 我要声明一个可以指向该数组的指针变量，这个声明该如何书写呢？是 char *p[3]还是char (*p)[3]？按照上面对多维数组的理解:</p>
+
+
+<p> <span style="font-family:courier new,courier,monospace">char a[2][3];</span></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

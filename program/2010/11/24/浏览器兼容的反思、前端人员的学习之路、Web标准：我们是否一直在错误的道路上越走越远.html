@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>浏览器兼容的反思、前端人员的学习之路、Web标准：我们是否一直在错误的道路上越走越远</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>浏览器兼容的反思、前端人员的学习之路、Web标准：我们是否一直在错误的道路上越走越远</h2>
+<p class="meta">24 Nov 2010</p>
+
+<div class="post">
+<h2>浏览器兼容的反思、前端人员的学习之路、Web标准：我们是否一直在错误的道路上越走越远</h2>
+
+<h3>by TJerry</h3>
+
+<h3>at 2010-11-24 15:37:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/easygame/archive/2010/11/24/1886647.html">http://www.cnblogs.com/easygame/archive/2010/11/24/1886647.html</a></h3>
+
+<p><p>      我不想谈主流浏览器的历史、每个版本发布的时间，支持的特性与市场份额作为开头，这些大家可以从网络上获取浩如烟海的信息，甚至无聊时可以当做小说般读的津津有味。我只想回忆一些自己的学习经历，以此来反思自己曾经有过的现在自认为错误的想法。还记得你<span style="color:#ff0000">第一次写CSS代码</span>吗？07年的时候朋友介绍我去校内网注册个账号，可以找到很多很多的同学。那时候上传真实相片可以获得星级用户，可是我不想用自己的相片去摧残不小心浏览到我页面的朋友。我开始查找既可以获取星级用户又可以不显示我的真实头像的方法，结果是我把头像的图片隐藏了，利用CSS背景图片加载了一个自己上传的卡通头像。<br>     对于那时候的我，CSS是个新鲜事物，成功的激起了我的好奇心和兴趣，于是我在浦东新区图书馆借了一本CSS方面的书，很薄，开始在我的主页上试验起来，直到半夜2点多，我捣鼓出来了一个自认为是很成功的主页，后来被别人告知是我的审美观可能有问题。<br>    当时敲CSS代码时很多时候不起作用，在网上得到的信息是IE6不支持很多CSS属性，后来想深入的学习一下，于是找到了几个跟Web标准化相关的网站，知道了W3C。并找到了一个可以当做在线手册的网站http://www.w3school.com.cn/,又去借阅了一本CSS权威指南，开始在业余时间学习起来。我把每个CSS的属性和属性值在IE6和FireFox进行了试验，这个时候我知道了<span style="color:#ff0000">CSS hack</span>。CSS hack可以让我给不同的浏览器提供不同的样式。* html {}只有IE认识，多么神奇。随着工作中遇到了和网站相关的项目，遇到了需要使用CSS的时候，我用这些神奇的CSS hack、<span style="color:#ff0000">IE条件注释</span>、加上一些像zoom:1;这些对标准浏览器无害但能达到使IE行为正常化的属性让网站实现了浏览器的兼容性，期间又断断续续的学了JavaScript基础、了解了jQuery、Mootools、YUI CSS等等。<br>    浏览器兼容，我现在的理解是<span style="color:#ff0000">网站可以在不同的浏览器呈现相同的外观、行为和用户体验</span>。以前的理解<span style="color:#ff0000">是一份CSS文件通用所有浏览器，一份JavaScript文件通用所有浏览器</span>。<br>    为了让一份JavaScript文件通用所有浏览器，需要了解不同的浏览器对JavaScript的支持，需要在一份代码中判断不同的浏览器为不兼容的部分提供不同的代码。感谢JavaScript框架,简单易学的jQeury，面向对象的Mootools，不只是可以让一份JavaScript通用所有浏览器，<span style="color:#ff0000">更重要的是这份代码中不需要有针对不同浏览器的代码</span>。JavaScript框架为我们屏蔽了浏览器的不同。CSS也言必谈跨浏览器兼容，各种CSS框架也不断涌现。用YUI CSS吧，你可以让所有浏览器的表现一致、使用YUI CSS的跨浏览器网格布局或960 Grid System，你不用再为布局烦恼。</p>
+<p>    IE6有太多不标准不规范的地方，而我们不得不兼容它，IE7的发布并没有从根本上解决IE6遗留的问题，直到IE8才让让IE系列对标准的支持有了质的飞跃。有一段时间我在招聘美工，主要的工作是英文站的前端相关内容。大约2个月的时间面试了有几十人，这些人按工作时间从刚毕业到七八年不等，一半以上的人可以按照要求做出外观符合标准的页面，而且是只运行在IE下。少部分说有过兼容火狐的经验。提起W3C标准有些是滔滔不绝，可是一旦现场让写基础的三行三列自适应高度的浏览器兼容布局几乎难住了所有的人，我只好进行简单的CSS标准属性考核，一份<a href="http://www.w3school.com.cn/">http://www.w3school.com.cn/</a>的随机试卷能及格者凤毛麟角，80分以上的只有一个。我感到一种痛惜，不是为应聘者的表现不佳，而是感觉到这些人普遍的一种心理状态：Web标准我是知道很多，即使现在忘了，几天我就能捡起来。css hack我也懂不少，这才是我的实力。有问题，不怕，网上一堆一堆的解决方案等着我。</p>
+<p>    Web标准，如CSS2.1，我相信一个肯付出努力和动手实践的人，一周时间就可以在FireFox下做出令人满意的作品并且代码清晰、可阅读性和可维护性都高。但我更相信可能需要一个月时间他才能让这份作品兼容IE系列的浏览器并且思路混乱，甚至自己维护时都搞不清其中某些代码的加入原因。可是真的存在兼容浏览器的CSS吗？在IE霸占了3个名额的情况下，我不认为有这样的代码。我认为这种兼容其<span style="color:#ff0000">本质是根据主流浏览器对CSS的通用子集的基础上，在一份CSS文件中部分的包含了让不同浏览器进行不同的解析的代码</span>。牺牲了众多可以简化代码的高级特性，让所有浏览器接收一份CSS并按照浏览器自己的逻辑解析达到的不是兼容，这是对Web标准的讽刺，更是对使用者的嘲笑。甚至可以说<span style="color:#ff0000">当前的CSS兼容让符合Web标准的代码没有了</span>。</p>
+<p>    一个前端人员在CSS上的学习之路可能是这样：</p>
+<p>    1.接触合学习CSS和Web标准。可以针对标准的浏览器写出符合Web标准、较高的可读性和维护性的代码。</p>
+<p>    2.接触浏览器兼容性，<span style="color:#ff0000">认为一份包含了不同浏览器支持代码的CSS文件被不同浏览器解析出相同的效果是CSS的浏览器兼容</span>。</p>
+<p>    3.在如何通过各种手段实现2中所述兼容性的道路上弹精竭虑，为新版浏览器的发布而不断调整代码。</p>
+<p>    4.大多数人累了，开始使用CSS框架和Google解决问题，甚至开始荒废以前的积累。少数人勇猛精进，总结出了自己的解决方案或通用框架。</p>
+<p>   现在我认为，一个前端人员在CSS上的学习之路应该是这样：</p>
+<p>    1.接触和学习CSS和Web标准。可以针对标准的浏览器写出符合Web标准、较高的可读性和维护性的代码。</p>
+<p>    2.接触浏览器兼容性，认为IE6、IE7和其他标准的浏览器是不同的，为了让网站在这些浏览器上兼容，应该针对IE6、IE7这些行为非标准的浏览器提供附和他们自己逻辑的CSS文件。</p>
+<p>    3.把精力放在实用的新知识和技术上、网站可用性、用户体验和设计上不断学习和充实自己。</p>
+<p>    4.<span style="color:#ff0000">在IE6、IE7市场份额可以抛弃的情况下，停止维护并删除那些针对IE6或IE7的CSS文件</span>。</p>
+<p>    做一个假设，写一份附和Web标准并有较高可读性和维护性的代码提供给标准的浏览器用时1天。使用css hack等把这份代码扩充成可以让包括IE6、IE7等浏览器解析出相同效果用时7天。使用IE私有的属性或其他技术把这份代码改造成只支持IE6或IE7的代码用时7天。则一份所谓的兼容所有浏览器的代码用时8天，同样，对标准浏览器和非标准浏览器提供不同版本代码用时8天。新版本浏览器发布IE6、7市场份额消失都需要对第一份代码进行不断修改，比如hack的支持，多余代码的删除，整体代码的优化等。而第二份则不需要，因为<span style="color:#ff0000">IE6永远是IE6、IE7也永远是IE7</span>。</p>
+<p>    两种代码我都十分明白每一行的作用，我不用为这两种的任何一个版本考虑兼容性或浏览器的升级，我以后的维护也很简单。夸张的说，用YUI CSS我不知道里面有多少代码有着特俗的兼容性使命的意义，我不知道浏览器的升级会对这些代码的某个部分造成多大的冲击。我甚至读不懂这些代码，虽然我能读懂CSS标准代码和IE私有代码，我不知道如果让我维护这些代码我从哪里入手，我会手足无措。</p>
+<p>    而实际上，第一份代码在实现所谓的兼容性和网站维护、改版时带来的工作量个人认为绝对超出第二种方式。因为， IE6或IE7对标准CSS属性的不同解释、浏览器私有属性和扩展、JavaScript的辅助、互联网上大量现有问题解决方案可以让我们不那么费力的实现网站在IE6或IE7上的相同表现、行为和用户体验。我们以正常的思路使用标准的代码来支持标准的浏览器，而使用私有属性或扩展等非标准浏览器来支持其本身。向不同的浏览器发送不同的CSS文件，可以在ASP.NET或PHP等网站的后台代码中，建立一个Hander处理<a href="http://www.cnblogs.com/easygame/archive/2010/11/20/1882543.html">所有浏览器请求</a>来实现。</p><img src="http://www.cnblogs.com/easygame/aggbug/1886647.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/easygame/">TJerry</a> 发表于 2010-11-24 15:37 <a href="http://www.cnblogs.com/easygame/archive/2010/11/24/1886647.html">原文链接</a></p><p>评论: 36　<a href="http://www.cnblogs.com/easygame/archive/2010/11/24/1886647.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/easygame/archive/2010/11/24/1886647.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/82286/">通讯整合趋势紧逼IM防线：网易拟摆脱腾讯纠斗</a><span style="color:gray">(2010-11-25 10:13)</span><br>· <a href="http://news.cnblogs.com/n/82285/">索尼Qriocity云端影音服务在英国上线</a><span style="color:gray">(2010-11-25 10:08)</span><br>· <a href="http://news.cnblogs.com/n/82284/">Google网站排名被指失公允 付费广告可提升排名</a><span style="color:gray">(2010-11-25 10:06)</span><br>· <a href="http://news.cnblogs.com/n/82283/">HTC考虑永远弃用微软谷歌手机平台</a><span style="color:gray">(2010-11-25 10:02)</span><br>· <a href="http://news.cnblogs.com/n/82282/">iPhone4 才是最强拍照手机？</a><span style="color:gray">(2010-11-25 10:01)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/wwang/archive/2010/11/24/1883850.html">GCC强大背后</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

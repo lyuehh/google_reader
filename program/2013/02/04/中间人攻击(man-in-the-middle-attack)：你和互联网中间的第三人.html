@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>中间人攻击(man-in-the-middle attack)：你和互联网中间的第三人</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>中间人攻击(man-in-the-middle attack)：你和互联网中间的第三人</h2>
+<p class="meta">04 Feb 2013</p>
+
+<div class="post">
+<h2>中间人攻击(man-in-the-middle attack)：你和互联网中间的第三人</h2>
+
+<h3>by Aqee</h3>
+
+<h3>at 2013-02-04 00:09:48</h3>
+
+<h3>original <a href="http://www.aqee.net/man-in-the-middle-attack/">http://www.aqee.net/man-in-the-middle-attack/</a></h3>
+
+<p><i>最近看到国外有一篇有趣的文章，是关于“中间人攻击(man-in-the-middle attack)”的，本想原文翻译，但里面有大量的政治敏感度内容，不宜在本网站公布，这里仅摘译出技术相关的部分内容，供大家探讨。</i></p>
+
+
+<p>大概是1月26号早上8点左右，在新浪微博和Twitter上相继有中国用户报告说在访问GitHub.com网站时出现无效SSL证书警告提示。后续不断的证据显示，这是由于受到“中间人攻击(man-in-the-middle attack)”造成的。</p>
+
+
+<p><img alt="SSL安全证书不受信任" src="http://w983471.s234.ufhosted.com/qee/wordpress/wp-content/uploads/2013/02/fake-ssl-error-560x524.jpg" width="560" height="524"></p>
+
+
+<h3>中间人攻击(man-in-the-middle attack)指的是什么？</h3>
+
+
+<p>先看看来自维基百科的定义：</p>
+
+
+<blockquote><p>在密码学和计算机安全领域中，中间人攻击 （ Man-in-the-middle attack，通常缩写为MITM ）是指攻击者与通讯的两端分别建立独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。在中间人攻击中，攻击者可以拦截通讯双方的通话并插入新的内容。</p></blockquote>
+
+
+<p>这是比较理论的解释，下面是一个比较通俗的演绎：<br>
+<cite>假设爱丽丝（Alice）希望与鲍伯（Bob）通信。同时， 马洛里（Mallory）企图拦截窃会话以进行窃听并可能在某些时候传送给鲍伯一个虚假的消息。</cite></p>
+
+
+<p>1. 爱丽丝发送给鲍伯一条消息，被马洛里截获:</p>
+
+
+<pre><b>爱丽丝</b> <i>“嗨，鲍勃，我是爱丽丝。给我你的公钥“</i> --&gt; <b>马洛里</b>           <b>鲍勃</b></pre>
+
+
+<p>2. 马洛里将这条截获的消息转送给鲍伯；此时鲍伯不能分辨这条消息是否真的是从爱丽丝那里发来的:</p>
+
+
+<pre><b>爱丽丝</b>          <b>马洛里</b> <i>“嗨，鲍勃，我是爱丽丝。给我你的公钥“</i> --&gt; <b>鲍伯</b></pre>
+
+
+<p>3. 鲍伯回应爱丽丝的消息，并附上了他的公钥:</p>
+
+
+<pre><b>爱丽丝</b>          <b>马洛里</b> &lt;-- <i>[鲍伯的公钥]</i>-- <b>鲍伯</b></pre>
+
+
+<p>4. 马洛里用自己的密钥替换了消息中鲍伯的密钥，并将消息转发给爱丽丝，声称这是鲍伯的公钥:</p>
+
+
+<pre><b>爱丽丝</b> &lt;-- <i>[马洛里的公钥]</i>-- <b>马洛里</b>          <b>鲍勃</b></pre>
+
+
+<p>5. 爱丽丝用她以为是鲍伯的公钥加密了她的消息，以为只有鲍伯才能读到它:</p>
+
+
+<pre><b>爱丽丝</b> <i>“我们在公共汽车站见面！”--[使用马洛里的公钥加密]</i> --&gt; <b>马洛里</b>          <b>鲍勃</b></pre>
+
+
+<p>6. 然而，由于这个消息实际上是用马洛里的密钥加密的，所以马洛里可以解密它，阅读它，并在愿意的时候修改它，然后使用鲍伯的密钥重新加密，并将重新加密后的消息转发给鲍伯:</p>
+
+
+<pre><b>爱丽丝</b>          <b>马洛里</b> <i>“在家等我！”--[使用鲍伯的公钥加密]</i> --&gt; <b>鲍伯</b></pre>
+
+
+<p>7. 鲍勃认为，这条消息是经由安全的传输通道从爱丽丝那里传来的。</p>
+
+
+<p>可以看出，当受到中间人攻击时，你发送到任何信息都会被中间人截获——即使传输协议是加密的。比如说你在一个网吧或咖啡馆使用里面的无线网络上网，如果这个网络被动过手脚，有中间人劫持了网络，你的登录邮箱/微博的密码，网上支付的密码，你发送到电子邮件的内容，你的QQ聊天记录……都有可能被中间人截获。上面提到的那篇文章里称这次针对github.com的中间人攻击大概持续了1个小时，在这一个小时里从国内登录github.com的人的密码都有可能被人记录。</p>
+
+
+<h3>中间人攻击是可以探测到的</h3>
+
+
+<p>大部分的浏览器都能发现用https协议访问互联网时的SSL证书出现的异常情况，它们会提醒你该网站的安全证书不受信任，如上图，十分的醒目。如果你是使用火狐、谷歌、Safari等现代浏览器时，每次有证书异常情况发生，它们都会出现这个警告界面，但如果你使用的是IE浏览器，它只会在第一次提醒你。</p>
+
+
+<p>这篇文章里特别提到了中国国内市场占有率排名第一、<a>达到27%</a>的“360安全浏览器(360 Safe Browser)”，使用它访问具有伪造的SSL证书的网站时，第一次访问也会出现警告信息，但第二次访问时竟然弹出来绿色醒目的“通过绿色网站认证”标志！[汗]</p>
+
+
+<p><img alt="360安全浏览器的绿色认证标志" src="http://w983471.s234.ufhosted.com/qee/wordpress/wp-content/uploads/2013/02/github.com-ssl-warning-accepted-360-560x430.png" width="560" height="430"></p>
+
+
+<p>在这篇外文面前，我这个本来毫不相干的中国人都觉得脸红。取什么名字不好，偏偏叫什么“安全”浏览器，自己打自己嘴巴。幸好我从来不使用那些360、搜狗、百度等等的“国产”浏览器。</p>
+
+
+<p>如果你想多了解一些关于中间人攻击的知识，这篇文章里提供了一个简单的让你实时对真证书和假证书进行比度的功能，有兴趣的朋友可以试一试。这篇文章的地址是<a href="https://en.greatfire.org/blog/2013/jan/china-github-and-man-middle">这里</a>。</p>
+
+
+<hr>本文由<a href="http://www.aqee.net">外刊IT评论网</a>(<a href="http://www.aqee.net">www.aqee.net</a>)原创发表，文章地址：<a href="http://www.aqee.net/man-in-the-middle-attack/" rel="bookmark">中间人攻击(man-in-the-middle attack)：你和互联网中间的第三人</a><br><img src="http://www1.feedsky.com/t1/713695044/aqee-net/feedsky/s.gif?r=http://www.aqee.net/man-in-the-middle-attack/" border="0" height="0" width="0">
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

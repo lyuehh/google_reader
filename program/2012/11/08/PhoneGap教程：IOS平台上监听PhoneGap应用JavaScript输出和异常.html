@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PhoneGap教程：IOS平台上监听PhoneGap应用JavaScript输出和异常</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>PhoneGap教程：IOS平台上监听PhoneGap应用JavaScript输出和异常</h2>
+<p class="meta">08 Nov 2012</p>
+
+<div class="post">
+<h2>PhoneGap教程：IOS平台上监听PhoneGap应用JavaScript输出和异常</h2>
+
+<h3>by 董 龙飞</h3>
+
+<h3>at 2012-11-07 18:55:46</h3>
+
+<h3>original <a href="http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=debug-phonegap-listening-javascript-exception">http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=debug-phonegap-listening-javascript-exception</a></h3>
+
+<p>在编写PhoneGap应用时，监控javascript输出有助于帮助开发者快速定位问题，了解应用运行状态。本文介绍在IOS平台上，如何使用命令行工具监控JS输出。并且，通过PhoneGap内嵌，但默认关闭的debugview功能，开发者可以在不使用console.log和window.onerror命令的情况下，在底层监听js异常。 监控javascript日志 使用log命令监控输出 在调试phoneGap项目时，经常需要监控console.log命令的输出。使用logging命令，可以从命令行中监控到xcode的运行输出，这里包括native code的输出，也包括javaScript的console.log的输出。 在运行./emulate时，你可以注意到其通过stdoutPath命令把输出定位到cordova/console.log文件中，而log命令只是使用tail命令把console.log内容输出到终端中。 更加有效的监控Cordova JavaScript异常 实际上，通过为xcode项目添加几个文件，可以在不使用window.onerror和console.log更有效的在底层监控js异常。按照如下步骤，可完成激活JS异常监控功能： 1.复制debugview目录到xcode项目中 在PhoneGap的解压目录下，进入lib/ios/CordovaLib/Classes目录，拷贝其中的debugview目录到刚才创建的xcode项目中。debugview目录如下： 2.拷贝debugview目录到xcode项目中 拷贝上述的debugview目录到xcode项目中，在弹出的对话框中选择Create groups for any added folders，如下图： 3.修改MainViewController.m 找到xcode项目中的classes目录下，打开MainViewController.m文件。在其中加入如下函数： 在该文件顶部引入新的CDVDebugWebView.h文件： 重新编译并运行，在启动的模拟器中，可以看到下面弹出窗口。这是PhoneGap自动设定，为了提示您已经添加了调试类并启用。这些调试类使用了不被苹果允许的私有接口。因此只在调试阶段可用，在正式发布产品时需要去除。 此时，在log命令下，可以看到更详细的js异常输出。 Tags:   Del.icio.us Facebook TweetThis Digg StumbleUpon Comments:  0 (Zero), Be the first to leave a reply!You might be … <a href="http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/">Continue reading <span>→</span></a></p>
+
+
+<p>The post <a href="http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/">PhoneGap教程：IOS平台上监听PhoneGap应用JavaScript输出和异常</a> appeared first on <a href="http://www.donglongfei.com">RIA Coder</a>.</p>
+
+
+<p><br><br><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/ico-tag.png" border="0"> Tags:  <br><br><div style="width:80%"><table align="left" width="50%" cellspacing="0" cellpadding="0" bgcolor="#f1f1f1" border="0px;">
+                <tbody>
+                <tr bgcolor="#ffffff"><td align="center" width="17%" valign="top">
+                        <span>Del.icio.us</span><br>
+                        <a href="http://del.icio.us/post?url=http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/&amp;title=PhoneGap%E6%95%99%E7%A8%8B%EF%BC%9AIOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%9B%91%E5%90%ACPhoneGap%E5%BA%94%E7%94%A8JavaScript%E8%BE%93%E5%87%BA%E5%92%8C%E5%BC%82%E5%B8%B8">
+                        <img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/delicious.gif" border="0">
+                        </a><br/>
+                        </td><td align="center" width="17%" valign="top">
+                        <span>Facebook</span><br>
+                        <a href="http://www.facebook.com/share.php?u=http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/facebook_icon.png" border="0"></a><br/>
+                        </td><td align="center" width="17%" valign="top">
+                        <span>TweetThis</span><br>
+                        <a href="http://twitthis.com/twit?url=http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/&amp;title=PhoneGap%E6%95%99%E7%A8%8B%EF%BC%9AIOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%9B%91%E5%90%ACPhoneGap%E5%BA%94%E7%94%A8JavaScript%E8%BE%93%E5%87%BA%E5%92%8C%E5%BC%82%E5%B8%B8"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tweet.png" border="0"></a>                   </td><td align="center" width="17%" valign="top">
+                        <span>Digg</span><br>
+                        <a href="http://digg.com/submit?phase=2&amp;url=http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/&amp;title=PhoneGap%E6%95%99%E7%A8%8B%EF%BC%9AIOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%9B%91%E5%90%ACPhoneGap%E5%BA%94%E7%94%A8JavaScript%E8%BE%93%E5%87%BA%E5%92%8C%E5%BC%82%E5%B8%B8"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/digg.png" border="0"></a><br/>
+                        </td><td align="center" width="17%" valign="top">
+                        <span>StumbleUpon</span><br>
+                        <a href="http://www.stumbleupon.com/submit?url=http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/&amp;title=PhoneGap%E6%95%99%E7%A8%8B%EF%BC%9AIOS%E5%B9%B3%E5%8F%B0%E4%B8%8A%E7%9B%91%E5%90%ACPhoneGap%E5%BA%94%E7%94%A8JavaScript%E8%BE%93%E5%87%BA%E5%92%8C%E5%BC%82%E5%B8%B8"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/stumble.gif" border="0"></a><br/>
+                        </td></tr>
+                </tbody></table></div><br><div style="background:#eeeeee;padding:0px 0px 0px 15px;margin:10px 0px 0px 0px"><div style="padding:5px 0px 5px 0px"><b>Comments:</b>  <a href="http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/#respond">0 (Zero),  Be the first to leave a reply!</a></div><div style="padding:13px 0px 5px 0px"><span style="border-bottom:1px dashed #003399;padding-bottom:4px"><strong>You might be interested in this:</strong></span>  <br><ul style="margin:0;padding:0;padding-top:10px;padding-bottom:5px"><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2012/03/phonegap_tutorial/">PhoneGap</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2011/05/flex-mobile-app-tutorial/">Flex4.5 移动应用开发教程</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2012/03/phonegap-w3ctech/">PhoneGap：你应该知道的12件事</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2013/03/edge-animate-css-transform/">Edge Animate HTML5动画教程：CSS Transform的使用</a></li><li style="list-style-type:none"><img src="http://www.donglongfei.com/wp-content/plugins/readers-from-rss-2-blog/wpsmartapps-lic/images/tick.png" border="0">  <a href="http://www.donglongfei.com/2011/08/auto-scale-stagewebview-density-independent-mobile-app/">为移动应用创建DPI自适应的StageWebView</a></li></ul></div></div><hr style="color:#ebebeb"><small>Copyright © <a href="http://www.donglongfei.com">RIA Coder</a> [<a href="http://www.donglongfei.com/2012/11/debug-phonegap-listening-javascript-exception/">PhoneGap教程：IOS平台上监听PhoneGap应用JavaScript输出和异常</a>], All Right Reserved. 2013.</small><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

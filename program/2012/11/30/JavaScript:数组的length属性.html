@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JavaScript:数组的length属性</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JavaScript:数组的length属性</h2>
+<p class="meta">30 Nov 2012</p>
+
+<div class="post">
+<h2>JavaScript:数组的length属性</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-11-30 15:40:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/30/2795744.html">http://www.cnblogs.com/ziyunfei/archive/2012/11/30/2795744.html</a></h3>
+
+<p>在ES5中,数组的length属性是这么规定的:</p>
+
+
+<blockquote><p><strong><span>15.4.5.2</span> length</strong></p><p>数组对象的<code>length属性是一个数据属性,该属性的值始终从数值上大于所属数组的任何一个索引号</code>.</p><p><code>length属性的初始特性为</code><span style="font-family:Times New Roman">{ [[Writable]]: <strong>true</strong>, [[Enumerable]]: <strong>false</strong>, [[Configurable]]: <strong>false</strong> }</span>.</p></blockquote>
+
+
+<p>数组的属性可以分为三种:length属性,索引属性,其他属性.和普通对象相比,数组对象特殊的地方就是它的length属性和索引属性,为了对数组的属性做特殊处理,ES5标准专门规定了一个数组专用的[[DefineOwnProperty]]内部方法(<span>15.4.5.1</span>),以区别于其他对象所用的[[DefineOwnProperty]]内部方法(<span>8.12.9</span>).</p>
+
+
+<p><strong>1. 修改数组的length属性会不会影响数组的索引属性?</strong></p>
+
+
+<p>数组的索引属性(通常称之为索引或下标)是那些属性名为数字形式的属性(实际上是字符串).而且数字范围必须处于0到2<sup>32</sup>-2之间.</p>
+
+
+<p>本节要讲的这些表现主要规定在ES5 15.4.5.1-3中.</p>
+
+
+<p><strong>1.1. 以赋值方式修改length属性:</strong></p>
+
+
+<p>以赋值方式只能修改length属性的值(也就是value特性),本节给出的例子在目前所有主流引擎上表现都相同.</p>
+
+
+<p><strong>1.1.1. 手动增大数组的length属性<span style="color:#ff6600">不会</span>影响数组的索引属性:</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; <span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4<span style="color:#000000">]<br></span>&gt; a.length = 10<br>10<br>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4, , , , , ,]        <span style="color:#008000">//</span><span style="color:#008000">手动增大length属性并不会自动补全所缺少的索引属性,只是有些交互环境在显示数组的时候会把缺少的索引属性以空字符串+逗号的方式显示出来.</span><br>&gt;<span style="color:#000000"> print(a)<br></span>0,1,2,3,4,,,,,                    <span style="color:#008000">//</span><span style="color:#008000">Array.prototype.toString方法也会把那些缺少的索引属性显示出来</span><br>&gt;<span style="color:#000000"> Object.keys(a)<br>[</span>"0", "1", "2", "3", "4"]         <span style="color:#008000">//</span><span style="color:#008000">但实际上索引属性并没有增加,最大的索引属性还是4</span><br>&gt; a.length = Math.pow(2,32<span style="color:#000000">)<br>RangeError: invalid array length  </span><span style="color:#008000">//为length属性赋过大的值会抛出异常</span></div>
+
+
+<p><strong>1.1.2. 手动减小数组的length属性<span style="background-color:#ffffff;color:#ff6600">会</span>影响数组的索引属性:</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; <span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4<span style="color:#000000">]</span><br>&gt; a.length = 3           <br>3<br>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2]                                             <span style="color:#008000">//</span><span style="color:#008000">手动减小length属性会截掉多出来的索引属性</span><br>&gt; Object.defineProperty(a,&quot;1&quot;,{configurable:<span style="color:#0000ff">false</span>})   <span style="color:#008000">//</span><span style="color:#008000">如果需要截掉的索引属性中有一个是不可删除的,也就是不可配置的,那么...</span><br>[0, 1, 2<span style="color:#000000">] <br></span>&gt; a.length = 1           <br>1<br>&gt;<span style="color:#000000">a<br>[</span>0, 1]                                                <span style="color:#008000">//</span><span style="color:#008000">截取操作会被这种不可删除的索引属性阻止</span><br>&gt;<span style="color:#000000">a.length<br></span>2                                                     <span style="color:#008000">//</span><span style="color:#008000">length属性也会被自动设置成为最大的索引号+1</span></div>
+
+
+<p><strong>1.2. 以定义方式修改length属性:</strong></p>
+
+
+<p>如果你还不知道对象属性的定义操作和赋值操作有什么区别,推荐看看我的另一篇文章<a href="http://www.cnblogs.com/ziyunfei/archive/2012/10/31/2738728.html">[译]JavaScript中的属性:定义和赋值的区别</a>.</p>
+
+
+<p>以定义方式不仅能修改length属性的value特性,还能修改其他的特性比如writable特性.以定义方式修改数组的length属性在目前所有主流引擎上的表现有很多不同.</p>
+
+
+<p><strong>Chrome 25(v8):</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt;<span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt;Object.defineProperty(a,&quot;length&quot;,{value:10})         <span style="color:#008000">//</span><span style="color:#008000">以定义方式修改length属性的值</span><br>[0, 1, 2, 3, 4, undefined × 5<span style="color:#000000">]<br></span>&gt;a.length                                             <span style="color:#008000">//</span><span style="color:#008000">修改成功</span><br>10<br>&gt;Object.defineProperty(a,&quot;length&quot;,{writable:<span style="color:#0000ff">false</span>})   <span style="color:#008000">//</span><span style="color:#008000">修改length属性为只读</span><br>[0, 1, 2, 3, 4, undefined × 5<span style="color:#000000">]<br></span>&gt;Object.getOwnPropertyDescriptor(a,&quot;length&quot;<span style="color:#000000">)   <br>Object {value: </span>10, writable: <span style="color:#0000ff">false</span>, enumerable: <span style="color:#0000ff">false</span>, configurable: <span style="color:#0000ff">false</span>}         <span style="color:#008000">//</span><span style="color:#008000">length属性现在是不可配置加不可写的</span><br>&gt;a.length = 100                                       <span style="color:#008000">//</span><span style="color:#008000">以赋值方式修改length属性的值</span><br>100<br>&gt;a.length                                             <span style="color:#008000">//</span><span style="color:#008000">的确没有更改成功</span><br>10<br>&gt;(<span style="color:#0000ff">function</span>(){"use strict";a.length=100})()            <span style="color:#008000">//</span><span style="color:#008000">严格模式下会报错</span><br>TypeError: Cannot assign to read only property 'length'<span style="color:#000000"> of [object Array]<br></span>&gt;Object.defineProperty(a,&quot;length&quot;,{value:100})        <span style="color:#008000">//</span><span style="color:#008000">再以定义方式修改length属性的值</span><br>TypeError: Cannot redefine property: length           <span style="color:#008000">//</span><span style="color:#008000">也不能修改</span><br>&gt;a.push(10)                                           <span style="color:#008000">//</span><span style="color:#008000">通过push方法修改数组</span><br>11<br>&gt;<span style="color:#000000">a<br>[</span>0, 1, 2, 3, 4, undefined × 5, 10]                    <span style="color:#008000">//</span><span style="color:#008000">push进去了</span><br>&gt;<span style="color:#000000">a.length<br></span>11                                                    <span style="color:#008000">//</span><span style="color:#008000">length属性也被修改了</span><br>&gt;a[100] = 100                                         <span style="color:#008000">//</span><span style="color:#008000">添加新的索引元素</span><br>100<br>&gt;<span style="color:#000000">a.length<br></span>101                                                   <span style="color:#008000">//</span><span style="color:#008000">length属性也被修改了</span></div>
+
+
+<p><strong>Opera12.12(Carakan) :</strong></p>
+
+
+<p>opera中的表现和chrome基本相同.</p>
+
+
+<p><strong>IE9(<span><strong>Chakra</strong></span>):</strong></p>
+
+
+<p>IE9中的表现和chrome的区别是,length属性如果是只读的,任何方式都不能修改它的值.</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt;&gt; Object.defineProperty(a,&quot;length&quot;,{value:100<span style="color:#000000">}) <br></span>&quot;无法修改不可写的属性“length”&quot; <br>&gt;&gt; a.push(10)                                        <span style="color:#008000">//</span><span style="color:#008000">抛出异常</span><br>"对象不支持此操作" <br>&gt;&gt; a[100] = 10                                       <span style="color:#008000">//</span><span style="color:#008000">因为不能修改length属性的值,所以这样的属性添加操作也会静默失败</span><br>10 <br>&gt;&gt; a[100] + &quot;&quot; <br>"undefined"<br>&gt;&gt; a.length<br>10</div>
+
+
+<p><strong>Firefox 20(SpiderMonkey):</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; <span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt; Object.defineProperty(a,&quot;length&quot;,{value:10<span style="color:#000000">})<br>InternalError: defining the length property on an array is not currently supported   <br><br></span><span style="color:#008000">//</span><span style="color:#008000">Firefox完全不支持重新定义数组的length属性,但未来会修复.详见<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=591059">https://bugzilla.mozilla.org/show_bug.cgi?id=591059</a></span></div>
+
+
+<p><strong>Safari 5.17(JavaScriptCore):</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt;<span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt;Object.defineProperty(a,&quot;length&quot;,{value:10})                            <span style="color:#008000">//</span><span style="color:#008000">静默失败</span><br>[0, 1, 2, 3, 4<span style="color:#000000">]<br></span>&gt;<span style="color:#000000">a.length<br></span>5                                                                        <span style="color:#008000">//</span><span style="color:#008000">length属性没有变</span><br>&gt;Object.defineProperty(a,&quot;length&quot;,{writable:<span style="color:#0000ff">false</span>})                      <span style="color:#008000">//</span><span style="color:#008000">静默失败</span><br>[0, 1, 2, 3, 4<span style="color:#000000">]<br></span>&gt;JSON.stringify(Object.getOwnPropertyDescriptor(a,&quot;length&quot;<span style="color:#000000">))<br></span>"{"value":5,"writable":true,"enumerable":false,"configurable":false}"    <span style="color:#008000">//</span><span style="color:#008000">属性描述符没有变</span><span style="color:#008000"><br><br>//</span><span style="color:#008000">Safari也完全不支持重新定义数组的length属性,但不抛出异常</span></div>
+
+
+<p>哪个浏览器的表现是最合理的,这我不知道.但我们应该避免数组length属性的重定义操作,不过一般也不需要这样做.</p>
+
+
+<p><strong>2. 修改数组的索引属性会不会影响数组的length属性?</strong></p>
+
+
+<p>本节要讲的这些表现主要规定在ES5 15.4.5.1-4中.</p>
+
+
+<p><strong>2.1. 增大数组的最大索引号<span style="color:#ff9900">会</span>影响数组的length属性 :</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; <span style="color:#0000ff">var</span> a = [0,1,2,3,4<span style="color:#000000">]<br></span>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4<span style="color:#000000">]<br></span>&gt; a[10] = 10<br>10<br>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4, , , , , , 10<span style="color:#000000">]             </span><span style="color:#008000">//这种数组通常称之为"稀疏数组",对应的是"密集数组"<br></span>&gt;<span style="color:#000000"> a.length<br></span>11                                        <span style="color:#008000">//length属性的值被自动更改为</span><span style="color:#008000">最大索引号10再加上1<br></span>&gt; a[Math.pow(2,32<span style="color:#000000">)</span>-1] = "x"               <span style="color:#008000">//超过2^32-2的话<span style="color:#008000">(4294967295)</span></span><br>"x"<br>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4, , , , , , 10<span style="color:#000000">]             </span><span style="color:#008000">//4294967295不在索引里面<br></span>&gt;<span style="color:#000000"> a.length<br></span>11                                        <span style="color:#008000">//length属性的值没有变<br></span>&gt;a[Math.pow(2,32<span style="color:#000000">)</span>-1]                      <span style="color:#008000">//<span style="color:#008000"><span style="color:#008000">4294967295只能算个普通属性</span></span></span><br>"x"</div>
+
+
+<p><strong>2.2. 删除索引号最大的索引属性<span style="color:#ff9900">不会</span>影响数组的length属性:</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">&gt; <span style="color:#0000ff">var</span> a = [0, 1, 2, 3, 4, , , , , , 10<span style="color:#000000">]<br></span>&gt;<span style="color:#000000"> a.length<br></span>11<br>&gt; <span style="color:#0000ff">delete</span> a[10<span style="color:#000000">]<br></span><span style="color:#0000ff">true</span><br>&gt;<span style="color:#000000"> a<br>[</span>0, 1, 2, 3, 4, , , , , , ,]          <span style="color:#008000">//</span><span style="color:#008000">数组现在只有5个索引属性</span><br>&gt; a.length                            <br>11                                    <span style="color:#008000">//</span><span style="color:#008000">但length属性没有减小,还是11</span></div>
+
+
+<p><img src="http://www.cnblogs.com/ziyunfei/aggbug/2795744.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/30/2795744.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

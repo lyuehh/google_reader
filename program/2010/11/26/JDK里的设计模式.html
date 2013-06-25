@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JDK里的设计模式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JDK里的设计模式</h2>
+<p class="meta">26 Nov 2010</p>
+
+<div class="post">
+<h2>JDK里的设计模式</h2>
+
+<h3>by 陈皓</h3>
+
+<h3>at 2010-11-26 08:44:37</h3>
+
+<h3>original <a href="http://coolshell.cn/articles/3320.html">http://coolshell.cn/articles/3320.html</a></h3>
+
+<p>下面是JDK中有关23个经典设计模式的示例，在stakeoverflow也有相应的讨论：<br>
+<a href="http://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns">http://stackoverflow.com/questions/1673841/examples-of-gof-design-patterns</a></p>
+
+
+<h4><strong><span style="text-decoration:underline">Structural（结构模式）</span></strong></h4>
+
+
+<div><strong>Adapter:</strong><br>
+把一个接口或是类变成另外一种。
+<ul>
+<li>java.util.Arrays#asList()</li>
+<li>javax.swing.JTable(TableModel)</li>
+<li>java.io.InputStreamReader(InputStream)</li>
+<li>java.io.OutputStreamWriter(OutputStream)</li>
+<li>javax.xml.bind.annotation.adapters.XmlAdapter#marshal()</li>
+<li>javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal()</li>
+</ul>
+<p><strong>Bridge:</strong><br>
+把抽象和实现解藕，于是接口和实现可在完全独立开来。</p>
+<ul>
+<li>AWT (提供了抽象层映射于实际的操作系统)</li>
+<li>JDBC</li>
+</ul>
+<p><strong>Composite:</strong><br>
+让使用者把单独的对象和组合对象混用。</p>
+<ul>
+<li>javax.swing.JComponent#add(Component)</li>
+<li>java.awt.Container#add(Component)</li>
+<li>java.util.Map#putAll(Map)</li>
+<li>java.util.List#addAll(Collection)</li>
+<li>java.util.Set#addAll(Collection)</li>
+</ul>
+</div>
+
+
+<p><span></span></p>
+
+
+<div>
+<p><strong>Decorator:</strong><br>
+为一个对象动态的加上一系列的动作，而不需要因为这些动作的不同而产生大量的继承类。这个模式在JDK中几乎无处不在，所以，下面的列表只是一些典型的。</p>
+<ul>
+<li>java.io.BufferedInputStream(InputStream)</li>
+<li>java.io.DataInputStream(InputStream)</li>
+<li>java.io.BufferedOutputStream(OutputStream)</li>
+<li>java.util.zip.ZipOutputStream(OutputStream)</li>
+<li>java.util.Collections#checked[List|Map|Set|SortedSet|SortedMap]()</li>
+</ul>
+<p><strong>Facade:</strong><br>
+用一个简单的接口包状一组组件，接口，抽象或是子系统。</p>
+<ul>
+<li>java.lang.Class</li>
+<li>javax.faces.webapp.FacesServlet</li>
+</ul>
+<p><strong>Flyweight:</strong><br>
+有效率地存储大量的小的对象。</p>
+<ul>
+<li>java.lang.Integer#valueOf(int)</li>
+<li>java.lang.Boolean#valueOf(boolean)</li>
+<li>java.lang.Byte#valueOf(byte)</li>
+<li>java.lang.Character#valueOf(char)</li>
+</ul>
+<p><strong>Proxy:</strong><br>
+用一个简单的对象来代替一个复杂的对象。</p>
+<ul>
+<li>java.lang.reflect.Proxy</li>
+<li>RMI</li>
+</ul>
+</div>
+
+
+<div>
+<h4><strong><span style="text-decoration:underline">Creational（创建模式）</span></strong></h4>
+</div>
+
+
+<div><strong> </strong><strong>Abstract factory:</strong><br>
+创建一组有关联的对象实例。这个模式在JDK中也是相当的常见，还有很多的framework例如Spring。我们很容易找到这样的实例。
+<ul>
+<li>java.util.Calendar#getInstance()</li>
+<li>java.util.Arrays#asList()</li>
+<li>java.util.ResourceBundle#getBundle()</li>
+<li>java.sql.DriverManager#getConnection()</li>
+<li>java.sql.Connection#createStatement()</li>
+<li>java.sql.Statement#executeQuery()</li>
+<li>java.text.NumberFormat#getInstance()</li>
+<li>javax.xml.transform.TransformerFactory#newInstance()</li>
+</ul>
+<p><strong>Builder:</strong><br>
+主要用来简化一个复杂的对象的创建。这个模式也可以用来实现一个 <a href="http://en.wikipedia.org/wiki/Fluent_interface">Fluent Interface</a>。</p>
+<ul>
+<li>java.lang.StringBuilder#append()</li>
+<li>java.lang.StringBuffer#append()</li>
+<li>java.sql.PreparedStatement</li>
+<li>javax.swing.GroupLayout.Group#addComponent()</li>
+</ul>
+<p><strong>Factory:</strong><br>
+简单来说，按照需求返回一个类型的实例。</p>
+<ul>
+<li>java.lang.Proxy#newProxyInstance()</li>
+<li>java.lang.Object#toString()</li>
+<li>java.lang.Class#newInstance()</li>
+<li>java.lang.reflect.Array#newInstance()</li>
+<li>java.lang.reflect.Constructor#newInstance()</li>
+<li>java.lang.Boolean#valueOf(String)</li>
+<li>java.lang.Class#forName()</li>
+</ul>
+<p><strong>Prototype:</strong><br>
+使用自己的实例创建另一个实例。有时候，创建一个实例然后再把已有实例的值拷贝过去，是一个很复杂的动作。所以，使用这个模式可以避免这样的复杂性。</p>
+<ul>
+<li>java.lang.Object#clone()</li>
+<li>java.lang.Cloneable</li>
+</ul>
+<p><strong>Singleton:</strong><br>
+只允许一个实例。在 Effective Java中建议使用Emun.</p>
+<ul>
+<li>java.lang.Runtime#getRuntime()</li>
+<li>java.awt.Toolkit#getDefaultToolkit()</li>
+<li>java.awt.GraphicsEnvironment#getLocalGraphicsEnvironment()</li>
+<li>java.awt.Desktop#getDesktop()</li>
+</ul>
+<h4><strong><span style="text-decoration:underline">Behavioral(行为模式)</span></strong></h4>
+<p><strong>Chain of responsibility:</strong><br>
+把一个对象在一个链接传递直到被处理。在这个链上的所有的对象有相同的接口（抽象类）但却有不同的实现。</p>
+<ul>
+<li>java.util.logging.Logger#log()</li>
+<li>javax.servlet.Filter#doFilter()</li>
+</ul>
+<p><strong>Command:</strong><br>
+把一个或一些命令封装到一个对象中。</p>
+<ul>
+<li>java.lang.Runnable</li>
+<li>javax.swing.Action</li>
+</ul>
+<p><strong>Interpreter:</strong><br>
+一个语法解释器的模式。</p>
+<ul>
+<li>java.util.Pattern</li>
+<li>java.text.Normalizer</li>
+<li>java.text.Format</li>
+</ul>
+<p><strong>Iterator:</strong><br>
+提供一种一致的方法来顺序遍历一个容器中的所有元素。</p>
+<ul>
+<li>java.util.Iterator</li>
+<li>java.util.Enumeration</li>
+</ul>
+<p><strong>Mediator:</strong><br>
+用来减少对象单的直接通讯的依赖关系。使用一个中间类来管理消息的方向。</p>
+<ul>
+<li>java.util.Timer</li>
+<li>java.util.concurrent.Executor#execute()</li>
+<li>java.util.concurrent.ExecutorService#submit()</li>
+<li>java.lang.reflect.Method#invoke()</li>
+</ul>
+<p><strong>Memento:</strong><br>
+给一个对象的状态做一个快照。Date类在内部使用了一个long型来做这个快照。</p>
+<ul>
+<li>java.util.Date</li>
+<li>java.io.Serializable</li>
+</ul>
+<p><strong>Null Object:</strong><br>
+这个模式用来解决如果一个Collection中没有元素的情况。</p>
+<ul>
+<li>java.util.Collections#emptyList()</li>
+<li>java.util.Collections#emptyMap()</li>
+<li>java.util.Collections#emptySet()</li>
+</ul>
+<p><strong>Observer:</strong><br>
+允许一个对象向所有的侦听的对象广播自己的消息或事件。</p>
+<ul>
+<li>java.util.EventListener</li>
+<li>javax.servlet.http.HttpSessionBindingListener</li>
+<li>javax.servlet.http.HttpSessionAttributeListener</li>
+<li>javax.faces.event.PhaseListener</li>
+</ul>
+<p><strong>State:</strong><br>
+这个模式允许你可以在运行时很容易地根据自身内部的状态改变对象的行为。</p>
+<ul>
+<li>java.util.Iterator</li>
+<li>javax.faces.lifecycle.LifeCycle#execute()</li>
+</ul>
+<p><strong>Strategy:</strong><br>
+定义一组算法，并把其封装到一个对象中。然后在运行时，可以灵活的使用其中的一个算法。</p>
+<ul>
+<li>java.util.Comparator#compare()</li>
+<li>javax.servlet.http.HttpServlet</li>
+<li>javax.servlet.Filter#doFilter()</li>
+</ul>
+<p><strong>Template method:</strong><br>
+允许子类重载部分父类而不需要完全重写。</p>
+<ul>
+<li>java.util.Collections#sort()</li>
+<li>java.io.InputStream#skip()</li>
+<li>java.io.InputStream#read()</li>
+<li>java.util.AbstractList#indexOf()</li>
+</ul>
+<p><strong>Visitor:</strong></p>
+<p>作用于某个对象群中各个对象的操作. 它可以使你在不改变这些对象本身的情况下,定义作用于这些对象的新操作.</p>
+<ul>
+<li>javax.lang.model.element.Element 和javax.lang.model.element.ElementVisitor</li>
+<li>javax.lang.model.type.TypeMirror 和javax.lang.model.type.TypeVisitor</li>
+</ul>
+<p>（全文完）</p>
+</div>
+
+
+<h3>相关文章</h3>
+
+
+<ul><li>2010年12月31日 -- <a href="http://coolshell.cn/articles/3437.html" title="一些杂项资源">一些杂项资源</a></li><li>2010年12月21日 -- <a href="http://coolshell.cn/articles/3421.html" title="流体力学的演示">流体力学的演示</a></li><li>2010年11月02日 -- <a href="http://coolshell.cn/articles/3258.html" title="C++的字符串格式化库">C++的字符串格式化库</a></li><li>2010年08月23日 -- <a href="http://coolshell.cn/articles/2834.html" title="史上最烂的超级玛丽">史上最烂的超级玛丽</a></li><li>2010年07月19日 -- <a href="http://coolshell.cn/articles/2631.html" title="五大基于JVM的脚本语言">五大基于JVM的脚本语言</a></li><li>2010年07月07日 -- <a href="http://coolshell.cn/articles/2554.html" title="Eclipse 3.6 （Helios）新特性">Eclipse 3.6 （Helios）新特性</a></li><li>2010年06月02日 -- <a href="http://coolshell.cn/articles/2483.html" title="四个流行的Java连接池">四个流行的Java连接池</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

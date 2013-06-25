@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>由eval生成的代码效率真的很差吗？</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>由eval生成的代码效率真的很差吗？</h2>
+<p class="meta">16 Aug 2012</p>
+
+<div class="post">
+<h2>由eval生成的代码效率真的很差吗？</h2>
+
+<h3>by zhaojie</h3>
+
+<h3>at 2012-08-15 21:29:33</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7953.html">http://www.udpwork.com/item/7953.html</a></h3>
+
+<p>昨晚跟一位Node.js专家讲解了我的Wind.js类库。之前那位仁兄对Jscex（Wind.js的前身）的看法是“就是不喜欢”，也在微博上对Jscex冷嘲热讽，于是我私信他说建议看一下文档了解一下Jscex。昨天我们的争论主要围绕在eval的使用上，他认为更好的做法是像<a href="http://coffeescript.org/">CoffeeScript</a>那样使用一个额外的进程监听改变，这样更方便。我说CoffeeScript这么做是因为它没有像Wind.js那样借助eval实现完全动态的运行时转化，且生产环境中不会出现eval。最后他坚持认为“eval就是有性能问题”，因此开发时也不应该使用，否则Wind.js为什么要提供预编译器？虽然最后不欢而散，不过我忽然也打算验证一下eval生成的代码效率到底会差到什么样的地步，于是便有了这次试验。</p>
+
+
+<h1>测试代码</h1>
+
+
+<p>有人可能会问，eval每次动态的执行代码时需要重新分析代码，还不能进行优化，为什么会“不慢”？不过请注意，这里测试的目标不是用eval执行代码慢不慢，而是反复执行通过eval生成的代码，因为这才是Wind.js对eval的使用方式。Wind.js中每次eval将会生成一个函数，然后在使用的过程中不会反复eval。</p>
+
+
+<p>既然是测试纯性能，我就找了个纯粹用来计算的函数：<a href="http://en.wikipedia.org/wiki/Linear_congruential_generator">LCG随机数生成器</a>。这个随机数生成器实现简单，效率极高，因此运用十分广泛。这里我们不关心它的原理，只给出它的JavaScript实现：</p>
+
+
+<pre>var nativeRandomLCG = function (seed) {
+    return function () {
+        seed = (214013 * seed + 2531011) % 0x100000000;
+        return seed * (1.0 / 4294967296.0);
+    };
+};
+
+var evalRandomLCG = function (seed) {
+    var randomLCG = eval(&quot;(&quot; + nativeRandomLCG.toString() + &quot;)&quot;);
+    return randomLCG(seed);
+};</pre>
+
+
+<p>nativeRandomLCG将通过seed生成一个随机数生成器，而evalRandomLCG则会将前者的代码作为字符串取出，并在eval后重新获得随机数生成器。我们的评测对象便是这两个生成器：</p>
+
+
+<pre>var nativeSuite = {
+    name: &quot;native&quot;,
+    target: nativeRandomLCG(100)
+};
+
+var evalSuite = {
+    name: &quot;eval&quot;,
+    target: evalRandomLCG(100)
+};
+
+var iterations = [100, 200, 300];
+
+for (var round = 0; round &lt; iterations.length; round++) {
+    console.log(&quot;Round &quot; + round);
+    test(iterations[round] * 1000 * 1000, nativeSuite, evalSuite);
+    console.log(&quot;&quot;);
+}</pre>
+
+
+<p>我将进行三轮测试，分别生成100M，200M及300M个随机数，并观察两个随机数生成器的耗时。<a href="https://github.com/JeffreyZhao/benchmark/tree/master/js-code-from-eval">完整代码可以在此获得</a>，其中lcg.js可以直接作为Node.js程序运行，而lcg.html则可以在浏览器里打开，点击页面上的按钮启动计算，测试结果会在控制台里输出。</p>
+
+
+<p>由于Node.js可以在不同平台上使用，而Windows和OSX又各有一个不跨平台的浏览器，因此我会在两个平台上分别对Node.js和主流浏览器进行测试。为了避免Firefox出现“脚本执行时间过长，是否中止”这样的提示，还需要<a href="http://support.mozilla.org/en-US/kb/warning-unresponsive-script">对其进行简单的设置</a>。</p>
+
+
+<h1>Windows实验结果</h1>
+
+
+<p>Windows上的实验使用的是我工作时所使用的ThinkPad 520，操作系统为Windows 7，CPU信息如下：</p>
+
+
+<p><img src="http://img.zhaojie.me/blog/js-code-from-eval-benchmark/win-cpu.png" alt="ThinkPad 520 CPU"></p>
+
+
+<p>四个JavaScript执行环境为：</p>
+
+
+<ol><li>Node.js 0.8.6</li>
+<li>IE 9</li>
+<li>Chrome 21</li>
+<li>Firefox 14</li>
+</ol>
+
+
+<p>实验结果：</p>
+
+
+<p>图表：</p>
+
+
+<p>从中我们可以清晰地得出：</p>
+
+
+<p>对于Node.js来说，使用eval得到的函数，其执行效率和JavaScript直接定义的函数可谓毫无二至。事实上，除了IE似乎eval普遍稍慢于原生函数外，其他引擎里的表现都可谓基本持平，连IE的落后也基本可以忽略不计。所以，“eval出来的代码效率会有很大差距”这种说法，至少在这个实验中丝毫没有体现出来。</p>
+
+
+<p>有意思的是，在Chrome中还发生了这么一件事情：在第一轮比较中，原生定义的函数有较大的性能优势，而且自从测试了eval得到的函数之后，后面两轮连原生函数的效率都下降了。这会不会是因为eval让整个执行引擎大打折扣了呢？严谨起见，我又测试了三种情况：</p>
+
+
+<ul><li>两个测试用例都使用原生函数。</li>
+<li>eval得到的函数先于原生函数前执行。</li>
+<li>两个测试都使用eval得到的函数。</li>
+</ul>
+
+
+<p>都得到了类似的结果：先执行的函数效率会高出许多。我猜测这是因为Chrome发现了大量的密集计算，为了保证界面的响应能力，将JavaScript执行的优先级降低的缘故。值得一提的是，尽管Chrome的“降速”后的结果略慢于IE和Firefox，但它是唯一一个在性能测试的时候，整个界面还没有失去响应的浏览器。此时我可以切换到其他Tab，也可以关闭这张页面——甚至控制台里输出的文字也是立即出现的，而其他两个浏览器都必须等整段程序执行完成之后所有输出才同时出现。</p>
+
+
+<p>必须承认，Chrome浏览器在这方面的确可圈可点。</p>
+
+
+<h1>OSX实验结果</h1>
+
+
+<p>OSX上的实验使用的是一台高配的MBP with Retina Display，操作系统为最新的OSX Mountain Lion，CPU信息如下：</p>
+
+
+<p><img src="http://img.zhaojie.me/blog/js-code-from-eval-benchmark/osx-cpu.png"></p>
+
+
+<p>四个JavaScript执行环境为：</p>
+
+
+<ol><li>Node.js 0.8.0</li>
+<li>Safari 6</li>
+<li>Chrome 21</li>
+<li>Firefox 14</li>
+</ol>
+
+
+<p>实验结果：</p>
+
+
+<p>图表：</p>
+
+
+<p>由于结论十分类似，我就不多做分析了。不过有意思的是，不知为何Safari浏览器的性能极低，我一开始使用相同规模的实验数据，发现Safari迟迟不返回结果，直到我将生成随机数的数量降低到十分之一时，才得到Safari如今的耗时。因此请注意这里的Safari附带的x0.1字样，正是指它实验数据的规模仅仅为其他JavaScript执行引擎的十分之一。</p>
+
+
+<h1>总结</h1>
+
+
+<p>eval本身的执行无疑会慢，因为它需要动态的分析那段字符串的内容才能执行，且单次执行为它进行优化可能也得不偿失。但是，像Wind.js那样将eval的结果反复执行，并非反复执行eval本身，这可能就是另外一回事情了。eval最终还是得到一段代码，而这段代码在反复执行过程中可能也会被JIT，也会被优化。</p>
+
+
+<p>我不能说我设计的这个简单案例就能说明一切，但是至少通过这个我立即就想到的首个测试用例，能够说明eval的某些使用方式可能并不想许多人幻想中对性能会产生多大的影响。而且对于Wind.js这种异步类库来说，程序几乎都是在等待异步任务完成，代码层面的性能基本不会造成任何影响。如果你实在害怕eval，完全可以在生产环境中通过预编译消除所有的eval。这里的预编译并不是为了性能，而是让代码可以脱离体积最大的编译器模块运行，剩下的部分在Minified和GZipped之后只有4K大小。</p>
+
+
+<p>如果你非要如那位Node.js专家说“eval就是慢”，那我只能这么说：</p>
+
+
+<p>在Wind.js中使用eval不会产生什么性能问题，我觉得排斥的人有三种情况：不熟悉eval，不熟悉是不了解Wind.js，找茬。</p>
+
+
+<p>我在微博上说了上面这句话之后，却得到那位专家这样的回应：</p>
+
+
+<p>看來，不喜歡Wind.js的人要麼是不懂，要麼是故意找茬了。Wind.js是不容置疑的。//@老赵 :我觉得排斥的人有三种情况：不熟悉eval，不熟悉Wind.js，找茬……</p>
+
+
+<p>我顿时觉得很生气，说道：</p>
+
+
+<p>身为有头有脸的专家不要断章取义，我说的是排斥“Wind.js里使用eval”。你可以不喜欢Wind.js，但是要说出靠谱的理由。上次你也跑上来黑一票Wind.js就走，真枉我买过你的书。</p>
+
+
+<p>结果却得到对方“义正词严”的批评：</p>
+
+
+<p>還是請您就事論事，不要人身攻擊。</p>
+
+
+<p>真令人好生疑惑，我这就算是人身攻击？哪里没有就事论事？是谁在断章取义，搞低级黑？</p>
+
+
+<p>那攻击就攻击吧，反正我已经很失望了。</p>
+
+
+<p>注：<a href="http://www.otakustay.com/eval-performance-profile/">也有实验显示</a>，eval对性能的影响，并非要用过eval执行，或是执行eval出的代码才能体现出来，而eval某些存在方式也会让JavaScript引擎降低对其他代码的优化程度。因此，Wind.js中的eval到底产生多大影响也需要做进一步探明。接下来我也会在<a href="http://windjs.org/">Wind.js官方网站</a>上发布一些更针对Wind.js中eval使用方式的性能测试报告。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7953.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7953.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7953.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

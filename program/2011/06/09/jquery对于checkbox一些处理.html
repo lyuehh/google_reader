@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jquery对于checkbox一些处理</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>jquery对于checkbox一些处理</h2>
+<p class="meta">09 Jun 2011</p>
+
+<div class="post">
+<h2>jquery对于checkbox一些处理</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-06-09 10:27:34</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1073950">http://hlee.iteye.com/blog/1073950</a></h3>
+
+<p><br><pre name="code">&lt;input type=&quot;checkbox&quot; name=&quot;foo&quot; value=&quot;bar&quot; /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;show_checked()&quot; value=&quot;Show&quot; /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;set_checked(true)&quot; value=&quot;On&quot; /&gt;
+&lt;input type=&quot;button&quot; onclick=&quot;set_checked(false)&quot; value=&quot;Off&quot; /&gt;
+</pre>
+<br>
+<br><pre name="code"></p>
+
+<h1>判断是否选中</h1>
+
+<pre><code>$('input[name=foo]').is(':checked')
+$('input[name=foo]').attr('checked')
+</code></pre>
+
+<p></pre>
+<br><pre name="code"></p>
+
+<h1>选中和不选中</h1>
+
+<pre><code>$('input[name=foo]').attr('checked', true);
+$('input[name=foo]').attr('checked', false);
+</code></pre>
+
+<p></pre>
+<br>
+<br>
+<br>
+<br>判断是否选中，开始用的办法
+<br>
+<br>
+<br>
+<br><pre name="code">
+$(function() {
+  $('#isOther').click(function() {
+    var other = $('#isOther:checked').val();
+    if (other != undefined) $('#other').removeAttr('readonly');
+    else $('#other').attr('readonly', 'readonly');
+  });
+});</p>
+
+<p></pre>
+<br>
+<br>其实可以
+<br>
+<br><pre name="code">var checked = $('input[type=checkbox]').attr('checked');</pre>
+<br>
+<br>返回一个jason对象，是有结构的
+<br><pre name="code">
+var myJSONObject = {&quot;bindings&quot;: [
+        {&quot;ircEvent&quot;: &quot;PRIVMSG&quot;, &quot;method&quot;: &quot;newURI&quot;, &quot;regex&quot;: &quot;^http://.<em>&quot;},
+        {&quot;ircEvent&quot;: &quot;PRIVMSG&quot;, &quot;method&quot;: &quot;deleteURI&quot;, &quot;regex&quot;: &quot;^delete.</em>&quot;},
+        {&quot;ircEvent&quot;: &quot;PRIVMSG&quot;, &quot;method&quot;: &quot;randomURI&quot;, &quot;regex&quot;: &quot;^random.*&quot;}
+    ]
+};</p>
+
+<p>myData = JSON.parse(text, function (key, value) {
+    var type;
+    if (value &amp;&amp; typeof value === &#39;object&#39;) {
+        type = value.type;
+        if (typeof type === &#39;string&#39; &amp;&amp; typeof window[type] === &#39;function&#39;) {
+            return new (window[type])(value);
+        }
+    }
+    return value;
+});</p>
+
+<p></pre>
+<br>
+<br>一些参考：
+<br>都是把一组复选框是否选中情况，得到。等着ajax发出去
+<br>
+<br><pre name="code">var sList = "";
+$('input[type=checkbox]').each(function () {
+    var sThisVal = (this.checked ? "1" : "0");
+    sList += (sList=="" ? sThisVal : "," + sThisVal);
+});
+console.log (sList);</pre>
+<br>另一个
+<br>
+<br><pre name="code">var str = "";</p>
+
+<p>$(':checkbox').each(function() {
+    str += this.checked ? "1," : "0,";
+});</p>
+
+<p>str = str.substr(0, str.length - 1);    //Remove the trailing comma</pre>
+<br></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1073950#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

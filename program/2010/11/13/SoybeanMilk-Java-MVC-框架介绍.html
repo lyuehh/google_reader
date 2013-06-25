@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>SoybeanMilk Java MVC 框架介绍</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>SoybeanMilk Java MVC 框架介绍</h2>
+<p class="meta">13 Nov 2010</p>
+
+<div class="post">
+<h2>SoybeanMilk Java MVC 框架介绍</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-11-12 20:37:47</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/810239">http://www.javaeye.com/topic/810239</a></h3>
+
+<p><strong>SoybeanMilk</strong>是一个极其简易、友好、且零侵入的Java MVC实现框架：
+<br>
+<br><ul>
+<li>它几乎没有学习成本，你只需要熟悉jsp和servlet技术
+</li><li>也不需要你遵从任何代码编写模式
+</li><li>你的代码中找不到任何这个框架的踪迹
+</li></ul>
+<br>
+<br>使用它，您仅需要指定URL和参数值便可以执行任何Java对象的任何方法并控制和取得其返回结果。
+<br>
+<br>如果你是一个WEB开发者，并且已经有点厌烦现有的WEB开发框架所固有的开发方式（固定的代码编写模式、芝麻点的小功能也要写一堆接口），应该考虑了解下这个框架。
+<br>
+<br>还有，这个框架并不是仅能应用于WEB程序，你也可以在桌面程序中使用它。
+<br>
+<br>项目主页
+<br><a href="http://code.google.com/p/soybeanmilk/">http://code.google.com/p/soybeanmilk/</a>
+<br>
+<br>这里有完整的项目包，其中也包括API、使用帮助、示例代码
+<br><a href="http://code.google.com/p/soybeanmilk/downloads/list">http://code.google.com/p/soybeanmilk/downloads/list</a>
+<br>
+<br>---------------------------------------------------------------------------------------
+<br>
+<br>来看看使用<strong>SoybeanMilk</strong>时，你需要做些什么。
+<br>
+<br>首先，你需要编写你的Java业务类，如下所示：
+<br><pre name="code">
+package my.biz;
+public class Calculator
+{
+        public int multiply(int a, int b)
+        {
+                return a*b;
+        }
+}
+</pre>
+<br>
+<br>然后，定义“/WEB-INF/soybean-milk.config.xml”配置文件：
+<br><pre name="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;soybean-milk&gt;
+        &lt;resolvers&gt;
+                &lt;resolver id=&quot;calculator&quot; class=&quot;my.biz.Calculator&quot; /&gt;
+        &lt;/resolvers&gt;</p>
+
+<pre><code>    &amp;lt;executables&amp;gt;
+            &amp;lt;action name=&amp;quot;/multiply.do&amp;quot;&amp;gt;
+                    &amp;lt;invoke method=&amp;quot;multiply&amp;quot; resolver=&amp;quot;calculator&amp;quot; result-key=&amp;quot;multiplyResult&amp;quot;&amp;gt;
+                            &amp;lt;arg key=&amp;quot;param.a&amp;quot; /&amp;gt;
+                            &amp;lt;arg value=&amp;quot;10&amp;quot; /&amp;gt;
+                    &amp;lt;/invoke&amp;gt;
+
+                    &amp;lt;target url=&amp;quot;/multiply_result.jsp&amp;quot; /&amp;gt;
+            &amp;lt;/action&amp;gt;
+    &amp;lt;/executables&amp;gt;
+</code></pre>
+
+<p>&lt;/soybean-milk&gt;
+</pre>
+<br>
+<br>接下来，编写“/multiply_result.jsp”展示页面：
+<br><pre name="code">
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot; pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot;&gt;
+&lt;title&gt;计算结果&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+        计算结果：${multiplyResult}
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br>
+<br>配置web.xml，加入如下内容：
+<br><pre name="code">
+&lt;servlet&gt;
+    &lt;servlet-name&gt;dispatchServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;org.soybeanMilk.web.servlet.DispatchServlet&lt;/servlet-class&gt;
+    &lt;init-param&gt;
+      &lt;param-name&gt;encoding&lt;/param-name&gt;
+      &lt;param-value&gt;UTF-8&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;dispatchServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;*.do&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</pre>
+<br>
+<br>并将<strong>SoybeanMilk</strong>库和其依赖库
+<br>
+<br>soybeanMilk-[<em>version</em>].jar
+<br>commons-beanutils-1.8.2.jar
+<br>commons-logging-1.0.4.jar
+<br>commons-logging-api-1.1.jar
+<br>log4j-1.2.14.jar（可选）
+<br>
+<br>放入/WEB-INF/lib目录下。
+<br>
+<br>最后，启动服务器，在浏览器中输入“ http://<em>youApp</em>/multiply.do?a=3 ”，完成！
+<br></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://earthangry.javaeye.com"&gt;earthangry&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/810239" style="color:red"&gt;已有 &lt;strong&gt;13&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

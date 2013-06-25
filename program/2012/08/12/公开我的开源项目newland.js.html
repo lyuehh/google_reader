@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>公开我的开源项目newland.js</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>公开我的开源项目newland.js</h2>
+<p class="meta">12 Aug 2012</p>
+
+<div class="post">
+<h2>公开我的开源项目newland.js</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-08-12 15:08:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/12/2634310.html">http://www.cnblogs.com/rubylouvre/archive/2012/08/12/2634310.html</a></h3>
+
+<p>newland.js是一个node.js MVC框架，这个MVC架构只是针对它的后端部分而已。当然有人立即会提出怀疑，世界已经有这么MVC框架，你的亮点在哪啊？回答通常有两种：重复造轮子的意义，与新框架的特性。</p>
+
+
+<p><br><p>是的，重造轮子，世界无时无刻地造轮子，造轮子的人为了编造了许许多“藉口”，我觉得最美妙的藉口是最近多《GTF: Great Teacher Friedman 》读的东西，我觉得光是他说的那一点就能让许多人闭嘴了——</p><br><p>当然，重新发明东西并不会给我带来论文发表，但是它却给我带来了更重要的东西，这就是独立的思考能力。一旦一个东西被你“想”出来，而不是从别人那里 “学”过来，那么你就知道这个想法是如何产生的。这比起直接学会这个想法要有用很多，因为你知道这里面所有的细节和犯过的错误。而最重要的，其实是由此得 到的直觉。如果直接去看别人的书或者论文，你就很难得到这种直觉，因为一般人写论文都会把直觉埋藏在一堆符号公式之下，让你看不到背后的真实想法。如果得到了直觉，下一次遇到类似的问题，你就有可能很快的利用已有的直觉来解决新的问题。</p><p>而这一切都已经发生在我身上。比如，在听说 ANF 之后，我没有看 Amr Sabry 的论文，只把原来的 CPSer 程序改了一点点，就得到了 ANF 变换，整个过程只花了十几分钟。而在 R. Kent Dybvig 的编译器课程上，我利用 CPS 变换里面的直觉，改造和合并了 Dybvig 提供的编译器框架的好几个 pass，使得它们变得比原来短小好几倍，而且生成很不错的代码。</p><p>现在我仍然是这样，喜欢故意重新发明一些东西，探索不止一个领域。这让我获得了直觉，不再受别人思想的限制，节省了看论文的时间，而且多了一些乐趣。一个问题，当我相信自己能想得出来，一般都能解决。虽然我经常不把我埋头做出来的东西放在心上，把它们叫做“重新发明”(reinvention)，但是出乎意料的是，最近我发现这里面其实很是隐藏了一些真正的发明。我准备慢慢把其中一些想法发掘整理出来，发表成论文，或者做成产品。</p><br><p>我想我是违反“发明公会”的行规了，把这天大的秘密泄漏给大家，让本来许多甘愿当一辈子码农的人奋身而已赌一把，朝食物链的顶层爬去了！</p><br><p>有关食物链的论断，是昨晚我在群里一个有三年经验的SOHO谈话时想到。他说，wordpress已占全球网站10%，许多人都靠wordpress的二次开发过活。有的人能月赚5000$，当然这是有稳定客户的情况下，印度阿三是强大的竞争对手。想一想wordpress的团队才多少人啊？二十来个，作为食物链的顶端他们肯定比国内的什么wordpress jam活得好！靠服务支持与流量带来的广告收入，世界范围的荣誉，被人需要的满足感……这是世上少有几种圆满生活方式了！再想rails团队，jQuery团队，spring团队,  hibernate 团队……老外这么热衷搞开源，理由不一清二楚吗？！</p><br><p>再回归框架的本身，这是一个node.js框架。近年来，HTML5与chrome V8的优异表现，让javascript继ajax之后再次走进舞台的中心。node.js只是后随的一个大浪罢了。但这大浪由于ruby界，C++界等大牛的加入，变成海啸了。看一下github中各语言的活跃情况吧：</p><div><img src="http://images.cnblogs.com/cnblogs_com/rubylouvre/205314/o_github_rank.jpg"></div><br><p>由于早些年javascript没有赋以处理二进制的能力，带来的致命影响是数据持久化与数据库的连接干不了，导致javascript沦为玩具语言。要知道一个网站最重要的是用户数据，不能保存用户数据就会被边缘化。其次像读取模板文件的内容，合并多个文件，写入日志等活儿对网站来说也是至关重要的！PHP的兴起，是因为他让这些工作变得更轻松更简单。node.js提供了对二进制的支持，正是javascript第二次爆发的原因。node.js模块迅速增长让专业的人做专业的事，</p><br><p>长久以来，前端与后端的地位就像中国的官僚系统一样可笑，外行指挥内行。从JAVA的struts时代开始，视图层的交互都是层层封装在标签库内，让人无需写javascript就能实现各种效果。然后，不是每个人都像google的员工聪明能干，那些WEB框架也不都像GWT那样出色绝伦！于是有PHP的纪元。PHP有什么优势？《ＸＸＸ，21天从入门到精通》！我想这样的书名真的只能适用于PHP！入门简单，而且存在大量这样的培训中心，而且PHPer的招聘条件肯定把HTML,XML,CSS,JS等罗列进去！因此PHPer真是最廉价与实惠的工种。切图仔只能干一样，而且熟练工流动快！JSer基本是骗人的，都是jQueryer，调BUG能力为零，写出的代码维护性也为零……因此找靠谱的切图与JSer，基本上与PM一样难，当然，PM的良品率更低。但说这些有什么用呢？让专业的人做专业的事！PHP能打败JAVA在WEB的地位，是因为它更加专业。rails让PHP为之战战兢兢，是因为rails更专业，它起码有个叫Prototype.js的子项目啊，Prototype.js建立了javascript的第一个王朝，直到jQuery在四年前打败了它。PHPer的人口众多，天才也众多，抄啊抄啊，抄了rails的数据库迁移，智能手脚架，COC，再武装上jQuery，终于把rubyer的起义军镇住了！但node.js的起义军怎么镇压呢？PHPer很少跑去rails阵营，但node.js的阵营每天都有人“叛逃”过去！rails团队成员兼jquery团队成员的 Yehuda Katz 搞了Ember.js，他的理念是构建“超级Web应用”所需的一切，因此向node.js进军势在必行，雅虎在用nodejs构建它的鸡尾酒，jQuery是基于node.js进行构建测试压缩打包，大名鼎鼎的EXT团队拥有node.js最出名的WEB框架express.js，mongodb的接口是javascript式，提供node.js的连接库……node.js是时代的骄子，从来没有这么多人为一种语言摇旗呐喊，即使它的真相曾是被人骂得最多的语言，但我们知道，最该骂的是javascript之父，只花十天时间来构思它，还有导致第一次浏览器大战的网景与微软，让JS长期滞后不前，兼容性问题成为当时程序员的噩梦！</p><br><p>但美好的事物终会回归，就像大陆与台湾。大陆是PHP，台湾为nodejs。让专业的人做专业的事，这是市场的需求，生产力的呼唤！基于node.js的web框架必然比PHP框架更把了解HTML,CSS与JS。前端的人才储备必然流向node.js。requirejs让JS开始走向工业化的模块化开发，国内的seajs也在做相同的事情，模块化是构建大应用的关键，标识着JSer完成有能力开发像struct这样巨弩级的web框架！前端模板的兴起，nodejs各种数据库连接库，session模拟的实现，再加之knockout这样的MVVM模式被认同普及，web框架的难题一一被打破。而我的新框架newland.js只是时代洪流的一员。</p><br><p>诚然，newland.js现在是非常非常弱小的，正如我在它的<a href="https://github.com/RubyLouvre/newland">readme</a>中写的一样，它只是我到达后端大陆时被撞碎的海盗船的残骸！后端的世界是如此广阔古老神秘，以致于前端的世界好像一个伊比利亚半岛。但后端的世界绝对不是美洲新大陆，更精确的比喻是百年后，人类冒冒失失跑进拥有神级技术的外星人的领地。后端的世界沉睡着像JAVA三大框架的古老帝国，活跃数千PHP的新兴国家与rails这样的圣剑骑士团！海岸上还遍布着其他登陆者，他们建立起geddyjs, railsjs, towerjs, meteorjs，expressjs等居民点！这就是WEB世界的现状！PHP国家每年都跑到前端大陆劫掠数以万计的码农为它们做苦力，而只有jQuery，EXT等团队能与它们对等谈判！不过他们有点像非洲的酉长，把培训好的jQueryer奴隶卖给PHPer去了！jQuery号称是能最快制造这样的优质奴隶！EXT心有不甘，因此有了express.js，梦想有一天光靠自己就能把控一个项目！而newlandjs就是mass Framework的express.js。</p><br><p>mass Framework由于长期的宣传不足，及国人普遍不懂开源的好处，因此发展缓慢。但即便这样，它也国内少数能与jquery抗衡的框架，它的架构与实现都是相当优异了，汇集了我各个群的精英的设计成果。我不希望newlandjs走mass Framework的老路，总是处于缺员怠工状态，于是抓紧发动群里的人加入进来。当然，我也希望园子里的人，或来自其他圈子的朋友加入进来。中国是不缺开源项目，只是缺乏活跃的开源项目罢了。善于内斗分散了我们的战斗力，导致我们被老外全部打败，至今还在用老外的东西干活……</p><br><p>newlandjs有着宏伟的目标——开拓javascript新天地，实现真正的大前端！之所以这么说，是因为托HTML5与node.js所赐，websocket将成为未来前后端交互的主要渠道，一改HTTP无状态的困境。加之HTML5的改地址不刷新页面的History 新API（见github上的pjax项目与新浪微博的运用），MVVM带来的最小化刷新技术，HTML5的cache manifes， Local Storage……这一切令人惊异的技术都迫需一个跨前后端的框架来统合！knockoutjs可以完全不脚踢开jQuery，轻易处理各种DOM操作，而且写出的代码被jQuery更易维护！这正是前端MVC（或其变种）兴起的原因。但knockoutjs还是有弱点的，它最初要绑定数据的需要是怎么生成的呢？还不是要依赖后端通过几个子模板拼装起来的吗？这些子模板的拼装方式与渲染输出能不能再改进一点，像facebook的bigpipe一样智能呢？！还有模块与模板的前后端共用。less在前后端实现CSS的DRY，解放CSSer的生产力！就算我不做newland.js，外国还会有人做这事的。这是未来的趋势。</p><br><p>总之，让专业的人做专业的事！这是newlandjs带给大家的良好景望！</p><br><p><a href="https://github.com/RubyLouvre/newland">newland.js在github的地址</a></p><p><a href="http://rubylouvre.github.com/">newland.js的静态网站</a></p><hr><p>相关链接</p><p><a href="http://www.ituring.com.cn/article/8108">JavaScript宝座：七大框架论剑</a></p><p><a href="http://blog.csdn.net/physicsdandan/article/details/7352943">使用 HTML5 开发离线应用 </a></p><p><a href="https://github.com/search?langOverride=&amp;language=&amp;q=location%3Achina&amp;repo=&amp;start_value=1&amp;type=Users">Github上评选出最活跃的100名中国开发者</a></p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2634310.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/12/2634310.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

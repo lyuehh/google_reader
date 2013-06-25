@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>基于Canvas的热力图绘制方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>基于Canvas的热力图绘制方法</h2>
+<p class="meta">31 Aug 2010</p>
+
+<div class="post">
+<h2>基于Canvas的热力图绘制方法</h2>
+
+<h3>by remember2015</h3>
+
+<h3>at 2010-08-31 13:26:58</h3>
+
+<h3>original <a href="http://www.baiduux.com/blog/2010/08/31/%e5%9f%ba%e4%ba%8ecanvas%e7%9a%84%e7%83%ad%e5%8a%9b%e5%9b%be%e7%bb%98%e5%88%b6%e6%96%b9%e6%b3%95/">http://www.baiduux.com/blog/2010/08/31/%e5%9f%ba%e4%ba%8ecanvas%e7%9a%84%e7%83%ad%e5%8a%9b%e5%9b%be%e7%bb%98%e5%88%b6%e6%96%b9%e6%b3%95/</a></h3>
+
+<h2>一. 介绍</h2>
+
+
+<p>最近参与的一个项目Marmot中需要根据点坐标绘制热力图。</p>
+
+
+<blockquote><p>热力图</p>
+<p>以特殊高亮的形式显示访客热衷的页面区域或访客所在的地理区域</p>
+<p>特点为：</p>
+<p>1. 可以显示不可点击区域发生的事情。你将发现用户经常会点击那些不是链接的地方，也许你应该在那个地方放置一个资源链接。比如：如果你发现人们总是在点击某个产品图片，你能想到的是，他们也许想看大图，或者是想了解该产品的更多信息。 同样，他们可能会错误地认为特别的图片就是导航链接。</p>
+<p>2. 热力图同时还能告诉你，页面的哪些部分吸引了大多数用户的注意。这对那些对web分析数据没有很多经验的产品人员非常有用。</p>
+<p>3. 如果你在一个页面上有多个链接指向同一个URL，例如：如果有不同位置的3个链接指到同一个特定的产品页面 ，那么热力图将会显示你的访客最喜欢点击哪一个链接，这将帮助你提升网页的设计并让它对用户更加友好，不过实现这个功能需要一些设置。</p>
+<p>…………</p>
+</blockquote>
+
+
+<p>实例如下：</p>
+
+
+<p><img src="http://imgsrc.baidu.com/forum/pic/item/47df94350dbab7f2d1a2d37e.jpg" alt="" width="500" height="400"></p>
+
+
+<p><span></span></p>
+
+
+<p>需要注意的是上图实例粒度粗，梯度小，容差大。反映了热力图的一个属性：趋势相关。不过，热力图也可以做到粒度细，梯度大，容差小。这完全是依据采样数据的精确性以及分析需求来做的。给个例子（Google的眼动分析[焦点梯度]图）:</p>
+
+
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/e5a062b4f4d2108b37d3ca7e.jpg" alt="" width="500" height="440"></p>
+
+
+<p>下面介绍热力图绘制的方法，注意，以下代码并没有检测数据有效性，也没有对数据进行过滤，剔除脏数据，同时没有处理异常。实际使用时请不要忽略此类情况，否则会对最终结果造成干扰……</p>
+
+
+<h2>二. 绘制</h2>
+
+
+<p>问题描述：</p>
+
+
+<blockquote><p>假设有一块画布，1200px*2000px尺寸，一组坐标数据，格式为[x,y]二维数组，量级为10000~100000，采样粒度为7*7。依据点坐标的分布密度绘制热力图</p>
+</blockquote>
+
+
+<h3>方法一</h3>
+
+
+<p><br></p>
+
+
+<p>思路：使用canvas元素标签将所有点绘制到画布上，每个点给予较低的透明度。然后获取画布每个点的位数据，根据其alpha值(alpha ∈ [0, 255])的大小计算每一位的r，g，b的值，得出所有新的位数据之后，重新绘制。使之呈现为红色↔蓝色渐变。</p>
+
+
+<p>代码：</p>
+
+
+<p><div style="border:1px solid #9f9f9f;width:435px"><table cellspacing="0" cellpadding="0"><tbody><tr><td style="padding:5px;text-align:center;color:#888888;background-color:#eeeeee;border-right:1px solid #9f9f9f;font:normal 12px/1.4em Monaco,Lucida Console,monospace"><div>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br></div></td><td><div style="padding:5px;font:normal 12px/1.4em Monaco,Lucida Console,monospace;white-space:nowrap"><span style="color:#006600;font-style:italic">/*假设点坐标为aXY，二维数组*/</span><br>
+<span style="color:#003366;font-weight:bold">var</span> aXY <span style="color:#339933">=</span> <span style="color:#009900">[</span><span style="color:#009900">[</span>x1<span style="color:#339933">,</span> y1<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x2<span style="color:#339933">,</span> y2<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x3<span style="color:#339933">,</span> y3<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x4<span style="color:#339933">,</span> y4<span style="color:#009900">]</span>...<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">//获取canvas的context</span><br>
+<span style="color:#003366;font-weight:bold">var</span> context <span style="color:#339933">=</span> canvas.<span style="color:#660066">getContext</span><span style="color:#009900">(</span><span style="color:#3366cc">'2d'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> pi2 <span style="color:#339933">=</span> Math.<span style="color:#660066">PI</span> <span style="color:#339933">*</span> <span style="color:#cc0000">2</span><span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">//设置填充样式，透明度为0.1</span><br>
+context.<span style="color:#660066">fillStyle</span> <span style="color:#339933">=</span> <span style="color:#3366cc">'rgba(255,30,0,0.1)'</span><span style="color:#339933">;</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> len <span style="color:#339933">=</span> aXY.<span style="color:#660066">length</span><span style="color:#339933">;</span> i <span style="color:#339933">&lt;</span> len<span style="color:#339933">;</span> i<span style="color:#339933">++</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> x <span style="color:#339933">=</span> aXY<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span><span style="color:#339933">,</span> y <span style="color:#339933">=</span> aXY<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+    context.<span style="color:#660066">beginPath</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//绘制圆点</span><br>
+    context.<span style="color:#660066">arc</span><span style="color:#009900">(</span>x<span style="color:#339933">,</span> y<span style="color:#339933">,</span> 6<span style="color:#339933">,</span> 0<span style="color:#339933">,</span> pi2<span style="color:#339933">,</span> <span style="color:#003366;font-weight:bold">true</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    context.<span style="color:#660066">closePath</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    context.<span style="color:#660066">fill</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span><br>
+<span style="color:#006600;font-style:italic">//获取这个画布的位数据</span><br>
+<span style="color:#003366;font-weight:bold">var</span> imgd <span style="color:#339933">=</span> context.<span style="color:#660066">getImageData</span><span style="color:#009900">(</span>0<span style="color:#339933">,</span> 0<span style="color:#339933">,</span> 1200<span style="color:#339933">,</span> 2000<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> pix <span style="color:#339933">=</span> imgd.<span style="color:#660066">data</span><span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">// 循环计算rgb，使之根据alpha值映射到红蓝渐变</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> n <span style="color:#339933">=</span> pix.<span style="color:#660066">length</span><span style="color:#339933">;</span> i <span style="color:#339933">&lt;</span> n<span style="color:#339933">;</span> i <span style="color:#339933">+=</span> <span style="color:#cc0000">4</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#006600;font-style:italic">//位数据的格式为[rgbargbargba……]，每个rgba代表了每个点的rgba四个通道的值</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> a <span style="color:#339933">=</span> pix<span style="color:#009900">[</span>i<span style="color:#339933">+</span>3<span style="color:#009900">]</span><span style="color:#339933">;</span> <span style="color:#006600;font-style:italic">//alpha</span><br>
+    <span style="color:#006600;font-style:italic">//red</span><br>
+    pix<span style="color:#009900">[</span>i  <span style="color:#009900">]</span> <span style="color:#339933">=</span> 128 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 256 <span style="color:#339933">*</span> a <span style="color:#339933">-</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span> <span style="color:#339933">+</span> <span style="color:#cc0000">200</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//green</span><br>
+    pix<span style="color:#009900">[</span>i<span style="color:#339933">+</span>1<span style="color:#009900">]</span> <span style="color:#339933">=</span> 128 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 128 <span style="color:#339933">*</span> a <span style="color:#339933">-</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span> <span style="color:#339933">+</span> <span style="color:#cc0000">127</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//blue,128之后直接衰减为0</span><br>
+    pix<span style="color:#009900">[</span>i<span style="color:#339933">+</span>2<span style="color:#009900">]</span> <span style="color:#339933">=</span> 256 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 256 <span style="color:#339933">*</span> a <span style="color:#339933">+</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    pix<span style="color:#009900">[</span>i<span style="color:#339933">+</span>3<span style="color:#009900">]</span> <span style="color:#339933">=</span> pix<span style="color:#009900">[</span>i<span style="color:#339933">+</span>3<span style="color:#009900">]</span> <span style="color:#339933">*</span> <span style="color:#cc0000">0.8</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span><br>
+context.<span style="color:#660066">putImageData</span><span style="color:#009900">(</span>imgd<span style="color:#339933">,</span> 0<span style="color:#339933">,</span> 0<span style="color:#009900">)</span><span style="color:#339933">;</span></div></td></tr></tbody></table></div>
+</p>
+
+
+<p>上面的代码将会呈现：</p>
+
+
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/7588897f87b8607d0dd7da7e.jpg" alt="image" width="437" height="289"></p>
+
+
+<p>显而易见，这并不是热力图，但是可以精确反映每个点的分布密度，红色表示在该区域的点数据较多，浅，蓝色表示密度小。那么如何改进?</p>
+
+
+<p>使用径向渐变代替圆点的绘制，用以表示每一个点向周围的点的辐射，渐变色的叠加可以展现梯度变换的效果。代码如下：</p>
+
+
+<p><div style="border:1px solid #9f9f9f;width:435px"><table cellspacing="0" cellpadding="0"><tbody><tr><td style="padding:5px;text-align:center;color:#888888;background-color:#eeeeee;border-right:1px solid #9f9f9f;font:normal 12px/1.4em Monaco,Lucida Console,monospace"><div>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br></div></td><td><div style="padding:5px;font:normal 12px/1.4em Monaco,Lucida Console,monospace;white-space:nowrap"><span style="color:#003366;font-weight:bold">var</span> aXY <span style="color:#339933">=</span> <span style="color:#009900">[</span><span style="color:#009900">[</span>x1<span style="color:#339933">,</span> y1<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x2<span style="color:#339933">,</span> y2<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x3<span style="color:#339933">,</span> y3<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x4<span style="color:#339933">,</span> y4<span style="color:#009900">]</span>...<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> context <span style="color:#339933">=</span> canvas.<span style="color:#660066">getContext</span><span style="color:#009900">(</span><span style="color:#3366cc">'2d'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> len <span style="color:#339933">=</span> aXY.<span style="color:#660066">length</span><span style="color:#339933">;</span> i <span style="color:#339933">&lt;</span> len<span style="color:#339933">;</span> i<span style="color:#339933">++</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> x <span style="color:#339933">=</span> aXY<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span><span style="color:#339933">,</span> y <span style="color:#339933">=</span> aXY<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//绘制径向渐变</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> radgrad <span style="color:#339933">=</span> <span style="color:#000066;font-weight:bold">this</span>.<span style="color:#660066">context</span>.<span style="color:#660066">createRadialGradient</span><span style="color:#009900">(</span>x<span style="color:#339933">,</span> y<span style="color:#339933">,</span> 1<span style="color:#339933">,</span> x<span style="color:#339933">,</span> y<span style="color:#339933">,</span> 8<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//锚点</span><br>
+    radgrad.<span style="color:#660066">addColorStop</span><span style="color:#009900">(</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#3366cc">'rgba(255,30,0,1)'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//锚点</span><br>
+    radgrad.<span style="color:#660066">addColorStop</span><span style="color:#009900">(</span> <span style="color:#cc0000">1</span><span style="color:#339933">,</span> <span style="color:#3366cc">'rgba(255,30,0,0)'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    context.<span style="color:#660066">fillStyle</span> <span style="color:#339933">=</span> radgrad<span style="color:#339933">;</span><br>
+    context.<span style="color:#660066">fillRect</span><span style="color:#009900">(</span> x <span style="color:#339933">-</span> 8<span style="color:#339933">,</span> y <span style="color:#339933">-</span> 8<span style="color:#339933">,</span> 16<span style="color:#339933">,</span> 16<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span></div></td></tr></tbody></table></div>
+</p>
+
+
+<p>效果如下:</p>
+
+
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/c9b58039f1684a87d462257e.jpg" alt="image" width="401" height="280"></p>
+
+
+<p>方案度量：这是比较简单的实现方案，稍微麻烦的地方在于根据alpha值计算红蓝绿值，使得alpha高的地方显示红色，alpha低的显示蓝色，中间部分显示黄/绿色(考虑到效率与简单性，使用了简单的三角函数，如果需要更为精确的色相渐变，可以使用幂次变换)。同时这个方案的缺点也十分明显：在点数据量低的时候效率很高，但是点数据超过10000之后就会有明显的时间延迟&gt;3s，原因在于循环绘制渐变色会消耗资源。其次该方案的性能也会取决于画布的大小。画布大的情况，比如画布尺寸为1200*3000，对其取位数据的时候，将会循环360万次，同时进行3*360万sin运算~~对于客户端性能是个问题。</p>
+
+
+<h3>方法二</h3>
+
+
+<p>思路：对所有点数据进行计算，得出每个点的密度值，然后依据密度值由低到高，绘制点数据。</p>
+
+
+<p>代码：</p>
+
+
+<p><div style="border:1px solid #9f9f9f;width:435px"><table cellspacing="0" cellpadding="0"><tbody><tr><td style="padding:5px;text-align:center;color:#888888;background-color:#eeeeee;border-right:1px solid #9f9f9f;font:normal 12px/1.4em Monaco,Lucida Console,monospace"><div>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18<br>19<br>20<br>21<br>22<br>23<br>24<br>25<br>26<br>27<br>28<br>29<br>30<br>31<br>32<br>33<br>34<br>35<br>36<br>37<br>38<br>39<br>40<br>41<br>42<br>43<br>44<br>45<br>46<br>47<br></div></td><td><div style="padding:5px;font:normal 12px/1.4em Monaco,Lucida Console,monospace;white-space:nowrap"><span style="color:#003366;font-weight:bold">var</span> points <span style="color:#339933">=</span> <span style="color:#009900">[</span><span style="color:#009900">[</span>x1<span style="color:#339933">,</span> y1<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x2<span style="color:#339933">,</span> y2<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x3<span style="color:#339933">,</span> y3<span style="color:#009900">]</span><span style="color:#339933">,</span> <span style="color:#009900">[</span>x4<span style="color:#339933">,</span> y4<span style="color:#009900">]</span>...<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> cache <span style="color:#339933">=</span> <span style="color:#009900">{</span><span style="color:#009900">}</span><span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">//计算每个点的密度</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> len <span style="color:#339933">=</span> points.<span style="color:#660066">length</span><span style="color:#339933">;</span> i <span style="color:#339933">&lt;</span> len<span style="color:#339933">;</span> i<span style="color:#339933">++</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> j <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> len2 <span style="color:#339933">=</span> points<span style="color:#009900">[</span>i<span style="color:#009900">]</span>.<span style="color:#660066">length</span><span style="color:#339933">;</span> j <span style="color:#339933">&lt;</span> len2<span style="color:#339933">;</span> j<span style="color:#339933">++</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+        <span style="color:#003366;font-weight:bold">var</span> key <span style="color:#339933">=</span> points<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>j<span style="color:#009900">]</span><span style="color:#009900">[</span><span style="color:#cc0000">0</span><span style="color:#009900">]</span> <span style="color:#339933">+</span> <span style="color:#3366cc">'*'</span> <span style="color:#339933">+</span> points<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>j<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+        <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>cache<span style="color:#009900">[</span>key<span style="color:#009900">]</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+            cache<span style="color:#009900">[</span>key<span style="color:#009900">]</span> <span style="color:#339933">++;</span><br>
+        <span style="color:#009900">}</span> <span style="color:#000066;font-weight:bold">else</span> <span style="color:#009900">{</span><br>
+            cache<span style="color:#009900">[</span>key<span style="color:#009900">]</span> <span style="color:#339933">=</span> <span style="color:#cc0000">1</span><span style="color:#339933">;</span><br>
+        <span style="color:#009900">}</span><br>
+    <span style="color:#009900">}</span><br>
+<span style="color:#009900">}</span><br>
+<span style="color:#006600;font-style:italic">//点数据还原</span><br>
+<span style="color:#003366;font-weight:bold">var</span> oData <span style="color:#339933">=</span> <span style="color:#009900">[</span><span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> m <span style="color:#000066;font-weight:bold">in</span> cache<span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>m <span style="color:#339933">==</span> <span style="color:#3366cc">'0*0'</span><span style="color:#009900">)</span> <span style="color:#000066;font-weight:bold">continue</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> x <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>m.<span style="color:#660066">split</span><span style="color:#009900">(</span><span style="color:#3366cc">'*'</span><span style="color:#009900">)</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span><span style="color:#339933">,</span> 10<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> y <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>m.<span style="color:#660066">split</span><span style="color:#009900">(</span><span style="color:#3366cc">'*'</span><span style="color:#009900">)</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">,</span> 0<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    oData.<span style="color:#660066">push</span><span style="color:#009900">(</span><span style="color:#009900">[</span>x<span style="color:#339933">,</span> y<span style="color:#339933">,</span> cache<span style="color:#009900">[</span>m<span style="color:#009900">]</span><span style="color:#009900">]</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span><br>
+<span style="color:#006600;font-style:italic">//简单排序，使用数组内建的sort</span><br>
+oData.<span style="color:#660066">sort</span><span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span>a<span style="color:#339933">,</span> b<span style="color:#009900">)</span><span style="color:#009900">{</span><br>
+    <span style="color:#000066;font-weight:bold">return</span> a<span style="color:#009900">[</span>2<span style="color:#009900">]</span> <span style="color:#339933">-</span> b<span style="color:#009900">[</span>2<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> max <span style="color:#339933">=</span> oData<span style="color:#009900">[</span>oData.<span style="color:#660066">length</span> <span style="color:#339933">-</span> 1<span style="color:#009900">]</span><span style="color:#009900">[</span>2<span style="color:#009900">]</span><span style="color:#339933">;</span><br>
+<span style="color:#003366;font-weight:bold">var</span> pi2 <span style="color:#339933">=</span> Math.<span style="color:#660066">PI</span> <span style="color:#339933">*</span> <span style="color:#cc0000">2</span><span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">//设置阈值，可以过滤掉密度极小的点</span><br>
+<span style="color:#003366;font-weight:bold">var</span> threshold <span style="color:#339933">=</span> <span style="color:#000066;font-weight:bold">this</span>._points_min_threshold <span style="color:#339933">*</span> max<span style="color:#339933">;</span><br>
+<span style="color:#006600;font-style:italic">//alpha增强参数</span><br>
+<span style="color:#003366;font-weight:bold">var</span> pr <span style="color:#339933">=</span> <span style="color:#009900">(</span>Math.<span style="color:#660066">log</span><span style="color:#009900">(</span>245<span style="color:#009900">)</span><span style="color:#339933">-</span>1<span style="color:#009900">)</span><span style="color:#339933">/</span><span style="color:#cc0000">245</span><span style="color:#339933">;</span><br>
+<span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> 0<span style="color:#339933">,</span> len <span style="color:#339933">=</span> oData.<span style="color:#660066">length</span><span style="color:#339933">;</span> i <span style="color:#339933">&lt;</span> len<span style="color:#339933">;</span> i<span style="color:#339933">++</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>
+    <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>2<span style="color:#009900">]</span>  0 <span style="color:#339933">?</span> 0 <span style="color:#339933">:</span> 1<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//q参数用于平衡梯度差，使之符合人的感知曲线log2N，如需要精确梯度，去掉log计算</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> q <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>Math.<span style="color:#660066">log</span><span style="color:#009900">(</span>oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>2<span style="color:#009900">]</span><span style="color:#009900">)</span> <span style="color:#339933">/</span> Math.<span style="color:#660066">log</span><span style="color:#009900">(</span>max<span style="color:#009900">)</span> <span style="color:#339933">*</span> 255<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> r <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>128 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 256 <span style="color:#339933">*</span> q <span style="color:#339933">-</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span> <span style="color:#339933">+</span> 200<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> g <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>128 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 128 <span style="color:#339933">*</span> q <span style="color:#339933">-</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span> <span style="color:#339933">+</span> 127<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> b <span style="color:#339933">=</span> parseInt<span style="color:#009900">(</span>256 <span style="color:#339933">*</span> Math.<span style="color:#660066">sin</span><span style="color:#009900">(</span><span style="color:#009900">(</span>1 <span style="color:#339933">/</span> 256 <span style="color:#339933">*</span> q <span style="color:#339933">+</span> 0.5 <span style="color:#009900">)</span> <span style="color:#339933">*</span> Math.<span style="color:#660066">PI</span> <span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> alp <span style="color:#339933">=</span> <span style="color:#009900">(</span>0.92 <span style="color:#339933">*</span> q <span style="color:#339933">+</span> 20<span style="color:#009900">)</span> <span style="color:#339933">/</span> <span style="color:#cc0000">255</span><span style="color:#339933">;</span><br>
+    <span style="color:#006600;font-style:italic">//如果需要灰度增强，则取消此行注释</span><br>
+    <span style="color:#006600;font-style:italic">//var alp = (Math.exp(pr * q + 1) + 10) / 255</span><br>
+    <span style="color:#003366;font-weight:bold">var</span> radgrad <span style="color:#339933">=</span> <span style="color:#000066;font-weight:bold">this</span>.<span style="color:#660066">context</span>.<span style="color:#660066">createRadialGradient</span><span style="color:#009900">(</span>oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span><span style="color:#339933">,</span> oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">,</span> 1<span style="color:#339933">,</span> oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span><span style="color:#339933">,</span> oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span><span style="color:#339933">,</span> 8<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    radgrad.<span style="color:#660066">addColorStop</span><span style="color:#009900">(</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#3366cc">'rgba('</span> <span style="color:#339933">+</span> r <span style="color:#339933">+</span> <span style="color:#3366cc">','</span> <span style="color:#339933">+</span> g <span style="color:#339933">+</span> <span style="color:#3366cc">','</span><span style="color:#339933">+</span> b <span style="color:#339933">+</span> <span style="color:#3366cc">','</span> <span style="color:#339933">+</span> alp <span style="color:#339933">+</span> <span style="color:#3366cc">')'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    radgrad.<span style="color:#660066">addColorStop</span><span style="color:#009900">(</span> <span style="color:#cc0000">1</span><span style="color:#339933">,</span> <span style="color:#3366cc">'rgba('</span> <span style="color:#339933">+</span> r <span style="color:#339933">+</span> <span style="color:#3366cc">','</span> <span style="color:#339933">+</span> g <span style="color:#339933">+</span> <span style="color:#3366cc">','</span><span style="color:#339933">+</span> b <span style="color:#339933">+</span> <span style="color:#3366cc">',0)'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+    <span style="color:#000066;font-weight:bold">this</span>.<span style="color:#660066">context</span>.<span style="color:#660066">fillStyle</span> <span style="color:#339933">=</span> radgrad<span style="color:#339933">;</span><br>
+    <span style="color:#000066;font-weight:bold">this</span>.<span style="color:#660066">context</span>.<span style="color:#660066">fillRect</span><span style="color:#009900">(</span> oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>0<span style="color:#009900">]</span> <span style="color:#339933">-</span> 8<span style="color:#339933">,</span> oData<span style="color:#009900">[</span>i<span style="color:#009900">]</span><span style="color:#009900">[</span>1<span style="color:#009900">]</span> <span style="color:#339933">-</span> 8<span style="color:#339933">,</span> 16<span style="color:#339933">,</span> 16<span style="color:#009900">)</span><span style="color:#339933">;</span><br>
+<span style="color:#009900">}</span></div></td></tr></tbody></table></div>
+<p><p>以上代码结果如下：</p>
+<p><img src="http://imgsrc.baidu.com/forum/mpic/item/56cac118745f333fdbb4bd4e.jpg" alt="image" width="597" height="397"></p>
+<p>大约处理了25000个点，用时大约700ms(鄙人的小本性能还行)。属于可接受范围内。</p>
+<p>方案度量：此方案性能比方案一有明显优势。目前Marmot采用此方案。</p></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ruby ftp封装</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ruby ftp封装</h2>
+<p class="meta">22 Jun 2010</p>
+
+<div class="post">
+<h2>ruby ftp封装</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-06-22 11:28:07</h3>
+
+<h3>original <a href="http://my.oschina.net/tomsu/blog/5686">http://my.oschina.net/tomsu/blog/5686</a></h3>
+
+<p>最近自己用ruby 封装了一个Net::FTP的工具类.</p>
+
+<p>class FtpTool
+def initialize()
+ @current_ftp = create_ftp
+end</p>
+
+<h1>获取指定格式的文件名称列表</h1>
+
+<h1>例如： source = "test/*.txt"</h1>
+
+<h1>返回： [source/file_name.txt]</h1>
+
+<p>def fetch_remote_filenames(source)
+ return [] if source.blank?
+ log_info("source is " + source)
+ ...</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

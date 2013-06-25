@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[程序员] Web开发入门（原创）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[程序员] Web开发入门（原创）</h2>
+<p class="meta">16 Oct 2011</p>
+
+<div class="post">
+<h2>[程序员] Web开发入门（原创）</h2>
+
+<h3>by alexdiao</h3>
+
+<h3>at 2011-10-15 18:01:15</h3>
+
+<h3>original <a href="http://www.v2ex.com/t/19596#reply8">http://www.v2ex.com/t/19596#reply8</a></h3>
+
+<p>这篇文章最早发在水木web开发和IT业界板，都加精了。原文在我的博客上，不定期会更新下内容
+<br><a href="http://diaoyifu.sinaapp.com/?p=24" rel="nofollow">http://diaoyifu.sinaapp.com/?p=24</a>
+<br>顺便说下我创建的喜分分 <a href="http://www.xifenfen.com" rel="nofollow">http://www.xifenfen.com</a> 也公测了，是一个个性化阅读，分享与收藏社区。http://diaoyifu.sinaapp.com/?p=74
+<br>
+<br>我读过的相关书籍发布在豆列(已更新)：程序员的自我修养 <a href="http://book.douban.com/doulist/1268022/" rel="nofollow">http://book.douban.com/doulist/1268022/</a>
+<br>
+<br>最近常有同学问我Web开发如何入门，那就把我的经验分享出来，希望对计算机专业出身和非专业的同学都有帮助。本文也部分适用于移动应用开发。
+<br>
+<br>一、准备工作
+<br>
+<br>1,  做好失败的心理准备
+<br>
+<br>Web应用的竞争异常激烈，开发难度也是入门容易做好很难，所以第一次开发的应用不成功是很正常的事情。不过这正是一个积累的过程，反正你需要的只是电脑和少量服务器经费，所以多磨练几次，水平自然会提高。
+<br>
+<br>2, 习惯阅读及查阅英文资料
+<br>
+<br>前沿信息基本源自美国，翻译的东西不及时，不全，很多水平不高，再加之中文原创资料毕竟很有限，因此是否能熟练地查阅英文资料决定了你获取信息的及时性和质量。另外习惯用英文思考，你才能更好地用英文表达自己碰到的问题，借力StackOverflow, ServerFault, Quora这些社区。阅读原版书，常上英文程序员社区，并且把谷歌的默认界面语言调为英文，都是强迫自己使用英文的好办法。特别值得一提的是，原版书里以O’Reilly和Apress出版社的最为推荐。
+<br>
+<br>3, 边学边练
+<br>
+<br>Web开发非常强调实践性，千万不要一本书读完了，却一行代码或者一行命令也没敲过。即使你看似简单的问题，也要亲手做做，因为由于软件配置，软件版本的不同，书上写的并不一定能执行成功，只有你做过才知道，做过之后记得记好笔记。
+<br>
+<br>4, 时时跟进技术趋势。
+<br>
+<br>创意总是相似的，虽然我很反感抄袭，但是基本所有创意都是以别人的为基础。跟进技术趋势除了在条件许可的情况下多玩玩最新的数码产品外，更重要的是时刻保持对科技文章的饥渴感。
+<br>
+<br>我觉得关注三个基本够了：Hacker News, Techcrunch, 36氪。另外天涯海阁经常报道创业网站，月光博客的见解一般比较到位。除此以外，多多订阅各种技术geek的博客。
+<br>
+<br>这里有张更全的列表 <a href="http://www.tisiwi.com/123" rel="nofollow">http://www.tisiwi.com/123</a>
+<br>
+<br>
+<br>
+<br>哦对了，当然还有团队，资金，创意这些准备，不过其他文章谈的很多了，我这就不谈了。
+<br>
+<br>
+<br>
+<br>二、编程语言及框架
+<br>
+<br>古往今来，程序猿们不知在这个问题上浪费了多少口水。一句废话来总结这个问题的答案，就是没有最好，只有最适合。免责声明，我曾经接触过的Web开发语言是PHP, Java, Python，现在用的是Python下框架Django。
+<br>
+<br>首先大家需要弄清动态语言（PHP, Ruby, Python等）与静态语言（C/C++，Java为代表）的区别。简单的来说，动态语言在执行的时候才编译，静态语言先编译好再执行。动态语言往往更高级（体现在更丰富的数据结构，更简洁的用法上）。从效果上来说，动态语言编写过程快，运行过程慢；静态语言则恰恰相反。那么在Web开发中选择哪种类型的语言好呢？现在已经有一个争议很少的标准答案：动态语言。那是因为网站性能瓶颈在于I/O,特别是在对数据库的操作上，随着CPU速度不断提高，程序语言执行速度的差别已经对网站性能鸭梨不大；而程序员的时间是宝贵的，使用一门开发更快速，让程序员更愉悦的语言，可以让开发过程更加高效。当然，程序语言的速度也有成为瓶颈的时候，不过那是当你达到Google或者Facebook级别的时候，不然Gmail不会是C++写的，Facebook也不会弄个Hiphop把PHP翻译成C++了；你并不用担心，到那时再进行改写就好了。
+<br>
+<br>在参考现在大网站用的是什么语言时，要搞清楚他们选择那门语言是在什么时候，当时有哪些可选项，他们是否对此后悔。比如Zuckerberg选择了PHP, 直到现在Facebook也在前端用PHP; 但是Quora的创始人，前Facebook的CTO Adam D’Angelo就出来解释为什么Facebook仍然用PHP，那是因为‘Facebook is stuck there’，Facebook（因为代码量太大）困在PHP上了。同理，在Ruby和Django都还不成熟的时候，J2EE是中流砥柱，Ebay, 淘宝等很多大型网站都是J2EE的架构，但是现在大家越来越发现J2EE过于笨重（开发缓慢），而开始提倡轻量级框架。京东网用.Net也是类似的情况，现在想转型也转不了了。顺便说一句，尽量不用微软系的东西，因为需要跑在Windows上，服务器的正版授权开销是吃不消的，另外现在也极少有web程序员学.Net了。
+<br>
+<br>那在动态语言里，我们又改选则哪一门呢？主流的选择就是PHP, Ruby和Python。PHP是一个让人又爱又恨的东西，不过恨的成分居多。PHP无疑在流行语言中配置最为简单，上手最为迅速，流行开源软件很多（Wordpress, Joomla, Drupal等），在大型网站中应用也很广泛（微博，腾讯网，百度很多产品比如有啊）。不过因为PHP的发明者说，他是一个不喜欢编程的人，所以PHP多少是有点业余，在语法和功能上有不少缺陷。大公司已经有不少PHP程序员，而且在市场上好招聘，所以他们倾向于用PHP，而小公司则没有这个约束了。Ruby现在在欧美最为流行，不过我并不了解，代表网站是Twitter(现在已经大量用Scala改写)和Groupon。Python是我现在用的开发语言，语法非常简洁，可以应用在几乎所有领域（桌面开发，Web开发，Linux系统管理），并且可以与其他语言很好的结合，典型的应用是Quora, Dropbox,豆瓣。同时，Python也是Google三门官方语言（C++,Java, Python）之一，并且刚刚成为MIT的计算机教学语言。当然还有Scala这种很有潜力的语言（Foursquare和Twitter大量采用），不过入门者就不用考虑了。
+<br>
+<br>选好语言，还应选择本语言下的编程框架。优秀的编程框架贯彻了MVC的思想，并帮你实现了ORM, 用户模块，后台管理等功能，同时在防止SQL注入等安全性上也很有帮助，庞大的社区更提供各种插件和帮助。PHP下框架主要是CodeIgniter(在欧美最流行，最轻量级),Cakephp和Zend; Ruby下是Rails一统天下；Python下以Django为主，也有web.py, pylons, tornado等轻量级框架。
+<br>
+<br>学习语言可以去买一本经典的书，而因为Web框架的代码变化很快，其最好的资源就是官方网站的Tutorial。 当然，你还需要数据库和服务器软件。对入门者来说，最直接的办法就是安装wamp或者xampp套件（php+apache服务器软件+Mysql数据库），wamp只在windows下，xampp则在各个平台下都有。安装套件是傻瓜式的操作，可以省去你不少配置烦恼；当然，以后你部署Linux服务器的时候，还是要学会用命令行方式安装这些软件。即使你有前端人员配合，你也需要学习HTML和CSS。这方面最推荐的书籍是Head First HTML+CSS，以对话的形式来讲述，非常易懂也非常清楚。进阶可以看O’reilly的各种XX Definitive Guide.  HTML5是未来的趋势，不过现在还有很多浏览器不支持，所以不建议直接用HTML5开发。不过如果你开发移动应用，苹果和Android的手机浏览器都对HTML5支持较好，而且用HTML5在多个平台开发速度快，适合制作原型，当然运行速度还是比原生应用慢。如果你想做Javascript,最方便的就是直接开始学习Jquery, 免除你不少调试浏览器兼容性的烦恼。
+<br>
+<br>除此之外，你还需要一个代码版本管理工具，以往最著名的是SVN和Google Code，不过现在基本所有开源项目都迁移到Github去了。Github上建立开源项目是免费的，私有项目有7刀和12刀以及更贵的套餐。
+<br>
+<br>特别需要提醒的，是要注意文字编码问题。除了理解编码的原理外，尽量在所有的地方都设置为UTF-8编码（HTML, 代码，数据库连接校验，文档）以最大程度避免问题。
+<br>
+<br>参考：Quora上讨论，为什么Python比PHP好 <a href="http://www.quora.com/Why-is-Python-better-than-PHP" rel="nofollow">www.quora.com/Why-is-Python-better-than-PHP</a>
+<br>
+<br>Progit简体中文版 progit.org/2010/06/09/pro-git-zh.html
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>三、服务器和域名
+<br>
+<br>服务器是个让人头疼的问题，特别是在我国。你首先有必要了解一下我国的一些国情：1，由于各个电信公司的垄断，各大公司的网络之间互连带宽非常有限（比如电信与网通之间）。解决这个问题的唯一办法是选择双线（电信+网通）或者多线机房。2, 有很多大学有缩减版的上网服务（比如浙大的10元VPN），只能访问教育网定义IP地址段的服务器，除了不能访问国外网站外，国内有些IP段也无法访问，所以在购买前你需要进行测试。3,国内服务器市场竞争不充分,相较于美国，在提供更差服务的情况下，价格更贵。4, 国内对域名有严格的监管，并且备案流程十分复杂，工信部的指导资料极度复杂且含混不清。
+<br>
+<br>我现在认为对创业者而言最靠谱的服务器是云计算平台。云计算有两大流派，分别以亚马逊AWS(主要是EC2)和Google App Engine为代表。EC2在使用上相当于传统的VPS，通过命令行可以对主机以root权限管理。GAE则仅允许你使用它配置好的环境，并且不能使用Mysql数据库而只能调用它以big table为基础的key-value存储。GAE仅支持Python和Java, 限制了你的编程方式，相当于将你的程序与其平台绑定，因此只适合做做博客或个人应用来玩玩，并不推荐。而EC2则相当强大，其按小时计费，随时可以开启新的instance(虚拟机器)的方式，不仅利于灵活的扩展网站，更是非常有利于创业者的现金流。在国内，新浪App Engine类似于GAE,不过仅支持PHP，前几天使用感觉还不错，功能也很全面了。阿里云涵盖了EC2和GAE的两种方式，不过由于其刚开放一个月，服务还完全不稳定，甚至在安装Apache的时候也会卡在连接网易镜像那里。阿里云是按月计费，价钱比EC2还要有竞争力。
+<br>
+<br>当然，你也可以选择传统的虚拟主机，VPS或者主机托管，三者的价钱从便宜到贵，功能从弱到强。虚拟主机是指服务器提供商为你配置好环境（一般仅支持PHP）,然后你把程序和数据库脚本上传上去即可运行。VPS和主机托管的管理方式类似，都是通过命令行，可以有root权限管理。不过VPS的主机只能租用，并且同虚拟主机一样是多人共享一台，只不过系统资源和权限都比虚拟主机要丰富。主机托管的价钱最贵，主机的产权归你。我还没在国内发现靠谱的服务器厂商，就不推荐了。美国最大的是Rackspace, 从国内访问很快的是Linode，另外Slicehost, Dreamhost都不错，不过你把服务器放在那的话，部分教育网用户就无法访问了。
+<br>
+<br>接下来谈域名和备案。域名的注册很简单，国内最大的是万网，国外最大的是Godaddy,服务和价格都差不多。域名最好想个.com的，因为用户习惯已经养成。双拼的域名基本不可能注册的到了，你可以试试看三个字的拼音，还基本都可以注册。备案是非常麻烦的，并且2010年以后工信部修改了备案的流程，管理更加严格；据说他们自己有爬虫系统，爬到没有备案的网站是会直接要求服务器商关闭的。所有使用国内服务器的网站都需要备案，并且现在只能通过服务器提供商代为备案。在2010前备案过，在网站上可以查到备案主体，并且有备案密码的情况下（或者可以通过工信部网站重置密码），可以让服务器接入商在本主体下加入新的域名。更换服务器提供商是需要重新向工信部申请的。更详细的信息就需要你咨询服务接入商了。
+<br>
+<br>
+<br>
+<br>四、网站运维/扩展网站性能
+<br>
+<br>绝大多数网站在发布第一个版本后就不会很频繁的推出新功能，那么他们在做什么呢，除了不断修复bug，就是运维服务器，还不断修改程序以应对不断增长的用户量。对于小网站来说，有比较简单的几步可以做：将Web服务器和数据库服务器分离，避免频繁的上下文切换。配置数据库Master-Slave,不仅增加了并发量，也实现了热备份。将Web服务器分离为两台，在前端用负载均衡器（Load Balancer)调度，增加并发性。向更大规模扩展的过程，根据每个网站的情况就差别很大了。需要你组建一个团队，具有数据库，分布式系统，信息检索等背景。Nosql特别适合Web2.0站点，不过需要注意的是Nosql技术并不成熟，也没有一个Nosql方案像Mysql那样统领江湖，因此使用时有一定风险。特别是Nosql不支持事务性，所以对于用户数据等关键信息，还是放在Mysql里合适，对于需要denormalization的冗余数据，Nosql非常合适。最为推荐的Nosql方案是MongoDB和Redis,Redis的数据结构特别方便，我们在一个功能里使用了Redis后性能就得到了飙升。此外，在网站进入超大规模后，也是绕不开以Google GFS+MapReduce+Bigtable为代表的分布式系统和分布式计算的，其开源实现是Hadoop。
+<br>
+<br>我认为最有帮助的几本书和文章：
+<br>
+<br>《Mysql 性能调优与架构设计》简朝阳
+<br>
+<br>《High Performance Mysql》
+<br>
+<br>《构建高性能Web站点》郭欣
+<br>
+<br>《Linux系统管理技术手册》 Evi Nemeth等
+<br>
+<br>如果希望更深入的了解计算机系统，需要阅读很多经典论文：
+<br>
+<br><a href="http://www.cs.cmu.edu/~15712/" rel="nofollow">http://www.cs.cmu.edu/~15712/</a>
+<br>
+<br>Nosql综述: <a href="http://blog.nosqlfan.com/html/2171.html" rel="nofollow">http://blog.nosqlfan.com/html/2171.html</a>
+<br>
+<br>Designs, Lessons and Advice from building large Distributed System(Jeff Dean, MapReduce发明者) <a href="http://www.odbms.org/download/dean-keynote-ladis2009.pdf" rel="nofollow">www.odbms.org/download/dean-keynote-ladis2009.pdf</a>
+<br>
+<br>On Designing and Deploying Internet-Scale Services
+<br>
+<br><a href="http://www.mvdirona.com/jrh/talksAndPapers/JamesRH_Lisa.pdf" rel="nofollow">http://www.mvdirona.com/jrh/talksAndPapers/JamesRH_Lisa.pdf</a>
+<br>
+<br>Quora上关于设计新鲜事的讨论
+<br>
+<br><a href="http://www.quora.com/What-are-the-scaling-issues-to-keep-in-mind-while-developing-a-social-network-feed" rel="nofollow">http://www.quora.com/What-are-the-scaling-issues-to-keep-in-mind-while-developing-a-social-network-feed</a></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

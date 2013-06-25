@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>为什么你应该学点Awk（附指南及示范）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>为什么你应该学点Awk（附指南及示范）</h2>
+<p class="meta">01 Sep 2011</p>
+
+<div class="post">
+<h2>为什么你应该学点Awk（附指南及示范）</h2>
+
+<h3>by yuanyi</h3>
+
+<h3>at 2011-09-01 09:05:44</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/heikezhi/~8608072/555235610/6713895/1/item.html">http://item.feedsky.com/~feedsky/heikezhi/~8608072/555235610/6713895/1/item.html</a></h3>
+
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/08/awk-165x300.jpg" alt="" title="awk" width="165" height="300">在我还读研究生时，我被一个我曾共事过的教授向我展示的高超文本文件操作能力震撼了，于是我决定花点时间学学他用来操作文本文件的神器Awk。</p>
+
+
+<p>即便是在今天，我所认识的90%的程序员几乎从没用过awk，其实只要你花上几分钟了解哪怕只是awk 10%的语法，它都能梦幻般的提高你操作文本文件的能力。下面就让我来教你一些最有用的操作——注意，不是“最基础的”，只要你愿意花上5分钟时间练习下这些技巧，我相信你就将会领悟到我认为这门语言最为有趣的东西。</p>
+
+
+<p>Awk实际上是一门非常有趣的小型编程语言，它设计的主要目的就是为了处理字符串。还记得有次我们的一个教授为我们布置了一道计算机网络的课程作业，让我们根据RPC协议编写一个可以生成客户端和服务端stub的程序，但是这个教授犯了一个错误，他告诉我们可以使用任何我们想要的语言，于是我决定用Awk来写一个，我原本的目的只是为了更好的掌握Awk，但是让我惊奇的是，我发现最终我的实现要比其它我用过的语言（Python，C++，Java）都更简短。</p>
+
+
+<p>如果要了解Awk，你可以看看<a href="http://oreilly.com/catalog/9781565922259">这本书</a>，当然我已经看过了，但是你可能并不想像我那样用Awk来实现某个协议的一个解析器，或许你只是想从你的日志文件中找出那些IP地址加起来刚好是666的家伙，那就跟我来吧，继续往下看！</p>
+
+
+<p>让我们先来看个例子，假设我们有一个小文件（logs.txt）看起来像是下面这样，很简单，它只有2行带有IP地址的log信息:</p>
+
+
+<p>07.46.199.184 [28/Sep/2010:04:08:20] "GET /robots.txt HTTP/1.1" 200 0 "msnbot"<br>
+123.125.71.19 [28/Sep/2010:04:20:11] "GET / HTTP/1.1" 304 - "Baiduspider"</p>
+
+
+<p>这是两条由Apache生成的日志信息，很简单，它们显示了Bing和Baidu的爬虫昨天到访过我的网站。</p>
+
+
+<p>Awk同其它命令行程序（比如grep）一样，都是从stdin读取输入并写到stdout，所以你可以很容易的通过管道使用它，Awk的使用也很简单，你唯一需要关心的它令后面的那个字符串参数：</p>
+
+
+<p>awk '{print $0}'</p>
+
+
+<p>大部分awk程度都是以{开头，并以}结束的，｛｝中包含的命令会在输入中的每一行上执行，大部分awk程序都会打印些什么东西，上面的命令会原封不动的将它读到的输入再打印出来，并添加一个换行，$0代表一整行。所以这个程序很典型——它除了将输入拷贝到输出，其它什么都没做。</p>
+
+
+<p>Awk还会根据输入行中的空白字符（空格，tab）自动将行切分为字段，并自动处理连着的分隔字符，你可以通过$1,$2,$3等来引用分割后的字段。</p>
+
+
+<p>echo 'this is a test' | awk '{print $3}' // prints 'a'<br>
+awk '{print $1}' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>07.46.199.184<br>
+123.125.71.19</p>
+
+
+<p>很简单，并且很有用，不是吗？但是有时我需要从字符串的结尾开始打印，这时我可以使用一个名为NF的特殊变量，它包含了当前行的字段数，因此我可以使用$NF来打印最后一个字段，我也可以通过这个值来反向查找某个字段，同时我还可以在一行打印多个值：</p>
+
+
+<p>echo 'this is a test' | awk '{print $NF}' // prints "test"<br>
+awk '{print $1, $(NF-2) }' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>07.46.199.184 200<br>
+123.125.71.19 304</p>
+
+
+<p>更进一步——现在你可以看到，我们可以将日志文件分割，并只打印我们关心的部分。另一个很有用的变量就是NR，这个变量表示当前正在处理的输入的行号。在我演示NR的同时，我还想展示一下如何使用print来格式化输出，你可以使用逗号来分隔print的多个参数，它们会被转化为空格，但是下面的例子我没有使用逗号，所以结果中也没有插入空格：</p>
+
+
+<p>awk &#39;{print NR &quot;) &quot; $1 &quot; -&gt; &quot; $(NF-2)}&#39; logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>1) 07.46.199.184 -&gt; 200<br>
+2) 123.125.71.19 -&gt; 304</p>
+
+
+<p>很强大，并且一点也不难，对吧，如果你喜欢，你还可以使用printf函数，或许你对它更熟一些。现在，问题来了，不是所有字段都是以空格作为分隔符的，比如下面这个：</p>
+
+
+<p>$ awk '{print $2}' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>[28/Sep/2010:04:08:20]<br>
+[28/Sep/2010:04:20:11]</p>
+
+
+<p>日期字段使用了/和:作为分隔符，当然我可以通过一条awk命令来完成这个操作，但是我想向你演示一种更简单也是你更为熟悉的方式：Unix管道，下面我要做的就是通过管道使用另外一条awk命令来根据冒号对日期进行分割，要做到这一点，我的第二个awk命令需要使用2个{}，不过我暂时不想对这个多做解释，你只要看看我是如何做的就行了：</p>
+
+
+<p>$ awk '{print $2}' logs.txt | awk 'BEGIN{FS=":"}{print $1}'</p>
+
+
+<p>输出:</p>
+
+
+<p>[28/Sep/2010<br>
+[28/Sep/2010</p>
+
+
+<p>我为FS（也就是字段分隔符）指定了一个不同的值，也就是":"，然后打印出了第一个字段，现在没有时间了，只有日期！如果你不想看到输出中的那个[，最简单的方法就是使用sed，或许你早就知道了：</p>
+
+
+<p>$ awk '{print $2}' logs.txt | awk 'BEGIN{FS=":"}{print $1}' | sed 's/\[//'</p>
+
+
+<p>输出:</p>
+
+
+<p>28/Sep/2010<br>
+28/Sep/2010</p>
+
+
+<p>使用相同的技巧，我还可以进一步根据'/‘字符来切分日期，但是我认为你已经掌握这个技巧了，所以我就不罗嗦了，下面，让我们来试着加入一点点逻辑判断，如果我只想得到状态为200的行，我可以使用grep，但是如果我想得到IP地址中包含200的行，或者是日期在2000年以后的行，那我就需要先使用awk，然后在通过grep来查找了，不过的问题是输出结果没了上下文，还好，Awk支持if条件判断，所以我们可以像下面这样：</p>
+
+
+<p>$ awk '{if ($(NF-2)=="200") {print $0}}' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>07.46.199.184 [28/Sep/2010:04:08:20] "GET /robots.txt HTTP/1.1" 200 0 "msnbot"</p>
+
+
+<p>现在，只有符合条件的行才会被输出，这个if语句实在是太熟悉不过了，应该不需要我做过多的解释，下面让我通过一个蠢例子向你演示下awk如何实现跨行保存状态，假设我想得到这个文件中所有HTTP相应的状态字段的和，虽然我实在想不出有有什么理由这样做，但是为了演示字段求和，就让我们先忘掉这一点吧，要做到这一点，我只需要创建一个变量就okay了：</p>
+
+
+<p>$ awk '{a+=$(NF-2); print "Total so far:", a}' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>Total so far: 200<br>
+Total so far: 504</p>
+
+
+<p>很显然，这是有问题的，大部分情况下，我并不需要中间值，只需要最后的结果就可以了，当然我可以使用tail -n1，但是还有一种更好的方式，我可以使用END关键字告诉awk只在最后一行调用print：</p>
+
+
+<p>$ awk '{a+=$(NF-2)}END{print "Total:", a}' logs.txt</p>
+
+
+<p>输出:</p>
+
+
+<p>Total: 504</p>
+
+
+<p>如果你想要了解更多关于awk的知识，有几本好书以及大量的线上资源可供你参考，只需要花上一些闲暇时间，你就可以很容易的学到关于awk的一切，但是要熟练使用它，还是有些挑战的，因为它的编码方式实在有点特别——你实际上是在写一个for循环的内部实现，仔细想想，这其实有点MapReduce的感觉，只是一开始会让人有些迷惑。</p>
+
+
+<p>我希望这篇文章能对你有用，如果你觉得它有用，不妨给我留言。</p>
+
+
+<p>更新: 这篇文章的许多评论都很值得一读，当然我很希望它们都能在一个地方，但现在我只能把它们分别列出来：</p>
+
+
+<p><a href="http://www.reddit.com/r/programming/comments/dkew8/why_you_should_know_just_a_little_bit_of_awk/">Programming Reddit</a><br>
+<a href="http://news.ycombinator.com/item?id=1738688">Hacker News</a></p>
+
+
+<p>最后，如果你是那种对awk感兴趣的人，毫无疑问，你就是那种我希望可以在Google共事的人，如果你感兴趣，可以给我简历（ggrothau@gmail.com），我可以确保它一定会出现在合适的招聘者面前，而不是遗落在我们每天收到的那一大堆简历中。</p>
+
+
+<p>--------------<br>
+本文来自"<a href="http://gregable.com/2010/09/why-you-should-know-just-little-awk.html#">Why you should learn just a little Awk - A Tutorial by Example</a>"，作者：<a href="http://www.blogger.com/profile/06692328337754346540">Greg</a>，翻译：<a href="http://twitter.com/yuanyiz">@yuanyiz</a></p>
+
+
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="忘掉grep/sed/awk…，试试pru" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F22%2Fforget-grep-sed-awk-try-pru%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F31%2Fwhy-you-should-know-just-little-awk%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">忘掉grep/sed/awk…，试试pru</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="HTML5本地存储不完全指南" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F20%2Fhtml5-localstorage-simple-tutorials%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F31%2Fwhy-you-should-know-just-little-awk%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/08/21/23944738.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">HTML5本地存储不完全指南</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="为什么GNU grep这样快？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F18%2Fwhy-gnu-grep-is-fast%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F31%2Fwhy-you-should-know-just-little-awk%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">为什么GNU grep这样快？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Sony为什么被黑，看看他们的CAPTCHA源代码就知道了" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F08%2Fsony-captcha%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F08%2F31%2Fwhy-you-should-know-just-little-awk%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/08/09/21702620.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Sony为什么被黑，看看他们的CAPTCHA源代码就知道了</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/555235610/heikezhi/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/heikezhi/~8608072/555235610/6713895/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

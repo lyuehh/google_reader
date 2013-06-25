@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>扩展DOM有什么问题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>扩展DOM有什么问题</h2>
+<p class="meta">01 Oct 2012</p>
+
+<div class="post">
+<h2>扩展DOM有什么问题</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-09-30 16:54:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/30/2709283.html">http://www.cnblogs.com/rubylouvre/archive/2012/09/30/2709283.html</a></h3>
+
+<p>原文地址：<a href="http://perfectionkills.com/whats-wrong-with-extending-the-dom/">what’s wrong with extending the DOM</a></p>
+
+
+<p>最近我惊奇地发现，网上很少有关于扩展DOM的文章。令人不安的是，这个看似不错的做法的缺点并不是那么的众所周知。除了<a href="http://groups.google.com/group/comp.lang.javascript/topics">某些僻静的社交圈</a>。信息的匮乏可以很好的解释为什么现代的一些脚本和类库依然会陷入这个圈套（DOM并没有想象的那么好）。我想通过展示一些与之关联的问题来解释一下，为什么扩展DOM并不是一个好的做法。我也将给出一些可能的替换方案来替代这种不好的做法。</p>
+
+
+<p>首先，我们还是要了解一下什么是DOM扩展？和它是怎么工作的?</p>
+
+
+<p><strong>它是怎么工作的？</strong></p>
+
+
+<p>DOM扩展是一个简单给DOM对象添加自定义方法和属性的过程。自定义属性是那些不存在的特殊的实现。那什么是DOM对象呢？它是宿主对象的实现，比如element,event,document等等其他的DOM接口。通过扩展，方法和属性能被直接地添加到对象上，或者直接扩展到它们的原型（prototype）上，如果运行环境支持的话（火狐是支持在DOM对象的prototype上直接扩展的，而ie不支持）。最通常地对象扩展方法可能就是扩展<a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-745549614">DOM元素</a>了，像prototype和mootools框架就是这样做的。<a href="http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Event">事件对象</a>和<a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#i-Document">document对象</a>也同样经常被扩展。</p>
+
+
+<p>一些开发工具能显示element对象的原型（比如firebug），下面是一个DOM扩展的例子：</p>
+
+
+<p><br>Element.prototype.hide = function() {<br>    this.style.display = 'none';<br>};<br>...<br>var element = document.createElement('p');<br>element.style.display; // ' '<br>element.hide();<br>element.style.display; // 'none'<br><p>正如你所见到的，“hide”函数首先被分配给element.prototype的hide属性，然后从一个element直接被调用，然后这个元素样式中的display属性被设置为了“none”。<br>它的原理是，当创建一个p元素时，它在原型链上继承了element对象的原型，也会有hide方法。</p><p>当hide属性被调用时，它会搜索整个原型链，直到找在element对象的原型上找到hide这个方法。</p><p>实际上，如果我们在一些现代浏览器中检查p元素端的原型链，它可能看起来会像是这样：</p><br>// &quot;^&quot; denotes connection between objects in prototype chain<br>document.createElement('p');<br>^<br>HTMLParagraphElement.prototype<br>^<br>HTMLElement.prototype<br>^<br>Element.prototype<br>^<br>Node.prototype<br>^<br>Object.prototype<br>^<br>null<br><p>注意，p元素的原型链最近的祖先是HTMLParagraphElement.prototype，它是一个具体元素类型的对象。对于p元素来说，就是HTMLParagraphElement.prototype，那div元素的话，就是HTMLDivElement.prototype，a元素的话就是HTMLAnchorElement.prototype等等。<br>你或许会问，怎么会有这么奇怪的名字？<br>这些名字其实符合<a href="http://www.w3.org/TR/DOM-Level-2-HTML/html.html#ID-798055546">interfaces defined in DOM Level 2 HTML Specification</a>的，这些名字也定义了继承关系，在这些接口之间。比如：<em>HTMLParagraphElement接口拥有HTMLElement接口所有的属性和方法</em>（<a href="http://www.w3.org/TR/DOM-Level-2-HTML/ecma-script-binding.html">说明</a>），再比如：<em>HTMLElement接口拥有Element接口所有的属性和方法</em>（<a href="http://www.w3.org/TR/DOM-Level-2-HTML/ecma-script-binding.html">说明</a>）等等。<br>明显地，如果我们在paragraph element（p标签）的原型上面创建一个属性，它将不会在anchor element（a标签）上作用：</p><br>HTMLParagraphElement.prototype.hide = function() {<br>    this.style.display = 'none';<br>  };<br>  ...<br>  typeof document.createElement(&#39;a&#39;).hide; // &quot;undefined&quot;<br>  typeof document.createElement(&#39;p&#39;).hide; // &quot;function&quot;<br><p>这个是因为anchor element（a标签）的原型上面没有包含对HTMLParagraphElement.prototype（p标签的具体原型）的引用，而是包含对HTMLAnchorElement.prototype（a标签的具体原型）的引用。为了“修正”这一点，我们可以把属性写在更深层的祖先上面，如<code>HTMLElement.prototype</code>, <code>Element.prototype</code> 或 <code>Node.prototype。</code> 类似地，在Element.prototype上创建的属性也不会在所有的节点上生效，只有在element类型的节点上生效。如果我们想让所有的节点（例如，文本节点和注释节点）上有个属性的话，我们要在<code>Node.prototype</code>上分配属性。说到文本节点和注释节点，这是继承接口通常寻找它们的方法：</p><br>document.createTextNode(&#39;foo&#39;); // &lt; Text.prototype &lt; CharacterData.prototype &lt; Node.prototype<br>document.createComment(&#39;bar&#39;); // &lt; Comment.prototype &lt; CharacterData.prototype &lt; Node.prototype<br><p>现在，很重要的一点是，刚刚揭露的这里DOM原型并不是有保证的。DOM Level2 说明书仅仅是定义了这些接口，和这些接口之间的继承关系。它并没有规定说一定要存在一个全局的Element属性，referencing object that’s a prototype of all objects implementing <code>Element</code> interface.也没有规定要存在一个全局的Node属性，referencing object that’s a prototype of all objects implementing <code>Node</code> interface.<br>IE7以下就是这么个环境的例子。它没有显示全局的<code>Node</code>, <code>Element</code>, <code>HTMLElement</code>,<code>HTMLParagraphElement，或者他们的属性。另一个这样浏览器是Safari 2.x（像Safari 1.x一样）</code><br>所以我们要处理这些不能“显示”（expose）全局对象原型的环境呢？一个变通的方案是直接扩展DOM对象：</p><br>var element = document.createElement('p');<br>  ...<br>  element.hide = function() {<br>    this.style.display = 'none';<br>  };<br>  ...<br>  element.style.display; // ''<br>  element.hide();<br>  element.style.display; // 'none'<br><p><strong>哪里错了呢?</strong><br>通过原型对象扩张DOM元素听起来很神奇。我们发挥了js原型本质的优势，对DOM编程变的非常面向对象。事实上，DOM扩展看上如此诱人地有用已经有好些年头了，<a href="http://prototypejs.org/">Prototype Javascript library</a>把它作为体系结构中必要的部分。但是这个看起来无害的实践下面隐藏着巨大的负载问题。一会我们就将看到，在跨浏览器编程中，它的弊远大于利。DOM扩展是prototype.js犯过的最大的错误。<br>所以问题到底在哪里？</p><p><strong>缺少标准</strong></p><p>正如我所提到的那样，不是任何的标准里面都有暴露对象原型的部分。DOM Level 2只定义了接口和他们的继承关系。为了完全符合DOM Level  2这一标准实现，没有必要暴露那些全局的Node、Element、等等对象。其他任何方面也没有这个需求。给定它们就有可能手工的扩展DOM对象，这看起来也不是一个很大的问题。但是真相是手工扩展是一个很慢而且不方便的过程（我们将在后面看到）。实际上，它的“快速”也仅限于很少一部分的浏览器，将来的可移植性和跨平台访问能力也将不可靠（比如：手机设备）。</p><p><strong>宿主对象没有规则可循</strong></p><p>下一个DOM扩展的问题是DOM对象是宿主对象，宿主对象是最坏的一群东西。根据ECMA-262第3版，宿主对象被允许做一些事，不是其他对象能想象的到的。引用相关章节<sup>[<a href="http://bclary.com/2004/11/07/#a-8.6.2">8.6.2</a>]</sup>:</p><p style="padding-left:30px"><em>Host objects may implement these internal methods with any implementation-dependent behaviour, or it may be that a host object implements only some internal methods and not others.</em></p><p>内部方法标准说的是[[Get]], [[Put]], [[Delete]], etc等等。注意它是怎么说的，内部方法行为是依赖实现的。这意味着在调用[[Get]]时，宿主对象抛出异常是绝对正常的。而且不幸的是，这不只是一个理论。在IE里，我们能容易的准确观察到这些——宿主对象[[Get]]抛出异常的例子：</p><br>document.createElement(&#39;p&#39;).offsetParent; // &quot;Unspecified error.&quot;<br>new ActiveXObject(&quot;MSXML2.XMLHTTP&quot;).send; // &quot;Object doesn&#39;t support this property or method&quot;<br><p>扩展DOM对象像是行走在雷区。根据定义，你是正工作在一个允许表现的难以捉摸和完全不稳定的东西上。而且不止这些。它也可能静默失败，这是更坏的情况了。一个不稳定行为的例子是applet,object和embed，<a href="http://github.com/jquery/jquery/commit/59802928566b6be3a66d65e77c2418fff37e6f5f">它们在分配属性时，某些情况下会抛出异常</a>。相似的灾难发生在XML节点上：</p><br>var xmlDoc = new ActiveXObject(&quot;Microsoft.XMLDOM&quot;);<br>xmlDoc.loadXML('bar');<br>xmlDoc.firstChild.foo = &#39;bar&#39;; // &quot;Object doesn&#39;t support this property or method&quot;<br><p><a href="http://jibbering.com/faq/notes/code-guidelines/#hostObjects">在IE里还有些其他失败的情况</a>，像document.styleSheets[99999]会抛出“Invalid procedure call or argument”的错误，document.createElement(‘p’).filters会报“Member not found.”。不仅MSHTML DOM 是个问题。在火狐中，重写事件对象的target属性会抛出“TypeError”，因为那些是只读的，不能被重写。在WebKit下又不太一样，在分配“target”后，再在原始对象中调用，会静默失败。<br>当创建一个API给事件对象时，需要要考虑一下那些只读的属性，而不是专注在那些简洁描述的名字上。<br><strong>冲突的机会</strong><br>基于DOM元素扩展的API很难去标度。当添加和修改核心API方法时，类库的开发人员很难去标度它。类库的用户在添加特定域的扩展时，也是如此。根本的问题在于有可能冲突。DOM在流行的浏览器的实现中，都有API所有权。这些API并不是静态的，他会时常的根据浏览器版本的发布而更新。一些会被弃用，一些会被更新或添加。所以给DOM对象设置属性和方法，可能会像是在打移动靶。<br>考虑到当今已经有很多数量的web环境在使用中，如果某个属性已经不在DOM上不可能被告知。如果可以，那它是否能被重写的呢？或者，重写它时，会不会报错呢？记住他可是一个宿主对象啊。如果我们能正常的重写它，那它对DOM对象的其他部分又有什么影响呢？是不是所有的东西会预期的那样发生呢？如果在这个版本的浏览器中这一切都正常，谁有又能保证，在下个版本中，它不会采用相同的命名？这里有一堆的问题在继续。<br>打断Prototype开发的关于扩展所有权的例子有“<a href="http://dev.rubyonrails.org/ticket/10189">IE上textarea的wrap属性</a>”（和<a href="http://www.prototypejs.org/api/element/wrap">元素的wrap方法</a>冲突），还有“<a href="http://dev.rubyonrails.org/ticket/11251">Opera上表单控制元素的select方法</a>”（和<a href="http://www.prototypejs.org/api/element/select">元素的select方法</a>冲突）。即使这两种情况已经在文档中记录，但这个意外还是很令人讨厌。<br>扩展所有权不是唯一的问题。HTML5带来了一篮子属性和方法。大部分流行的浏览器已经开始兼容他们。某些时候，<a href="http://www.prototypejs.org/api/element/select">WebForms</a>为input元素定义了replace属性，Opera决定将它添加到他们的浏览器中，这正好和Prototype中元素的relpace方法冲突了，它又一次的打断了Prototype。<br>等一下，还有更多的问题。<br>由于DOM Level 0长期的传统，有一个简单的方法<a href="http://yura.thinkweb2.com/domlint/">关闭表单元素的访问表单控制</a>，就是通过他们的name值。这意味着除了使用标准的元素链，还可以像这样访问他们：</p><br>&lt;form action=&quot;&quot;&gt;<br>    &lt;input name=&quot;foo&quot;&gt;<br>  &lt;/form&gt;<br>  ...<br>  &lt;script type=&quot;text/javascript&quot;&gt;<br>    document.forms[0].foo; // non-standard access<br>    // compare to<br>    document.forms[0].elements.foo; // standard access<br>  &lt;/script&gt;<br><p>所以，如果你说你通过login方法扩展了form元素，可以检查验证信息然后提交。而且表单中有一个表单控件name值等于login，接下来发生的就不那么可爱了：</p><br> &lt;form action=&quot;&quot;&gt;<br>    &lt;input name=&quot;login&quot;&gt;<br>    ...<br>  &lt;/form&gt;<br>  ...<br>  &lt;script type=&quot;text/javascript&quot;&gt;<br>    HTMLFormElement.prototype.login = function(){<br>      return 'logging in';<br>    };<br>    ...<br>    $(myForm).login(); // boom!<br>    // $(myForm).login references input element, not <code>login</code> method<br>  &lt;/script&gt;<br><p>每个拥有name值的表单控件遮蔽了从原型链上继承的属性。在表单元素上出现异常和冲突的机会会更高一些。<br>这种情况在有name值的form元素上也是相似的，它们可以通过它们的name值直接在document上访问：</p><br> &lt;form name=&quot;foo&quot;&gt;<br>    ...<br>  &lt;/form&gt;<br>  ...<br>  &lt;script type=&quot;text/javascript&quot;&gt;<br>    document.foo; // [object HTMLFormElement]<br>  &lt;/script&gt;<br><p>当扩展document对象的时候，有一个附加的风险就是会和form元素的name值冲突。如果脚本运行在一个有大量html的古老应用程序里，删除这些name值将是一个烦琐的工作，不是吗？<br>使用一些种类的前缀会减轻这些问题，但也可能带来一些副作用。<br><a href="http://www.nczonline.net/blog/2010/03/02/maintainable-javascript-dont-modify-objects-you-down-own/">不要修改不属于你的对象</a>是一个避免冲突的最终解决方案。破坏这一规则的Prototype已经陷入了麻烦，当它自定义地<a href="http://ejohn.org/blog/getelementsbyclassname-pre-prototype-16/">重写 <code>document.getElementsByClassName</code></a>的实现时。于此同时，那些不管有没有修改DOM对象的脚本（其他框架），在相同环境下，运行地更好。</p><p><strong>性能开销</strong></p><p>正如我们前面看到的，不支持元素扩张的浏览器，像ie6，ie7，safari 2.x 等等，只能手动扩展。问题就是手动扩展很慢，不方便，而且无法衡量。慢的原因是对象需要扩展大量经常使用的属性和方法。讽刺的是，这些浏览器已经是众多浏览器中最慢的了。不方便的原因是对象需要先扩展后操作。所以在document.createElement(‘p’).hide()之前，你需要先$(document.createElement(‘p’)).hide()。这种方式对于Prototype的新手的来说，无疑是一个绊脚石。最后，手动扩展无法测量是因为添加API的方法影响性能是呈线性的。这个问题上，如果在Element.prototype上有100个方法，在一个元素上就必须有100个分配被创建。如果在Element.prototype上有200个方法，在一个元素上就必须有200个分配被创建。</p><p>另一个对性能的打击是关于事件对象的。Prototype通过相同的方式在它们上面扩展了一个集合的方法。不幸的是，浏览器中有些事件比如，mousemove, mouseover, mouseout, resize 等等，在一秒钟内能被多次触发。扩展他们中的任意一个都是非常昂贵的过程。那么怎么办呢？让事件对象只调用单个方法吗？</p><p>最后，一旦你开始扩展元素，类库API大多数情况下需要返回已扩展的元素。结果就是，像$这样的查询方法将在查询里，扩展一个简单元素时就被终止了。很容易想象当我们谈论成千上百个元素时的性能开销，用这个过程处理的话。</p><p><strong>IE的DOM一团糟</strong></p><p>像前面章节展示的那样，手动扩展DOM是混乱的。在IE里面将更糟糕，下面会讲为什么。</p><p>我们都知道IE里面有一个循环调用宿主和本地对象的漏洞，我们最好避开它。可是，给DOM元素添加一个方法的第一步就是创建这个循环的引用。老版的IE没有暴露“object prototype”，我们只能没有别的方法，只能在元素上直接扩展。循环引用和漏洞无法避免。事实上，Prototype的生命周期中，在这里遭受了很多的损失。</p><p>另一个问题是IE DOM 映射每个元素属性（attributes）和属性（properties）之间的方式。实际上，属性（attributes）和属性（properties）在同一个命名空间里，增加了冲突的机率，还有各种异常和不一致。如果自定义show属性，会发生什么，prototype会扩展它吗。你会惊奇地发现，show属性会被Prototype的Element#show方法重写。extendedElement.getAttribute(‘show’)会返回一个函数的引用，而不是show属性的值。类似地，extendedElement.hasAttribute(‘hide’)将返回true，即使没有在元素上自定义hide属性。IE8以下是没有hasAttribute的，但是我们仍然能看到attribute/property的冲突：typeof extendedElement.attributes[&#39;show&#39;] != “undefined” 。</p><p>最后，一个较少人知道的缺点是在ie中，添加属性（properties）会引起回流。所以仅仅是扩展元素就是一个相当昂贵的操作。放弃DOM中有缺陷的属性（attributes）和属性（properties）之间的映射是有道理的。</p><p><strong>“额外奖励”：浏览器bugs</strong></p><p>如果这些还不够的话（或许，你是一个受虐狂），这里还有几个比上面那些有过之无不及的bugs。</p><p>在Sarfri 3.x中的某些版本里，就是在通过点击浏览器导航上的返回按钮，返回前一页时，会<a href="http://webkit.org/blog/427/webkit-page-cache-i-the-basics/#comment-25207">擦去所有宿主对象的扩展</a>。不幸的是，这个bug是无法被察觉的，为了解决这个问题，Prototype不得不做出一些可怕的事情。先嗅探出那个版本的Webkit，然后在window的unload事件上明确地禁止掉bfcache（for back-forward cache）。禁止bfcache，意味着浏览器将重新去获取页面，而不是从缓存中读取已存储的页面。</p><p>在ie8中，<code>HTMLObjectElement.prototype</code>和 <code>HTMLAppletElement.prototype也有bug，object元素和applet元素不是这里继承的。你可以给HTMLObjectElement.prototype分配一个属性，但是它在object元素上面不起作用，applets也是一样的。所有这些对象又需要另外去手动扩展，这又是一项开销。</code></p><p>对照其他流行的实现，ie8只<a href="http://msdn.microsoft.com/en-us/library/dd282900%28VS.85%29.aspxs">暴露一部分原型对象</a>。比如，它有HTMLParagraphElement.prototype（和其他特殊的类型一样），Element.prototype，但是没有<code>HTMLElement、</code><code>HTMLElement.prototype，</code> <code>Node<span style="font-family:Georgia,&#39;Times New Roman&#39;,&#39;Bitstream Charter&#39;,Times,serif">、</span></code><code>Node.prototype。Element.prototype在ie8中也不是从Object.prototype继承的。这本身并不是bugs，然而需要牢记的是：对不存在的node进行扩展没有什么好处。</code></p><p><strong>用封装来拯救</strong></p><p>代替这个混乱的DOM扩展的方案，最常见的方法有对象封装。这就是jQuery开始使用的方法，其他类库也紧随其后。这个想法很简单。不在元素或事件上面直接的扩展，而是通过把他们封装成另外的对象，然后在给他们委派方法。没有冲突，不需要处理宿主对象这样疯狂的行为，漏洞更加容易管理，更容易在不正常的MSHTML DOM上操作，更好的性能，健全的维护和无痛的缩放。</p><p>你还能避免程序上的方法。</p><p><strong>Prototype 2.0</strong></p><p>好消息是，prototype在下一个主版本中将不会犯这种错误了。至于我所忧虑的，所有的核心开发者已经都明白了以上提到的问题，封装是在一个健全的发展方向。我不确定其他像mootools这样的基于DOM扩展的类库的计划是什么。据我所知，他们已经封装events对象了，但是还是在扩展元素。我希望将来他们能离这个愚蠢的行为远点。</p><p><strong>可控的环境</strong></p><p>……</p><p><strong>编后记</strong></p><p>下一次，你在使用某一个采用DOM扩展的类库或框架时，最好也考虑一下风险。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2709283.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/30/2709283.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

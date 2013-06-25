@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[原]Android玩乐系列：修改汇编代码支持原生高清来电大头贴（三）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[原]Android玩乐系列：修改汇编代码支持原生高清来电大头贴（三）</h2>
+<p class="meta">04 Sep 2012</p>
+
+<div class="post">
+<h2>[原]Android玩乐系列：修改汇编代码支持原生高清来电大头贴（三）</h2>
+
+<h3>by aimingoo</h3>
+
+<h3>at 2012-09-04 09:15:39</h3>
+
+<h3>original <a href="http://blog.csdn.net/aimingoo/article/details/7939132">http://blog.csdn.net/aimingoo/article/details/7939132</a></h3>
+
+<p>【</p>
+
+
+<p>本文分三篇。本篇介绍更复杂的定制过程。</p>
+
+
+<p>】</p>
+
+
+<p><br>
+</p>
+
+
+<p>（接下来进一步细化上一篇的修改，前六节请参见：<a href="http://blog.csdn.net/aimingoo/article/details/7939116">http://blog.csdn.net/aimingoo/article/details/7939116</a>）</p>
+
+
+<p><br>
+</p>
+
+
+<p>7、一些遗留问题的修改<br>
+=======<br>
+<br>
+上面是最简版本，只是为了突出核心功能的实现，但实际留下的问题还是不少的。下面一一道来。<br>
+<br>
+<br>
+<strong>1) 呀。是成功了呢，不过一会儿就被改回来了。</strong><br>
+---------</p>
+
+
+<p>[修改, 2012.09.04。方法名写错的，应该是updateInCallBackground()，而不是updateScreen()]<br>
+这并不是普遍性的问题，有些拔号面板是有背景的，有些则是背景透明而直接显示桌面的。对于有背景的拔号面板，Phone.apk通常会在InCallScreen.smali中有一个updateInCallBackground()方法，找到它的几处调用，注释掉即可。或者干脆把updateInCallBackground()改成空函数就好了。<br>
+<br>
+<br>
+如果找不到updateInCallBackground()函数，则尝试找一个setBackgroundResource()这个方法，看哪里重绘了mMainFrame的背景即可。<br>
+<br>
+<br>
+<br>
+<br>
+<strong>2) 下一次电话呼入的时候，会残留上一个电话使用的大头贴</strong><br>
+---------<br>
+是的。这应该在此次电话结束时清理掉。这很简单，修改InCallScreen.smali，找到<br>
+</p>
+
+
+<pre name="code">   .method private delayedCleanupAfterDisconnect()V</pre>
+
+
+<p><br>
+这个方法。然后找到其中return-void这行代码，往上数几行找个地方插入如下代码即可：<br></p>
+
+<pre name="code">    ...
+
+
+## fixed by aimingoo
+    ## 重置背景
+    const/4 v0, 0x0
+    iget-object v1, p0, Lcom/android/phone/InCallScreen;-&gt;mMainFrame:Landroid/view/ViewGroup;
+    invoke-virtual {v1, v0}, Landroid/view/ViewGroup;-&gt;setBackgroundResource(I)V
+
+
+    ## 这里参见本遗留问题第5项有关setPersonInfoStyle()的说明
+    const/4 v0, 0x1
+    iget-object v1, p0, Lcom/android/phone/InCallScreen;-&gt;mCallCard:Lcom/android/phone/CallCard;
+    invoke-virtual {v1, v0}, Lcom/android/phone/CallCard;-&gt;setPersonInfoStyle(Z)V
+##end fix.
+    :cond_3
+    :goto_0
+    return-void      ## &lt;&lt;- 注意从这行代码往上找
+
+
+    ...</pre>
+
+
+<p><br>
+<br>
+<strong>3) 好象原来的头像还是会闪一下？</strong><br>
+---------<br>
+原来的头像是这样的一个获得过程：<br>
+  - 首先开始接听或拔打电话<br>
+  - 拔号程序显示面板，面板中头像位置显示为“无头像”的icon<br>
+  - 异步发起调用，从联系人数据库中读取头像<br>
+  - 当上述异步调用返回时，更新显示上面的“无头像”icon为真正的头像图片<br>
+<br>
+<br>
+所以事实上原生的应用在“显示头像”时都会是两步，这是为了更快地绘制出拨号面板以便用户操作。而们的代码事实上也是依赖这个原理，在上述的过程异步得到“高清大头贴”的数据之后，显示在背景上的。<br>
+<br>
+<br>
+那么总的来说，事实上头像总会闪一下。并且在异步读取到头像之前，原生界面上就是会显示一个“无头像”的icon。尽管这个过程通常很短，多数时候在你抓过来电话之前就已经闪过去了，但是对于那些正盯着电话看效果的玩实来说，这还是不爽的。<br>
+<br>
+<br>
+基本上来说，可以注释掉所有修改mPhoto的地方。如果必要，保留一些用于在没有大头贴的情况下显示原有的mPhoto的代码是可以的。作为一个示例，一个简单的地方就是修改showCachedImage()。这首先在CallCard.smail中找到showCachedImage()，然后注释掉其中下面的两行：<br></p>
+
+<pre name="code">#
+# 不必在得到头像时更新cardCard中的头像
+#
+.method private static final showCachedImage(Landroid/widget/ImageView;Lcom/android/internal/telephony/CallerInfo;)Z
+    ...
+
+
+##    iget-object v0, p1, Lcom/android/internal/telephony/CallerInfo;-&gt;cachedPhoto:Landroid/graphics/drawable/Drawable;
+##
+##    invoke-static {p0, v0}, Lcom/android/phone/CallCard;-&gt;showImage(Landroid/widget/ImageView;Landroid/graphics/drawable/Drawable;)V
+    ...
+</pre>
+
+
+<p><br>
+这里直接修改showCachedImage()，是因为Phone.apk只为mPhoto成员调用showCachedImage()，其它的会直接调用showImage()。<br>
+<br>
+<br>
+<br>
+<strong>4) 界面上大头贴显示不全，被一些元素遮住了。要是它们有透明度就好了。</strong><br>
+---------<br>
+有些时候，界面上的元素是通过贴图来绘制的，也就是在资源文件中，它的背景是一张图片。对于指定颜色的背景，例如#xxRRGGBB，我们可以在资源文件中通过指定xx值来使它透明化。但如果背景是图，那么在较低的android版本的资源文件中又不支持alpha属性，那么就只能在源代码中通过setAlpha()来使之透明了。<br>
+<br>
+<br>
+后面这种情况（也包括前面这种设置color代码的情况）可以在CallCard.smali与InCallTouchUi.smali中添加代码来实现，某些情况下，你也可能要改到InCallScreen.smali中的代码的。但总的来说，都与具体的Phone.apk有关。下面是我在修改Mokee的Phone.apk中使用的代码。注意，这些代码都应该写在onFinishInflate()方法里，这里刚好初始化完界面，并将界面元素关联到Java对象的成员上。<br></p>
+
+<pre name="code">#---------
+# 在完成初始化后，处理一些背景
+#  - CallCard.smali
+#---------
+.method protected onFinishInflate()V
+   ……
+    iput-object v0, p0, Lcom/android/phone/CallCard;-&gt;mPrimaryCallInfo:Landroid/view/ViewGroup;
+
+
+## fixed by aimingoo
+    ## for callCardPersonInfo.clild(0)
+    const v0, 0x7f070020
+    invoke-virtual {p0, v0}, Lcom/android/phone/CallCard;-&gt;findViewById(I)Landroid/view/View;
+    move-result-object v0
+    check-cast v0, Landroid/view/ViewGroup;
+
+
+    const v1, 0x0
+    invoke-virtual {v0, v1}, Landroid/view/ViewGroup;-&gt;getChildAt(I)Landroid/view/View;
+    move-result-object v0
+
+
+    invoke-virtual {v0}, Landroid/view/View;-&gt;getBackground()Landroid/graphics/drawable/Drawable;
+    move-result-object v0
+
+
+    const/16 v1, 0x40
+    invoke-virtual {v0, v1}, Landroid/graphics/drawable/Drawable;-&gt;setAlpha(I)V
+
+
+    ## for phoneMsgContainer
+    const v0, 0x7f070028
+    invoke-virtual {p0, v0}, Lcom/android/phone/CallCard;-&gt;findViewById(I)Landroid/view/View;
+    move-result-object v0
+
+
+    invoke-virtual {v0}, Landroid/view/View;-&gt;getBackground()Landroid/graphics/drawable/Drawable;
+    move-result-object v0
+    invoke-virtual {v0, v1}, Landroid/graphics/drawable/Drawable;-&gt;setAlpha(I)V
+## end fix.
+
+
+
+
+#---------
+# 在完成初始化后，处理一些背景
+#  - InCallTouchUi.smali
+#---------
+.method protected onFinishInflate()V
+   ……
+    iput-object v1, p0, Lcom/android/phone/InCallTouchUi;-&gt;stop_layout:Landroid/widget/LinearLayout;
+
+
+## fixed by aimingoo
+    ## for bottomButtons @ mInCallControls
+    iget-object v1, p0, Lcom/android/phone/InCallTouchUi;-&gt;mInCallControls:Landroid/view/View;
+    const v2, 0x7f070074
+    invoke-virtual {v1, v2}, Landroid/view/View;-&gt;findViewById(I)Landroid/view/View;
+    move-result-object v0
+
+
+    const/16 v1, 0x40
+    invoke-virtual {v0}, Landroid/view/View;-&gt;getBackground()Landroid/graphics/drawable/Drawable;
+    move-result-object v0
+    invoke-virtual {v0, v1}, Landroid/graphics/drawable/Drawable;-&gt;setAlpha(I)V
+
+
+
+
+    ## for endButton @ mEndButton
+    iget-object v1, p0, Lcom/android/phone/InCallTouchUi;-&gt;mEndButton:Landroid/widget/Button;
+    invoke-virtual {v1}, Landroid/widget/Button;-&gt;getBackground()Landroid/graphics/drawable/Drawable;
+    move-result-object v0
+    const/16 v1, 0x60
+    invoke-virtual {v0, v1}, Landroid/graphics/drawable/Drawable;-&gt;setAlpha(I)V
+## end fix.</pre>
+
+
+<p><br>
+<br>
+<br>
+<strong>5) 上面那个mPhoto的确不显示了，但好象还占着位置，还是很难看。</strong><br>
+【话说，真的有必要通过汇编代码来调样式哇？GG，你直接改资源文件不好哇？】<br>
+---------<br>
+如果我们真的要实现：<br>
+  - 有大头贴时，不显示小小的头像mPhoto<br>
+  - 没有大头贴时，显示一下“无头像”icon，或者<br>
+  - 因为头像图片不够大，所以某些时候还是显示图片到头像mPhoto中间去更好看<br>
+<br>
+<br>
+事实上，前面showCachedBackground()的实现代码中，还确实检查了头像图片的大小，当它长宽之一小于240px，我们就不作为全屏大头贴来显示了。所以，我们的确还是要将mPhoto处理成：有大头贴时隐藏，否则在必要时还得显示。<br>
+<br>
+<br>
+这个，改资源文件还真不成。还得动代码。<br>
+<br>
+<br>
+上面我们在showCachedBackground()中留下了一个setPersonInfoStyle()没做说明。那个方法，其实就是留给这里用的。传入参数toDefault。当toDefault为false时，就显示我们定制的大头贴界面，否则就切回原生界面（就是小头像）来显示。这个方法就与具体的Phone.apk有关了，因为每个Phone.apk的来电面板界面都不一样，显示哪些，不显示哪些，其实都要靠程序员分析着资源文件一点点来改。尽管麻烦，但效果也确实惊人。下面是我为Lezo界面写的一个setPersonInfoStyle()方法：<br></p>
+
+<pre name="code">.method public setPersonInfoStyle(Z)V
+    .locals 2
+    .parameter &quot;toDefault&quot;
+
+
+    if-nez p1, :cond_0
+
+
+    ## 42.0F
+    const/high16 v0, 0x4228
+
+
+    ## CallCard.pA == mName
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pA:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## 28.0F
+    const/high16 v0, 0x41b8
+
+
+    ## CallCard.pC == mPhoneNumber
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pC:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## CallCard.pB == mLocation
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pB:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## bacground
+    const v0, 0x80CCCCCC
+    invoke-virtual {v1}, Landroid/widget/TextView;-&gt;getParent()Landroid/view/ViewParent;
+    move-result-object v1
+    check-cast v1, Landroid/view/ViewGroup;
+    invoke-virtual {v1, v0}, Landroid/view/ViewGroup;-&gt;setBackgroundColor(I)V
+
+
+    :goto_0
+    return-void
+
+
+    :cond_0
+    ## 25.0F
+    const/high16 v0, 0x41c8
+
+
+    ## CallCard.pA == mName
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pA:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## 18.0F
+    const/high16 v0, 0x4190
+
+
+    ## CallCard.pC == mPhoneNumber
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pC:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## CallCard.pB == mLocation
+    iget-object v1, p0, Lcom/android/phone/CallCard;-&gt;pB:Landroid/widget/TextView;
+    invoke-virtual {v1, v0}, Landroid/widget/TextView;-&gt;setTextSize(F)V
+
+
+    ## bacground
+    const v0, 0x0
+    invoke-virtual {v1}, Landroid/widget/TextView;-&gt;getParent()Landroid/view/ViewParent;
+    move-result-object v1
+    check-cast v1, Landroid/view/ViewGroup;
+    invoke-virtual {v1, v0}, Landroid/view/ViewGroup;-&gt;setBackgroundResource(I)V
+
+
+    goto :goto_0
+.end method</pre>
+
+
+<p><br>
+这个setPersonInfoStyle()函数会在showCachedBackground()中调用并传入false值，另外也应该在InCallScreen.smali的delayedCleanupAfterDisconnect()方法中调用。后一种情况应传入true值，以使得“下一次”来电面板将以缺省形式打开。<br>
+<br>
+<br>
+<br>
+<strong>6) 全屏！！要真的全屏！！！</strong><br>
+---------<br>
+其实大多数拨号面板是并不支持“全屏”的，它通常会留下状态栏。既然我们这里说的是“全屏来电大头贴”，那么就加上下面这段代码好了：<br></p>
+
+<pre name="code">#---------
+# 使拔号面板全屏
+#  - in InCallScreen.smali
+#  - 修改代码必须位于InCallScreen;-&gt;setContentView()调用之前!!!
+#---------
+.method protected onCreate(Landroid/os/Bundle;)V
+   ……
+## fixed by aimingoo.
+    invoke-virtual {p0}, Lcom/android/phone/InCallScreen;-&gt;getWindow()Landroid/view/Window;
+    move-result-object v2
+    const/16 v1, 0x400
+    invoke-virtual {v2, v1, v1}, Landroid/view/Window;-&gt;setFlags(II)V
+## fix end.
+
+
+  ……
+    const v1, 0x7f030012
+    invoke-virtual {p0, v1}, Lcom/android/phone/InCallScreen;-&gt;setContentView(I)V
+</pre>
+
+
+<p><br>
+<br>
+<br>
+<strong>7) 好象你忘了说HD Contact Photos怎么改了！</strong><br>
+---------<br>
+嗯嗯。是的是的，不好意思。补过。<br>
+<br>
+<br>
+其实很简单。反编译它，然后找到<br>
+<span style="white-space:pre"></span>smali\com\jgarrison\hdcontacts\NewEntry.smali<br>
+<br>
+<br>
+这个文件。将下面的代码注释掉，就可以了：<br></p>
+
+<pre name="code">##---------
+## 注释掉下面的代码，使打开图片选取时显示一个“自由的”截图框
+##  -  .line xxx这样的代码可能与具体的反编译有关，不必在意。
+##---------
+##    .line 406
+##    const-string v12, &quot;outputX&quot;
+##
+##    const/16 v13, 0x100
+##
+##    invoke-virtual {v8, v12, v13}, Landroid/content/Intent;-&gt;putExtra(Ljava/lang/String;I)Landroid/content/Intent;
+##
+##    .line 407
+##    const-string v12, &quot;outputY&quot;
+##
+##    const/16 v13, 0x100
+##
+##    invoke-virtual {v8, v12, v13}, Landroid/content/Intent;-&gt;putExtra(Ljava/lang/String;I)Landroid/content/Intent;
+##
+##    .line 408
+##    const-string v12, &quot;aspectX&quot;
+##
+##    const/4 v13, 0x1
+##
+##    invoke-virtual {v8, v12, v13}, Landroid/content/Intent;-&gt;putExtra(Ljava/lang/String;I)Landroid/content/Intent;
+##
+##    .line 409
+##    const-string v12, &quot;aspectY&quot;
+##
+##    const/4 v13, 0x1
+##
+##    invoke-virtual {v8, v12, v13}, Landroid/content/Intent;-&gt;putExtra(Ljava/lang/String;I)Landroid/content/Intent;</pre>
+
+
+<p><br>
+然后重编译它，这样在用它设置大头贴时，我们可以自由选取图片大小。当然，为了得到“正好是一个全屏大小”的大头贴，我们也可以借助一下工具。这里强烈推荐“快图浏览”，它在截取时可以按大小（像素数）和长宽比来设置截取框。如果你按大小来设置，比如480x800的屏幕大小，那么无论你截选图片多大，最终都会等比缩放到这个大小——相当好用！<br>
+<br>
+<br>
+<strong>n) 其它之其它</strong><br>
+---------<br>
+！强调！！！<br>
+<br>
+<br>
+1：永远记住：插入代码的时候，要确认你在使用着合适的寄存器！<br>
+<br>
+<br>
+2：不同的Phone.apk是不一样的，上面的代码主要基于CyanogenMod及其衍生版的ROM，大致在它们之间都是可以通用的。但要注意细节上的差异，尤其（再次强调）寄存器在反汇编代码中是可能不同的！<br>
+<br>
+<br>
+3：非常多的ROM衍生自CyanogenMod，包括Lewa、Lezo、DianxinOS、Mokee、Shendu、Norma、Joyos，以及部分Miui的定制版。<br>
+<br>
+<br>
+4：不同版本ROM中的Phone.apk，多数都是不能换在其它ROM中用的。主要的原因之一，是Phone.apk依赖framework-res.apk中的资源来实现了锁屏状态下的接听面板（TouchUi），而不用ROM的framework-res差异较大。另外，也可能是它们用到的TelephonyProvider.apk版本不一致，试试换个看，试试手气呵。<br>
+<br>
+<br>
+5：一定要用platform.*的两个key来签名Phone.apk，它要求必须是这个权限的签名。<br>
+<br>
+<br>
+6：没必要去尝试改原厂的Phone.apk，例如sesen原生界面的。因为你拿不到他们私有的platform keys。于是你签不了名，于是你改了也放不到原生ROM中去。用到别的ROM？你忘了，framework-res还不一样呢。<br>
+<br>
+<br>
+7：写程序嘛，不过是汇编嘛，不怕不怕啦！<br></p>
+
+<p></p>
+
+
+<pre><code>        &lt;div&gt;
+            作者：aimingoo 发表于2012-9-3 18:15:39 &lt;a href="http://blog.csdn.net/aimingoo/article/details/7939132"&gt;原文链接&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：6457 评论：1 &lt;a href="http://blog.csdn.net/aimingoo/article/details/7939132#comments"&gt;查看评论&lt;/a&gt;
+        &lt;/div&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

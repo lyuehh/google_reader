@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>从Enyo看移动Web应用框架设计</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>从Enyo看移动Web应用框架设计</h2>
+<p class="meta">23 Jul 2012</p>
+
+<div class="post">
+<h2>从Enyo看移动Web应用框架设计</h2>
+
+<h3>by chenbo</h3>
+
+<h3>at 2012-07-23 11:20:22</h3>
+
+<h3>original <a href="http://www.programmer.com.cn/12708/">http://www.programmer.com.cn/12708/</a></h3>
+
+<p>文 / 程邵非</p>
+
+
+<p>Enyo是一个来自Palm的Aries项目的JavaScript开发框架，它所关注的方向是一般的程序框架所关注的封装性、复用性和可维护性。<span></span></p>
+
+
+<p><strong><span style="color:#3366ff">历史</span></strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">是随着</span><span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">发布的开发框架。</span></p>
+
+
+<p>Enyo 1.0<span style="font-family:宋体">发布于</span><span style="font-family:&#39;Times New Roman&#39;">HP TouchPad</span><span style="font-family:宋体">的</span><span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">之上，它是依赖于</span><span style="font-family:&#39;Times New Roman&#39;">WebKit</span><span style="font-family:宋体">的开发框架。因为一些历史原因，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo 1.0</span><span style="font-family:宋体">的授权仅限于</span><span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">中使用，并没有使用开源协议。</span></p>
+
+
+<p>Enyo 2.0<span style="font-family:宋体">则是一个跨平台的框架，它现在已经在</span><span style="font-family:&#39;Times New Roman&#39;">github</span><span style="font-family:宋体">以</span><span style="font-family:&#39;Times New Roman&#39;">Apache 2.0</span><span style="font-family:宋体">协议开源。</span></p>
+
+
+<p>如无特别强调，本文后面所述的<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">皆指</span><span style="font-family:&#39;Times New Roman&#39;">Enyo 2.0</span><span style="font-family:宋体">框架。</span></p>
+
+
+<p><strong><span style="color:#3366ff">核心概念</span></strong></p>
+
+
+<p>如<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">网站主页强调的，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的核心是一种封装模型，让使用者能够更容易地复用和维护。在这一点上，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">更倾向于一个传统程序设计领域的框架。它所关注的方向是一般的程序框架所关注的封装性、复用性和可维护性。</span></p>
+
+
+<p>与<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">相比，一些流行的</span><span style="font-family:&#39;Times New Roman&#39;">JS</span><span style="font-family:宋体">框架设计的核心思想则显得不那么“程序员思维”，比如</span><span style="font-family:&#39;Times New Roman&#39;">jQuery</span><span style="font-family:宋体">的设计理念是：</span>Write less, do more。</p>
+
+
+<p>jQuery<span style="font-family:宋体">在这一点上颇受一些程序员背景的工程师诟病，但恰恰因为这样，它讨好了大量设计师和有设计背景的前端工程师。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">的设计理念是将程序分解为一个个的</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">（组件），</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">又能够由其它的</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">组成。</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">是一个立足于</span><span style="font-family:&#39;Times New Roman&#39;">UI</span><span style="font-family:宋体">的框架，但它的</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">理念并不限于</span><span style="font-family:&#39;Times New Roman&#39;">UI</span><span style="font-family:宋体">组件。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">这样的设计非常适合较大的工程，这跟传统的</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">前端项目理念有些不同。很难想象一个网页会由很多工程师共同完成。而</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">认为基于</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">开发的应用程序，可能需要更多工程师来进行合作。</span></p>
+
+
+<p>总体而言，从<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的整体设计看，它对于移动开发程序员和程序员背景的前端工程师比较友好，而与之相对，它对于设计师背景的前端工程师则不那么友好。</span></p>
+
+
+<p><strong><span style="color:#3366ff">Enyo的设计目标:Web、移动、应用</span></strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">作为应用程序基础框架用于</span><span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">上，这决定了它的设计目标离不开</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">、移动和应用三个关键词。</span></p>
+
+
+<p>毫无疑问，<span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">选择</span><span style="font-family:&#39;Times New Roman&#39;">HTML+JS</span><span style="font-family:宋体">的开发方式很大程度是看中了已有的网页前端开发工程师资源。经过多年的发展和磨合，现在网页开发已经是一个非常成熟的技术环境了，这其中有着由设计师、工程师、产品经理等不同人才组成的完整的生态系统，大部分企业的开发流程也已成熟。尽管拥有</span><span style="font-family:&#39;Times New Roman&#39;">JavaScript</span><span style="font-family:宋体">这样图灵完备且具有相当抽象能力的编程语言，网页与应用之间仍然有着不小的差距，而</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的设计目标之一就是尽量弥合这个差距。</span></p>
+
+
+<p>为了与同类产品竞争，<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">还必须要提供能够快速上手的开发能力，以及对硬件的访问能力。而这些恰恰是传统网页所缺少的功能。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">的编程模型中基本抛弃了</span><span style="font-family:&#39;Times New Roman&#39;">HTML</span><span style="font-family:宋体">语言本身，而主要使用</span><span style="font-family:&#39;Times New Roman&#39;">JavaScript</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">DOM API</span><span style="font-family:宋体">来编写图形界面。</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">选用</span><span style="font-family:&#39;Times New Roman&#39;">JSON</span><span style="font-family:宋体">来代替</span><span style="font-family:&#39;Times New Roman&#39;">HTML</span><span style="font-family:宋体">作为界面描述语言，这样既保持了方便的程序访问性，又保证界面编写难度不会过高。</span></p>
+
+
+<p>JSON<span style="font-family:宋体">描述界面这种做法在传统的</span><span style="font-family:&#39;Times New Roman&#39;">JS</span><span style="font-family:宋体">框架中有成功的先例，其中最为著名的当属</span><span style="font-family:&#39;Times New Roman&#39;">ExtJS</span><span style="font-family:宋体">，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">选择这一做法很可能借鉴了</span><span style="font-family:&#39;Times New Roman&#39;">ExtJS</span><span style="font-family:宋体">的成功经验。</span></p>
+
+
+<p>当然抛弃<span style="font-family:&#39;Times New Roman&#39;">HTML</span><span style="font-family:宋体">这一做法实际上意味着</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">放弃了大批</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">开发者以及围绕</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">开发的工具。</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的这一选择可能并非明智。</span></p>
+
+
+<p>因为<span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">系统主要用于移动设备，所以</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的设计也必须更多考虑移动设备。</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">提供了专门为触屏设计的</span><span style="font-family:&#39;Times New Roman&#39;">Scroll</span><span style="font-family:宋体">组件，这样可以使</span><span style="font-family:&#39;Times New Roman&#39;">webOS</span><span style="font-family:宋体">设备能够轻易地做出接近</span><span style="font-family:&#39;Times New Roman&#39;">iOS</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">Android</span><span style="font-family:宋体">设备的触摸滚动效果。</span></p>
+
+
+<p><strong><span style="color:#3366ff">Enyo的架构</span></strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">主要分为五个模块：</span><span style="font-family:&#39;Times New Roman&#39;">Kernel</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">AJAX</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">DOM</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">Touch</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">UI</span><span style="font-family:宋体">。</span></p>
+
+
+<p>Kernel<span style="font-family:宋体">模块为所有模块所依赖，其中主要包括对</span><span style="font-family:&#39;Times New Roman&#39;">JavaScript</span><span style="font-family:宋体">语言本身的扩展和</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的</span><span style="font-family:&#39;Times New Roman&#39;">Type</span><span style="font-family:宋体">系统。</span></p>
+
+
+<p>AJAX<span style="font-family:宋体">模块实际上不仅仅是</span><span style="font-family:&#39;Times New Roman&#39;">AJAX</span><span style="font-family:宋体">功能扩展，还包括</span><span style="font-family:&#39;Times New Roman&#39;">JSON</span><span style="font-family:宋体">等</span><span style="font-family:&#39;Times New Roman&#39;">AJAX</span><span style="font-family:宋体">相关的功能扩展。</span></p>
+
+
+<p>DOM<span style="font-family:宋体">则是对</span><span style="font-family:&#39;Times New Roman&#39;">HTML DOM API</span><span style="font-family:宋体">的简单封装和基本手势的支持。</span></p>
+
+
+<p>Touch<span style="font-family:宋体">实际上包含了</span><span style="font-family:&#39;Times New Roman&#39;">Scroll</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">Touch</span><span style="font-family:宋体">功能的结合，</span><span style="font-family:&#39;Times New Roman&#39;">touch</span><span style="font-family:宋体">提供了各个层次的</span><span style="font-family:&#39;Times New Roman&#39;">Scroll</span><span style="font-family:宋体">逻辑，既能够直接使用</span><span style="font-family:&#39;Times New Roman&#39;">Scroller</span><span style="font-family:宋体">，又能用更为底层的</span><span style="font-family:&#39;Times New Roman&#39;">ScrollMath</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">ScrollStrategy</span><span style="font-family:宋体">来定制自己的</span><span style="font-family:&#39;Times New Roman&#39;">Scroll</span><span style="font-family:宋体">行为。</span></p>
+
+
+<p>UI<span style="font-family:宋体">模块是</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">提供的基本控件，这些控件的主要作用是生成对应的</span><span style="font-family:&#39;Times New Roman&#39;">HTML</span><span style="font-family:宋体">代码。</span></p>
+
+
+<p><strong><span style="color:#3366ff">加载系统</span></strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">的主要模块之外，有一部分</span><span style="font-family:&#39;Times New Roman&#39;">Boot</span><span style="font-family:宋体">模块可以用于加载</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的脚本以及注册全局命名空间。</span></p>
+
+
+<p>这里<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">提供了一组简单的包管理系统，包括加载包、包依赖关系，以及样式表单文件的管理。</span></p>
+
+
+<p>虽然很少用到，但这部分功能也暴露给了开发者，通过<span style="font-family:&#39;Times New Roman&#39;">enyo.loader</span><span style="font-family:宋体">可以实现加载代码包并且处理依赖关系。</span></p>
+
+
+<p><strong>OOP系统</strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">实现</span><span style="font-family:&#39;Times New Roman&#39;">OOP</span><span style="font-family:宋体">的方式是</span><span style="font-family:&#39;Times New Roman&#39;">Type+Component</span><span style="font-family:宋体">模式，这基本可以认为是</span><span style="font-family:&#39;Times New Roman&#39;">Class</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">Object</span><span style="font-family:宋体">的别名。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">的</span><span style="font-family:&#39;Times New Roman&#39;">Type</span><span style="font-family:宋体">系统是</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">提供的一种类型系统，一切</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">框架内的组件都必须遵循</span><span style="font-family:&#39;Times New Roman&#39;">Type</span><span style="font-family:宋体">系统来注册自己。</span></p>
+
+
+<p>Component<span style="font-family:宋体">系统则是与</span><span style="font-family:&#39;Times New Roman&#39;">Type</span><span style="font-family:宋体">系统密不可分的，任何</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">都必须有自己的指定</span><span style="font-family:&#39;Times New Roman&#39;">Type</span><span style="font-family:宋体">，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">正是通过这种方式保证模块化的。</span></p>
+
+
+<p>以下是来自<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">官方网站的一个注册类型实例。</span></p>
+
+
+<p><span style="color:#3366ff">enyo.kind({</span></p>
+
+
+<p><span style="color:#3366ff">name: ”Hello”,</span></p>
+
+
+<p><span style="color:#3366ff">kind: enyo.Control,</span></p>
+
+
+<p><span style="color:#3366ff">components: </span></p>
+
+
+<p><span style="color:#3366ff">[</span></p>
+
+
+<p><span style="color:#3366ff">{name: "hello", content: "Hello From Enyo", ontap: "helloTap"},</span></p>
+
+
+<p><span style="color:#3366ff">{tag: "hr"}</span></p>
+
+
+<p><span style="color:#3366ff">],</span></p>
+
+
+<p><span style="color:#3366ff">helloTap: function() </span></p>
+
+
+<p><span style="color:#3366ff">{</span></p>
+
+
+<p><span style="color:#3366ff">this.$.hello.addStyles(“color: red”);</span></p>
+
+
+<p><span style="color:#3366ff">}</span></p>
+
+
+<p><span style="color:#3366ff">});</span></p>
+
+
+<p>值得注意的是，<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">可以简单地将几个</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">组合，形成新的</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">类型。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">注册类型之后，则可以直接通过</span><span style="font-family:&#39;Times New Roman&#39;">new</span><span style="font-family:宋体">来创建</span><span style="font-family:&#39;Times New Roman&#39;">Component</span><span style="font-family:宋体">。</span></p>
+
+
+<p>在<span style="font-family:&#39;Times New Roman&#39;">kind</span><span style="font-family:宋体">函数接受的</span><span style="font-family:&#39;Times New Roman&#39;">JSON</span><span style="font-family:宋体">描述中，</span><span style="font-family:&#39;Times New Roman&#39;">kind</span><span style="font-family:宋体">属性起到了等同于指派父类的作用。</span></p>
+
+
+<p><strong>扩展API</strong></p>
+
+
+<p>如同每一个<span style="font-family:&#39;Times New Roman&#39;">JS</span><span style="font-family:宋体">框架做的那样，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">也有对</span><span style="font-family:&#39;Times New Roman&#39;">XHR</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">Cookie</span><span style="font-family:宋体">、事件、异步等一些</span><span style="font-family:&#39;Times New Roman&#39;">HTML DOM API</span><span style="font-family:宋体">做了扩展，这样可以减轻</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">的开发者的负担。</span></p>
+
+
+<p>比较特别的扩展是<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">对于手势的封装，</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">提供了</span><span style="font-family:&#39;Times New Roman&#39;">10</span><span style="font-family:宋体">种手势：</span><span style="font-family:&#39;Times New Roman&#39;">up</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">down</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">tap</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">move</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">enter</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">leave</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">hold</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">release</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">holdpulse</span><span style="font-family:宋体">、</span><span style="font-family:&#39;Times New Roman&#39;">flick</span><span style="font-family:宋体">。这些基本涵盖了所有的单点触控手势。</span></p>
+
+
+<p><strong>scroll系统</strong></p>
+
+
+<p>在<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">中最简单的支持滚动的方法是直接使用</span><span style="font-family:&#39;Times New Roman&#39;">Scroller</span><span style="font-family:宋体">和</span><span style="font-family:&#39;Times New Roman&#39;">TouchScrollStrategy</span><span style="font-family:宋体">，</span><span style="font-family:&#39;Times New Roman&#39;">Scroller</span><span style="font-family:宋体">提供了基本的滚动行为，</span><span style="font-family:&#39;Times New Roman&#39;">TouchScrollStrategy</span><span style="font-family:宋体">提供对手势的基础支持。</span></p>
+
+
+<p>实际上<span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">暴露了不同层次的</span><span style="font-family:&#39;Times New Roman&#39;">API</span><span style="font-family:宋体">，最底层的是</span><span style="font-family:&#39;Times New Roman&#39;">ScrollMath</span><span style="font-family:宋体">类型，它定义了一个效果比较良好的滚动所用到的数学和物理常量以及算法。</span></p>
+
+
+<p>ScrollStrategy<span style="font-family:宋体">则是一个抽象类，它规定了手势与</span><span style="font-family:&#39;Times New Roman&#39;">Scroller</span><span style="font-family:宋体">之间的关系，如果不使用原生</span><span style="font-family:&#39;Times New Roman&#39;">TouchScrollStrategy</span><span style="font-family:宋体">的话，则可以自由定义事件和滚动的触发关系。</span></p>
+
+
+<p><strong><span style="color:#3366ff">思考</span></strong></p>
+
+
+<p>Enyo<span style="font-family:宋体">作为一个已被正式商用的移动应用开发框架，无疑是值得后来者学习的，包括其他基于</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">平台的操作系统、试图为</span><span style="font-family:&#39;Times New Roman&#39;">hybrid</span><span style="font-family:宋体">服务的</span><span style="font-family:&#39;Times New Roman&#39;">Web</span><span style="font-family:宋体">框架以及类似</span><span style="font-family:&#39;Times New Roman&#39;">PhoneGap</span><span style="font-family:宋体">的</span><span style="font-family:&#39;Times New Roman&#39;">HTML</span><span style="font-family:宋体">应用壳程序。一些</span><span style="font-family:&#39;Times New Roman&#39;">Enyo</span><span style="font-family:宋体">受到诟病之处，也值得参照和避免。</span></p>
+
+
+<p>Enyo<span style="font-family:宋体">中可以总结一些移动应用框架的设计原则。</span></p>
+
+
+<p><strong>尽量保持原生风格。</strong>在框架设计上，采用颠覆性的风格是危险和得不偿失的，应当尽量贴近原生<span style="font-family:&#39;Times New Roman&#39;">API</span><span style="font-family:宋体">的命名风格和设计风格。</span></p>
+
+
+<p><strong>提供多层次的API。</strong>既给初级用户提供能够简单使用的<span style="font-family:&#39;Times New Roman&#39;">API</span><span style="font-family:宋体">，又给高级用户提供足够灵活的</span><span style="font-family:&#39;Times New Roman&#39;">API</span><span style="font-family:宋体">，当两者矛盾之时，可以通过暴露不同层次的</span><span style="font-family:&#39;Times New Roman&#39;">API</span><span style="font-family:宋体">来实现。</span></p>
+
+
+<p><strong>节省命名空间。</strong>如非必要，尽量不污染全局命名空间。</p>
+
+
+<p><strong>支持触屏设备。</strong>现有局面下，移动框架的主要竞争焦点在于触屏的支持，尤其是手势和滚动效果很大程度决定了框架的优劣。</p>
+
+
+<p><strong>考虑开发者多样性。</strong>Web App<span style="font-family:宋体">的开发者包括传统的前端人员和一部分移动开发工程师，设计框架时过于倾斜将会导致一部分开发者流失，尽量提供给用户多种选择更为合理。</span></p>
+
+
+<p> </p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

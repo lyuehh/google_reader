@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>爱上朴实的CSS细节</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>爱上朴实的CSS细节</h2>
+<p class="meta">18 Sep 2012</p>
+
+<div class="post">
+<h2>爱上朴实的CSS细节</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-17 21:30:35</h3>
+
+<h3>original <a href="http://kb.cnblogs.com/page/157692/">http://kb.cnblogs.com/page/157692/</a></h3>
+
+<p>　　<strong>英文原文：</strong><a href="http://www.alistapart.com/articles/love-the-boring-bits-of-css/">Learning to Love the Boring Bits of CSS</a></p>
+
+
+<p>　　未来的CSS太让人兴奋了：一方面，是全新的页面布局方式；另一方面，是酷炫的滤镜、颜色等视觉效果。这些CSS，受开发者追捧，被杂志和博客文章铺天盖地地介绍。</p>
+
+
+<p>　　如果说这些特性是CSS华丽的一面，那我们来看看它朴实的一面：很不起眼的东西，如选择器、单位、函数（方法）。我经常说这是繁琐的东西，但我意思是它们能干漂亮的活，这就是我要分享的。</p>
+
+
+<p>　　怎么说呢，让我们看看这些效果最好的朴实的CSS细节——这些细节远远没有那些酷炫的CSS效果那么引人注目。它们有些已经存在一段时间了，但值得我们更好地认识，而有些则刚刚面世。虽然不起眼，但是它们可以提高我们的工作效率——以谦虚的姿态。</p>
+
+
+<p><strong>　　相对单位</strong></p>
+
+
+<p>　　聪明又有前瞻头脑的开发者们已经使用<strong>相对单位</strong>了——如em或者百分比——所以，开发者们了解这个问题：往往因为元素的继承性而需要使用计算器作为辅助工具来计算大小。例如，现在普遍的做法是给页面的字体设置全局尺寸，然后用相对单位来定义页面中其它的元素。CSS大概会这样写：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">html </span>{<span style="color:#ff0000"> font-size</span>:<span style="color:#0000ff"> 10px</span>; } <span style="color:#800000">p </span>{<span style="color:#ff0000"> font-size</span>:<span style="color:#0000ff"> 1.4em</span>; }</div>
+
+
+<p>　　这样写是没问题，直到有个子元素需要设置一个不同的字体大小，比如，在这样的标签当中：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">The cat sat on the &lt;span&gt;mat&lt;/span&gt;.</span></div>
+
+
+<p>　　如果你要设置span的字体大小为1.2em，你需要做什么？拿出计算器，算算1.2除以1.4是多少，结果如下：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">p span </span>{<span style="color:#ff0000"> font-size</span>:<span style="color:#0000ff"> 0.85714em</span>; }</div>
+
+
+<p>　　这个问题不局限于em。如果用百分比来创建响应式的流式布局网站，而百分比是与容器相关的，所以，如果要定义一个元素为它的容器的40%，它的高是75%，宽则需要设置为53.33333%。</p>
+
+
+<p>　　很明显，这很不方便。</p>
+
+
+<p><strong>　　根相关的长度单位</strong></p>
+
+
+<p>　　为了修复字体大小定义的问题，现在可以使用单位rem（root em）。rem同样是相对单位，但是它所对应的是固定的基本值，这个固定的基本值也就是文档的根元素的字体大小（在HTML文件中，就是html元素）。假设和上个例子一样，同样设定10px的字体大小为根元素的大小，那么CSS这样写就OK了：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">p </span>{<span style="color:#ff0000"> font-size</span>:<span style="color:#0000ff"> 1.4rem</span>; } <span style="color:#800000">p span </span>{<span style="color:#ff0000"> font-size</span>:<span style="color:#0000ff"> 1.2rem</span>; }</div>
+
+
+<p>　　这两个CSS规则都是相对于根元素的字体大小，这样的代码更加优雅和简便，特别是在设置简单的数值如10px或者12px的时候。这样和使用px值很相似，不同点在于rem是可扩展的。</p>
+
+
+<p>　　在整篇文章介绍的特性中，rem特性相对来说是兼容性比较好，高级浏览器都能支持，包括IE9在内，除了Opera Mobile。</p>
+
+
+<p><strong>　　窗口相关的长度单位</strong></p>
+
+
+<p>　　觉得rem单位很酷吧，如果还有另外一组单位能解决百分比的问题，那就更酷了。它和rem的道理相似，不同点在于，它相对的不是文档的根元素，而是相对于设备窗口本身的大小。</p>
+
+
+<p>　　这两个单位就是vh和vw，即是相对于窗口大小的高和宽。每个单位在前面加上数字，代表的是多少个百分比。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">div </span>{<span style="color:#ff0000"> height</span>:<span style="color:#0000ff"> 50vh</span>; }</div>
+
+
+<p>　　在上面的例子，高度被设定为窗口高度的一半。1vh相当于一个百分比的窗口高度，所以50vh即是50%的窗口高度。</p>
+
+
+<p>　　如果窗口大小变了，那么这个值也随之改变。这相对百分比来说，好处是不需要担心父容器，不管它的父容器如何，10vw的元素会一直是10%的窗口大小。</p>
+
+
+<p>　　相应地，有vmin单位，相当于vh或者vw的最小值，最近还宣布有vmax单位会被加到规范文档里面（虽然在这篇文章发布的时候还没有）。</p>
+
+
+<p>　　现在支持这个特性的有IE9+、Chrome和Safari 6。</p>
+
+
+<p><strong>　　运算式的值</strong></p>
+
+
+<p>　　如果你在做响应式的流式布局网站，经常会遇到混合单位的问题——用百分比设置栅格，但是又用固定像素宽度设置margin。如：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">div </span>{ <span style="color:#ff0000">margin</span>:<span style="color:#0000ff"> 0 20px</span>; <span style="color:#ff0000">width</span>:<span style="color:#0000ff"> 33%</span>;}</div>
+
+
+<p>　　如果布局只用到padding和border，你可以使用box-sizing来解决，但是对于margin就无能为力了。更好、更灵活的方法是使用calc()函数，设置不同单位之间的数学方程式，如：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">div </span>{ <span style="color:#ff0000">margin</span>:<span style="color:#0000ff"> 0 20px</span>; <span style="color:#ff0000">width</span>:<span style="color:#0000ff"> calc(33% - 40px)</span>;}</div>
+
+
+<p>　　它不仅可以用来计算宽，还可以用来计算长度——如果有必要，还可以在calc()里面再加calc()。</p>
+
+
+<p>　　这个特性IE9+和Firefox都支持，Firefox需要加上 -moz- 前缀（在版本16或17可能不用加前缀），Chrome和Safari也支持，但需要加上 -webkit- 前缀。然而，移动Webkit还不支持。</p>
+
+
+<p><strong>　　加载字体库的部分字体</strong></p>
+
+
+<p>　　优越的性能往往很重要，尤其是市场上各种各样的移动设备——导致连接速度的差异和不确定性——更加体现了这个重要性。其中一个加快页面加载速度的方法，就是减少外部文件个数，@font-face的一个新属性unicode-range就是为此而生。</p>
+
+
+<p>　　这个属性就是unicode-range（编码范围），代表的是编码字体的参数范围。在加载外部文件的时候，只有那些被使用的字体才会被加载，而不是整套字体库。下面的代码演示了如何从foo.ttf字体库中仅加载三个字体：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">@font-face </span>{<span style="color:#ff0000">font-family</span>:<span style="color:#0000ff"> foo</span>;<span style="color:#ff0000">src</span>:<span style="color:#0000ff"> url('foo.ttf')</span>;<span style="color:#ff0000">unicode-range</span>:<span style="color:#0000ff"> U+31-33</span>;}</div>
+
+
+<p>　　这点对于使用字体图标的页面尤其有用。我测试过，使用unicode-range，加载字体文件的时间平均减少了0.85秒，也不是小数目了。当然，你可能不会这么想。</p>
+
+
+<p>　　这个属性，目前可以在IE9+、Webkit浏览器（如Chrome和Safari）中运行。</p>
+
+
+<p><strong>　　新的伪类</strong></p>
+
+
+<p>　　单位和值都应该好好利用，但是，让我更兴奋的是选择器和伪类。完善的选择器模式，即使只有少数浏览器支持，都让我兴奋不已。引用乔布斯的话：你要把栅栏的里面修得和外面一样漂亮，即使别人看不到里面——因为你自己知道。</p>
+
+
+<p>　　我第一次使用:nth-of-type()的时候，简直是一次突破，就像我冲出了思想的桎梏。好吧，我有些夸张了。但有些新的CSS伪类，确实值得狂热一番。</p>
+
+
+<p><strong>　　否定伪类</strong></p>
+
+
+<p>　　你大概不知道 :not() 伪类的好，除非你亲自实践一番。带有参数的 :not() 其实就是普通的选择器——不是复合选择器。一组元素加上选择器 :not()，表示满足这个参数的元素会被排除出去。听起来有些复杂吧？但是实际上非常简单。</p>
+
+
+<p>　　假设：要对项目列表的奇数行进行选择，但是最后一行除外。如果是以前，需要这样写：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">li </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #00F</span>; } <span style="color:#800000">li:nth-child(odd) </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #F00</span>; } <span style="color:#800000">li:last-child </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #00F</span>; }</div>
+
+
+<p>　　现在，通过设定:last-child作为否定伪类的参数，就可以把最后一个元素排除，这样少了一行代码，从而更加的简洁和易维护。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">li </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #00F</span>; } <span style="color:#800000">li:nth-child(odd):not(:last-child) </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #F00</span>; }</div>
+
+
+<p>　　否定伪类看起来并没有什么惊人之处，你可以不用它，但是它还是挺实用的。我曾经把它用在基于Webkit的项目当中，优势还是挺明显的。说实话，它是我最喜欢的伪类之一。</p>
+
+
+<p>　　是的，我有最喜欢的伪类。</p>
+
+
+<p>　　在本文提到的特性当中，否定伪类是兼容性最好的，它被IE9+和高级浏览器支持（不需要加浏览器产商前缀）。如果你熟悉jQuery，你可能习惯用它——版本1.0开始就有了，以及相似的not()方法。</p>
+
+
+<p><strong>　　“适用于”伪类</strong></p>
+
+
+<p>　　:matches() 伪类可以用普通的选择器、复合选择器、逗号隔开的列表或任何的选择器组合作为参数。太棒了！但是，它能做什么？</p>
+
+
+<p>　　:matches() 伪类最强大的地方就是聚合多行选择器。例如，要选择父容器里面其中几个不同子容器里面的p元素，在这之前，代码或许会写成这样：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">.home header p,.home footer p,.home aside p </span>{<span style="color:#ff0000">color</span>:<span style="color:#0000ff"> #F00</span>;}</div>
+
+
+<p>　　有了:matches()伪类，就可以把共同点提取出来，缩减代码量。该例子里面，选择器的共同点是以home为起点、以p为终点，所以可以用:matches()把中间的所有元素集合起来。是不是有些困惑？看看代码就明白了：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#800000">.home :matches(header,footer,aside) p </span>{<span style="color:#ff0000"> color</span>:<span style="color:#0000ff"> #F00</span>; }</div>
+
+
+<p>　　这其实是CSS4的一部分（确切地说，是CSS选择器第四等级），这份规范文档还提到将会有类似的语法（以逗号隔开的复合选择器）应用于:not()伪类。兴奋ing！</p>
+
+
+<p>　　目前，:matches()可以在Chrome和Safari浏览器中运行，但是要加上前缀-webkit-，Firefox也支持，但是要按照旧的写法:any()，同时要加上-moz-前缀。</p>
+
+
+<p><strong>　　你爱上这些朴实的CSS细节了吗？</strong></p>
+
+
+<p>　　这篇文章讲到的特性，最赞的一点是它们解决了现实的问题，从琐碎而繁复的选择器到建立响应式网站的新挑战。实际上，我期待每一个特性被使用到最普通的项目当中。</p>
+
+
+<p>　　新特性如滤镜可能很直观很华丽，但是我更愿意发现隐藏在深处的实用小技巧。</p>
+
+
+<p>　　在积极探索的过程中，每一个特性可以让你的职业生涯更顺利——想到这里，就不会觉得繁琐了。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go程序设计语言(一)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Go程序设计语言(一)</h2>
+<p class="meta">24 Aug 2012</p>
+
+<div class="post">
+<h2>Go程序设计语言(一)</h2>
+
+<h3>by bigwhite</h3>
+
+<h3>at 2012-08-23 16:57:34</h3>
+
+<h3>original <a href="http://tonybai.com/2012/08/23/the-go-programming-language-tutorial-part1/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part1">http://tonybai.com/2012/08/23/the-go-programming-language-tutorial-part1/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part1</a></h3>
+
+<p>本文译自<a href="http://en.wikipedia.org/wiki/Rob_Pike">Rob Pike</a>的<a href="http://golang.org">Go</a>语言PPT教程 – &quot;<a href="http://golang.org/doc/GoCourseDay1.pdf">The Go Programming Language Part 1</a>(updated June 2011)&quot;。由于该教程的最新更新时间早于<a href="http://golang.org/doc/go1.html">Go 1版本</a>发布，因此该PPT中的一些内容与Go 1语言规范略有差异，到时我会在相应的地方做上注解。</p>
+
+
+<h2><b>谁发明了Go</b></h2>
+
+
+<p>Go语言的设计和实现工作是由Google的一个研发小组以及来自世界各地的大量贡献者共同完成的。</p>
+
+
+<p>联系方式：</p>
+
+
+<ul>
+<li><a href="http://golang.org">http://golang.org</a>:                 官网</li>
+<li><a href="mailto:golang-nuts@golang.org">golang-nuts@golang.org</a>:    用户讨论组</li>
+<li><a href="mailto:golang-dev@golang.org">golang-dev@golang.org</a>:     开发者讨论组</li>
+</ul>
+
+
+<h2><b>课程大纲</b></h2>
+
+
+<p>第一部分：基础<br>
+    第二部分：类型(type)、方法(method)以及接口(interface)<br>
+    第三部分：并发(concurrency)与通信(communication)</p>
+
+
+<p>这个课程是关于Go程序设计语言的，而不是关于编程语言设计方法的，后者是一个单独的话题，不在此教程范围内。</p>
+
+
+<h2><b>第一部分大纲</b></h2>
+
+
+<ul>
+<li>动机</li>
+<li>基础 - 简单、熟悉的内容</li>
+<li>包与程序构建</li>
+</ul>
+
+
+<h2><b>动机</b></h2>
+
+
+<h3>为什么要发明一门新语言？</h3>
+
+
+<p>在当今世界，编程语言在某些方面不够给力：</p>
+
+
+<ul>
+<li>计算机运行速度快，但软件的构建慢。</li>
+<li>为了速度和安全性需进行必要的依赖分析。</li>
+<li>在类型上遇到了太多的阻碍。</li>
+<li>对垃圾收集以及并发的支持太差。</li>
+<li>多核被视为危机而不是机会。</li>
+</ul>
+
+
+<h3>积极应对</h3>
+
+
+<p>我们的目标是让编程重新回归快乐。</p>
+
+
+<ul>
+<li>兼有动态语言的感觉以及静态类型系统的安全性；</li>
+<li>编译成机器语言以获得更快的运行速度；</li>
+<li>真正在运行时支持GC(垃圾收集)以及并发；</li>
+<li>轻量级、灵活的类型系统；</li>
+<li>拥有方法(method)，但却不是传统的OO(面向对象)语言。</li>
+</ul>
+
+
+<h3>资源</h3>
+
+
+<p>关于Go语言的更多背景资料请参见文档：http://golang.org</p>
+
+
+<p>文档包括：</p>
+
+
+<ul>
+<li>语言规范</li>
+<li>教程</li>
+<li>&quot;Effective Go&quot;</li>
+<li>标准库文档</li>
+<li>安装和How-to文档</li>
+<li>FAQs</li>
+<li>一个语言联系游乐场(在浏览器中运行Go程序)</li>
+<li>更多</li>
+</ul>
+
+
+<h3>现状：编译器</h3>
+
+
+<p>gc(<a href="http://en.wikipedia.org/wiki/Ken_Thompson">Ken Thompson</a>)，又称6g，8g，5g<br>
+            继承自Plan 9项目的编译器模型<br>
+            生成代码速度非常快<br>
+            不支持gcc直接链接</p>
+
+
+<p>gccgo(Ian Taylor)<br>
+            更为熟悉的体系架构<br>
+            生成代码的速度没有gc那样快<br>
+            支持gcc直接链接</p>
+
+
+<p>支持32-bit和64-bit x86 (amd64，x86-64) 以及ARM。</p>
+
+
+<p>垃圾收集器，并发等都已实现。<br>
+    优秀且正逐步完善的标准库。</p>
+
+
+<h2>基础</h2>
+
+
+<h3>是时候上一些代码了</h3>
+
+
+<p><span style="font-family:courier new,courier,monospace">package main</span></p>
+
+
+<div><span style="font-family:courier new,courier,monospace">import &quot;fmt&quot;</span></div>
+
+
+<div> </div>
+
+
+<div><span style="font-family:courier new,courier,monospace">func main() {</span></div>
+
+
+<div><span style="font-family:courier new,courier,monospace">    fmt.Print(&quot;Hello, 世界\n&quot;)</span></div>
+
+
+<div><span style="font-family:courier new,courier,monospace">}</span></div>
+
+
+<div> </div>
+
+
+<h3>语言基础</h3>
+
+
+<div>
+<ul>
+<li>假设熟悉其他C语言类的(C-like)编程语言，这里将快速浏览一些基础知识。</li>
+<li>这里大部分内容是简单的且熟悉的，也可能因此而有些沉闷，这里先说声道歉。</li>
+<li>接下来的两部分教程会包含很有趣的内容，不过我们首先需要打下良好基础。</li>
+</ul>
+</div>
+
+
+<h3>词法结构</h3>
+
+
+<div>
+<div>- 传统中蕴含新意。</div>
+<div>- 源码采用UTF-8编码。空格包括：空白，tab，换行，回车。</div>
+<div>- 标识符由字母和数字组成（外加&#39;_&#39;)，字母和数字都是Unicode编码。</div>
+<div>- 注释：</div>
+<div><span style="font-family:courier new,courier,monospace">/* This is a comment; no nesting */</span></div>
+<div><span style="font-family:courier new,courier,monospace">// So is this.</span></div>
+</div>
+
+
+<div> </div>
+
+
+<h3>字面值(literals)</h3>
+
+
+<div>类似C语言中的字面值，但数值不需要符号以及大小标志(后续会有更多这方面内容)：</div>
+
+
+<div> </div>
+
+
+<div><span style="font-family:courier new,courier,monospace">23</span></div>
+
+
+<div><span style="font-family:courier new,courier,monospace">0x0FF</span></div>
+
+
+<div><span style="font-family:courier new,courier,monospace">1.234e7</span></div>
+
+
+<div> </div>
+
+
+<div>类似C中的字符串，但字符串是Unicode/UTF-8编码的。同时，\xNN总是有2个数字；\012总是3；两个都是字节：</div>
+
+
+<div> </div>
+
+
+<div>
+<div><span style="font-family:courier new,courier,monospace">&quot;Hello, world\n&quot;</span></div>
+<div><span style="font-family:courier new,courier,monospace">&quot;\xFF&quot;       // 1 byte</span></div>
+<div><span style="font-family:courier new,courier,monospace">&quot;\u00FF&quot;     // 1 Unicode char, 2 bytes of UTF-8</span></div>
+<div> </div>
+</div>
+
+
+<div>原生字符串：<span style="font-family:courier new,courier,monospace">`\n\.abc\t\` == &quot;\\n\\.abc\\t\\&quot;</span></div>
+
+
+<h3>语法概述</h3>
+
+
+<div>基本上就是类C的语法，但使用反转的类型和声明，并使用关键字作为每个声明的开头。</div>
+
+
+<div> </div>
+
+
+<div><span style="font-family:courier new,courier,monospace">var a int<br>
+    var b, c *int // 注意与C的不同<br>
+    var d []int<br>
+    type S struct { a, b int }</span></div>
+
+
+<div> </div>
+
+
+<div>基本的控制结构也十分熟悉：</div>
+
+
+<div> </div>
+
+
+<div>
+<div><span style="font-family:courier new,courier,monospace">if a == b { return true } else { return false }</span></div>
+<div><span style="font-family:courier new,courier,monospace">for i = 0; i &lt; 10; i++ { … }</span></div>
+<div> </div>
+<div>注意：没有圆括号，但需要大括号。</div>
+<div> </div>
+<div>后续会有更多有关这方面的内容。</div>
+<div> </div>
+<h3>分号</h3>
+<div>
+<div>
+<div>
+<div>分号作为语句终止符号，但：</div>
+<div>- 如果前一个符号是语句的结尾，那词法分析程序将自动在行尾插入一个分号<br>
+                    - 注意：比JavaScript的规则更清晰和简单
+<p>因此，下面的程序不需要分号：</p>
+<p><font face="Courier New">package main</font></p>
+<p><font face="Courier New">const three = 3<br>
+                        var i int = three</font></p>
+<p><font face="Courier New">func main() { fmt.Printf(&quot;%d\n&quot;, i) }</font></p>
+<p>在实际中，Go源码在for和if子句之外几乎都没有用到分号。</p>
+<h3>数值类型</h3>
+<p>数值类型(numeric types)是原生内置的，也是为大家所熟知的：</p>
+</div>
+<div>
+<p><font face="Courier New">int          uint<br>
+                        int8      uint8 = byte<br>
+                        int16       uint16<br>
+                        int32       uint32         float32      complex64<br>
+                        int64       uint64         float64      complex128</font></p>
+<p>还有uintptr，一个大小足够存储一个指针的数值。</p>
+<p>这些都是互不相同的类型；int不等于是int32，即便是在一个32位的机器上。</p>
+<p>没有隐式类型转换(不过不要恐慌)。</p>
+<h3>Bool</h3>
+<p>普通的布尔类型bool，取值true和false(预定义的常量)。</p>
+<p>if语句等使用布尔表达式。</p>
+<p>指针类型和整型不是布尔类型。</p>
+<h3>string</h3>
+<p>原生内置的string类型代表不可改变的字节数组，即文本。string类型是用长度定界的，而不是以结尾0终止的。</p>
+<p>字符串字面值是string类型。</p>
+<p>和整型一样不可改变。可重新赋值，但不能修改其值。</p>
+<p>正如&quot;3&quot;总是3，&quot;hello&quot;也总是&quot;hello&quot;。</p>
+<p>Go语言对字符串操作提供了良好的支持。</p>
+<h3>表达式(Expressions)</h3>
+<p>大多都是类C语言的操作符。</p>
+<p>二元操作符：</p>
+<p><font face="Courier New">优先级                操作符                    备注</font></p>
+<p><font face="Courier New">5                 * / % &lt;&lt; &gt;&gt; &amp; &amp;^         &amp;^是位清理操作符<br>
+                        4                 + – | ^                  ^是异或(xor)</font><br>
+                        <font face="Courier New">3                 == != &lt; &lt;= &gt; &gt;=<br>
+                        2                 &amp;&amp;<br>
+                        1                 ||</font></p>
+<p>一元操作符包括：&amp; ! * + – ^(外加用于通信的&lt;-)<br>
+                        一元操作符^是求补码/反码操作。</p>
+<h3>Go vs. C表达式</h3>
+<p>可以让C程序员惊喜的是：</p>
+<p>更少的优先级层次(应该容易)。<br>
+                        ^替代了~<br>
+                        ++和–不再是表达式操作符(x++是一个语句，不是表达式；*p++是(*p)++，而不是*(p++))<br>
+                        &amp;^是新操作符，在常量表达式中很有用<br>
+                        &lt;&lt;和&gt;&gt;等需要一个无符号的移位计数。</p>
+<p>无惊喜的是：</p>
+<p>赋值操作与所期望的一样：+= &lt;&lt;= &amp;^=等<br>
+                        表达式总体看起来相似(下标、函数调用等)</p>
+<h3>例子</h3>
+<p><font face="Courier New">+x<br>
+                        23 + 3*x[i]<br>
+                        x &lt;= f()<br>
+                        ^a &gt;&gt; b<br>
+                        f() || g()<br>
+                        x == y + 1 &amp;&amp; &lt;-ch &gt; 0<br>
+                        x &amp;^ 7 // x with the low 3 bits cleared<br>
+                        fmt.Printf(&quot;%5.2g\n&quot;, 2*math.Sin(PI/8))<br>
+                        7.234/x + 2.3i</font></p>
+<p><font face="Courier New">&quot;hello, &quot; + &quot;world&quot;  // concatenation<br>
+                                             // no C-like &quot;a&quot; &quot;b&quot;</font></p>
+<h3>数值转型</h3>
+<p>将一个数值从一个类型转换为另一个类型称为一次转型，其语法形式有点类似函数调用：</p>
+<p><font face="Courier New">uint8(intVar)   //截断到相应的大小<br>
+                        int(float64Var) //片段截断<br>
+                        float64(intVar) //转为float64</font></p>
+<p>一些涉及string类型的转型：</p>
+<p><font face="Courier New">string(0×1234)          // == &quot;\u1234&quot;<br>
+                        string(sliceOfBytes)    // bytes -&gt; bytes<br>
+                        string(sliceOfInts)     // ints -&gt; Unicode/UTF-8<br>
+                        []byte(&quot;abc&quot;)           // bytes -&gt; bytes<br>
+                        []int(&quot;日本語&quot;)          // Unicode/UTF-8 -&gt; ints</font></p>
+<p>切片(slice)与数组相关，稍后会有更多相关内容。</p>
+<h3>常量</h3>
+<p>数值常量是&quot;理想数&quot;：没有大小或标志，因此没有U、L或UL作结尾。</p>
+<p><font face="Courier New">077 // 八进制<br>
+                        0xFEEDBEEEEEEEEEEEEEEEEEEEEF //十六进制<br>
+                        1 &lt;&lt; 100</font></p>
+<p>下面是整数和浮点数值，字面值的语法决定其类型：</p>
+<p><font face="Courier New">1.234e5    // 浮点<br>
+                        1e2        // 浮点<br>
+                        3.2i       // 浮点虚数<br>
+                        100        // 整数</font></p>
+<h3>常量表达式</h3>
+<p>浮点和整型常量可以任意组合，最终表达式的类型由常量的类型决定。操作自身也取决于类型。</p>
+<p><font face="Courier New">2*3.14   // 浮点: 6.28<br>
+                        3./2     // 浮点：1.5<br>
+                        3/2      // 整型：1<br>
+                        3+2i     // 复数：3.0 + 2.0i</font></p>
+<p><font face="Courier New">// 高精度<br>
+                        const Ln2 = 0.69314718055994530941723212145817656807<br>
+                        const Log2E = 1/Ln2 </font></p>
+<p><font face="Courier New">数值的表示范围足够大(目前最大用1024位表示)。</font></p>
+<h3><font face="Courier New">理想数的结果</font></h3>
+<p><font face="Courier New">Go语言允许无需显式转型的情况下使用常量，前提是常量值可以被其类型表示(没有必要进行转型；其值表示起来没问题)：</font></p>
+<p><font face="Courier New">var million int = 1e6  //float语法在这里可以使用<br>
+                        math.Sin(1)</font></p>
+<p><font face="Courier New">常量必须可以被其类新表示。例如：^0的值为-1，不在0-255的范围内。</font></p>
+<p><font face="Courier New">uint8(^0)       //错误：-1无法用uint8类型表示<br>
+                        ^uint8(0)       //OK<br>
+                        uint8(350)      //错误：350无法用uint8类型表示<br>
+                        uint8(35.0)     //OK: 35<br>
+                        uint8(3.5)      //错误：3.5无法用uint8类型表示</font></p>
+<h3><font face="Courier New">声明</font></h3>
+<p><font face="Courier New">声明以一个关键字开头(var, const，type和func)，并且与C中的声明次序相反：</font></p>
+<p><font face="Courier New">var i int<br>
+                        const PI = 22./7.<br>
+                        type Point struct { x, y int }<br>
+                        func sum(a, b int) int { return a + b }</font></p>
+<p><font face="Courier New">为何要以相反次序声明呢？早期的一个例子：</font></p>
+<p><font face="Courier New">var p, q *int</font></p>
+<p><font face="Courier New">p和q的类型都是*int。并且函数读起来更佳，并且与其他声明一致。还有一个原因，马上道来。</font></p>
+<h3><font face="Courier New">Var</font></h3>
+<p><font face="Courier New">变量声明以var开头。</font></p>
+<p><font face="Courier New">它们可以有一个类型或一个初始化表达式；至少应有一个或二者都有。初始化表达式应该与变量匹配(还有类型！)。</font></p>
+<p><font face="Courier New">var i int<br>
+                        var j = 365.245<br>
+                        var k int = 0<br>
+                        var l, m uint64 = 1, 2<br>
+                        var nanoseconds int64 = 1e9 // float64 constant!<br>
+                        var inter, floater, stringer = 1, 2.0, &quot;hi&quot;</font></p>
+<h3><font face="Courier New">分派var</font></h3>
+<p><font face="Courier New">总是输入var让人生厌。我们可以通过括号让多个变量声明成为一组：</font></p>
+<p><font face="Courier New">var (<br>
+                            i int<br>
+                            j = 356.245<br>
+                            k int = 0<br>
+                            l, m uint64 = 1, 2<br>
+                            nanoseconds int64 = 1e9<br>
+                            inter, floater, stringer = 1, 2.0, &quot;hi&quot;<br>
+                        )</font></p>
+<p><font face="Courier New">这种形式适用于const,type, var，但不能用于func。</font></p>
+<h3><font face="Courier New">=:&quot;短声明&quot;</font></h3>
+<p><font face="Courier New">在函数内(只有在函数内这一种情况下)，下面形式的声明：<br>
+                          var v = value</font></p>
+<p><font face="Courier New">可以被缩短成：<br>
+                          v := value</font></p>
+<p><font face="Courier New">(这就是另外一个名字、类型倒序的原因)</font></p>
+<p><font face="Courier New">类型就是值的类型(对于理想数，相应的类型是int或float64或complex128)<br>
+                          a, b, c, d, e := 1, 2.0, &quot;three&quot;, FOUR, 5e0i</font></p>
+<p><font face="Courier New">这种形式的声明使用很频繁，并且在诸如for循环初始化表达式中也可以使用。</font></p>
+<h3><font face="Courier New">Const</font></h3>
+<p><font face="Courier New">常量声明以const开头。</font></p>
+<p><font face="Courier New">它们必须有一个常量表达式，可在编译期间求值，作为初始化表达式，可以拥有一个可选的类型修饰符。</font></p>
+<p><font face="Courier New">const Pi = 22./7.<br>
+                        const AccuratePi float64 = 355./113<br>
+                        const beef, two, parsnip = &quot;meat&quot;, 2, &quot;veg&quot;<br>
+                        const (<br>
+                            Monday, Tuesday, Wednesday = 1, 2, 3<br>
+                            Thursday, Friday, Saturday = 4, 5, 6<br>
+                        )</font></p>
+<h3><font face="Courier New">Iota</font></h3>
+<p><font face="Courier New">常量声明可以使用计数器：iota，每个const块中的iota都从0开始计数，在每个隐式的分号(行尾)自增。</font></p>
+<p><font face="Courier New">const (<br>
+                            Monday = iota  // 0<br>
+                            Tuesday = iota // 1<br>
+                        )</font></p>
+<p><font face="Courier New">速记：重复上一个类型和表达式。</font></p>
+<p><font face="Courier New">const (<br>
+                            loc0, bit0 uint32 = iota, 1&lt;&lt;iota //0，1<br>
+                            loc1, bit1                        //1，2<br>
+                            loc2, bit2                        //2，4<br>
+                        )</font></p>
+<h3><font face="Courier New">Type</font></h3>
+<p><font face="Courier New">类型声明以type开头。</font></p>
+<p><font face="Courier New">我们后续会学习更多类型，不过先这里举几个例子：</font></p>
+<p><font face="Courier New">type Point struct {<br>
+                            x, y, z float64<br>
+                            name<br>
+                            string<br>
+                        }<br>
+                        type Operator func(a, b int) int<br>
+                        type SliceOfIntPointers []*int</font></p>
+<p><font face="Courier New">我们稍后会回到函数。</font></p>
+<h3><font face="Courier New">New</font></h3>
+<p><font face="Courier New">内置函数new用于分配内存。其语法类似一个函数调用，以类型作为参数，与C++中的new类似。返回一个指向已分配对象的指针。</font></p>
+<p><font face="Courier New">var p *Point = new(Point)<br>
+                        v := new(int)   // v的类型为*int</font></p>
+<p><font face="Courier New">稍后我们将看到如何构建切片(slice)</font></p>
+<p><font face="Courier New">Go语言中没有用于内存释放的delete或free。Go具备垃圾回收功能。</font></p>
+<h3><font face="Courier New">赋值</font></h3>
+<p><font face="Courier New">赋值是容易和熟悉的：</font></p>
+<p><font face="Courier New">a = b</font></p>
+<p><font face="Courier New">但Go还支持多项赋值：</font></p>
+<p><font face="Courier New">x, y, z = f1(), f2(), f3()<br>
+                        a, b = b, a  //交互a,b的值</font></p>
+<p><font face="Courier New">函数支持多个返回值(稍后有更多细节)：</font></p>
+<p><font face="Courier New">nbytes, error := Write(buf)</font></p>
+<h3><font face="Courier New">控制结构</font></h3>
+<p><font face="Courier New">与C类似，但很多地方有不同。</font></p>
+<p><font face="Courier New">Go支持if、for和switch。</font></p>
+<p><font face="Courier New">正如之前说的，无需小括号，但大括号是必要的。</font></p>
+<p><font face="Courier New">如果将它们看为一组，它们的用法很规律。例如，if、for和switch都支持初始化语句。</font></p>
+<h3><font face="Courier New">控制结构的形式</font></h3>
+<p><font face="Courier New">后续会有细节，但总体上：</font></p>
+<p><font face="Courier New">if和switch语句以1元素和2元素形式呈现，后面详细讲解。</font></p>
+<p><font face="Courier New">for循环具有1元素和3元素的形式：</font></p>
+<p><font face="Courier New">1元素形式等价于C语言中的while：<br>
+                            for a {}<br>
+                        3元素形式等价于C语言中的for：<br>
+                            for a;b;c {}</font></p>
+<p><font face="Courier New">在所有这些形式里，任何元素都可以是空。</font></p>
+<h3><font face="Courier New">if</font></h3>
+<p><font face="Courier New">基本形式是大家所熟知的，但已经没有了&quot;else悬挂&quot;问题了：</font></p>
+<p><font face="Courier New">if x &lt; 5 { less() }<br>
+                        if x &lt; 5 { less() } else if x == 5 { equal() }</font></p>
+<p><font face="Courier New">支持初始化语句；需要分号。</font></p>
+<p><font face="Courier New">if v := f(); v &lt; 10 {<br>
+                            fmt.Printf(&quot;%d less than 10\n&quot;, v)<br>
+                        } else {<br>
+                            fmt.Printf(&quot;%d not less than 10\n&quot;, v)<br>
+                        }</font></p>
+<p><font face="Courier New">与多元函数一起使用更有益处：</font></p>
+<p><font face="Courier New">if n, err = fd.Write(buf); err != nil { … }</font></p>
+<p><font face="Courier New">省略条件意为true，在这里没有什么用。但在for，switch语句中尤其有用。</font></p>
+<h3><font face="Courier New">for</font></h3>
+<p><font face="Courier New">基本形式是大家所熟知的：<br>
+                            for i := 0; i &lt; 10; i++ { … }</font></p>
+<p><font face="Courier New">省略条件意为true:</font></p>
+<p><font face="Courier New">    for ;; { fmt.Printf(&quot;looping forever&quot;) }</font></p>
+<p><font face="Courier New">而且你还可以省略分号：<br>
+                           <br>
+                            for { fmt.Printf(&quot;Mine! &quot;) }</font></p>
+<p><font face="Courier New">不要忘记多项赋值：<br>
+                            for i,j := 0,N; i &lt; j; i,j = i+1,j-1 {…}</font></p>
+<p><font face="Courier New">(Go中没有像C中那样的逗号操作符)</font></p>
+<h3><font face="Courier New">switch细节</font></h3>
+<p><font face="Courier New">switch与C中的switch有些类似。</font></p>
+<p><font face="Courier New">不过，有一些语法和语义的重要不同之处：<br>
+                        - 表达式不必一定是常量，甚至可以不必是int。<br>
+                        - 没有自动的fall through<br>
+                        - 但作为替代，语法上，最后的语句可以为fallthrough<br>
+                        - 多case可以用逗号分隔</font></p>
+<p><font face="Courier New">switch count%7 {<br>
+                            case 4,5,6: error()<br>
+                            case 3: a *= v; fallthrough<br>
+                            case 2: a *= v; fallthrough<br>
+                            case 1: a *= v; fallthrough<br>
+                            case 0: return a*v<br>
+                        }</font></p>
+<h3><font face="Courier New">Switch</font></h3>
+<p><font face="Courier New">Go中的switch要远比C中的强大。常见的形式：</font></p>
+<p><font face="Courier New">switch a {<br>
+                            case 0: fmt.Printf(&quot;0&quot;)<br>
+                            default: fmt.Printf(&quot;non-zero&quot;)<br>
+                        }</font></p>
+<p><font face="Courier New">switch表达式可以是任意类型，如果为空，则表示true。结果类似一个if-else链：</font></p>
+<p><font face="Courier New">a, b := x[i], y[j]<br>
+                        switch {<br>
+                            case a &lt; b: return -1<br>
+                            case a == b: return 0<br>
+                            case a &gt; b: return 1<br>
+                        }</font></p>
+<p><font face="Courier New">或</font></p>
+<p><font face="Courier New">switch a, b := x[i], y[j]; { … }</font></p>
+<h3><font face="Courier New">Break，continue等</font></h3>
+<p><font face="Courier New">break和continue语句的工作方式与C中的类似。</font></p>
+<p><font face="Courier New">它们可以指定一个label并影响外层结构：</font></p>
+<p><font face="Courier New">Loop: for i := 0; i &lt; 10; i++ {<br>
+                            switch f(i) {<br>
+                                case 0, 1, 2: break Loop<br>
+                            }<br>
+                            g(i)<br>
+                        }</font></p>
+<p><font face="Courier New">是的，那是一个goto。</font></p>
+<h3><font face="Courier New">函数</font></h3>
+<p><font face="Courier New">函数以func关键字开头。</font></p>
+<p><font face="Courier New">如果有返回类型，返回类型放在参数的后面。return的含义和你期望的一致。</font></p>
+<p><font face="Courier New">func square(f float64) float64 { return f*f }</font></p>
+<p><font face="Courier New">函数支持返回多个值。这样，返回类型就是一个括号包围的列表。</font></p>
+<p><font face="Courier New">func MySqrt(f float64) (float64, bool) {<br>
+                            if f &gt;= 0 { return math.Sqrt(f), true }<br>
+                            return 0, false<br>
+                        }</font></p>
+<h3><font face="Courier New">空标识符</font></h3>
+<p><font face="Courier New">如果你只关心MySqrt函数返回的第一个值？你仍然需要将第二个值放在一个地方。</font></p>
+<p><font face="Courier New">解决方法：使用空标识符_(下划线)。它是预声明的，可以被赋予任何无用的值。</font></p>
+<p><font face="Courier New">// Don&#39;t care about boolean from MySqrt.<br>
+                        val, _ = MySqrt(foo())</font></p>
+<p><font face="Courier New">在空标识符其他的适用场合中，我们仍然会展示它。</font></p>
+<h3><font face="Courier New">带结果变量(result variable)的函数</font></h3>
+<p><font face="Courier New">如果你给结果参数命名了，你可以将它当作实际变量使用。</font></p>
+<p><font face="Courier New">func MySqrt(f float64) (v float64, ok bool) {<br>
+                            if f &gt;= 0 { v,ok = math.Sqrt(f), true }<br>
+                            else { v,ok = 0,false }<br>
+                            return v,ok<br>
+                        }</font></p>
+<p><font face="Courier New">结果变量被初始化为&quot;0&quot;(0，0.0,false等。根据其类型；稍后有更多有关内容)</font></p>
+<p><font face="Courier New">func MySqrt(f float64) (v float64, ok bool) {<br>
+                            if f &gt;= 0 { v,ok = math.Sqrt(f), true }<br>
+                            return v,ok<br>
+                        }</font></p>
+<h3><font face="Courier New">空返回</font></h3>
+<p><font face="Courier New">最后，一个没有返回表达式的return将返回结果变量的当前值。下面是另外两个MySqrt的版本：</font></p>
+<p><font face="Courier New">func MySqrt(f float64) (v float64, ok bool) {<br>
+                            if f &gt;= 0 { v,ok = math.Sqrt(f), true }<br>
+                            return // must be explicit<br>
+                        }<br>
+                        func MySqrt(f float64) (v float64, ok bool) {<br>
+                            if f &lt; 0 { return } // error case<br>
+                            return math.Sqrt(f),true<br>
+                        }</font></p>
+<h3><font face="Courier New">0是什么</font></h3>
+<p><font face="Courier New">Go中的内存都是被初始化了的。所有变量在执行之前的声明时被初始化。如果没有显式的初始化表达式，我们将使用对应类型的&quot;0值&quot;。下面的循环：</font></p>
+<p><font face="Courier New">for i := 0; i &lt; 5; i++ {<br>
+                            var v int<br>
+                            fmt.Printf(&quot;%d &quot;, v)<br>
+                            v = 5<br>
+                        }<br>
+                        将打印0 0 0 0 0。</font></p>
+<p><font face="Courier New">0值取决于类型：数值是0；布尔是false；空字符串是&quot;&quot;；指针，map、切片、channel是nil；结构体是0等。</font></p>
+<h3><font face="Courier New">Defer</font></h3>
+<p><font face="Courier New">defer语句负责在其所在的函数返回时执行一个函数(或方法)。其参数在到达defer语句那个时刻被求值；其函数在返回时被执行。</font></p>
+<p><font face="Courier New">func data(fileName string) string {<br>
+                            f := os.Open(fileName)<br>
+                            defer f.Close()<br>
+                            contents := io.ReadAll(f)<br>
+                            return contents<br>
+                        }</font></p>
+<p><font face="Courier New">在关闭文件描述符、解互斥锁等场合十分有用。</font></p>
+<h3><font face="Courier New">每Defer执行一个函数</font></h3>
+<p><font face="Courier New">Go按按后入先出(LIFO)次序执行一组defer函数。</font></p>
+<p><font face="Courier New">func f() {<br>
+                            for i := 0; i &lt; 5; i++ {<br>
+                                defer fmt.Printf(&quot;%d &quot;, i)<br>
+                            }<br>
+                        }</font></p>
+<p><font face="Courier New">上面代码将输出4 3 2 1 0。你可以在最后关闭所有文件描述符以及解锁所有互斥锁。</font></p>
+<h3><font face="Courier New">用defer跟踪代码</font></h3>
+<p><font face="Courier New">func trace(s string) { fmt.Println(&quot;entering:&quot;, s) }<br>
+                        func untrace(s string) { fmt.Println(&quot;leaving:&quot;, s) }</font></p>
+<p><font face="Courier New">func a() {<br>
+                        2    trace(&quot;a&quot;)<br>
+                            defer untrace(&quot;a&quot;)<br>
+                            fmt.Println(&quot;in a&quot;)<br>
+                        }</font></p>
+<p><font face="Courier New">func b() {<br>
+                            trace(&quot;b&quot;)<br>
+                            defer untrace(&quot;b&quot;)<br>
+                            fmt.Println(&quot;in b&quot;)<br>
+                            a()<br>
+                        }</font></p>
+<p><font face="Courier New">func main() { b() }</font></p>
+<p><font face="Courier New">不过我们可以实现的更灵巧一些。</font></p>
+<h3><font face="Courier New">参数当即求值，defer稍后执行</font></h3>
+<p><font face="Courier New">func trace(s string) string {<br>
+                        2<br>
+                        fmt.Println(&quot;entering:&quot;, s)<br>
+                            return s<br>
+                        }<br>
+                        func un(s string) {<br>
+                            fmt.Println(&quot;leaving:&quot;, s)<br>
+                        }<br>
+                        func a() {<br>
+                            defer un(trace(&quot;a&quot;))<br>
+                            fmt.Println(&quot;in a&quot;)<br>
+                        }<br>
+                        func b() {<br>
+                            defer un(trace(&quot;b&quot;))<br>
+                            fmt.Println(&quot;in b&quot;)<br>
+                            a()<br>
+                        }<br>
+                        func main() { b() }</font></p>
+<h3><font face="Courier New">函数字面值</font></h3>
+<p><font face="Courier New">和在C中一样，函数不能在函数内部声明。但函数字面值却可以被赋值给变量。</font></p>
+<p><font face="Courier New">func f() {<br>
+                            for i := 0; i &lt; 10; i++ {<br>
+                                g := func(i int) { fmt.Printf(&quot;%d&quot;,i) }<br>
+                                g(i)<br>
+                            }<br>
+                        }</font></p>
+<h3><font face="Courier New">函数字面值是闭包(closure)</font></h3>
+<p><font face="Courier New">函数字面值实际上是闭包。</font></p>
+<p><font face="Courier New">func adder() (func(int) int) {<br>
+                            var x int<br>
+                            return func(delta int) int {<br>
+                                x += delta<br>
+                                return x<br>
+                            }<br>
+                        }</font></p>
+<p><font face="Courier New">f := adder()<br>
+                        fmt.Print(f(1))<br>
+                        fmt.Print(f(20))<br>
+                        fmt.Print(f(300))</font></p>
+<p><font face="Courier New">输出1 21 321 – f中的x累加。</font></p>
+<h2><font face="Courier New">程序构建</font></h2>
+<h3><font face="Courier New">包(package)</font></h3>
+<p><font face="Courier New">一个程序以一个包的形式构建，这个包还可以使用其他包提供的一些设施。</font></p>
+<p><font face="Courier New">一个Go程序的创建是通过链接一组包。</font></p>
+<p><font face="Courier New">一个包可以由多个源码文件组成。</font></p>
+<p><font face="Courier New">导入包中的名字可以通过packagename.Itemname访问。</font></p>
+<h3><font face="Courier New">源码文件结构</font></h3>
+<p><font face="Courier New">每个源码文件包括：</font></p>
+<p><font face="Courier New">- 一个package字句(文件归属于哪个包)；其名字将作为导入包时的默认名字。<br>
+                            package fmt<br>
+                        - 一个可选的import声明集<br>
+                            import &quot;fmt&quot;  //使用默认名字<br>
+                            import myFmt &quot;fmt&quot; //使用名字myFmt</font></p>
+<p><font face="Courier New">- 0个或多个全局或“包级别”声明。</font></p>
+<h3><font face="Courier New">单一文件包</font></h3>
+<p><font face="Courier New">package main // 这个文件是包main的一部分</font></p>
+<p><font face="Courier New">import &quot;fmt&quot; // 这个文件使用了包&quot;fmt&quot;</font></p>
+<p><font face="Courier New">const hello = &quot;Hello, 世界\n&quot;</font></p>
+<p><font face="Courier New">func main() {<br>
+                            fmt.Print(hello)<br>
+                        }</font></p>
+<h3><font face="Courier New">main和main.main</font></h3>
+<p><font face="Courier New">每个Go程序包含一个名为main的包以及其main函数，在初始化后，程序从main开始执行。类似C,C++中的main()函数。</font></p>
+<p><font face="Courier New">main.main函数没有参数，没有返回值。当main.main返回时，程序立即退出并返回成功。</font></p>
+<h3><font face="Courier New">os包</font></h3>
+<p><font face="Courier New">os包提供Exit函数以及访问文件I/O以及命令行参数的函数等。</font></p>
+<p><font face="Courier New">// A version of echo(1)<br>
+                        package main</font></p>
+<p><font face="Courier New">import (<br>
+                            &quot;fmt&quot;<br>
+                            &quot;os&quot;<br>
+                        )</font></p>
+<p><font face="Courier New">func main() {<br>
+                            if len(os.Args) &lt; 2 { // length of argument slice<br>
+                                os.Exit(1)<br>
+                            }<br>
+                            for i := 1; i &lt; len(os.Args); i++ {<br>
+                                fmt.Printf(&quot;arg %d: %s\n&quot;, i, os.Args[i])<br>
+                            }<br>
+                        } // falling off end == os.Exit(0)</font></p>
+<h3><font face="Courier New">全局作用域与包作用域</font></h3>
+<p><font face="Courier New">在一个包中，所有全局变量、函数、类型以及常量对这个包的所有代码可见。</font></p>
+<p><font face="Courier New">对于导入该包的包而言，只有以大写字母开头的名字是可见的：全局变量、函数、类型、常量以及方法和结构体中全局类型以及变量的字段。</font></p>
+<p><font face="Courier New">const hello = &quot;you smell&quot;    // 包内可见<br>
+                        const Hello = &quot;you smell nice&quot;  //全局可见<br>
+                        const _Bye = &quot;stinko!&quot;        // _不是大写字母</font></p>
+<p><font face="Courier New">这与C/C++非常不同：没有extern、static、private以及public。</font></p>
+<h3><font face="Courier New">初始化</font></h3>
+<p><font face="Courier New">有两种方法可以在main.main执行前初始化全局变量：<br>
+                        1) 带有初始化语句的全局声明<br>
+                        2) 在init函数内部，每个源文件中都可能有init函数。</font></p>
+<p><font face="Courier New">包依赖可以保证正确的执行顺序。</font></p>
+<p><font face="Courier New">初始化总是单线程的。</font></p>
+<h3><font face="Courier New">初始化例子</font></h3>
+<p><font face="Courier New">package transcendental</font></p>
+<p><font face="Courier New">import &quot;math&quot;</font></p>
+<p><font face="Courier New">var Pi float64</font></p>
+<p><font face="Courier New">func init() {<br>
+                            Pi = 4*math.Atan(1) // init function computes Pi<br>
+                        }<br>
+                        ====<br>
+                        package main</font></p>
+<p><font face="Courier New">import (<br>
+                            &quot;fmt&quot;<br>
+                            &quot;transcendental&quot;<br>
+                        )</font></p>
+<p><font face="Courier New">var twoPi = 2*transcendental.Pi // decl computes twoPi</font></p>
+<p><font face="Courier New">func main() {<br>
+                            fmt.Printf(&quot;2*Pi = %g\n&quot;, twoPi)<br>
+                        }<br>
+                        ====<br>
+                        输出: 2*Pi = 6.283185307179586</font></p>
+<h3><font face="Courier New">包与程序构建</font></h3>
+<p><font face="Courier New">要构建一个程序，包以及其中的文件必须按正确的次序进行编译。包依赖关系决定了按何种次序构建包。</font></p>
+<p><font face="Courier New">在一个包内部，源文件必须一起被编译。包作为一个单元被编译，按惯例，每个目录包含一个包，忽略测试，</font></p>
+<p><font face="Courier New">cd mypackage<br>
+                        6g *.go</font></p>
+<p><font face="Courier New">通常，我们使用make; Go语言专用工具即将发布（译注：Go 1中可直接使用go build、go install等高级命令，可不再直接用6g、6l等命令了。）</font></p>
+<h3><font face="Courier New">构建fmt包</font></h3>
+<p><font face="Courier New">% pwd<br>
+                        /Users/r/go/src/pkg/fmt<br>
+                        % ls<br>
+                        Makefile fmt_test.go format.go print.go # …<br>
+                        % make # hand-written but trivial<br>
+                        % ls<br>
+                        Makefile _go_.6 _obj fmt_test.go format.go print.go # …<br>
+                        % make clean; make<br>
+                        …</font></p>
+<p><font face="Courier New">目标文件被放在_obj子目录中。</font></p>
+<p><font face="Courier New">编写Makefiles时通常使用Make.pkg提供的帮助。看源码。</font></p>
+<h3><font face="Courier New">测试</font></h3>
+<p><font face="Courier New">要测试一个包，可在这个包内编写一组Go源文件；给这些文件命名为*_test.go。</font></p>
+<p><font face="Courier New">在这些文件内，名字以Test[^a-z]开头的</font><font face="Courier New">全局函数会被</font><font face="Courier New">测试工具gotest自动执行，这些函数应使用下面函数签名：</font></p>
+<p><font face="Courier New">func TestXxx(t *testing.T)</font></p>
+<p><font face="Courier New">testing包提供日志、benchmarking、错误报告等支持。</font></p>
+<h3><font face="Courier New">一个测试例子</font></h3>
+<p><font face="Courier New">摘自fmt_test.go中的一段有趣代码：</font></p>
+<p><font face="Courier New">import (<br>
+                            &quot;testing&quot;<br>
+                        )</font></p>
+<p><font face="Courier New">func TestFlagParser(t *testing.T) {<br>
+                            var flagprinter flagPrinter<br>
+                            for i := 0; i &lt; len(flagtests); i++ {<br>
+                                tt := flagtests[i]<br>
+                                s := Sprintf(tt.in, &amp;flagprinter)<br>
+                                if s != tt.out {<br>
+                                    // method call coming up – obvious syntax.<br>
+                                    t.Errorf(&quot;Sprintf(%q, &amp;flagprinter) =&gt; %q,&quot;+&quot; want %q&quot;, tt.in, s, tt.out)<br>
+                                }<br>
+                            }<br>
+                        }</font></p>
+<h3><font face="Courier New">gotest（译注：在go 1中gotest工具用go test命令替代）</font></h3>
+<p><font face="Courier New">% ls<br>
+                        Makefile fmt.a fmt_test.go format.go print.go # …<br>
+                        % gotest # by default, does all *_test.go<br>
+                        PASS<br>
+                        wally=% gotest -v fmt_test.go<br>
+                        === RUN fmt.TestFlagParser<br>
+                        — PASS: fmt.TestFlagParser (0.00 seconds)<br>
+                        === RUN fmt.TestArrayPrinter<br>
+                        — PASS: fmt.TestArrayPrinter (0.00 seconds)<br>
+                        === RUN fmt.TestFmtInterface<br>
+                        — PASS: fmt.TestFmtInterface (0.00 seconds)<br>
+                        === RUN fmt.TestStructPrinter<br>
+                        — PASS: fmt.TestStructPrinter (0.00 seconds)<br>
+                        === RUN fmt.TestSprintf<br>
+                        — PASS: fmt.TestSprintf (0.00 seconds) # plus lots more<br>
+                        PASS<br>
+                        %</font></p>
+<h3><font face="Courier New">一个benchmark的测试例子</font></h3>
+<p><font face="Courier New">Benchmark的函数签名如下：</font></p>
+<p><font face="Courier New">func BenchmarkXxxx(b *testing.B)</font></p>
+<p><font face="Courier New">并被循环执行b.N次；其余的由testing包完成。</font></p>
+<p><font face="Courier New">下面是一个来自fmt_test.go中的benchmark例子：</font></p>
+<p><font face="Courier New">package fmt // package is fmt, not main<br>
+                        import (<br>
+                            &quot;testing&quot;<br>
+                        )<br>
+                        func BenchmarkSprintfInt(b *testing.B) {<br>
+                            for i := 0; i &lt; b.N; i++ {<br>
+                                Sprintf(&quot;%d&quot;, 5)<br>
+                            }<br>
+                        }</font></p>
+<h3><font face="Courier New">Benchmarking: gotest</font></h3>
+<p><font face="Courier New">% gotest -bench=&quot;.&quot; # regular expression identifies which<br>
+                        fmt_test.BenchmarkSprintfEmpty2 50000002<br>
+                        310 ns/op<br>
+                        fmt_test.BenchmarkSprintfString2 20000002<br>
+                        774 ns/op<br>
+                        fmt_test.BenchmarkSprintfInt2<br>
+                        50000002<br>
+                        663 ns/op<br>
+                        fmt_test.BenchmarkSprintfIntInt2 20000002<br>
+                        969 ns/op<br>
+                        …<br>
+                        %</font></p>
+<h3><font face="Courier New">库</font></h3>
+<p><font face="Courier New">库就是包。</font></p>
+<p><font face="Courier New">目前的库规模是适中的，但还在增长。</font></p>
+<p><font face="Courier New">一些例子：</font></p>
+<p><font face="Courier New">包                目的             例子<br>
+                        fmt            格式化I/O           Printf、Scanf<br>
+                        os             OS接口              Open, Read, Write<br>
+                        strconv        numbers&lt;-&gt; strings  Atoi, Atof, Itoa<br>
+                        io             通用I/O             Copy, Pipe<br>
+                        flag           flags: –help等     Bool, String<br>
+                        log            事件日志             Logger, Printf<br>
+                        regexp         正则表达式           Compile, Match<br>
+                        template       html等              Parse, Execute<br>
+                        bytes          字节数组             Compare, Buffer</font></p>
+<h3><font face="Courier New">更多关于fmt</font></h3>
+<p>fmt包包含一些熟悉的名字：</p>
+<p><font face="Courier New">Printf – 打印到标准输出<br>
+                        Sprintf – 返回一个字符串<br>
+                        Fprintf – 写到os.Stderr等</font></p>
+<p>还有</p>
+<p><font face="Courier New">Print, Sprint, Fprint – 无格式no format<br>
+                        Println, Sprintln, Fprintln – 无格式，但中间加入空格，结尾加入\n</font></p>
+<p><font face="Courier New">fmt.Printf(&quot;%d %d %g\n&quot;, 1, 2, 3.5)<br>
+                        fmt.Print(1, &quot; &quot;, 2, &quot; &quot;, 3.5, &quot;\n&quot;)<br>
+                        fmt.Println(1, 2, 3.5)</font></p>
+<p><font face="Courier New">每个都输出相同的结果：&quot;1 2 3.5\n&quot;</font></p>
+<h3><font face="Courier New">库文档</font></h3>
+<p><font face="Courier New">源码中包含注释。</font></p>
+<p><font face="Courier New">命令行或web工具可以将注释提取出来。</font></p>
+<p><font face="Courier New">链接：http://golang.org/pkg/</font></p>
+<p><font face="Courier New">命令：<br>
+                            % godoc fmt<br>
+                            % godoc fmt Printf</font></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p>
+
+
+<p><img src="http://www1.feedsky.com/t1/685950360/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/08/23/the-go-programming-language-tutorial-part1/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part1" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

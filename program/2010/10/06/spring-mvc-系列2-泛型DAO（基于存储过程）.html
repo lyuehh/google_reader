@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>spring mvc 系列2 泛型DAO（基于存储过程）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>spring mvc 系列2 泛型DAO（基于存储过程）</h2>
+<p class="meta">06 Oct 2010</p>
+
+<div class="post">
+<h2>spring mvc 系列2 泛型DAO（基于存储过程）</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-06 14:05:46</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/777732">http://www.javaeye.com/topic/777732</a></h3>
+
+<p>spring mvc 系列1 中：
+<br>感谢 ricoyu 提示
+<br><div>引用</div><div>
+<br>1 楼 ricoyu 2010-10-02   引用
+<br>DAO层不要用◎Service，用◎Repository（没拼错的话）
+<br></div>
+<br>基于事务管理，由于小弟一时大意忘了加上去，感谢  icanfly  提醒。
+<br>此版本已经修正以上BUG。
+<br>
+<br>泛型需要JDK1.5以上，因此此版本需要运行在JDK1.5以上。
+<br>先看代码：
+<br><pre name="code">
+@Repository
+public class BaseDao {
+    // 存储过程前缀
+    protected static String PROCEDURE_NAME_PREFIX = &quot;st_&quot;;</p>
+
+<pre><code>/**
+ * 存储过程对应的表名，为空时，从操作对象类名中获取
+ * 存储过程命名方式：前缀_表名_后缀
+ * 操作对象如：ProductModel, ProductSellTableModel
+ * 对应获取表名为：productTable, ProductSellTable
+ */
+protected static String TABLE_NAME = null; 
+
+// 存储过程后缀
+protected static String PROCEDURE_NAME_ADD_SUFFIX = &amp;quot;Add&amp;quot;;
+protected static String PROCEDURE_NAME_UPDATE_SUFFIX = &amp;quot;Update&amp;quot;;
+protected static String PROCEDURE_NAME_DELETE_SUFFIX = &amp;quot;Delete&amp;quot;;
+protected static String PROCEDURE_NAME_QUERY_BY_PRIMARY_KEY_SUFFIX = &amp;quot;QueryByPrimaryKey&amp;quot;;
+
+public BaseDao(){}
+
+@Autowired
+private SimpleJdbcTemplate simpleJdbcTemplate ;
+
+//@Autowired是Spring提供的一种注入Bean的方法
+@Autowired
+private JdbcTemplate jdbcTemplate ;
+
+public SimpleJdbcTemplate getSimpleJdbcTemplate() {
+    return simpleJdbcTemplate;
+}
+
+public void setSimpleJdbcTemplate(SimpleJdbcTemplate simpleJdbcTemplate) {
+    this.simpleJdbcTemplate = simpleJdbcTemplate;
+}
+
+public SimpleJdbcCall createSimpleJdbcCall() {
+    return new SimpleJdbcCall(this.jdbcTemplate);
+}
+
+public JdbcTemplate getJdbcTemplate() {
+    return jdbcTemplate;
+}
+
+public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+}
+
+/**
+ * 
+ * @功能模块: executeProcedure
+ * @方法说明: 执行存储过程 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要操作的对象信息
+ * @param returnClass 返回的类型，如果为null 返回类型与查询类型一致
+ * @param procedureName 存储过程名称
+ * @return Map&amp;lt;&amp;quot;ReturningResultSet&amp;quot;, Object&amp;gt;
+ * @throws
+ */
+@SuppressWarnings(&amp;quot;unchecked&amp;quot;)
+protected &amp;lt;T&amp;gt; Map executeProcedure(Class returnClass, T t, String procedureName){
+    SimpleJdbcCall sjc = this.createSimpleJdbcCall();
+    sjc.getJdbcTemplate().setResultsMapCaseInsensitive(true);
+    sjc.withProcedureName(procedureName).returningResultSet(&amp;quot;ReturningResultSet&amp;quot;, BeanPropertyRowMapper.newInstance(returnClass==null?t.getClass():returnClass));
+
+    SqlParameterSource param = new BeanPropertySqlParameterSource(t);
+    return sjc.execute(param);
+}
+
+/**
+ * 
+ * @功能模块: querySelf
+ * @方法说明: 执行存储过程 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要操作的对象信息
+ * @param procedureName 存储过程名称
+ * @return T 执行存储过程后返回的对象,与传入对象类型一致
+ * @throws
+ */
+@SuppressWarnings(&amp;quot;unchecked&amp;quot;)
+protected &amp;lt;T&amp;gt; T querySelf(T t, String procedureName){
+    Map returnResultSet = executeProcedure(null, t, procedureName);
+    List list = (List)returnResultSet.get(&amp;quot;ReturningResultSet&amp;quot;);
+    if(list.size()&amp;gt;0){
+        return (T)list.get(0);
+    }else{
+        return null;
+    }
+}
+
+
+
+/**
+ * 
+ * @功能模块: add
+ * @方法说明: 添加一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要添加的对象信息
+ * @param procedureName 存储过程名称
+ * @return T 泛类型（返回添加后的对象）
+ * @throws
+ */
+protected &amp;lt;T&amp;gt; T add(T t, String procedureName){
+    return this.querySelf(t, procedureName);    
+}
+
+/**
+ * 
+ * @功能模块: add
+ * @方法说明: 添加一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要添加的对象信息
+ * @return T 泛类型（返回添加后的对象）
+ * @throws
+ */
+public &amp;lt;T&amp;gt; T add(T t){
+    return add(t, getProcedureName(t.getClass(), PROCEDURE_NAME_ADD_SUFFIX));           
+}
+
+/**
+ * 
+ * @功能模块: update
+ * @方法说明: 按主键修改一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要修改的对象信息
+ * @param procedureName 存储过程名称
+ * @return T 泛类型（返回修改后的对象信息）
+ * @throws
+ */
+protected &amp;lt;T&amp;gt; T update(T t, String procedureName){
+    return this.querySelf(t, procedureName);            
+}
+
+/**
+ * 
+ * @功能模块: update
+ * @方法说明: 按主键修改一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回此对象操作后的信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要修改的对象信息
+ * @return T 泛类型（返回修改后的对象信息）
+ * @throws
+ */
+public &amp;lt;T&amp;gt; T update(T t){
+    return update(t, getProcedureName(t.getClass(), PROCEDURE_NAME_UPDATE_SUFFIX));         
+}
+
+/**
+ * 
+ * @功能模块: delete
+ * @方法说明: 按主键删除一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回执行结果信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛型
+ * @param t 要删除的对象
+ * @param procedureName 存储过程名称
+ * @return Result 执行结果信息类 
+ * @throws
+ */
+protected &amp;lt;T&amp;gt; Result delete(T t, String procedureName){
+    Map returnResultSet = executeProcedure(Result.class, t, procedureName);
+    List list = (List)returnResultSet.get(&amp;quot;ReturningResultSet&amp;quot;);
+    if(list!=null &amp;amp;&amp;amp; list.size()&amp;gt;0){
+        return (Result)list.get(0);
+    }else{
+        return null;
+    }
+}
+
+/**
+ * 
+ * @功能模块: delete
+ * @方法说明: 按主键删除一个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回执行结果信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛型
+ * @param t 要删除的对象
+ * @return Result 执行结果信息类 
+ * @throws
+ */
+public &amp;lt;T&amp;gt; Result delete(T t){
+    return delete(t, getProcedureName(t.getClass(), PROCEDURE_NAME_DELETE_SUFFIX));
+}
+
+/**
+ * 
+ * @功能模块: delete
+ * @方法说明: 按主键字符串删除多个对象 将对象t转换成存储过程参数，并执行存储过程，执行存储过程后返回执行结果信息
+ * @version: 1.0
+ * @param ids 要删除的对象ID，多个ID以逗号分割，如：1,2,3
+ * @return Result 执行结果信息类 
+ * @throws
+ */
+protected Result delete(String ids, String procedureName){
+    SimpleJdbcCall sjc = this.createSimpleJdbcCall();
+    sjc.getJdbcTemplate().setResultsMapCaseInsensitive(true);
+    sjc.withProcedureName(procedureName).returningResultSet(&amp;quot;ReturningResultSet&amp;quot;, BeanPropertyRowMapper.newInstance(Result.class));
+
+    List list = (List)sjc.execute(ids).get(&amp;quot;ReturningResultSet&amp;quot;);
+    if(list!=null &amp;amp;&amp;amp; list.size()&amp;gt;0){
+        return (Result)list.get(0);
+    }else{
+        return null;
+    }
+}
+
+/**
+ * 
+ * @功能模块: query
+ * @方法说明: 按条件，排序，分页信息查询内容
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛型，查询的对象类型
+ * @param t 对象实例
+ * @param condition 条件
+ * @param order 排序
+ * @param pagination 分页信息
+ * @param procedureName 存储过程名称
+ * @return Map&amp;lt;&amp;quot;Pagination&amp;quot;, PaginationModel&amp;gt;
+ *         Map&amp;lt;&amp;quot;List&amp;quot;, List&amp;lt;T&amp;gt;&amp;gt;
+ * @throws
+ */
+@SuppressWarnings(&amp;quot;unchecked&amp;quot;)
+protected Map query(Class clazz, Map&amp;lt;String, Object&amp;gt; condition, String order, PaginationModel pagination, String procedureName){
+    SimpleJdbcCall sjc = this.createSimpleJdbcCall();
+    sjc.getJdbcTemplate().setResultsMapCaseInsensitive(true);
+    sjc.withProcedureName(procedureName).
+        returningResultSet(&amp;quot;Pagination&amp;quot;, BeanPropertyRowMapper.newInstance(PaginationModel.class)).
+        returningResultSet(&amp;quot;List&amp;quot;, BeanPropertyRowMapper.newInstance(clazz));
+
+    Map&amp;lt;String, Object&amp;gt; param = new HashMap&amp;lt;String, Object&amp;gt;();
+    param.putAll(condition==null?new HashMap():condition);
+    param.put(&amp;quot;orderby&amp;quot;, order==null?&amp;quot;&amp;quot;:order);
+    param.put(&amp;quot;pageSize&amp;quot;, pagination.getPageSize());
+    param.put(&amp;quot;currPage&amp;quot;, pagination.getCurrPage());
+    Map returnResultSet = sjc.execute(param);
+
+    Map&amp;lt;String, Object&amp;gt; newResult = new HashMap&amp;lt;String, Object&amp;gt;();
+    newResult.put(&amp;quot;List&amp;quot;, returnResultSet.get(&amp;quot;List&amp;quot;));
+
+    List list = (List)returnResultSet.get(&amp;quot;Pagination&amp;quot;);
+    if(list.size()&amp;gt;0){
+        newResult.put(&amp;quot;Pagination&amp;quot;, list.get(0));
+    }
+
+    return newResult;
+}
+
+/**
+ * 
+ * @功能模块: query
+ * @方法说明: 按条件查询对象列表
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛型
+ * @param t 要查询的对象
+ * @param condition 条件
+ * @param procedureName 存储过程名称
+ * @return List 对象列表
+ * @throws
+ */
+@SuppressWarnings(&amp;quot;unchecked&amp;quot;) 
+protected List query(Class clazz, Map&amp;lt;String, Object&amp;gt; condition, String procedureName){
+    SimpleJdbcCall sjc = this.createSimpleJdbcCall();
+    sjc.getJdbcTemplate().setResultsMapCaseInsensitive(true);
+    sjc.withProcedureName(procedureName).
+        returningResultSet(&amp;quot;List&amp;quot;, BeanPropertyRowMapper.newInstance(clazz));
+    Map resultSet = sjc.execute(condition);
+    return (List)resultSet.get(&amp;quot;List&amp;quot;);
+}
+
+
+/**
+ * 
+ * @功能模块: query
+ * @方法说明: 按对象主键进行查询 将对象t转换成存储过程参数，并执行存储过程进行查询，返回查询后的对象信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要查询的对象信息
+ * @param procedureName 存储过程名称
+ * @return T 执行查询存储过程后返回的对象,与传入对象类型一致
+ * @throws
+ */
+protected &amp;lt;T&amp;gt; T query(T t, String procedureName){
+    return this.querySelf(t, procedureName);
+}
+
+/**
+ * 
+ * @功能模块: query
+ * @方法说明: 按对象主键进行查询 将对象t转换成存储过程参数，并执行存储过程进行查询，返回查询后的对象信息
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛类型
+ * @param t 要查询的对象信息
+ * @return T 执行查询存储过程后返回的对象,与传入对象类型一致
+ * @throws
+ */
+public &amp;lt;T&amp;gt; T query(T t){
+    return query(t, getProcedureName(t.getClass(), PROCEDURE_NAME_QUERY_BY_PRIMARY_KEY_SUFFIX));
+}
+
+/**
+ * 
+ * @功能模块: getProcedureName
+ * @方法说明: 根据查询的对象类，获取此操作此对象存储过程的名称
+ * @version: 1.0
+ * @param clazz 查询的对象类
+ * @param suffix 存储过程后缀
+ * @return String 存储过程名称
+ * @throws
+ */
+private String getProcedureName(Class clazz, String suffix){
+    String tableName = TABLE_NAME==null?getTableName(clazz.getSimpleName()):TABLE_NAME;
+    return PROCEDURE_NAME_PREFIX + tableName + (suffix==null?&amp;quot;&amp;quot;:(&amp;quot;&amp;quot;.equals(suffix)?&amp;quot;&amp;quot;:&amp;quot;_&amp;quot;+suffix));
+}
+
+/**
+ * 
+ * @功能模块: getTableName
+ * @方法说明: 根据查询的对象类名，获取此对象类对应的表
+ * @version: 1.0
+ * @param className
+ * @return String
+ * @throws
+ */
+private String getTableName(String className){
+    if(className.endsWith(&amp;quot;Model&amp;quot;)){          
+        String name = className.substring(0, className.length()-&amp;quot;Model&amp;quot;.length());
+        return name.endsWith(&amp;quot;Table&amp;quot;)?name:name+&amp;quot;Table&amp;quot;;
+    }else{
+        return className.endsWith(&amp;quot;Table&amp;quot;)?className:className+&amp;quot;Table&amp;quot;;
+    }
+}
+</code></pre>
+
+<p>}
+</pre>
+<br>
+<br>此BaseDao封装了 添加、删除、修改、查询等基本方法。
+<br>其它子DAO继承此BaseDao即可，如有不同覆盖基类方法即可:
+<br><pre name="code">
+@Transactional
+@Repository
+public class TestDao extends BaseDao {</p>
+
+<pre><code>/**
+ * 
+ * @功能模块: selectTestAll
+ * @方法说明: 按分页信息查询内容
+ * @version: 1.0
+ * @param &amp;lt;T&amp;gt; 泛型，查询的对象类型
+ * @param t 对象实例
+ * @param pagination 分页信息
+ * @param procedureName 存储过程名称
+ * @return Map&amp;lt;&amp;quot;Pagination&amp;quot;, PaginationModel&amp;gt;
+ *         Map&amp;lt;&amp;quot;List&amp;quot;, List&amp;lt;T&amp;gt;&amp;gt;
+ * @throws
+ */
+public Map selectTestAll(PaginationModel paginationModel) {
+    return super.query(TestModel.class, null, null, paginationModel, &amp;quot;st_TestTable_QueryAll&amp;quot;);
+}
+
+/**
+ * 
+ * @功能模块: delete
+ * @方法说明: 按主键字符串删除多个对象 将ids转换成存储过程参数，并执行存储过程，执行存储过程后返回执行结果信息
+ * @version: 1.0
+ * @param ids 要删除的对象ID，多个ID以逗号分割，如：1,2,3
+ * @return Result 执行结果信息类 
+ * @throws
+ */
+public Result delete(String ids){
+    return super.delete(ids, &amp;quot;st_TestTable_Delete&amp;quot;);
+}
+</code></pre>
+
+<p>}
+</pre>
+<br>
+<br>
+<br>
+<br></p>
+
+<p>  <br><br>
+  <ul>
+    本文附件下载:</p>
+
+<pre><code>  &lt;li&gt;&lt;a href="http://dl.javaeye.com/topics/download/fd9724d6-cc67-3244-af53-7c52d7354c2c"&gt;TestSpringMVC.rar&lt;/a&gt; (8.6 MB)&lt;/li&gt;
+</code></pre>
+
+<p>  </ul></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://joknm.javaeye.com"&gt;joknm&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/777732" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

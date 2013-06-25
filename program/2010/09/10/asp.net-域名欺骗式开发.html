@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>asp.net 域名欺骗式开发</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>asp.net 域名欺骗式开发</h2>
+<p class="meta">10 Sep 2010</p>
+
+<div class="post">
+<h2>asp.net 域名欺骗式开发</h2>
+
+<h3>by 路过秋天</h3>
+
+<h3>at 2010-09-09 17:30:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/cyq1162/archive/2010/09/09/1822437.html">http://www.cnblogs.com/cyq1162/archive/2010/09/09/1822437.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/cyq1162/"><img src="http://pic.cnblogs.com/face/u17408.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/cyq1162/">路过秋天</a> 发表于 2010-09-09 17:30 <a href="http://www.cnblogs.com/cyq1162/archive/2010/09/09/1822437.html">原文链接</a> 阅读: 1111 评论: 20</p>
+
+
+<p>今天大水很猛，两大巨头又重现江湖，首页瞬时风生水起，在这临行出差之际，草草来篇，沉淀在潮水之下。</p>
+
+
+<p> </p>
+
+
+<p><strong style="color:red">前言：如果觉得本文对你有帮助，就热情点下推荐</strong></p>
+
+
+<p> </p>
+
+
+<p><strong>一：用VS的IDE自带的IIS开发</strong></p>
+
+
+<div>
+<div><span style="color:#000000">概说：在VS2005中，我们很多时候开发，都是采用IDE自带的IIS开发，通常有两种开发方式。</span></div></div>
+
+
+<p><span style="color:red">1：WebSite：</span></p>
+
+
+<p><span style="color:red"></span></p>
+
+
+<div>
+<div><span style="color:#000000">如果建的是早期的webSite 网站，我们运行后总是会多一层目录的地址,如图</span></div></div>
+
+
+<p> </p>
+
+
+<p><img height="176" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_1.jpg" width="368" border="0"></p>
+
+
+<p> </p>
+
+
+<p><span style="color:red">2：WebApplication:</span><span style="color:red"></span></p>
+
+
+<div>
+<div><span style="color:#000000">如果vs2005打了sp1补丁或在vs2008/vs2010中，新建的可以是webApplication，运行后是没有多出一层目录的，如图</span></div></div>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_2.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p>问题：</p>
+
+
+<div>
+<div><span style="color:#000000">如果建的是WebSite，由于多出一层目录结构，所以在开发中极为不便的，问题多多~!</span></div></div>
+
+
+<p> </p>
+
+
+<p>这里用一个小小示例说明问题：</p>
+
+
+<p>我们同样为上面的方式加上一个A链接：</p>
+
+
+<div>
+<div><span style="color:#000000">//WebSite html<br>方式：</span><span style="color:#0000ff">&lt;</span><span style="color:#800000">a </span><span style="color:#ff0000">href</span><span style="color:#0000ff">="/Default.aspx"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000">WebSite 网站</span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">a</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br><br>//WebApplication html<br>方式：</span><span style="color:#0000ff">&lt;</span><span style="color:#800000">a </span><span style="color:#ff0000">href</span><span style="color:#0000ff">="/Default.aspx"</span><span style="color:#0000ff">&gt;</span><span style="color:#000000">Application应用程序</span><span style="color:#0000ff">&lt;/</span><span style="color:#800000">a</span><span style="color:#0000ff">&gt;</span><span style="color:#000000"><br><br></span></div></div>
+
+
+<p>说明： </p>
+
+
+<div>
+<div><span style="color:#000000">按常理，我们都知道，“/”代表根目录，编写这样的html应该是没啥问题的，可是，这种情况在WebSite方式下出现错误了</span></div></div>
+
+
+<p> </p>
+
+
+<p>我们点击链接，出错如下图：</p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_3.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p>问题怎么解决?</p>
+
+
+<div>
+<div><span style="color:#000000">如果你故意要在代码中处理这种根目录的问题，那处理起来是相当的麻烦的。<br>然而WebApplication下则是正常的，所以，现在一般开发都建WebApplication项目。<br>那我们今天怎么解决WebSite这种多出来的目录问题？那就是使用系统的IIS进行开发了。<br></span></div></div>
+
+
+<p> </p>
+
+
+<p><strong>二：使用系统的IIS开发</strong></p>
+
+
+<p>要进行系统IIS开发，我们需要进行以下的设置</p>
+
+
+<p><span style="color:red">1：设置自定义服务器为自己的局域网IP地址，设为127.0.0.1也行</span></p>
+
+
+<div>
+<div><span style="color:#000000">对于WebSite的项目属性</span></div></div>
+
+
+<p> </p>
+
+
+<p><img height="287" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_4.jpg" width="774" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">WebApplication的项目属性</span></div></div>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_5.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">说明：在IIS定位到相应开发目录之后，记得点一下“创建虚拟目录”成功之后才能使用。</span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><span style="color:red">2：相应的IIS网站目录需要定位到开发目录</span></p>
+
+
+<div>
+<div><span style="color:#000000">定位目录到开发网站的目录</span></div></div>
+
+
+<p> </p>
+
+
+<p><img height="218" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_6.jpg" width="492" border="0"></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">设置成IP访问形式</span></div></div>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_7.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p>设置的成果</p>
+
+
+<div>
+<div><span style="color:#000000">设置完成后，我们再浏览原来的WebSite或WebApplication站点时，就是IP地址访问的形式了<br>这时候你再用之前的点击链接，就不会出现错误了，而且也没有多出一层目录出来了,如图<br></span></div></div>
+
+
+<p> </p>
+
+
+<p><img height="177" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_8.jpg" width="323" border="0"></p>
+
+
+<p> </p>
+
+
+<p>结段结言：</p>
+
+
+<div>
+<div><span style="color:#000000">至此，通过使用系统IIS进行开发，就可以避免了多出一层目录出来的情况，同时我们也换成了IP开发。<br>那在实现项目中，很多时候，我们开发都可能要根网站域名挂勾，而网站域名当然很多时候跟Cookie有关了<br>于是，接下来一步就是重点，使用域名欺骗进行开发。<br></span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>三：域名欺骗开发</strong></p>
+
+
+<p><span style="color:red">1：域名欺骗设置</span></p>
+
+
+<div>
+<div><span style="color:#000000">我们打开以下路径：C:\WINDOWS\system32\drivers\etc，可以看到一个host文件,如图</span></div></div>
+
+
+<p><img height="82" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_9.jpg" width="284" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">用记事本打开，输出一行：127.0.0.1 <a href="http://www.abc.com/">www.abc.com/</a><br>这里意思是：如果在浏览器输入<a href="http://www.abc.com/">www.abc.com/</a>将自定转向本机网站,设置如图<br></span></div></div>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_10.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p><span style="color:red">2：项目属性设置</span></p>
+
+
+<div>
+<div><span style="color:#000000">将项目属性的IP改成域名</span></div></div>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">WebSite网站属性,如图</span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_11.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">效果浏览：看，可以域名的方式欺骗访问了，如图</span></div></div>
+
+
+<p> </p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_12.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">WebApplication应用程序属性设置</span></div></div>
+
+
+<p> </p>
+
+
+<p>对于这个设置，如果直接点创建虚拟目录，可能问题多会一点,比如如下图：</p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_13.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">说明：这种属性是由于host指向了127.0.0.1，则IIS使用192.168.3.48方式引起的，只要改成同一种即可</span></div></div>
+
+
+<p> </p>
+
+
+<p>下面是正常创建虚拟目录：我里我添加了另一个域名指向</p>
+
+
+<div>
+<div><span style="color:#000000">192.168.3.48 <a href="http://www.cyq.com">www.cyq.com</a></span></div></div>
+
+
+<p> </p>
+
+
+<p><strong style="color:red">为了F5能够运行，而不止于右键游览方式，需要进行以下设置</strong></p>
+
+
+<p>A：IIS主机头设置</p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_16.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p>B：创建虚拟目录</p>
+
+
+<p><img height="159" alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_14.jpg" width="572" border="0"></p>
+
+
+<p> </p>
+
+
+<p><strong>接着F5运行</strong></p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/net_dev_15.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p><strong>配置这个需要注意下以下问题</strong>：</p>
+
+
+<div>
+<div><span style="color:#000000">1：host文件域名指向的IP<br>2：IIS网站属性设置使用的IP<br>3：IIS网站的主机头需要添加域名<br></span></div></div>
+
+
+<p> </p>
+
+
+<p>结语：</p>
+
+
+<div>
+<div><span style="color:#000000">通过这种域名方式开发，可以模仿和发布网站后一模一样的开发方式，也不用担心路径和域名最后的问题。<br>对于很多个子域名的，方式一样，只是host文件的指身改成如：<br>192.168.3.48 a.cyq.com<br></span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/cyq1162/aggbug/1822437.html?type=1" width="1" height="1" alt=""><p>评论: 20　<a href="http://www.cnblogs.com/cyq1162/archive/2010/09/09/1822437.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/cyq1162/archive/2010/09/09/1822437.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73780/">诺基亚N8行货本月22日首卖 预计4500元</a><span style="color:gray">(2010-09-10 08:40)</span><br>· <a href="http://news.cnblogs.com/n/73779/">苹果上海旗舰店竟成“免费公话亭”</a><span style="color:gray">(2010-09-10 08:35)</span><br>· <a href="http://news.cnblogs.com/n/73778/">软件过万，RIM 依然任重道远</a><span style="color:gray">(2010-09-10 08:34)</span><br>· <a href="http://news.cnblogs.com/n/73777/">苹果App Store解禁第三方开发工具</a><span style="color:gray">(2010-09-10 08:27)</span><br>· <a href="http://news.cnblogs.com/n/73776/">腾讯官方联合厂商推出 QQ高清摄像头 号称720P</a><span style="color:gray">(2010-09-10 08:25)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/KnightsWarrior/archive/2010/09/08/1821098.html">云计算之旅5—实战第一个云程序</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

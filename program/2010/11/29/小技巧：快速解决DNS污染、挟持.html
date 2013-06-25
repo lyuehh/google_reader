@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>小技巧：快速解决DNS污染、挟持</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>小技巧：快速解决DNS污染、挟持</h2>
+<p class="meta">29 Nov 2010</p>
+
+<div class="post">
+<h2>小技巧：快速解决DNS污染、挟持</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2010-11-28 18:52:57</h3>
+
+<h3>original <a href="http://www.kejiyun.com/archives/952">http://www.kejiyun.com/archives/952</a></h3>
+
+<p>下午在google reader上看到某童鞋关于教育网出国的文章，其中有提到解决DNS污染的小方法。自己实际测试了下，感觉效果还行 ，因此作以记录分享。</p>
+
+
+<p><span style="background-color:#9bbb59">什么是DNS污染、挟持？</span></p>
+
+
+<blockquote><p>域名服务器缓存污染（DNS cache poisoning），又名域名服务器快取侵害（DNS cache pollution），是指一些刻意制造或无意中制造出来的域名服务器<a href="http://zh.wikipedia.org/zh-cn/%E5%B0%81%E5%8C%85">分组</a>，把域名指往不正确的IP地址。一般来说，外间在互联网上一般都有可信赖的域名服务器，但为减免网络上的交通，一般的域名都会把外间的域名服务器数据暂存起来，待下次有其他机器要求解析域名时，可以立即提供服务。一但有关网域的局域域名服务器的缓存受到污染，就会把网域内的电脑导引往错误的服务器或服务器的网址。</p>
+<p>域名服务器缓存污染可能是通过域名服务器软件上的设计错误而产生，但亦可能由别有用心者通过研究开放架构的域名服务器系统来利用当中的漏洞。【来源<a href="http://zh.wikipedia.org/zh-cn/%E5%9F%9F%E5%90%8D%E6%9C%8D%E5%8B%99%E5%99%A8%E7%B7%A9%E5%AD%98%E6%B1%A1%E6%9F%93">维基百科</a>】</p></blockquote>
+
+
+<p><span></span></p>
+
+
+<p>再简单的解释就是：通过某些手段取得某一服务提供商的DNS解析控制权，进而修改相应的域名记录值，使用该服务提供商DNS的用户在访问该域名时，并不会通过轮循的机制查询到域名真实的IP，而是会访问服务提供商DNS里面的记录值。</p>
+
+
+<p><span style="background-color:#9bbb59">如何DNS污染、挟持？</span></p>
+
+
+<p>1、修改hosts：通过未污染的DNS服务器查询到正确的目标服务器IP，然后通过修改本地hosts来对抗，hosts文件位于C:\WINDOWS\system32\drivers\etc目录下，通过大家所说的IPV6穿墙就是通过修改hosts实现的。</p>
+
+
+<p>2、利用本地DNS代理：这就是文章前面所提到解决DNS污染的小方法。<strong>pydnsproxy</strong>是用python编写的小程序，通过了简单的方法实现了对抗DNS缓存污染。具体实现方法好像是通过openvpn连接远程DNS解析服务器。具体使用方法：</p>
+
+
+<ul>
+<li>下载pydnsproxy，安装在你喜欢的位置。（注：Windows Vista/7 的用户请使用管理员模式安装），通过<a href="http://pydnsproxy.googlecode.com/files/DNSProxy-0.0.4-win32.exe">迅雷下载</a></li>
+<li>将宽带连接（或者其他你喜爱的名字的连接）的dns服务器设置为127.0.0.1<a href="http://kejiyun.com/wp-content/uploads/2010/11/32.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="3" src="http://kejiyun.com/wp-content/uploads/2010/11/3_thumb2.png" border="0" alt="3" width="565" height="279"></a></li>
+<li>一切OK，Enjoy it!</li>
+</ul>
+
+
+<p>现在测试一下结果，进入CMD命令。输入ipconfig /flushdns来刷新DNS缓存；接下来输入nslookup facebook.com 来查询facebook.com所对应的IP。下图我们可以看见结果：</p>
+
+
+<p><a href="http://kejiyun.com/wp-content/uploads/2010/11/23.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="2" src="http://kejiyun.com/wp-content/uploads/2010/11/2_thumb3.png" border="0" alt="2" width="361" height="260"></a></p>
+
+
+<p>打开你的浏览器输入<a href="http://69.63.181.12/">http://69.63.181.12/</a>，你看到了什么？</p>
+
+
+<p><a href="http://kejiyun.com/wp-content/uploads/2010/11/41.png"><img style="background-image:none;padding-left:0px;padding-right:0px;display:inline;padding-top:0px;border:0px" title="4" src="http://kejiyun.com/wp-content/uploads/2010/11/4_thumb1.png" border="0" alt="4" width="443" height="174"></a></p>
+
+
+<p>此程序会一直在电脑中运行，不会占用太多的电脑资源，如果你不需要的话，那么进行控制面版——管理工具——服务——停用DNSproxy即可。</p>
+
+
+<p>事实上关于<a href="http://code.google.com/p/pydnsproxy/">pydnsproxy</a>还有许多东西要解决，这是此项目的主页地址：<a href="http://code.google.com/p/pydnsproxy/">http://code.google.com/p/pydnsproxy/</a> 关于解决DNS污染、挟持还有一些其它方法，我这里暂时还没写完，随后可能还会进行更新，解释。</p>
+
+
+<p><span style="background-color:#9bbb59">解决DNS污染、挟持有什么用？</span></p>
+
+
+<p><span style="background-color:#ffffff">明确的说</span>，这只是对抗GFW的一部分并不能完全对抗长城。解决DNS污染、挟持的方法作用就是得到真实的域名解析IP。例如前几周饭否回归地前期，也就是fanfou.com可以打开的时候，国内好多人都是通过修改hosts访问，原因就是DNS服务器刷新缓存需要2-24小时，而中国没有根DNS服务器，相对较慢。如果采用国外的DNS代理，则可以更快得到真实IP。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/519605150/jrcjbk/feedsky/s.gif?r=http://www.kejiyun.com/archives/952" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

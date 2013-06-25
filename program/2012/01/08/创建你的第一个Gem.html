@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>创建你的第一个Gem</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>创建你的第一个Gem</h2>
+<p class="meta">08 Jan 2012</p>
+
+<div class="post">
+<h2>创建你的第一个Gem</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-01-08 12:36:27</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/heikezhi/~8608072/592583108/6713895/1/item.html">http://item.feedsky.com/~feedsky/heikezhi/~8608072/592583108/6713895/1/item.html</a></h3>
+
+<p>原文作者：John McAliley，<a href="http://rubysource.com/creating-your-first-gem/">原文地址</a>，翻译：Pilipala</p>
+
+
+<p>你在Ruby世界看到到处都是Gem。他们几乎是所有的Ruby应用程序的核心。我承认当我试着建立第一个Gem的时候，我有点战战兢兢。但我很快就发现了，这玩意简单得要死。在这个博客系列中，我将涵盖从头开始创建一个Gem的基础，然后转移到更高级的主题，包括Gem生成工具和Rails引擎。首先，对于你们这些Ruby有新手，第一个问题是：什么是Gem？简而言之，它是打包的Ruby代码。在最低限度，Gem包括一个Ruby文件和一个gemspec。gemspec（Gem规范）描述Gem信息，RubyGems包管理器需要这些信息安装Gem。</p>
+
+
+<p>RubyGems包管理器可以下载，并安装Gem到你的系统，并允许你在其他Ruby程序中使用这些Gem。Ruby 1.9默认安装RubyGems。如果你使用的是Ruby 1.9之前的版本，你可以在<a href="http://rubygems.org/pages/download">这里</a>下载RubyGems。在Ruby 1.9之前版本的应用程序中使用RubyGems，你需要在你的应用程序，加入这一行 ：</p>
+
+
+<pre>require 'rubygems'</pre>
+
+
+<p>Ruby 1.9中不需要这么做，因为RubyGems已经被包含在Ruby 1.9中。</p>
+
+
+<p><strong>Gem规范(Gem Specification)</strong></p>
+
+
+<p>正如我在前面提到，Gem的规范描述了Gem。让我们看看一个基本的gemspec文件：</p>
+
+
+<pre name="code">
+Gem::Specification.new do |s|
+  s.name = %q{my_gem}
+  s.version = "0.0.1"
+  s.date = %q{2011-09-29}
+  s.summary = %q{my_gem is an awesome gem}
+  s.files = [
+    "Gemfile",
+    "Rakefile",
+    "VERSION",
+    "lib/my_gem.rb"
+  ]
+  s.require_paths = ["lib"]
+end</pre>
+
+
+<p>gemspec是一个相当简单的文件，描述你的Gem的各个方面。在上面的例子gemspec中的文件中，我只列出必需的属性。<br>
+前4个属性是不言自明。“文件”属性中列出包括在Gem中的所有文件。<br>
+“require_paths”属性指定的目录，其中包含Ruby文件应该被这个Gem所加载。gemspec所用到的完整属性列表，请参考<a href="http://docs.rubygems.org/read/chapter/20">这里</a>。</p>
+
+
+<p>这是一些简单的基础知识，现在让我们切入正题，寻找更有趣的东西。</p>
+
+
+<p><strong>从头开始创建一个Gem</strong></p>
+
+
+<p>1、建立Gem的基本文件结构：</p>
+
+
+<p>输入shell指令,并创建Gem需要的目录：</p>
+
+
+<pre>
+$ mkdir awesome_gem
+$ cd awesome_gem
+$ mkdir lib
+</pre>
+
+
+<p>就这样！你需要为你的Gem和一个lib目录来存放你的Ruby文件的根目录。</p>
+
+
+<p>2、创建的gemspec</p>
+
+
+<p>我们将使用上一节gemspec文件作为模板。创建一个名为“awesome_gem.gemspec”在你的Gem的根目录中。然后添加一些代码，以成为一个有效的gemspec：</p>
+
+
+<pre name="code">
+Gem::Specification.new do |s|
+  s.name = %q{awesome_gem}
+  s.version = "0.0.0"
+  s.date = %q{2011-09-29}
+  s.summary = %q{awesome_gem is the best}
+  s.files = [
+    "lib/awesome_gem.rb"
+  ]
+  s.require_paths = ["lib"]
+end</pre>
+
+
+<p>这个文件包含了一个gemspec标准所需的属性，并且显示我们有一个“lib”目录。在lib目录中的文件“awesome_gem.rb”将被用来保存这个Gem的Ruby代码。</p>
+
+
+<p>3、添加一些代码</p>
+
+
+<p>为了简单起见，我们将只用一个Ruby文件在这个Gem里：/lib/awesome_gem.rb，你会看到这种结构类型在大多数你遇到的Gem中。 “lib”内的根文件通常会与Gem的名称相匹配。本例中，“awesome_gem”和“/lib/awesome_gem.rb” 。</p>
+
+
+<p>继续创建这个文件，添加下�</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

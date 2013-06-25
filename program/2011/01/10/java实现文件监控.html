@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>java实现文件监控</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>java实现文件监控</h2>
+<p class="meta">10 Jan 2011</p>
+
+<div class="post">
+<h2>java实现文件监控</h2>
+
+<h3>by pengo</h3>
+
+<h3>at 2011-01-09 16:32:00</h3>
+
+<h3>original <a href="http://www.blogjava.net/pengo/archive/2011/01/09/342622.html">http://www.blogjava.net/pengo/archive/2011/01/09/342622.html</a></h3>
+
+<p>java本身不能直接监听系统的文件操作事件，不过可以先编写C/C++调用操作系统的API监听文件，再通过jni调用的方式实现。限于本人的C/C++水平有限，没有用C/C++实现该接口，而且已有开源组件JNotify实现了这个功能，本文例子使用JNotify。<br>
+</p>
+
+
+<div style="border-bottom:#cccccc 1px solid;border-left:#cccccc 1px solid;padding-bottom:4px;background-color:#eeeeee;padding-left:4px;width:98%;padding-right:5px;font-size:13px;word-break:break-all;border-top:#cccccc 1px solid;border-right:#cccccc 1px solid;padding-top:4px"><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MainFrame </span><span style="color:#0000ff">extends</span><span style="color:#000000"> JFrame {<br>
+<br>
+    </span><span style="color:#0000ff">private</span><span style="color:#000000"> JPanel contentPane;<br>
+    </span><span style="color:#0000ff">private</span><span style="color:#000000"> JTextField textField;<br>
+    </span><span style="color:#0000ff">private</span><span style="color:#000000"> JTextArea textArea;<br>
+<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> main(String[] args) {<br>
+        EventQueue.invokeLater(</span><span style="color:#0000ff">new</span><span style="color:#000000"> Runnable() {<br>
+            </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> run() {<br>
+                </span><span style="color:#0000ff">try</span><span style="color:#000000"> {<br>
+                    MainFrame frame </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> MainFrame();<br>
+                    frame.setVisible(</span><span style="color:#0000ff">true</span><span style="color:#000000">);<br>
+                } </span><span style="color:#0000ff">catch</span><span style="color:#000000"> (Exception e) {<br>
+                    e.printStackTrace();<br>
+                }<br>
+            }<br>
+        });<br>
+    }<br>
+<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> MainFrame() {<br>
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);<br>
+        setBounds(</span><span style="color:#000000">100</span><span style="color:#000000">, </span><span style="color:#000000">100</span><span style="color:#000000">, </span><span style="color:#000000">543</span><span style="color:#000000">, </span><span style="color:#000000">300</span><span style="color:#000000">);<br>
+        contentPane </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JPanel();<br>
+        contentPane.setBorder(</span><span style="color:#0000ff">new</span><span style="color:#000000"> EmptyBorder(</span><span style="color:#000000">5</span><span style="color:#000000">, </span><span style="color:#000000">5</span><span style="color:#000000">, </span><span style="color:#000000">5</span><span style="color:#000000">, </span><span style="color:#000000">5</span><span style="color:#000000">));<br>
+        setContentPane(contentPane);<br>
+        contentPane.setLayout(</span><span style="color:#0000ff">null</span><span style="color:#000000">);<br>
+<br>
+        JLabel label </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JLabel(</span><span style="color:#000000">"</span><span style="color:#000000">监控路径：</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        label.setBounds(</span><span style="color:#000000">33</span><span style="color:#000000">, </span><span style="color:#000000">20</span><span style="color:#000000">, </span><span style="color:#000000">65</span><span style="color:#000000">, </span><span style="color:#000000">15</span><span style="color:#000000">);<br>
+        contentPane.add(label);<br>
+<br>
+        textField </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JTextField(</span><span style="color:#000000">"</span><span style="color:#000000">D:/</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        textField.setBounds(</span><span style="color:#000000">90</span><span style="color:#000000">, </span><span style="color:#000000">16</span><span style="color:#000000">, </span><span style="color:#000000">219</span><span style="color:#000000">, </span><span style="color:#000000">21</span><span style="color:#000000">);<br>
+        contentPane.add(textField);<br>
+        textField.setColumns(</span><span style="color:#000000">10</span><span style="color:#000000">);<br>
+<br>
+        JButton button </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JButton(</span><span style="color:#000000">"</span><span style="color:#000000">开始监控</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        button.addActionListener(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ActionListener() {<br>
+            </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> actionPerformed(ActionEvent e) {<br>
+                </span><span style="color:#0000ff">try</span><span style="color:#000000"> {<br>
+                    addWatch();<br>
+                } </span><span style="color:#0000ff">catch</span><span style="color:#000000"> (Exception ex) {<br>
+                    ex.printStackTrace();<br>
+                }<br>
+            }<br>
+        });<br>
+        button.setBounds(</span><span style="color:#000000">319</span><span style="color:#000000">, </span><span style="color:#000000">16</span><span style="color:#000000">, </span><span style="color:#000000">93</span><span style="color:#000000">, </span><span style="color:#000000">23</span><span style="color:#000000">);<br>
+        contentPane.add(button);<br>
+<br>
+        textArea </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JTextArea();<br>
+        JScrollPane scrollPane </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> JScrollPane(textArea);<br>
+        scrollPane.setBounds(</span><span style="color:#000000">33</span><span style="color:#000000">, </span><span style="color:#000000">45</span><span style="color:#000000">, </span><span style="color:#000000">480</span><span style="color:#000000">, </span><span style="color:#000000">207</span><span style="color:#000000">);<br>
+        contentPane.add(scrollPane);<br>
+    }<br>
+<br>
+    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> addWatch() </span><span style="color:#0000ff">throws</span><span style="color:#000000"> Exception {<br>
+        String path </span><span style="color:#000000">=</span><span style="color:#000000"> textField.getText();<br>
+        </span><span style="color:#0000ff">int</span><span style="color:#000000"> mask </span><span style="color:#000000">=</span><span style="color:#000000"> JNotify.FILE_CREATED </span><span style="color:#000000">|</span><span style="color:#000000"> JNotify.FILE_DELETED<br>
+                </span><span style="color:#000000">|</span><span style="color:#000000"> JNotify.FILE_MODIFIED </span><span style="color:#000000">|</span><span style="color:#000000"> JNotify.FILE_RENAMED;<br>
+        </span><span style="color:#0000ff">boolean</span><span style="color:#000000"> watchSubtree </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>
+        </span><span style="color:#008000">//</span><span style="color:#008000">添加文件监听</span><span style="color:#008000"><br>
+</span><span style="color:#000000">        </span><span style="color:#0000ff">int</span><span style="color:#000000"> watchID </span><span style="color:#000000">=</span><span style="color:#000000"> JNotify.addWatch(path, mask, watchSubtree, </span><span style="color:#0000ff">new</span><span style="color:#000000"> Listener());<br>
+    }<br>
+<br>
+    </span><span style="color:#0000ff">class</span><span style="color:#000000"> Listener </span><span style="color:#0000ff">implements</span><span style="color:#000000"> JNotifyListener {<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> fileRenamed(</span><span style="color:#0000ff">int</span><span style="color:#000000"> wd, String rootPath, String oldName,<br>
+                String newName) {<br>
+            textArea.append(</span><span style="color:#000000">"</span><span style="color:#000000">文件：</span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> rootPath </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000"> : </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> oldName </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000"> 重命名为： </span><span style="color:#000000">"</span><span style="color:#000000"><br>
+                    </span><span style="color:#000000">+</span><span style="color:#000000"> newName </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000">\n</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> fileModified(</span><span style="color:#0000ff">int</span><span style="color:#000000"> wd, String rootPath, String name) {<br>
+            textArea.append(</span><span style="color:#000000">"</span><span style="color:#000000">文件修改 </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> rootPath </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000"> : </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> name </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000">\n</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> fileDeleted(</span><span style="color:#0000ff">int</span><span style="color:#000000"> wd, String rootPath, String name) {<br>
+            textArea.append(</span><span style="color:#000000">"</span><span style="color:#000000">删除文件： </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> rootPath </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000"> : </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> name </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000">\n</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        }<br>
+<br>
+        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> fileCreated(</span><span style="color:#0000ff">int</span><span style="color:#000000"> wd, String rootPath, String name) {<br>
+            textArea.append(</span><span style="color:#000000">"</span><span style="color:#000000">新建文件: </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> rootPath </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000"> : </span><span style="color:#000000">"</span><span style="color:#000000"> </span><span style="color:#000000">+</span><span style="color:#000000"> name </span><span style="color:#000000">+</span><span style="color:#000000"> </span><span style="color:#000000">"</span><span style="color:#000000">\n</span><span style="color:#000000">"</span><span style="color:#000000">);<br>
+        }<br>
+    }<br>
+}</span></div>
+
+
+<p><br>
+运行效果：<br>
+在D盘新建一个文件和修改文件名操作。<br>
+<img border="0" alt="http://www.blogjava.net/pengo" src="http://www.blogjava.net/images/blogjava_net/pengo/2011.01.09fileMonit.jpg" width="538" height="297"><br>
+<br>
+附件：<a title="源码" href="http://download.csdn.net/source/2971706">源码</a>
+<img src="http://www.blogjava.net/pengo/aggbug/342622.html" width="1" height="1"><br><br><div align="right"><a style="text-decoration:none" href="http://www.blogjava.net/pengo/">pengo</a> 2011-01-09 16:32 <a href="http://www.blogjava.net/pengo/archive/2011/01/09/342622.html#Feedback" style="text-decoration:none">发表评论</a></div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

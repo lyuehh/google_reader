@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>策略模式-4</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>策略模式-4</h2>
+<p class="meta">01 Jul 2010</p>
+
+<div class="post">
+<h2>策略模式-4</h2>
+
+<h3>by 云飞龙行</h3>
+
+<h3>at 2010-07-01 08:32:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/sjms/archive/2010/07/01/1768806.html">http://www.cnblogs.com/sjms/archive/2010/07/01/1768806.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/sjms/">云飞龙行</a> 发表于 2010-07-01 08:32 <a href="http://www.cnblogs.com/sjms/archive/2010/07/01/1768806.html">原文链接</a> 阅读: 919 评论: 3</p>
+
+
+<h3 style="text-align:center">3.3  Context和Strategy的关系</h3>
+
+
+<p>         在策略模式中，通常是上下文使用具体的策略实现对象，反过来，策略实现对象也可以从上下文获取所需要的数据，因此可以将上下文当参数传递给策略实现对象，这种情况下上下文和策略实现对象是紧密耦合的。<br>        在这种情况下，上下文封装着具体策略对象进行算法运算所需要的数据，具体策略对象通过回调上下文的方法来获取这些数据。<br>        甚至在某些情况下，策略实现对象还可以回调上下文的方法来实现一定的功能，这种使用场景下，上下文变相充当了多个策略算法实现的公共接口，在上下文定义的方法可以当做是所有或者是部分策略算法使用的公共功能。<br>        但是请注意，由于所有的策略实现对象都实现同一个策略接口，传入同一个上下文，可能会造成传入的上下文数据的浪费，因为有的算法会使用这些数据，而有的算法不会使用，但是上下文和策略对象之间交互的开销是存在的了。<br>        还是通过例子来说明。<br><strong>1：工资支付的实现思路<br></strong>        考虑这样一个功能：工资支付方式的问题，很多企业的工资支付方式是很灵活的，可支付方式是比较多的，比如：人民币现金支付、美元现金支付、银行转账到工资帐户、银行转账到工资卡；一些创业型的企业为了留住骨干员工，还可能有：工资转股权等等方式。总之一句话，工资支付方式很多。<br>        随着公司的发展，会不断有新的工资支付方式出现，这就要求能方便的扩展；另外工资支付方式不是固定的，是由公司和员工协商确定的，也就是说可能不同的员工采用的是不同的支付方式，甚至同一个员工，不同时间采用的支付方式也可能会不同，这就要求能很方便的切换具体的支付方式。<br>        要实现这样的功能，策略模式是一个很好的选择。在实现这个功能的时候，不同的策略算法需要的数据是不一样，比如：现金支付就不需要银行帐号，而银行转账就需要帐号。这就导致在设计策略接口中的方法时，不太好确定参数的个数，而且，就算现在把所有的参数都列上了，今后扩展呢？难道再来修改策略接口吗？如果这样做，那无异于一场灾难，加入一个新策略，就需要修改接口，然后修改所有已有的实现，不疯掉才怪！那么到底如何实现，在今后扩展的时候才最方便呢？<br>        解决方案之一，就是把上下文当做参数传递给策略对象，这样一来，如果要扩展新的策略实现，只需要扩展上下文就可以了，已有的实现不需要做任何的修改。<br>        这样是不是能很好的实现功能，并具有很好的扩展性呢？还是通过代码示例来具体的看。假设先实现人民币现金支付和美元现金支付这两种支付方式，然后就进行使用测试，然后再来添加银行转账到工资卡的支付方式，看看是不是能很容易的与已有的实现结合上。</p>
+
+
+<p><strong>2：实现代码示例<br></strong>（1）先定义工资支付的策略接口，就是定义一个支付工资的方法，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 支付工资的策略的接口，公司有多种支付工资的算法</p>
+<p align="left"> * 比如：现金、银行卡、现金加股票、现金加期权、美元支付等等</p>
+<p align="left"> */</p>
+<p align="left">public interface PaymentStrategy {</p>
+<p align="left">    /**</p>
+<p align="left">     * 公司给某人真正支付工资</p>
+<p align="left">     * @param ctx 支付工资的上下文，里面包含算法需要的数据</p>
+<p align="left">     */</p>
+<p align="left">    public void pay(PaymentContext ctx);</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><br>（2）定义好了工资支付的策略接口，该来考虑如何实现这多种支付策略了。<br>        为了演示的简单，这里先简单实现人民币现金支付和美元现金支付方式，当然并不真的去实现跟银行的交互，只是示意一下。<br>        人民币现金支付的策略实现，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 人民币现金支付</p>
+<p align="left"> */</p>
+<p align="left">public class RMBCash implements PaymentStrategy{</p>
+<p align="left">    public void pay(PaymentContext ctx) {</p>
+<p align="left">       System.<em>out</em>.println("现在给"+ctx.getUserName()</p>
+<p align="left">+"人民币现金支付"+ctx.getMoney()+"元");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><br>同样的实现美元现金支付的策略，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 美元现金支付</p>
+<p align="left"> */</p>
+<p align="left">public class DollarCash implements PaymentStrategy{</p>
+<p align="left">    public void pay(PaymentContext ctx) {</p>
+<p align="left">       System.<em>out</em>.println("现在给"+ctx.getUserName()</p>
+<p align="left">+"美元现金支付"+ctx.getMoney()+"元");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p> （3）该来看支付上下文的实现了，当然这个使用支付策略的上下文，是需要知道具体使用哪一个支付策略的，一般由客户端来确定具体使用哪一个具体的策略，然后上下文负责去真正执行。因此，这个上下文需要持有一个支付策略，而且是由客户端来配置它。示例代码如下： </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 支付工资的上下文，每个人的工资不同，支付方式也不同</p>
+<p align="left"> */</p>
+<p align="left">public class PaymentContext {</p>
+<p align="left">    /**</p>
+<p align="left">     * 应被支付工资的人员，简单点，用姓名来代替</p>
+<p align="left">     */</p>
+<p align="left">    private String userName = null;</p>
+<p align="left">    /**</p>
+<p align="left">     * 应被支付的工资的金额</p>
+<p align="left">     */</p>
+<p align="left">    private double money = 0.0;</p>
+<p align="left">    /**</p>
+<p align="left">     * 支付工资的方式策略的接口</p>
+<p align="left">     */</p>
+<p align="left">    private PaymentStrategy strategy = null;</p>
+<p align="left">    /**</p>
+<p align="left">     * 构造方法，传入被支付工资的人员，应支付的金额和具体的支付策略</p>
+<p align="left">     * @param userName 被支付工资的人员</p>
+<p align="left">     * @param money 应支付的金额</p>
+<p align="left">     * @param strategy 具体的支付策略</p>
+<p align="left">     */</p>
+<p align="left">    public PaymentContext(String userName,double money,</p>
+<p align="left">PaymentStrategy strategy){</p>
+<p align="left">       this.userName = userName;</p>
+<p align="left">       this.money = money;</p>
+<p align="left">       this.strategy = strategy;</p>
+<p align="left">      } </p>
+<p align="left">    public String getUserName() {</p>
+<p align="left">       return userName;</p>
+<p align="left">    }</p>
+<p align="left">    public double getMoney() {</p>
+<p align="left">       return money;</p>
+<p align="left">    }</p>
+<p align="left">/**</p>
+<p align="left">     * 立即支付工资</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong><strong> void payNow(){</strong></p>
+<p align="left"><strong>       //</strong><strong>使用客户希望的支付策略来支付工资</strong><strong></strong></p>
+<p align="left"><strong>       this.strategy.pay(this);</strong></p>
+<p align="left"><strong>    }</strong></p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>（4）准备好了支付工资的各种策略，下面看看如何使用这些策略来真正支付工资，很简单，客户端是使用上下文来使用具体的策略的，而且是客户端来确定具体的策略，就是客户端创建哪个策略，最终就运行哪一个策略，各个策略之间是可以动态切换的，示例代码如下： </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">public class Client {</p>
+<p align="left">    public static void main(String[] args) {</p>
+<p align="left">       //创建相应的支付策略</p>
+<p align="left">       PaymentStrategy strategyRMB = new RMBCash();</p>
+<p align="left">       PaymentStrategy strategyDollar = new DollarCash();</p>
+<p align="left">       </p>
+<p align="left">       //准备小李的支付工资上下文</p>
+<p align="left">       PaymentContext ctx1 = </p>
+<p align="left">new PaymentContext("小李",5000,strategyRMB);</p>
+<p align="left">       //向小李支付工资</p>
+<p align="left">       ctx1.payNow();</p>
+<p align="left">       </p>
+<p align="left">       //切换一个人，给petter支付工资</p>
+<p align="left">       PaymentContext ctx2 = </p>
+<p align="left">new PaymentContext("Petter",8000,strategyDollar);</p>
+<p align="left">       ctx2.payNow();</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>运行一下，看看效果，运行结果如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">现在给小李人民币现金支付5000.0元</p>
+<p align="left">现在给Petter美元现金支付8000.0元</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p><strong>3：扩展示例，实现方式一</strong><br>        经过上面的测试可以看出，通过使用策略模式，已经实现好了两种支付方式了。如果现在要增加一种支付方式，要求能支付到银行卡，该怎么扩展最简单呢？<br>        应该新增加一种支付到银行卡的策略实现，然后通过继承来扩展支付上下文，在里面添加新的支付方式需要的新的数据，比如银行卡账户，然后在客户端使用新的上下文和新的策略实现就可以了，这样已有的实现都不需要改变，完全遵循开-闭原则。<br>        先看看扩展的支付上下文对象的实现，示例代码如下： </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 扩展的支付上下文对象</p>
+<p align="left"> */</p>
+<p align="left"><strong>public</strong><strong> class PaymentContext2</strong> <strong>extends</strong><strong> PaymentContext</strong> {</p>
+<p align="left">    /**</p>
+<p align="left">     * 银行帐号</p>
+<p align="left">     */</p>
+<p align="left">    private String account = null;</p>
+<p align="left">    /**</p>
+<p align="left">     * 构造方法，传入被支付工资的人员，应支付的金额和具体的支付策略</p>
+<p align="left">     * @param userName 被支付工资的人员</p>
+<p align="left">     * @param money 应支付的金额</p>
+<p align="left">     * @param account 支付到的银行帐号</p>
+<p align="left">     * @param strategy 具体的支付策略</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong><strong> PaymentContext2(String userName,double money,</strong></p>
+<p align="left"><strong>String account,PaymentStrategy strategy){</strong></p>
+<p align="left"><strong>       super(userName,money,strategy);</strong></p>
+<p align="left"><strong>       this.account = account;</strong></p>
+<p align="left"><strong>    }</strong></p>
+<p align="left">    public String getAccount() {</p>
+<p align="left">       return account;</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>然后看看新的策略算法的实现，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 支付到银行卡</p>
+<p align="left"> */</p>
+<p align="left">public class Card implements PaymentStrategy{ </p>
+<p align="left">    <strong>public</strong><strong> void pay(PaymentContext ctx) {</strong></p>
+<p align="left"><strong>       //</strong><strong>这个新的算法自己知道要使用扩展的支付上下文，所以强制造型一下</strong><strong></strong></p>
+<p align="left"><strong>       PaymentContext2 ctx2 = (PaymentContext2)ctx;</strong></p>
+<p align="left"><strong>       System.<em>out</em>.println("</strong><strong>现在给</strong><strong>"+ctx2.getUserName()+"</strong><strong>的</strong><strong>"</strong></p>
+<p align="left"><strong>+ctx2.getAccount()+"</strong><strong>帐号支付了</strong><strong>"+ctx2.getMoney()+"</strong><strong>元</strong><strong>");</strong></p>
+<p align="left"><strong>       //</strong><strong>连接银行，进行转帐，就不去管了</strong><strong></strong></p>
+<p align="left"><strong>    }</strong></p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>最后看看客户端怎么使用这个新的策略呢？原有的代码不变，直接添加新的测试就可以了，示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">public class Client {</p>
+<p align="left">    public static void main(String[] args) {</p>
+<p align="left">       //创建相应的支付策略</p>
+<p align="left">       PaymentStrategy strategyRMB = new RMBCash();</p>
+<p align="left">       PaymentStrategy strategyDollar = new DollarCash();</p>
+<p align="left">       </p>
+<p align="left">       //准备小李的支付工资上下文</p>
+<p align="left">       PaymentContext ctx1 = </p>
+<p align="left">new PaymentContext("小李",5000,strategyRMB);</p>
+<p align="left">       //向小李支付工资</p>
+<p align="left">       ctx1.payNow();</p>
+<p align="left">       </p>
+<p align="left">       //切换一个人，给petter支付工资</p>
+<p align="left">       PaymentContext ctx2 = </p>
+<p align="left">new PaymentContext("Petter",8000,strategyDollar);</p>
+<p align="left">       ctx2.payNow();</p>
+<p align="left">       </p>
+<p align="left">       <strong>//</strong><strong>测试新添加的支付方式</strong></p>
+<p align="left"><strong>       PaymentStrategy strategyCard = new Card();</strong></p>
+<p align="left"><strong>       PaymentContext ctx3 = new PaymentContext2(</strong></p>
+<p align="left"><strong>"小王",9000,"010998877656",strategyCard);</strong></p>
+<p align="left"><strong>       ctx3.payNow();</strong></p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>再次测试，体会一下，运行结果如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">现在给小李人民币现金支付5000.0元</p>
+<p align="left">现在给Petter美元现金支付8000.0元 </p>
+<p align="left">现在给小王的010998877656帐号支付了9000.0元</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><br> </p>
+
+
+<p><strong>4：扩展示例，实现方式二</strong><br>        同样还是实现上面这个功能：现在要增加一种支付方式，要求能支付到银行卡。<br>（1）上面这种实现方式，是通过扩展上下文对象来准备新的算法需要的数据。还有另外一种方式，那就是通过策略的构造方法来传入新算法需要的数据。这样实现的话，就不需要扩展上下文了，直接添加新的策略算法实现就好了。示例代码如下：  </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 支付到银行卡</p>
+<p align="left"> */</p>
+<p align="left">public class Card2 implements PaymentStrategy{</p>
+<p align="left">    /**</p>
+<p align="left">     * 帐号信息</p>
+<p align="left">     */</p>
+<p align="left">    private String account = &quot;&quot;;</p>
+<p align="left">    /**</p>
+<p align="left">     * 构造方法，传入帐号信息</p>
+<p align="left">     * @param account 帐号信息</p>
+<p align="left">     */</p>
+<p align="left">    <strong>public</strong><strong> Card2(String account){</strong></p>
+<p align="left"><strong>       this.account = account;</strong></p>
+<p align="left"><strong>    }</strong></p>
+<p align="left">    <strong>public</strong><strong> void pay(PaymentContext ctx) {</strong></p>
+<p align="left"><strong>       System.<em>out</em>.println("</strong><strong>现在给</strong><strong>"+ctx.getUserName()+"</strong><strong>的</strong><strong>"</strong></p>
+<p align="left"><strong>+this.account+"</strong><strong>帐号支付了</strong><strong>"+ctx.getMoney()+"</strong><strong>元</strong><strong>");</strong></p>
+<p align="left"><strong>       //</strong><strong>连接银行，进行转帐，就不去管了</strong><strong></strong></p>
+<p align="left"><strong>    }</strong></p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>（2）直接在客户端测试就可以了，测试示例代码如下：   </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">public class Client {</p>
+<p align="left">    public static void main(String[] args) {</p>
+<p align="left">       //测试新添加的支付方式</p>
+<p align="left">       PaymentStrategy strategyCard2 = new Card2(&quot;010998877656&quot;);</p>
+<p align="left">       PaymentContext ctx4 = </p>
+<p align="left">new PaymentContext("小张",9000,strategyCard2);</p>
+<p align="left">       ctx4.payNow();</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>运行看看，好好体会一下。</p>
+
+
+<p><br> （3）现在有这么两种扩展的实现方式，到底使用哪一种呢？或者是哪种实现更好呢？下面来比较一下：<br>        <strong>对于扩展上下文的方式</strong>：这样实现，所有策略的实现风格更统一，策略需要的数据都统一从上下文来获取，这样在使用方法上也很统一；另外，在上下文中添加新的数据，别的相应算法也可以用得上，可以视为公共的数据。但缺点也很明显，如果这些数据只有一个特定的算法来使用，那么这些数据有些浪费；另外每次添加新的算法都去扩展上下文，容易形成复杂的上下文对象层次，也未见得有必要。<br>        <strong>对于在策略算法的实现上添加自己需要的数据的方式</strong>：这样实现，比较好想，实现简单。但是缺点也很明显，跟其它策略实现的风格不一致，其它策略都是从上下文中来获取数据，而这个策略的实现一部分数据来自上下文，一部分数据来自自己，有些不统一；另外，这样一来，外部使用这些策略算法的时候也不一样了，不太好以一个统一的方式来动态切换策略算法。<br>        两种实现各有优劣，至于如何选择，那就具体问题，具体的分析了。</p>
+
+
+<p><br><strong>5：另一种策略模式调用顺序示意图<br></strong>        策略模式调用还有一种情况，就是把Context当做参数来传递给Strategy，也就是本例示范的这种方式，这个时候策略模式的调用顺序如图4所示：<br><img src="http://pic002.cnblogs.com/img/sjms2010/201007/2010070108295020.gif"> </p>
+
+
+<p>图4  策略模式调用顺序示意图二</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p style="text-align:center"><strong><span style="font-size:18pt">未完待续......</span></strong></p>
+
+
+<p><img src="http://www.cnblogs.com/sjms/aggbug/1768806.html?type=1" width="1" height="1" alt=""><p>评论: 3　<a href="http://www.cnblogs.com/sjms/archive/2010/07/01/1768806.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/sjms/archive/2010/07/01/1768806.html#commentform">发表评论</a></p><p><a href="http://mpd.cnblogs.com/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67408/">Google 香港主页由于 “技术问题” 无法向大陆提供搜索建议</a><span style="color:gray">(2010-07-01 22:15)</span><br>· <a href="http://news.cnblogs.com/n/67406/">是不是文言文有望实现自动翻译呢？</a><span style="color:gray">(2010-07-01 22:01)</span><br>· <a href="http://news.cnblogs.com/n/67407/">移动互联网经济笔记之五： 挺进纵深</a><span style="color:gray">(2010-07-01 21:58)</span><br>· <a href="http://news.cnblogs.com/n/67405/">苹果公司该不该赚高利？</a><span style="color:gray">(2010-07-01 21:46)</span><br>· <a href="http://news.cnblogs.com/n/67404/">12款非同寻常但默默无闻的Linux发行版</a><span style="color:gray">(2010-07-01 21:41)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/wayfarer/archive/2010/06/30/1768694.html">领域驱动设计实践</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

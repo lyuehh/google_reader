@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用HTML5模拟森林大火</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用HTML5模拟森林大火</h2>
+<p class="meta">11 Oct 2010</p>
+
+<div class="post">
+<h2>使用HTML5模拟森林大火</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-11 11:40:32</h3>
+
+<h3>original <a href="http://news.cnblogs.com/n/76857/">http://news.cnblogs.com/n/76857/</a></h3>
+
+<p>　　在一片空地上，随机地种上一些树，随着时间的推移，这些树会向周围扩张（周围长出新的树木），也有一定的概率枯死，而枯死的树有一定概率会发生自燃，或者你也可以通过点击地面的某一点丢下一个火种，火焰周围8个格子中的树木（包括枯树和还在生长的树）会被引燃，于是大火便蔓延开来，如果火种周围没有树木，则火焰熄灭。实验就是观察在不同的参数下，枯树自燃或人为引发的森林大火会达到什么样的规模。之前读了方舟子的科普文章《<a href="http://blog.sina.com.cn/s/blog_474068790100f0i5.html">野火烧不尽</a>》，一直觉得很受启发，最近趁着假期空闲，我也用计算机模拟了一下文中介绍的森林大火的实验，见<a href="http://oldj.net/static/forest-fire/1.html">这个链接</a>。
+</p>
+
+
+<p>　　实验是这样的：在一片空地上，随机地种上一些树，随着时间的推移，这些树会向周围扩张（周围长出新的树木），也有一定的概率枯死，而枯死的树有一定概率会发生自燃，或者你也可以通过点击地面的某一点丢下一个火种，火焰周围8个格子中的树木（包括枯树和还在生长的树）会被引燃，于是大火便蔓延开来，如果火种周围没有树木，则火焰熄灭。实验就是观察在不同的参数下，枯树自燃或人为引发的森林大火会达到什么样的规模。</p>
+
+
+<p>　　当然，我的实验和方舟子文中介绍的原始实验细节上有一些不同，不过基本思想是一致的。运行的效果如下图，绿色的点代表生长中的树木，黄褐色的点代表枯树，红色的点是火焰，黑色及灰色的点是刚被烧过的地方。</p>
+
+
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201010/2010101111400711.png" alt=""></p>
+
+
+<p>　　根据《野火烧不尽》的介绍，野火的发生遵循幂律，野火的规模越大，发生的频率就越低。在<a href="http://oldj.net/static/forest-fire/1.html">我的实验</a>中，野火发生的概率是均匀分布的，不过这个概率是一个可调的参数。类似地，我发现，野火发生的概率越高，每次野火的规模就越小，虽然野火总数增加了，但总的来说造成的损失并不大，野火发生的概率越低，每次野火的规模就越大，甚至一次野火就能烧毁整个森林。
+</p>
+
+
+<p>　　这个结论很容易解释，因为森林中的树木在不断地生长、死亡，如果没有野火，它们将慢慢地密集地布满整个地表，渐渐达到“自组织的临界状态（自身逐渐形成的高度敏感的不稳定状态）”，树木越密集，发生野火时火势就越容易蔓延，造成的损失就会越大。而如果不时地有野火发生，烧掉一些枯树及及密集的地方，使森林保持一定的空隙，这倒反而不会造成太大的损失。</p>
+
+
+<p>　　我们大多数人的观念中，或许都认为森林大火是一件不好的事情，因此一旦发生森林大火，我们就会组织人员前去灭火。但森林大火真的有百害而无一利吗？不是的。事实上，在人类文明出现之前，森林与野火已经共存了几亿年，每年都有无数次森林野火发生，但森林从未被野火完全毁灭，地球上依旧绿意盎然，森林与野火早就已经形成了一种共存的关系。</p>
+
+
+<p>　　《野火烧不尽》中介绍了一个美国的例子：“在1972年之前，黄石公园对野火采取零容忍政策，一旦发现野火就尽量将其扑灭。这就像是模拟程序中超低的点火频率，也出现了类似的后果：1988年黄石公园突发大火，烧掉了32万公顷的森林，占黄石公园面积的36％。”所以据说后来美国林业部门对自然因素引起的野火不再扑灭，只要它不威胁到生命、财产的安全就任其燃烧，林务员还时不时地在严格控制下有选择地放火烧掉一部分森林。</p>
+
+
+<p>　　这一种看似矛盾的共存关系在很多地方都能看得到，比如草原上狼与羊之间的关系。要知道，矛盾总是存在，并且无法避免，迟早总会发生的，与其人为地压制矛盾造成一种表面的和谐，不如尊重一下自然规律，让矛盾不时地小规模地出现、消化。</p>
+
+
+<p>　　另外，方舟子的另一篇科普文章《<a href="http://blog.sina.com.cn/s/blog_474068790100f454.html">生物大灭绝为什么反复发生</a>》中提到：“生物灭绝和地震、森林大火、沙堆坍塌一样，发生的频率也遵循幂律”，许多看似复杂的事情背后都有一个简单的幂律，我之前也曾注意到<a href="http://oldj.net/article/relation-between-income-and-ranking/">软件的下载量与排名之间也存在幂函数关系</a>，看起来幂律出场的地方之多真是超乎想象。</p>
+
+
+<p>　　最后，再贴一下我做的网页版的森林大火实验的地址：<a href="http://oldj.net/static/forest-fire/1.html">http://oldj.net/static/forest-fire/1.html</a>。这个程序基于 HTML5 ，只能在比较新的浏览器（如 Firefox、Chrome 等）上运行，建议使用 Chrome 。</p>
+
+
+<p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/67379/">10个HTML5动画，让你忘掉Flash是啥</a><span style="color:gray">(2010-07-01)</span><br>　　· <a href="http://news.cnblogs.com/n/70995/">HTML5热得烫手 它将给我们带来什么</a><span style="color:gray">(2010-08-17)</span><br>　　· <a href="http://news.cnblogs.com/n/69315/">HTML5如何掀起一场Web革命</a><span style="color:gray">(2010-07-26)</span><br>　　· <a href="http://news.cnblogs.com/n/68140/">Gmail HTML 5 功能开始支持 Safari 浏览器</a><span style="color:gray">(2010-07-13)</span><br>　　· <a href="http://news.cnblogs.com/n/67310/">你从没见过的 HTML5 动画效果</a><span style="color:gray">(2010-06-30)</span><br></p>
+
+
+<p>　　本文链接：<a href="http://news.cnblogs.com/n/76857/">http://news.cnblogs.com/n/76857/</a></p>
+
+
+<p>　　<a href="http://job.cnblogs.com">程序员找工作，就在博客园</a></p>
+
+
+<p>　　<a href="http://a4.yeshj.com/rd/34138/">每天10分钟，轻松学外语</a></p>
+
+
+<p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=76857" width="1" height="1" alt=""></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

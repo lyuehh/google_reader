@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PNG现状整理.</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>PNG现状整理.</h2>
+<p class="meta">12 Jan 2011</p>
+
+<div class="post">
+<h2>PNG现状整理.</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2011-01-11 16:13:11</h3>
+
+<h3>original <a href="http://www.cssrain.cn/?p=1484">http://www.cssrain.cn/?p=1484</a></h3>
+
+<p>PNG现状整理：<a href="http://calendar.perfplanet.com/2010/png-that-works/">http://calendar.perfplanet.com/2010/png-that-works/</a></p>
+
+
+<p>png无损伤压缩工具：<a href="http://www.advsys.net/ken/util/pngout.htm">http://www.advsys.net/ken/util/pngout.htm</a></p>
+
+
+<p>PNG这种文件格式值得科普下,对比GIF来说：</p>
+
+
+<p><strong>PNG和GIF都支持动画</strong><br>
+PNG的动画也叫APNG,只是firefox支持,详见 <a href="http://ooxx.me/apng.orz">http://ooxx.me/apng.orz</a> ,如Firefox看这里的favicon,是会动滴<br>
+所以动画图片来说,还是GIF支持最好</p>
+
+
+<p><strong>第一种PNG叫PNG8(索引色透明)</strong>,简单说可以理解为静态的GIF<br>
+他们都只有256色,也支持索引透明,就是指定一个像素点是不是透明<br>
+但是PNG由于算法的优势,体积比较少<br>
+所以,静态GIF完全可用PNG8取代</p>
+
+
+<p><strong>第二种PNG也叫PNG8(Alpha透明)</strong>,牛逼在可指定像素点的透明度,例如50%透明度<br>
+这种优点在于比PNG24/32体积小,但效果一样<br>
+缺点在于IE6支持不好,会显示灰底</p>
+
+
+<p><strong>第三种PNG叫PNG24</strong><br>
+和PNG8的区别仅在于体积更大<br>
+比较尴尬的存在</p>
+
+
+<p><strong>第四种PNG叫PNG32</strong><br>
+和photoshop的PSD一样,是Fireworks的默认源文件格式,包含图层和通道信息<br>
+和PNG24的区别在于有图层</p>
+
+
+<p>简单的归纳就是</p>
+
+
+<p><strong>动画</strong>:<br>
+支持: GIF, PNG只在firefox支持<br>
+不支持: 非Firefox的PNG</p>
+
+
+<p><strong>索引色透明</strong>(某像素是全透明还是全不透明):<br>
+支持: GIF/PNG都支持<br>
+不支持: <strong>IE6下</strong>的PNG8(Alpha透明)和PNG24/32</p>
+
+
+<p><strong>Alpha透明</strong>(可指定透明度)<strong>: </strong><br>
+支持:PNG8(Aplha透明)/PNG24/PNG32<br>
+不支持: GIF/PNG8(索引色透明)</p>
+
+
+<p><strong>图层</strong><br>
+支持: PNG32<br>
+不支持: PNG8/PNG24/GIF</p>
+
+
+<p><strong>颜色</strong><br>
+256色：GIF PNG8(2种)<br>
+其他的格式颜色数不过来,好多</p>
+
+
+<p><a href="http://ooxx.me/png.orz">http://ooxx.me/png.orz</a></p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">你可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="关于IE6 PNG透明。" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D96&amp;from=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1484">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">关于IE6 PNG透明。</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="jQuery插件—png透明插件." style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D735&amp;from=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1484">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">jQuery插件—png透明插件.</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="疯狂的设计—弯折的书架." style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1033&amp;from=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1484">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/01/18/2159097.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">疯狂的设计—弯折的书架.</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="javascript—Slide Menu." style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D568&amp;from=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1484">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/01/18/2158132.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">javascript—Slide Menu.</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Flash-LightBox." style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1252&amp;from=http%3A%2F%2Fwww.cssrain.cn%2F%3Fp%3D1484">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/01/18/2158050.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Flash-LightBox.</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/649789271/cssrain/feedsky/s.gif?r=http://www.cssrain.cn/?p=1484" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

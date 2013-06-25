@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>HTML5本地储存</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>HTML5本地储存</h2>
+<p class="meta">02 Oct 2012</p>
+
+<div class="post">
+<h2>HTML5本地储存</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-10-02 09:07:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/10/02/2710100.html">http://www.cnblogs.com/rubylouvre/archive/2012/10/02/2710100.html</a></h3>
+
+<ul>  <li><code>sessionStorage</code></li>  <li><code>localStorage</code></li></ul>
+
+
+<p>都实现了<code>Storage Interface</code>：</p>
+
+
+<p>interface Storage {<br>  readonly attribute unsigned long length;<br>  [IndexGetter] DOMString key(in unsigned long index);<br>  [NameGetter] DOMString getItem(in DOMString key);<br>  [NameSetter] void setItem(in DOMString key, in DOMString data);<br>  [NameDeleter] void removeItem(in DOMString key);<br>  void clear();<br>};<p><span></span><br><code>length</code>表示当前存储的values的个数；<br><code>key()</code>方法返回与index相对应的item的key， 如果在storage中有2个value，那么key(0)则是第一个value的keyName：</p><br>localStorage.setItem('key1', 1);<br>localStorage.key(0)// ---&gt;; &#39;key1&#39;<br><p><code>getItem, setItem, removeItem</code>的用法和一般的Dict是一样的。</p><p><strong>需要注意</strong></p><ul><li>key/value都是String类型，一个object在保存前会调用其<code>toString()</code>方法，所以要自己做处理，一般是用<code>JSON</code></li><li><code>Storage</code> 对象作为<code>localStorage/sessionStorage</code> 的<code>constructor</code>存在，所以可以为<code>Storage</code>添加方法，则<code>localStorage/sessionStorage</code>都可以访问到(通过<code>Storage.prototype.xxx=...</code>)</li><li>storage 中的值可以通过普通的<code>obj["keyname"]</code>的形式进行get/set, 但仍推荐使用<code>getItem/setItem</code>方法</li><li><code>localStorage</code>中的值没有expire time设置</li><li><code>sessionStorage</code>中的值在页面<strong>reload/restore</strong>是仍然有效，但是窗口/Tab关闭后再重新打开则无效</li></ul><p><code>Web Stroage</code>的事件</p><p>根据W3C的Specification:</p><blockquote><p>When the setItem(), removeItem(), and clear() methods are called on a Storage object x that is associated with a local storage area, if the methods did something, then in every Document object whose Window object’s localStorage attribute’s Storage object is associated with the same storage area, other than x, a storage event must be fired…</p></blockquote><p>这里以<code>localStorage</code>为例说明。<br>一个key-value被改动时，会触发’storage’事件（你可以通过window.addEventListener(‘storage’…)来监听）。需要注意的是，当你在不同的tab/window对localStorage进行操作时，这个event才会被触发。因此，当你在同一个tab/window内操作时，你的当前tab/window不会触发这个event，即上文所说的“other than x”</p><p>一个简单的demo是：<br>1. 打开一个Chrome Tab, 在console中输入</p><br>window.addEventListener('storage', function(e){ console.log(e) });<br>localStorage('key', 'v1');//saved a data<br><p>2. 在另一个tab中， console输入:</p><br>localStorage('key', 'v2');//change<br><p>3. 检查第一个tab的输出，你会看到类似下面的输出(删去了一些不必要的细节)：</p><br>StorageEvent<br>{<br>bubbles: false,<br>cancelBubble: false,<br>cancelable: false,<br>key: "key",<br>newValue: "v2",<br>oldValue: "v1",<br>storageArea: Storage,<br>timeStamp: 1324953524367,<br>type: "storage",<br>url: "https://www.google.com/#sclient=psy..."<br>}<br><p>StorageEvent的Interface定义:</p><br>interface StorageEvent : Event {<br>  readonly attribute DOMString key;<br>  readonly attribute DOMString? oldValue;<br>  readonly attribute DOMString? newValue;<br>  readonly attribute DOMString url;<br>  readonly attribute Storage? storageArea;<br>};<br><ul><li><code>key</code> : 触发这个事件的storage的key</li><li><code>oldValue</code> : 事件前该key对应的value</li><li><code>newValue</code> : 事件后该key对应的value</li><li><code>url</code> : 触发这个事件的window的url(在那个tab中key被更改的)</li><li><code>storageArea</code> : 现在都是返回Storage</li></ul><p>但是W3C对sessionStorage的storage事件触发机制描述的很模糊， 我没有能够成功触发storage事件（或者是因为Chrome实现的问题？）。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2710100.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/10/02/2710100.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

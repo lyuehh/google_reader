@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>面向对象的Shell脚本</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>面向对象的Shell脚本</h2>
+<p class="meta">21 Jul 2011</p>
+
+<div class="post">
+<h2>面向对象的Shell脚本</h2>
+
+<h3>by 陈皓</h3>
+
+<h3>at 2011-07-21 12:39:11</h3>
+
+<h3>original <a href="http://coolshell.cn/articles/5035.html">http://coolshell.cn/articles/5035.html</a></h3>
+
+<p>还记得以前那个用<a title="检查素数的正则表达式" href="http://coolshell.cn/articles/2704.html">算素数的正则表达式</a>吗？编程这个世界太有趣了，总是能看到一些即别出心裁的东西。你有没有想过在写Shell脚本的时候可以把你的变量和函数放到一个类中？不要以为这不可能，这不，我在<a href="http://lab.madscience.nl/oo.sh.txt">网上</a>又看到了一个把Shell脚本整成面向对象的东西。Shell本来是不支持的，需要自己做点东西，能搞出这个事事的人真的是hacker啊。</p>
+
+
+<p>当然，这里并不是真正的面向对象，因为其只是封装罢了，还没有支持继承和多态。最变态的是他居然还支持typeid，靠！</p>
+
+
+<p>下面让我们看看他是怎么来做的。下面的脚本可能会有点费解。本想解释一下，后来想想，还是大家自己专研一下吧，其实看懂也不难，给大家提几个点吧。</p>
+
+
+<ol>
+<li>我们可以看到，下面的这个脚本定义了class,  func, var, new 等函数，其实这些就是所谓的关键字。</li>
+<li>class是一个函数，主要是记录类名。</li>
+<li>func和var实际上是把成员函数名和成员变量记成有相同前缀的各种变量。</li>
+<li>new方法主要是记录实例。大家重点看看new函数里的那个for循环，最核心的就在那里了。</li>
+</ol>
+
+
+<div>脚本如下所示：</div>
+
+
+<div><span></span></div>
+
+
+<pre>#!/bin/bash
+
+# -------------------------------------------------------------------
+# OO support functions
+# Kludged by Pim van Riezen &lt;pi@madscience.nl&gt;
+# -------------------------------------------------------------------
+DEFCLASS=&quot;&quot;
+CLASS=&quot;&quot;
+THIS=0
+
+class() {
+  DEFCLASS=&quot;$1&quot;
+  eval CLASS_${DEFCLASS}_VARS=&quot;&quot;
+  eval CLASS_${DEFCLASS}_FUNCTIONS=&quot;&quot;
+}
+
+static() {
+  return 0
+}
+
+func() {
+  local varname=&quot;CLASS_${DEFCLASS}_FUNCTIONS&quot;
+  eval &quot;$varname=\&quot;\${$varname}$1 \&quot;&quot;
+}
+
+var() {
+  local varname=&quot;CLASS_${DEFCLASS}_VARS&quot;
+  eval $varname=&quot;\&quot;\${$varname}$1 \&quot;&quot;
+}
+
+loadvar() {
+  eval &quot;varlist=\&quot;\$CLASS_${CLASS}_VARS\&quot;&quot;
+  for var in $varlist; do
+    eval &quot;$var=\&quot;\$INSTANCE_${THIS}_$var\&quot;&quot;
+  done
+}
+
+loadfunc() {
+  eval &quot;funclist=\&quot;\$CLASS_${CLASS}_FUNCTIONS\&quot;&quot;
+  for func in $funclist; do
+    eval &quot;${func}() { ${CLASS}::${func} \&quot;\$*\&quot;; return \$?; }&quot;
+  done
+}
+
+savevar() {
+  eval &quot;varlist=\&quot;\$CLASS_${CLASS}_VARS\&quot;&quot;
+  for var in $varlist; do
+    eval &quot;INSTANCE_${THIS}_$var=\&quot;\$$var\&quot;&quot;
+  done
+}
+
+typeof() {
+  eval echo \$TYPEOF_$1
+}
+
+new() {
+  local
+  local cvar=&quot;$2&quot;
+  shift
+  shift
+  local id=$(uuidgen | tr A-F a-f | sed -e &quot;s/-//g&quot;)
+  eval TYPEOF_${id}=$class
+  eval $cvar=$id
+  local funclist
+  eval &quot;funclist=\&quot;\$CLASS_${class}_FUNCTIONS\&quot;&quot;
+  for func in $funclist; do
+    eval &quot;${cvar}.${func}() {
+      local t=\$THIS; THIS=$id; local c=\$CLASS; CLASS=$class; loadvar;
+      loadfunc; ${class}::${func} \&quot;\$*\&quot;; rt=\$?; savevar; CLASS=\$c;
+      THIS=\$t; return $rt;
+    }&quot;
+
+  done
+  eval &quot;${cvar}.${class} \&quot;\$*\&quot; || true&quot;
+}</pre>
+
+
+<p>下面，让我们来看看例程吧。</p>
+
+
+<pre># -------------------------------------------------------------------
+# Example code
+# -------------------------------------------------------------------
+
+# class definition
+class Storpel
+  func Storpel
+  func setName
+  func setQuality
+  func print
+  var name
+  var quality
+
+# class implementation
+Storpel::Storpel() {
+  setName &quot;$1&quot;
+  setQuality &quot;$2&quot;
+  if [ -z &quot;$name&quot; ]; then setName &quot;Generic&quot;; fi
+  if [ -z &quot;$quality&quot; ]; then setQuality &quot;Normal&quot;; fi
+}
+
+Storpel::setName() { name=&quot;$1&quot;; }
+Storpel::setQuality() { quality=&quot;$1&quot;; }
+Storpel::print() { echo &quot;$name ($quality)&quot;; }
+
+# usage
+new Storpel one &quot;Storpilator 1000&quot; Medium
+new Storpel two
+new Storpel three
+
+two.setName &quot;Storpilator 2000&quot;
+two.setQuality &quot;Strong&quot;
+
+one.print
+two.print
+three.print
+
+echo &quot;&quot;
+
+echo &quot;one: $one ($(typeof $one))&quot;
+echo &quot;two: $two ($(typeof $two))&quot;
+echo &quot;three: $three ($(typeof $two))&quot;</pre>
+
+
+<p> </p>
+
+
+<p>（全文完）</p>
+
+
+<h3>相关文章</h3>
+
+
+<ul><li>2011年08月15日 -- <a href="http://coolshell.cn/articles/5202.html" title="对象的消息模型">对象的消息模型</a></li><li>2011年01月28日 -- <a href="http://coolshell.cn/articles/3609.html" title="那些炒作过度的技术和概念">那些炒作过度的技术和概念</a></li><li>2010年09月29日 -- <a href="http://coolshell.cn/articles/3036.html" title="面向对象是个骗局？！">面向对象是个骗局？！</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

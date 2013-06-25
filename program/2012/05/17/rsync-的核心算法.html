@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>rsync 的核心算法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>rsync 的核心算法</h2>
+<p class="meta">17 May 2012</p>
+
+<div class="post">
+<h2>rsync 的核心算法</h2>
+
+<h3>by 陈皓</h3>
+
+<h3>at 2012-05-17 08:25:38</h3>
+
+<h3>original <a href="http://coolshell.cn/articles/7425.html">http://coolshell.cn/articles/7425.html</a></h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Rsync">rsync</a>是unix/linux下同步文件的一个高效算法，它能同步更新两处计算机的文件与目录，并适当利用查找文件中的不同块以减少数据传输。rsync中一项与其他大部分类似程序或协定中所未见的重要特性是镜像是只对有变更的部分进行传送。rsync可拷贝／显示目录属性，以及拷贝文件，并可选择性的压缩以及递归拷贝。rsync利用由<a href="http://en.wikipedia.org/wiki/Andrew_Tridgell">Andrew Tridgell</a>发明的算法。这里不介绍其使用方法，只介绍其核心算法。我们可以看到，Unix下的东西，一个命令，一个工具都有很多很精妙的东西，怎么学也学不完，这就是<a title="Unix传奇(上篇)" href="http://coolshell.cn/articles/2322.html">Unix的文化</a>啊。</p>
+
+
+<p>本来不想写这篇文章的，因为原先发现有很多中文blog都说了这个算法，但是看了一下，发现这些中文blog要么翻译国外文章翻译地非常烂，要么就是介绍这个算法介绍得很乱让人看不懂，还有错误，误人不浅，所以让我觉得有必要写篇rsync算法介绍的文章。（当然，我成文比较仓促，可能会有一些错误，请指正）</p>
+
+
+<h4>问题</h4>
+
+
+<p>首先， 我们先来想一下rsync要解决的问题，如果我们要同步的文件只想传不同的部分，我们就需要对两边的文件做diff，但是这两个问题在两台不同的机器上，无法做diff。如果我们做diff，就要把一个文件传到另一台机器上做diff，但这样一来，我们就传了整个文件，这与我们只想传输不同部的初衷相背。</p>
+
+
+<p>于是我们就要想一个办法，让这两边的文件见不到面，但还能知道它们间有什么不同。这就出现了rsync的算法。</p>
+
+
+<h4>算法</h4>
+
+
+<p>rsync的算法如下：（<strong>假设我们同步源文件名为fileSrc，同步目的文件叫fileDst</strong>）</p>
+
+
+<p><span></span></p>
+
+
+<p>1）<strong>分块Checksum算法</strong>。首先，我们会把fileDst的文件平均切分成若干个小块，比如每块512个字节（最后一块会小于这个数），然后对每块计算两个checksum，</p>
+
+
+<ul>
+<li>一个叫<a href="http://en.wikipedia.org/wiki/Rolling_hash">rolling checksum</a>，是弱checksum，32位的checksum，其使用的是Mark Adler发明的<a title="Adler-32" href="http://en.wikipedia.org/wiki/Adler-32">adler-32</a>算法，</li>
+<li>另一个是强checksum，128位的，以前用md4，现在用md5 hash算法。</li>
+</ul>
+
+
+<p>为什么要这样？因为若干年前的硬件上跑md4的算法太慢了，所以，我们需要一个快算法来鉴别文件块的不同，但是弱的adler32算法碰撞概率太高了，所以我们还要引入强的checksum算法以保证两文件块是相同的。<strong>也就是说，弱的checksum是用来区别不同，而强的是用来确认相同</strong>。（checksum的具体公式可以参看<a href="http://rsync.samba.org/tech_report/node3.html">这篇文章</a>）</p>
+
+
+<p>2）<strong>传输算法。</strong>同步目标端会把fileDst的一个checksum列表传给同步源，这个列表里包括了三个东西，<strong>rolling checksum(32bits)</strong>，<strong>md5 checksume(128bits)</strong>，<strong>文件块编号</strong>。</p>
+
+
+<p>我估计你猜到了同步源机器拿到了这个列表后，会对fileSrc做同样的checksum，然后和fileDst的checksum做对比，这样就知道哪些文件块改变了。</p>
+
+
+<p>但是，聪明的你一定会有以下两个疑问：</p>
+
+
+<ul>
+<li>如果我fileSrc这边在文件中间加了一个字符，这样后面的文件块都会位移一个字符，这样就完全和fileDst这边的不一样了，但理论上来说，我应该只需要传一个字符就好了。这个怎么解决？</li>
+</ul>
+
+
+<ul>
+<li>如果这个checksum列表特别长，而我的两边的相同的文件块可能并不是一样的顺序，那就需要查找，线性的查找起来应该特别慢吧。这个怎么解决？</li>
+</ul>
+
+
+<p>很好，让我们来看一下同步源端的算法。</p>
+
+
+<p>3）<strong>checksum查找算法</strong>。同步源端拿到fileDst的checksum数组后，会把这个数据存到一个hash table中，用rolling checksum做hash，以便获得O(1)时间复杂度的查找性能。这个hash table是16bits的，所以，hash table的尺寸是2的16次方，对rolling checksum的hash会被散列到0 到 2^16 – 1中的某个整数值。（对于hash table，如果你不清楚，建议回去看大学时的数据结构教科书）</p>
+
+
+<p>顺便说一下，我在网上看到很多文章说，“要对rolling checksum做排序”（比如<a href="http://www.yejun.cn/?p=472">这篇</a>和<a href="http://blog.csdn.net/tobeandnottobe/article/details/6719848">这篇</a>），这两篇文章都引用并翻译了<a href="http://rsync.samba.org/tech_report/node4.html">原作者的这篇文章</a>，但是他们都理解错了，不是排序，就只是把fileDst的checksum数据，按rolling checksum做存到2^16的hash table中，当然会发生碰撞，把碰撞的做成一个链表就好了。这就是<a href="http://rsync.samba.org/tech_report/node4.html">原文</a>中所说的第二步——搜索有碰撞的情况。</p>
+
+
+<p>4）<strong>比对算法</strong>。这是最关键的算法，细节如下：</p>
+
+
+<p style="padding-left:30px">4.1）取fileSrc的第一个文件块（我们假设的是512个长度），也就是从fileSrc的第1个字节到第512个字节，取出来后做rolling checksum计算。计算好的值到hash表中查。</p>
+
+
+<p style="padding-left:30px">4.2）如果查到了，说明发现在fileDst中有潜在相同的文件块，于是就再比较md5的checksum，因为rolling checksume太弱了，可能发生碰撞。于是还要算md5的128bits的checksum，这样一来，我们就有 2^-(32+128) = 2^-160的概率发生碰撞，这太小了可以忽略。<strong>如果rolling checksum和md5 checksum都相同，这说明在fileDst中有相同的块，我们需要记下这一块在fileDst下的文件编号</strong>。</p>
+
+
+<p style="padding-left:30px">4.3）如果fileSrc的rolling checksum 没有在hash table中找到，那就不用算md5 checksum了。表示这一块中有不同的信息。总之，只要rolling checksum 或 md5 checksum 其中有一个在fileDst的checksum hash表中找不到匹配项，那么就会触发算法对fileSrc的rolling动作。于是，<strong>算法会住后step 1个字节，取fileSrc中字节2-513的文件块要做checksum，go to (4.1) </strong>- 现在你明白什么叫rolling checksum了吧。</p>
+
+
+<p style="padding-left:30px">4.4）这样，我们就可以找出fileSrc相邻两次匹配中的那些文本字符，这些就是我们要往同步目标端传的文件内容了。</p>
+
+
+<h4>图示</h4>
+
+
+<p>怎么，你没看懂？ 好吧，我送佛送上西，画个示意图给你看看（对图中的东西我就不再解释了）。</p>
+
+
+<p><img title="rsync algorithm" src="http://coolshell.cn/wp-content/uploads/2012/05/rsync-algorithm.jpg" alt="" width="650" height="463"></p>
+
+
+<p>这样，最终，在同步源这端，我们的rsync算法可能会得到下面这个样子的一个数据数组，图中，红色块表示在目标端已匹配上，不用传输（注：我专门在其中显示了两块chunk #5，相信你会懂的），而白色的地方就是需要传输的内容（注意：这些白色的块是不定长的），这样，同步源这端把这个数组（白色的就是实际内容，红色的就放一个标号）压缩传到目的端，在目的端的rsync会根据这个表重新生成文件，这样，同步完成。</p>
+
+
+<p><img title="rsync algorithm result" src="http://coolshell.cn/wp-content/uploads/2012/05/rsync-algorithm-result.jpg" alt="" width="606" height="82"></p>
+
+
+<p>最后想说一下，对于某些压缩文件使用rsync传输可能会传得更多，因为被压缩后的文件可能会非常的不同。对此，对于gzip和bzip2这样的命令，记得开启 “rsyncalbe” 模式。</p>
+
+
+<p>（全文完，<strong>转载时请注明作者和出处</strong>）
+<div style="margin-top:15px;font-size:11px;color:#cc0000">
+<p align="center"><strong>（转载本站文章请注明作者和出处 <a href="http://coolshell.cn/">酷壳 – CoolShell.cn</a> ，请勿用于任何商业用途）</strong></p></div>
+<div style="text-align:center;padding:0px;font-size:11px;margin-bottom:50px">————————============ <b>感谢 <a href="http://42qu.com/">42qu.com</a> 为本站提供 <a href="http://vps.42qu.com/"> VPS</a></b> ============————————</div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="28个Unix/Linux的命令行神器" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7829.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7425.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/07/11/34898000.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">28个Unix/Linux的命令行神器</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Unix 40年：Unix年鉴" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1032.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7425.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/04/23/6281985.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Unix 40年：Unix年鉴</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Linux/Unix 新手和专家教程" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1042.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7425.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/11/08/10437737.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Linux/Unix 新手和专家教程</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Unix 40年：昨天，今天和明天 " style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1023.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7425.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/11/08/10437733.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Unix 40年：昨天，今天和明天 </font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="高级Unix命令" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1044.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F7425.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">高级Unix命令</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><h3>相关文章</h3><ul><li>2012年07月11日 -- <a href="http://coolshell.cn/articles/7829.html" title="28个Unix/Linux的命令行神器">28个Unix/Linux的命令行神器</a></li><li>2012年06月30日 -- <a href="http://coolshell.cn/articles/7804.html" title="关于闰秒">关于闰秒</a></li><li>2012年06月29日 -- <a href="http://coolshell.cn/articles/7779.html" title="K-Means 算法">K-Means 算法</a></li><li>2012年06月24日 -- <a href="http://coolshell.cn/articles/7755.html" title="Git显示漂亮日志的小技巧">Git显示漂亮日志的小技巧</a></li><li>2012年06月20日 -- <a href="http://coolshell.cn/articles/7490.html" title="性能调优攻略">性能调优攻略</a></li><li>2012年05月22日 -- <a href="http://coolshell.cn/articles/7459.html" title="Huffman 编码压缩算法">Huffman 编码压缩算法</a></li><li>2011年11月29日 -- <a href="http://coolshell.cn/articles/6010.html" title="一些有意思的算法代码">一些有意思的算法代码</a></li></ul></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

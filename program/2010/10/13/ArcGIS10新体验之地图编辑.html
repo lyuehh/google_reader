@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ArcGIS10新体验之地图编辑</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ArcGIS10新体验之地图编辑</h2>
+<p class="meta">13 Oct 2010</p>
+
+<div class="post">
+<h2>ArcGIS10新体验之地图编辑</h2>
+
+<h3>by gisangela</h3>
+
+<h3>at 2010-10-12 20:35:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/gisangela/archive/2010/10/12/1849168.html">http://www.cnblogs.com/gisangela/archive/2010/10/12/1849168.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/gisangela/"><img src="http://pic.cnblogs.com/face/u160939.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/gisangela/">gisangela</a> 发表于 2010-10-12 20:35 <a href="http://www.cnblogs.com/gisangela/archive/2010/10/12/1849168.html">原文链接</a> 阅读: 867 评论: 3</p>
+
+
+<p>　　地图编辑经常用于做数据更新，虽然这个工作说起来并不复杂，但是由于跟地图交互比较多，而且不同软件的操作流程不一样，往往让刚接触软件的用户无从下手。之前写过一篇文章介绍编辑的技巧，感兴趣的可以到www.higis.cn/index.php/2008/12/380下载（适用于10之前的版本）。而10版本中，对于编辑的工作流程有了较大的改变，因此这里再和大家来讨论一下。</p>
+
+
+<p>　　编辑就是对点、线、面等矢量数据的增删改，对于矢量数据分为空间信息的和属性信息两部分。相比之下属性数据的编辑是比较简单的（即为字段赋值，修改字段值），而空间数据的编辑涉及到大量的和地图交互的操作以及快捷键的使用，是我们要花时间才能掌握的。在之前的版本中，掌握编辑的原则可以归纳为3T：即Tools——用来绘图的一些草图工具；Target——目标图层，决定了你要绘制的是那一类的地物，道路还是宗地等等，绘制的新地物的几何类型与目标图层一致；Task——编辑任务，例如切割多边形，快速修改要素等，要往往结合草图工具和右键菜单来完成要素的绘制。总之，编辑是以图层为目标，选择恰当的编辑任务和工具配合完成的一项工作。在10版本中的编辑最明显的变化就是没有target的设置了，而且task的下拉列表也被部分整合到了工具条上，整个编辑的工作流程由基于图层变成了基于Template（模版）。</p>
+
+
+<p>所谓的模版就是在图层上进一步的细分，例如在水管的图层中，可能会根据类型分为主干线、支线等，而且数据可能已经根据类型做了符号化，不同的水管类型用不同的符号显示。如果新添加一条管线，那么它会用什么符号显示呢？因为新添加的管线“类型”字段为空值，所以会用默认的all other value的符号显示，如果这条管线属于主干线，只有我们对“类型”字段赋值之后才会显示成主干线的符号。而有了模版之后，我们可以在创建新管线的时候就可以具体到是主干线还是支线，它不仅会调用正确的符号显示，而且会自动给类型字段赋值。当然默认每个图层只有一个模版，增加模版的操作方法是打开Organize Templates对话框，点击New Template，在弹出的对话框中选择要添加模版的图层（Pipes），点击Finish。</p>
+
+
+<p> <img src="http://pic002.cnblogs.com/images/2010/160939/2010101220321442.png" alt="" width="430" height="347"></p>
+
+
+<p>即出现基于符号化的进一步细分的模版：</p>
+
+
+<p> <img src="http://pic002.cnblogs.com/images/2010/160939/2010101220323268.png" alt=""></p>
+
+
+<p>如果选择新绘制Hydrant Setting，创建的新要素会自动为Line_Type字段赋值<img src="http://pic002.cnblogs.com/images/2010/160939/2010101220334080.jpg" alt=""></p>
+
+
+<p>还可以进一步在Hydrant Setting的属性中定义使用的默认绘图工具和字段的默认值，如下图。</p>
+
+
+<p> <img src="http://pic002.cnblogs.com/images/2010/160939/2010101220341178.png" alt=""></p>
+
+
+<p>之后绘制的新要素会保留设置中的属性，自动为该字段赋值，如下图。这一点改进确实方便了许多，而以前想要实现这样的自动赋值只有通过Subtype（子类）才可以实现。</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2010/160939/2010101220343091.jpg" alt=""></p>
+
+
+<p><img src="http://www.cnblogs.com/gisangela/aggbug/1849168.html?type=1" width="1" height="1" alt=""><p>评论: 3　<a href="http://www.cnblogs.com/gisangela/archive/2010/10/12/1849168.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/gisangela/archive/2010/10/12/1849168.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77150/">中国3C电子商务市场地图</a><span style="color:gray">(2010-10-13 13:56)</span><br>· <a href="http://news.cnblogs.com/n/77149/">我无家可归，因此我用 iPad</a><span style="color:gray">(2010-10-13 13:52)</span><br>· <a href="http://news.cnblogs.com/n/77148/">Digg新任CEO承认改版失败 将恢复旧功能</a><span style="color:gray">(2010-10-13 13:42)</span><br>· <a href="http://news.cnblogs.com/n/77147/">Android操作系统将保持增长动力的10大原因</a><span style="color:gray">(2010-10-13 13:38)</span><br>· <a href="http://news.cnblogs.com/n/77145/">程序员视角看开放平台：开放不是一个简单的技术问题</a><span style="color:gray">(2010-10-13 13:32)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77144/">上海麻辣马资深程序员叶劲峰：我的游戏人生</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

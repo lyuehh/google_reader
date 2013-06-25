@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>作为笔记：Tomcat配置DataSource</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>作为笔记：Tomcat配置DataSource</h2>
+<p class="meta">24 Jun 2010</p>
+
+<div class="post">
+<h2>作为笔记：Tomcat配置DataSource</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-06-24 11:50:09</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/698236">http://www.javaeye.com/topic/698236</a></h3>
+
+<p>修改Tomcat_Home/conf/server.xml，在GlobalNamingResources中加入：</p>
+
+
+<p>
+</p>
+
+
+<pre name="code"> &lt;Resource name=&quot;jdbc/DataSource&quot; auth=&quot;Container&quot;
+  type=&quot;javax.sql.DataSource&quot; driverClassName=&quot;oracle.jdbc.OracleDriver&quot;
+  url=&quot;jdbc:oracle:thin:@127.0.0.1:1521:orcl&quot;
+  username=&quot;user&quot; password=&quot;password&quot; maxActive=&quot;20&quot; maxIdle=&quot;10&quot;
+  maxWait=&quot;-1&quot;/&gt;   
+</pre>
+
+
+
+
+<p> 再在Context中加入引用：</p>
+
+
+<p>
+</p>
+
+
+<pre name="code"> &lt;ResourceLink name=&quot;jdbc/DataSource&quot; global=&quot;jdbc/DataSource&quot;  type=&quot;javax.sql.DataSource&quot;/&gt;
+</pre>
+
+
+
+
+<p> 如果不加，则在使用的时候会出现：Cannot create JDBC driver of class '' for connect URL 'null' 错误</p>
+
+
+<p> </p>
+
+
+<p>在web.xml定义：</p>
+
+
+<p>
+</p>
+
+
+<pre name="code">    &lt;resource-ref&gt;
+        &lt;description&gt;popuserDataSource&lt;/description&gt;
+        &lt;res-ref-name&gt;jdbc/DataSource&lt;/res-ref-name&gt;
+        &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+        &lt;res-auth&gt;Container&lt;/res-auth&gt;
+    &lt;/resource-ref&gt;</pre>
+
+
+
+
+<p> 在Spring中引用：</p>
+
+
+<p>
+</p>
+
+
+<pre name="code">  &lt;bean id=&quot;DataSource&quot; class=&quot;org.springframework.jndi.JndiObjectFactoryBean&quot;&gt;
+        &lt;property name=&quot;jndiName&quot; value=&quot;java:comp/env/jdbc/DataSource&quot;/&gt;
+        &lt;property name=&quot;expectedType&quot; value=&quot;javax.sql.DataSource&quot;/&gt;
+    &lt;/bean&gt;</pre>
+
+
+
+
+<p> 完成。</p>
+
+
+<p> </p>
+
+
+<p>不知道为什么Tomcat非得要改web.xml指定引后才能引用<span style="white-space:pre">Resource <span style="white-space:normal">。真烦人。</span></span></p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://netbus.javaeye.com"&gt;NetBus&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/698236" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

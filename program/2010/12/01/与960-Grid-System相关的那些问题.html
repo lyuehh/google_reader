@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>与960 Grid System相关的那些问题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>与960 Grid System相关的那些问题</h2>
+<p class="meta">01 Dec 2010</p>
+
+<div class="post">
+<h2>与960 Grid System相关的那些问题</h2>
+
+<h3>by dreamer爱小花</h3>
+
+<h3>at 2010-11-30 19:57:47</h3>
+
+<h3>original <a href="http://ucdchina.com/snap/8590">http://ucdchina.com/snap/8590</a></h3>
+
+<p>10月份有机会从零开始设计一整个企业网站。借此机会用上了心仪已久的<a href="http://960.gs/">960 Grid System</a>。我们四年前的旧网站也即将改版，原来设计的宽度是1000px，我们打算今后都统一到960px，同时用上960 Grid System。下面整理了使用960 Grid  System时考虑的一些问题，菜鸟们共勉。</p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>为什么是960px？</strong></h4>
+
+
+
+
+<p><br>一直以来，网页设计师都希望寻找一个理想的页面宽度值，既能适应大部分屏幕，又尽可能的在一行显示更多的信息。<br><br>我们首先会考虑的是全屏自适应，但这并非一个好的解决方案。一方面，需要做一个能适应各个宽度的设计，从背景图片，到每个栏目标题的文字长度，都需要考虑到适应多变的宽度；另一方面，也是最致命的一点，相比英文单词，中文方块字是没有起伏的，用户对文字位置记忆的依赖性更大。自适应宽度也就意味着一行显示的文字数是不定的，阅读中文文字块时很可能很难一下找到刚才读到的那个地方现在到哪去了。因此，固定页面宽度比自适应更常用。过去，信息闭塞独立思考的我们会考虑用主流屏幕宽度－20px（IE中左右边框＋滚动条的宽度）。在1024＊768的分辨率下，页面宽度应该为1004px。但过不了多久，很多人便意识到，有一个更好的宽度——960px。<br><br>960 ＝ 2^6*3*5。与1004这个无厘头的数字相比，960能够被12、15、16、24整除，得数分别为80、64、60、40，这些数字听着就和谐而且靠谱。因此960非常适合于使用栅格设计系统进行网页设计。</p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>为什么要用栅格设计系统?</strong></h4>
+
+
+
+
+<p> </p>
+
+
+<p> <blockquote><a href="http://zh.wikipedia.org/w/index.php?title=%E6%A0%85%E6%A0%BC%E8%AE%BE%E8%AE%A1&amp;variant=zh-cn">栅格设计系统，即Gird System</a>（又称网格设计系统、标准尺寸系统、程序版面设计、瑞士平面设计风格、国际主义平面设计风格），是一种平面设计的方法与风格。运用固定的格子设计版面布局，其风格工整简洁，在二战后大受欢迎，已成为今日出版物设计的主流风格之一。</blockquote></p>
+
+<p><br><br>栅格设计系统在印刷出版物的排版设计中十分普遍，网页设计常会从印刷排版中汲取灵感。在网页设计中采用栅格设计系统不单能够继承工整简洁的风格，还能大大的减少设计的工作量；从前端工程的角度来说，这种排版方式优点不言而喻：天然的规范性和可重用性。从整个团队来看，使用栅格设计系统能简化工作流程，便于交流，也便于分工和统一风格。<br><br><img title="3gird_accomplish" src="http://www.youxiangfa.com/wordpress/wp-content/uploads/2010/11/3gird_accomplish.jpg" alt="" width="464" height="425"><br>这是使用3＊3的网格的960px页面设计草图，来自<a href="http://book.douban.com/subject/1998410/">"The Principles of Beautiful Web Design"</a>。</p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>960px是唯一的么？</strong></h4>
+
+
+
+
+<p>960是否是唯一最优的页面宽度呢？当然不是。目前使用栅格系统的页面的宽度并不严格就是960px，也可能是950px，例如yahoo的YUI框架就是950px。关于网页栅格系统设计的介绍<a href="http://ued.taobao.com/blog/2008/09/17/grid_systems/">可以看看TaobaoUED的这篇文章</a>。1024＊768也不会永远是主流分辨率，随着分辨率的发展，下一个较优宽度很可能是1440（2^5*3^2*5），或者是一个没有分辨率的时代，页面能够按比例自动缩放（就像现在在移动版safari看到的那样）。另外，好的设计和创意常常需要打破规则，栅格设计系统也并非网页排版唯一可用的风格，在主流之外会一直存在一些很优秀的非960px页面（尤其是全flash网站）；有时候人们会议论他们seo上的缺陷，或者兼容性、用户体验不够好，但从艺术的角度上他们依然很优秀。</p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>为什么用960 Grid System？</strong></h4>
+
+
+
+
+<p><br><a href="http://960.gs/">960 Grid System</a>是由<a href="http://sonspring.com/">Nathan Smith</a>开发的CSS框架，有12列、16列、24列三个版本。CSS对于很多程序员来说可能完全不屑于优化，但它确实和其他的程序代码一样需要架构和优化。即使运营的是一个很小的网站，适当地组织、重用CSS代码能够节省相当多的时间和成本。CSS框架正是那个能让你在每个网站都屡试不爽的东西，把那些无聊重复的工作都交给它们吧，把自己的精力集中在怎么创造更令人动心的设计上！<br><br>而且，960 Grid System不仅仅提供了CSS框架，它还提供了可打印的缩略图表，Firewofks、Phototshop、OmniGraffle 和Vision的模板源文件⋯⋯你可以让项目组的很多人都用上它。<br><br>它也能为你减少了很多兼容性问题，它支持被yahoo评为A级别的浏览器：<br><img title="960-grid-system-093" src="http://www.youxiangfa.com/wordpress/wp-content/uploads/2010/11/960-grid-system-093.gif" alt="" width="450" height="184"></p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>用960 Grid System做出来的东西好看么？</strong></h4>
+
+
+
+
+<p><br>这个问题很有现实主意色彩。使用960 Grid System创造好网站的能力毋庸置疑，在<a href="http://960.gs/">它的网站上</a>列出了许多成功案例。此外，wordpress用户熟悉的<a href="http://www.woothemes.com/">WooThemes</a>也用了960Grid System。<br><a href="http://www.woothemes.com/"><img title="caffeinated" src="http://www.youxiangfa.com/wordpress/wp-content/uploads/2010/11/caffeinated.jpg" alt="" width="460" height="345"></a><br><br>具体到中文的环境中，每个设计师都有自己的判断。例如我自己觉得16列的网格系统比较适合中文企业网站，你可能会有别的看法。但是并不是用了它就一定能创造出令人满意的网页。“Frameworks are merely tools that help people achieve solutions, not the solutions themselves. It’s up to designers and developers to combat class-itis and div-itis.（框架只是帮助人们获取解决解决方案的工具，不是解决方案本身。它取决于设计师和开发者如何驾驭class和div）”。<br><br>对于开发者来说，用框架总好于不用。还有<a href="http://blog.bingo929.com/css-frameworks-15.html">很多优秀的CSS框架</a>可用。960 Grid System是一个比较单纯的框架，它不关心字体、颜色⋯⋯你可以为自己的网站定制一份字体颜色的框架。但框架也意味着难免会有一些你用不上的样式，如果你的网站很在意这方面的问题，需要谨慎考虑使用框架。</p>
+
+
+<p> </p>
+
+
+
+
+<h4><strong>最后，值得一读的一些参考文章</strong></h4>
+
+
+
+
+<p><a href="http://blog.bingo929.com">彬Go</a>的文章：<br>《<a href="http://blog.bingo929.com/960-grid-system-css.html">960网格系统（翻译）</a>》<br>《<a href="http://blog.bingo929.com/960-css-framework-learn-the-basics.html">960 Grid System 基本原理及使用方法（翻译）</a> 》<br>《<a href="http://blog.bingo929.com/photoshop-960-grid-system-web-design.html">使用Photoshop+960 Grid System模板进行网页设计</a> 》<br>《<a href="http://blog.bingo929.com/css-frameworks-15.html">精选15个国外CSS框架</a>》<br><br>一些经典的使用教程<br><a href="http://www.webdesignerdepot.com/2010/03/fight-div-itis-and-class-itis-with-the-960-grid-system/">Fight Div-itis and Class-itis With the 960 Grid System</a><br><a href="http://net.tutsplus.com/tutorials/html-css-techniques/prototyping-with-the-grid-960-css-framework/">Prototyping With The Grid 960 CSS Framework</a></p>
+
+
+<p>源地址：<a href="http://www.youxiangfa.com/web/about-960-grid-system/">http://www.youxiangfa.com/web/about-960-grid-system/</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

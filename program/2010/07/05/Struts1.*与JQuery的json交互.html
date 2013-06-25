@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Struts1.*与JQuery的json交互</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Struts1.*与JQuery的json交互</h2>
+<p class="meta">05 Jul 2010</p>
+
+<div class="post">
+<h2>Struts1.*与JQuery的json交互</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-05 11:58:50</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/705749">http://www.javaeye.com/topic/705749</a></h3>
+
+<p>这两天项目需要,Struts1.*框架使用JQuery的Json来异步查询信息来显示内容,写完本人总结下~~~</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>一、需要的东西</p>
+
+
+<p>1. jquery的js文件：本人使用的是jquery-1.4.2.min.js.(可以自己去官网下载)</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>二、jsp页面写法</p>
+
+
+<p>1. 首先在head中引入jquery的js文件：</p>
+
+
+<pre name="code">&lt;script type=&quot;text/javascript&quot; src=&quot;${contextPath }/js/tips.js&quot;&gt;&lt;/script&gt;</pre>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>2. 页面button的onclick事件：</p>
+
+
+<pre name="code">&lt;a href=&quot;#&quot; onclick=&quot;f_getInfo(&#39;send.id=${send.id}&#39;)&quot;&gt;预览&lt;/a&gt;</pre>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>3. 下面是js中jquery的代码：</p>
+
+
+<pre name="code">function f_getInfo(param) {
+    $.post(&quot;${contextPath}/send/preSendInfo.do?&quot;,param,
+        function (data) {
+            var obj;
+            obj = eval(data);
+            f_perview(obj);
+         },&quot;json&quot;);
+}
+
+
+function f_perview(obj) {
+    var MSG1 = new CLASS_MSN_MESSAGE(&quot;aa&quot;,obj.twidth,obj.theight,obj.sname,obj.sname,&quot;用户：&quot;+obj.username + &quot;&lt;br&gt; 消息URL：&quot; + obj.contentUrl);
+    MSG1.rect(null,null,null,screen.height-50);
+    MSG1.speed = obj.keepTime; 
+    MSG1.step = 8; 
+    MSG1.show();
+}</pre>
+
+
+<p> </p>
+
+
+<p>说明：第一个js的方法是jquery与后台交互，function方法是返回的结果（这里只有返回成功的消息才会执行该方法），eval是json转换成对象的函数，之后是调用下面的方法传递一个参数。下面的方法就是显示内容了。显示对象的内容使用的是：***.后台bean对象的成员变量。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>4. action类中的写法：</p>
+
+
+<pre name="code">public ActionForward preSendInfo() throws IOException {
+        
+        send = sendService.getSendInfo(send.getId());
+        if(send == null) {
+            return StrutsEnv.getActionMapping().findForward(FAILED);
+        }   
+        
+        String result = JsonUtil.object2json(send).toString();
+        
+        HttpServletResponse response = StrutsEnv.getResponse();
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter pw = response.getWriter();
+        pw.write(result);
+        pw.flush();
+        
+        return null;
+    }</pre>
+
+
+<p> </p>
+
+
+<p>说明：action类中的方法中返回值应该准换成json格式，然后使用response返回到jsp页面。</p>
+
+
+<p>         注意renturn 后面为null。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>5. struts-config.xml文件的写法跟普通的写法一样，只是不用谢forward了~~~</p>
+
+
+<pre name="code">&lt;action attribute=&quot;send&quot; name=&quot;send&quot; path=&quot;/send/preSendInfo&quot; 
+            scope=&quot;request&quot;   type=&quot;com.uucall.messagepush.struts.BeanAction&quot;&gt;
+        &lt;/action&gt;</pre>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>上面就是struts1.*与jquery的ajax交互使用json的所有方法,以后方便自己忘记之后熟悉~~~</p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://ipc.javaeye.com"&gt;mxl86&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/705749" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

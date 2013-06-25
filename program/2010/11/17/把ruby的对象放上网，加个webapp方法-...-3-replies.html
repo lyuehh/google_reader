@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>把ruby的对象放上网，加个webapp方法 ... 3 replies</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>把ruby的对象放上网，加个webapp方法 ... 3 replies</h2>
+<p class="meta">17 Nov 2010</p>
+
+<div class="post">
+<h2>把ruby的对象放上网，加个webapp方法 ... 3 replies</h2>
+
+<h3>by Latest from ChinaonRails</h3>
+
+<h3>at 2010-11-17 14:52:17</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/LatestFromChinaonrails/~3/6__ggJjAJEo/4622.html">http://feedproxy.google.com/~r/LatestFromChinaonrails/~3/6__ggJjAJEo/4622.html</a></h3>
+
+<p>创意来自 最近的ruby大会上，受到启发 -@JEG2's talk at Rubyconf<br>
+<br>
+<a href="https://gist.github.com/675667" rel="nofollow external">https://gist.github.com/675667</a><br>
+<br>
+运行代码<br></p>
+
+<div>require 'rubygems'<br>
+require 'rack'<br>
+<br>
+class Object<br>
+  def webapp<br>
+    class &lt;&lt; self<br>
+       define_method :call do |env|<br>
+         func, *attrs = env[&#39;PATH_INFO&#39;].split(&#39;/&#39;).reject(&amp;:empty?)<br>
+         [200, {}, send(func, *attrs)]<br>
+       end<br>
+    end<br>
+    self<br>
+  end<br>
+end<br>
+<br>
+Rack::Handler::Mongrel.run [].webapp, :Port =&gt; 9292</div>
+
+
+<p><br>
+在浏览器里操作Array <br>
+<br></p>
+
+<h1>http://localhost:9292/push/1 -&gt; 1<br></h1>
+
+<h1>http://localhost:9292/push/2 -&gt; 12<br></h1>
+
+<h1>http://localhost:9292/push/3 -&gt; 123<br></h1>
+
+<p><br></p>
+
+<h1>http://localhost:9292/to_a -&gt; 123<br></h1>
+
+<p><br></p>
+
+<h1>http://localhost:9292/pop -&gt; 3<br></h1>
+
+<h1>http://localhost:9292/shift -&gt; 1<br></h1>
+
+<p><br>
+其它语言版本<br></p>
+
+<h1>Node.js: https://gist.github.com/700995<br></h1>
+
+<h1>Groovy: https://gist.github.com/702337<br></h1>
+
+<h1>Python: https://gist.github.com/702001<br></h1>
+
+<p><br>
+原理解释：<br>
+<a href="http://stackoverflow.com/questions/4198883/exposing-any-ruby-object-over-the-web" rel="nofollow external">http://stackoverflow.com/questions/4198883/exposing-any-ruby-object-over-the-web</a><br>
+<br>
+下面link，这个？？ 你如果没弄明白，可别干<br>
+http://localhost:9292/instance_eval/exec("rm -rf /")</p>
+
+<p><a href="http://feedads.g.doubleclick.net/~a/QMrVW4f4Gc-LWds1dXUAtkeywf0/0/da"><img src="http://feedads.g.doubleclick.net/~a/QMrVW4f4Gc-LWds1dXUAtkeywf0/0/di" border="0" ismap></a><br>
+<a href="http://feedads.g.doubleclick.net/~a/QMrVW4f4Gc-LWds1dXUAtkeywf0/1/da"><img src="http://feedads.g.doubleclick.net/~a/QMrVW4f4Gc-LWds1dXUAtkeywf0/1/di" border="0" ismap></a></p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/LatestFromChinaonrails/~4/6__ggJjAJEo" height="1" width="1"><img src="http://www1.feedsky.com/t1/438107841/RubyonRails_q5tb/feedsky/s.gif?r=http://feedproxy.google.com/~r/LatestFromChinaonrails/~3/6__ggJjAJEo/4622.html" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/RubyonRails_q5tb/438107841/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/RubyonRails_q5tb/438107841/art01.gif"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Linux Shell常用命令总结</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Linux Shell常用命令总结</h2>
+<p class="meta">07 Nov 2011</p>
+
+<div class="post">
+<h2>Linux Shell常用命令总结</h2>
+
+<h3>by Stephen_Liu</h3>
+
+<h3>at 2011-11-07 07:26:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/stephen-liu74/archive/2011/11/07/2202034.html">http://www.cnblogs.com/stephen-liu74/archive/2011/11/07/2202034.html</a></h3>
+
+<p><p><span style="color:#ff0000;font-size:16px"><strong>1.   find</strong></span><br>       find pathname -options [-print -exec -ok]<br>       让我们来看看该命令的参数：<br>       pathname find命令所查找的目录路径。例如用.来表示当前目录，用/来表示系统根目录。<br>       -print find命令将匹配的文件输出到标准输出。<br>       -exec find命令对匹配的文件执行该参数所给出的shell命令。相应命令的形式为&#39;command&#39; {} \;，注意{}和\；之间的空格，同时两个{}之间没有空格,<br>       <span style="color:#ff0000">注意一定有分号结尾。</span><br>       0) -ok 和-exec的作用相同，只不过以一种更为安全的模式来执行该参数所给出的shell命令，在执行每一个命令之前，都会给出提示，让用户来确定是否执行<br>       find . -name &quot;datafile&quot; -ctime -1 -exec ls -l {} \; 找到文件名为datafile*, 同时创建实际为1天之内的文件, 然后显示他们的明细.<br>       find . -name &quot;datafile&quot; -ctime -1 -exec rm -f {} \; 找到文件名为datafile*, 同时创建实际为1天之内的文件, 然后删除他们.<br><br>       find . -name &quot;datafile&quot; -ctime -1 -ok ls -l {} \; 这两个例子和上面的唯一区别就是-ok会在每个文件被执行命令时提示用户, 更加安全.<br>       find . -name &quot;datafile&quot; -ctime -1 -ok rm -f {} \; <br><br>       1) find . -name   基于文件名查找,但是文件名的大小写敏感.    <br>       find . -name &quot;datafile*&quot;<br>    <br>       2) find . -iname  基于文件名查找,但是文件名的大小写不敏感.<br>       find . -iname &quot;datafile*&quot;<br>    <br>       3) find . -maxdepth 2 -name fred 找出文件名为fred,其中find搜索的目录深度为2(距当前目录), 其中当前目录被视为第一层.<br>        <br>       4) find . -perm 644 -maxdepth 3 -name &quot;datafile*&quot;  (表示权限为644的, 搜索的目录深度为3, 名字为datafile*的文件)<br>    <br>       5) find . -path &quot;./rw&quot; -prune -o -name &quot;datafile*&quot; 列出所有不在./rw及其子目录下文件名为datafile*的文件。<br>       find . -path &quot;./dir*&quot; 列出所有符合dir*的目录及其目录的文件.<br>       find . \( -path &quot;./d1&quot; -o -path &quot;./d2&quot; \) -prune -o -name &quot;datafile*&quot; 列出所有不在./d1和d2及其子目录下文件名为datafile*的文件。<br>    <br>       6) find . -user ydev 找出所有属主用户为ydev的文件。<br>       find . ! -user ydev 找出所有属主用户不为ydev的文件， 注意!和-user之间的空格。<br>    <br>       7) find . -nouser    找出所有没有属主用户的文件，换句话就是，主用户可能已经被删除。<br>    <br>       8) find . -group ydev 找出所有属主用户组为ydev的文件。<br>    <br>       9) find . -nogroup    找出所有没有属主用户组的文件，换句话就是，主用户组可能已经被删除。<br>    <br>       10) find . -mtime -3[+3] 找出修改数据时间在3日之内[之外]的文件。<br>       find . -mmin  -3[+3] 找出修改数据时间在3分钟之内[之外]的文件。<br>       find . -atime -3[+3] 找出访问时间在3日之内[之外]的文件。<br>       find . -amin  -3[+3] 找出访问时间在3分钟之内[之外]的文件。<br>       find . -ctime -3[+3] 找出修改状态时间在3日之内[之外]的文件。<br>       find . -cmin  -3[+3] 找出修改状态时间在3分钟之内[之外]的文件。<br>    <br>       11) find . -newer eldest_file ! -newer newest_file 找出文件的更改时间 between eldest_file and newest_file。<br>       find . -newer file     找出所有比file的更改时间更新的文件<br>       find . ! -newer file 找出所有比file的更改时间更老的文件<br>        <br>       12) find . -type d    找出文件类型为目录的文件。<br>       find . ! -type d  找出文件类型为非目录的文件。<br>       b - 块设备文件。<br>       d - 目录。<br>       c - 字符设备文件。<br>       p - 管道文件。<br>       l - 符号链接文件。<br>       f - 普通文件。<br>        <br>       13) find . -size [+/-]100[c/k/M/G] 表示文件的长度为等于[大于/小于]100块[字节/k/M/G]的文件。<br>    <br>       14) find . -empty 查找所有的空文件或者空目录.<br>    <br>       15) find . -type f | xargs grep &quot;ABC&quot; <br>       使用xargs和-exec的区别是, -exec可能会为每个搜索出的file,启动一个新的进程执行-exec的操作, 而xargs都是在一个进程内完成, 效率更高.<br>    <br><strong><span style="font-size:16px;color:#ff0000">2.   crontab:</span></strong> <br>       文件格式如下(每个列之间是使用空格分开的):<br>       第1列分钟1～59<br>       第2列小时1～23（0表示子夜）<br>       第3列日1～31<br>       第4列月1～12<br>       第5列星期0～6（0表示星期天）<br>       第6列要运行的命令<br>    <br>       分 时 日 月 星期 要运行的命令<br>    <br>       30 21* * * /apps/bin/cleanup.sh<br>       <span style="color:#ff0000">上面的例子表示每晚的21:30运行/apps/bin目录下的cleanup.sh。</span><br>       45 4 1,10,22 * * /apps/bin/backup.sh<br>       <span style="color:#ff0000">上面的例子表示每月1、10、22日的4:45运行/apps/bin目录下的backup.sh。</span><br>       10 1 * * 6,0 /bin/find -name &quot;core&quot; -exec rm {} \;<br>       <span style="color:#ff0000">上面的例子表示每周六、周日的1:10运行一个find命令。</span><br>       0,30 18-23 * * * /apps/bin/dbcheck.sh<br>       <span style="color:#ff0000">上面的例子表示在每天18:00至23:00之间每隔30分钟运行/apps/bin目录下的dbcheck.sh。</span><br>       0 23 * * 6 /apps/bin/qtrend.sh<br>       <span style="color:#ff0000">上面的例子表示每星期六的11:00pm运行/apps/bin目录下的qtrend.sh。</span><br>    <br>       -u 用户名。<br>       -e 编辑crontab文件。<br>       -l 列出crontab文件中的内容。<br>       -r 删除crontab文件。<br>       系统将在/var/spool/cron/目录下自动保存名为&lt;username&gt;的cron执行脚本.<br>       cron是定时完成的任务, 在任务启动时,一般来讲都是重新启动一个新的SHELL, 因此当需要使用登录配置文件的信息,特别是环境变量时,是非常麻烦的. <br>       一般这种问题的使用方法如下:<br>       0 2 * * * ( su - USERNAME -c &quot;export LANG=en_US; /home/oracle/yb2.5.1/apps/admin/1.sh&quot;; ) &gt; /tmp/1.log 2&gt;&amp;1<br>       <span style="color:#ff0000">如果打算执行多条语句, 他们之间应使用分号进行分割. 注: 以上语句必须在root的帐户下执行.</span><br>    <br><strong><span style="color:#ff0000;font-size:16px">3.   nohup:</span></strong><br>       nohup command &amp; <br>       如果你正在运行一个进程，而且你觉得在退出帐户时该进程还不会结束，那么可以使用nohup命令。该命令可以在你退出帐户之后继续运行相应的进程。<br>       Nohup就是不挂起的意思(no hang up)。<br>    <br><strong><span style="color:#ff0000;font-size:16px">4.   cut:</span></strong><br>       1) cut一般格式为：cut [options] file1 file2<br>       -c list 指定剪切字符数。<br>       -f field 指定剪切域数。<br>       -d 指定与空格和tab键不同的域分隔符。<br>       -c 用来指定剪切范围，如下所示：<br>       -c1,5-7 剪切第1个字符，然后是第5到第7个字符。<br>       -c2- 剪切第2个到最后一个字符<br>       -c-5 剪切最开始的到第5个字符<br>       -c1-50 剪切前50个字符。<br>       -f 格式与-c相同。<br>       -f1,5 剪切第1域，第5域。<br>       -f1,10-12 剪切第1域，第10域到第12域。<br>       2) 使用方式：<br>       cut -d: -f3 cut_test.txt (基于&quot;:&quot;作为分隔符，同时返回field 3中的数据) *field从0开始计算。<br>       cut -d: -f1,3 cut_test.txt (基于&quot;:&quot;作为分隔符，同时返回field 1和3中的数据)<br>       cut -d: -c1,5-10 cut_test.txt(返回第1个和第5-10个字符)<br>    <br><span style="font-size:16px"><strong><span style="color:#ff0000">5.   sort:    </span></strong></span> <br>       1) 对文件内容进行排序，缺省分割符为空格，如果自定义需要使用-t选择，如-t:<br>       2) 使用分隔符分割后，第一个field为0，awk中为1<br>       3) 具体用法如下：<br>       sort -t: sort_test.txt(缺省基于第一个field进行排序，field之间的分隔符为&quot;:&quot;)<br>       sort -t: -r sort_test.txt(缺省基于第一个field进行倒序排序，field之间的分隔符为&quot;:&quot;)<br>       sort -t: +1 sort_test.txt(基于第二个field进行排序，field之间的分隔符为&quot;:&quot;)<br>       sort +3n sort_test.txt(基于第三个field进行排序，其中n选项提示是进行&quot;数值型&quot;排序) <br>       sort -u  sort_test.txt(去除文件中重复的行，同时基于整行进行排序)<br>       sort -o output_file -t: +1.2[n] sort_text.txt(基于第二个field,同时从该field的第二个字符开始，这里n的作用也是&quot;数值型&quot;排序,并将结果输出到output_file中)<br>       sort -t: -m +0 filename1 filename2(合并两个文件之后在基于第一个field排序)<br><br><strong><span style="color:#ff0000;font-size:16px">6.   pgrep和pkill:</span></strong></p>
+<p>       查找和杀死指定的进程, 他们的选项和参数完全相同, 这里只是介绍pgrep<br>       /&gt; sleep 100&amp;<br><em><span style="color:#008000">       1000</span></em><br>       /&gt; sleep 100&amp;<br><em><span style="color:#008000">       1001</span></em><br>    <br>       /&gt; pgrep sleep<br><em><span style="color:#008000">       1000</span></em><br><em><span style="color:#008000">       1001</span></em><br>       /&gt; pgrep -d: sleep    # -d定义多个进程之间的分隔符, 如果不定义则使用newline<br><span style="color:#008000"><em>       1000:1001</em></span><br>       /&gt; pgrep -n sleep    # -n表示如果该程序有多个进程,查找最新的.<br><em><span style="color:#008000">       1001</span></em><br>       /&gt; pgrep -o  sleep    # -o表示如果该程序有多个进程,查找最老的.<br><em><span style="color:#008000">       1000   </span></em> <br>       /&gt; pgrep -G root,oracle sleep # -G 表示进程的group id在-G后面的组列表中的进程会被考虑<br><span style="color:#008000"><em>       1000</em></span><br><span style="color:#008000"><em>       1001</em></span><br>       /&gt; pgrep -u root,oracle sleep # -u 表示进程的effetive user id在-u后面的组列表中的进程会被考虑<br><em><span style="color:#008000">       1000</span></em><br><em><span style="color:#008000">       1001</span></em><br>       /&gt; pgrep -U root,oracle sleep # -U 表示进程的real user id在-u后面的组列表中的进程会被考虑<br><em><span style="color:#008000">       1000</span></em><br><em><span style="color:#008000">       1001</span></em><br>       /&gt; pgrep -x sleep # -x 表示进程的名字必须完全匹配, 以上的例子均可以部分匹配<br><em><span style="color:#008000">       1000</span></em><br><em><span style="color:#008000">       1001</span></em><br>       /&gt; pgrep -x sle<br>    <br>       /&gt; pgrep -l sleep # -l 将不仅打印pid,也打印进程名<br><em><span style="color:#008000">       1000 sleep</span></em><br><em><span style="color:#008000">       1001 sleep</span></em><br>       /&gt; pgrep -lf sleep # -f 一般与-l合用, 将打印进程的参数<br><span style="color:#008000"><em>       1000 sleep 100</em></span><br><span style="color:#008000"><em>       1001 sleep 100</em></span><br>    <br>       /&gt; pgrep -f sleep -d, | xargs ps -fp<br><em><span style="color:#008000">       UID        PID  PPID  C STIME TTY          TIME CMD</span></em><br><em><span style="color:#008000">       root      1000  2138  0 06:11 pts/5    00:00:00 sleep 1000</span></em><br><em><span style="color:#008000">       root      1001  2138  0 06:11 pts/5    00:00:00 sleep 1000</span></em><br><br><span style="font-size:16px"><strong><span style="color:#ff0000">7.   fuser:</span></strong></span><br>       fuser -m /dev    # 列出所有和/dev设备有染的进程pid.<br>       fuser testfile    # 列出和testfile有染的进程pid<br>       fuser -u testfile # 列出和testfile有染的进程pid和userid<br>       fuser -k testfile # 杀死和testfile有染的进程pid</p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000">8.   mount:</span></strong></span></p>
+<p>　　 如何在unix下面mount一个windows下面的共享目录<br>       mount -t smbfs -o username=USERNAME,password=PASSWORD //windowsIp/pub_directory  /mountpoint   <br>       /&gt; mkdir -p /mnt/win32<br>       /&gt; mount -o username=administrator,password=1234 //10.1.4.103/Mine /mnt/win32<br>       /&gt; umount /mnt/win32        # 卸载该mount.</p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000">9.   netstat:</span></strong></span></p>
+<p>　　 -a 表示显示所有的状态<br>　　 -l 则只是显示listen状态的，缺省只是显示connected<br>　　 -p 显示应用程序的名字<br>　　 -n 显示ip、port和user等信息<br>　　 -t 只显示TCP的连接<br>　　 /&gt; netstat -apnt <br>　　 /&gt; netstat -lpnt      #如果只是显示监听端口的状态，可以使用该命令</p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000">10. tune2fs:</span></strong></span></p>
+<p>　　 调整ext2/ext3文件系统特性的工具</p>
+<p>　　 -l 查看文件系统信息<br>　　 /&gt; tune2fs -l /dev/sda1  #将会列出所有和该磁盘分区相关的数据信息，如Inode等。<br>　　 /&gt; tune2fs -l /dev/sda1 | grep -i &quot;block size&quot;      #查看当前文件系统的块儿尺寸<br>　　 /&gt; tune2fs -l /dev/sdb1 |grep -i &quot;mount count&quot;   #查看 mount count 挂载次数</p>
+<p><span style="font-size:16px;color:#ff0000"><strong>11.  开启或关闭Linux(iptables)防火墙</strong></span><br>      重启后永久性生效：<br>      /&gt; chkconfig iptables on         #开启<br>      /&gt; chkconfig iptables off         #关闭<br>    <br>      即时生效，重启后还原:<br>      /&gt; service iptables start        #开启<br>      /&gt; service iptables stop         #关闭  </p>
+<p><span style="color:#ff0000;font-size:16px"><strong><br></strong></span></p>
+<p><span style="color:#ff0000;font-size:16px"><strong>12.  tar 分卷压缩和合并</strong></span><br>      以每卷500M为例<br>      /&gt;tar cvzpf - somedir | split -d -b 500m    #tar分卷压缩<br>      /&gt;cat x* &gt; mytarfile.tar.gz                      #tar多卷合并</p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000"><br></span></strong></span></p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000">13.  把man或info的信息存为文本文件</span></strong></span><br>      /&gt; man tcsh | col -b &gt; tcsh.txt<br>      /&gt; info tcsh -o tcsh.txt -s</p>
+<p><br><span style="color:#ff0000;font-size:16px"><strong>14.  查看正在执行进程的线程数</strong></span><br>      /&gt;ps -eo &quot;args nlwp pid pcpu&quot; </p>
+<p> </p>
+<p><span style="font-size:16px"><strong><span style="color:#ff0000">15.  使用md5sum计算文件的md5</span></strong></span><br>      /&gt; md5sum test.c<br>      07af691360175a6808567e2b08a11724  test.c<br><br>      /&gt; md5sum test.c &gt; hashfile<br>      /&gt; md5sum –c hashfile     # 验证hashfile中包含的md5值和对应的文件,在执行该命令时是否仍然匹配, 如果此时test.c被修改了,该命令将返回不匹配的警告.</p><img src="http://www.cnblogs.com/stephen-liu74/aggbug/2202034.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/stephen-liu74/">Stephen_Liu</a> 发表于 2011-11-07 07:26 <a href="http://www.cnblogs.com/stephen-liu74/archive/2011/11/07/2202034.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/stephen-liu74/archive/2011/11/07/2202034.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/stephen-liu74/archive/2011/11/07/2202034.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/120748/">小米手机“熊猫版”真机体验 黑白配色</a><span style="color:gray">(2011-11-07 12:09)</span><br>· <a href="http://news.cnblogs.com/n/120747/">Intel官方超高清大图：微处理器40周年</a><span style="color:gray">(2011-11-07 12:07)</span><br>· <a href="http://news.cnblogs.com/n/120746/">阿里巴巴员工的道德观是如何形成的</a><span style="color:gray">(2011-11-07 12:00)</span><br>· <a href="http://news.cnblogs.com/n/120745/">Facebook全美成年社交网络用户渗透率达96%</a><span style="color:gray">(2011-11-07 11:59)</span><br>· <a href="http://news.cnblogs.com/n/120744/">苹果在中国获得13项iPad 2设计专利</a><span style="color:gray">(2011-11-07 11:56)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/chijianqiang/archive/2011/11/06/2238379.html">移动互联网，浮华还是盛宴 —— 2011年中国移动开发者大会</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

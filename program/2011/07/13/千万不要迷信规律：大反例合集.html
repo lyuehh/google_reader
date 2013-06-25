@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>千万不要迷信规律：大反例合集</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>千万不要迷信规律：大反例合集</h2>
+<p class="meta">13 Jul 2011</p>
+
+<div class="post">
+<h2>千万不要迷信规律：大反例合集</h2>
+
+<h3>by Matrix67</h3>
+
+<h3>at 2011-07-13 13:39:45</h3>
+
+<h3>original <a href="http://www.matrix67.com/blog/archives/4491">http://www.matrix67.com/blog/archives/4491</a></h3>
+
+<p>    数学猜想并不总是对的，错误的数学猜想不占少数。关键在于，有时反例太大，找出反例实在是太困难了。这篇日志收集了很多“大反例”的例子，里面提到的规律看上去非常诱人，要试到相当大的数时才会出现第一个反例。</p>
+
+
+<p><strong>千万不要迷信规律</strong></p>
+
+
+<p>    圆上有 n 个点，两两之间连线后，最多可以把整个圆分成多少块？</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107131.png" alt=""></p>
+
+
+<p>    上图显示的就是 n 分别为 2 、 3 、 4 的情况。可以看到，圆分别被划分成了 2 块、 4 块、 8 块。规律似乎非常明显：圆周上每多一个点，划分出来的区域数就会翻一倍。</p>
+
+
+<p><span></span><br>
+    事实上真的是这样吗？让我们看看当 n = 5 时的情况：</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107132.png" alt=""></p>
+
+
+<p>    果然不出所料，整个圆被分成了 16 块，区域数依旧满足 2<sup>n-1</sup> 的规律。此时，大家都会觉得证据已经充分，不必继续往下验证了吧。偏偏就在 n = 6 时，意外出现了：</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107133.png" alt=""></p>
+
+
+<p>    此时区域数只有 31 个。</p>
+
+
+<p> <br>
+ <br>
+<strong>最有名的素数生成公式</strong></p>
+
+
+<p>    1772 年，Euler 曾经发现，当 n 是正整数时， n<sup>2</sup> + n + 41 似乎总是素数。事实上，n 从 1 一直取到 39，算出来的结果分别是：</p>
+
+
+<blockquote><p>43, 47, 53, 61, 71, 83, 97, 113, 131, 151, 173, 197, 223, 251, 281,<br>
+313, 347, 383, 421, 461, 503, 547, 593, 641, 691, 743, 797, 853,<br>
+911, 971, 1033, 1097, 1163, 1231, 1301, 1373, 1447, 1523, 1601</p></blockquote>
+
+
+<p>    这些数全都是素数。第一次例外发生在 n = 40 的时候，此时 40<sup>2</sup> + 40 + 41 = 40<sup>2</sup> + 40 + 40 + 1 = (40 + 1)(40 + 1) = 41 × 41。</p>
+
+
+<p> <br>
+ <br>
+<strong>x<sup>n</sup> - 1 的因式分解</strong></p>
+
+
+<p>    x<sup>2</sup> - 1 分解因式后等于 (x + 1)(x - 1) 。 x<sup>20</sup> - 1 分解因式后等于</p>
+
+
+<blockquote><p>(x - 1) (x + 1) (x<sup>2</sup> + 1) (x<sup>4</sup> - x<sup>3</sup> + x<sup>2</sup> - x + 1) (x<sup>4</sup> + x<sup>3</sup> + x<sup>2</sup> + x + 1) (x<sup>8</sup> - x<sup>6</sup> + x<sup>4</sup> - x<sup>2</sup> + 1)</p></blockquote>
+
+
+<p>    对于所有的正整数 n ， x<sup>n</sup> - 1 因式分解后各项系数都只有可能是 1 或者 -1 吗？据说有人曾经算到了 x<sup>100</sup> - 1 ，均没有发现反例，终于放心大胆地做出了这个猜想。悲剧的是，这个猜想是错误的，第一个反例出现在 n = 105 的情况， x<sup>105</sup> - 1 分解出来等于</p>
+
+
+<blockquote><p>(x - 1) (x<sup>2</sup> + x + 1) (x<sup>4</sup> + x<sup>3</sup> + x<sup>2</sup> + x + 1) (x<sup>6</sup> + x<sup>5</sup> + x<sup>4</sup> + x<sup>3</sup> + x<sup>2</sup> + x + 1)<br>
+(x<sup>8</sup> - x<sup>7</sup> + x<sup>5</sup> - x<sup>4</sup> + x<sup>3</sup> - x + 1) (x<sup>12</sup> - x<sup>11</sup> + x<sup>9</sup> - x<sup>8</sup> + x<sup>6</sup> - x<sup>4</sup> + x<sup>3</sup> - x + 1)<br>
+(x<sup>24</sup> - x<sup>23</sup> + x<sup>19</sup> - x<sup>18</sup> + x<sup>17</sup> - x<sup>16</sup> + x<sup>14</sup> - x<sup>13</sup> + x<sup>12</sup> - x<sup>11</sup> + x<sup>10</sup> - x<sup>8</sup> + x<sup>7</sup> - x<sup>6</sup> + x<sup>5</sup> - x + 1)<br>
+(x<sup>48</sup> + x<sup>47</sup> + x<sup>46</sup> - x<sup>43</sup> - x<sup>42</sup> - <span style="color:red">2</span> x<sup>41</sup> - x<sup>40</sup> - x<sup>39</sup> + x<sup>36</sup> + x<sup>35</sup> + x<sup>34</sup> + x<sup>33</sup> + x<sup>32</sup> + x<sup>31</sup> - x<sup>28</sup><br>
+ - x<sup>26</sup> - x<sup>24</sup> - x<sup>22</sup> - x<sup>20</sup> + x<sup>17</sup> + x<sup>16</sup> + x<sup>15</sup> + x<sup>14</sup> + x<sup>13</sup> + x<sup>12</sup> - x<sup>9</sup> - x<sup>8</sup> - <span style="color:red">2</span> x<sup>7</sup> - x<sup>6</sup> - x<sup>5</sup> + x<sup>2</sup> + x + 1)</p></blockquote>
+
+
+<p> <br>
+ <br>
+<strong>以 2 为底的伪素数</strong></p>
+
+
+<p>    下面是当 n 较小的时候， n 与 2<sup>n</sup> - 2 的值。</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107135.png" alt=""></p>
+
+
+<p>    似乎有这样的规律： n 能整除 2<sup>n</sup> - 2 ，当且仅当 n 是一个素数。如果真是这样的话，我们无疑有了一种超级高效的素数判定算法（ 2<sup>n</sup> 可以用二分法速算，期间可以不断模 n ）。国外数学界一直传有“中国人 2000 多年前就发现了这一规律”的说法，后来发现其实是对《九章算术》一书的错误翻译造成的。再后来人们发现，这个规律竟然是错误的。第一个反例是 n = 341，此时 341 能够整除 2<sup>341</sup> - 2 ，但 341 = 11 × 31 。</p>
+
+
+<p>    事实上，根据 Fermat 小定理，如果 p 是素数，那么 p 一定能整除 2<sup>n</sup> - 2。不过，它的逆定理却是不成立的，上面提到的 341 便是一例。我们把这种数叫做以 2 为底的伪素数。由于这种素数判定法的反例出人意料的少，我们完全可以用它来做一个概率型的素数判定算法。事实上，著名的 <a href="http://www.matrix67.com/blog/archives/234">Miller-Rabin 素性测试算法</a>就是用的这个原理。</p>
+
+
+<p> <br>
+ <br>
+<strong>Perrin 伪素数</strong></p>
+
+
+<p>    定义 f(n) = f(n - 2) + f(n - 3) ，其中 f(1) = 0 ， f(2) = 2 ， f(3) = 3 。这个数列叫做 Perrin 数列。</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107136.png" alt=""></p>
+
+
+<p>    似乎有这么一个规律： n 能整除 Perrin 数列的第 n 项 f(n) ，当且仅当 n 是一个素数。如果这个规律成立的话，我们也将获得一个效率非常高的素数检验方法。根据 <a href="http://mathworld.wolfram.com/PerrinPseudoprime.html">MathWorld</a> 的描述，1899 年 Perrin 本人曾经做过试验，随后 Malo 在 1900 年， Escot 在 1901 年，以及 Jarden 在 1966 年都做过搜索，均未发现任何反例。直到 1982 年， Adams 和 Shanks 才发现第一个反例 n = 271 441 ，它等于 521 × 521 ，却也能整除 f(271 441) 。下一个反例则发生在 n = 904 631 的时候，再下一个反例则是 n = 16 532 714 。这种反例被称为 Perrin 伪素数。</p>
+
+
+<p> <br>
+ <br>
+<strong>最经典的大反例</strong></p>
+
+
+<p>    说到大反例，这是我最喜欢举的例子。下面是大于 1 的正整数分解质因数后的结果：</p>
+
+
+<blockquote><p>2 = 2<br>
+3 = 3<br>
+4 = 2 × 2<br>
+5 = 5<br>
+6 = 2 × 3<br>
+7 = 7<br>
+8 = 2 × 2 × 2<br>
+9 = 3 × 3<br>
+10 = 2 × 5<br>
+...</p></blockquote>
+
+
+<p>    其中，4、6、9、10 包含偶数个质因子，其余的数都包含奇数个质因子。你会发现，在上面的列表中一行一行地看下来，不管看到什么位置，包含奇数个质因子的数都要多一些。1919 年，George Pólya 猜想，质因子个数为奇数的情况不会少于 50% 。也就是说，对于任意一个大于 1 的自然数 n ，从 2 到 n 的数中有奇数个质因子的数不少于有偶数个质因子的数。这便是著名的 Pólya 猜想。</p>
+
+
+<p>    Pólya 猜想看上去非常合理——每个有偶数个质因子的数，必然都已经提前经历过了“有奇数个质因子”这一步。不过，这个猜想却一直未能得到一个严格的数学证明。到了 1958 年，英国数学家 C. B. Haselgrove 发现， Pólya 猜想竟然是错误的。他证明了 Pólya 猜想存在反例，从而推翻了这个猜想。不过，Haselgrove 仅仅是证明了反例的存在性，并没有算出这个反例的具体值。Haselgrove 估计，这个反例至少也是一个 361 位数。</p>
+
+
+<p>    1960 年，R. Sherman Lehman 给出了一个确凿的反例：n = 906 180 359。而 Pólya 猜想的最小反例则是到了 1980 年才发现的：n = 906 150 257。</p>
+
+
+<p> <br>
+ <br>
+<strong>Fermat 大定理还能推广吗？</strong></p>
+
+
+<p>    Fermat 大定理说，当 n &gt; 2 时，方程 x<sup>n</sup> + y<sup>n</sup> = z<sup>n</sup> 没有正整数解。 Euler 曾经猜想，当 n &gt; k 时，方程 x<sub>1</sub><sup>n</sup> + x<sub>2</sub><sup>n</sup> + … + x<sub>k</sub><sup>n</sup> = y<sup>n</sup> 都没有正整数解。 1986 年，Noam Elkies 给出了方程 x<sup>4</sup> + y<sup>4</sup> + z<sup>4</sup> = w<sup>4</sup> 的一个正整数解，从而推翻了这个猜想。这个反例是：2 682 440<sup>4</sup> + 15 365 639<sup>4</sup> + 18 796 760<sup>4</sup> = 20 615 673<sup>4</sup> 。</p>
+
+
+<p> <br>
+ <br>
+<strong>XX 型平方数</strong></p>
+
+
+<p>    11, 22, 33, 44, 55, 66, 77, 88, 99, 1010, 1111, 1212, … 都不是完全平方数。有没有什么数，把它连写两次后，正好是一个完全平方数呢？有。第一个这样的数是 13 223 140 496 ，把它连写两次将得到 1 322 314 049 613 223 140 496 ，是 36 363 636 364 的平方。第二个这样的数则是 20 661 157 025 ，它对应了 45 454 545 455 的平方。更多信息可见 <a href="http://oeis.org/A102567">http://oeis.org/A102567</a> 。</p>
+
+
+<p> <br>
+ <br>
+<strong>总是相等吗？</strong></p>
+
+
+<p>    下面是 n 为正整数时， 2 / (2<sup>1/n</sup> - 1) 取上整的结果与 2n / ln(2) 取下整的结果：</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107134.png" alt=""></p>
+
+
+<p>    这两者的结果总是相等吗？不是的。第一个反例是 n = 777 451 915 729 368，前者算出来的结果是 2 243 252 046 704 767 ，但后者是 2 243 252 046 704 766 。下一个反例则出现在 n = 140 894 092 055 857 794 的时候。更多信息可见 <a href="http://oeis.org/A129935">http://oeis.org/A129935</a> 。</p>
+
+
+<p> <br>
+ <br>
+<strong>至今仍未找到的反例</strong></p>
+
+
+<p>    有没有什么猜想，明明已经被推翻了，所有人都知道存在反例，但因为反例实在是太大了，直到现在仍然没有找到呢？有。下面这张表展示了 n 取不同值时 pi(n) 和 li(n) 的值，其中 pi(n) 表示不超过 n 的素数的个数，li(n) 则是对数积分 ∫<sub>0</sub><sup>n</sup> dx/ln(x) 。</p>
+
+
+<p>      <img src="http://www.matrix67.com/blogimage_2011/201107137.png" alt=""></p>
+
+
+<p>    pi(n) 是否永远小于 li(n) 呢？1914 年，Littlewood 证明了存在一个大数 n 使得 pi(n) ≥ li(n) ，不过却并没有给出一个具体的 n 值来。1955 年，Skewes 给出了这样的 n 值的一个上界：在 10^(10^(10^963)) 以内，必有一个满足 pi(n) ≥ li(n) 的 n 。</p>
+
+
+<p>    虽然数学家们正在不断地改进上界（目前的上界大约是 e<sup>727.9513</sup> ），但仍然无法找出一个具体的 n 来。原因很简单——这个反例实在是太大了。</p>
+
+
+<p> <br>
+ <br>
+几个主要来源：<br>
+<a href="http://redd.it/iikk4">http://redd.it/iikk4</a><br>
+<a href="http://www.guokr.com/article/9688/">http://www.guokr.com/article/9688/</a><br>
+<a href="http://mathoverflow.net/questions/15444">http://mathoverflow.net/questions/15444</a></p>
+
+
+<p>如果你对此感兴趣，不要错过数学史上的一篇经典论文：<a href="http://www.math.sjsu.edu/~hsu/courses/126/Law-of-Small-Numbers.pdf">The Strong Law of Small Numbers</a></p>
+
+
+<p>这篇日志今后将不断更新</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/552087372/matrix67/feedsky/s.gif?r=http://www.matrix67.com/blog/archives/4491" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

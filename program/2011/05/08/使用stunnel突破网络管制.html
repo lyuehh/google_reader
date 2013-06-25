@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用stunnel突破网络管制</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用stunnel突破网络管制</h2>
+<p class="meta">08 May 2011</p>
+
+<div class="post">
+<h2>使用stunnel突破网络管制</h2>
+
+<h3>by iGFW</h3>
+
+<h3>at 2011-05-07 23:39:57</h3>
+
+<h3>original <a href="http://igfw.tk/archives/2498">http://igfw.tk/archives/2498</a></h3>
+
+<p>当前网络审查相当严格，不仅有政府的GFW来扫描过往的数据包，好多公司也有各自的“墙”，用策略来过滤一部分的网络请求，本文描述了如何在比较苛刻的审查条件下进行突破数据包扫描的方法。</p>
+
+
+<p>公司屏蔽了除21/80/443之外的其他端口，端口绑定协议（也就是21必须是FTP协议，80是HTTP，443是HTTPS），禁止IMCP协议（也就是说过滤了ping数据包）；配合域名过滤以及ip地址过滤，比如对qq/飞信的过滤就是屏蔽了服务器的ip地址；更加变态的是居然有类似GFW的链接被重置，比如你访问的一个网站上引用到了某个被屏蔽的站点的url，那个网站也会被屏蔽几分钟，机制很诡异。</p>
+
+
+<h2><span></span>解决思路：</h2>
+
+
+<p><strong>思路1：</strong>在自己的VPS上把SSHD绑定在21或443端口，利用MyEntunnel配合ssh翻墙（这招在突破GFW上很管用，比VPN简单易用，直接得到一个SOCKS代理，配合Firefox的AutoProxy用）。结果由于端口绑定协议，ssh根本不能访问。</p>
+
+
+<p><strong>思路2：</strong>在外网找一台Server，我用的是自己家的ADSL+一台ATOM D510小主机，开放80端口做HTTP(S)代理，成功的解决了ip地址过滤的问题，飞信和qq成功登录。</p>
+
+
+<p><strong>思路3：</strong>同样是借助外网Server，在443端口上假设stunnel server端，在内网架设stunnel client端，C/S端用密钥对加解密，成功的突破了防火墙的限制，得到加密的一条隧道至一个HTTP代理。至此，突破网络扫描的工作完成，任何TCP请求都能够顺利通过隧道。</p>
+
+
+<h2>stunnel的机制以及局限性：</h2>
+
+
+<p><strong>作用机制：</strong>stunnel（官方站点<a href="http://www.stunnel.org/">www.stunnel.org</a>）其实是一个用SSL加密来保护不受加密的通信的工具，简单的说就是建立一个消息隧道，本地未加密的消息传输到stunnel的客户端，客户端使用加密后传输给服务器端，服务器端解密后进行数据包的转发，比如转发到一个代理，数据返回的机制类似。穿透防火墙的原理是因为通信采用的是标准的HTTPS，因此网关不能扫描包内容，也不会进行拦截。这样就保证了数据传输的安全性，在非安全的网络条件下适用。</p>
+
+
+<p><strong>局限性：</strong>stunnel并没有提供客户端程序使用HTTP代理访问服务器端的支持（或者是我没找到），其实从原理上来说是可以增加一层代理的，因为是标准的HTTPS通信，多一层proxy不影响整个数据的流通。还有一个不容忽视的问题就是速度被明显的拖慢了，中间环节变多了，速度没可能不慢，我的解决方法是在客户端做一个squid代理缓存，对静态文件（比如css，图片，js等）高概率（90%）缓存命中，减少重复的通过隧道请求服务器。</p>
+
+
+<h2>stunnel配置方法：</h2>
+
+
+<p>1. 下载stunne和openssl：</p>
+
+
+<p><a href="ftp://ftp.stunnel.org/stunnel/">ftp://ftp.stunnel.org/stunnel/</a> 子目录中也有<a href="ftp://ftp.stunnel.org/stunnel/openssl/">openssl</a></p>
+
+
+<p>2. 生成证书：</p>
+
+
+<p>openssl req -new -x509 -days 365 -nodes -config openssl.cnf -out stunnel.pem -keyout stunnel.pem<br>
+将产生的stunnel.pem拷贝到服务端/客户端各自的安装目录，替换同名文件</p>
+
+
+<p>3. 在服务器上安装服务器端，修改配置文件stunnel.conf：</p>
+
+
+<p>cert = stunnel.pem<br>
+key = stunnel.pem<br>
+client = no<br>
+[https]<br>
+accept  = 443<br>
+connect = 80</p>
+
+
+<p>//[https]表示声明一个endpoint，此处即监听443端口，转发到本地的80端口</p>
+
+
+<p>4. 在本地机器上安装客户端，修改配置文件stunnel.conf：</p>
+
+
+<p>cert = stunnel.pem<br>
+key = stunnel.pem<br>
+client = yes<br>
+[https]<br>
+accept  = 8888<br>
+connect = xxxx.com:443<br>
+//同样，声明https这个endpoint，监听本地的8888端口，转发到xxxx.com的443端口<br>
+//注意，服务端和客户端使用的stunnel.pem一定要一致</p>
+
+
+<h2>Cache：</h2>
+
+
+<p>由于使用加密隧道进行通信的时间成本比较大，如果不做本地缓存的话可能会严重的影响速度。因此，我做了两个缓存服务器，一个在客户端，一个在服务器端，客户端squid配置成对静态文件90%命中，即无视http header中的Expires设置，有点类似强制命中。这样就基本能保证同一个文件不会经常占用速度比较慢的隧道而影响浏览效果，因此客户端squid的memory缓存和磁盘缓存大小必须设置得比较大。</p>
+
+
+<p><strong>原文</strong>：<a href="http://hackerzhou.me/2011/02/use-stunnel-breakthrough-network-restrictions.html">http://hackerzhou.me/2011/02/use-stunnel-breakthrough-network-restrictions.html</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

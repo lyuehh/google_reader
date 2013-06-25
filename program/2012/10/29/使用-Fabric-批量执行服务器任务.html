@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用 Fabric 批量执行服务器任务</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用 Fabric 批量执行服务器任务</h2>
+<p class="meta">29 Oct 2012</p>
+
+<div class="post">
+<h2>使用 Fabric 批量执行服务器任务</h2>
+
+<h3>by vpsee</h3>
+
+<h3>at 2012-10-29 13:57:44</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/vpsee/~3/G8RY0jfGAFc/">http://feedproxy.google.com/~r/vpsee/~3/G8RY0jfGAFc/</a></h3>
+
+<p>我们的<a href="http://www.vpsee.com/2012/03/install-puppet-on-centos-6-2/">服务器和虚拟机的环境配置都由 puppet 管理</a>，但有时候需要临时执行某些任务和操作，比如同时更换500台服务器的密码、同时更新或者重启500台虚拟机、在特定几台服务器上添加或者一个用户、上传一个特定文件/脚本到1000台服务器等等。这些任务用 Puppet 可以做，但是不是最简洁的办法。我们需要一种工具能完成大量服务器上的批量操作，并且要简单可编程，Fabric 就是这样一个基于 Python 的服务器批量管理库/工具，Fabric 使用 ssh（通过 paramiko 库）在多个服务器上批量执行任务，我们只需要用 Python 编写这些任务脚本并指定要执行这些任务的服务器就可以了。</p>
+
+
+<p>Fabric 依赖 paramiko，所以需要安装这两个：</p>
+
+
+<pre>
+$ sudo pip install fabric
+$ sudo pip install paramiko
+</pre>
+
+
+<p>编写一个简单的 Fabric 例子，在1台服务器上打印系统信息（uname -s）：</p>
+
+
+<pre>
+$ vi fabfile.py
+#!/usr/bin/python
+
+from fabric.api import run
+
+def host_os():
+    run('uname -s')
+</pre>
+
+
+<p>在 vpsee.com 这台主机（host）上使用 root 帐户执行上面的任务 host_os：</p>
+
+
+<pre>
+$ fab -H root@vpsee.com host_os
+[root@vpsee.com] Executing task 'host_os'
+[root@vpsee.com] run: uname -s
+[root@vpsee.com] Login password for 'root': 
+[root@vpsee.com] out: Linux
+
+Done.
+Disconnecting from root@vpsee.com... done.
+</pre>
+
+
+<p>来看一个更复杂点的例子，在多个服务器（grid00, grid02, …, grid05）上更换 root 密码（假设原密码是 root），注意加上 @parallel，这样任务是并行执行的，在大量服务器上会快很多：</p>
+
+
+<pre>
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from fabric.api import *
+import string
+from random import choice
+import socket
+import paramiko
+
+env.user = 'root'
+env.password = 'root'
+env.hosts = [ 'grid00', 'grid01', 'grid02', 'grid03', 'grid04', 'grid05']
+
+@task
+@parallel
+def passwd(user, passwd=False):
+    with settings(hide('running', 'stdout', 'stderr'), warn_only=True):
+        if isup(env.host):
+            if not passwd:
+                passwd = genpass()
+            sudo("echo -e '%s\n%s' | passwd %s" % (passwd, passwd, user))
+
+def genpass(length=10):
+    return ''.join(choice(string.ascii_letters + string.digits) for _ in range(length))
+
+def isup(host):
+    print 'connecting host: %s' % host
+    timeout = socket.getdefaulttimeout()
+    socket.setdefaulttimeout(1)
+    up = True
+    try:
+        paramiko.Transport((host, 22))
+    except Exception, e:
+        up = False
+        print '%s down, %s' % (host, e)
+    finally:
+        socket.setdefaulttimeout(timeout)
+        return up
+</pre>
+
+
+<p>使用 fab -l 查看我们刚编写的 fabfile.py 里面的可用命令，这个命令就是那个函数名 def passwd(user, passwd=False)：</p>
+
+
+<pre>
+$ fab -l
+Available commands:
+
+    passwd
+</pre>
+
+
+<p>使用这个命令批量更换 grid00-grid05 的 root 密码为 test，passwd 传递参数的时候接冒号，并且用户名和密码参数用逗号隔开：</p>
+
+
+<pre>
+$ fab passwd:root,test
+[grid00] Executing task 'passwd'
+[grid01] Executing task 'passwd'
+[grid02] Executing task 'passwd'
+[grid03] Executing task 'passwd'
+[grid04] Executing task 'passwd'
+[grid05] Executing task 'passwd'
+connecting host: grid05
+connecting host: grid04
+connecting host: grid02
+connecting host: grid03
+connecting host: grid01
+connecting host: grid00
+
+Done.
+</pre>
+
+
+<p>Fabric 的强大之处在于可以用 Python 编写各种任务（函数），这些任务可以指定到任何服务器上（通过 ssh），非常适合管理大量服务器、批量处理任务。另外 Fabric 工作方式非常简单容易理解，就是简单的 ssh 而已，没有内幕没有架构，不像其他工具什么客户端服务器端、什么中间代码、什么 DSL 领域专属语言（嗯，说的就是 puppet, chef）。Fabric 使用起来只需要懂点 Python 就可以了，不需要学命令、api、框架之类的。<a href="http://www.vpsee.com/2010/06/do-one-thing-and-do-it-well/">我们喜欢简单</a>、容易理解的工具。</p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/vpsee/~4/G8RY0jfGAFc" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

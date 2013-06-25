@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一目了然 rails html xml encode decode</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一目了然 rails html xml encode decode</h2>
+<p class="meta">04 May 2013</p>
+
+<div class="post">
+<h2>一目了然 rails html xml encode decode</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-05-03 23:37:38</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1859583">http://hlee.iteye.com/blog/1859583</a></h3>
+
+<pre name="code">
+1.9.2p320 :001 &gt; require &#39;htmlentities&#39;
+1.9.2p320 :002 &gt; c = HTMLEntities.new
+ #=&gt; #&lt;HTMLEntities:0x007fef0a5b0468 @flavor=&quot;xhtml1&quot;&gt;
+1.9.2p320 :003 &gt; c.decode &quot;&amp;gt;&quot;
+ #=&gt; &quot;&gt;&quot;
+1.9.2p320 :004 &gt; require &#39;cgi&#39;
+# =&gt; false
+1.9.2p320 :005 &gt; CGI.unescapeHTML &quot;&amp;quot;&quot;
+# =&gt; &quot;\&quot;&quot;
+1.9.2p320 :006 &gt; helper.send :raw, &quot;&amp;lt;&quot;
+# =&gt; &quot;&amp;lt;&quot;
+1.9.2p320 :007 &gt; helper.send :raw, &quot;&lt;/p&gt;&quot;
+# =&gt; &quot;&lt;/p&gt;&quot;
+1.9.2p320 :008 &gt; helper.send :h, &quot;&lt;/p&gt;&quot;
+# =&gt; &quot;&amp;lt;/p&amp;gt;&quot;
+
+</pre>
+
+
+<p><br>
+<br>
+<br>xml稍微特别处理
+<br><pre name="code">
+require &#39;rubygems&#39;
+require &#39;builder&#39;</p>
+
+<p>content = &lt;&lt;eos
+SOME TEXT, GOES TO UPPERCASE
+other text
+&lt;em&gt;italics&lt;em&gt;</p>
+
+<p>xml = Builder::XmlMarkup.new
+  xml.instruct! :xml, :version =&gt; &#39;1.0&#39;
+  xml.book :id =&gt; 1.0 do
+    xml.keyPic &quot;keyPic1.jpg&quot;
+    xml.parts do
+      xml.part :partId =&gt; &quot;1&quot;, :name =&gt; &quot;name&quot; do
+        xml.chapter :title =&gt; &quot;title&quot;, :subtitle =&gt; &quot;subtitle&quot; do
+          xml.text content
+        end
+      end
+    end
+  end</p>
+
+<h1>p xml</h1>
+
+<h1>When running from the CLI (Cygwin), I get the following:</h1>
+
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;book id=&quot;1.0&quot;&gt;
+  &lt;keyPic&gt;keyPic1.jpg&lt;/keyPic&gt;
+    &lt;parts&gt;
+      &lt;part partId=&quot;1&quot; name=&quot;name&quot;&gt;
+        &lt;chapter title=&quot;title&quot; subtitle=&quot;subtitle&quot;&gt;
+          &lt;text&gt;
+          SOME TEXT, GOES TO UPPERCASE
+          other text
+          &amp;lt;em&amp;gt;italics&amp;lt;em&amp;gt;
+          &lt;/text&gt;
+        &lt;/chapter&gt;
+      &lt;/part&gt;
+    &lt;/parts&gt;
+&lt;/book&gt;&lt;inspect/&gt;</p>
+
+<p>&lt;text&gt;
+SOME TEXT, GOES TO UPPERCASE
+other text
+&lt;em&gt;italics&lt;em/&gt;
+&lt;/text&gt;</p>
+
+<p></pre>
+<br>
+<br>使用&lt;&lt; 操作符来添加不修改内容
+<br>
+<br><pre name="code"></p>
+
+<p>xml.text do |t|
+  t &lt;&lt; content
+end</p>
+
+<p></pre></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1859583#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

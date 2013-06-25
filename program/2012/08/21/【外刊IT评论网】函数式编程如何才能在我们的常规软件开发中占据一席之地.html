@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【外刊IT评论网】函数式编程如何才能在我们的常规软件开发中占据一席之地</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【外刊IT评论网】函数式编程如何才能在我们的常规软件开发中占据一席之地</h2>
+<p class="meta">21 Aug 2012</p>
+
+<div class="post">
+<h2>【外刊IT评论网】函数式编程如何才能在我们的常规软件开发中占据一席之地</h2>
+
+<h3>by Aqee</h3>
+
+<h3>at 2012-08-21 00:03:45</h3>
+
+<h3>original <a href="http://aqee.feedsportal.com/c/34519/f/631690/s/228e0fb6/l/0L0Saqee0Bnet0Cfunctional0Eprogramming0Ea0Estep0Ebackward0C/story01.htm">http://aqee.feedsportal.com/c/34519/f/631690/s/228e0fb6/l/0L0Saqee0Bnet0Cfunctional0Eprogramming0Ea0Estep0Ebackward0C/story01.htm</a></h3>
+
+<p><br><p><a href="http://wkee.net/qee/wordpress/wp-content/uploads/2012/08/qbear.gif"><img title="qbear" src="http://wkee.net/qee/wordpress/wp-content/uploads/2012/08/qbear-209x300.gif" alt="qbear" width="209" height="300"></a></p> <p>除非你生活中与世隔绝的深山老林里，否则你应该知道，在众多的所谓顶级编程高手(<a href="http://video.google.com/videoplay?docid=-3436067109364123518">alpha geeks</a>)中，函数式编程是十分盛行的。也许你已经使用了某种<a title="Functional programming" href="http://www.aqee.net/www.aqee.net/tag/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B/" rel="wikipedia">函数式编程语言</a>。如果你是在使用很传统的编程语言，例如Java或C#，你应该知道了，这些语言很快就将<a href="http://www.aqee.net/whats-wrong-with-the-for-loop/">引入一些函数式编程特征</a>。就在这美丽的新世界即将来到之际，就在我们摩拳擦掌打算大干一番之前，我想，现在应该是我们暂停一下、反省一下函数式编程在我们的日常应用开发中是否合适的好时机。</p> <p>什么是函数式编程？简单的回答：一切都是<a title="Function (mathematics)" href="http://en.wikipedia.org/wiki/Function_%28mathematics%29" rel="wikipedia">数学函数</a>。函数式编程语言里也可以有对象，但通常这些对象都是恒定不变的——要么是函数参数，要什么是函数返回值。函数式编程语言里没有for/next循环，因为这些逻辑意味着有状态的改变。相替代的是，这种循环逻辑在函数式编程语言里是通过递归、把函数当成参数传递的方式实现的。</p> <h3>为什么要使用函数式编程</h3> <p>拥护者说函数式编程能开发出更高效的软件，而反对者说反之亦然。我感觉双方的观点都有问题。我可以轻松的证明函数式编程能使你更难写出针对编译器优化的代码，或者相较于传统语言的代码，<a title="Just-in-time compilation" href="http://en.wikipedia.org/wiki/Just-in-time_compilation" rel="wikipedia">JIT编译器</a>对于函数式代码会编译出更慢的程序。<a title="Imperative programming" href="http://en.wikipedia.org/wiki/Imperative_programming" rel="wikipedia">命令式编程语言(imperative programming languages)</a>语法跟底层的计算机硬件指令间有着很相似的对应关系，但函数式编程语言却没有这种特征。结果就是，编译器处理函数式编程语言时更费力。</p> <p>然而，优秀的编译器能把函数式编程中的闭包、tail调用、或lambda表达式转换成跟传统语言中loop循环或其它表达式等效的代码。这需要多做一些工作。如果你在寻找一本厚达1600页的关于这方面的好书，我推荐你《<a href="http://amzn.to/NSbGQp">Optimizing Compilers for Modern Architectures: A Dependence-based Approach</a>》和《<a href="http://www.amazon.com/Advanced-Compiler-Design-Implementation-Muchnick/dp/1558603204">Advanced Compiler Design and Implementation</a>》。或者你也可以使用GCC或任何具有多阶段编译功能、<a href="http://www.cs.nyu.edu/courses/spring07/G22.3130-001/code_gen.html">能生成汇编代码</a>的编译器自己去证明这一点。</p> <p>对于为什么要使用函数式编程，这有一个更好的论据，现代的应用程序都会牵涉到多核计算机上的并行运算功能，程序状态就成了一个问题。所有的命令式语言，包括面向对象语言，在涉及多线程时，都会遇到共享对象的状态修改问题。这就是死锁、堆栈跟踪、低级处理器缓存命中率低等问题的根源。如果对象没有状态，这些问题就不存在了。</p> <p>在很多地方使用函数式编程或函数式编程语言都是非常适合的，甚至是最好的选择。对于纯函数计算，函数式编程明显的比命令式编程更合适。但对于商业软件或其它普通<a title="Application software" href="http://en.wikipedia.org/wiki/Application_software" rel="wikipedia">应用软件</a>，你不能不说这正好要颠倒过来。就像<a title="Martin Fowler" href="http://martinfowler.com/" rel="homepage">Martin Fowler</a>著名的阐述，“傻子都能写出计算机可读懂的代码。优秀的程序员写出的是人能读懂的代码。”而函数式编程写出的代码就是让人一眼望去不可读。</p> <p>几段代码就能让你知道我说的是什么意思。来自<a href="http://en.wikipedia.org/wiki/Erlang_%28programming_language%29">Erlang</a>语言的代码例子：</p> <pre>-module(listsort). -export([by_length/1]). by_length(Lists) -&gt; <a title="Qsort" href="http://en.wikipedia.org/wiki/Qsort" rel="wikipedia">qsort</a>(Lists, fun(A,B) -&gt; A &lt; B end). qsort([], _)-&gt; []; qsort([Pivot|Rest], Smaller) -&gt; qsort([X || X &lt;- Rest, Smaller(X,Pivot)], Smaller) ++ [Pivot] ++ qsort([Y || Y &lt;- Rest, not(Smaller(Y, Pivot))], Smaller).</pre> <p>这个是<a href="http://book.realworldhaskell.org/read/writing-a-library-working-with-json-data.html">Haskell</a>语言的：</p> <pre>-- file: ch05/Prettify.hs pretty width x = best 0 [x] where best col (d:ds) = case d of Empty -&gt; best col ds Char c -&gt; c : best (col + 1) ds Text s -&gt; s ++ best (col + length s) ds Line -&gt; &#39;\n&#39; : best 0 ds a <code>Concat</code> b -&gt; best col (a:b:ds) a <code>Union</code> b -&gt; nicest col (best col (a:ds)) (best col (b:ds)) best _ _ = &quot;&quot; nicest col a b | (width - least) <code>fits</code> a = a | otherwise = b where least = min width col</pre> <h3>人 vs 机器</h3> <p>一个不怎么样的程序员一般都能从一段命令式的代码中很快的看出其基本的功用——甚至这是一种他从未见过的语言。然而虽然你也能从一段函数式代码里分析出它的功用，但你绝对不可能简单几眼就能看出来。不像命令式代码，函数式代码并不体现出简单的语言结构。它展现的都是数学结构。</p> <p>我们的编程经历了从纸带打孔到汇编到宏汇编到C语言(高级宏汇编)再到抽象出了很多老实机器上复制运算的高等编程语言。每一步都使我们越来越接近《星际迷航4》里的场景：遇到麻烦的Scott对他的鼠标说出指令(“<a href="http://www.geocities.com/area51/3253/regular/doohan_scotty_quotes_movie.html">Hello computer</a>“)。数十年的进步使得编程语言越来越容易被人类阅读和理解，函数式编程的语法是在把时钟指针往后拨。</p> <p>函数式编程能解决并行运算的状态问题，但付出的代价是失去人类可读性。函数式编程也许完全可以用于任何环境开发，它甚至可以通过定义<a href="http://www.aqee.net/www.aqee.net/what-is-domain-driven-design/">面向领域(domain-specific)的编程语言</a>来拉近人类语言和计算机语言之间的距离。但它糟糕的语法使得它极不适合常规目的的编程开发。</p> <p>不要这么着急的判断潮流——特别对于那些不想有太多风险的项目。</p> <hr>本文来自<a href="http://www.aqee.net">外刊IT评论网</a>(<a href="http://www.aqee.net">www.aqee.net</a>)，原始地址：<a href="http://www.aqee.net/functional-programming-a-step-backward/" rel="bookmark">函数式编程如何才能在我们的常规软件开发中占据一席之地</a><br><img width="1" height="1" src="http://aqee.feedsportal.com/c/34519/f/631690/s/228e0fb6/mf.gif" border="0"><div><table border="0"><tr><td valign="middle"><a href="http://share.feedsportal.com/viral/sendEmail.cfm?lang=en&amp;title=%E3%80%90%E5%A4%96%E5%88%8AIT%E8%AF%84%E8%AE%BA%E7%BD%91%E3%80%91%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E5%A6%82%E4%BD%95%E6%89%8D%E8%83%BD%E5%9C%A8%E6%88%91%E4%BB%AC%E7%9A%84%E5%B8%B8%E8%A7%84%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E4%B8%AD%E5%8D%A0%E6%8D%AE%E4%B8%80%E5%B8%AD%E4%B9%8B%E5%9C%B0&amp;link=http%3A%2F%2Fwww.aqee.net%2Ffunctional-programming-a-step-backward%2F"><img src="http://res3.feedsportal.com/images/emailthis2.gif" border="0"></a></td><td valign="middle"><a href="http://res.feedsportal.com/viral/bookmark.cfm?title=%E3%80%90%E5%A4%96%E5%88%8AIT%E8%AF%84%E8%AE%BA%E7%BD%91%E3%80%91%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E5%A6%82%E4%BD%95%E6%89%8D%E8%83%BD%E5%9C%A8%E6%88%91%E4%BB%AC%E7%9A%84%E5%B8%B8%E8%A7%84%E8%BD%AF%E4%BB%B6%E5%BC%80%E5%8F%91%E4%B8%AD%E5%8D%A0%E6%8D%AE%E4%B8%80%E5%B8%AD%E4%B9%8B%E5%9C%B0&amp;link=http%3A%2F%2Fwww.aqee.net%2Ffunctional-programming-a-step-backward%2F"><img src="http://res3.feedsportal.com/images/bookmark.gif" border="0"></a></td></tr></table></div><br><br><a href="http://da.feedsportal.com/r/139792264332/u/0/f/631690/c/34519/s/228e0fb6/a2.htm"><img src="http://da.feedsportal.com/r/139792264332/u/0/f/631690/c/34519/s/228e0fb6/a2.img" border="0"></a><img width="1" height="1" src="http://pi.feedsportal.com/r/139792264332/u/0/f/631690/c/34519/s/228e0fb6/a2t.img" border="0"><img src="http://www1.feedsky.com/t1/670399987/aqee-net/feedsky/s.gif?r=http://aqee.feedsportal.com/c/34519/f/631690/s/228e0fb6/l/0L0Saqee0Bnet0Cfunctional0Eprogramming0Ea0Estep0Ebackward0C/story01.htm" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

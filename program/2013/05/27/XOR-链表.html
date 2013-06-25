@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>XOR 链表</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>XOR 链表</h2>
+<p class="meta">27 May 2013</p>
+
+<div class="post">
+<h2>XOR 链表</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2013-05-27 10:41:54</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2013/05/xor_linked_list.html">http://blog.codingnow.com/2013/05/xor_linked_list.html</a></h3>
+
+<p>前两天阿楠同学想用链表实现一个消息队列，虽说是链表，但是没有从中间删除节点或添加节点的需求。只需要先压入的消息先处理。为了完成这个需求，最后实现了一个双向链表。</p>
+
+
+
+
+<p>当然这个东西是用 Lua 写的，做一个双向链表也不算复杂。采用单向链表也可以做到，只需要多记录一个尾节点。不过今天想说的是，如果这个玩意在 C 里实现的话，其实只需要用一个指针的空间就可以搞定一个双向队列，可以从任意一头进出数据，可以以两个方向遍历，而实现需要的代码量却和单向链表类似。因为算法非常有趣，在 C 语言之外很少见到，知道并使用过的人也就不太多了。这就是所谓的 <a href="http://en.wikipedia.org/wiki/XOR_linked_list">XOR Linked List</a> 。</p>
+
+
+<pre><code>    &lt;p&gt;我们不需要在链表节点上保存前序和后继两个指针，而改而保存这两个指针的 XOR 值。把两个指针强制转换为 &lt;code&gt;uintptr_t&lt;/code&gt; ，做位运算 ^ 即可。&lt;/p&gt;
+</code></pre>
+
+<p>这个数据结构可以工作起来，依赖位运算的一个特性： A^(A^B) == B ，我们知道前序地址或后继地址中的任意一个，都可以用这个值推算出另一个来。这样的链表，从前向后与从后向前遍历的算法是一样的，区别只在于初始参数。</p>
+
+
+
+
+<p>每个链表对象，我们保存链表的首节点和尾节点的指针。由于首节点没有前序节点，它的链接信息只需要记录后续节点（ XOR NULL 不会改变它）即可。当链表内只有一个节点时，链接信息记录的就是它自己的地址了。</p>
+
+
+
+
+<p>对于队列，我们只需要在新节点加入时，替换掉首节点，链接信息设为原来的头节点，并把原头节点的链接数据域 xor 上新加入的节点地址即可。</p>
+
+
+
+
+<p>而出队列的时候，只需要用尾节点的链接域替换掉它并用 xor 更新新的尾节点链接域的数据即可。</p>
+
+
+
+
+<hr>
+
+
+
+
+<p>XOR 链表的实现很巧妙有趣，但并意味着实现很复杂。它比传统的双向链表实现起来要简单的多（甚至更容易实现为无锁的数据结构，传统的单向链表很容易实现为无锁数据结构，而<a href="http://people.csail.mit.edu/edya/publications/OptimisticFIFOQueue-journal.pdf">双向链表就麻烦的多</a> ）。当然，局限性也很明显。</p>
+
+
+
+
+<p>它很难在 C/C++ 只外的其它语言中实现，而且链接信息很隐讳，会导致调试起来更困难一些。</p>
+
+
+
+
+<p>我们几乎只能在遍历链表的过程中去插入和删除单个节点（当然很多情况下，我们也只需要在这个场合做这些事情），插入一个节点需要同时知道两个节点，我们才能把新节点插入其间，删除节点也必须有它前或后的节点信息才行。</p>
+
+
+
+
+<p>但这个数据结构在某些场景毕竟是有用的，比起用 xor 交换两个变量来说，<a href="http://en.wikipedia.org/wiki/XOR_swap_algorithm">XOR 交换算法</a> 才真的像道智力题。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

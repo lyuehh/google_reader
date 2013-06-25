@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jquery1.43源码分析之属性操作</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>jquery1.43源码分析之属性操作</h2>
+<p class="meta">26 Oct 2010</p>
+
+<div class="post">
+<h2>jquery1.43源码分析之属性操作</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-26 05:05:37</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/793835">http://www.javaeye.com/topic/793835</a></h3>
+
+<p>jquery提供了一些快捷函数来对dom对象的属性进行存取操作. 这一部分还是比较简单的. jquery的主要工作还是为了解决浏览器的兼容性. 这部分的方法一般都有2个特点.
+<br>1, set方法和get方法一体化. 根据参数数量来判断是set还是get.
+<br>2, value可以传入一个闭包. 这个闭包的返回值才是真正的value.
+<br>
+<br>jQuery.prototype.attr.
+<br>实际上这个方法就是setAttribute和getAttribute操作的集合.jQuery把又长又难记的函数名省略成attr.
+<br>
+<br>严格的讲, 挂在dom元素身上的属性,又可以分为属性(property)和特性(attribute).
+<br>属性可以看成是dom节点对象上的一个普通的property.跟var a = {b:1}的a.b一样. 设置它可以用a.b=1, 删除它可以用delete a.b
+<br>而特性是真正被应用到dom节点当中, 会改变节点在document中的状态.如果给dom节点添加了一个特性, 在firebug中是能够看到dom节点标签里多了这个attribute的.删除它要用removeAttribute
+<br>
+<br>对于id, a标签的href这样的特殊属性,通过dom0方式(即xxx.xxx=xxx)和dom1方式(setAttribute/getAttribute)方式都可以访问到它们.这些特殊的属性也被当成特性, 在各个浏览器中行为都是一样的.
+<br>
+<br>除了这些特殊属性, 在firefox等符合w3c标准的浏览器中,特性和属性是严格区分的. 如果要给dom节点设置/取得一个自定义特性,必须用setAttribute/getAttribute, 在firefox中用dom0的方式操作的只是这个dom节点对象的property.
+<br>而在IE中, dom节点内的任何通过硬编码(即写在html标签内的属性)和通过dom0方式(即xxx.xxx=xxx)设置的属性,也都被当做了特性. 也就是说set/get它的时候通过dom0方式和dom1方式都可以.
+<br>
+<br>删除dom节点特性/属性的时候, 如果是特性就用removeAttrtibute, 如果是属性就用delete xxx.xxx. 由上面的分析可知, IE中都是用removeAttrtibute. 而firefox中要看具体到底是特性还是属性.因为各个浏览器对特性/属性的混乱实现, jquery里面提供了jQuery.support.deleteExpando这个特性检测.
+<br>
+<br>了解了这些之后就来看看attr函数的实现.
+<br>暴露给api的原型方法非常简单,只有一句话.把参数交给jQuery.access函数去处理. jQuery.access主要作用是修正参数. 看看attr函数里的最后一个参数jQuery.attr. 这个参数的作用是告诉access方法, 修正完参数后再去调用 jQuery.attr方法. 因为access还可以被 jQuery.css利用,如果这里的最后一个参数是 jQuery.css.
+<br><pre name="code">
+attr: function( name, value ) {
+        return jQuery.access( this, name, value, true, jQuery.attr );
+    }
+</pre>
+<br>access忘记是1.3还是1.4版本被提炼出来的.它的作用就好像机场的安检处,检查你的行李,没收你的打火机.然后根据你的机票告诉你,北京往左边走,深圳往右边走,当然还记得带上你的行李.
+<br><pre name="code">
+access: function( elems, key, value, exec, fn, pass ) {
+//value可能是一个闭包函数,exec参数是判断value是一个直接的//string值还是这个闭包函数计算后的返回值, 属性操作这部分的方法里都可以传入一个闭包的返回值当value.可以应用于
+//$(&quot;div&quot;).attr(&quot;id&quot;, function(elem){return parseInt(elem.id) + 1})
+        var length = elems.length;
+        // Setting many attributes
+        if ( typeof key === &quot;object&quot; ) {
+     //可以传入object类型参数,一次设置多个属性.
+            for ( var k in key ) {
+                jQuery.access( elems, k, key[k], exec, fn, value );
+            }
+            return elems;
+        }</p>
+
+<pre><code>    // set方式
+    if ( value !== undefined ) {
+        exec = !pass &amp;amp;&amp;amp; exec &amp;amp;&amp;amp; jQuery.isFunction(value);
+    //pass默认是undefined的. 所以如果exec为true并且value
+    //是函数的话, value应该是这个函数的返回值.
+        for ( var i = 0; i &amp;lt; length; i++ ) {
+    //给集合内的每个元素都设置key,value.
+    //这里fn是jQuery.attr
+            fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+        }
+
+        return elems;
+    }
+    // get方式
+    return length ? fn( elems[0], key ) : undefined;
+}
+</code></pre>
+
+<p></pre>
+<br>
+<br>access函数最后把参数又传递给了jQuery.attr, 在jQuery.attr里才真正进行setAttribute/getAttribute操作.
+<br><pre name="code">
+attr: function( elem, name, value, pass ) {
+        // don&#39;t set attributes on text and comment nodes
+        if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
+            return undefined;
+        }</p>
+
+<pre><code>    if ( pass &amp;amp;&amp;amp; name in jQuery.attrFn ) {
+        //jQuery.attrFn里包含了一些快捷方法, 如.html(), .text()
+  //如果name等于html,text这些, 直接调用这些快捷方法.
+        return jQuery(elem)[name](value);
+    }
+
+    var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
+        //确认不是xml文档
+        set = value !== undefined;
+        //判断是set方式还是get方式
+    name = notxml &amp;amp;&amp;amp; jQuery.props[ name ] || name;
+    //修正 name, 比如class变成className.
+    if ( elem.nodeType === 1 ) {
+        var special = rspecialurl.test( name );
+        //如果name是 href || src || style, 特殊处理.
+        if ( name === &amp;quot;selected&amp;quot; &amp;amp;&amp;amp; !jQuery.support.optSelected ) {
+            //对safari中select的特殊处理
+            var parent = elem.parentNode;
+            if ( parent ) {
+                parent.selectedIndex;
+
+                if ( parent.parentNode ) {
+                    parent.parentNode.selectedIndex;
+                }
+            }
+        }
+
+        if ( (name in elem || elem[ name ] !== undefined) &amp;amp;&amp;amp; notxml &amp;amp;&amp;amp; !special ) {
+            //这个if分支是处理dom0方式. name in elem就可以判断出name是elem中一个已经存在的property, 
+            //如果是这种情况, 实际上是通过dom0方式修改这个
+</code></pre>
+
+<p>//属性的值. 这次操作跟设置元素的特性无关.
+                //并且name不是style, href, src.
+                if ( set ) {
+      if ( name === &quot;type&quot; &amp;&amp; rtype.test( elem.nodeName ) &amp;&amp; elem.parentNode ) {
+                //input和button的type属性不能被改变
+        jQuery.error( &quot;type property can&#39;t be changed&quot; );
+        }</p>
+
+<pre><code>                if ( value === null ) {
+                    //value为null的话, 实际上remove掉这个特性.
+                    if ( elem.nodeType === 1 ) {
+                        elem.removeAttribute( name );
+                    }
+
+                } else {
+                    elem[ name ] = value;
+                    //用dom0的方式set
+                }
+            }
+            if ( jQuery.nodeName( elem, &amp;quot;form&amp;quot; ) &amp;amp;&amp;amp; elem.getAttributeNode(name) ) {
+                //表单元素返回的是nodeValue.
+                return elem.getAttributeNode( name ).nodeValue;
+            }
+
+            if ( name === &amp;quot;tabIndex&amp;quot; ) {
+     //如果tabIndex没有被显示设定, 可能得不到正确的值
+    var attributeNode = elem.getAttributeNode( &amp;quot;tabIndex&amp;quot; );
+                return attributeNode &amp;amp;&amp;amp; attributeNode.specified ?
+                    attributeNode.value :
+                    rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) &amp;amp;&amp;amp; elem.href ?
+                        0 :
+                        undefined;
+            }
+
+            return elem[ name ];
+            //dom0方式, 返回属性值
+        }
+
+        if ( !jQuery.support.style &amp;amp;&amp;amp; notxml &amp;amp;&amp;amp; name === &amp;quot;style&amp;quot; ) {
+            //如果是set/get style.
+            if ( set ) {
+                elem.style.cssText = &amp;quot;&amp;quot; + value;
+            }
+
+            return elem.style.cssText;
+        }
+
+        if ( set ) {
+    //非dom0方式.
+    //除了IE之外的浏览器, getAttribute的返回值都是string类型. 
+    //而IE中返回的是原始类型, 这里为了统一, setAttribute之前
+  //先转化为string
+            elem.setAttribute( name, &amp;quot;&amp;quot; + value );
+        }
+
+        // Ensure that missing attributes return undefined
+        // Blackberry 4.7 returns &amp;quot;&amp;quot; from getAttribute #6938
+        if ( !elem.attributes[ name ] &amp;amp;&amp;amp; (elem.hasAttribute &amp;amp;&amp;amp; !elem.hasAttribute( name )) ) {
+            //没有这个attribute的话, 返回undefined.
+            return undefined;
+        }
+
+        var attr = !jQuery.support.hrefNormalized &amp;amp;&amp;amp; notxml &amp;amp;&amp;amp; special ?
+                elem.getAttribute( name, 2 ) :
+                elem.getAttribute( name );
+</code></pre>
+
+<p>/<em>
+    当dom节点的属性是一个超链接的时候, IE下面的反应不一样.
+        比如如果href是一个相对路径.它会把你的域名自动补全到href前面再返回.不过IE和firefox都提供了一个返回  原始文本值的方法. 即elem.getAttribute( &quot;href&quot;, 2 ).
+</em>/
+            return attr === null ? undefined : attr;
+        }
+    }
+})
+</pre>
+<br>再看看jQuery.prototype.removeAttr函数
+<br><pre name="code">
+removeAttr: function( name, fn ) {
+        return this.each(function(){
+            jQuery.attr( this, name, "" ); ------(1)设置为""有什么意义??
+            if ( this.nodeType === 1 ) {
+                this.removeAttribute( name );  -------------------(2)
+            }
+        });
+    }
+</pre>
+<br>代码很直观, (1)是掉用jQuery.attr删除dom0方式注册的属性. 具体实现原理可以重新跟着走一次jQuery.attr方法.(2)处是删除特性. 不过我有个疑问. 假如有这样一段代码.
+<br>$("#div1")[0].fff = 111;
+<br>$("#div1").removeAttr("fff");
+<br>alert ($(&quot;#div1&quot;)[0].fff);  //firefox下是&quot;&quot;,  IE下是undefined.
+<br>就我个人的理解, 这2个值是应该统一的. 为什么IE和firefox返回的值不一样, 因为这个通过dom0方式注册的属性fff, 在IE下也是元素的特性,而在firefox下则不然. (1)处调用的jQuery.attr()只负责完把属性设置为""之后就退出了. 而(2)处的代码只能删除特性,所以实际上只在IE下起作用, 所以remove掉之后只有IE弹出的是undefined. 其实在(2)处的后面加上这样一句代码就OK了.
+<br><pre name="code">
+jQuery.support.deleteExpando &amp;&amp; delete this[name];
+</pre>
+<br>
+<br>看看几个跟元素的className有关的方法, 包括addClass, removeClass, toggleClass.
+<br>
+<br>jQuery.prototype.addClass
+<br>先看看addClass方法, 给元素添加className. 元素可以同时有多个className. 每2个className中间以空格符来分开.
+<br>
+<br>这个方法的思路很简单. 先取出原来的className, 再用新来的className和旧的className做比较. 旧的className中没有它, 就合并到原来的className字符串中.
+<br><pre name="code">
+addClass: function( value ) {<br/>
+        if ( jQuery.isFunction(value) ) {<br/>
+    //如果value是一个函数
+            return this.each(function(i) {
+                var self = jQuery(this);
+                self.addClass( value.call(this, i, self.attr(&quot;class&quot;)) );
+    //把函数的返回值当做参数重新调用addClass函数
+            });
+        }</p>
+
+<pre><code>    if ( value  &amp;amp;&amp;amp;  typeof value === &amp;quot;string&amp;quot; ) {    
+        var classNames = (value || &amp;quot;&amp;quot;).split( rspace );  
+//以空格为分割号, 把参数make成数组
+
+        for ( var i = 0, l = this.length; i &amp;lt; l; i++ ) {  
+            //循环集合内每个元素, 依次addClass
+var elem = this[i];
+            if ( elem.nodeType === 1 ) {  
+//确认是dom节点
+                if ( !elem.className ) {   
+                elem.className = value;
+//如果没有className属性, 直接把className设置为value
+                } else {
+                    var className = &amp;quot; &amp;quot; + elem.className + &amp;quot; &amp;quot;, setClass = elem.className;  
+//加2个空格是为了统一className的格式, 方便后面的indexOf判断
+                    for ( var c = 0, cl = classNames.length; c &amp;lt; cl; c++ ) {
+                        if ( className.indexOf( &amp;quot; &amp;quot; + classNames[c] + &amp;quot; &amp;quot; ) &amp;lt; 0 ) { 
+//如果当前的className中没有
+                            setClass += &amp;quot; &amp;quot; + classNames[c];       
+                        }
+                    }
+                    elem.className = jQuery.trim( setClass );  
+//去掉前后空格
+                }
+            }
+        }
+    }
+    return this;
+}
+</code></pre>
+
+<p></pre>
+<br>jQuery.prototype.removeClass
+<br>
+<br>删除元素的某个className
+<br>removeClass也是用旧的className字符串和参数比较. 如果有参数在这个字符串中, 说明元素包含了这个className. 把className中的这一段用空格replace掉. 如果参数为undefined. 清空元素所有的className,实际上就是直接把className设置为"".
+<br><pre name="code">
+removeClass: function( value ) { <br/>
+        if ( jQuery.isFunction(value) ) {
+            return this.each(function(i) {   //这一段同addClass
+                var self = jQuery(this);
+                self.removeClass( value.call(this, i, self.attr(&quot;class&quot;)) );
+            });
+        }</p>
+
+<pre><code>    if ( (value &amp;amp;&amp;amp; typeof value === &amp;quot;string&amp;quot;) || value === undefined ) {  
+//value为undefined时, remove掉所有的className.
+        var classNames = (value || &amp;quot;&amp;quot;).split(rspace);  
+//需要remove掉的classNames, 数组形式
+        for ( var i = 0, l = this.length; i &amp;lt; l; i++ ) {
+            var elem = this[i];
+            if ( elem.nodeType === 1 &amp;amp;&amp;amp; elem.className ) {
+                if ( value ) {
+                    var className = (&amp;quot; &amp;quot; + elem.className + &amp;quot; &amp;quot;).replace(rclass, &amp;quot; &amp;quot;); 
+ //当前的className中的多个空格合并成一个空格
+                    for ( var c = 0, cl = classNames.length; c &amp;lt; cl; c++ ) {
+                        className = className.replace(&amp;quot; &amp;quot; + classNames[c] + &amp;quot; &amp;quot;, &amp;quot; &amp;quot;);  
+//把需要被remove的className替换为&amp;quot;&amp;quot;
+                    }
+                    elem.className = jQuery.trim( className );
+                } else {
+                    elem.className = &amp;quot;&amp;quot;;  
+//参数为undefined的时候, 清空className
+                }
+            }
+        }
+    }
+    return this;
+}
+</code></pre>
+
+<p></pre>
+<br>
+<br>jQuery.prorotype.toggleClass
+<br>
+<br>三 切换元素的className
+<br>toggleClass就是addClass和removeClass操作的集合.
+<br>当这个方法有参数的时候. 如果元素有这个className, 就删除这个className. 反之添加.
+<br>如果toggleClass方法没有传入参数. 分别删除之前className和添加之前的className.
+<br>
+<br>另外toggleClass还可以传入一个返回值为boolean的表达式, 当这个值为true时, 执行addClass, 为false时执行removeClass.
+<br>
+<br>和addClass和removeClass一样, toggleClass的第一个参数也可以传入一个闭包.
+<br>
+<br>第一种有参数的情况比较容易想到怎么做. 就是判断当前的className集合, 根据当中有没有跟参数一样的className来看是执行add还是remove操作.
+<br>
+<br>如果没有参数的情况下, 要删除原来所有的className. 这时需要把原来的className设置到元素的缓存当中.以便可以在下次toggleClass的时候恢复.
+<br>
+<br>看代码
+<br><pre name="code">
+toggleClass: function( value, stateVal ) {
+        var type = typeof value, isBool = typeof stateVal === "boolean";</p>
+
+<pre><code>    if ( jQuery.isFunction( value ) ) {
+        return this.each(function(i) {  //同addClass和removeClass
+            var self = jQuery(this);
+            self.toggleClass( value.call(this, i, self.attr("class"), stateVal), stateVal );
+        });
+    }
+
+    return this.each(function() {
+        if ( type === "string" ) {
+            var className, i = 0, self = jQuery(this),
+                state = stateVal,
+                classNames = value.split( rspace );
+            //需要切换的className, 数组形式
+              while ( (className = classNames[ i++ ]) ) {
+            //循环数组, 里面的每个className都需要被切换
+            state = isBool ? state : !self.hasClass( className );
+            self[ state ? "addClass" : "removeClass" ]( className );
+</code></pre>
+
+<p>//看元素是执行addClass还是removeClass.</p>
+
+<pre><code>   }
+
+        } else if ( type === "undefined" || type === "boolean" ) {   
+//删除所有的className或者把原来的所有className重新添加上
+            if ( this.className ) {
+                jQuery.data( this, "__className__", this.className );
+            //缓存原来的className
+            }
+            this.className = this.className || value === false ? "" : jQuery.data( this, "__className__" ) || "";
+            //切换元素的className为空或者为缓存的className
+        }
+    });
+}
+</code></pre>
+
+<p></pre>
+<br>jQuery.prototype.hasClass
+<br>
+<br>判断是否含有某个特定的className
+<br>hasClass是检查当前的元素是否含有某个特定的className, 代码很直观. 不过在判断前也要记得先把className字符串中的多个空格合并成一个.
+<br><pre name="code">
+hasClass: function( selector ) {
+        var className = &quot; &quot; + selector + &quot; &quot;;
+        for ( var i = 0, l = this.length; i &lt; l; i++ ) {
+            if ( (&quot; &quot; + this[i].className + &quot; &quot;).replace(rclass, &quot; &quot;).indexOf( className ) &gt; -1 ) {
+                return true;
+            }
+        }
+        return false;
+    }
+</pre>
+<br>jQuery.prototype.val
+<br>取得或者设置一个元素的值, 也可以给一组元素, 比如checkbox, radio设置值, 参数是数组形式. 这个方法一般只用于select radio checkbox input textarea等.
+<br>
+<br>这个函数很长, 但代码比较简单. 很多代码都在处理单选select, 多选select, redio, checkbox.
+<br><pre name="code">
+val: function( value ) {
+        if ( value === undefined ) {<br/>
+            //get方式
+            var elem = this[0];<br/>
+            //获取第一个元素</p>
+
+<pre><code>        if ( elem ) {
+        //确认元素存在
+            if ( jQuery.nodeName( elem, &amp;quot;option&amp;quot; ) ){  
+        //如果是option
+                return (elem.attributes.value || {}).specified ? elem.value : elem.text;
+        //如果元素没有value属性, 在IE和firefox下 (elem.attributes.value || {}).specified分别等于false/undefined. 这时返回元素的text.
+        //默认情况下, 如果元素没有value属性. firefox会把元素的text代替value返回. 这里主要是针对IE做的处理.
+            }
+
+            if ( jQuery.nodeName( elem, &amp;quot;select&amp;quot; ) ) {
+                //如果元素是select, 要处理单选和多选的情况. 多
+</code></pre>
+
+<p>//选下拉框把所有选中option的value组合成一个数组.
+                    var index = elem.selectedIndex,
+                    //第一个选中的option的index
+                        values = [],
+                    //如果是多选下拉框, 这个数组用来装载所有选中
+//的option的value
+                        options = elem.options,
+                        one = elem.type === &quot;select-one&quot;;
+                    //elem.type === &quot;select-one&quot;时为单选下拉框, 另外
+//一种情况是 type=&quot;select-multiple&quot;
+                    if ( index &lt; 0 ) {
+                        return null;
+                    }
+                    //没有被选中的, 返回null.
+                    for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i &lt; max; i++ ) {
+    /<em>
+  循环所有的option,这个变态的循环主要是为了减少循环的次数.
+    如果是select-one形式, 作用不变,还是判断一次. 也就是从index 到index+1的这次.就是当前被选中的option.
+如果是select-multiple形式,  从第一个被选中的option开始判断到最后, 第一个被选中的前面的option就不用再判断了.
+    </em>/
+                        var option = options[ i ];</p>
+
+<pre><code>                    if ( option.selected ) {
+                        value = jQuery(option).val();
+                        //取得每个被选中option的value
+                        if ( one ) {
+                            return value;
+                        //select-one形式, 返回单个值
+                        }
+                        values.push( value );
+                        //select-multiple形式, push进一个数组, 在下面返回.
+                    }
+                }
+                return values;
+            }
+
+            if ( rradiocheck.test( elem.type ) &amp;amp;&amp;amp; !jQuery.support.checkOn ) {
+                //如果是radio或者checkbox元素, 并且没有默认的值&amp;quot;on&amp;quot;, 主要是兼容safari.
+                return elem.getAttribute(&amp;quot;value&amp;quot;) === null ? &amp;quot;on&amp;quot; : elem.value;
+                //如果value为null, 返回&amp;quot;on&amp;quot;, 跟其它浏览器兼容.
+            }
+
+            return (elem.value || &amp;quot;&amp;quot;).replace(rreturn, &amp;quot;&amp;quot;);
+            //其它情况下, 直接返回elem的value. 并且把回车符也替换为&amp;quot;&amp;quot;.
+
+        }
+
+        return undefined;
+    }
+//从下面开始进入set方式
+    var isFunction = jQuery.isFunction(value);  
+    //如果参数为函数, 这个函数的返回值才是要真正要设置的value.
+    return this.each(function(i) {
+    //给集合中每个元素都设置
+        var self = jQuery(this), val = value;
+
+        if ( this.nodeType !== 1 ) {
+    //需保证是dom节点.
+            return;
+        }
+
+        if ( isFunction ) {
+            val = value.call(this, i, self.val());
+        //求出返回值
+        }
+
+        if ( typeof val === &amp;quot;number&amp;quot; ) {
+            val += &amp;quot;&amp;quot;;
+            //数字转化为字符串.         
+}
+
+        if ( jQuery.isArray(val) &amp;amp;&amp;amp; rradiocheck.test( this.type ) ) {
+    //如果当前元素是radio或者checkbox, 并且参数value是数组.
+            this.checked = jQuery.inArray( self.val(), val ) &amp;gt;= 0;
+        /*
+            inArray是返回索引的, &amp;gt;=0后其实就是等于inArray返回true/false一样的效果.
+            也就是说当前元素的value在数组中的话,就把当前元素的checked设置为true.
+</code></pre>
+
+<p>*/
+            } else if ( jQuery.nodeName( this, &quot;select&quot; ) ) {
+            //如果当前元素是select
+                var values = jQuery.makeArray(val);</p>
+
+<pre><code>            jQuery( &amp;quot;option&amp;quot;, this ).each(function() {
+            /*取得这个selector下的所有option再遍历每一个
+</code></pre>
+
+<p>jQuery(&quot;option&quot;, this)相当于$(this).find(&quot;option&quot;)
+                */
+                    this.selected = jQuery.inArray( jQuery(this).val(), values ) &gt;= 0;
+              //当前元素的value在数组中的话,就把当前元素的selected设置为true.
+                });</p>
+
+<pre><code>            if ( !values.length ) {
+                this.selectedIndex = -1;
+            //如果数组为空, 不选中任何option.
+            }
+        } else {
+            this.value = val;
+            //其它情况, 也是最常用的情况, 直接设置value.
+        }
+    });
+}
+</code></pre>
+
+<p>});
+</pre>
+<br>jQuery.prototype.text
+<br>相当于IE中的innerText. set/get某个元素的文本值.
+<br><pre name="code">
+text: function( text ) {
+        if ( jQuery.isFunction(text) ) {
+    //如果参数是函数
+            return this.each(function(i) {
+                var self = jQuery(this);
+                self.text( text.call(this, i, self.text()) ); <br/>
+    //函数的返回值,作为参数重新调用此方法
+            });
+        }</p>
+
+<pre><code>    if ( typeof text !== &amp;quot;object&amp;quot; &amp;amp;&amp;amp; text !== undefined ) {   
+//set方式
+        return this.empty().append( (this[0] &amp;amp;&amp;amp; this[0].ownerDocument || document).createTextNode( text ) );  
+    //用元素的根元素(若没有,就用document)创建一个文本节点. 
+  //然后清空元素的子节点,把刚刚创建的文本节点append进去.
+    }
+
+    return jQuery.text( this );   
+//如果是get, 调用getText函数, 在源码的第3680行,  jQuery.text = getText.
+}
+</code></pre>
+
+<p></pre>
+<br>再看getText函数,  getText会遍历集合中的所有元素, 把每个元素的文本值加起来拼成一个字符串返回.
+<br><pre name="code">
+function getText( elems ) {
+    var ret = &quot;&quot;, elem;</p>
+
+<pre><code>for ( var i = 0; elems[i]; i++ ) {
+    elem = elems[i];
+    //遍历集合中的所有元素.
+    if ( elem.nodeType === 3 || elem.nodeType === 4 ) {
+    //如果是文本节点或者&amp;lt;![CDATA[ ]]&amp;gt;文本节点
+        ret += elem.nodeValue;
+    //拼接nodeValue
+    } else if ( elem.nodeType !== 8 ) {
+        ret += getText( elem.childNodes );
+</code></pre>
+
+<p>   //如果元素不是注释节点的话, 把子节点的nodeValue也拼接进来
+        }
+    }</p>
+
+<pre><code>return ret;
+  //返回拼接好的字符串
+</code></pre>
+
+<p></pre>
+<br>jQuery.prototype.html
+<br>set/get每一个匹配元素的html内容. 做法就是先用innerHTML,如果innerHTML抛出异常,则用this.empty().append( value ).还要记得清空子节点上的缓存,避免内存泄露.
+<br><pre name="code">
+    html: function( value ) {
+        if ( value === undefined ) {
+            //get方式.val()函数里已经改成了!arguments.length.这里还
+         //是用的value===undefined.咋就不能统一呢？
+            return this[0] &amp;&amp; this[0].nodeType === 1 ?
+                this[0].innerHTML.replace(rinlinejQuery, &quot;&quot;) :
+                null;</p>
+
+<pre><code>    } else if ( typeof value === &amp;quot;string&amp;quot; &amp;amp;&amp;amp; !rnocache.test( value ) &amp;amp;&amp;amp;
+        (jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &amp;amp;&amp;amp;
+        !wrapMap[ (rtagName.exec( value ) || [&amp;quot;&amp;quot;, &amp;quot;&amp;quot;])[1].toLowerCase() ] ) {
+
+                value = value.replace(rxhtmlTag, &amp;quot;&amp;lt;$1&amp;gt;&amp;lt;/$2&amp;gt;&amp;quot;);
+                //修正一些不规范的html标签
+        try {
+            for ( var i = 0, l = this.length; i &amp;lt; l; i++ ) {
+                // Remove element nodes and prevent memory leaks
+                if ( this[i].nodeType === 1 ) {
+            jQuery.cleanData( this[i].getElementsByTagName(&amp;quot;*&amp;quot;) );
+                    //清空所有子元素的缓存,避免内存泄露.
+                    this[i].innerHTML = value;
+                    //用快捷方式innerHTML
+                }
+            }
+
+        } catch(e) {
+            this.empty().append( value );
+    //如果innerHTML抛出异常,  用this.empty().append( value ).
+  //先清空子节点, 再把value append进去.
+        }
+
+    } else if ( jQuery.isFunction( value ) ) {
+        //参数是闭包函数
+        this.each(function(i){
+            var self = jQuery(this);
+            self.html( value.call(this, i, self.html()) );
+        //取得函数的返回值, 重新调用.html(value)
+        });
+
+    } else {
+        this.empty().append( value );
+        //其他情况
+    }
+
+    return this;
+}
+</code></pre>
+
+<p></pre>
+<br>
+<br></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://gengzhelun619-163-com.javaeye.com"&gt;__游乐场&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/793835" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>代码的抽象三原则</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>代码的抽象三原则</h2>
+<p class="meta">31 Jan 2013</p>
+
+<div class="post">
+<h2>代码的抽象三原则</h2>
+
+<h3>by 阮一峰</h3>
+
+<h3>at 2013-01-31 14:03:35</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/9191.html">http://www.udpwork.com/item/9191.html</a></h3>
+
+<p>软件开发是<a href="http://en.wikipedia.org/wiki/Abstraction_principle_(computer_programming)">&quot;抽象化&quot;原则</a>（Abstraction）的一种体现。</p>
+
+
+<p>所谓&quot;抽象化&quot;，就是指从具体问题中，提取出具有共性的模式，再使用通用的解决方法加以处理。</p>
+
+
+<p><img src="http://image.beekka.com/blog/201301/bg2013013105.jpg"></p>
+
+
+<p>开发软件的时候，一方面，我们总是希望使用别人已经写好的代码，另一方面，又希望自己写的代码尽可能重用，以求减少工作量。要做到这两个目标，这需要&quot;抽象化&quot;。</p>
+
+
+<p>最近，我读到美国程序员<a href="http://lostechies.com/derickbailey/2012/10/31/abstraction-the-rule-of-three/">Derick Bailey</a>的一篇文章，谈到&quot;抽象化&quot;应该遵循的三个原则，觉得很有启发。</p>
+
+
+<p><strong>一、DRY原则</strong>
+</p>
+
+
+<p><a href="http://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a>是 Don&#39;t repeat yourself 的缩写，意思是&quot;不要重复自己&quot;。</p>
+
+
+<p><img src="http://image.beekka.com/blog/201301/bg2013013102.jpg"></p>
+
+
+<p>软件工程名著<a href="http://en.wikipedia.org/wiki/The_Pragmatic_Programmer">《The Pragmatic Programmer》</a>首先提出了这个原则。它的涵义是，系统的每一个功能都应该有唯一的实现。也就是说，如果多次遇到同样的问题，就应该抽象出一个共同的解决方法，不要重复开发同样的功能。</p>
+
+
+<p>这个原则有时也称为<a href="http://zh.wikipedia.org/wiki/%E4%B8%80%E6%AC%A1%E4%B8%94%E4%BB%85%E4%B8%80%E6%AC%A1">&quot;一次且仅一次&quot;原则</a>（Once and Only Once）。</p>
+
+
+<p><strong>二、YAGNI原则</strong>
+</p>
+
+
+<p><a href="http://en.wikipedia.org/wiki/You_ain&#39;t_gonna_need_it">YAGNI</a>是 You aren&#39;t gonna need it 的缩写，意思是&quot;你不会需要它&quot;。</p>
+
+
+<p><img src="http://image.beekka.com/blog/201301/bg2013013103.jpg"></p>
+
+
+<p>这是<a href="http://en.wikipedia.org/wiki/Extreme_programming">&quot;极限编程&quot;</a>提倡的原则，指的是你自以为有用的功能，实际上都是用不到的。因此，除了最核心的功能，其他功能一概不要部署，这样可以大大加快开发。</p>
+
+
+<p>它背后的指导思想，就是尽可能快、尽可能简单地让软件运行起来（do the simplest thing that could possibly work）。</p>
+
+
+<p>但是，这里出现了一个问题。仔细推敲的话，你会发现DRY原则和YAGNI原则并非完全兼容。前者追求&quot;抽象化&quot;，要求找到通用的解决方法；后者追求&quot;快和省&quot;，意味着不要把精力放在抽象化上面，因为很可能&quot;你不会需要它&quot;。所以，就有了第三个原则。</p>
+
+
+<p><strong>三、Rule Of Three原则</strong>
+</p>
+
+
+<p><a href="http://en.wikipedia.org/wiki/Rule_of_three_(computer_programming)">Rule of three</a>称为&quot;三次原则&quot;，指的是当某个功能第三次出现时，才进行&quot;抽象化&quot;。</p>
+
+
+<p><img src="http://image.beekka.com/blog/201301/bg2013013104.jpg"></p>
+
+
+<p>这是软件开发大家<a href="http://en.wikipedia.org/wiki/Martin_Fowler">Martin Fowler</a>在《Refactoring》一书中提出的。</p>
+
+
+<p>它的涵义是，第一次用到某个功能时，你写一个特定的解决方法；第二次又用到的时候，你拷贝上一次的代码；第三次出现的时候，你才着手&quot;抽象化&quot;，写出通用的解决方法。</p>
+
+
+<p>这样做有几个理由：</p>
+
+
+<p>（1）省事。如果一种功能只有一到两个地方会用到，就不需要在&quot;抽象化&quot;上面耗费时间了。</p>
+
+
+<p>（2）容易发现模式。&quot;抽象化&quot;需要找到问题的模式，问题出现的场合越多，就越容易看出模式，从而可以更准确地&quot;抽象化&quot;。</p>
+
+
+<p>比如，对于一个数列来说，两个元素不足以判断出规律：</p>
+
+
+<p>　　1, 2, _, _, _, _,</p>
+
+
+<p>第三个元素出现后，规律就变得较清晰了：</p>
+
+
+<p>　　1, 2, 4, _, _, _,</p>
+
+
+<p>（3）防止过度冗余。如果一种功能同时有多个实现，管理起来非常麻烦，修改的时候需要修改多处。在实际工作中，重复实现最多可以容忍出现一次，再多就无法接受了。</p>
+
+
+<p>综上所述，&quot;三次原则&quot;是DRY原则和YAGNI原则的折衷，是代码冗余和开发成本的平衡点，值得我们在&quot;抽象化&quot;时遵循。</p>
+
+
+<p>==========================================================</p>
+
+
+<p>附：</p>
+
+
+<p><strong>[广告]</strong>
+</p>
+
+
+<p>图灵公司打算重新出版<a href="http://www.amazon.com/Joel-Software-Occasionally-Developers-Designers/dp/1590593898/">《Joel on Software》</a>的中文版，正在寻找译者。如果你对此有兴趣，请与朱巍编辑联系（Email：zhuw(at)turingbook.com）试译。关于此书的更多情况，可参考我翻译的续集<a href="http://www.ruanyifeng.com/docs/mjos/">《More Joel on Software》</a>。特别提醒：翻译是非常辛苦、但是报酬很低的工作，写信前请想清楚，你是真的想翻译这本书。</p>
+
+
+<p>（完）</p>
+
+
+<div><h3>文档信息</h3>
+<ul><li>版权声明：自由转载-非商用-非衍生-保持署名 |<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2013/01/abstraction_principles.html">http://www.ruanyifeng.com/blog/2013/01/abstraction_principles.html</a></li>
+<li>最后修改时间：2013年2月 4日 03:01</li>
+<li>付费支持：<a href="https://me.alipay.com/ruanyf"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" alt="人民币 - 支付宝"></a>|<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.99&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="美元 - paypal"></a></li>
+</ul>
+</div>
+
+
+<div></div>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/9191.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/9191.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/9191.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

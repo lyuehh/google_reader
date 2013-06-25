@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Redis发布2.2.9最新稳定版本</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Redis发布2.2.9最新稳定版本</h2>
+<p class="meta">10 Jun 2011</p>
+
+<div class="post">
+<h2>Redis发布2.2.9最新稳定版本</h2>
+
+<h3>by nosqlfan</h3>
+
+<h3>at 2011-06-10 10:43:55</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/nosqlfan/~8149226/521607387/6253001/1/item.html">http://item.feedsky.com/~feedsky/nosqlfan/~8149226/521607387/6253001/1/item.html</a></h3>
+
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/imgres-1.jpeg"><img title="imgres-1" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/imgres-1.jpeg" alt="" width="389" height="129"></a></p>
+
+
+<p>Redis作者@<a href="http://twitter.com/antirez">antirez</a> 同学刚刚在twitter上<a href="http://twitter.com/#!/antirez/status/78914206195392512">宣布</a>，Redis最新的2.2.9版本已经发布，推荐大家升级。特别是使用了slave＋AOF日志或者是使用了Pub/Sub机制的同学，因为这个版本修复了这两个方面的几个重大bug.</p>
+
+
+<p>主要修复功能如下：</p>
+
+
+<ul>
+<li>Slave会在与master 同步数据后写AOF日志，但是这个写操作的时机不正确，会导致Slave的AOF日志错乱。</li>
+<li>[LR]LPUSH 的同步是有问题的，已经得到修复</li>
+<li>BRPOPLPUSH操作的内存泄露问题得到修复</li>
+<li>由于Pub/Sub 导致经常性程序崩溃的问题得到修复</li>
+</ul>
+
+
+<p>antirez 还提醒大家，如果你现在使用slave＋AOF的话，要停机升级前注意先BGREWRITEAOF 保证AOF日志的正确性。</p>
+
+
+<p>下载地址：<a href="http://redis.io/download">http://redis.io/download</a></p>
+
+
+<p>changlog：<a href="https://raw.github.com/antirez/redis/2.2/00-RELEASENOTES">https://raw.github.com/antirez/redis/2.2/00-RELEASENOTES</a></p>
+
+
+<p style="font-weight:bold">觉得文章还不错？快分享给更多的人吧！<a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html&amp;text=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKEJk/ga3Zw.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html" title="新浪微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKrzm/b6giQ.png"></a><a href="http://v.t.qq.com/share/share.php?title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html" title="腾讯微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJX6o/HMY8k.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html" title="QQ空间" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJSKI/6hVj7.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html&amp;title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJrri/SB2B.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html&amp;title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJ4v4/3CHaH.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html" title="人人网" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVI86k/1yDki.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html&amp;title=Redis%E5%8F%91%E5%B8%832.2.9%E6%9C%80%E6%96%B0%E7%A8%B3%E5%AE%9A%E7%89%88%E6%9C%AC%20@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVHr67/ftAKQ.png"></a><table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能还喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Redis进阶教程-aof(append only file)日志文件" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F199.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://blog.nosqlfan.com/nosqlfan.jpeg" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis进阶教程-aof(append only file)日志文件</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="听 antirez 讲 Redis Cluster" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1007.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11641473.jpg" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">听 antirez 讲 Redis Cluster</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis Web界面管理工具" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F471.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11641555.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis Web界面管理工具</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis.io-Redis的新家" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F946.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11642415.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis.io-Redis的新家</font>
+                    </a>
+                </td>
+                <td width="116" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Redis Logo 你喜欢哪一个？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F718.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F1861.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:110px!important;height:110px!important" src="http://static.wumii.com/site_images/2011/06/09/11642500.png" width="110px" height="110px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:116px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Redis Logo 你喜欢哪一个？</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table><img src="http://www1.feedsky.com/t1/521607387/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/521607387/6253001/1/item.html" border="0" height="0" width="0"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

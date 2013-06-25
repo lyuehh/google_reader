@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Invalid gemspec because of the date format in specification</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Invalid gemspec because of the date format in specification</h2>
+<p class="meta">07 Nov 2011</p>
+
+<div class="post">
+<h2>Invalid gemspec because of the date format in specification</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-11-07 02:14:46</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1236965">http://hlee.iteye.com/blog/1236965</a></h3>
+
+<p>又是这个date format的错误。
+<br>
+<br>上次出错忘了，记录下来，可好又得查一遍，赶快抄回来。
+<br>
+<br><pre name="code">
+Invalid gemspec in [/home/ra/.rvm/gems/ruby-1.9.2-p180/specifications/json_pure-1.6.1.gemspec]: invalid date format in specification: "2011-09-18 00:00:00.000000000Z"</p>
+
+<p></pre>
+<br>
+<br>总之，问题就是这个格式的时间，认不出来
+<br>
+<br>那么理论上只要
+<br>
+<br>在给出的问题gem包里把
+<br><pre name="code">
+"s.date = %q{2011-05-21 00:00:00.000000000Z}"</p>
+
+<h1>改成</h1>
+
+<p>"s.date = %q{2011-05-21}"</pre>
+<br>
+<br>也有说可以gem update或者再装解决
+<br>
+<br>我比较推荐
+<br>
+<br><pre name="code"></p>
+
+<h1>/home/user/.rvm/gems/ruby-1.9.2-p180/specifications/</h1>
+
+<p>grep -i <em>.gemspec -e '.</em>s.date.<em>=.</em>%q{(....-..-..) (.<em>Z)}
+</pre>
+<br>
+<br>或者
+<br>
+<br><pre name="code">
+sed -i -e 's/(.</em>)s.date.<em>=.</em>%q{(....-..-..) (.<em>Z)}/\1s.date = %q{\2}/p' ./</em>.gemspec
+</pre>
+<br>shell脚本多文件替换，方便快捷
+<br></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1236965#comments" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

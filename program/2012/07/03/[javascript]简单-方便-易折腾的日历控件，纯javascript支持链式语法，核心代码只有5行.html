@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[javascript]简单 方便 易折腾的日历控件，纯javascript支持链式语法，核心代码只有5行</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[javascript]简单 方便 易折腾的日历控件，纯javascript支持链式语法，核心代码只有5行</h2>
+<p class="meta">03 Jul 2012</p>
+
+<div class="post">
+<h2>[javascript]简单 方便 易折腾的日历控件，纯javascript支持链式语法，核心代码只有5行</h2>
+
+<h3>by 小玉西瓜</h3>
+
+<h3>at 2012-07-03 14:07:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/enix/archive/2012/07/03/2574663.html">http://www.cnblogs.com/enix/archive/2012/07/03/2574663.html</a></h3>
+
+<p>又重复造了个轮子，重复造轮子当然要有优点要不就没有存在价值。使用简单，方便。只要5行代码就可生成年历。</p>
+
+
+<p><br><p>input date已经是一个原生控件opera和chrome已经支持，日历控件逻辑比较复杂，要做到尽善尽美也是不容易的，也是比较锻炼编码的，所以学习意义大于实际意义。而且这个控件也是多年心愿，最近有时间写写停停，终于坚持下来就拿来和大家分享了。</p><br><p> </p><br><p> </p><br><p><a href="http://www.veryide.com/projects/timelime/icals.html">传送门</a></p><br><p> </p><br><p><strong>特点</strong></p><br><p>1.此日历插件特点在于简单易用，要保证功能实现最低要求一个参数。</p><br><p>2.个性化配置有强大的自定义事件和多个个性化参数可选。</p><br><p>3.采用原型继承，扩展派生非常方便。</p><br><p>4.跨浏览器，保证可用性。</p><br><p>5.采用表格做载体，无样式也可以正常使用功能。</p><br><p>6.缓存，已生成月份数据。使数据持久化，减少计算。</p><br><p>7.无样式支持，功能依然健在。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/62171/2012070313575772.jpg" alt=""></p><br><p><strong>应用展示</strong></p><br><p>a.</p><br><p><img src="http://pic002.cnblogs.com/images/2012/62171/2012070313314620.jpg" alt=""></p><br><p>b.</p><br><p><img src="http://pic002.cnblogs.com/images/2012/62171/2012070313321318.jpg" alt=""></p><br><p>c.</p><br><p><img src="http://pic002.cnblogs.com/images/2012/62171/2012070313322916.jpg" alt=""></p><br><p></p><br><p> </p><br><p><strong>技术总结</strong></p><br><p>1.主要难点不是日期算法，而是select控件和表格所带来的问题。select和表格都有一套自己的dom api，来操作和访问。尤其是生成日历table的算法非了一些时间，而且ie浏览器上。innerHTML属性，table tbody tfoot tr都是只读的，所以对技术选型有一些干扰。中间使用了insertRow这样的方法未果，采用分辨浏览器采用不同方案也行不通后，过段采用整个table都用拼字符串的方式。虽然效率不一定比生成dom节点存入变量修改高，但是结果却是最好的。</p><br><p>2.select主要问题在于序号和长度差，要访问selectedIndex，设置select的值都要小心这个变化。</p><br><p>3.Date对象的序号问题，年 日都是从1开始，月份是从0开始，这些差别和人类习惯的处理带来一定成本。</p><br><p>可见初期，技术储备和技术选型的重要性。</p><br><p><strong>其实日期核心算法只有5行代码而已，想要生成一个可用的日期控件20行内代码足够，</strong>由于和日期控件相关的控件出来带来了大量代码。</p><br><p> </p><br><p><strong>核心代码</strong></p><br><p><strong> </strong></p><br><p>1。计算某个月有多少天，2012.6月到底有多少天呢？我们要是知道6月最后一天是多少号，不就知道6月有多少天了吗。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre><span style="color:#0000ff">new</span> Date(<span style="color:#800000">'</span><span style="color:#800000">2012,6,0</span><span style="color:#800000">'</span>).getDate();最简单最短 //chrome不支持用字符串new Date('2012,6,0')格式创建日期， 但支持new Date('2012','6','0');这点要注意 而safari没有问题非常诡异</pre><br></div><br><p>通用的</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>(<span style="color:#0000ff">new</span> Date(+(<span style="color:#0000ff">new</span> Date(2012, 7, <span style="color:#800080">1</span>)) - 86400000)).getDate();</pre><br></div><br><p>下个月的一号减去一天，就是当月最后一天</p><br><p> </p><br><p>2.知道了当月有多少天还不行，要知道当月1号是要放在什么位置，如果知道1号是星期几不就可以知道1号在什么位置了吗。</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>new Date(2012, 7,1).getDay();</pre><br></div><br><p>　</p><br><p>3.生成一个月的日历，代码很简单只有5行</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>for (var i = 0; i &lt; row; i++) {<br>　　html.push(&#39;&lt;/tr&gt;&#39;);<br>   for (var j = 0; j &lt; 7; j++) {<br>      html.push((cell-- &lt;= offset &amp;&amp; days &gt; 0) ? (&#39;&lt;td &#39; + (that.Date &gt; new Date(y, m, days + 1) ? &#39;class=&quot;oldDay&quot;&#39; : &#39;&#39;) + (y === that.Year &amp;&amp; m === that.Month &amp;&amp; days === that.Day ? &#39;class=&quot;currentDay&quot;&#39; : &#39;&#39;) + &#39; title=&quot;&#39;+y+that.style+(m+1)+that.style+days+&#39;&quot;&gt;&#39; + (days--) + &#39;&lt;/td&gt;&#39;) : &#39;&lt;td&gt;&lt;/td&gt;&#39;);<br>   }<br>   html.push(&#39;&lt;tr&gt;&#39;);<br>}<br></pre><br></div><br><p>大家可能要怀疑为什么先写的是　&lt;/tr&gt;结束标签，开始生成日历的时候采用的是倒序循环，用li标签，后面发现无样式时不能使用，所以改用table但这一方式保留下来，日期也是按照从后往前生成的。然后调用数组的reverse反向join就正序了。</p><br><p> </p><br><p>4.一个实例的6月份数据和另外一个实例的6月份数据有不同点么，或者重复使用6月份数据需要每次都计算么，答案显然不是。相同月份的数据多次使用要是只计算一次的话就可以大大提高效率，减少计算次数。</p><br><p>那么这就牵扯到数据持久化的问题，怎样把数据持久化呢或者暂时持久化？答案是把数据保存在类的属性上随用随拿。</p><br><p> </p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre>var key = '<em>date</em>:' + Y + ':' + M;<br>indicotar.cache[key] || (indicotar.cache[key] = that.getDateString(Y, M));<br></pre><br></div><br><p>按照年月生成一个key，如果没有数据就调用方法生成数据存入对应key的value。以后只用只用取出，合并字符串即可。</p><br><p><img src="http://pic002.cnblogs.com/images/2012/62171/2012070314032020.jpg" alt=""></p><br><p> </p><br><p>　</p><br><div><br><h2>API</h2><br>constructor：Cal(可以自行修改无依赖);<br><br>实例化:new Cal(document.body);<br>返回值:实例对象;<br><table><caption>参数</caption><td><br><tbody><br><tr><br><td>Node</td><td><br><td>*htmlNode</td><td><br><td>nodeType为1的节点，控件会被append此节点内</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Object</td><td><br><td>O</td><td><br><td>配置控件可选参数</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Number</td><td><br><td>O.Y</td><td><br><td>设置的年份，默认当年，范围(1970-当年+10)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Number</td><td><br><td>O.M</td><td><br><td>设置的月份，默认当月，范围(1-12)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>String</td><td><br><td>O.hasTitle</td><td><br><td>是否有日期控制栏，默认有'true'</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>String</td><td><br><td>O.hasFoot</td><td><br><td>是否有脚注用来显示年月，默认无'false'</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>String</td><td><br><td>O.style</td><td><br><td>日期分隔符，默认'-'</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Number</td><td><br><td>O.startYear</td><td><br><td>开始年，默认2006</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Number</td><td><br><td>O.endtYear</td><td><br><td>结束年，默认当年加10</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Function</td><td><br><td>O.ongetdate</td><td><br><td>用户点击日期单元格时触发，this指向实例，第一个参数为日期对应数组</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Function</td><td><br><td>O.onrender</td><td><br><td>控件插入值dom树时触发，this指向实例，第一个参数为控件对应的dom节点</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Function</td><td><br><td>O.ongetdatestring</td><td><br><td>获得月份所对应的日期字符串时触发，this指向实例，第一个参数为字符串</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Function</td><td><br><td>O.oncalframe</td><td><br><td>组成完毕控件node框架时触发，this指向实例，第一个参数为对应的dom节点</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>Function</td><td><br><td>fn</td><td><br><td>类的回调函数，生成控件后触发</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><br><br><br><br><br><br><br><br><br><br> </td></td></td></td></td></td></td></td></td></td></td></td></td></td></tbody><td><br><br><br><br><br><br><br><br><br><br></td></td></table><br><p> </p><br><table><caption>实例方法</caption><td><br><tbody><br><tr><br><td>方法名</td><td><br><td>参数</td><td><br><td>返回值</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>createDay</td><td><br><td>Y:number/string(2012),M:number/string(0-11)</td><td><br><td>实例（1储存日期字符串至Cal的cache中，是数据持久化；2调用render）</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>render</td><td><br><td>node:(this.elems),key:string('<em>date</em>:2012:0'),Y:number(2012),M:number(0-11)</td><td><br><td>实例（渲染控件至dom树）</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>getDateString</td><td><br><td>Y:number(2012),M:number(0-11)</td><td><br><td>htmlString</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>toString</td><td><br><td> </td><td><br><td>string '2012-12-12' (获取选中日期对应的字符串)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>valueOf</td><td><br><td> </td><td><br><td>Array [2012,12,12] (获取选中日期对应的数组)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>hide</td><td><br><td> </td><td><br><td>实例 (隐藏控件)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>show</td><td><br><td> </td><td><br><td>实例 (显示控件)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><tr><br><td>setCss</td><td><br><td>Object({'font-size':'12px','width':'300px'})</td><td><br><td>实例 (为控件添加样式)</td><td><br><br><br><br><br><br><br><br><br><br><br>    </td></td></td></tr><td><br><br><br><br><br><br><br><br><br><br><br> </td></td></td></td></td></td></td></td></td></tbody><td><br><br><br><br><br><br><br><br><br><br></td></td></table><br><br><br><br><br><br><br><br><br><br><br> </div><img src="http://www.cnblogs.com/enix/aggbug/2574663.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/enix/archive/2012/07/03/2574663.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

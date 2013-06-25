@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>你的下一个文件系统——Btrfs</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>你的下一个文件系统——Btrfs</h2>
+<p class="meta">05 Aug 2011</p>
+
+<div class="post">
+<h2>你的下一个文件系统——Btrfs</h2>
+
+<h3>by Iven</h3>
+
+<h3>at 2011-08-05 14:57:59</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/ivenvd/~3/vcucdxejQTw/">http://feedproxy.google.com/~r/ivenvd/~3/vcucdxejQTw/</a></h3>
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/tg14q7f9ljnnr11k5g15had49o/468/60#http%3A%2F%2Fwww.kissuki.com%2F2011%2F08%2Fbtrfs%2F" width="100%" height="60" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p>提起 <a href="http://www.kissuki.com/tag/btrfs/" rel="tag" title="标签 btrfs 下的日志">Btrfs</a> ，相信广大折腾帝们都不会陌生，被誉为“下一代 Linux 文件系统”的它，具有扩展性好、支持数据校验、支持多设备管理等等强大特性，使得 Ext4 也只能成为悲剧的过渡产品，还不赶快找一个 Ubuntu 10.10、Fedora 15、Meego 什么的试一下？</p>
+
+
+<p>慢着！支持什么多设备、什么数据校验跟你有一毛钱关系啊？根据 <a href="http://www.phoronix.com/scan.php?page=article&amp;item=linux_3_filesystems&amp;num=1">Ext4 和 Btrfs 的对比</a>，Btrfs 在速度上似乎还差上一些呢！这么说 Btrfs 其实挺垃圾的？</p>
+
+
+<p>本文就来为你从普通<del>折腾帝</del>用户的角度来解说一下 Btrfs 到底有什么好。如果你想从技术层面了解 Btrfs ，可以看一下《<a title="新一代 Linux 文件系统 btrfs 简介" href="http://www.ibm.com/developerworks/cn/linux/l-cn-btrfs/">新一代 Linux 文件系统 btrfs 简介</a>》。</p>
+
+
+<p><span style="color:#ff0000">注意：Btrfs 还处于实验性阶段，截止到本文写作为止，其磁盘检查工具 Btrfsck 还不能修复文件系统，请不要在工作环境下使用 Btrfs，以免数据丢失！再次警告，这不是演习！</span></p>
+
+
+<h2>错误修复</h2>
+
+
+<p>在正式开始讲之前，我假定你已经把系统弄坏了，你已经看到了系统提示你“You are on your own”，“Good luck~”，很好，我之前已经说过 Btrfs 还处于实验阶段了，所以就不要妄想把你的动作片全集找回来啦，乖乖格式化掉吧~</p>
+
+
+<p>呃，当然，我们对于有共享精神的同志还是要宽容处理的，如果你真的很想找回来<del>并且共享给我</del>，你或许可以去 <a href="https://wiki.archlinux.org/index.php/Btrfs#Troubleshooting">Arch Wiki</a> 上看一下，那里有几条<del>死马当活马医的</del>良策，或许可以帮你度过难关，<del>铁道部</del>春哥保佑你。</p>
+
+
+<h2>其他特性</h2>
+
+
+<p>其实 Btrfs 对于普通用户有用的、能看到的特性主要就是其包含了<strong>卷管理特性</strong>，但是为了吊胃口，我们还是从其他特性开始说起吧。</p>
+
+
+<h3>其他的其他</h3>
+
+
+<p>Btrfs 支持在线的碎片整理，在线的卷增大和缩小，在线的块设备增添和删除，在线的块设备负载均衡；啥叫在线的呢？我理解就是文件系统挂载着就可以干这些事情，牛吧？虽然我不知道这些事情都是干嘛的跟我有<del>毛</del>神马关系。</p>
+
+
+<h3>可以从 Ext3/Ext4 无痛转换</h3>
+
+
+<p>不解释，详见《<a title="Conversion from Ext3" href="https://btrfs.wiki.kernel.org/index.php/Conversion_from_Ext3">Conversion from Ext3 and Ext4</a>》。</p>
+
+
+<h3>为 SSD 优化</h3>
+
+
+<p>Btrfs 高度为 SSD 优化，不仅提高存取效率，还延长了使用寿命。如果你在 SSD 硬盘上使用 Btrfs，那么可以在挂载选项中加入 <code>ssd</code> 来启用这一特性。</p>
+
+
+<h3>支持数据压缩</h3>
+
+
+<p>Btrfs 支持文件系统的压缩，这个有什么用呢？大家知道 NTFS 吧，它就支持压缩，支持压缩就可以存放更多的东西呗，动作片什么的。</p>
+
+
+<p>不过压缩可不光是这个作用，大家都知道磁盘速度很慢，总是跟不上 CPU 的处理速度，所以 CPU 常常空闲着没事干。于是牛人们就想着给它找点事干，于是就有了压缩。压缩了之后磁盘读写就少了，原来闲着的 CPU 过来帮忙压缩解压缩数据，CPU 多快啊，这一来二去，<strong>往往</strong>就比原来不压缩的时候速度快得多。没看内核和 Ramdisk 都变着花样的压缩么，就是这个道理。</p>
+
+
+<p>Btrfs 目前支持 lzo 和 zlib 压缩算法，而且很智能，像一些视频啊、音乐啊、图片啊，大家都知道它们本来就是压缩过存放的，再压缩也不一定减少空间，反而平白浪费 CPU，所以 Btrfs 会试着压缩一小段，如果压着困难，就会原样存放。怎么样，智能吧？</p>
+
+
+<p>如果想要启用这一特性，可以在挂载选项中加入 <code>compress</code> 选项，你还可以手动指定压缩算法，例如 <code>compress=zlib</code> 可以获得更高压缩比，而 <code>compress=lzo</code> 可以获得更快的速度。</p>
+
+
+<h2>卷管理</h2>
+
+
+<p>终于到正题了啊，说到卷管理，很多人可能就想到 LVM 了，没错，说的就是这个卷！不过我虽然用过 LVM ，不过用的也不熟，如果说得有错误，请偷偷告诉我……</p>
+
+
+<h3>无须分区的文件系统</h3>
+
+
+<p>初入 Linux ，最大的难点是什么？当然是分区。其实这是大多数操作系统都会共有的问题，各位 MM ，你们当时是不是找暗恋你们的 GG 帮忙分的区？各位 GG ，你们当时是不是找暗恋你们的 GG 帮忙分的区？有了 Btrfs ，你们再也不用求人了！</p>
+
+
+<p>什么 /boot 要分 200M 还有说不用单独分出来的啊，什么 /home 要分好多好多但是不能理解这是干什么用的啊，就算你已经算是 Linux 老鸟了，新换一个发行版的时候，也会犹豫 / 到底是分 15G 好还是 20G 好吧？</p>
+
+
+<p>有了 Btrfs，你只需要分一个区就可以了，除非你想要休眠功能，那可以再分一个跟内存大小一样大的 swap 分区。</p>
+
+
+<p>还在担心重装系统 /home 下文件会丢失？不用了，把 /home 分到一个单独的<strong>子卷</strong>中就可以啦！担心多系统问题？把 /boot 分到一个子卷中，就可以共享啦，然后再建一个其他操作系统的 / 子卷，往里面安新的操作系统吧！</p>
+
+
+<h3>子卷</h3>
+
+
+<p>上面的说明让你云里雾里？好吧，我来详细指点一下，多设备我不清楚，这里只说单设备，谁有多个硬盘自己研究去。</p>
+
+
+<p>Btrfs 呢，自带了卷管理功能，所谓的卷呢，就是原来分区的概念，嗯，特别是在 LVM 中，就是这样。 LVM 中，划分子卷的时候也要指定子卷的大小，然后如果哪个子卷空间不够用了，可以用 LVM 的一套工具来改变大小。</p>
+
+
+<p>这样其实跟原来分区的概念相差也不是很大，不过 Btrfs 中的子卷不是这样。在 Btrfs 中，所有子卷共用文件系统中所有的空间，在划分的时候是无需指定大小的。比如说你有个 80G 的 SSD 硬盘，全划分到一个 Btrfs 分区 sda1，而这个分区里面又有两个子卷 A 和 B，那么只要 A + B 的空间大小不超过 80G，两个子卷中哪个多点哪个少点根本没关系！</p>
+
+
+<p>所以你再也不必为了 /boot 分小了而懊悔不已，不用为 / 分大了肉痛不已——它们共用一块空间，自身再也没有大小的概念了。</p>
+
+
+<p>你可能要问，只分成一个 Btrfs 分区，那挂载的时候怎么办呢？仍然是通过挂载参数解决，比如：</p>
+
+
+<pre>mount /dev/sda1 /mnt -o subvol=root
+mount /dev/sda1 /mnt/home -o subvol=home</pre>
+
+
+<p>虽然分区一样，不过由于子卷名称不一样，挂载时选择的子卷就不一样，很神奇。</p>
+
+
+<h3>快照</h3>
+
+
+<p>子曰：快照也是一种子卷，子卷是一种特殊的快照。</p>
+
+
+<p>好，我们来挑战一下更难理解的概念——<strong>快照</strong>。说到快照，就不得不提系统还原，最常见的系统还原就是 Ghost 那种啦，把文件系统整个复制一遍然后压缩成一个镜像，这个又慢又费空间，大家懂的。Windows 自己也有系统还原，似乎是基于文件级的，把重要的文件备份一下，挂掉之后还原一下，能不能恢复正常全看天命，哈哈。</p>
+
+
+<p>总之现在现实世界中各种系统还原办法还都不怎么完美（什么苹果、ZFS，我没用过的东西谁提我跟谁急！），不过在虚拟机的世界里，快照的应用已经相当广泛。嗯，或许你早已经用过 Virtualbox 的快照功能了，完全的增量备份方式，不会重复占用空间，并且可以方便地对快照进行增加和删除，是不是很爽？</p>
+
+
+<p>现在这种异次元才有的技术终于降临在 Linux 上了， Btrfs 让真机上的文件系统快照成为可能。</p>
+
+
+<h3>COW</h3>
+
+
+<p>Btrfs 的快照功能是通过 COW(Copy on write) 技术来实现的，这种技术实现起来很难，不过说起来很简单。可能很多人听说过， Linux 内核中创建进程时 fork() 就用了这个技术，所以据各种书籍吹嘘， Linux 下建进程要比 Windows 下快得多。</p>
+
+
+<p>举个例子，比如你把 Btrfs 分区分成了 / 和 /home 两个子卷，然后装上了系统，这时你想搞个对 / 子卷的快照，以便以后系统折腾坏了之后可以恢复过来。于是你就建了个快照，快照名叫 ooxx 好了。</p>
+
+
+<p>Btrfs 中快照的建立几乎是瞬间的事，因为实际上它并没有备份数据，而只是增加了引用计数，比如一个文件 /lib/libc.so.6 ，初始引用计数是 1，你每建立一个快照它就加 1 ，所以现在你建立了 ooxx，引用数就变成了 2。</p>
+
+
+<p>如果你哪天心情好，把 <code>rm -rf /usr/lib</code> 写成了 <code>rm -rf /usr /lib</code>，很遗憾你的<strong>默认子卷</strong>中的 /lib/libc.so.6 这个文件就没了。不过呢，这只是它的引用计数减 1 而已，快照 ooxx 中还对它持有一个引用，因此这个文件并没有真正消失，你还可以从 ooxx 中将其拷贝回来。</p>
+
+
+<p>而哪天系统升级，<strong>默认子卷</strong>中 /lib/libc.so.6 被升级成了 /lib/libc.so.7，那么版本 6 的引用计数也是减一，同时在默认子卷中增加了一个版本 7 的文件。而快照 ooxx 完全不受此影响。</p>
+
+
+<p>这就是 COW，也就是两者之间有差异的时候，再去修改差异的部分。如果没有差异，那么就无需重复的磁盘空间。</p>
+
+
+<h3>快照也是一种子卷，子卷是一种特殊的快照</h3>
+
+
+<p>这里反复提到<strong>默认子卷</strong>，也就是刚装系统时划分的那些子卷，这些子卷跟快照又是什么关系？</p>
+
+
+<p>其实默认子卷只是一种特殊的快照而已，还记得之前说过划分子卷时要指定<strong>子卷名</strong>么？其实子卷名就是快照名，一个道理，你不管 / 的子卷叫 root ，而是叫它 xxoo 也是可以的，不管 /home 的子卷叫 home，叫它 oxox 也是可以的。</p>
+
+
+<p>你可能糊涂了：快照不是死的、只读的么？怎么跟子卷又是一回事了？</p>
+
+
+<p>错！快照不是只读的！</p>
+
+
+<p>你可以把 Btrfs 中的快照想象成新建了一个一模一样的子卷，还记得之前的挂载命令么？现在你也可以使用快照名作为子卷名来进行挂载并且读写！</p>
+
+
+<pre>mount /dev/sda1 /mnt/root -o subvol=root
+mount /dev/sda1 /mnt/snapshot_ooxx -o subvol=ooxx</pre>
+
+
+<p>没错！你甚至可以将默认子卷和快照同时挂载在系统上，同时进行读写，有 COW 技术的后盾，完全不用担心会有混乱！</p>
+
+
+<p>想想这个技术可以干什么？你可以挂载一下以前的快照，轻松找回误删的文件；你可以新建一个快照，全盘删除，然后装个别的系统，完全不用担心原来系统的安全<del>；你甚至可以建立一个快照，专门存放各种 MV, PV, AV, GV ，只要不挂载，即使是其他 Linux 高手也很难发现</del>。</p>
+
+
+<h3>恢复系统</h3>
+
+
+<p>有了快照，怎么恢复系统呢？总不能把快照里面的文件都拷贝回来吧？</p>
+
+
+<p>这个问题其实前面已经解答了。大家知道 Linux 下文件系统挂载主要是两个地方，一个是内核参数（也就是 GRUB 之类的配置文件里），一个是 /etc/fstab；大家还知道快照的挂载只需要修改挂载参数中的 subvol 的值就可以了，那么事情就简单了：想要恢复到哪个快照，直接挂载它就可以啦！</p>
+
+
+<p>也就是说，系统的恢复只是改改配置文件的事，完全无需等待！当然以后可能还会有图形界面的工具出现。</p>
+
+
+<h3>快照的数量</h3>
+
+
+<p>我们可以在一个分区里面建立多少个快照？这个问题不要问我。我只能告诉你，如果你每天都在使用电脑，并且每天建立 100 个快照，那么你磁盘空间不足的时候， Btrfs 的 subvolid 肯定不会用完就是了。</p>
+
+
+<p>所以你可以没事就建建快照，玩 RPG 的都会 S/L 大法吧？说不定少做了一次快照，前面就“请英雄重新来过”了，到时候哭都来不及。 Arch 下已经有了相应的工具自动建立快照，详情自行搜索。</p>
+
+
+<h2>总结</h2>
+
+
+<p>本文仅仅是从理论方面对 Btrfs 对普通<del>折腾帝</del>用户的用处进行了阐述，如果<del>我心情好</del>反响好的话我会写一篇实战篇，大家也可以去 <a href="https://btrfs.wiki.kernel.org/index.php/Main_Page">Btrfs Wiki</a> 上查看更详细的理论和实践知识。</p>
+
+
+<p>根据最新接到的消息， <a href="http://thread.gmane.org/gmane.comp.file-systems.btrfs/12352/focus=12370">Btrfsck 将在两周之内推出一个可以修复数据的初始版本</a>，相信这个工具的推出，可以使更多折腾帝投入 Btrfs 的大潮之中，这篇文章，全当是为大家做个动员吧。</p>
+
+
+<p>最后还是提醒，折腾有风险，千万别在 Btrfs 上存放重要数据，否则追悔莫及！谢谢支持！</p>
+
+
+<p>PS: 长了草的博客，我对不起乃！我以后<del>可能的话</del>一定痛改前非，专心写博！</p>
+
+
+<p>Related posts:<ol>
+<li><a href="http://www.kissuki.com/2009/03/%e5%88%b6%e4%bd%9clfs%e8%bf%87%e7%a8%8b%e4%b8%ad%e5%90%84%e4%b8%aa%e9%98%b6%e6%ae%b5%e6%81%a2%e5%a4%8d%e5%b7%a5%e4%bd%9c%e7%8a%b6%e6%80%81%e7%9a%84%e6%96%b9%e6%b3%95-%e7%ac%ac%e4%ba%8c%e7%89%88/" rel="bookmark" title="制作LFS过程中各个阶段恢复工作状态的方法 第二版(适合LFS6.3)（转贴）">制作LFS过程中各个阶段恢复工作状态的方法 第二版(适合LFS6.3)（转贴）</a></li>
+<li><a href="http://www.kissuki.com/2008/12/%e8%a7%a3%e5%86%b3arch-linux%e4%b8%8ba%e5%8d%a1%e5%bc%80compiz%e5%81%87%e6%ad%bb%e7%9a%84%e9%97%ae%e9%a2%98%ef%bc%88%e8%bd%ac%e8%b4%b4%ef%bc%89/" rel="bookmark" title="解决Arch Linux下A卡开compiz假死的问题（转贴）">解决Arch Linux下A卡开compiz假死的问题（转贴）</a></li>
+<li><a href="http://www.kissuki.com/2009/01/arch-linux%e6%97%a0%e6%b3%95%e4%bc%91%e7%9c%a0%e7%9a%84%e8%a7%a3%e5%86%b3/" rel="bookmark" title="Arch Linux无法休眠的解决">Arch Linux无法休眠的解决</a></li>
+</ol></p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/ivenvd/~4/vcucdxejQTw" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

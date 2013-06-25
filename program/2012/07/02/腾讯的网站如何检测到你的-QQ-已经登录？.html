@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>腾讯的网站如何检测到你的 QQ 已经登录？</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>腾讯的网站如何检测到你的 QQ 已经登录？</h2>
+<p class="meta">02 Jul 2012</p>
+
+<div class="post">
+<h2>腾讯的网站如何检测到你的 QQ 已经登录？</h2>
+
+<h3>by lovelucy</h3>
+
+<h3>at 2012-07-01 18:04:03</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7598.html">http://www.udpwork.com/item/7598.html</a></h3>
+
+<p>在 QQ 已经登录的情况下，手动输入网址打开 QQ 邮箱 或者 QQ 空间 等腾讯网站，可以看到网页已经检测到本地 QQ 客户端已经登录，于是用户可以很方便地一键登录网站而不必再输入用户名密码。这实际上是典型的异构系统单点登录 SSO（single-sign-on）技术。网页怎么会知道我登录的 QQ 号码？腾讯是如何实现的呢？</p>
+
+
+<p><a href="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/Qzone_AutoLogin.jpg"><img src="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/Qzone_AutoLogin.jpg" alt="Qzone_AutoLogin"></a></p>
+
+
+<p></p>
+
+
+<div><div></div>
+</div>
+
+
+<p><a href="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/QQMail_AutoLogin.jpg"><img src="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/QQMail_AutoLogin.jpg" alt="QQMail_AutoLogin"></a></p>
+
+
+<p>网上有很多猜测，比如——</p>
+
+
+<ul><li>QQ 登录时在本地某地方存登录 ID 信息（Cookie 或文件），用 js 读，然后去服务器认证。但是现在的浏览器一般有沙箱功能，js 无法读到登录 ID；而且在清空 Cookie 后依然起作用。</li>
+<li>以 IP、CPU ID、硬盘 ID 等硬件设备 hash 做唯一标识，QQ 登录时在服务器记录此信息，js 验证。感觉这样依赖环境过多，QQ 不太可能采用此方法。</li>
+<li>QQ 启动某端口监听，js 连接此端口。但是用 netstat 查看后，QQ 并没有监听端口。</li>
+</ul>
+
+
+<p>有这么一个神奇的链接，<a href="http://xui.ptlogin2.qq.com/cgi-bin/qlogin">http://xui.ptlogin2.qq.com/cgi-bin/qlogin</a>你一点开，它就检测到你登录了 QQ。通过查看页面源代码，我们可以发现一个<a href="http://imgcache.qq.com/ptlogin/10004/js/xui.js" title="QQ ptlogin">关于 ptlogin 的 js</a>文件，这段代码中，描述了使用 ActivexObject 浏览器插件的过程，于是一切了然。</p>
+
+
+<p>可是 ActiveX 是 IE 的插件呀，我们使用 Chrome 或者 FireFox 也是可以直接登录的，这是怎么回事呢？</p>
+
+
+<p>原来，QQ 使用了历史很悠久的 NPAPI（Netscape Plugin Application Programming Interface）接口。NPAPI 几乎支持所有主流浏览器，包括 FireFox、Chrome、Opera（IE 从 5.5 后停止支持 NPAPI，转而使用 ActiveX）。</p>
+
+
+<p>打开 chrome://plugins/ 我们可以发现自动登录的有关插件，而在路径 C:\Program Files (x86)\Common Files\Tencent\TXSSO 下就可以找到关于 SSO 的相关动态链接库。</p>
+
+
+<p><a href="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/Tencent_SSO_plugin.jpg"><img src="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/Tencent_SSO_plugin.jpg" alt="Tencent_SSO_plugin"></a></p>
+
+
+<p>np 插件一般命名都会加np前缀 如 QQ 的这个 npSSOAxCtrlForPTLogin.dll，只要按照<a href="http://geeklu.com/2010/10/getting-started-with-npapi-plugin/" title="NPAPI插件编程起步">标准的写法</a>，放在浏览器会加载的地方，用的时候写个标签就可以在 js 里面调用了。于是跨浏览器（无视 IE）的插件开发变得相当可行。运行在 NPAPI 插件中的代码拥有当前用户的所有权限，不在沙箱中运行，所以它的扩展程序在被 Chrome 网上应用店接受前要求人工审核。</p>
+
+
+<p>有点不怀好意的想法开始萌生，我自己的网站能否借用这个插件来检测用户的 QQ 登录呢？写个页面测试一下。</p>
+
+
+<div><div><pre>&lt;html&gt;
+&lt;body&gt;
+&lt;script&gt;
+ 
+var g_vOptData;
+var mylocation= “xui.ptlogin2.qq.com/cgi-bin1/qlogintest.html”;
+var pt = {
+ ishttps: false,
+ low_login: 0,
+ keyindex: 9,
+ init: function()
+ {
+  pt.ishttps = /^https/.test(mylocation);
+  //if (navigator.mimeTypes[&quot;application/nptxsso&quot;]) {
+  var B = document.createElement(“embed”);
+  B.type = “application/nptxsso”;
+  B.style.width = “0px”;
+  B.style.height = “0px”;
+  document.body.appendChild(B);
+  pt.sso = B
+ }
+};
+pt.init();
+ 
+try {
+ if (window.ActiveXObject)
+ {
+  q_hummerQtrl = new ActiveXObject(“SSOAxCtrlForPTLogin.SSOForPTLogin2″);
+  var A = q_hummerQtrl.CreateTXSSOData();
+  q_hummerQtrl.InitSSOFPTCtrl(0, A);
+  g_vOptData = q_hummerQtrl.CreateTXSSOData()
+ }
+ hummer_loaduin();
+} catch(B) {
+ alert(/create ActiveXObject failed/)
+}
+ 
+function hummer_loaduin()
+{
+ if (window.ActiveXObject)
+ {
+  var Y = q_hummerQtrl.DoOperation(1, g_vOptData);
+  if (null == Y) {
+   return
+  }
+  try
+  {
+   var T = Y.GetArray(“PTALIST”);
+   var c = T.GetSize();
+   var X = “”;
+   for (var d = 0; d &lt; c; d++)
+   {
+    var E = T.GetData(d);
+    var a = E.GetDWord(“dwSSO_Account_dwAccountUin”);
+    var J = “”;
+    var O = E.GetByte(“cSSO_Account_cAccountType”);
+    var b = a;
+    if (O == 1)
+    {
+     try
+     {
+      J = E.GetArray(“SSO_Account_AccountValueList”);
+      b = J.GetStr(0)
+     } catch(Z) {}
+    }
+    var Q = 0;
+    try {
+    Q = E.GetWord(“wSSO_Account_wFaceIndex”)
+    } catch(Z) {
+    Q = 0
+    }
+    var S = “”;
+    try {
+    S = E.GetStr(“strSSO_Account_strNickName”)
+    } catch(Z) {
+    S = “”
+    }
+    var F = E.GetBuf(“bufGTKey_PTLOGIN”);
+    var G = E.GetBuf(“bufST_PTLOGIN”);
+    var N = “”;
+    var A = G.GetSize();
+    for (var W = 0; W &lt; A; W++) {
+    var B = G.GetAt(W).toString(“16″);
+    if (B.length == 1) {
+    B = “0″ + B
+    }
+    N += B
+    }
+    var M = {
+     uin: a,
+     name: b,
+     type: O,
+     face: Q,
+     nick: S,
+     key: N
+    };
+    var str = “QQinfo\r\n”+
+        “uin:” + M[&#39;uin&#39;]+”\r\n”+
+        “name:”+M[&#39;name&#39;]+”\r\n”+
+        “type:”+M[&#39;type&#39;]+”\r\n”+
+        “face:”+M[&#39;face&#39;]+”\r\n”+
+        “nick:”+M[&#39;nick&#39;]+”\r\n”+
+        “key:”+M[&#39;key&#39;]+”\r\n”;
+    alert(str);
+    q_aUinList[d] = M
+   }
+  } catch(Z) {}
+  } else
+  {
+  try {
+   var M = pt.sso;
+   var L = M.InitPVA();
+   if (L != false)
+   {
+    var I = M.GetPVACount();
+    for (var W = 0; W &lt; I; W++)
+    {
+     var C = M.GetUin(W);
+     var D = M.GetAccountName(W);
+     var K = M.GetFaceIndex(W);
+     var U = M.GetNickname(W);
+     var P = M.GetGender(W);
+     var V = M.GetUinFlag(W);
+     var f = M.GetGTKey(W);
+     var R = M.GetST(W);
+    }
+    var str = “QQinfo\r\n”+
+        “uin:” + C +”\r\n”+
+        “name:”+D+”\r\n”+
+        “face:”+K +”\r\n”+
+        “nick:”+U+”\r\n”+
+        “key:”+f+”\r\n”;
+    alert(str);
+   }
+  } catch(Z) {}
+  }
+ 
+}
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div>
+</div>
+
+
+<p>本地打开此页面，create ActiveXObject 失败。腾讯必然在 dll 中就对域名进行了限制，网页是无法篡改的。于是修改本地host文件，加一条：</p>
+
+
+<p>xui.ptlogin2.qq.com  127.0.0.1</p>
+
+
+<p>再用 xui.ptlogin2.qq.com 这个域名去访问本地的这个 html，果然，可以正常拿到 QQ 相关信息。</p>
+
+
+<p><strong>PS.</strong>
+Chrome 浏览器自带的开发者工具有一个功能可以格式化被压缩的 js 代码，十分好用。废话不多说，有图说明一切——</p>
+
+
+<p><a href="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/pretty_print_js_google_chrome.png"><img src="http://cdn.lovelucy.info/wordpress/wp-content/uploads/2012/07/pretty_print_js_google_chrome.png" alt="pretty_print_js_google_chrome"></a></p>
+
+
+<p>参考链接：
+<br>
+<a href="http://1.lanz.sinaapp.com/?p=152" title="WEB检测QQ登录状态机制分析">http://1.lanz.sinaapp.com/?p=152</a>
+<br>
+<a href="http://taurus-ly.com/articles/2012/02/153.html" title="探究网页中检测QQ登录原理">http://taurus-ly.com/articles/2012/02/153.html</a></p>
+
+
+<table border="0" cellspacing="0" cellpadding="3"><tr><td colspan="5"><b>猜你可能也喜欢：</b></td>
+</tr>
+<tr><td><a href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html%3Fvariant%3Dzh-tw&amp;from=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html" title="騰訊的網站如何檢測到你的 QQ 已經登錄？"><img src="http://static.wumii.com/site_images/2012/07/01/33193817.jpg">
+<br>
+騰訊的網站如何檢測到你的 QQ 已經登錄？</a></td>
+<td><a href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.lovelucy.info%2Fwatch-youku-tudou-without-proxy.html&amp;from=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html" title="不用代理，直接观看中国大陆优酷土豆网络视频"><img src="http://static.wumii.com/site_images/2012/03/24/18084891.jpg">
+<br>
+不用代理，直接观看中国大陆优酷土豆网络视频</a></td>
+<td><a href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.lovelucy.info%2Fwatch-youku-tudou-without-proxy.html%3Fvariant%3Dzh-hant&amp;from=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html" title="不用代理，直接觀看中國大陸優酷土豆網絡視頻"><img src="http://static.wumii.com/site_images/2012/03/24/18084891.jpg">
+<br>
+不用代理，直接觀看中國大陸優酷土豆網絡視頻</a></td>
+<td><a href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.lovelucy.info%2Fgrayscaling-non-ie-browsers.html&amp;from=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html" title="在非IE浏览器实现页面全灰"><img src="http://static.wumii.com/images/blogWidget/wordpress_default.gif">
+<br>
+在非IE浏览器实现页面全灰</a></td>
+<td><a href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.lovelucy.info%2Fwebsite-database-optimization.html&amp;from=http%3A%2F%2Fwww.lovelucy.info%2Ftencent-sso.html" title="优化网站性能之数据库架构篇"><img src="http://static.wumii.com/site_images/2011/06/06/11133904.png">
+<br>
+优化网站性能之数据库架构篇</a></td>
+</tr>
+<tr><td colspan="5"><a href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">无觅</a></td>
+</tr>
+</table>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7598.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7598.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7598.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

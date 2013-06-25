@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>四个新的 HTTP 状态码</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>四个新的 HTTP 状态码</h2>
+<p class="meta">06 May 2012</p>
+
+<div class="post">
+<h2>四个新的 HTTP 状态码</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-05-06 13:32:48</h3>
+
+<h3>original <a href="http://www.cnbeta.com/articles/185928.htm">http://www.cnbeta.com/articles/185928.htm</a></h3>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/138.htm"><img src="http://img.cnbeta.com/topics/communication.png" alt="通信技术" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.azury.net/">悠蓝</a>的投递</b><br>
+<a rel="nofollow" href="http://tools.ietf.org/html/rfc6585">RFC 6585</a> 最近刚刚发布，该文档描述了 4 个新的 HTTP 状态码。HTTP 协议还在变化？是的，HTTP 协议一直在演变，新的状态码对于开发 REST 服务或者说是基于 HTTP 的服务非常有用，下面我们为你详细介绍这四个新的状态码以及是否应该使用。</p>
+        <p><span style="font-weight:bold">428 Precondition Required (要求先决条件)</span><br>
+<br>
+先决条件是客户端发送 HTTP 请求时，如果想要请求能成功必须满足一些预设的条件。<br>
+<br>
+一个好的例子就是 If-None-Match 头，经常在 GET 请求中使用，如果指定了 If-None-Match ，那么客户端只在响应中的 ETag 改变后才会重新接收回应。<br>
+<br>
+先决条件的另外一个例子就是 If-Match 头，这个一般用在 PUT 请求上用于指示只更新没被改变的资源，这在多个客户端使用 HTTP 服务时用来防止彼此间不会覆盖相同内容。<br>
+<br>
+当服务器端使用 <a rel="nofollow" href="http://tools.ietf.org/html/rfc6585#section-3">428 Precondition Required</a> 状态码时，表示客户端必须发送上述的请求头才能执行请求，这个方法为服务器提供一种有效的方法来阻止 'lost update' 问题。<br>
+<br>
+<span style="font-weight:bold">429 Too Many Requests (太多请求)</span><br>
+<br>
+当你需要限制客户端请求某个服务数量时，该状态码就很有用，也就是请求速度限制。<br>
+<br>
+在此之前，有一些类似的状态码，例如 '509 Bandwidth Limit Exceeded'. <a rel="nofollow" href="https://dev.twitter.com/docs/error-codes-responses">Twitter 使用 420</a> （这不是HTTP定义的状态码）<br>
+<br>
+如果你希望限制客户端对服务的请求数，可使用 429 状态码，同时包含一个 Retry-After 响应头用于告诉客户端多长时间后可以再次请求服务。<br>
+<br style="font-weight:bold">
+<span style="font-weight:bold"> 431 Request Header Fields Too Large (请求头字段太大)</span><br>
+<br>
+某些情况下，客户端发送 HTTP 请求头会变得很大，那么服务器可发送 <a rel="nofollow" href="http://tools.ietf.org/html/rfc6585#section-5">431 Request Header Fields Too Large</a> 来指明该问题。<br>
+<br>
+我不太清楚为什么没有 430 状态码，而是直接从 429 跳到 431，我尝试搜索但没有结果。唯一的猜测是 430 Forbidden 跟 403 Forbidden 太像了，为了避免混淆才这么做的，天知道！<br>
+<br>
+<span style="font-weight:bold">511 Network Authentication Required (要求网络认证)</span><br>
+<br>
+对我来说这个状态码很有趣，如果你在开发一个 HTTP 服务器，你不一定需要处理该状态码，但如果你在编写 HTTP 客户端，那这个状态码就非常重要。<br>
+<br>
+如果你频繁使用笔记本和智能手机，你可能会注意到大量的公用 WIFI 服务要求你必须接受一些协议或者必须登录后才能使用。<br>
+<br>
+这是通过拦截HTTP流量，当用户试图访问网络返回一个重定向和登录，这很讨厌，但是实际情况就是这样的。<br>
+<br>
+使用这些“拦截”客户端，会有一些讨厌的副作用。在 RFC 中有提到这两个的例子：<br>
+<br>
+ 如果你在登录WIFI前访问某个网站，网络设备将会拦截首个请求，这些设备往往也有自己的网站图标 ‘favicon.ico'。登录后您会发现，有一段时间内你访问的网站图标一直是WIFI登录网站的图标。 
+ 如果客户端使用HTTP请求来查找文档（可能是JSON），网络将会响应一个登录页，这样你的客户端就会解析错误并导致客户端运行异常，在现实中这种问题非常常见。 
+<br>
+因此 511 状态码的提出就是为了解决这个问题。<br>
+<br>
+如果你正在编写 HTTP 的客户端，你最好还是检查 511 状态码以确认是否需要认证后才能访问。<br>
+<br>
+<a rel="nofollow" href="http://www.rooftopsolutions.nl/blog/new-http-status-codes">英文原文</a>，<a rel="nofollow" href="http://www.oschina.net/">OSCHINA</a>原创翻译<br></p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

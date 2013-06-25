@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>vim(gvim)支持对齐线</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>vim(gvim)支持对齐线</h2>
+<p class="meta">18 May 2012</p>
+
+<div class="post">
+<h2>vim(gvim)支持对齐线</h2>
+
+<h3>by Dante</h3>
+
+<h3>at 2012-05-17 19:40:36</h3>
+
+<h3>original <a href="http://www.vimer.cn/2012/05/vimgvim%e6%94%af%e6%8c%81%e5%af%b9%e9%bd%90%e7%ba%bf.html">http://www.vimer.cn/2012/05/vimgvim%e6%94%af%e6%8c%81%e5%af%b9%e9%bd%90%e7%ba%bf.html</a></h3>
+
+<p>前段时间有朋友在微博上@我推荐了一款vim的插件，用来显示对齐线，感觉效果不错，就给大家推荐一下.<br>
+下载链接: <a href="http://www.vim.org/scripts/script.php?script_id=3361">Indent Guides</a></p>
+
+
+<p>截图如下:</p>
+
+
+<p><a href="http://www.vimer.cn/wp-content/uploads/2012/05/indentguide.png"><img title="http://www.vimer.cn/wp-content/uploads/2012/05/indentguide.png" src="http://www.vimer.cn/wp-content/uploads/2012/05/indentguide.png" width="570" style="border-top-width:0px;display:inline;border-left-width:0px;border-bottom-width:0px;border-right-width:0px" alt="1" border="0"></a></p>
+
+
+<p><b>一. 安装 </b><br>
+不用多说，直接解压放到vimfiles or .vim下</p>
+
+
+<p><b>二. 配置</b><br>
+基本可以不用配置，不过由于默认的对齐线宽度太宽，不太美观，所以我改成1了，如下</p>
+
+
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#804040">let</span> g<span style="color:#000000">:</span>indent_guides_guide_size=<span style="color:#000000;font-weight:bold">1</span></pre></td></tr></table></div>
+
+
+
+
+<p>详细的配置，可以参看他的文档，这里不再多说</p>
+
+
+<p><b>三. 使用</b><br>
+默认的键盘映射是</p>
+
+
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">&lt;</span>mapleader<span style="color:#000000">&gt;</span>ig</pre></td></tr></table></div>
+
+
+
+
+<p>OK，插件就介绍到这里，其实如果只是单纯的介绍插件，就不用写这篇文章了。<br>
+我在用这个插件的时候，又发现了另一个需求，即标尺的功能。vim7.3里面默认提供了colorcolumn，例如执行:</p>
+
+
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">:</span>set cc=<span style="color:#000000;font-weight:bold">80</span></pre></td></tr></table></div>
+
+
+
+
+<p>就可以高亮第80列，效果如下：</p>
+
+
+<p><a href="http://www.vimer.cn/wp-content/uploads/2012/05/cc.png"><img title="http://www.vimer.cn/wp-content/uploads/2012/05/cc.png" src="http://www.vimer.cn/wp-content/uploads/2012/05/cc.png" style="border-top-width:0px;display:inline;border-left-width:0px;border-bottom-width:0px;border-right-width:0px" alt="1" border="0"></a></p>
+
+
+<p>但是有时候我们想看一下几行的字符是不是在同一列上时，手工去输入列数实在太麻烦了，所以我就单独写了一个函数，来满足这个需求：</p>
+
+
+
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td><td><pre style="font-family:monospace"><span style="color:#25bb4d">map</span> ,ch <span style="color:#000000">:</span><span style="color:#804040">call</span> SetColorColumn<span style="color:#000000">(</span><span style="color:#000000">)</span><span style="color:#000000">&lt;</span>CR<span style="color:#000000">&gt;</span>
+<span style="color:#804040">function</span><span style="color:#000000">!</span> SetColorColumn<span style="color:#000000">(</span><span style="color:#000000">)</span>
+    <span style="color:#804040">let</span> col_num = <span style="color:#25bb4d">virtcol</span><span style="color:#000000">(</span><span style="color:#c5a22d">&quot;.&quot;</span><span style="color:#000000">)</span>
+    <span style="color:#804040">let</span> cc_list = <span style="color:#25bb4d">split</span><span style="color:#000000">(</span><span style="color:#000000">&amp;</span>cc, <span style="color:#c5a22d">','</span><span style="color:#000000">)</span>
+    <span style="color:#804040">if</span> <span style="color:#25bb4d">count</span><span style="color:#000000">(</span>cc_list, <span style="color:#25bb4d">string</span><span style="color:#000000">(</span>col_num<span style="color:#000000">)</span><span style="color:#000000">)</span> <span style="color:#000000">&lt;</span>= <span style="color:#000000;font-weight:bold">0</span>
+        <span style="color:#804040">execute</span> <span style="color:#c5a22d">&quot;set cc+=&quot;</span><span style="color:#000000">.</span>col_num
+    <span style="color:#804040">else</span>
+        <span style="color:#804040">execute</span> <span style="color:#c5a22d">&quot;set cc-=&quot;</span><span style="color:#000000">.</span>col_num
+    <span style="color:#804040">endif</span>
+endfunction</pre></td></tr></table></div>
+
+
+
+
+<p>按下,ch 就可以将当前光标下的列高亮，再按下一次，取消高亮；并且可以同时多列高亮。</p>
+
+
+<p>这两个工具搭配在一起使用，相信会取得更好的效果。</p>
+
+
+<p>OK，就是这样~</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/725925745/vimer/feedsky/s.gif?r=http://www.vimer.cn/2012/05/vimgvim%e6%94%af%e6%8c%81%e5%af%b9%e9%bd%90%e7%ba%bf.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

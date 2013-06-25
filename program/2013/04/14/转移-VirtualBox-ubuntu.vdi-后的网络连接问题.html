@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>转移 VirtualBox ubuntu.vdi 后的网络连接问题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>转移 VirtualBox ubuntu.vdi 后的网络连接问题</h2>
+<p class="meta">14 Apr 2013</p>
+
+<div class="post">
+<h2>转移 VirtualBox ubuntu.vdi 后的网络连接问题</h2>
+
+<h3>by leegorous</h3>
+
+<h3>at 2013-04-14 12:01:43</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/leegorous/gowing/~3/TE6bFjE1YGE/">http://feedproxy.google.com/~r/leegorous/gowing/~3/TE6bFjE1YGE/</a></h3>
+
+<p>由于磁盘空间的问题，需要迁移 vdi 文件去新的位置。关闭，转移，新建 Ubuntu 虚拟机直接引用转移后的 vdi，其它都保留原有的设置，一切都很好。</p>
+
+
+<p>唯独启动后，ifconfig 一看就发现问题了，只有本地网络了。</p>
+
+
+<p>一开始还是以为是 VBox 网络连接的问题，反复试了几次，问题依旧，而其它虚拟机同样的配置却可以正常运作。经过一翻 google，最终从 <a href="http://stackoverflow.com/questions/13335950/moving-a-virtualbox-vdi-linux-machine-to-a-new-host-computer" title="Moving a VirtualBox .vdi Linux machine to a new host computer">这里</a> 得到启示。   </p>
+
+
+<pre>
+&gt; sudo mv /etc/udev/rules.d/70-persistent-net.rules /etc/udev/rules.d/70-persistent-net.rules.bak
+</pre>
+
+
+<p>删掉应该也是可以的，重启之后问题就解决了。</p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/leegorous/gowing/~4/TE6bFjE1YGE" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

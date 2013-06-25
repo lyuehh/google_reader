@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ASP.NET MVC Routing概述 (C#)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ASP.NET MVC Routing概述 (C#)</h2>
+<p class="meta">26 Aug 2010</p>
+
+<div class="post">
+<h2>ASP.NET MVC Routing概述 (C#)</h2>
+
+<h3>by JasenKin</h3>
+
+<h3>at 2010-08-25 22:38:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/jasenkin/archive/2010/08/25/1808534.html">http://www.cnblogs.com/jasenkin/archive/2010/08/25/1808534.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/jasenkin/"><img src="http://pic.cnblogs.com/face/u102079.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/jasenkin/">JasenKin</a> 发表于 2010-08-25 22:38 <a href="http://www.cnblogs.com/jasenkin/archive/2010/08/25/1808534.html">原文链接</a> 阅读: 716 评论: 2</p>
+
+
+<p align="left"><strong style="font-size:14pt">                                               ASP.NET MVC Routing概述</strong><br> <br>    <span style="font-size:14pt">   ASP.NET Routing模块的责任是将传入的浏览器请求映射为特有的MVC controller actions。</span><br> <br> <strong style="font-size:14pt">使用默认的Route Table</strong><br style="font-size:14pt"><span style="font-size:14pt">       当你创建一个新的ASP.NET MVC应用程序，这个应用程序已经被配置用来使用ASP.NET Routing。 ASP.NET Routing 在2个地方设置。第一个，ASP.NET Routing 在你的应用程序中的Web配置文件（Web.config文件）是有效的。在配置文件中有4个与routing相关的代码片段：system.web.httpModules代码段，system.web.httpHandlers 代码段,system.webserver.modules代码段以及 system.webserver.handlers代码段。千万注意不要删除这些代码段，如果没有这些代码段，routing将不再运行。第二个，更重要的，route  table在应用程序的Global.asax文件中创建。这个Global.asax文件是一个特殊的文件，它包含ASP.NET 应用程序生命周期events的event handlers。这个route  table在应用程序的起始event中创将。</span><br></p>
+
+
+<p align="left"><span style="font-size:14pt">       在Listing 1中包含ASP.NET MVC应用程序的默认Global.asax文件.</span></p>
+
+
+<p><span style="font-size:14pt">Listing 1 - Global.asax.cs</span></p>
+
+
+<div>
+<div><span style="color:#008080;font-size:14pt"> 1</span> <span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">class</span><span style="color:#000000;font-size:14pt"> MvcApplication : System.Web.HttpApplication<br></span><span style="color:#008080;font-size:14pt"> 2</span> <span style="color:#000000;font-size:14pt">    {<br></span><span style="color:#008080;font-size:14pt"> 3</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">static</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">void</span><span style="color:#000000;font-size:14pt"> RegisterRoutes(RouteCollection routes)<br></span><span style="color:#008080;font-size:14pt"> 4</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt"> 5</span> <span style="color:#000000;font-size:14pt">            routes.IgnoreRoute(</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">{resource}.axd/{*pathInfo}</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">);<br></span><span style="color:#008080;font-size:14pt"> 6</span> <span style="color:#000000;font-size:14pt">            routes.MapRoute(<br></span><span style="color:#008080;font-size:14pt"> 7</span> <span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Default</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 路由名称</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt"> 8</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">{controller}/{action}/{id}</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 带有参数的 URL</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt"> 9</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#0000ff;font-size:14pt">new</span><span style="color:#000000;font-size:14pt"> { controller </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Home</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, action </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Index</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, id </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000;font-size:14pt"> UrlParameter.Optional } </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 参数默认值</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">10</span> <span style="color:#008000"></span><span style="color:#000000;font-size:14pt">            );<br></span><span style="color:#008080;font-size:14pt">11</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">12</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">13</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">14</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">protected</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">void</span><span style="color:#000000;font-size:14pt"> Application_Start()<br></span><span style="color:#008080;font-size:14pt">15</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt">16</span> <span style="color:#000000;font-size:14pt">            AreaRegistration.RegisterAllAreas();<br></span><span style="color:#008080;font-size:14pt">17</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">18</span> <span style="color:#000000;font-size:14pt">            RegisterRoutes(RouteTable.Routes);<br></span><span style="color:#008080;font-size:14pt">19</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">20</span> <span style="color:#000000;font-size:14pt">    }</span></div></div>
+
+
+<p> </p>
+
+
+<p>   </p>
+
+
+<p><span style="font-size:14pt">       当一个MVC应用程序第一个启动，Application_Start() 方法被调用，这个方法反过来调用RegisterRoutes() 方法。</span></p>
+
+
+<p><span style="font-size:14pt">       这个默认的route  table包含一个单一的route。这个默认的route将url的第一个段映射为一个controller名称，url的第二个段映射为一个controller  action,第三个段映射为命名为id的参数。</span><br><span style="font-size:14pt">       假如，你在网页浏览器的地址栏中键入下面的url：/Home/Index/3,这个默认的route将这个url映射为下面的参数：</span><br><span style="font-size:14pt">controller = Home     controller名称</span></p>
+
+
+<p><span style="font-size:14pt">action = Index          controller  action</span></p>
+
+
+<p><span style="font-size:14pt">id = 3                       id的参数</span></p>
+
+
+<p><span style="font-size:14pt">       当你请求/Home/Index/3这样的url，下面的代码将执行。HomeController.Index(3) </span></p>
+
+
+<p><span style="font-size:14pt">       这个默认的route包含3个默认的参数。如果你没有提供一个 controller，那么 controller默认为Home。同样，action默认为Index,id参数默认为空字符串。</span><br><span style="font-size:14pt">       让我们来看一些关于默认的route怎么映射urls为controller  actions的例子。假如你在你的浏览器地址栏中输入如下的url：/Home， 由于这些默认的route参数有一些相关的默认值，键入这样的URL，将导致HomeController类的Index()方法（如Listing 2）被调用。</span></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#008080;font-size:14pt"> 1</span> <span style="color:#0000ff;font-size:14pt">namespace</span><span style="color:#000000;font-size:14pt"> MvcRoutingApp.Controllers<br></span><span style="color:#008080;font-size:14pt"> 2</span> <span style="color:#000000;font-size:14pt">{<br></span><span style="color:#008080;font-size:14pt"> 3</span> <span style="color:#000000;font-size:14pt">    [HandleError]<br></span><span style="color:#008080;font-size:14pt"> 4</span> <span style="color:#000000">    </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">class</span><span style="color:#000000;font-size:14pt"> HomeController : Controller<br></span><span style="color:#008080;font-size:14pt"> 5</span> <span style="color:#000000;font-size:14pt">    {<br></span><span style="color:#008080;font-size:14pt"> 6</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000;font-size:14pt"> ActionResult Index(</span><span style="color:#0000ff;font-size:14pt">string</span><span style="color:#000000;font-size:14pt"> id)<br></span><span style="color:#008080;font-size:14pt"> 7</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt"> 8</span> <span style="color:#000000;font-size:14pt">            ViewData[</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Message</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">] </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">欢迎使用 ASP.NET MVC!</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">;<br></span><span style="color:#008080;font-size:14pt"> 9</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">10</span> <span style="color:#000000">            </span><span style="color:#0000ff;font-size:14pt">return</span><span style="color:#000000;font-size:14pt"> View();<br></span><span style="color:#008080;font-size:14pt">11</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">12</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">13</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000;font-size:14pt"> ActionResult About()<br></span><span style="color:#008080;font-size:14pt">14</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt">15</span> <span style="color:#000000">            </span><span style="color:#0000ff;font-size:14pt">return</span><span style="color:#000000;font-size:14pt"> View();<br></span><span style="color:#008080;font-size:14pt">16</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">17</span> <span style="color:#000000;font-size:14pt">    }<br></span><span style="color:#008080;font-size:14pt">18</span> <span style="color:#000000;font-size:14pt">}<br></span><span style="color:#008080;font-size:14pt">19</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">20</span> <span style="color:#000000"></span></div></div>
+
+
+<p> </p>
+
+
+<p>        </p>
+
+
+<p><span style="font-size:14pt">         在Listing 2中，这个HomeController 类包含一个名为Index()的方法。这个URL /Home导致Index()方法被调用，一个空的字符串将作为id参数的值。由于mvc框架调用controller actions的这种方式，这个URL /Home同样匹配HomeController类中的Index()方法（如Listing 3）。</span><br><span style="font-size:14pt">Listing 3 - HomeController.cs (Index action with no parameter)</span></p>
+
+
+<p><span style="font-size:14pt">    [HandleError]</span><br><span style="font-size:14pt">    public class HomeController : Controller</span><br><span style="font-size:14pt">    {</span><br><span style="font-size:14pt">        public ActionResult Index()</span><br><span style="font-size:14pt">        {</span><br><span style="font-size:14pt">            return View();</span><br><span style="font-size:14pt">        }</span><br><span style="font-size:14pt">    }</span><br></p>
+
+
+<p><span style="font-size:14pt">        在Listing 3中，这个Index()方法不接收任何参数。这个URL /Home将导致Index()方法被调用。URL /Home/Index/3同样调用这个方法（ID被忽略）。</span></p>
+
+
+<p><br><span style="font-size:14pt">Listing 4 - HomeController.cs (Index action with nullable parameter)</span></p>
+
+
+<p><br><span style="font-size:14pt">    [HandleError]</span><br><span style="font-size:14pt">    public class HomeController : Controller</span><br><span style="font-size:14pt">    {</span><br><span style="font-size:14pt">        public ActionResult Index(int? id)</span><br><span style="font-size:14pt">        {</span><br><span style="font-size:14pt">            return View();</span><br><span style="font-size:14pt">        }</span><br><span style="font-size:14pt">    }</span><br></p>
+
+
+<p><span style="font-size:14pt">       在Listing 4中, Index() 方法有一个整数参数. 由于这个参数是可空参数 ,  Index() 将被调用而不引起错误. </span></p>
+
+
+<p><span style="font-size:14pt">       最后, 使用 URL /Home 来调用如Listing 5中的Index() 方法 将导致异常，因为这个ID参数不是一个可空的参数。如果你试图去调用这个Index()方法，你将获得如下图所示的错误。</span></p>
+
+
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jasenkin/MVC/mvc_exc01.jpg" width="601" height="444"></p>
+
+
+<p><span style="font-size:14pt">Listing 5 - HomeController.cs (Index action with Id parameter)</span><br><span style="font-size:14pt">    [HandleError]</span><br><span style="font-size:14pt">    public class HomeController : Controller</span><br><span style="font-size:14pt">    {</span><br><span style="font-size:14pt">        public ActionResult Index(int id)</span><br><span style="font-size:14pt">        {</span><br><span style="font-size:14pt">            return View();</span><br><span style="font-size:14pt">        }</span><br><span style="font-size:14pt">    }</span><br><br><span style="font-size:14pt">      另一方面，使用如Listing 5中的Index controller action，URL /Home/Index/3运行正常。Index controller action in Listing 5. /Home/Index/3请求将导致Index()方法被调用，ID参数拥有一个3的值。 </span></p>
+
+
+<p><strong style="font-size:14pt"></strong> </p>
+
+
+<p><strong style="font-size:14pt">总结</strong><br style="font-size:14pt"><span style="font-size:14pt">      这是一个关于ASP.NET Routing的简要介绍. 应该了解了这个默认的route如何将URLs映射为controller actions。</span></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><br><strong style="font-size:14pt">创建自定义的Routes (C#)</strong> </p>
+
+
+<p>         <span style="font-size:14pt">这个教程，你将学会怎样添加一个自定义的route到一个asp.net mvc应用程序。你将学会在Global.asax文件中，怎样使用一个自定义的route来修改这个默认的route table。</span><br><span style="font-size:14pt">      对于许多简单的ASP.NET MVC 应用程序，这个默认的route  table将运行得很好。然而，你可能发现，你可能特定的routing 需求。那样的话，你可能需要创建一个自定义的route。</span><br><span style="font-size:14pt">      设想一下，例如，你正在建立一个博客应用程序，你可能想要去处理像/Archive/12-25-2009的输入请求。</span></p>
+
+
+<p><br><span style="font-size:14pt">      当一个用户键入这个请求，你想要返回与日期为12/25/2009相符的博客实体。为了处理这种类型的请求，你需要去创建一个自定义的route。</span><br><span style="font-size:14pt">      在 Listing 1中，这个Global.asax文件中包含一个新的名为Blog的自定义route，它处理类似于/Archive/entry date的请求。</span><br><span style="font-size:14pt">Listing 1 - Global.asax (with custom route)</span></p>
+
+
+<p>    </p>
+
+
+<div>
+<div><span style="color:#008080;font-size:14pt"> 1</span> <span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System;<br></span><span style="color:#008080;font-size:14pt"> 2</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System.Collections.Generic;<br></span><span style="color:#008080;font-size:14pt"> 3</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System.Linq;<br></span><span style="color:#008080;font-size:14pt"> 4</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System.Web;<br></span><span style="color:#008080;font-size:14pt"> 5</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System.Web.Mvc;<br></span><span style="color:#008080;font-size:14pt"> 6</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">using</span><span style="color:#000000;font-size:14pt"> System.Web.Routing;<br></span><span style="color:#008080;font-size:14pt"> 7</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt"> 8</span> <span style="color:#000000"></span><span style="color:#0000ff;font-size:14pt">namespace</span><span style="color:#000000;font-size:14pt"> MvcRoutingApp<br></span><span style="color:#008080;font-size:14pt"> 9</span> <span style="color:#000000;font-size:14pt">{<br></span><span style="color:#008080;font-size:14pt">10</span> <span style="color:#000000">    </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，<br></span><span style="color:#008080;font-size:14pt">11</span> <span style="color:#008000">    </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 请访问 </span><span style="color:#008000;font-size:14pt;text-decoration:underline">http://go.microsoft.com/?LinkId=9394801</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">12</span> <span style="color:#008000"></span><span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">13</span> <span style="color:#000000">    </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">class</span><span style="color:#000000;font-size:14pt"> MvcApplication : System.Web.HttpApplication<br></span><span style="color:#008080;font-size:14pt">14</span> <span style="color:#000000;font-size:14pt">    {<br></span><span style="color:#008080;font-size:14pt">15</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">public</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">static</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">void</span><span style="color:#000000;font-size:14pt"> RegisterRoutes(RouteCollection routes)<br></span><span style="color:#008080;font-size:14pt">16</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt">17</span> <span style="color:#000000;font-size:14pt">            routes.IgnoreRoute(</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">{resource}.axd/{*pathInfo}</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">);<br></span><span style="color:#008080;font-size:14pt">18</span> <span style="color:#000000;font-size:14pt">            routes.MapRoute(<br></span><span style="color:#008080;font-size:14pt">19</span> <span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Blog</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 路由名称</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">20</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Archive/{entryDate}/{id}</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 带有参数的 URL</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">21</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#0000ff;font-size:14pt">new</span><span style="color:#000000;font-size:14pt"> { controller </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Archive</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, action </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Entry</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, id </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000;font-size:14pt"> UrlParameter.Optional } </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 参数默认值</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">22</span> <span style="color:#008000"></span><span style="color:#000000;font-size:14pt">            );<br></span><span style="color:#008080;font-size:14pt">23</span> <span style="color:#000000;font-size:14pt">            routes.MapRoute(<br></span><span style="color:#008080;font-size:14pt">24</span> <span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Default</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 路由名称</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">25</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">{controller}/{action}/{id}</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 带有参数的 URL</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">26</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#0000ff;font-size:14pt">new</span><span style="color:#000000;font-size:14pt"> { controller </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Home</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, action </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000"> </span><span style="color:#800000;font-size:14pt">"</span><span style="color:#800000;font-size:14pt">Index</span><span style="color:#800000;font-size:14pt">"</span><span style="color:#000000;font-size:14pt">, id </span><span style="color:#000000;font-size:14pt">=</span><span style="color:#000000;font-size:14pt"> UrlParameter.Optional } </span><span style="color:#008000;font-size:14pt">//</span><span style="color:#008000;font-size:14pt"> 参数默认值</span><span style="color:#008000"><br></span><span style="color:#008080;font-size:14pt">27</span> <span style="color:#008000"></span><span style="color:#000000;font-size:14pt">            );<br></span><span style="color:#008080;font-size:14pt">28</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">29</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">30</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">31</span> <span style="color:#000000">        </span><span style="color:#0000ff;font-size:14pt">protected</span><span style="color:#000000"> </span><span style="color:#0000ff;font-size:14pt">void</span><span style="color:#000000;font-size:14pt"> Application_Start()<br></span><span style="color:#008080;font-size:14pt">32</span> <span style="color:#000000;font-size:14pt">        {<br></span><span style="color:#008080;font-size:14pt">33</span> <span style="color:#000000;font-size:14pt">            AreaRegistration.RegisterAllAreas();<br></span><span style="color:#008080;font-size:14pt">34</span> <span style="color:#000000"><br></span><span style="color:#008080;font-size:14pt">35</span> <span style="color:#000000;font-size:14pt">            RegisterRoutes(RouteTable.Routes);<br></span><span style="color:#008080;font-size:14pt">36</span> <span style="color:#000000;font-size:14pt">        }<br></span><span style="color:#008080;font-size:14pt">37</span> <span style="color:#000000;font-size:14pt">    }<br></span><span style="color:#008080;font-size:14pt">38</span> <span style="color:#000000;font-size:14pt">}</span></div></div>
+
+
+<p> </p>
+
+
+<p>  </p>
+
+
+<p><span style="font-size:14pt">        你添加到route  table的routes的顺序是很重要的。我们新自定义的blog  route在现存的默认route之前添加。如果你颠倒了顺序，那么这个默认的route总是先调用而不是这个自定义的route。</span><br><span style="font-size:14pt">        这个自定义的blog  toute匹配任何以 /Archive/ 开头的请求。所以，它匹配所有下列URLs：</span><br><span style="font-size:14pt">/Archive/12-25-2009</span></p>
+
+
+<p><span style="font-size:14pt">/Archive/10-6-2004</span></p>
+
+
+<p><span style="font-size:14pt">/Archive/apple</span></p>
+
+
+<p><span style="font-size:14pt">        这个自定义的route将输入的请求映射至名为Archive的controller，并且调用 Entry() action。当 Entry() action被调用的时候，这个输入的日期被当作名为entryDate的参数。</span><br><span style="font-size:14pt">Listing 2 - ArchiveController.cs</span><br><span style="font-size:14pt">    public class ArchiveController : Controller</span><br><span style="font-size:14pt">    {</span></p>
+
+
+<p><span style="font-size:14pt">        public string Entry(DateTime entryDate)</span><br><span style="font-size:14pt">        {</span><br><span style="font-size:14pt">            return &quot;You requested the date:&quot; + entryDate.ToString();</span><br><span style="font-size:14pt">        }</span></p>
+
+
+<p><span style="font-size:14pt">    }</span><br><br><span style="font-size:14pt">      注意，在Listing 2中这个Entry()方法接收一个类型为DateTime的参数。MVC框架是足够智能的，它自动将URL中输入的date转换为一个DateTime值。如果URL中输入的date不能转换为DateTime,错误将被引发。</span><br></p>
+
+
+<p><strong style="font-size:14pt"> </strong></p>
+
+
+<p><strong style="font-size:14pt">总结<br></strong><span style="font-size:14pt">      这个教程演示怎样来创建一个自定义的route。你学会了怎样在Global.asax 文件中添加一个自定义的route到route  table。我们讨论了怎样为blog实体将请求映射为名为</span><span style="font-size:14pt">ArchiveController的controller，名为Entry()的controller action。</span></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/jasenkin/aggbug/1808534.html?type=1" width="1" height="1" alt=""><p>评论: 2　<a href="http://www.cnblogs.com/jasenkin/archive/2010/08/25/1808534.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/jasenkin/archive/2010/08/25/1808534.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/72105/">Ubuntu 10.10多点触摸功能演示</a><span style="color:gray">(2010-08-26 15:39)</span><br>· <a href="http://news.cnblogs.com/n/72104/">YYeTs中断服务一周后恢复</a><span style="color:gray">(2010-08-26 15:36)</span><br>· <a href="http://news.cnblogs.com/n/72103/">日本2010企业品牌排名：Google首超微软</a><span style="color:gray">(2010-08-26 15:35)</span><br>· <a href="http://news.cnblogs.com/n/72102/">UC浏览器与印尼运营商达成合作 发布印尼语专版</a><span style="color:gray">(2010-08-26 15:30)</span><br>· <a href="http://news.cnblogs.com/n/72101/">阿里巴巴CEO谈收购Auctiva：辅助者是关键词</a><span style="color:gray">(2010-08-26 15:29)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/kyo-yo/archive/2010/08/25/Talk-about-changes-in-ideology-and-the-relationship-between-programmers.html">说说思想意识的转变与程序员的关系</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

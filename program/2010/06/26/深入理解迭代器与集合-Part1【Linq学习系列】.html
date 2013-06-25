@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>深入理解迭代器与集合 Part1【Linq学习系列】</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>深入理解迭代器与集合 Part1【Linq学习系列】</h2>
+<p class="meta">26 Jun 2010</p>
+
+<div class="post">
+<h2>深入理解迭代器与集合 Part1【Linq学习系列】</h2>
+
+<h3>by 肖敏</h3>
+
+<h3>at 2010-06-25 23:26:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/xiaomin/archive/2010/06/25/1765555.html">http://www.cnblogs.com/xiaomin/archive/2010/06/25/1765555.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/xiaomin/"><img src="http://pic.cnblogs.com/face/u30330.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/xiaomin/">肖敏</a> 发表于 2010-06-25 23:26 <a href="http://www.cnblogs.com/xiaomin/archive/2010/06/25/1765555.html">原文链接</a> 阅读: 656 评论: 4</p>
+
+
+<p align="center"><span style="font-family:宋体"><a></a>Linq学习系列</span></p>
+
+
+<p><strong><span style="font-family:宋体">第一节</span> <span style="font-family:宋体">深入理解迭代器与集合</span></strong></p>
+
+
+<p><span style="font-family:宋体"></span> </p>
+
+
+<p>      <strong>1.0 <span style="font-family:宋体">前言</span></strong></p>
+
+
+<p> </p>
+
+
+<p><span>      </span><span style="font-family:宋体">不管是</span>Linq To Objects,Linq To Sql,<span style="font-family:宋体">还是</span>Linq To Xml<span style="font-family:宋体">等等，</span>Linq<span style="font-family:宋体">都是用于对集合的操作。而迭代器是</span>Linq<span style="font-family:宋体">的基础之一。</span></p>
+
+
+<p><span>      </span><span style="font-family:宋体">迭代器是一种模式，用于顺序访问一个聚合对象中的各个元素。更具体的说，在</span>.Net<span style="font-family:宋体">中，是通过实现</span>IEnumerable<span style="font-family:宋体">，</span>IEnumerable&lt;T&gt;<span style="font-family:宋体">来实现的。</span></p>
+
+
+<p><span style="font-family:宋体">    </span><span style="font-family:宋体">迭代器模式参看：<a href="http://blog.sina.com.cn/s/blog_45d7d4010100bz50.html">http://blog.sina.com.cn/s/blog_45d7d4010100bz50.html</a>。</span></p>
+
+
+<p><span>      </span><span style="font-family:宋体">也许有人觉得集合不就是数组吗，比如</span>Int[] myIntegers=Int[100];<span style="font-family:宋体">直接指定下标</span>myIntergers[x]<span style="font-family:宋体">不就可以访问任意元素了吗？为什么要这么麻烦？</span></p>
+
+
+<p style="text-indent:21.75pt"><span style="font-family:宋体">集合有很多种，链表，树</span>(<span style="font-family:宋体">比如</span>xml)<span style="font-family:宋体">，图都是集合，而且集合中的元素也不一定就是同样的类型。有些集合无法使用任意指定的方式来遍历。最特殊的例子（也许不是很恰当）</span>,<span style="font-family:宋体">互联网就是一个集合。</span>google<span style="font-family:宋体">的网络爬虫就是一个迭代器，它遍历整个互联网，抓取的东西包括网页，图片，视频，音频等等。</span></p>
+
+
+<p style="text-indent:21.75pt"><span style="font-family:宋体">但是，我们先从最简单的数组开始。</span></p>
+
+
+<p> </p>
+
+
+<p style="margin:0cm 0cm 0pt 19.5pt"><span>     <strong>1.1<span style="font:7pt &#39;Times New Roman&#39;">    </span></strong></span><span style="font-family:宋体"><strong>数组</strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 19.5pt"><span style="font-family:宋体"></span> </p>
+
+
+<p style="margin:0cm 0cm 0pt 19.5pt"><span style="font-family:宋体">在没有迭代器的时代，如果我们要遍历一个数组，我们一般用这样的写法：</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span></p>
+
+
+<div>
+<div><span style="color:#000000">Int myIntegers</span><span style="color:#000000">=</span><span style="color:#000000">Int[</span><span style="color:#800080">100</span><span style="color:#000000">];<br><br></span><span style="color:#0000ff">for</span><span style="color:#000000">(i</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;i</span><span style="color:#000000">&lt;</span><span style="color:#000000">myIntegers.Length;i</span><span style="color:#000000">++</span><span style="color:#000000">)<br>{<br>    Console.WriteLine(myIntegers[i]);<br>}<br></span></div></div>
+
+
+<p>  </p>
+
+
+<p style="text-indent:21pt">对于这种方式，我们经常碰到的问题就是：越界。编译器无法判断，因此这种错误只能在运行时查出来。我们看看迭代器遍历的方式：</p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span></p>
+
+
+<div>
+<div><span style="color:#0000ff">foreach</span><span style="color:#000000">(</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#0000ff">in</span><span style="color:#000000"> myIntegers)<br>{<br>    Console.WriteLine(i);<br>}<br></span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt">其实对于上述写法，编译器完全可以使用语法糖的技巧，偷偷的编译成如下语句：</p>
+
+
+<div>
+<div><span style="color:#0000ff">int</span><span style="color:#000000"> current</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;<br><br></span><span style="color:#0000ff">while</span><span style="color:#000000">(myIntegers.Lenght</span><span style="color:#000000">&gt;</span><span style="color:#000000"> current)<br>{<br>    </span><span style="color:#0000ff">int</span><span style="color:#000000"> i</span><span style="color:#000000">=</span><span style="color:#000000"> myIntegers[current];<br><br>    Console.WriteLine(i);<br><br>    current</span><span style="color:#000000">++</span><span style="color:#000000">;<br>}<br></span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">这样也可以解决越界的问题。但是实际上并没有使用上述方法，而是使用迭代器实现的。在</span>C#<span style="font-family:宋体">（</span>2.0<span style="font-family:宋体">以后）中，每一个数组对象都实现了</span>IEnumerable&lt;T&gt;<span style="font-family:宋体">接口。（还实现了I</span>Collection&lt;T&gt;,IList&lt;T&gt;<span style="font-family:宋体">接口）。定义如下：</span><span style="font-family:宋体"></span></p>
+
+
+<div>
+<div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">interface</span><span style="color:#000000"> IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> : IEnumerable<br>{<br>    IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> GetEnumerator();<br>}<br></span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"> <span style="font-family:宋体">以</span>Int<span style="font-family:宋体">型数组为例，当我们声明一个</span>Int<span style="font-family:宋体">型数组</span>Int[]myIntegers<span style="font-family:宋体">时，系统会自动生成一个类</span>:System.Int[],<span style="font-family:宋体">名称空间跟</span>Int<span style="font-family:宋体">类型是一样的。示例代码：</span></p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#0000ff">public</span><span style="color:#000000"> Int[]:Array,IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>{<br>    IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;</span><span style="color:#000000"> GetEnumerator()<br>    {<br>        </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> ArrayEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;</span><span style="color:#000000">(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>    }<br>}<br><br></span><span style="color:#0000ff">public</span><span style="color:#000000"> ArrayEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000">:IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>{<br>    T[] _array;<br>    Int _current</span><span style="color:#000000">=-</span><span style="color:#800080">1</span><span style="color:#000000">;</span></div>
+<div><span style="color:#000000"><br>    // 构造函数,传入数组<br>    </span><span style="color:#0000ff">public </span><span style="color:#000000">ArrayEnumerator(T[] array)<br>    {<br>        _array</span><span style="color:#000000">=</span><span style="color:#000000">array;<br>    }<br><br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> T Current<br>    {<br>        </span><span style="color:#0000ff">get</span><span style="color:#000000"> { </span><span style="color:#0000ff">return</span><span style="color:#000000"> _array[current]; }<br>    }<br><br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> MoveNext()<br>    {<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000">(_array.Length</span><span style="color:#000000">==</span><span style="color:#000000">_current</span><span style="color:#000000">+</span><span style="color:#800080">1</span><span style="color:#000000"> </span><span style="color:#000000">||</span><span style="color:#000000"> _array.Length</span><span style="color:#000000">==</span><span style="color:#800080">0</span><span style="color:#000000">)<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>        </span><span style="color:#0000ff">else</span><span style="color:#000000"><br>        {<br>            _current</span><span style="color:#000000">++</span><span style="color:#000000">;<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> ture;<br>        }<br>    }<br><br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> Reset()<br>    {<br>        _current</span><span style="color:#000000">=</span><span style="color:#800080">0</span><span style="color:#000000">;<br>    }<br>}<br><br></span></div></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">因此，实际上在使用</span>foreach<span style="font-family:宋体">语句的时候，实际上调用的<span style="color:#000000">IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;接口：</span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="color:#000000"> </span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span></p>
+
+
+<div>
+<div><span style="color:#0000ff"><font face="宋体"><span style="color:#000000">IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;</span></font></span><span style="color:#000000"> e<font color="#0000ff"><span style="color:#000000">numerator</span></font></span><span style="color:#000000">=myIntegers.GetEnumerator();</span></div>
+<div><span style="color:#0000ff">foreach</span><span style="color:#000000">(</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#0000ff">in</span><span style="color:#000000"> e<font color="#0000ff"><span style="color:#000000">numerator</span></font>)<br>{<br>    Console.WriteLine(i);<br>}<br></span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">也相当于以下语句：</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span></p>
+
+
+<div>
+<div><span style="color:#000000">IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">Int</span><span style="color:#000000">&gt;</span><span style="color:#000000"> enumerator</span><span style="color:#000000">=</span><span style="color:#000000"> myIntegers.GetEnumerator();<br><br></span><span style="color:#0000ff">while</span><span style="color:#000000">(enumerator.MoveNext())<br>{<br>    </span><span style="color:#0000ff">int</span><span style="color:#000000"> i</span><span style="color:#000000">=</span><span style="color:#000000">enumerator.Current;<br><br>    Console.WriteLine(i);<br>}<br><br>enumerator.Reset();<br><br></span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt">在这里，我们用到了数组迭代器：<font face="Verdana">ArrayEnumerator&lt;T&gt;</font><span style="font-family:宋体">，针对不同的集合，我们可以使用不同的迭代器，只要可以实现</span><a title="System.Collections.Generic.IEnumerator&lt;T&gt;" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Target=code://mscorlib:2.0.0.0:b77a5c561934e089/System.Collections.Generic.IEnumerator%3c%3e"><font face="Verdana">IEnumerator</font></a><font face="Verdana">&lt;T&gt;</font><span style="font-family:宋体">接口就行。下一节,我们举一个单向链表的例子。</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span> </p>
+
+
+<p><strong>   1.2 自定义单向链表</strong></p>
+
+
+<p> </p>
+
+
+<p><span>    链表定义：</span><span></span></p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> LinkTable</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> : IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>    {<br>        TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _firstNode;<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Add(T value)<br>        {<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (_firstNode </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                _firstNode </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000">(value);<br>            </span><span style="color:#0000ff">else</span><span style="color:#000000"><br>                _firstNode.Next </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000">(value);<br>        }<br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerable&lt;T&gt; Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> GetEnumerator()<br>        {<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> LinkTableEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000">(_firstNode);<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerable Members</span><span style="color:#000000"><br><br>        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()<br>        {<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> LinkTableEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000">(_firstNode);<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">链表节点定义：</span><span style="font-family:宋体"></span></p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>    {<br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> TableNode(T value)<br>        {<br>            _value </span><span style="color:#000000">=</span><span style="color:#000000"> value;<br>        }<br><br>        T _value;<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> T Value<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"> { </span><span style="color:#0000ff">return</span><span style="color:#000000"> _value; }<br>            </span><span style="color:#0000ff">set</span><span style="color:#000000"> { _value </span><span style="color:#000000">=</span><span style="color:#000000"> value; }<br>        }<br><br>        TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _next;<br><br>        </span><span style="color:#0000ff">internal</span><span style="color:#000000"> TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> Next<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"> { </span><span style="color:#0000ff">return</span><span style="color:#000000"> _next; }<br>            </span><span style="color:#0000ff">set</span><span style="color:#000000"> { _next </span><span style="color:#000000">=</span><span style="color:#000000"> value; }<br>        }<br>    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"> </p>
+
+
+<p style="text-indent:21pt">链表迭代器：</p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#000000">    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> LinkTableEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> : IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>    {<br>        TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _firstNode;<br>        TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _current;<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> LinkTableEnumerator(TableNode</span><span style="color:#000000">&lt;</span><span style="color:#000000">T</span><span style="color:#000000">&gt;</span><span style="color:#000000"> firstNode)<br>        {<br>            _firstNode </span><span style="color:#000000">=</span><span style="color:#000000"> firstNode;<br>        }<br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerator&lt;T&gt; Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> T Current<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"> { </span><span style="color:#0000ff">return</span><span style="color:#000000"> _current.Value; }<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IDisposable Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Dispose()<br>        {<br>            </span><span style="color:#008000">//</span><span style="color:#008000">throw new NotImplementedException();</span><span style="color:#008000"><br></span><span style="color:#000000">        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerator Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">object</span><span style="color:#000000"> System.Collections.IEnumerator.Current<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"> { </span><span style="color:#0000ff">return</span><span style="color:#000000"> _current.Value; }<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> MoveNext()<br>        {<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000">(_firstNode</span><span style="color:#000000">==</span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br><br>            </span><span style="color:#008000">//</span><span style="color:#008000"> 迭代器开始</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#0000ff">if</span><span style="color:#000000">(_current</span><span style="color:#000000">==</span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>            {<br>                _current </span><span style="color:#000000">=</span><span style="color:#000000"> _firstNode;<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>            }<br>            </span><span style="color:#0000ff">else</span><span style="color:#000000"> <br>            {<br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (_current.Next </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br>                </span><span style="color:#0000ff">else</span><span style="color:#000000"><br>                {<br>                    _current </span><span style="color:#000000">=</span><span style="color:#000000"> _current.Next;<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>                }<br>            }<br>        }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Reset()<br>        {<br>            _current </span><span style="color:#000000">=</span><span style="color:#000000"> null;<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>    }</span></div></div></div>
+
+
+<p> <span style="font-family:宋体"><a></a>    【<a title="LinkTable源代码" href="http://files.cnblogs.com/xiaomin/LinkTable.txt">下载LinkTable源代码</a>】</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span> 调用代码：</p>
+
+
+<div>
+<div><span style="color:#000000">    LinkTable</span><span style="color:#000000">&lt;</span><span style="color:#0000ff">string</span><span style="color:#000000">&gt;</span><span style="color:#000000"> sLink </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> LinkTable</span><span style="color:#000000">&lt;</span><span style="color:#0000ff">string</span><span style="color:#000000">&gt;</span><span style="color:#000000">();<br>    sLink.Add(</span><span style="color:#800000">"</span><span style="color:#800000">a</span><span style="color:#800000">"</span><span style="color:#000000">);<br>    sLink.Add(</span><span style="color:#800000">"</span><span style="color:#800000">b</span><span style="color:#800000">"</span><span style="color:#000000">);<br>    </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (</span><span style="color:#0000ff">string</span><span style="color:#000000"> item </span><span style="color:#0000ff">in</span><span style="color:#000000"> sLink)<br>    {<br>        Console.WriteLine(item);<br>    }</span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"> </p>
+
+
+<p style="text-indent:21pt">输出：</p>
+
+
+<p style="text-indent:21pt">a</p>
+
+
+<p style="text-indent:21pt">b</p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">从MoveNext()方法可以看出来，针对不同的集合，迭代器的行为有可能完全不一样。在数组迭代器中，迭代器保存着数组的引用，而在单向链表迭代器中，只需要保存第一个节点就行。</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">再比如我们还可以自定义树的迭代器，显然，我们可以使用深度优先遍历或者广度优先遍历,那我们可以让一个集合对象实现两个迭代器，并且让用户自己选择需要的迭代器吗？</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"></span> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><strong><span>1.3<span style="font:7pt &#39;Times New Roman&#39;">    </span></span><span style="font-family:宋体">让集合拥有多个迭代器:扩展TreeView类</span></strong></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体"></span></span> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体">以System.Windows.Forms.TreeView类为例，这是一个树形结构，但是它并没有实现IEnumerable&lt;T&gt;接口因此我们并不能够对他使用迭代器进行方便的遍历。</span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体">显然，我们可以扩展TreeView类，让它实现IEnumerable&lt;T&gt;接口：</span></span></p>
+
+
+<p style="text-indent:21pt"><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MyTreeView:TreeView,IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体">那么我们就可以使用如下语法来遍历MyTreeView类型对象：</span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体"><span style="color:#000000">MyTreeView tree</span><span style="color:#000000">=</span><span style="color:#0000ff">new</span><span style="color:#000000"> MyTreeView (); </span></span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体"><span style="color:#000000"></span><span style="color:#0000ff">foreach</span><span style="color:#000000">(TreeNode node </span><span style="color:#0000ff">in</span><span style="color:#000000"> tree)<br>    {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> do someting...</span><span style="color:#008000"><br></span><span style="color:#000000">    }</span> </span></span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体">但是，如果我们要让用户选择是用深度遍历还是广度遍历，这种方法就不行了。因此我们考虑让MyTreeView拥有两个迭代器，其中关键部分是，在GetEnumerator()方法中，根据用户的选择（增加TreeEnumeratorType属性，该属性为枚举类型）返回不同的迭代器。完整代码如下：</span></span><span style="font-family:宋体"><span style="font-family:宋体"></span></span></p>
+
+
+<div>
+<div><span style="color:#000000">
+<p>   <span style="color:#000000"> </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">enum</span><span style="color:#000000"> EnumeratorType<br>    {<br>        DepthFirst,<br>        WidthFirst<br>    }<br><br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> MyTreeView : TreeView,IEnumerable</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"><br>    {<br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> EnumeratorType TreeEnumeratorType </span><span style="color:#000000">=</span><span style="color:#000000"> EnumeratorType.DepthFirst;<br><br>        IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _depthFirst;<br><br>        IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"> DepthFirst<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"> <br>            {<br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (_depthFirst </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                {<br>                    _depthFirst </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> DepthFirstEnumerator(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>                }<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _depthFirst;<br>            }<br>        }<br><br>        IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"> _widithFirst;<br><br>        IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"> WidithFirst<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"><br>            {<br>                </span><span style="color:#0000ff">if</span><span style="color:#000000"> (_widithFirst </span><span style="color:#000000">==</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">)<br>                {<br>                    _widithFirst </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> WidthFirstEnumerator(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>                }<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> _widithFirst;<br>            }<br>        }<br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerable&lt;TreeNode&gt; Members</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> IEnumerator</span><span style="color:#000000">&lt;</span><span style="color:#000000">TreeNode</span><span style="color:#000000">&gt;</span><span style="color:#000000"> GetEnumerator()<br>        {<br>            </span><span style="color:#0000ff">switch</span><span style="color:#000000"> (TreeEnumeratorType)<br>            {<br>                </span><span style="color:#0000ff">case</span><span style="color:#000000"> EnumeratorType.DepthFirst:<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.DepthFirst;<br>                </span><span style="color:#0000ff">case</span><span style="color:#000000"> EnumeratorType.WidthFirst:<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.WidithFirst;<br>            }<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.DepthFirst;<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br><br>        </span><span style="color:#0000ff">#region</span><span style="color:#000000"> IEnumerable Members</span><span style="color:#000000"><br><br>        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()<br>        {<br>            </span><span style="color:#0000ff">switch</span><span style="color:#000000"> (TreeEnumeratorType)<br>            {<br>                </span><span style="color:#0000ff">case</span><span style="color:#000000"> EnumeratorType.DepthFirst:<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.DepthFirst;<br>                </span><span style="color:#0000ff">case</span><span style="color:#000000"> EnumeratorType.WidthFirst:<br>                    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.WidithFirst;<br>            }<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.DepthFirst;<br>        }<br><br>        </span><span style="color:#0000ff">#endregion</span><span style="color:#000000"><br>    }</span> </p></span></div></div>
+
+
+<p style="text-indent:21pt">使用：</p>
+
+
+<div>
+<div><span style="color:#000000">    <span style="color:#000000">MyTreeView myTree </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> MyTreeView();<br><br>    </span><span style="color:#008000">// </span><span style="color:#008000">使用深度优先迭代器</span><span style="color:#008000"><br></span><span style="color:#000000">    myTree.TreeEnumeratorType </span><span style="color:#000000">=</span><span style="color:#000000"> EnumeratorType.DepthFirst; </span></span></div>
+<div><span style="color:#000000"><span style="color:#000000">    </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (var item </span><span style="color:#0000ff">in</span><span style="color:#000000"> myTree)<br>    {<br>                <br>    }<br><br>    </span><span style="color:#008000">//</span><span style="color:#008000"> 使用广度优先迭代器</span><span style="color:#008000"><br></span><span style="color:#000000">    myTree.TreeEnumeratorType </span><span style="color:#000000">=</span><span style="color:#000000"> EnumeratorType.WidthFirst;<br>    </span><span style="color:#0000ff">foreach</span><span style="color:#000000"> (var item </span><span style="color:#0000ff">in</span><span style="color:#000000"> myTree)<br>    {<br><br>    }</span>       </span></div></div>
+
+
+<p> </p>
+
+
+<p style="text-indent:21pt"> </p>
+
+
+<p style="text-indent:21pt"> </p>
+
+
+<p style="text-indent:21pt"> </p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体"><span style="font-family:宋体"></span></span></p>
+
+
+<p> <img src="http://www.cnblogs.com/xiaomin/aggbug/1765555.html?type=1" width="1" height="1" alt=""><p>评论: 4　<a href="http://www.cnblogs.com/xiaomin/archive/2010/06/25/1765555.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/xiaomin/archive/2010/06/25/1765555.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67017/">汉王推出人脸识别考勤系统</a><span style="color:gray">(2010-06-26 14:45)</span><br>· <a href="http://news.cnblogs.com/n/67016/">Facebook的6年之痒</a><span style="color:gray">(2010-06-26 14:42)</span><br>· <a href="http://news.cnblogs.com/n/67015/">Facebook副总裁：Facebook不会采用云服务</a><span style="color:gray">(2010-06-26 14:30)</span><br>· <a href="http://news.cnblogs.com/n/67014/">粉丝通宵排队抢购iPhone4</a><span style="color:gray">(2010-06-26 13:14)</span><br>· <a href="http://news.cnblogs.com/n/67013/">首只iPhone4已进中关村：来自日本售八九千</a><span style="color:gray">(2010-06-26 13:12)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/sumtec/archive/2010/06/25/1764838.html">C#确实是很“慢”——最后的疯狂</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

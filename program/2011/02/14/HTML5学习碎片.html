@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>HTML5学习碎片</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>HTML5学习碎片</h2>
+<p class="meta">14 Feb 2011</p>
+
+<div class="post">
+<h2>HTML5学习碎片</h2>
+
+<h3>by Windie Chai</h3>
+
+<h3>at 2011-02-14 09:14:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/xiaoshatian/archive/2011/02/14/1954032.html">http://www.cnblogs.com/xiaoshatian/archive/2011/02/14/1954032.html</a></h3>
+
+<p>春节在家读了两本介绍HTML5的书：<a href="http://book.douban.com/subject/4143105/">《HTML5 Up and Running》</a>和<a href="http://book.douban.com/subject/4143106/">《Pro HTML5 Programming》</a>，得益于Kindle的便捷，一边读一边标注了一些内容，随感觉而标记，不成体系，所以称之为“碎片”，记录于此作为存档。
+<ol>
+<li><strong>浏览器支持情况检测</strong>
+<ul>
+<li><a href="http://www.modernizr.com/">Modernizr</a>是一个开源的JavaScript脚本库，可以用它来检查浏览器对HTML5和CSS3的支持情况。</li>
+<li>IE是个很有意思的浏览器，它只识别它的DOM字典里存在的标签。如果你的HTML中包含它不认识的标签，只需要用JavaScript创建一下，IE就会把该标签加到它的DOM字典中，那么也就可以识别该标签并为它应用样式了。例如，让IE支持article标签的方法是：
+<div>
+<pre>document.createElement(“article”)
+</pre>
+</div>
+根据这个原理，有人写了一段脚本来让老版本的IE支持HTML5标签：
+<div>
+<pre>&lt;!--[if lt IE 9]&gt;
+&lt;script&gt;
+var e = (&quot;abbr,article,aside,audio,canvas,datalist,details,&quot; + &quot;figure,footer,header,hgroup,mark,menu,meter,nav,output,&quot; + &quot;progress,section,time,video&quot;).split(&#39;,&#39;);
+for (var i = 0; i &lt; e.length; i++)
+{
+document.createElement(e[i]);
+}
+&lt;/script&gt;
+&lt;![endif]—&gt; 
+</pre>
+</div>
+或者直接在线引用这段脚本：
+<div>
+<pre>&lt;!--[if lt IE 9]&gt;
+&lt;script src=&quot;http://html5shiv.googlecode.com/svn/trunk/html5.js&quot;&gt;&lt;/script&gt;
+&lt;![endif]--&gt;
+</pre>
+</div>
+</li>
+</ul>
+</li>
+<li><strong>ORIGIN（源）</strong>
+<ul>
+<li>HTML5通过引入origin这个概念来明确和细化了域安全性，origin是由scheme（协议）、host（域名）和port（端口）组成的。<span style="color:#555555">譬如</span><a href="http://windstyle.cn">http://windstyle.cn</a>和https://windstyle.cn是不同的origin，但http://windstyle.cn和http://windstyle.cn/example.html是同一origin。</li>
+</ul>
+</li>
+<li><strong>DOCTYPE</strong>
+<ul>
+<li>Web页面有几种不同的渲染模式：
+<ul>
+<li>Standards mode</li>
+<li>Almost Standards mode</li>
+<li>Quirk mode</li>
+</ul>
+</li>
+<li>DOCTYPE就是用来告诉浏览器应该用哪种模式来渲染页面，符合HTML5标准（Standards mode）的DOCTYPE很简单：
+<div>
+<pre>&lt;!DOCTYPE HTML&gt;
+</pre>
+</div>
+</li>
+<li>没有DOCTYPE或者声明了不同的DOCTYPE会导致浏览器以Almost Standards mode或Quirks mode来渲染页面。《HTML5 Up and Running》的作者说，目前至少有5种DOCTYPE ，它们会触发浏览器的almost standards mode和至少73种quirks mode，光IE8就支持4种呈现模式（见下图），于是作者在书中要大喊：“Kill it. Kill it with fire!”。
+<a href="http://coding.windstyle.cn/files/2011/02/ie8-mode.png"><img style="display:inline" title="ie8-mode" src="http://coding.windstyle.cn/files/2011/02/ie8-mode_thumb.png" alt="ie8-mode" width="400" height="334"></a></li>
+</ul>
+</li>
+<li><strong>文档大纲</strong>
+<ul>
+<li>在HTML4中，创建文档大纲的唯一方法是使用&lt;h1&gt;到&lt;h6&gt;这几个标签，为了确保大纲只有一个根节点，页面中就不能多次使用&lt;h1&gt;。而在HTML5中，每个section都可以包含自己的&lt;h1&gt;，这并不会影响大纲结构。</li>
+</ul>
+</li>
+<li><strong>&lt;time&gt;标签</strong>
+<ul>
+<li>用法示例：
+<div>
+<pre>&lt;time datetime=&quot;2009-10-22T13:59:47-04:00&quot; pubdate&gt; October 22, 2009 1:59pm EDT &lt;/time&gt;
+</pre>
+</div>
+</li>
+<li>pubdate特性有两个含义，如果&lt;time&gt;标签位于&lt;article&gt;标签中，pubdate表示该article的发布日期，否则，pubdate表示整个文档的发布日期。</li>
+</ul>
+</li>
+<li><strong>&lt;canvas&gt;标签</strong>
+<ul>
+<li>设置&lt;canvas&gt;标签的宽度或高度会清除它的内容，并且还会将绘图上下文中的所有属性重设为默认值。IE目前上不支持&lt;canvas&gt;，可以使用ExplorerCanvas这个开源的JavaScript脚本库来间接实现画布API。</li>
+<li>向context.drawImage方法传递img对象可以将img表示的图片绘制在画布上，但img所引用的图片必须完全加载完毕，否则会抛出异常。</li>
+<li>如果向context.drawImage方法传递video对象，那么将会在画布上绘制视频的当前帧画面。</li>
+<li>context.getImageData方法可以获取画布的像素数据，但如果画布上绘制了来自不同origin的图片时，调用此方法会抛出异常。</li>
+</ul>
+</li>
+<li><strong>Web Storage</strong>
+<ul>
+<li>Cookie的缺点：
+<ul>
+<li>每次HTTP请求都会包含Cookie，会降低请求速度；</li>
+<li>Cookie数据未加密，在不使用SSL的情况下不安全；</li>
+<li>Cookie的尺寸限制为4KB</li>
+</ul>
+</li>
+<li>LocalStorage和sessionStorage的数据以字符串键值对的形式储存，他们的区别如下：
+<ul>
+<li>生存周期不同：当包含页面的选项卡或者窗口关闭后，sessionStorage中存储的数据就清空了，而LocalStorage中存储的数据依然存在；</li>
+<li>数据可见度不同：sessionStorage中存储的数据只有当前页面可以访问，而LocalStorage存储的数据对相同origin的所有页面都可见。</li>
+</ul>
+</li>
+<li>Web Storage事件会在相同origin的所有页面上触发，无论该页面是否对Web Storage进行过操作，所以可以利用这些事件来进行页面之间的通信。</li>
+</ul>
+</li>
+<li><strong>Offline Web Application</strong>
+<ul>
+<li>Offline Web Application需要一个离线清单文件（*.manifest），该文件可以位于服务器上的任何位置，但必须以text/cache-manifest为内容类型提供。</li>
+<li>Offline Web Application中所有页面的&lt;html&gt;标签中都要添加指向该清单文件的manifest特性。</li>
+<li>清单文件示例：
+<blockquote>CACHE MANIFEST
+<br>FALLBACK: / /offline.html
+<br>NETWORK: *</blockquote>
+</li>
+<li>无论当前是否在线，CACHE MANIFEST中的所有资源都会被缓存起来；NETWORK节表示“白名单”，该节中的所有资源都不会被缓存下来，只能在线获取；FALLBACK则为那些无法获取的资源提供一个备用路径。</li>
+<li>window.applicationCache对象包含许多事件
+<ol>
+<li>当浏览器发现&lt;html&gt;标签中的manifest特性时，就会触发checking事件；</li>
+<li>如果浏览器之前从未见过此清单文件：
+<ol>
+<li>触发downloading事件，然后开始下载清单中的资源。</li>
+<li>下载过程中会触发progress事件，该事件包含了已下载文件的数量和待下载文件的数量等信息。</li>
+<li>清单中的资源都下载完毕后，会触发cached事件，这表明该Offline Web Application已经可以在离线使用了。</li>
+</ol>
+</li>
+<li>如果浏览器之前访问过包含同一清单文件的页面，就会去检查该清单是否发生了变化：
+<ol>
+<li>如果没有变化：触发noupdate事件；</li>
+<li>如果发生了变化：会触发downloading事件，当清单中的资源都下载完毕后，会触发updateready事件，这表明该Offline Web Application已经更新成功。但浏览器仍然在使用旧版本，想要切换到新版本，需要手工调用window.applicationCache.swapCache()方法。</li>
+</ol>
+</li>
+<li>期间如果发生了错误，哪怕只有一个文件下载失败这样的错误，都会导致整个缓存过程失败，并会触发error事件，最要命的是这个事件并不会告诉你具体错在哪里。</li>
+</ol>
+</li>
+<li>window.applicationCache.status指示了缓存的状态：
+<ul>
+<li>0：UNCACHED</li>
+<li>1：IDLE</li>
+<li>2：CHECKING</li>
+<li>3：DOWNLOADING</li>
+<li>4：UPDATEREADY</li>
+<li>5：OBSOLETE</li>
+</ul>
+</li>
+<li>可以调用window.applicationCache.update()方法来向浏览器请求更新缓存。</li>
+<li>Web Server应当通过一些HTTP headers（譬如Expires和Cache-Control）来将文件的一些信息告诉浏览器。如果浏览器通过HTTP headers发现清单文件过期，就会向服务器请求新版本并下载它。此时浏览器会将服务器上一次通过HTTP headers发送给它的last-modified时间发回给服务器，如果服务器发现发现清单文件在该日期之后并没有更改过，就会返回304状态码，表示“Note Modified”。如果发生了变化，就会返回200状态码以及新文件的内容（当然也会包含Cache-Control和新的last-modified headers）；</li>
+<li>所以每次修改了需要缓存的文件之后，记着也要修改清单文件，这样服务器才会认为它更新了版本。简单的方法是在清单文件中加一行版本注释，每次修改注释中的版本号即可。</li>
+<li>当浏览器以联机方式工作时，navigator.onLine的值为true。</li>
+</ul>
+</li>
+<li><strong>Microdata</strong>
+<ul>
+<li>Microdata用一些具有范围概念的名值对来诠释DOM。</li>
+<li>在HTML5中，&lt;meta&gt;标签可以在任何地方使用，不局限于&lt;head&gt;中。</li>
+<li><a href="http://www.google.com/webmasters/tools/richsnippets">Google Rich Snippets tool</a>可以提取页面中的Microdata，并以“Google See”的形式展现出来。</li>
+</ul>
+</li>
+<li><strong>Selector API</strong>
+<ul>
+<li>新增加的和CSS Selector一样的Selector API，检索更加简单：
+<div>
+<pre>querySelector(&quot;input.error&quot;);//返回第一个class为error的input标签 </pre>
+<pre>querySelectorAll("#results td");//检索td中所有id为results的标签
+</pre>
+</div>
+</li>
+</ul>
+</li>
+<li><strong>定位 </strong>
+<ul>
+<li>新增加的定位服务会返回以下几种错误：
+<ul>
+<li>PERMISSION_DENIED，错误代码为1，用户不允许浏览器访问位置信息；</li>
+<li>POSITION_UNAVAILABLE，错误代码为2，获取位置失败；</li>
+<li>TIMEOUT，错误代码为3，超时；</li>
+<li>UNKNOWN_ERROR，错误代码为0，发生了其他错误，可以检查message特性来获取具体信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>跨源</strong>
+<ul>
+<li>XMLHttpRequest Level 2允许使用Cross Origin Resource Sharing（CORS）来进行跨源的HTTP请求。请求需要包含一个Origin header，用于告诉服务器请求从何而来，此header被浏览器保护，应用的代码无法更改它的值。Origin header和以前的sic header不同之处在于后者是完整的URL。</li>
+<li>除了浏览器要自动发送Origin header信息之外，服务器端也需要支持CORS。
+检查浏览器是否支持XMLHttpRequest Level 2的方法是检查XMLHttpRequest 是否包含withCredentials属性。</li>
+<li>XMLHttpRequest Level 2的progress事件包括：
+<ul>
+<li>loadstart</li>
+<li>progress</li>
+<li>abort</li>
+<li>error</li>
+<li>load</li>
+<li>loadend</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>WebSocket</strong>
+<ul>
+<li>新增加的WebSocket API用于连接远程主机，它大幅度减少了不必要的HTTP header，从而提高连接了速度。</li>
+<li>ws://和wss://协议分别表示WebSocket连接和安全WebSocket连接。</li>
+<li>WebSocket API也需要服务器专门支持。</li>
+<li>当浏览器请求WebSocket URL时，服务器会回发headers来完成WebSocket握手，WebSocket握手响应的第一行内容必须是下面的格式：
+<blockquote>HTTP/1.1 101 WebSocket Protocol Handshake</blockquote>
+完成握手后，客户端和服务器端之间就可以随时发送消息了。</li>
+<li>WebSocket对象包含以下事件：
+<ul>
+<li>open：当连接建立时触发</li>
+<li>close：当连接关闭时触发</li>
+<li>message：当收到消息时触发</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>FORM API </strong>
+<ul>
+<li>HTML5的input标签增加了一个placeholder特性，placeholder的值只能包含文本，不可以包含HTML标签。</li>
+<li>input标签的list特性和datalist标签结合起来可以为input标签提供一个备选列表。</li>
+<li>新增加的valueAsNumber函数可以将控件的值从文本转换为数字，而且还可以将控件的值设置为数据。</li>
+<li>如果input控件设置了required特性，那么该控件必须包含值，否则包含它的Form就无法被提交。</li>
+<li>所有Form控件都包含validity属性（ValidityState对象），该属性包括8种可能的验证错误：
+<ul>
+<li>valueMissing：缺少必需值（包含required特性的input标签缺少值）</li>
+<li>typeMismatch：值的类型不匹配（email、url等类型校验失败）</li>
+<li>patternMismatch：值的格式不匹配（input标签设置了pattern特性，但值没有匹配该pattern。开发人员可以使用pattern来更加灵活地验证Form控件的值）</li>
+<li>tooLong：值超出了控件允许的长度（超出了maxLength特性的值）</li>
+<li>rangeUnderflow：值小于设定的最小值（值小于min特性的值）</li>
+<li>rangeOverflow：值大于设定的最大值（值大于max特性的值）</li>
+<li>stepMismatch：值不符合控件的min、max和step特性综合计算的结果（比如min="0" max="100" step="5"，那么值为6时就会导致stepMismatch）</li>
+<li>customError：表示又代码产生的自定义错误，调用控件的setCustomValidity(message)方法可以设置customError，向该方法传递空字符串会清空customError。</li>
+</ul>
+</li>
+<li>如果Form控件有可能进行上述任何一项验证，那么它的willValidate属性会返回true。</li>
+<li>调用控件的checkValidity方法也可以进行对控件的值进行验证。
+无论是提交Form还是调用checkValidity方法，如果Form验证失败，都会触发invalid事件。</li>
+<li>可以通过控件的validationMessage属性来访问控件的验证失败消息。想要阻止浏览器显示错误消息，可以在invalid事件中调用参数evt的preventDefault方法。</li>
+<li>设置Form的noValidate特性可以使其不去验证输入的有效性，关闭验证的更简单的方法是设置提交按钮formNoValidate特性。</li>
+</ul>
+</li>
+<li><strong>Web Workers</strong>
+<ul>
+<li>HTML5 Web Workers为Web应用提供了后台工作的能力，使得JavaScript可以享受到多核CPU的好处。</li>
+<li>Web Workers不能直接访问网页和DOMAPI，这一点和Windows Forms的机制很像。</li>
+<li>初始化Web Workders时需要传递JavaScript文件的URL，该文件包含了Worker要执行的代码：
+<div>
+<pre>worker = new Worker("echoWorker.js");
+</pre>
+</div>
+</li>
+<li>如果想要在JavaScript文件中引用其他JavaScript文件，可以调用importScripts方法，传递一个或多个JavaScript文件的路径。</li>
+<li>实例化Web Worker之后，就可以调用postMessage API来在网页和Web Worker之间发送数据了。</li>
+</ul>
+</li>
+</ol>
+总的来说，这两本书还算不错，《HTML5 Up and Running》言语风趣，捎带着谈了许多HTML的发展历程，《Pro HTML5 Programming》则侧重于JavaScript API。这两本书都有中文版，分别是<a href="http://book.douban.com/subject/5386169/">《HTML5揭秘》</a>和<a href="http://book.douban.com/subject/5402708/">《HTML5高级程序设计》</a>。<img src="http://www.cnblogs.com/xiaoshatian/aggbug/1954032.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/xiaoshatian/">Windie Chai</a> 发表于 2011-02-14 09:14 <a href="http://www.cnblogs.com/xiaoshatian/archive/2011/02/14/1954032.html">原文链接</a></p><p>评论: 8　<a href="http://www.cnblogs.com/xiaoshatian/archive/2011/02/14/1954032.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/xiaoshatian/archive/2011/02/14/1954032.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/90955/">诺基亚/微软: Zune 前景将如何？</a><span style="color:gray">(2011-02-14 18:24)</span><br>· <a href="http://news.cnblogs.com/n/90954/">Symbian最后的辉煌：升级1GHz换用新UI</a><span style="color:gray">(2011-02-14 18:23)</span><br>· <a href="http://news.cnblogs.com/n/90953/">搜索的小秘密</a><span style="color:gray">(2011-02-14 18:21)</span><br>· <a href="http://news.cnblogs.com/n/90952/">欧洲研发人工智能宇宙飞船 可取代人类执行任务</a><span style="color:gray">(2011-02-14 18:18)</span><br>· <a href="http://news.cnblogs.com/n/90951/">Google：送暗恋女孩一张Android卡通照吧</a><span style="color:gray">(2011-02-14 18:17)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2011/02/14/1954276.html">博客园电子期刊2011年1月刊发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

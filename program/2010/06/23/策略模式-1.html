@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>策略模式-1</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>策略模式-1</h2>
+<p class="meta">23 Jun 2010</p>
+
+<div class="post">
+<h2>策略模式-1</h2>
+
+<h3>by 云飞龙行</h3>
+
+<h3>at 2010-06-22 22:17:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/sjms/archive/2010/06/22/1762964.html">http://www.cnblogs.com/sjms/archive/2010/06/22/1762964.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/sjms/">云飞龙行</a> 发表于 2010-06-22 22:17 <a href="http://www.cnblogs.com/sjms/archive/2010/06/22/1762964.html">原文链接</a> 阅读: 674 评论: 3</p>
+
+
+<p>首先感谢众多朋友的支持、评论和鼓励，只有多多努力，写点好的博文来回报大家的好意！ </p>
+
+
+<p>接下来想写写另外一个虽然较简单，但是使用很频繁的模式——策略模式</p>
+
+
+<p> </p>
+
+
+<h1 style="text-align:center">策略模式(Strategy)</h1>
+
+
+<h2 style="text-align:center">1  场景问题</h2>
+
+
+<h3>1.1  报价管理</h3>
+
+
+<p>        向客户报价，对于销售部门的人来讲，这是一个非常重大、非常复杂的问题，对不同的客户要报不同的价格，比如：</p>
+
+
+<p> </p>
+
+
+<p>　　（1）对普通客户或者是新客户报的是全价</p>
+
+
+<p>　　（2）对老客户报的价格，根据客户年限，给予一定的折扣</p>
+
+
+<p>　　（3）对大客户报的价格，根据大客户的累计消费金额，给予一定的折扣</p>
+
+
+<p>　　（4）还要考虑客户购买的数量和金额，比如：虽然是新用户，但是一次购买的数量非常大，或者是总金额非常高，也会有一定的折扣　</p>
+
+
+<p>　　（5）还有，报价人员的职务高低，也决定了他是否有权限对价格进行一定的浮动折扣</p>
+
+
+<p> </p>
+
+
+<p>        甚至在不同的阶段，对客户的报价也不同，一般情况是刚开始比较高，越接近成交阶段，报价越趋于合理。<br>        总之，向客户报价是非常复杂的，因此在一些CRM（客户关系管理）的系统中，会有一个单独的报价管理模块，来处理复杂的报价功能。<br>        为了演示的简洁性，假定现在需要实现一个简化的报价管理，实现如下的功能：<br>           （1）对普通客户或者是新客户报全价<br>           （2）对老客户报的价格，统一折扣5%<br>           （3）对大客户报的价格，统一折扣10%<br>        该怎么实现呢？</p>
+
+
+<h3><br>1.2  不用模式的解决方案</h3>
+
+
+<p>        要实现对不同的人员报不同的价格的功能，无外乎就是判断起来麻烦点，也不多难，很快就有朋友能写出如下的实现代码，示例代码如下： </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 价格管理，主要完成计算向客户所报价格的功能</p>
+<p align="left"> */</p>
+<p align="left">public class Price {</p>
+<p align="left">    /**</p>
+<p align="left">     * 报价，对不同类型的，计算不同的价格</p>
+<p align="left">     * @param goodsPrice 商品销售原价</p>
+<p align="left">     * @param customerType 客户类型</p>
+<p align="left">     * @return 计算出来的，应该给客户报的价格</p>
+<p align="left">     */</p>
+<p align="left">    public double quote(double goodsPrice,String customerType){</p>
+<p align="left">       if(customerType.equals(&quot;普通客户&quot;)){</p>
+<p align="left">           System.<em>out</em>.println("对于新客户或者是普通客户，没有折扣");</p>
+<p align="left">           return goodsPrice;</p>
+<p align="left">       }else if(customerType.equals(&quot;老客户&quot;)){</p>
+<p align="left">           System.<em>out</em>.println("对于老客户，统一折扣5%");</p>
+<p align="left">           return goodsPrice*(1-0.05);</p>
+<p align="left">       }else if(customerType.equals(&quot;大客户&quot;)){</p>
+<p align="left">           System.<em>out</em>.println("对于大客户，统一折扣10%");</p>
+<p align="left">           return goodsPrice*(1-0.1);         </p>
+<p align="left">       }</p>
+<p align="left">       //其余人员都是报原价</p>
+<p align="left">       return goodsPrice;</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<h3>1.3  有何问题</h3>
+
+
+<p>        上面的写法是很简单的，也很容易想，但是仔细想想，这样实现，问题可不小，比如：</p>
+
+
+<p>　　（1）第一个问题：价格类包含了所有计算报价的算法，使得价格类，尤其是报价这个方法比较庞杂，难以维护。</p>
+
+
+<p>        有朋友可能会想，这很简单嘛，把这些算法从报价方法里面拿出去，形成独立的方法不就可以解决这个问题了吗？据此写出如下的实现代码，示例代码如下： </p>
+
+
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody>
+<tr>
+<td width="531" valign="top">
+<p align="left">/**</p>
+<p align="left"> * 价格管理，主要完成计算向客户所报价格的功能</p>
+<p align="left"> */</p>
+<p align="left">public class Price {</p>
+<p align="left">    /**</p>
+<p align="left">     * 报价，对不同类型的，计算不同的价格</p>
+<p align="left">     * @param goodsPrice 商品销售原价</p>
+<p align="left">     * @param customerType 客户类型</p>
+<p align="left">     * @return 计算出来的，应该给客户报的价格</p>
+<p align="left">     */</p>
+<p align="left">    public double quote(double goodsPrice,String customerType){</p>
+<p align="left">       if(customerType.equals(&quot;普通客户&quot;)){</p>
+<p align="left">           return this.calcPriceForNormal(goodsPrice);</p>
+<p align="left">       }else if(customerType.equals(&quot;老客户&quot;)){</p>
+<p align="left">           return this.calcPriceForOld(goodsPrice);</p>
+<p align="left">       }else if(customerType.equals(&quot;大客户&quot;)){</p>
+<p align="left">           return this.calcPriceForLarge(goodsPrice);        </p>
+<p align="left">       }</p>
+<p align="left">       //其余人员都是报原价</p>
+<p align="left">       return goodsPrice;</p>
+<p align="left">    }</p>
+<p align="left">    /**</p>
+<p align="left">     * 为新客户或者是普通客户计算应报的价格</p>
+<p align="left">     * @param goodsPrice 商品销售原价</p>
+<p align="left">     * @return 计算出来的，应该给客户报的价格</p>
+<p align="left">     */</p>
+<p align="left">    private double calcPriceForNormal(double goodsPrice){</p>
+<p align="left">       System.<em>out</em>.println("对于新客户或者是普通客户，没有折扣");</p>
+<p align="left">       return goodsPrice;</p>
+<p align="left">    }</p>
+<p align="left">    /**</p>
+<p align="left">     * 为老客户计算应报的价格</p>
+<p align="left">     * @param goodsPrice 商品销售原价</p>
+<p align="left">     * @return 计算出来的，应该给客户报的价格</p>
+<p align="left">     */</p>
+<p align="left">    private double calcPriceForOld(double goodsPrice){</p>
+<p align="left">       System.<em>out</em>.println("对于老客户，统一折扣5%");</p>
+<p align="left">       return goodsPrice*(1-0.05);</p>
+<p align="left">    }</p>
+<p align="left">    /**</p>
+<p align="left">     * 为大客户计算应报的价格</p>
+<p align="left">     * @param goodsPrice 商品销售原价</p>
+<p align="left">     * @return 计算出来的，应该给客户报的价格</p>
+<p align="left">     */</p>
+<p align="left">    private double calcPriceForLarge(double goodsPrice){</p>
+<p align="left">       System.<em>out</em>.println("对于大客户，统一折扣10%");</p>
+<p align="left">       return goodsPrice*(1-0.1);  </p>
+<p align="left">    }</p>
+<p align="left">}</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>        这样看起来，比刚开始稍稍好点，计算报价的方法会稍稍简单一点，这样维护起来也稍好一些，某个算法发生了变化，直接修改相应的私有方法就可以了。扩展起来也容易一点，比如要增加一个“战略合作客户”的类型，报价为直接8折，就只需要在价格类里面新增加一个私有的方法来计算新的价格，然后在计算报价的方法里面新添一个else-if即可。看起来似乎很不错了。<br>        真的很不错了吗？<br>        再想想，问题还是存在，只不过从计算报价的方法挪动到价格类里面了，假如有100个或者更多这样的计算方式，这会让这个价格类非常庞大，难以维护。而且，维护和扩展都需要去修改已有的代码，这是很不好的，违反了开-闭原则。 </p>
+
+
+<p> </p>
+
+
+<p>　　（2）第二个问题：经常会有这样的需要，在不同的时候，要使用不同的计算方式。</p>
+
+
+<p>        比如：在公司周年庆的时候，所有的客户额外增加3%的折扣；在换季促销的时候，普通客户是额外增加折扣2%，老客户是额外增加折扣3%，大客户是额外增加折扣5%。这意味着计算报价的方式会经常被修改，或者被切换。<br>        通常情况下应该是被切换，因为过了促销时间，又还回到正常的价格体系上来了。而现在的价格类中计算报价的方法，是固定调用各种计算方式，这使得切换调用不同的计算方式很麻烦，每次都需要修改if-else里面的调用代码。<br>        看到这里，可能有朋友会想，<strong>那么到底应该如何实现，才能够让价格类中的计算报价的算法，能很容易的实现可维护、可扩展，又能动态的切换变化呢？</strong></p>
+
+
+<p><strong> </strong> </p>
+
+
+<p><strong> </strong> </p>
+
+
+<p><strong></strong> </p>
+
+
+<p style="text-align:center"><strong><span style="font-size:18pt">未完待续......</span></strong><br> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/sjms/aggbug/1762964.html?type=1" width="1" height="1" alt=""><p>评论: 3　<a href="http://www.cnblogs.com/sjms/archive/2010/06/22/1762964.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/sjms/archive/2010/06/22/1762964.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66812/">iPhone运行Windows Live Messenger官方演示</a><span style="color:gray">(2010-06-23 13:00)</span><br>· <a href="http://news.cnblogs.com/n/66811/">Facebook CEO扎克伯格承认用户增长速度放缓</a><span style="color:gray">(2010-06-23 12:41)</span><br>· <a href="http://news.cnblogs.com/n/66809/">世上没有“著名程序员”</a><span style="color:gray">(2010-06-23 11:51)</span><br>· <a href="http://news.cnblogs.com/n/66808/">科学家的“商业洗脑”日志</a><span style="color:gray">(2010-06-23 11:45)</span><br>· <a href="http://news.cnblogs.com/n/66805/">千橡互动加入百团大战 融合SNS打造团购2.0模式</a><span style="color:gray">(2010-06-23 11:39)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/66804/">苹果编程语言和 API 的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

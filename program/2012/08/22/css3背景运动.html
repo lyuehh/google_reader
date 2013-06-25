@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>css3背景运动</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>css3背景运动</h2>
+<p class="meta">22 Aug 2012</p>
+
+<div class="post">
+<h2>css3背景运动</h2>
+
+<h3>by marvin</h3>
+
+<h3>at 2012-08-21 23:20:20</h3>
+
+<h3>original <a href="http://www.w3cplus.com/demo/382.html">http://www.w3cplus.com/demo/382.html</a></h3>
+
+<div><div><div><img src="http://www.w3cplus.com/sites/default/files/styles/large/public/tutrial/css3bgmove.jpg" width="428" height="111" alt="css3背景运动"></div></div></div>
+
+
+<div><div><div><p>两个css3背景运动实例，一个是图片，一个是渐变。关键点就在于定义背景的位置，使之可以循环往复，注意衔接地方不要出现中断啊。这个对不支持的浏览器降级也可以很优雅，第一个就是背景的平铺，至于第二个也可以设置一个背景，或者直接设置一个border-top什么的都可以。</p>
+<p><a href="http://www.w3cplus.com/demo/css3/css3bgmove/css3bgmove.html">demo</a><a href="http://www.w3cplus.com/download/css3bgmove.zip">download</a></p>
+<p>第一个实例的主要css3代码：</p>
+<pre>body{
+    background:url('../images/header_bg.png') repeat-x 0 0;
+    -moz-animation-name:bgscroll;
+    -moz-animation-duration:15s;
+    -moz-animation-timing-function:linear;
+    -moz-animation-iteration-count:infinite;
+        
+    -webkit-animation-name:bgscroll;
+    -webkit-animation-duration:15s;
+    -webkit-animation-timing-function:linear;
+    -webkit-animation-iteration-count:infinite;
+        
+    animation-name:bgscroll;
+    animation-duration:15s;
+    animation-timing-function:linear;
+    animation-iteration-count:infinite;
+
+    padding-top:100px;
+}
+@-moz-keyframes bgscroll{
+    0%{
+        background-position: 0 -60px;
+    }
+    100%{
+        background-position: -940px -60px;
+    }
+}
+@-webkit-keyframes bgscroll{
+    0%{
+        background-position: 0 -60px;
+    }
+    100%{
+        background-position: -940px -60px;
+    }
+}</pre><p><a href="http://www.w3cplus.com/demo/css3/css3bgmove/css3bgmove.html">demo</a><a href="http://www.w3cplus.com/download/css3bgmove.zip">download</a></p>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/demo/tags/23.html">css3</a></li><li><a href="http://www.w3cplus.com/demo/tags/185.html">background</a></li></ul></div>
+
+
+<div><div><div><div>
+      <div>2</div>
+                  <a href="http://www.w3cplus.com/vote/node/382/1/vote/alternate/pf9Bgby03jTLg4G356KrKoPsQGD919OGz8it08wTAFA/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/668363063/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/demo/382.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

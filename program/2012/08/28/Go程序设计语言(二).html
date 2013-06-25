@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go程序设计语言(二)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Go程序设计语言(二)</h2>
+<p class="meta">28 Aug 2012</p>
+
+<div class="post">
+<h2>Go程序设计语言(二)</h2>
+
+<h3>by bigwhite</h3>
+
+<h3>at 2012-08-27 21:05:20</h3>
+
+<h3>original <a href="http://tonybai.com/2012/08/27/the-go-programming-language-tutorial-part2/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part2">http://tonybai.com/2012/08/27/the-go-programming-language-tutorial-part2/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part2</a></h3>
+
+<p>本文译自<a href="http://en.wikipedia.org/wiki/Rob_Pike">Rob Pike</a>的<a href="http://golang.org">Go语言</a>PPT教程 – &quot;<a href="http://golang.org/doc/GoCourseDay2.pdf">The Go Programming Language Part 2</a>(updated June 2011)&quot;。由于该教程的最新更新时间早于<a href="http://golang.org/doc/go1.html">Go 1</a>版本发布，因此该PPT中的一些内容与Go 1语言规范略有差异，到时我会在相应的地方做上注解。</p>
+
+
+<h2>第二部分大纲</h2>
+
+
+<ul>
+<li>复合类型 – 结构体、数组、切片、Maps</li>
+<li>方法 – 不再只是为结构体</li>
+<li>接口</li>
+</ul>
+
+
+<h2>数组</h2>
+
+
+<h3>数组</h3>
+
+
+<p>Go中的数组与C语言中的数组差异很大，倒更类似Pascal中的数组。 (Slice，下个话题，有些像C语言中的数组)</p>
+
+
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">var ar [3]int</span></p>
+
+
+<p>声明ar为一个拥有三个整型数的数组，所有元素初始化为0。</p>
+
+
+<p>大小是类型的一个组成部分。</p>
+
+
+<p>内置的函数len可以用于获取数组大小：</p>
+
+
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">len(ar) = 3</span></p>
+
+
+<h3>数组是值类型</h3>
+
+
+<p>Go中的数组是值，而非C语言中的隐式指针。你可以获得数组的地址，并生成一个指向数组的指针(例如，将其高效地传递给函数)：</p>
+
+
+<p> </p>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func f(a [3]int) { fmt.Println(a) }</span></div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func fp(a *[3]int) { fmt.Println(a) }</span></div>
+
+
+<div> </div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func main() {</span></div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    var ar [3] int</span></div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    f(ar) </span>// 传递一个ar的拷贝</div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    fp(&amp;ar) // 传递一个指向ar的指针</span></div>
+
+
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+
+
+<div> </div>
+
+
+<div>输出结果：</div>
+
+
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">[0 0 0]</span></p>
+
+
+<p><span style="font-family:&#39;courier new&#39;,courier,monospace">&amp;[0 0 0]</span></p>
+
+
+<p>数组字面值</p>
+
+
+<div>
+<div>所有的符合类型都有相同的值创建语法。以数组为例，其语法如下：</div>
+<div> </div>
+<div>3个整数的数组：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  [3]int{1, 2, 3}</span></div>
+<div> </div>
+<div>10个整数的数组，前三个元素不是0：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  [10]int{ 1, 2, 3}</span></div>
+<div> </div>
+<div>不想数？使用…代表长度：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  [...]int{1, 2, 3}</span></div>
+<div> </div>
+<div>不想初始化所有值？使用key:value对：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  [10]int{2:1, 3:1, 5:1, 7:1}</span></div>
+<div> </div>
+<h3>指向数组字面值的指针</h3>
+<div>你可以获取数组字面值的地址，这样可以得到一个指向新建数组实例的指针：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func fp(a *[3]int) { fmt.Println(a) }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func main() {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    for i := 0; i &lt; 3; i++ {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">        fp(&amp;[3]int{i, i*i, i*i*i})</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>输出结果：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">&amp;[0 0 0]</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">&amp;[1 1 1]</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">&amp;[2 4 8]</span></div>
+<div> </div>
+<h2>切片(Slice)</h2>
+<h3>切片</h3>
+<div>切片是对数组中某一段的引用。</div>
+<div> </div>
+<div>切片比普通数组应用得更多也更广泛。</div>
+<div> </div>
+<div>切片使用的代价很低。</div>
+<div> </div>
+<div>一个切片类型很像一个没有大小的数组类型：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  var a []int</span></div>
+<div> </div>
+<div>内置的<span style="font-family:&#39;courier new&#39;,courier,monospace">len(a)</span>可以返回切片中元素的个数。</div>
+<div> </div>
+<div>通过对数组或切片进行&quot;切片&quot;，我们可以创建一个新切片：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  a = ar[7:9]</span></div>
+<div> </div>
+<div>a(上面例子中的a)的有效下标值是0和1；<span style="font-family:&#39;courier new&#39;,courier,monospace">len(a) == 2</span>。</div>
+<div> </div>
+<h3>切片速记</h3>
+<div>当对数组进行切片时，第一个下标值默认是0：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">   ar[:n]等价于a[0:n]。</span></div>
+<div> </div>
+<div>第二个下标值默认为len(array/slice)：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">   ar[n:]等价于ar[n:len(ar)]。</span></div>
+<div> </div>
+<div>因此由数组创建切片时：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">   ar[:]等价于ar[0:len(ar)]。</span></div>
+<div> </div>
+<h3>切片引用数组</h3>
+<div>概念上：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type Slice struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    base *elemType // 指向0th元素的指针</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    len int </span>// 切片中元素的数量</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    cap int </span>// 切片可以容纳元素的数量</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>数组：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">ar： 7 1 5 4 3 8 7 <em><strong>2</strong></em> 11 5 3</span></div>
+<div> </div>
+<div>切片：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">a = ar[7:9] ：base = &amp;ar[7](指向ar中的2) len = 2 cap = 4</span></div>
+<h3>创建切片</h3>
+<p>切片字面值看起来像没有指定大小的数组字面值：</p>
+<p> </p>
+</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  var slice = []int{1,2,3,4,5}</span></div>
+<div> </div>
+<div>上面代码创建了一个长度为5的数组并创建一个切片用于引用这个数组。</div>
+<div> </div>
+<div>我们可以使用内置的make函数分配一个切片（底层实际是个数组）：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  var s100 = make([]int, 100) // slice: 100 ints</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">为何用make而不是用new？因为我们需要创建切片，而不仅仅是为了分配内存。注意make([]int, 10)返回[]int，而new([]int)返回*[]int。</span></div>
+<div> </div>
+<div>使用make创建切片、map以及channel。</div>
+<div> </div>
+<h3>切片容量</h3>
+<div>切片是对底层数组的一个引用。因此存在一些在数组里但却没在切片引用的范围内的元素。</div>
+<div> </div>
+<div>内置的函数cap(capacity)用于报告切片可能增长到多长。</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var ar = [10]int{0,1,2,3,4,5,6,7,8,9}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var a = ar[5:7] // 引用子数组{5,6}</span></div>
+<div> </div>
+<div>len(a) = 2，cap(a) = 5，现在我们可以重新切片：</div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">a = a[0:4] // 引用子数组 {5,6,7,8}</span></div>
+<div>  </div>
+<p> </p>
+</div>
+<div>len(a)现在是4，而cap(a)依旧是5。</div>
+<div> </div>
+<h3>调整切片大小</h3>
+<div>切片可被当作可增长的数组用。使用make分配一个切片，并指定其长度和容量。当要增长时，我们可以做重新切片：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var sl = make([]int, 0, 100) </span>// 长度 0, 容量 100</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func appendToSlice(i int, sl []int) []int {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    if len(sl) == cap(sl) { error(…) }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    n := len(sl)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    <span style="color:rgb(255,0,0)">sl = sl[0:n+1]</span> // 长度增加1</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    sl[n] = i</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    return sl</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>因此，sl的长度总是元素的个数，但其容量可根据需要增加。</div>
+<div> </div>
+<div>这种手法代价很小，并且是Go语言中的惯用法。</div>
+<div> </div>
+<h3>切片使用的代价很小</h3>
+<div>你可以根据需要自由地分配和调整切片大小。它们的传递仅需要很小的代价；不必分配。</div>
+<div> </div>
+<div>记住它们是引用，因此下层的存储可以被修改。</div>
+<div> </div>
+<div>例如，I/O使用切片，而不是计数：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func Read(fd int, b []byte) int</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var buffer [100]byte</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">for i := 0; i &lt; 100; i++ {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    // 每次向Buffer中填充一个字节</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    Read(fd, buffer[i:i+1]) // no allocation here</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>拆分一个Buffer：</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  header, data := buf[:n], buf[n:]</span></div>
+<div> </div>
+<div>字符串也可以被切片，而且效率相似。</div>
+<div> </div>
+<h2>Maps</h2>
+<h3>maps</h3>
+<div>Map是另外一种引用类型。它们是这样声明的：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var m map[string]float64</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">这里声明了一个map，索引key的类型为string，值类型为float64。这类似于C++中的类型*map&lt;string, float64&gt;。</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">对于给定map m，len(m)返回key的数量。</span></div>
+<div> </div>
+<h3>map的创建</h3>
+<div>和创建一个切片一样，一个map变量是一个空引用；在可以使用它之前，应先要向里面放入一些内容。</div>
+<div> </div>
+<div>三种方式：</div>
+<div> </div>
+<div>1) 字面值：逗号分隔的key:value对列表</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  m = map[string]float64{&quot;1&quot;:1, &quot;pi&quot;:3.1415}</span></div>
+<div> </div>
+<div>2) 创建</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  m = make(map[string]float64) // make not new</span></div>
+<div> </div>
+<div>3) 赋值</div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  var m1 map[string]float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  m1 = m // m1和m现在引用相同的map</span></div>
+<div> </div>
+<h3>map索引</h3>
+<div>(接下来的几个例子全都使用：</div>
+<div>m = map[string]float64{&quot;1&quot;:1, &quot;pi&quot;:3.1415})</div>
+<div>
+<div> </div>
+<div>访问一个元素；如果该元素不存在，则得到对应map value类型的零值：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">one := m["1"]</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">zero := m["not present"] // zero被置为0.0.</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">设置一个元素的值(两次设置将更新为最新值)</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">m["2"] = 2</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">m[&quot;2&quot;] = 3 // 思维混乱</span></div>
+<div> </div>
+<h3>测试存在性</h3>
+<div>要测试一个map中是否存在某个key，我们可以使用一个多项赋值的&quot;comma, om&quot;形式：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">m = map[string]float64{&quot;1&quot;:1, &quot;pi&quot;:3.1415}</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var value float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var present bool</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">value, present = m[x]</span></div>
+<div> </div>
+<div>或者按惯例：</div>
+<p>value, ok := m[x] // &quot;comma ok&quot; 形式</p>
+</div>
+</div>
+</div>
+<div>
+<div> </div>
+<div>如果map中存在x这个key，布尔变量会被设置为true；value会被赋值为map中key对应的值。相反，布尔变量会被设置为false，value被设置为相应值类型的零值。</div>
+<p> </p>
+</div>
+<h3>删除</h3>
+<div>使用多元赋值可以删除map中的一个值：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">m = map[string]float64{&quot;1&quot;:1.0, &quot;pi&quot;:3.1415}</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var keep bool</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var value float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var x string = f()</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">m[x] = v, keep</span></div>
+<div> </div>
+<p>如果keep的值为true，则将v赋值到map中；如果keep为false，则删除map中的key x。因此删除一个key：</p>
+<p>m[x] = 0, false // 从map中删除x</p>
+<p>译注：Go 1中上述的删除方式已被取消，取而代之的是<span style="font-family:&#39;courier new&#39;,courier,monospace">delete(m, x)</span>。</p>
+</div>
+<div>
+<p> </p>
+</div>
+<h3>for和range</h3>
+<p>对于数组、切片和map（以及我们在第三部分将要看到的更多类型），for循环提供了一种特殊的语法用于迭代访问其中的元素。</p>
+<p>m := map[string]float64{&quot;1&quot;:1.0, &quot;pi&quot;:3.1415}</p>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">for <span style="color:rgb(255,0,0)">key, value := range m </span>{</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    fmt.Printf(&quot;key %s, value %g\n&quot;, key, value)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>只用一个变量，我们可以获得key：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">for key = range m {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    fmt.Printf(&quot;key %s\n&quot;, key)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>变量可以用:=赋值或声明。</div>
+<div> </div>
+<div>对于数组和切片来说，通过这种方式我们可以获得元素的下标以及元素值。</div>
+<div> </div>
+<h3>将range用于字符串</h3>
+<div>将for range用于字符串时，实际迭代的元素是Unicode码点(code point)，而不是字节（对字节，可使用[]byte或使用标准的for语句）。我们假设字符串包含使用UTF-8编码的字符。</div>
+<div> </div>
+<div>下面循环：</div>
+<div>s := &quot;[\u00ff\u754c]&quot;</div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">for i, c := range s {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    fmt.Printf(&quot;%d:%q &quot;, i, c) // %q for &#39;quoted&#39;</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>输出：<span style="font-family:&#39;courier new&#39;,courier,monospace">0:&#39;[&#39; 1:&#39;ÿ&#39; 3:&#39;界&#39; 6:&#39;]&#39;</span></div>
+<div> </div>
+<div>如果遇到了错误的UTF-8码点，这个字符将被设置为U+FFFD，下标向后移动一个字节。</div>
+<p> </p>
+</div>
+<div> </div>
+<h2>Structs</h2>
+<h3>structs</h3>
+<div>对于Go中的struct，你应该感觉十分熟悉：简单的数据字段声明。</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var p struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    x, y float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>更常用的是：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type Point struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    x, y float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var p Point</span></div>
+<div> </div>
+<div>struct允许程序员定义内存布局。</div>
+<div> </div>
+<h3>struct是值类型</h3>
+<div>struct是值类型，new(StructType)返回一个指向零值的指针（分配的内存都被置0）。</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type Point struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    x, y float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var p Point</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">p.x = 7</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">p.y = 23.4</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var pp *Point = new(Point)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">*pp = p</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">pp.x = Pi // (*pp).x的语法糖</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">对于结构体指针，没有-&gt;符号可用。Go提供了间接的方式。</span></div>
+<div> </div>
+<h3><span style="font-family:&#39;courier new&#39;,courier,monospace">创建结构体</span></h3>
+<div>结构体是值类型，因此你可只通过声明就可以创建一个全0的结构体变量。</div>
+<div> </div>
+<div>你也可以使用new创建一个结构体。</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var p Point // 零值</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">pp := new(Point) // 惯用法</span></div>
+<div> </div>
+<div><font face="&#39;courier new&#39;, courier, monospace">结构体字面值语法也不出所料：</font></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">p = Point{7.2, 8.4}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">p = Point{y:8.4, x:7.2}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">pp = &amp;Point{7.2, 8.4} // 惯用法</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">pp = &amp;Point{} //也是惯用法，== new(Point)</span></div>
+<div> </div>
+<div><font face="&#39;courier new&#39;, courier, monospace">和数组一样，得到了结构体字面值的地址，就得到了新建结构体的地址。</font></div>
+<div> </div>
+<div><font face="&#39;courier new&#39;, courier, monospace">这些例子都是构造器。</font></div>
+<div> </div>
+<h3><font face="&#39;courier new&#39;, courier, monospace">导出类型和字段</font></h3>
+<div>只有当结构体的字段(和方法，即将讲解)名字的首字母大写时，它才能被包外可见。</div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">私有类型和字段：</span></div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  type point struct { x, y float64 }</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">导出类型和字段：</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  type Point struct { X, Y float64 }</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">导出类型和私有类型混合字段：</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  type Point struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">      X, Y float64 // exported</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">      name string // not exported</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">  }</span></div>
+<div> </div>
+<div>你甚至可以创建一个带有导出字段的私有类型。（练习：何时能派上用场呢？）</div>
+<div> </div>
+<h3>匿名字段</h3>
+<div>在一个结构体内，你可以声明不带名字的字段，比如另外一个结构体类型。这些字段被称为匿名字段。它们看起来就像里层的结构体简单插入或“嵌入”到外层结构体似的。</div>
+<div> </div>
+<div>这个简单的机制为从其他类型继承已有的实现提供了一种方法。</div>
+<div> </div>
+<div>下面是一个例子。</div>
+<div> </div>
+<h3>一个匿名结构体字段</h3>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type A struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    ax, ay int</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type B struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    A</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    bx, by float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">B看起来像有四个字段ax、ay、bx和by。B可看成{ax, ay int; bx, by float64}。</span></div>
+<div> </div>
+<div>然后B的字面值必须提供细节：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">b := B{A{1, 2}, 3.0, 4.0}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Println(b.ax, b.ay, b.bx, b.by)</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">输出1 2 3 4 </span></div>
+<div> </div>
+<h3>匿名字段以类型作为名字</h3>
+<div>匿名字段不仅仅是简单插入这些字段这么简单，其含义更为丰富：B还拥有字段A。匿名字段看起来就像名字为其类型名的字段。</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">b := B{A{ 1, 2}, 3.0, 4.0}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Println(b.A)</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">输出：{1 2}。如果A来自于另外一个包，这个字段依旧被称为A。</span></div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">import &quot;pkg&quot;</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type C struct { pkg.A }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">…</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">c := C {pkg.A{1, 2}}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Println(c.A) // 不是 c.pkg.A</span></div>
+<div> </div>
+<h3>任意类型的匿名字段</h3>
+<p>任何具名类型或指向具名类型的指针都可以用作匿名字段。它们可以出现在结构体中的任意位置。</p>
+<p> </p>
+</div>
+<p> </p>
+</div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type C struct {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    x float64</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    int</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    string</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">c := C{3.5, 7, &quot;hello&quot;}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Println(c.x, c.int, c.string)</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">输出：3.5 7 hello</span></div>
+<div> </div>
+<h3>冲突和遮蔽</h3>
+<div>如果有两个字段具有相同的名字(可能是一个继承类型的名字)，代码将遵循下面规则：</div>
+<div> </div>
+<div>1) 外层的名字遮蔽内层的名字。这提供了一个重写字段/方法的方式。</div>
+<div>2) 如果在同一层次上出现了相同的名字，如果名字被使用，那么将是一个错误。(如果没有使用，不会出现错误)</div>
+<div> </div>
+<div>二义性是没有规则能解决的，必须被修正。</div>
+<div> </div>
+<h3>冲突的例子</h3>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type A struct { a int }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type B struct { a, b int }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type C struct { A; B }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var c C</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">使用c.a将会出现错误。它到底是c.A.a还是c.B.a呢？</span></div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type D struct { B; b float64 }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">var d D</span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">使用d.b没有问题：它是float64类型变量，不是d.B.b。要获得内层的b，可用d.B.b。</span></div>
+<div> </div>
+<h2>方法(method)</h2>
+<h3>基于结构体的方法</h3>
+<div>Go没有类(class)，不过你可以为任何类型附上方法。没错，(几乎是)任何类型。方法声明为一个带有显式接收者的函数，其声明独立于类型的声明。下面是一个明显的例子：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type Point struct { x, y float64 } </span>// A method on *Point </div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func (p *Point) Abs() float64 {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    return math.Sqrt(p.x*p.x + p.y*p.y)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>注意：在这个例子中，类型为*Point的显式接收者(不是自动的this)在函数中被使用了。</div>
+<div> </div>
+<h3>基于结构体值的方法</h3>
+<div>一个不需要指针作为接收者的方法：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type Point3 struct { x, y, z float64 } </span></div>
+<div> </div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">// A method on Point3</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func (p Point3) Abs() float64 {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    return math.Sqrt(p.x*p.x + p.y*p.y + p.z*p.z)</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div> </div>
+<div>这样的代价有些大，因为Point3类型将以值的方式传入到方法中，但在Go中这是合法的。</div>
+<div> </div>
+<h3>调用一个方法</h3>
+<p>和你所期望的一样。</p>
+<p> </p>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">p := &amp;Point{ 3, 4 }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Print(p.Abs()) // will print 5</span></div>
+<div> </div>
+<div>一个非结构体的例子：</div>
+<div> </div>
+<div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">type IntVector []int</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">func (v IntVector) Sum() (s int) {</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    for _, x := range v { // blank identifier!</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">        s += x</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    }</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">    return</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">}</span></div>
+<div><span style="font-family:&#39;courier new&#39;,courier,monospace">fmt.Println(IntVector{1, 2, 3}.Sum())</span></div>
+<div> </div>
+<h3><span style="font-family:&#39;courier new&#39;,courier,monospace">方法的基本规则</span></h3>
+<div>方法附属于一个具名类型，比如Foo，并且是静态绑定的。</div>
+<div> </div>
+<div>方法中接收者的类型可以是*Foo也可以是Foo。你可以有一些Foo方法，也可以有一些*Foo方法。</div>
+<div> </div>
+<div>Foo本身不能是一个指针类型，即便方法可以使用*Foo类型的接收者。</div>
+<div> </div>
+<div>类型Foo必须与其全部方法定义在一个包中。</div>
+<div> </div>
+<h3>指针与值</h3>
+<div>
+<div>当你调用方法时，Go自动为你解引用。</div>
+<div> </div>
+<div>例如，即使方法的接收者类型为*Point， 你也可以通过可寻址的Point值变量调用该方法。</div>
+<div> </div>
+<div>
+<div>p1 := Point{ 3, 4 }</div>
+<div>fmt.Print(p1.Abs()) //  (&amp;p1).Abs()的语法糖</div>
+<div> </div>
+<p>同样，如果方法接收者是Point3类型，你 也可以使用一个*Point3类型的指针调用它。</p>
+<p> </p>
+</div>
+<div>
+<div>p3 := &amp;Point3{ 3, 4, 5 }</div>
+<div>fmt.Print(p3.Abs())  // (*p3).Abs()语法糖</div>
+<div> </div>
+<h3>有关匿名字段的方法</h3>
+<div>相应的，当一个匿名字段嵌入到一个结构体 中时，这个字段的类型的方法也随之嵌入。– 实际上，它继承了这些方法。</div>
+<div> </div>
+<div>这个机制提供了一个模拟子类和继承效果的 简单方式。</div>
+<div> </div>
+<h3>匿名字段例子</h3>
+<div>
+<div>type Point struct { x, y float64 }</div>
+<div>func (p *Point) Abs() float64 { … }</div>
+<div>type NamedPoint struct {</div>
+<div>    Point</div>
+<div>    name string</div>
+<div>}</div>
+<div>n := &amp;NamedPoint{Point{3, 4}, &quot;Pythagoras&quot;}</div>
+<div>fmt.Println(n.Abs()) // prints 5</div>
+<div> </div>
+<h3><font face="&#39;courier new&#39;, courier, monospace">重写一个方法</font></h3>
+<div>重写工作方式正如字段一样。
+<p> </p>
+<p><font face="Courier New">type NamedPoint struct {<br>
+                                                                                                        Point<br>
+                                                                                                        name string<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">func (n *NamedPoint) Abs() float64 {<br>
+                                                                                                       return n.Point.Abs() * 100.<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">n := &amp;NamedPoint{Point{3, 4}, &quot;Pythagoras&quot;}<br>
+                                                                                                    fmt.Println(n.Abs()) // prints 500</font></p>
+<p>当然，你可以有多个不同类型的匿名字段 – 一个简单版本的多继承。但冲突解决规则让事情保持简单。</p>
+<h3>另外一个例子</h3>
+<p>一个更具吸引力的使用匿名字段的例子。</p>
+<p><font face="Courier New">type Mutex struct { … }<br>
+                                                                                                    func (m *Mutex) Lock() { … }</font></p>
+<p><font face="Courier New">type Buffer struct {<br>
+                                                                                                        data [100]byte<br>
+                                                                                                        Mutex // 在Buffer中不需为第一个字段<br>
+                                                                                                    }<br>
+                                                                                                    var buf = new(Buffer)<br>
+                                                                                                    buf.Lock() // == buf.Mutex.Lock()</font></p>
+<p>注意：Lock的接收者是Mutex字段的地址。而不是外围的结构体。（对比子类或Lisp的mix-ins）</p>
+<h3>其他类型</h3>
+<p>方法不仅适用于结构体。他们可以被定义为用于任何非指针类型。</p>
+<p>但这个类型必须在你的包中定义。你不能为int编写方法，但你可以声明一个新的int类型，并为其添加方法。</p>
+<p><font face="Courier New">type Day int<br>
+                                                                                                    var dayName = []string {<br>
+                                                                                                        &quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, …<br>
+                                                                                                    }<br>
+                                                                                                    func (day Day) String() string {<br>
+                                                                                                        return dayName[day]<br>
+                                                                                                    }</font></p>
+<h3>其他类型</h3>
+<p>现在我们有一个类似枚举的类型，它知道如何打印自己。</p>
+<p><font face="Courier New">const (<br>
+                                                                                                        Monday Day = iota<br>
+                                                                                                        Tuesday<br>
+                                                                                                        Wednesday<br>
+                                                                                                        // …<br>
+                                                                                                    )<br>
+                                                                                                    var day = Tuesday<br>
+                                                                                                    fmt.Printf(&quot;%q&quot;, day.String()) // 打印 &quot;Tuesday&quot;</font></p>
+<h3>Print认识string方法</h3>
+<p>技术上后续会交待，fmt.Print和相近函数可以识别出实现了String方法的值，就像前面定义的类型Day。通过调用这个方法，这些值可以被自动格式化。</p>
+<p>于是：<br>
+                                                                                                       <br>
+                                                                                                    <font face="Courier New">fmt.Println(0, Monday, 1, Tuesday)</font></p>
+<p><font face="Courier New">输出0 Monday 1 Tuesday。</font></p>
+<p>Println可以区分出普通0和值为0的Day类型值。</p>
+<p>因此，为你的类型定义一个String方法，这样后续无需再进行其他工作，你的类型就可以获得优雅的输出格式。</p>
+<h3>方法和字段的可见性</h3>
+<p>回顾：<br>
+                                                                                                      在可见性方面，Go与C++有着很大不同。</p>
+<p>1) Go是包作用域，而C++则是文件作用域。<br>
+                                                                                                    2) 拼写方式决定了是导出的/本地的(公有的/私有的)。<br>
+                                                                                                    3) 同一包中的结构体有权访问另一个结构体的字段和方法。<br>
+                                                                                                    4) 本地类型可以导出其字段和方法。<br>
+                                                                                                    5) 没有真正意义上的子类，没有&quot;protected&quot;符号。</p>
+<p>这些规则看起来在实际当中工作良好。</p>
+<h2>接口</h2>
+<h3>离近点儿观察</h3>
+<p>我们接下来了解一下Go语言最不同寻常的一点：接口。</p>
+<p><tt>请先将你的成见留在门外。</tt></p>
+<h3><tt>简介</tt></h3>
+<p><tt>到目前为止，所有我们检视的类型都是具体的：它们实现了一些东西。</tt></p>
+<p><tt>还有一个类型需要考虑：接口类型。它是完全抽象的；它不包含任何实现；它提供了一些一个实现必须实现的属性。</tt></p>
+<p><tt>接口在概念上非常接近Java，Java中有一个interface类型，但Go的“接口值”概念是非常新颖的。</tt></p>
+<h3><tt>一个接口的定义</tt></h3>
+<p><tt>在Go中单词interface似乎有些使用过度了：涉及接口的有接口概念、接口类型以及接口值。</tt></p>
+<p><tt>定义：<br>
+                                                                                                        一个接口是一组方法的集合。</tt></p>
+<p><tt>由一个具体类型，如一个结构体实现的方法形成了那个类型的接口。</tt></p>
+<h3><tt>例子</tt></h3>
+<p><tt>之前我们见过这个简单的例子：</tt></p>
+<p><font face="Courier New">type Point struct { x, y float64 }<br>
+                                                                                                    func (p *Point) Abs() float64 { … }</font></p>
+<p><tt>类型Point的接口拥有方法：</tt></p>
+<p><font face="Courier New">Abs() float64</font></p>
+<p><tt>注意其方法不是：</tt></p>
+<p><font face="Courier New">func (p *Point) Abs() float64</font></p>
+<p><tt>因为接口不应带有接收者的限定。</tt></p>
+<p><tt>我们将Point嵌入一个新类型中：NamePoint。NamePoint将具有相同的接口。</tt></p>
+<h3><tt>接口类型</tt></h3>
+<p><tt>一个接口类型是一个接口的规格，一组由其他类型来实现的方法。这里是一个简单的例子，只包含一个方法：</tt></p>
+<p><font face="Courier New">type AbsInterface interface {<br>
+                                                                                                        Abs() float64 // 接收者是隐式的<br>
+                                                                                                    }</font></p>
+<p><tt>这是由Point实现的接口的定义，或者用我们的术语来讲，Point实现了AbsInterface。</tt></p>
+<p><tt>也可以说成，NamedPoint和Point3实现了AbsInterface方法。</tt></p>
+<p><tt>方法写在接口声明内部。</tt></p>
+<h3><tt>一个例子</tt></h3>
+<p><font face="Courier New">type MyFloat float64</font></p>
+<p><font face="Courier New">func (f MyFloat) Abs() float64 {<br>
+                                                                                                        if f &lt; 0 { return float64(-f) }<br>
+                                                                                                        return f<br>
+                                                                                                    }</font></p>
+<p><tt>MyFloat实现了AbsInterface接口，即便float64没有实现。</tt></p>
+<p><tt>顺便：MyFloat不是float64的&quot;装箱&quot;类型；它的表示与float64相同。</tt></p>
+<h3><tt>多对多</tt></h3>
+<p><tt>一个接口可以被任意个类型所实现。ABsInterface可以被任何拥有签名如Abs() float64的类型实现，不管该类型是否有其他方法。</tt></p>
+<p><tt>一个类型可以实现任意个接口。Point至少实现了下面两个：</tt></p>
+<p><font face="Courier New">type AbsInterface interface { Abs() float64 }<br>
+                                                                                                    type EmptyInterface interface { }</font></p>
+<p><tt>并且，也许更多，取决于它的方法。</tt></p>
+<p><tt>每个类型都实现了EmptyInterface。这将会非常有用。</tt></p>
+<h3><tt>接口值</tt></h3>
+<p><tt>一旦一个变量被声明为接口类型，它就可以被赋予任何实现了该接口的类型的值。</tt></p>
+<p><font face="Courier New">var ai AbsInterface<br>
+                                                                                                    pp := new(Point)<br>
+                                                                                                    ai = pp // OK：*Point中有Abs方法<br>
+                                                                                                    ai = 7 // 编译错误, float64没有Abs方法<br>
+                                                                                                    ai = MyFloat(-7.) // OK：MyFloat有Abs方法<br>
+                                                                                                                  <br>
+                                                                                                    ai = &amp;Point{ 3, 4 }<br>
+                                                                                                    fmt.Printf(ai.Abs()) </font><font face="Courier New"> // 方法调用</font></p>
+<p><tt>输出：5</tt></p>
+<p><tt>注意：ai不是指针，它是个接口值。</tt></p>
+<h3><tt>在内存中</tt></h3>
+<p><font face="Courier New">ai不是一个指针！它是一个多字(multiword)数据结构。</font></p>
+<p><font face="Courier New">ai: receiver value | method table ptr</font></p>
+<p><font face="Courier New">不同时刻，它的值和类型不同：</font></p>
+<p><font face="Courier New">ai = &amp;Point{3,4} (*Point在地址0xff1234)</font></p>
+<p><font face="Courier New">0xff1234| ———–&gt; (*Point) Abs() float64</font></p>
+<p><font face="Courier New">ai = MyFloat(-7.):</font></p>
+<p><font face="Courier New">-7. | ——–&gt; (MyFloat) Abs() float64</font></p>
+<h3><font face="Courier New">三个重要事实</font></h3>
+<p><tt>1) 接口定义了一组方法。他们是纯洁的且抽象的：没有实现，没有数据字段。Go在接口和实现之间具有清晰的区分。<br>
+                                                                                                    2) 接口值只是值。它们包含任何实现了接口所有方法的具体值。那些具体值可以是也可以不是指针。<br>
+                                                                                                    3) 类型通过实现方法来实现接口。它们无需声明它们要做这些事情。例如，每个类型都实现了空接口interface{}。</tt></p>
+<h3><tt>例子：io.Writer</tt></h3>
+<p><tt>下面是fmt.Fprintf的实际签名：</tt></p>
+<p><font face="Courier New">func Fprintf(w io.Writer, f string, a … interface{}) (n int, error os.Error)</font></p>
+<p><tt>它不是写入一个文件，而是写入类型为io.Writer的东西中。Writer定义在io包中：</tt></p>
+<p><font face="Courier New">type Writer interface {<br>
+                                                                                                        Write(p []byte) (n int, err os.Error)<br>
+                                                                                                    }</font></p>
+<p><tt>Fprintf因此可以用于写入任何具有Write方法的类型，包括文件、管道、网络链接等。</tt></p>
+<h3><tt>缓冲I/O</tt></h3>
+<p><tt>...一个写缓冲。下面来自于bufio包：</tt></p>
+<p><font face="Courier New">type Writer struct { … }</font></p>
+<p><tt>bufio.Writer实现了经典的Write方法。</tt></p>
+<p><font face="Courier New">func (b *Writer) Write(p []byte) (n int, err os.Error)</font></p>
+<p><tt>它还拥有一个工厂方法：传入一个io.Writer，它将以bufio.Writer的形式返回一个缓冲io.Writer：</tt></p>
+<p><font face="Courier New">func NewWriter(wr io.Writer) (b *Writer, err os.Error)</font></p>
+<p><tt>当然，os.File也实现了Writer。</tt></p>
+<h3><font face="Courier New">放在一起</font></h3>
+<p><font face="Courier New">import (<br>
+                                                                                                        &quot;bufio&quot;; &quot;fmt&quot;; &quot;os&quot;<br>
+                                                                                                    )<br>
+                                                                                                    func main() {<br>
+                                                                                                        // 无缓冲<br>
+                                                                                                        fmt.Fprintf(os.Stdout, &quot;%s, &quot;, &quot;hello&quot;)<br>
+                                                                                                        // 带缓冲: os.Stdout实现了io.Writer<br>
+                                                                                                        buf := bufio.NewWriter(os.Stdout)<br>
+                                                                                                        // 现在buf也带缓冲<br>
+                                                                                                        fmt.Fprintf(buf, &quot;%s\n&quot;, &quot;world!&quot;)<br>
+                                                                                                        buf.Flush()<br>
+                                                                                                    }</font></p>
+<p><tt>缓冲可以适合任何Writes的对象。</tt></p>
+<p><tt>是不是感觉特像Unix管道啊？可组合性非常强大；参见crypto包。</tt></p>
+<h3><font face="Courier New">io包中的其他公共接口</font></h3>
+<p><tt>io包拥有：</tt></p>
+<p><font face="Courier New">Reader<br>
+                                                                                                    Writer<br>
+                                                                                                    ReadWriter<br>
+                                                                                                    ReadWriteCloser</font></p>
+<p><tt>这些都是程式化的接口，不过很显然它们捕捉到了任何实现了其名字含义的函数的功能。</tt></p>
+<p><tt>这就是为何我们拥有一个带缓冲的I/O包的原因，其实现与I/O自身的实现分开：它同时接受以及提供接口值。</tt></p>
+<h3><tt>比较</tt></h3>
+<p><tt>从C++角度去看，接口类型像一个纯抽象类，指定方法，但不实现。</tt></p>
+<p><tt>从Java角度去看，接口类型更像是一个Java接口。</tt></p>
+<p><tt>然而，在Go中，有一个最大的不同：一个类型不需要声明它要实现的接口，也不需要继承那些接口。如果它实现了相同的方法，它就实现了接口。</tt></p>
+<p><tt>其他差异会变得显而易见了。</tt></p>
+<h3><tt>匿名字段也适用</tt></h3>
+<p><font face="Courier New">type LockedBufferedWriter struct {<br>
+                                                                                                        Mutex // has Lock and Unlock methods<br>
+                                                                                                        bufio.Writer // has Write method<br>
+                                                                                                    }<br>
+                                                                                                    func (l *LockedBufferedWriter) Write(p []byte)<br>
+                                                                                                    (nn int, err os.Error) {<br>
+                                                                                                        l.Lock()<br>
+                                                                                                        defer l.Unlock()<br>
+                                                                                                        return l.Writer.Write(p) // inner Write()<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">LockedBufferedWriter实现了io.Writer，但是通过匿名Mutex类型实现的。</font></p>
+<p><font face="Courier New">type Locker interface { Lock(); Unlock() }</font></p>
+<h3><font face="Courier New">例子：HTTP服务</font></h3>
+<p><font face="Courier New">type Handler interface {<br>
+                                                                                                        ServeHTTP(ResponseWriter, *Request)<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">这是一个在HTTP server包中定义的接口。要提供http服务，可定义一个类型，实现这个接口，连接到服务器(细节省略了)。</font></p>
+<p><font face="Courier New">type Counter struct {<br>
+                                                                                                        n int // or could just say type Counter int<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {<br>
+                                                                                                        fmt.Fprintf(w, &quot;counter = %d\n&quot;, ctr.n)<br>
+                                                                                                    2<br>
+                                                                                                        ctr.n++<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">现在我们定义一个类型来实现ServeHTTP：</font></p>
+<p><font face="Courier New">type HandlerFunc func(http.ResponseWriter, *http.Request)<br>
+                                                                                                    func (f HandlerFunc) ServeHTTP(w http.ResponseWriter,<br>
+                                                                                                    req *http.Request) {<br>
+                                                                                                    2<br>
+                                                                                                        f(w, req) // 接收者是一个函数，调用它<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">将函数转换为从属的方法，实现该接口：</font></p>
+<p><font face="Courier New">var Handle404 = HandlerFunc(notFound)</font></p>
+<h3><font face="Courier New">容器(container)&amp; 空接口</font></h3>
+<p><font face="Courier New">vector实现的梗概。(实际中，倾向于用原始slice替换，但这是有益处的)</font></p>
+<p><font face="Courier New">type Element interface {}</font></p>
+<p><font face="Courier New">// Vector本身就是容器.<br>
+                                                                                                    type Vector []Element</font></p>
+<p><font face="Courier New">// At()返回第i个元素.<br>
+                                                                                                    func (p *Vector) At(i int) Element {<br>
+                                                                                                        return p[i]<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">Vector可以存储任何类型的元素，因为任何类型都实现了空接口。(事实上，每个元素也可以是不同类型)</font></p>
+<h3><font face="Courier New">类型断言</font></h3>
+<p><font face="Courier New">一旦你像一个Vector中存入一些数据，这个数据将被当成一个接口值存储起来。需要用“拆箱”的方法将其还原：使用“类型断言”，其语法：</font></p>
+<p><font face="Courier New">interfaceValue.(typeToExtract)</font></p>
+<p><font face="Courier New">当类型错误时，断言将失败- 不过看下一slide。</font></p>
+<p><font face="Courier New">var v vector.Vector<br>
+                                                                                                    v.Set(0, 1234.) // 作为接口值存储<br>
+                                                                                                    i := v.At(0) // 作为interface{}被获取<br>
+                                                                                                    if i != 1234. {} // 编译期错误<br>
+                                                                                                    if i.(float64) != 1234. {} // OK<br>
+                                                                                                    if i.(int) != 1234 {} // 运行期错误<br>
+                                                                                                    if i.(MyFloat) != 1234. {} // err: 非MyFloat</font></p>
+<p><font face="Courier New">类型断言总是在运行期执行。编译器拒绝注定要失败的断言。</font></p>
+<h3><font face="Courier New">接口到接口的转换</font></h3>
+<p><font face="Courier New">到目前为止，我们只将常规值与接口值做了相互转换，但接口值还包含相应的方法，这些方法也可以被转换。</font></p>
+<p><font face="Courier New">实际上，这与将一个接口值做&quot;拆箱&quot;析出其中的具体值，接着为新接口类型装箱类似。</font></p>
+<p><font face="Courier New">转换成功与否取决于底层的值，而不是原先的接口类型。</font></p>
+<p> </p>
+<h3><font face="Courier New">接口转换例子</font></h3>
+<p><font face="Courier New">已知：</font></p>
+<p><font face="Courier New">var ai AbsInterface<br>
+                                                                                                    type SqrInterface interface { Sqr() float64 }<br>
+                                                                                                    var si SqrInterface<br>
+                                                                                                    pp := new(Point) // *Point具有方法Abs, Sqr<br>
+                                                                                                    var empty interface{}</font></p>
+<p><font face="Courier New">下面这些都OK:</font></p>
+<p><font face="Courier New">empty = pp // 所有类型值都满足empty<br>
+                                                                                                    ai = empty.(AbsInterface) // 底层值实现Abs接口，否则运行时错误<br>
+                                                                                                                             <br>
+                                                                                                    si = ai.(SqrInterface) // *Point实现Sqr()，即使AbsInterface没有</font></p>
+<p><font face="Courier New">empty = si // *Point 实现了空集<br>
+                                                                                                               // 注意: 静态可检查，因此类型断言不是必要的<br>
+                                                                                                              </font></p>
+<h3><font face="Courier New">用类型断言测试</font></h3>
+<p><font face="Courier New">可以使用&quot;comma ok&quot;类型断言测试一个值是否是某种类型：</font></p>
+<p><font face="Courier New">elem := vector.At(0)<br>
+                                                                                                    if i, ok := elem.(int); ok {<br>
+                                                                                                        fmt.Printf(&quot;int: %d\n&quot;, i)<br>
+                                                                                                    } else if f, ok := elem.(float64); ok {<br>
+                                                                                                        fmt.Printf(&quot;float64: %g\n&quot;, f)<br>
+                                                                                                    } else {<br>
+                                                                                                        fmt.Print(&quot;unknown type\n&quot;)<br>
+                                                                                                    }</font></p>
+<h3><font face="Courier New">用类型switch测试</font></h3>
+<p><font face="Courier New">特殊语法：</font></p>
+<p><font face="Courier New">switch v := elem.(type) { // 字面值关键字 &quot;type&quot;<br>
+                                                                                                    case int:<br>
+                                                                                                        fmt.Printf(&quot;is int: %d\n&quot;, v)<br>
+                                                                                                    case float64:<br>
+                                                                                                        fmt.Printf(&quot;is float64: %g\n&quot;, v)<br>
+                                                                                                    default:<br>
+                                                                                                        fmt.Print(&quot;unknown type\n&quot;)<br>
+                                                                                                    }</font></p>
+<h3><font face="Courier New">v实现m()了吗？    </font></h3>
+<p><font face="Courier New">再深入一步，可以测试一个值是否实现了某个方法。</font></p>
+<p><font face="Courier New">type Stringer interface { String() string }<br>
+                                                                                                    if sv, ok := v.(Stringer); ok {<br>
+                                                                                                        fmt.Printf(&quot;implements String(): %s\n&quot;,<br>
+                                                                                                        sv.String()) // 注意: sv 不是 v<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">这个就是Print等检查某个类型是否可以打印自己的方法。</font></p>
+<h3><font face="Courier New">反射和…</font></h3>
+<p><font face="Courier New">Go提供了一个反射(reflect)包，以支持你通过值探索其类型相关信息。太错综复杂，在这里说不方便。不过我们用Printf来分析一下其参数。</font></p>
+<p><font face="Courier New">func Printf(format string, args …interface{})(n int, err os.Error)</font></p>
+<p><font face="Courier New">在Printf内部，args变量变成一个特定类型的slice，例如[]interface{}。并且Printf使用反射包去解包每个元素以分析其类型。</font></p>
+<p><font face="Courier New">下一个小节有更多有关可变个数参数的函数的内容。</font></p>
+<h3><font face="Courier New">反射和Print</font></h3>
+<p><font face="Courier New">因此，Printf和同族函数知道参数的确切类型。正是因为它们知道参数到底是无符号的或是长整型的，才不需要%u或%ld，只需要%d。</font></p>
+<p><font face="Courier New">这也是Println和Print可以在没有格式化字符串参数时也可以优雅打印参数的原因。</font></p>
+<p><font face="Courier New">Printf还有一个%v(&quot;值&quot;)可以默认打印任何类型的值。</font></p>
+<p><font face="Courier New">fmt.Printf(&quot;%v %v %v %v&quot;, -1, &quot;hello&quot;,<br>
+                                                                                                    []int{1,2,3}, uint64(456))</font></p>
+<p><font face="Courier New">输出：-1 hello [1 2 3] 456。</font></p>
+<p><font face="Courier New">事实上，%v等价于由Print和Println完成格式化工作。</font></p>
+<h2><font face="Courier New">可变参数函数</font></h2>
+<h3><font face="Courier New">可变参数函数：…</font></h3>
+<p><font face="Courier New">变长参数列表用语法…T声明，T是独立参数的类型。这样的参数必须放在参数列表的末尾。在函数中，变参隐式类型为[]T。</font></p>
+<p><font face="Courier New">func Min(args …int) int {<br>
+                                                                                                        min := int(^uint(0)&gt;&gt;1) // 可能的最大整型值<br>
+                                                                                                        for _, x := range args { // args的类型为 []int<br>
+                                                                                                            if min &gt; x { min = x }<br>
+                                                                                                        }<br>
+                                                                                                        return min<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">fmt.Println(Min(1,2,3), Min(-27), Min(), Min(7,8,2))</font></p>
+<p><font face="Courier New">输出：1 -27 2147483647 2</font></p>
+<h3><font face="Courier New">将slice转换为可变参数</font></h3>
+<p><font face="Courier New">参数变成了一个slice。如果你要将slice直接传递给函数作为参数该如何做呢？ 在调用时使用…(只适用于可变参数)</font></p>
+<p><font face="Courier New">回顾：<br>
+                                                                                                        func Min(args …int) int</font></p>
+<p><font face="Courier New">下面两个调用都返回-2：</font></p>
+<p><font face="Courier New">Min(1, -2, 3)<br>
+                                                                                                    slice := []int{1, -2, 3}<br>
+                                                                                                    Min(slice…) // … 将slice转换为参数</font></p>
+<p><font face="Courier New">然而，下面的代码将会引发一个类型错误：</font></p>
+<p><font face="Courier New">Min(slice)</font></p>
+<p><font face="Courier New">因为slice类型为[]int，而Min的参数必须是独立的int。…是必须的。</font></p>
+<h3><font face="Courier New">Printf用于错误输出</font></h3>
+<p><font face="Courier New">我们可以使用…手法包装Printf或其某个变体来创建我们自己的错误处理函数。</font></p>
+<p><font face="Courier New">func Errorf(fmt string, args …interface{}) {<br>
+                                                                                                        fmt.Fprintf(os.Stderr, &quot;MyPkg: &quot;+fmt+&quot;\n&quot;, args…)<br>
+                                                                                                        os.Exit(1)<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">我们可以这样使用它：</font></p>
+<p><font face="Courier New">if err := os.Chmod(file, 0644); err != nil {<br>
+                                                                                                        Errorf(&quot;couldn&#39;t chmod %q: %s&quot;, file, err)<br>
+                                                                                                    }</font></p>
+<p><font face="Courier New">输出(包括换行符)：</font></p>
+<p><font face="Courier New">MyPkg: couldn&#39;t chmod &quot;foo.bar&quot;: permission denied</font></p>
+<h3><font face="Courier New">附加(append)</font></h3>
+<p>用于加长slice的内置函数append是支持可变参数的。它的函数签名：<br>
+                                                                                                        <font face="Courier New">append(s []T, x …T) []T</font></p>
+<p>其中s是个Slice，T是其中元素的类型。它返回一个新slice，即附加了新增元素x的s。</p>
+<p><font face="Courier New">slice := []int{1, 2, 3}<br>
+                                                                                                    slice = append(slice, 4, 5, 6)<br>
+                                                                                                    fmt.Println(slice)</font></p>
+<p><font face="Courier New">打印： [1 2 3 4 5 6]</font></p>
+<p>只要可能，append就会在正确的位置上增加slice。</p>
+<h3>附加一个slice</h3>
+<p>如果你想附加一个整个slice，而不是单个元素，我们再一次在调用时使用…。</p>
+<p><font face="Courier New">slice := []int{1, 2, 3}<br>
+                                                                                                    slice2 := []int{4, 5, 6}<br>
+                                                                                                    slice = append(slice, slice2…) // …是必须的<br>
+                                                                                                    fmt.Println(slice)</font></p>
+<p><font face="Courier New">这里例子也打印[1 2 3 4 5 6]。</font></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<p style="text-align:left">© 2012, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p>
+
+
+<p><img src="http://www1.feedsky.com/t1/685950359/bigwhite/feedsky/s.gif?r=http://tonybai.com/2012/08/27/the-go-programming-language-tutorial-part2/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=the-go-programming-language-tutorial-part2" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用 node.js 开发前端打包程序</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用 node.js 开发前端打包程序</h2>
+<p class="meta">29 Sep 2012</p>
+
+<div class="post">
+<h2>使用 node.js 开发前端打包程序</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-29 09:45:17</h3>
+
+<h3>original <a href="http://blog.jobbole.com/28904/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e4%25bd%25bf%25e7%2594%25a8-node-js-%25e5%25bc%2580%25e5%258f%2591%25e5%2589%258d%25e7%25ab%25af%25e6%2589%2593%25e5%258c%2585%25e7%25a8%258b%25e5%25ba%258f">http://blog.jobbole.com/28904/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e4%25bd%25bf%25e7%2594%25a8-node-js-%25e5%25bc%2580%25e5%258f%2591%25e5%2589%258d%25e7%25ab%25af%25e6%2589%2593%25e5%258c%2585%25e7%25a8%258b%25e5%25ba%258f</a></h3>
+
+<p>来源：<a href="http://ued.sina.com/?p=983" rel="nofollow">新浪UED</a></p>
+
+
+<p>我们在做前端开发的时候经常会在部署上线的时候做程序的打包和合并，我们接下来就会对如何使用 <span><a href="http://blog.jobbole.com/1254/" title="Node.js 究竟是什么？">Node.js</a></span> 开发前端打包程序做非常深入的讲解，希望能够帮到有需要的同学。</p>
+
+
+<p>我们现在做前端开发更多的是多人共同协作开发，每个人负责不同的模块，便于开发和调试。这样就导致我们最后部署上线的时候需要把所有人开发的模块进行合并，生成单个或多个文件上线。如果手动合并的话肯定是费时又费力，而且非常容易出错，所以我们一般都是通过一些工具来实现自动合并的功能。</p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/NodeJS.jpg" rel="lightbox[28904]" title="使用 node.js 开发前端打包程序 "><img title="使用 node.js 开发前端打包程序 " src="http://blog.jobbole.com/wp-content/uploads/2012/09/NodeJS.jpg" alt="使用 node.js 开发前端打包程序" width="518" height="162"></a></p>
+
+
+<p>打包程序的原理非常简单，入口文件-&gt;寻找依赖关系-&gt;替换依赖关系-&gt;生成文件，其中中间的两个步骤是递归执行的。<br>
+我们先来看一下使用 node.js 如何完成一个简单的文件合并功能：</p>
+
+
+<pre>// 打包文件内容
+var contentList = [];
+// 排重列表
+var loadedFileList = {};
+
+// 打包主程序
+function combine(filePath){
+    // 这里获取入口文件的内容
+    var fileContent = fs.readFileSync(filePath);
+    // 遍历文件内容
+    fileContent.forEach(function(value){
+        // 这里的findImport是需要你来实现的方法，用正则来匹配依赖关系
+        var matchFile = findImport(value);
+        if(matchFile){
+            //如果匹配到依赖关系
+            If(!loadedFileList[matchFile]){
+                //如果依赖关系不在排重列表中，递归调用combine
+                combine(matchFile);
+                contentList.push(‘\n’);
+            }
+        }else{
+            contentList.push(value);
+        }
+    });
+}</pre>
+
+
+<p>最后只要根据 contentList 里面的内容来生成文件就可以了，怎么样，是不是很简单呢？下面我们就要介绍另外一种方式，使用流来完成我们的打包程序。</p>
+
+
+<p>在 node.js 中，流(Stream)是一个由不同对象实现的抽象接口。流可以是可读的、可写的、或者既可读又可写的。所有的流都是 EventEmitter 的实例。我们可以通过继承接口来构造我们自己所需要的流。在我们的打包程序里面需要两个流，一个负责按行输出文件内容，另外一个负责处理依赖关系。所有的文件内容都在这两个流里面循环流动，当所有的依赖关系都处理完毕之后就结束流动并生成对应的文件，这样就达到我们的目的了。</p>
+
+
+<p>让我们先来看一下负责按行输出文件内容的流是怎么样的：</p>
+
+
+<pre>var Stream = require(&#39;stream&#39;).Stream,
+    util = require(&#39;util&#39;),
+    path = require(&#39;path&#39;),
+    fs = require(&#39;fs&#39;);
+
+// 构造函数
+function LineStream() {
+    this.writable = true;
+    this.readable = true;
+    this.buffer = &#39;&#39;;
+}
+
+module.exports = LineStream;
+// 继承流接口
+util.inherits(LineStream, Stream);
+
+// 重写write方法，所有pipe过来的数据都会调用此方法
+LineStream.prototype.write = function(data, encoding) {
+    var that = this;
+    // 把buffer转换为string类型
+    if (Buffer.isBuffer(data)) {
+        data = data.toString(encoding || &#39;utf8&#39;);
+    }
+
+    var parts = data.split(/\n/g);
+
+    // 如果有上一次的buffer存在就添加到最前面
+    if (this.buffer.length &gt; 0) {
+        parts[0] = this.buffer + parts[0];
+    }
+
+    // 遍历并发送数据
+    for (var i = 0; i &lt; parts.length - 1; i++) {
+        this.emit(&#39;data&#39;, parts[i]);
+    }
+    // 把最后一行数据保存到buffer，使传递过来的数据保持连续和完整。
+    this.buffer = parts[parts.length - 1];
+};
+// end方法，在流结束时调用
+LineStream.prototype.end = function() {
+    // 如果还有buffer，发送出去
+    if(this.buffer.length &gt; 0){
+        this.emit(&#39;data&#39;,this.buffer);
+        this.buffer = &#39;&#39;;
+    }
+    this.emit(&#39;end&#39;);
+};</pre>
+
+
+<p>这样我们的 lineStream 就完成了，我们看到在 write 方法里面就做了一件事，分解传递过来的数据并按行发送出去，然后我们看下处理依赖关系的流 DepsStream。</p>
+
+
+<pre>var stream = require(&#39;stream&#39;).Stream;
+var util = require(&#39;util&#39;);
+var fs = require(&#39;fs&#39;);
+var path = require(&#39;path&#39;);
+
+module.exports = DepsStream;
+util.inherits(DepsStream,stream);
+
+function DepsStream(){
+    this.writable = true;
+    this.readable = true;
+    this.buffer = &#39;&#39;;
+    this.depsList = [];
+};
+
+// 这里的write方法只发送数据，不对数据做任何的处理
+DepsStream.prototype.write = function(data){
+    this.emit(&#39;data&#39;,data);
+};
+
+// 我们在这里重新pipe方法，使其能够处理依赖关系和生成最终文件
+DepsStream.prototype.pipe = function(dest,opt){
+    var that = this;
+    function ondata(chunk){
+        var matches = findImport(chunk);
+        if(matches){
+            if(this.depsList.indexOf(matches) &gt;= 0){
+                // 我们在这里把处理过后的数据pipe回lineStream
+                dest.write(&#39;\n&#39;);
+            }else{
+                this.depsList.push(matches);
+                var code = getFileContent(matches);
+                // 我们在这里把处理过后的数据pipe回lineStream
+                dest.write(&#39;\n&#39; + code);
+            }
+        }else{
+            this.buffer += chunk + &#39;\n&#39;;
+        }
+    }
+    function onend(){
+        // 生成最终文件
+        var code = this.buffer;
+        fs.writeFileSync(filePublishUrl,code);
+        console.log(filePublishUrl + &#39; combine done.&#39;);
+    }
+    // 监听end事件
+    that.on(&#39;end&#39;,onend);
+    // 监听data事件
+    that.on(&#39;data&#39;,ondata);
+};
+
+// end方法
+DepsStream.prototype.end = function(){
+    this.emit(&#39;end&#39;);
+};</pre>
+
+
+<p>我们看到上面的程序里面我们在 pipe 方法里面监听了 end 事件和 data 事件，ondata 方法主要用来对数据进行处理，发现有依赖关系的话就获取对应依赖关系的文件并重新发回给 LineStream 进行处理。onend 方法用来生成最终的文件，我们来看一下最终的调用方法：</p>
+
+
+<pre>var fileStream = fs.createReadStream(filepath);
+var lineStream = new LineStream();
+var depsStream = new DepsStream();
+
+fileStream.pipe(lineStream);
+lineStream.pipe(depsStream);
+depsStream.pipe(lineStream);</pre>
+
+
+<p>怎么样，是不是非常简单，感兴趣的同学赶快尝试一下吧。</p>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/28088/" title="爱上朴实的CSS细节">爱上朴实的CSS细节</a></li><li><a href="http://blog.jobbole.com/26961/" title="Web前端开发规范文档你需要知道的事">Web前端开发规范文档你需要知道的事</a></li><li><a href="http://blog.jobbole.com/24845/" title="网页设计师必备的10个CSS技巧">网页设计师必备的10个CSS技巧</a></li><li><a href="http://blog.jobbole.com/24671/" title="LESS介绍及其与Sass的差异">LESS介绍及其与Sass的差异</a></li><li><a href="http://blog.jobbole.com/24480/" title="前端框架你究竟选什么">前端框架你究竟选什么</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

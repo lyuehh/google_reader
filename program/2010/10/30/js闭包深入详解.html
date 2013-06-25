@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>js闭包深入详解</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>js闭包深入详解</h2>
+<p class="meta">30 Oct 2010</p>
+
+<div class="post">
+<h2>js闭包深入详解</h2>
+
+<h3>by systemxgl</h3>
+
+<h3>at 2010-10-29 16:13:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/systemxgl/archive/2010/10/29/1864558.html">http://www.cnblogs.com/systemxgl/archive/2010/10/29/1864558.html</a></h3>
+
+<p><h3>一、什么是闭包？</h3>
+<p>“官方”的解释是：闭包是一个拥有许多变量和绑定了这些变量的环境的表达式（通常是一个函数），因而这些变量也是该表达式的一部分。<br>相信很少有人能直接看懂这句话，因为他描述的太学术。其实这句话通俗的来说就是：<strong>JavaScript中所有的function都是一个闭包</strong>。不过一般来说，嵌套的function所产生的闭包更为强大，也是大部分时候我们所谓的“闭包”。看下面这段代码：</p>
+<div>
+<div>
+<pre><span style="color:#003366;font-weight:bold">function</span> a<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>    <span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> <span style="color:#cc0000">0</span><span style="color:#339933">;</span>    <span style="color:#003366;font-weight:bold">function</span> b<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>        <span style="color:#000066">alert</span><span style="color:#009900">(</span><span style="color:#339933">++</span>i<span style="color:#009900">)</span><span style="color:#339933">;</span>    <span style="color:#009900">}</span>    <span style="color:#000066;font-weight:bold">return</span> b<span style="color:#339933">;</span><span style="color:#009900">}</span><span style="color:#003366;font-weight:bold">var</span> c <span style="color:#339933">=</span> a<span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>c<span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</div>
+</div>
+<p>这段代码有两个特点：</p>
+<ol>
+<li>函数b嵌套在函数a内部； </li>
+<li>函数a返回函数b。 </li>
+</ol>
+<p>引用关系如图：</p>
+<p><img title="jsclosure" src="http://www.felixwoo.com/wp-content/uploads/2007/12/jsclosure.jpg" alt="jsclosure" width="228" height="175"></p>
+<p>这样在执行完var c=a()后，变量c实际上是指向了函数b，b中用到了变量i，再执行c()后就会弹出一个窗口显示i的值(第一次为1)。这段代码其实就创建了一个闭包，为什么？因为函数a外的变量c引用了函数a内的函数b，就是说：<strong><br></strong></p>
+<blockquote>
+<p><span style="color:#ff0000;font-size:12pt"><strong>当函数a的内部函数b被函数a外的一个变量引用的时候，就创建了一个我们通常所谓的“闭包”。</strong></span></p>
+</blockquote>
+<p>让我们说的更透彻一些。所谓“闭包”，就是在构造函数体内定义另外的函数作为目标对象的方法函数，而这个对象的方法函数反过来引用外层外层函数体中 的临时变量。这使得只要目标 对象在生存期内始终能保持其方法，就能间接保持原构造函数体当时用到的临时变量值。尽管最开始的构造函数调用已经结束，临时变量的名称也都消失了，但在目 标对象的方法内却始终能引用到该变量的值，而且该值只能通这种方法来访问。即使再次调用相同的构造函数，但只会生成新对象和方法，新的临时变量只是对应新 的值，和上次那次调用的是各自独立的。</p>
+<p>为了更深刻的理解闭包，下面让我们继续探索闭包的作用和效果。</p>
+<h3>二、闭包有什么作用和效果？</h3>
+<p>简而言之，闭包的作用就是在a执行完并返回后，闭包使得Javascript的垃圾回收机制GC不会收回a所占用的资源，因为a的内部函数b的执行需要依赖a中的变量。这是对闭包作用的非常直白的描述，不专业也不严谨，但大概意思就是这样，理解闭包需要循序渐进的过程。<br>在上面的例子中，由于闭包的存在使得函数a返回后，a中的i始终存在，这样每次执行c()，i都是自加1后alert出i的值。</p>
+<p>那么我们来想象另一种情况，如果a返回的不是函数b，情况就完全不同了。因为a执行完后，b没有被返回给a的外界，只是被a所引用，而此时a也只会 被b引用，因此函数a和b互相引用但又不被外界打扰(被外界引用)，函数a和b就会被GC回收。(关于Javascript的垃圾回收机制将在后面详细介 绍)</p>
+<h3>三、闭包的微观世界</h3>
+<p>如果要更加深入的了解闭包以及函数a和嵌套函数b的关系，我们需要引入另外几个概念：函数的执行环境(excution context)、活动对象(call object)、作用域(scope)、作用域链(scope chain)。以函数a从定义到执行的过程为例阐述这几个概念。</p>
+<ol>
+<li>当<strong>定义</strong>函数a的时候，js解释器会将函数a的<strong>作用域链(scope chain)</strong>设置为<span style="color:#ff0000"><strong>定义a时a所在的“环境”</strong></span>，如果a是一个全局函数，则scope chain中只有window对象。 </li>
+<li>当<strong>执行</strong>函数a的时候，a会进入相应的<strong>执行环境(excution context)</strong>。 </li>
+<li>在创建执行环境的过程中，首先会为a添加一个scope属性，即a的<strong>作用域</strong>，其值就为第1步中的scope chain。即a.scope=a的作用域链。 </li>
+<li>然后执行环境会创建一个<strong>活动对象(call object)</strong>。活动对象也是一个拥有属性的对象，但它不具有原型而且不能通过JavaScript代码直接访问。创建完活动对象后，把活动对象添加到a的作用域链的最顶端。此时a的作用域链包含了两个对象：a的活动对象和window对象。 </li>
+<li>下一步是在活动对象上添加一个arguments属性，它保存着调用函数a时所传递的参数。 </li>
+<li>最后把所有函数a的形参和内部的函数b的引用也添加到a的活动对象上。在这一步中，完成了函数b的的定义，因此如同第3步，函数b的作用域链被设置为b所被定义的环境，即a的作用域。 </li>
+</ol>
+<p>到此，整个函数a从定义到执行的步骤就完成了。此时a返回函数b的引用给c，又函数b的作用域链包含了对函数a的活动对象的引用，也就是说b可以访问到a中定义的所有变量和函数。函数b被c引用，函数b又依赖函数a，因此函数a在返回后不会被GC回收。</p>
+<p>当函数b执行的时候亦会像以上步骤一样。因此，执行时b的作用域链包含了3个对象：b的活动对象、a的活动对象和window对象，如下图所示：</p>
+<p><a href="http://www.felixwoo.com/wp-content/uploads/attachments/200712/11_110522_scopechain.jpg"><img src="http://www.felixwoo.com/wp-content/uploads/attachments/200712/11_110522_scopechain.jpg" alt="http://www.felixwoo.com/wp-content/uploads/attachments/200712/11_110522_scopechain.jpg"></a></p>
+<p>如图所示，当在函数b中访问一个变量的时候，搜索顺序是：</p>
+<ol>
+<li>先搜索自身的活动对象，如果存在则返回，如果不存在将继续搜索函数a的活动对象，依次查找，直到找到为止。 </li>
+<li>如果函数b存在prototype原型对象，则在查找完自身的活动对象后先查找自身的原型对象，再继续查找。这就是Javascript中的变量查找机制。 </li>
+<li>如果整个作用域链上都无法找到，则返回undefined。 </li>
+</ol>
+<p>小结，本段中提到了两个重要的词语：函数的<strong>定义</strong>与<strong>执行</strong>。文中提到函数的作用域是在定义函数时候就已经确定，而不是在执行的时候确定（参看步骤1和3）。用一段代码来说明这个问题：</p>
+<div>
+<div>
+<pre><span style="color:#003366;font-weight:bold">function</span> f<span style="color:#009900">(</span>x<span style="color:#009900">)</span> <span style="color:#009900">{</span>    <span style="color:#003366;font-weight:bold">var</span> g <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">function</span> <span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span> <span style="color:#000066;font-weight:bold">return</span> x<span style="color:#339933">;</span> <span style="color:#009900">}</span>    <span style="color:#000066;font-weight:bold">return</span> g<span style="color:#339933">;</span><span style="color:#009900">}</span><span style="color:#003366;font-weight:bold">var</span> h <span style="color:#339933">=</span> f<span style="color:#009900">(</span><span style="color:#cc0000">1</span><span style="color:#009900">)</span><span style="color:#339933">;</span><span style="color:#000066">alert</span><span style="color:#009900">(</span>h<span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</div>
+</div>
+<p>这段代码中变量h指向了f中的那个匿名函数(由g返回)。</p>
+<ul>
+<li>假设函数h的作用域是在执行alert(h())确定的，那么此时h的作用域链是：h的活动对象-&gt;alert的活动对象-&gt;window对象。 </li>
+<li>假设函数h的作用域实在定义时确定的，就是说h指向的那个匿名函数在定义的时候就已经确定了作用域。那么在执行的时候，h的作用域链为：h的活动对象-&gt;f的活动对象-&gt;window对象。 </li>
+</ul>
+<p>如果第一种假设成立，那输出值就是undefined；如果第二种假设成立，输出值则为1。</p>
+<p>运行结果证明了第2个假设是正确的，说明函数的作用域确实是在定义这个函数的时候就已经确定了。</p>
+<h3>四、闭包的应用场景</h3>
+<ol>
+<li>保护函数内的变量安全。以最开始的例子为例，函数a中i只有函数b才能访问，而无法通过其他途径访问到，因此保护了i的安全性。 </li>
+<li>在内存中维持一个变量。依然如前例，由于闭包，函数a中i的一直存在于内存中，因此每次执行c()，都会给i自加1。 </li>
+<li>通过保护变量的安全实现JS私有属性和私有方法（不能被外部访问）</li>
+<li>私有属性和方法在Constructor外是无法被访问的
+<div>
+<div>
+<pre><span style="color:#003366;font-weight:bold">function</span> Constructor<span style="color:#009900">(</span>...<span style="color:#009900">)</span> <span style="color:#009900">{</span>    <span style="color:#003366;font-weight:bold">var</span> that <span style="color:#339933">=</span> <span style="color:#000066;font-weight:bold">this</span><span style="color:#339933">;</span>    <span style="color:#003366;font-weight:bold">var</span> membername <span style="color:#339933">=</span> value<span style="color:#339933">;</span>    <span style="color:#003366;font-weight:bold">function</span> membername<span style="color:#009900">(</span>...<span style="color:#009900">)</span> <span style="color:#009900">{</span>...<span style="color:#009900">}</span><span style="color:#009900">}</span></pre>
+</div>
+</div>
+</li>
+</ol>
+<p>以上3点是闭包最基本的应用场景，很多经典案例都源于此。</p>
+<h3>五、Javascript的垃圾回收机制</h3>
+<p>在Javascript中，如果一个对象不再被引用，那么这个对象就会被GC回收。如果两个对象互相引用，而不再被第3者所引用，那么这两个互相引用的对象也会被回收。因为函数a被b引用，b又被a外的c引用，这就是为什么函数a执行后不会被回收的原因。</p>
+<h3>六、结语</h3>
+<p>理解JavaScript的闭包是迈向高级JS程序员的必经之路，理解了其解释和运行机制才能写出更为安全和优雅的代码。 </p>
+<p> </p>
+<p>本文采编于租赁宝网内部技术人员 参考网址：<a href="http://www.zulinbao.com">http://www.zulinbao.com</a></p>
+<p>原文链接：<a href="http://hi.baidu.com/bluedream_119/blog/item/acff57d6dfd9d52506088b42.html">http://hi.baidu.com/bluedream_119/blog/item/acff57d6dfd9d52506088b42.html</a></p><img src="http://www.cnblogs.com/systemxgl/aggbug/1864558.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/systemxgl/">systemxgl</a> 发表于 2010-10-29 16:13 <a href="http://www.cnblogs.com/systemxgl/archive/2010/10/29/1864558.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/systemxgl/archive/2010/10/29/1864558.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/systemxgl/archive/2010/10/29/1864558.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/79043/">Windows Phone 7程序设计”完全版电子书可以免费下载了</a><span style="color:gray">(2010-10-29 16:04)</span><br>· <a href="http://news.cnblogs.com/n/79042/">评论：狗日的腾讯 狗日的360</a><span style="color:gray">(2010-10-29 16:01)</span><br>· <a href="http://news.cnblogs.com/n/79041/">360与腾讯之战愈演愈烈</a><span style="color:gray">(2010-10-29 15:49)</span><br>· <a href="http://news.cnblogs.com/n/79040/">王传福马化腾出任深圳市总商会名誉会长</a><span style="color:gray">(2010-10-29 15:43)</span><br>· <a href="http://news.cnblogs.com/n/79039/">人人都是歌星 神奇软件专治五音不全</a><span style="color:gray">(2010-10-29 15:35)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/msdnchina/archive/2010/10/29/1864083.html">PDC主题演讲直播笔录</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ie6 css sprites重复加载</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ie6 css sprites重复加载</h2>
+<p class="meta">13 Jul 2012</p>
+
+<div class="post">
+<h2>ie6 css sprites重复加载</h2>
+
+<h3>by Airen</h3>
+
+<h3>at 2012-07-13 11:41:39</h3>
+
+<h3>original <a href="http://www.w3cplus.com/code/328.html">http://www.w3cplus.com/code/328.html</a></h3>
+
+<div><div><div><p>如果你使用css sprites，那么在ie6下并不能发挥sprites的作用，它还是会每次再重新加载这个图片，解决方法为为ie6添加下面这条js：</p>
+<pre>&lt;!--[if IE 6]&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        document.execCommand(&quot;BackgroundImageCache&quot;,false,true);
+    &lt;/script&gt;
+&lt;![endif]--&gt;</pre></div></div></div>
+
+
+<div><div><div><div>
+      <div>2</div>
+                  <a href="http://www.w3cplus.com/vote/node/328/1/vote/alternate/n3XSEcjMd5goSDJQuN-6Q16RJvMjfV3LSbUTwFcMuTo/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/159.html">ie6</a></li><li><a href="http://www.w3cplus.com/blog/tags/40.html">css sprite</a></li></ul></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/659938800/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/code/328.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

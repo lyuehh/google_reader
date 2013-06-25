@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>基于axure的PRD协作</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>基于axure的PRD协作</h2>
+<p class="meta">11 Feb 2012</p>
+
+<div class="post">
+<h2>基于axure的PRD协作</h2>
+
+<h3>by kent.zhu</h3>
+
+<h3>at 2012-02-11 13:51:58</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/6828.html">http://www.udpwork.com/item/6828.html</a></h3>
+
+<p>大约1年多前我写了一篇《<a href="http://www.ikent.me/blog/3042">基于axure的PRD写作思考</a>》，其主旨思想是将文档版本的PRD与线框图及流程图结合起来，统一由axure来输出，降低PM与研发之间的沟通成本及交付物的传递成本。</p>
+
+
+<p>当时这个文档是基于我做Web端产品设计的经验为蓝本完成的，这1年多来我从Web端完全转到Mobile端，还在继续的使用着这套方法。在不断的实践过程中略有心得，遂更新一篇，详细的讲述一下这套思路。</p>
+
+
+<p>当然，肯定会有很多人说axure是个很笨重的工具，从来不用；也肯定会有很多人说我们团队有严格的文档规范，你的这套东西不适用…..是的，你们都是对的。这套方法的最大好处就是快速、直接，适用于扁平化的团队。如果你是产品与研发异地的团队，那么，建议还是有详细的文档比较合适。</p>
+
+
+<p>关于一个PRD文档需要包含的内容及相关的结构，之前《<a href="http://www.ikent.me/blog/3042">基于axure的PRD写作思考</a>》已经说的比较清楚，不再赘述。我们为什么要写PRD？简单来说就是把我们具体要做一个什么样的东西很详细的描述出来并传递给团队其他成员知晓，最终一起执行。这里面我觉得有3个点特别重要，详细描述、快速传递、一起执行，一份不管是什么形式的PRD最终都必须做到这3点。</p>
+
+
+<p>从打开axure准备开始进行原型设计开始，我会把文件分成这样几个部分：修改记录、产品结构、（用例及信息架构）、具体页面原型设计。在具体页面的原型设计的时候会再根据这个页面的负责程度看是否要增加一个流程图页面进去。</p>
+
+
+<p><strong>修改记录</strong>
+</p>
+
+
+<p>修改记录模块主要是对该原型的迭代历史进行记录。修改记录可以使用文本面板完成，主要记录比如，什么时候修改了什么模块，原因是什么。每次对原型进行修改都必须记录下来，这种内容迭代的记录方式一方面便于自己后续回忆与总结，同时也对项目管理的需要，每次的修改都有据可查。</p>
+
+
+<p><strong>产品结构</strong>
+</p>
+
+
+<p>产品设计本身是个从大往小的过程。所谓大就是指的产品整体的结构所谓小则是具体的交互设计页面布局等。我个人非常不建议一开始就进入到具体的页面设计，即使是一个具体的页面设计也建议先把页面模块及相应模块的布局想清楚，然后再开始填充内容；而如果是一个会涉及到很多步骤的设计，如果流程没有事先想清楚画出来，千万不要动手去设计。</p>
+
+
+<p>按照我个人的习惯，产品结构部分一般会采用结构图的方式调用流程图模式把这个产品的结构关系画清楚。目的有这样几个：搞清楚用户的主要路径，用户会从什么地方进入产品，在里面会经过哪些页面，然后会从什么地方退出；弄清楚产品的层级关系，从移动端的设计上看，产品的层级关系一定要避免太深；梳理一下整个产品的页面，不要有遗漏。</p>
+
+
+<p><img src="http://www.ikent.me/blog/wp-content/uploads/2012/02/%E4%BA%A7%E5%93%81%E7%BB%93%E6%9E%84%E9%83%A8%E5%88%86-700x407.png"></p>
+
+
+<p><strong>用例及信息架构</strong>
+</p>
+
+
+<p>用例之前在Web端我通常是直接采用母板来完成的，最近在做Mobile的产品设计，倍感在画原型的时候把用例标识出来的重要性。个人感受，移动端的产品需要比Web端更加深入的考虑模块复用，一来保持整个客户端的统一性，同时复用的模块在一定程度上是可以减少开发工作量的。</p>
+
+
+<p>就一个Apps而言，这个部分通常会包括一级页面的页面结构、二级页面的页面结构、三级页面的页面结构、….；弹层的样式及出现方式；是否出现menu键、样式及内容（android）等内容。</p>
+
+
+<p><img src="http://www.ikent.me/blog/wp-content/uploads/2012/02/%E7%94%A8%E4%BE%8B%E8%AF%B4%E6%98%8E-700x425.png"></p>
+
+
+<p>当进行需求评审的时候也建议按照这个顺序来说，先介绍一下整个产品的结构，向整个团队成员说清楚我们大概要做一个什么样的产品，他包括哪些部分，这些部分的关系是咋样的；其次开始介绍一下这个产品他从一个框架上看是什么样子的，有一个感性的认知；再次开始按用户任务/流程分模块进行介绍，详细的说明其中的策略问题。</p>
+
+
+<p><strong>具体页面原型设计</strong>
+</p>
+
+
+<p>具体页面的原型设计分为2种，1种是页面行为比较单一，简单的几个图加一定的文字就可以描述清楚的；一种是页面行为的流程及逻辑性比较强，有比较多的中间状态和用户行为的分支，这种页面我一般的方式是先画出流程图，然后再相应的给出页面原型。</p>
+
+
+<p>第一种页面比较简单，设计的时候想着点各个平台的设计规范（指南）就可以搞定。同时可以在页面原型的边上把每个模块部分取的元素内容及相应的策略也写出来。</p>
+
+
+<p>不过，需要有一个提醒，在移动端会存在不少页面的长度是超过1屏的，在原型设计的时候一定要画出一条屏幕高度基线，将第一屏内容和第二屏内容隔开。一方面重要的内容都必须在第一屏有所体现，另一方面注意节减页面高度，同时在原型评审的时候也让其他角色提前有所了解。</p>
+
+
+<p>另一方面，如果一个模块涉及的交互流程比较复杂，比如一个输入框，在初始状态、开始输入状态、输入完成状态、输入出错状态（超过字数限制）等不同状态下的表现及相应的操作提示都是不一样的，建议分别拆成几个不同的状态完成。这部分之前在Web端的时候可以直接用axure的交互来完成，但是mobile端的屏幕有所限制，再去做这些交互效果，往往也隐藏比较深，不如拆出来画。</p>
+
+
+<p><img src="http://www.ikent.me/blog/wp-content/uploads/2012/02/%E5%85%B7%E4%BD%93%E9%A1%B5%E9%9D%A2%E8%AE%BE%E8%AE%A11-700x527.png"></p>
+
+
+<p><strong>一些关于移动端原型设计的其他问题</strong>
+</p>
+
+
+<p>1、工具永远都是工具，不要让工具限制了你。axure也好，viso也好，OmniGraffle也好，做出来的东西无分好坏。</p>
+
+
+<p>2、除非脑子里想的比较清楚了，不要冲动性的就开始用axure画原型。在我看来，画原型只是20%的功夫，更多的功夫应该在原型之外，包括对要做什么，为什么要这么做的思考。同时，纸面原型是更好的选择，帮助锊清思路。</p>
+
+
+<p>3、在原型设计的过程中需要注意沉淀一些规范性的组件出来。每个团队每个项目都应该有一套自己的原型组件，而不应该是直接找别人要来原型组件然后直接导入（当然，系统通用的组件除外）。</p>
+
+
+<p>4、原型设计的过程中，酷炫的原型交互需要适可而止。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/6828.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/6828.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/6828.html#reviews">评论: 0</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

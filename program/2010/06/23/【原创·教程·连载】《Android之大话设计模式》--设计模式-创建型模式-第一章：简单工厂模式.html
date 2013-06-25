@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第一章：简单工厂模式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第一章：简单工厂模式</h2>
+<p class="meta">23 Jun 2010</p>
+
+<div class="post">
+<h2>【原创·教程·连载】《Android之大话设计模式》--设计模式 创建型模式 第一章：简单工厂模式</h2>
+
+<h3>by 国士工作室</h3>
+
+<h3>at 2010-06-23 01:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/23/1763062.html">http://www.cnblogs.com/guoshiandroid/archive/2010/06/23/1763062.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/guoshiandroid/"><img src="http://pic.cnblogs.com/face/u137019.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/guoshiandroid/">国士工作室</a> 发表于 2010-06-23 01:06 <a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/23/1763062.html">原文链接</a> 阅读: 702 评论: 3</p>
+
+
+<h1 align="center" style="font-size:2em">&lt;大话设计模式&gt;</h1>
+
+
+<h2 align="center" style="font-size:1.5em">本教程说明及版权声明</h2>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋利。</p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 如果对该文档有任何疑问或者建议，请进入官方博客</p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">   <a href="http://www.cnblogs.com/guoshiandroid/" style="color:#1a8bc8;text-decoration:none">http://www.cnblogs.com/guoshiandroid/</a>留言或者直接与国士工作室联系（后附联系方式），我们会慎重参考您的建议并根据需要对本文档进行修改，以造福更多开发者！</p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px">l 《大话设计模式》的最新及完整内容会在国士工作室官方博客定期更新，请访问国士工作室博客</p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px"><a href="http://www.cnblogs.com/guoshiandroid/" style="color:#1a8bc8;text-decoration:none">http://www.cnblogs.com/guoshiandroid/</a>获取更多更新内容。</p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"> <strong style="font-weight:bold"> <span style="line-height:24px;font-size:12pt">查看其他部分：</span><a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/06/1752668.html" style="color:#1a8bc8;text-decoration:none"><span style="line-height:28px;color:#0000ff"><span style="line-height:24px;font-size:12pt">本教程整体说明及章节索引</span></span></a></strong></p>
+
+
+<p style="margin-top:5px;margin-right:auto;margin-bottom:5px;margin-left:auto;text-indent:0px;line-height:19px;text-align:center"><span style="font-size:14pt"><a href="http://files.cnblogs.com/guoshiandroid/%e7%ae%80%e5%8d%95%e5%b7%a5%e5%8e%82%e6%a8%a1%e5%bc%8f_%e4%b8%80%e8%a7%81%e9%92%9f%e6%83%85%e7%9a%84%e4%bb%a3%e4%bb%b7.pdf" style="color:#1a8bc8;text-decoration:none">本文PDF下载链接</a></span></p>
+
+
+<p align="center"><b>简单工厂模式</b><b> </b><b>一见钟情的代价</b><b> </b></p>
+
+
+<p><b>简单工厂模式应用场景举例</b><b>：</b><b> </b></p>
+
+
+<p>       “你知不知道大学的规矩啊？”，MM有些不满的问道。“什么规矩？当然不知道了啊。”，GG傻傻的说道，很明显这个MM已经对GG的不懂事和不主动有些不满了。“在大学里，当两个人确定恋爱关系时，都是要请女朋友同寝室的人去吃饭的”，MM带着一些不满又有一些撒娇的口气说道。“啊？我不知道哎，请众美女吃饭我还求之不得呢，什么时候有时间啊，确定是时间和地点，我随叫随到！”GG很激动很爽快的答应道。MM笑着抬头看了一样这个傻GG,“那好，让我想想，我们…我们下周六下午有时间，要么这样，你带我们去麦当劳吧”，“一言为定”，“那我们在下周六下午五点在中心商业街南边的麦当劳分店见，听说那边的口味还不错:-O”，“好的，只要你开心就好，不见不散”GG回答道，“不见不散！”MM就这样嫣然一笑的欢天喜地的离开了。</p>
+
+
+<p>       想想前几天GG和MM因为非常偶然的因素相见的情景，GG再次涌起了一种无法言喻的幸福和激动。那一天，GG见到了MM，仿若晴天霹雳，整个地球在颤抖，她甜美而柔和的声音、她极具古典气息的是秀发、她超棒的身材、她恰到好处的着装、她极尽秀美而恬静的娇容、她似音乐般的举止顿时令他彻底的迷醉了，仿佛整个世界只有她一人，仿佛一切都是为她而生的，突然，两人目光交错，眼神相遇…就这么一见钟情！GG想，到麦当劳也好，反正我不会做饭，再说了，即使会做也不能去做啊，众口难调啊，更何况是一群美女，到麦当劳让她们自个儿去挑吧^_^不过我这一个月的生活费怕是要泡汤了，难怪别人说大学里最高的消费是花费的女朋友身上的消费~~~~(&gt;_&lt;)~~~~ </p>
+
+
+<p>       千呼万唤，终于到了周六下午。被感情冲昏大脑的GG突然间变的不再那么笨了，这次他提前预定了座位，是一个可以容纳8个人的座位。而且具体告诉了MM座位的位置，这样大家都清楚位置是比较好的，避免了到时候没有位置的尴尬。赶往麦当劳路上的GG心潮澎湃但是有些担心，毕竟要面对六个美女，而且女朋友也是刚认识几天。“亲爱的，现在到哪了？”手机中MM发过来了一条短信，GG一看时间，天啊，光顾着去傻想，还有几分钟就五点了，第一次如果都迟到那就太不好了，于是立即回复到，“宝贝儿，我就到了！”，因为麦当劳就在对面，抬头就可以看到的。GG跑上了麦当劳的二楼的用餐处，见到诸位美女，紧张的还没说不话来，“这是我男朋友”MM拽着GG的手臂说，“大家好，大家好”，GG紧张的说道。忙又补充到：“我们先点餐，大家自便，都不要客气啊”，“我要吃鸡翅”，“我要麦香鱼套餐”，我要“板烧鸡腿套餐”，我要“奶昔”，我要“薯条”，…，大家都点好自己的喜欢的食品，然后GG和MM分别又加了几份食品，有GG把订单拿到前台交给了服务员，服务员清算了一下所有花费，GG当即晕倒^_^。看来一个月的生活费是确实的泡汤了，不过还是故作振作，微笑着来到众美女中，和众美女坐在那里等着慢慢享用美食，而剩下的一切就交给服务员了…</p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式解释：</b><b> </b></p>
+
+
+<p>       简单工厂模式（Simple Factory Pattern）属于类的创新型模式，又叫静态工厂方法模式（Static FactoryMethod Pattern）,是通过专门定义一个类来负责创建其他类的实例，被创建的实例通常都具有共同的父类。</p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式的</b><b>UML</b><b>图：</b><b> </b></p>
+
+
+<p>       简单工厂模式中包含的角色及其相应的职责如下：</p>
+
+
+<p>       工厂角色（Creator）：这是简单工厂模式的核心，由它负责创建所有的类的内部逻辑。当然工厂类必须能够被外界调用，创建所需要的产品对象。</p>
+
+
+<p>       抽象（Product）产品角色：简单工厂模式所创建的所有对象的父类，注意，这里的父类可以是接口也可以是抽象类，它负责描述所有实例所共有的公共接口。</p>
+
+
+<p>       具体产品（Concrete Product）角色：简单工厂所创建的具体实例对象，这些具体的产品往往都拥有共同的父类。</p>
+
+
+<p> </p>
+
+
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062300571970.png"></p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式深入分析</b>：</p>
+
+
+<p>       简单工厂模式解决的问题是如何去实例化一个合适的对象。</p>
+
+
+<p>       简单工厂模式的核心思想就是：有一个专门的类来负责创建实例的过程。</p>
+
+
+<p>       具体来说，把产品看着是一系列的类的集合，这些类是由某个抽象类或者接口派生出来的一个对象树。而工厂类用来产生一个合适的对象来满足客户的要求。</p>
+
+
+<p>       如果简单工厂模式所涉及到的具体产品之间没有共同的逻辑，那么我们就可以使用接口来扮演抽象产品的角色；如果具体产品之间有功能的逻辑或，我们就必须把这些共同的东西提取出来，放在一个抽象类中，然后让具体产品继承抽象类。为实现更好复用的目的，共同的东西总是应该抽象出来的。</p>
+
+
+<p>       在实际的的使用中，抽闲产品和具体产品之间往往是多层次的产品结构，如下图所示：</p>
+
+
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062300583042.png"></p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式使用场景分析及代码实现：</b><b> </b></p>
+
+
+<p>       GG请自己的女朋友和众多美女吃饭，但是GG自己是不会做饭的或者做的饭很不好，这说明GG不用自己去创建各种食物的对象；各个美女都有各自的爱好，到麦当劳后她们喜欢吃什么直接去点就行了，麦当劳就是生产各种食物的工厂，这时候GG不用自己动手，也可以请这么多美女吃饭，所要做的就是买单O(∩_∩)O哈哈~,其UML图如下所示：</p>
+
+
+<p> </p>
+
+
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062300590451.png"></p>
+
+
+<p>       实现代码如下：</p>
+
+
+<p>       新建立一个食物的接口：</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.SimpleFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 产品的抽象接口</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>interface</b> Food {</p>
+<p align="left">    /*</p>
+<p align="left">     * 获得相应的食物</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get();</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>接下来建立具体的产品：麦香鸡和薯条</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.SimpleFactory.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.SimpleFactory.Food;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 麦香鸡对抽象产品接口的实现</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> McChicken <b>implements</b> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取一份麦香鸡</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get(){</p>
+<p align="left">        System.<i>out</i>.println("我要一份麦香鸡");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.SimpleFactory.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.SimpleFactory.Food;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 薯条对抽象产品接口的实现</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> Chips  <b>implements</b> Food{</p>
+<p align="left">    /*</p>
+<p align="left">     * 获取一份薯条</p>
+<p align="left">     */</p>
+<p align="left">    <b>public</b> <b>void</b> get(){</p>
+<p align="left">        System.<i>out</i>.println("我要一份薯条");</p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>现在建立一个食物加工工厂：</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.SimpleFactory.impl;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.SimpleFactory.Food;</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left"><b>public</b> <b>class</b> FoodFactory {</p>
+<p align="left"> </p>
+<p align="left">    <b>public</b> <b>static</b> Food getFood(String type) <b>throws</b>  InstantiationException, IllegalAccessException, ClassNotFoundException {</p>
+<p align="left">        <b>if</b>(type.equalsIgnoreCase("mcchicken")) {</p>
+<p align="left">            <b>return</b> McChicken.<b>class</b>.newInstance();</p>
+<p align="left"> </p>
+<p align="left">        }  <b>else</b> <b>if</b>(type.equalsIgnoreCase("chips")) {</p>
+<p align="left">            <b>return</b> Chips.<b>class</b>.newInstance();</p>
+<p align="left">        }  <b>else</b> {</p>
+<p align="left">            System.<i>out</i>.println("哎呀！找不到相应的实例化类啦！");</p>
+<p align="left">            <b>return</b> <b>null</b>;</p>
+<p align="left">        }</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>最后我们建立测试客户端：</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left"><b>package</b> com.diermeng.designPattern.SimpleFactory.client;</p>
+<p align="left"><b>import</b> com.diermeng.designPattern.SimpleFactory.Food;</p>
+<p align="left"><b>import</b>  com.diermeng.designPattern.SimpleFactory.impl.FoodFactory;</p>
+<p align="left"> </p>
+<p align="left">/*</p>
+<p align="left"> * 测试客户端</p>
+<p align="left"> */</p>
+<p align="left"><b>public</b> <b>class</b> SimpleFactoryTest {</p>
+<p align="left">    <b>public</b> <b>static</b> <b>void</b> main(String[] args) <b>throws</b>  InstantiationException, IllegalAccessException, ClassNotFoundException {</p>
+<p align="left"> </p>
+<p align="left">        //实例化各种食物</p>
+<p align="left">        Food  mcChicken = FoodFactory.<i>getFood</i>("McChicken");</p>
+<p align="left">        Food  chips = FoodFactory.<i>getFood</i>("Chips");</p>
+<p align="left">        Food  eggs =  FoodFactory.<i>getFood</i>("Eggs");</p>
+<p align="left"> </p>
+<p align="left">        //获取食物</p>
+<p align="left">        <b>if</b>(mcChicken!=<b>null</b>){</p>
+<p align="left">            mcChicken.get();</p>
+<p align="left">        }</p>
+<p align="left">        <b>if</b>(chips!=<b>null</b>){</p>
+<p align="left">            chips.get();</p>
+<p align="left">        }</p>
+<p align="left">        <b>if</b>(eggs!=<b>null</b>){</p>
+<p align="left">            eggs.get();</p>
+<p align="left">        }</p>
+<p align="left"> </p>
+<p align="left"> </p>
+<p align="left">    }</p>
+<p align="left">}</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p>输出的结果如下：</p>
+
+
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="568" valign="top">
+<p align="left">哎呀！找不到相应的实例化类啦！</p>
+<p align="left">我要一份麦香鸡</p>
+<p align="left">我要一份薯条</p>
+<p> </p>
+</td>
+</tr>
+</tbody>
+</table>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式的优缺点分析：</b><b> </b></p>
+
+
+<p>       优点：工厂类是整个模式的关键所在。它包含必要的判断逻辑，能够根据外界给定的信息，决定究竟应该创建哪个具体类的对象。用户在使用时可以直接根据工厂类去创建所需的实例，而无需了解这些对象是如何创建以及如何组织的。有利于整个软件体系结构的优化。</p>
+
+
+<p>      缺点：由于工厂类集中了所有实例的创建逻辑，这就直接导致一旦这个工厂出了问题，所有的客户端都会受到牵连；而且由于简单工厂模式的产品室基于一个共同的抽象类或者接口，这样一来，但产品的种类增加的时候，即有不同的产品接口或者抽象类的时候，工厂类就需要判断何时创建何种种类的产品，这就和创建何种种类产品的产品相互混淆在了一起，违背了单一职责，导致系统丧失灵活性和可维护性。而且更重要的是，简单工厂模式违背了“开放封闭原则”，就是违背了“系统对扩展开放，对修改关闭”的原则，因为当我新增加一个产品的时候必须修改工厂类，相应的工厂类就需要重新编译一遍。</p>
+
+
+<p>      总结一下：简单工厂模式分离产品的创建者和消费者，有利于软件系统结构的优化；但是由于一切逻辑都集中在一个工厂类中，导致了没有很高的内聚性，同时也违背了“开放封闭原则”。另外，简单工厂模式的方法一般都是静态的，而静态工厂方法是无法让子类继承的，因此，简单工厂模式无法形成基于基类的继承树结构。</p>
+
+
+<p> </p>
+
+
+<p><b>简单工厂模式的实际应用简介：</b><b> </b></p>
+
+
+<p>       作为一个最基本和最简单的设计模式，简单工厂模式却有很非常广泛的应用，我们这里以Java中的JDBC操作数据库为例来说明。</p>
+
+
+<p>        JDBC是SUN公司提供的一套数据库编程接口API，它利用Java语言提供简单、一致的方式来访问各种关系型数据库。Java程序通过JDBC可以执行SQL语句，对获取的数据进行处理，并将变化了的数据存回数据库，因此，JDBC是Java应用程序与各种关系数据进行对话的一种机制。用JDBC进行数据库访问时，要使用数据库厂商提供的驱动程序接口与数据库管理系统进行数据交互。</p>
+
+
+<p> </p>
+
+
+<p style="text-align:center"><img src="http://pic002.cnblogs.com/img/guoshiandroid/201006/2010062301000975.png"></p>
+
+
+<p>客户端要使用使用数据时，只需要和工厂进行交互即可，这就导致操作步骤得到极大的简化，操作步骤按照顺序依次为：注册并加载数据库驱动，一般使用Class.forName();创建与数据库的链接Connection对象；创建SQL语句对象preparedStatement(sql)；提交SQL语句，根据实际情况使用executeQuery()或者executeUpdate()；显示相应的结果；关闭数据库。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><b>温馨提示：</b><b></b></p>
+
+
+<p>       严格意义上讲，简单工厂模式并不算是一种设计模式，简单工厂模式更像是一种编程习惯，而这被广泛的应用。但是因为简单工厂模式在“高内聚”方面的欠缺，同时更致命的是违背了严格意义上的“开放封闭原则”，或者说只对“开放封闭原则”提供某种程度上的支持，这就使得每次新增加一个产品的时候是非常麻烦的，因为每当增加一种新的产品的时候，工厂角色必须知道这个产品，同时必须知道如何创建这个产品，还要以一种对客户端有好的方式提供给客户端使用。简而言之，就是每增加一个新的产品就必须修改工厂角色的源代码。所以简单工厂模式是不利于构建容易发生变化的系统的。而“需求总是在变化”，“世界上没有一个软件是不变的”。所以使用简单工厂模式的时候必须慎重考虑。</p>
+
+
+<p> </p>
+
+
+<p><span style="color:#ff0000">注意：该文档参考和使用了网络上的免费开放的图片和内容，并以免费开放的方式发布,希望为移动互联网和智能手机时代贡献绵薄之力！可以随意转载，但不得使用该文档谋<span style="color:#ff0000">利</span></span><span style="color:#ff0000">。</span></p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/guoshiandroid/aggbug/1763062.html?type=1" width="1" height="1" alt=""><p>评论: 3　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/23/1763062.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/guoshiandroid/archive/2010/06/23/1763062.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66843/">Linux版Chrome实现Silverlight</a><span style="color:gray">(2010-06-23 18:17)</span><br>· <a href="http://news.cnblogs.com/n/66842/">谷歌趋势显示Twitter国际扩张迅猛</a><span style="color:gray">(2010-06-23 18:00)</span><br>· <a href="http://news.cnblogs.com/n/66841/">赛迪传媒6月23日起停牌</a><span style="color:gray">(2010-06-23 17:51)</span><br>· <a href="http://news.cnblogs.com/n/66840/">网站开发者应该安装的几个 Chrome 扩展</a><span style="color:gray">(2010-06-23 17:34)</span><br>· <a href="http://news.cnblogs.com/n/66838/">大摩称第三方支付管理对腾讯阿里巴巴影响有限</a><span style="color:gray">(2010-06-23 16:48)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/66804/">苹果编程语言和 API 的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

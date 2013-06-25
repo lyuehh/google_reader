@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>最近几个关于js的笔记</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>最近几个关于js的笔记</h2>
+<p class="meta">14 Oct 2010</p>
+
+<div class="post">
+<h2>最近几个关于js的笔记</h2>
+
+<h3>by joe</h3>
+
+<h3>at 2010-10-14 15:17:11</h3>
+
+<h3>original <a href="http://xiebiji.com/2010/10/note_js/">http://xiebiji.com/2010/10/note_js/</a></h3>
+
+<p>第一，重温一下数据的json传输手法，最简单的php json转js对象方法：</p>
+
+
+
+
+<div><div><pre style="font-family:monospace"><span style="color:#006600;font-style:italic">//php的array(&#39;a&#39;=&gt;1,b=&gt;&#39;2&#39;)转换输出&quot;{a：1，b:2}&quot;的json字符，以下方法转为js对象</span>
+<span style="color:#000066;font-weight:bold">eval</span><span style="color:#009900">(</span><span style="color:#3366cc">'var result = '</span><span style="color:#339933">+</span>returnData<span style="color:#339933">+</span><span style="color:#3366cc">';'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><span style="color:#006600;font-style:italic">//等同于:var result={a：1，b:2}</span>
+<span style="color:#006600;font-style:italic">//然后可以通过以下方法遍历js对象</span>
+<span style="color:#000066;font-weight:bold">for</span><span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> v <span style="color:#000066;font-weight:bold">in</span> result<span style="color:#009900">)</span><span style="color:#009900">{</span>
+   <span style="color:#009966;font-style:italic">/*这是递归alert出属性值*/</span>   
+   <span style="color:#000066">alert</span><span style="color:#009900">(</span>result<span style="color:#009900">[</span>v<span style="color:#009900">]</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span></pre></div></div>
+
+
+
+
+<p>第二，研究了一下swfupload（<a href="http://www.swfupload.org/project/swfupload">官方下载</a>）这个swf+js的上传组件：</p>
+
+
+<p>先明确一下原理：</p>
+
+
+<p>实际上整个原理很简单，单一过程：选择一个文件，然后上传，然后通过响应handle.js里面定义的事件来后续操作。对于多个文件的上传实际上就是重复这个单一过程，handle.js里面定义的每个响应事件都是针对一个文件的上传过程。</p>
+
+
+<p>再说一下跟php的交互：</p>
+
+
+<p>   a.<strong>js端操作</strong>，在SWFUload对象初始化时，可以指定给后台php传递的参数，留意注释部分</p>
+
+
+
+
+<div><div><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> settings <span style="color:#339933">=</span> <span style="color:#009900">{</span>
+    flash_url <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;swfupload/swfupload.swf&quot;</span><span style="color:#339933">,</span>
+    flash9_url <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;swfupload/swfupload_fp9.swf&quot;</span><span style="color:#339933">,</span>
+    upload_url<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;&lt;?=url(&#39;Front&#39;,&#39;Upload&#39;)?&gt;&quot;</span><span style="color:#339933">,</span>
+    file_post_name <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;postFile&quot;</span><span style="color:#339933">,</span><span style="color:#006600;font-style:italic">//把上传的文件对象传递给php，在php中将以$_FILES['postFile']接收这个对象</span>
+    post_params<span style="color:#339933">:</span> <span style="color:#009900">{</span><span style="color:#3366cc">&quot;PHPSESSID&quot;</span> <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;&lt;?php echo session_id(); ?&gt;&quot;</span><span style="color:#009900">}</span><span style="color:#339933">,</span><span style="color:#006600;font-style:italic">//可额外给php传递参数，这里用的是post的方式，因此php端可以用$_POST['PHPSESSID']来接收</span>
+    file_size_limit <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;100 MB&quot;</span><span style="color:#339933">,</span>
+    file_types <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;*.jpg;*.png;*.gif&quot;</span><span style="color:#339933">,</span>
+    file_types_description <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;All Files&quot;</span><span style="color:#339933">,</span>
+    file_upload_limit <span style="color:#339933">:</span> <span style="color:#cc0000">100</span><span style="color:#339933">,</span>
+    file_queue_limit <span style="color:#339933">:</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span>
+    custom_settings <span style="color:#339933">:</span> <span style="color:#009900">{</span>
+        progressTarget <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;fsUploadProgress&quot;</span><span style="color:#339933">,</span>
+        cancelButtonId <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;btnCancel&quot;</span><span style="color:#339933">,</span>
+        uploadButtonId <span style="color:#339933">:</span> <span style="color:#3366cc">&quot;btnUpload&quot;</span><span style="color:#339933">,</span>
+    <span style="color:#009900">}</span><span style="color:#339933">,</span>
+    debug<span style="color:#339933">:</span> <span style="color:#003366;font-weight:bold">true</span><span style="color:#339933">,</span>
+    auto_upload<span style="color:#339933">:</span><span style="color:#003366;font-weight:bold">false</span><span style="color:#339933">,</span>
+ 
+    <span style="color:#006600;font-style:italic">// Button settings</span>
+    button_image_url<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;img/bg_btn_upload.png&quot;</span><span style="color:#339933">,</span>
+    button_width<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;93&quot;</span><span style="color:#339933">,</span>
+    button_height<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;35&quot;</span><span style="color:#339933">,</span>
+    button_placeholder_id<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;spanButtonPlaceHolder&quot;</span><span style="color:#339933">,</span>
+    button_text<span style="color:#339933">:</span> <span style="color:#3366cc">''</span><span style="color:#339933">,</span>
+    button_text_style<span style="color:#339933">:</span> <span style="color:#3366cc">&quot;&quot;</span><span style="color:#339933">,</span>
+ 
+    <span style="color:#006600;font-style:italic">// The event handler functions are defined in handlers.js</span>
+    swfupload_preload_handler <span style="color:#339933">:</span> preLoad<span style="color:#339933">,</span>
+    swfupload_load_failed_handler <span style="color:#339933">:</span> loadFailed<span style="color:#339933">,</span>
+    file_queued_handler <span style="color:#339933">:</span> fileQueued<span style="color:#339933">,</span>
+    file_queue_error_handler <span style="color:#339933">:</span> fileQueueError<span style="color:#339933">,</span>
+    file_dialog_complete_handler <span style="color:#339933">:</span> fileDialogComplete<span style="color:#339933">,</span>
+    upload_start_handler <span style="color:#339933">:</span> uploadStart<span style="color:#339933">,</span>
+    upload_progress_handler <span style="color:#339933">:</span> uploadProgress<span style="color:#339933">,</span>
+    upload_error_handler <span style="color:#339933">:</span> uploadError<span style="color:#339933">,</span>
+    upload_success_handler <span style="color:#339933">:</span> uploadSuccess<span style="color:#339933">,</span>
+    upload_complete_handler <span style="color:#339933">:</span> uploadComplete<span style="color:#339933">,</span>
+    queue_complete_handler <span style="color:#339933">:</span> queueComplete   <span style="color:#006600;font-style:italic">// Queue plugin event</span>
+<span style="color:#009900">}</span><span style="color:#339933">;</span>
+ 
+swfu <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> SWFUpload<span style="color:#009900">(</span>settings<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></div></div>
+
+
+
+
+<p>   b.<strong>php端操作</strong>，代码：</p>
+
+
+
+
+<div><div><pre style="font-family:monospace"><span style="color:#000088">$file</span><span style="color:#339933">=</span><span style="color:#000088">$_FILE</span><span style="color:#009900">[</span><span style="color:#0000ff">'postFile'</span><span style="color:#009900">]</span><span style="color:#339933">;</span>
+<span style="color:#000088">$return</span><span style="color:#339933">=</span><span style="color:#990000">array</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><span style="color:#666666;font-style:italic">//定义数组</span>
+<span style="color:#339933">....</span><span style="color:#666666;font-style:italic">//文件移动操作、$return赋值</span>
+<span style="color:#b1b100">echo</span> <span style="color:#990000">json_encode</span><span style="color:#009900">(</span><span style="color:#000088">$return</span><span style="color:#009900">)</span><span style="color:#339933">;</span><span style="color:#666666;font-style:italic">//转为json对象，输出到页面，这样swf可以读取它</span></pre></div></div>
+
+
+
+
+<div>与本文相关的日志</div>
+
+
+<ul><li>2008-10-31 -- <a href="http://xiebiji.com/2008/10/ajax/" title="AJAX[PHP,JS,JSON]的一个应用例子">AJAX[PHP,JS,JSON]的一个应用例子</a></li><li>2008-10-31 -- <a href="http://xiebiji.com/2008/10/json/" title="JSON 在JS和PHP中的应用">JSON 在JS和PHP中的应用</a></li><li>2008-10-29 -- <a href="http://xiebiji.com/2008/10/ad/" title="这几天做的一个简单广告管理系统">这几天做的一个简单广告管理系统</a></li><li>2010-11-26 -- <a href="http://xiebiji.com/2010/11/%e5%a4%8d%e4%b9%a0xmlhttprequest%ef%bc%8c%e5%87%a0%e4%b8%aa%e5%b0%8f%e7%ac%94%e8%ae%b0/" title="复习XMLHttpRequest，记个小笔记">复习XMLHttpRequest，记个小笔记</a></li><li>2010-10-19 -- <a href="http://xiebiji.com/2010/10/%e7%ae%80%e5%8d%95%e7%9a%84js%e8%b0%83%e8%af%95%e5%87%bd%e6%95%b0/" title="简单的js调试函数">简单的js调试函数</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

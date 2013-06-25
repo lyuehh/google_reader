@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>重温一下 毕业后写的第一个算法 LZW</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>重温一下 毕业后写的第一个算法 LZW</h2>
+<p class="meta">15 Feb 2011</p>
+
+<div class="post">
+<h2>重温一下 毕业后写的第一个算法 LZW</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-02-15 14:51:43</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/906868">http://www.javaeye.com/topic/906868</a></h3>
+
+<p>LZW压缩算法的基本原理：提取原始文本文件数据中的不同字符，基于这些字符创建一个编译表，然后用编译表中的字符的索引来替代原始文本文件数据中的相应字符，减少原始数据大小
+<br>第一次实现的时候是用C# 和js用于数据压缩 ，当时刚毕业，是根据伪码写的，当时挺痛苦的，后来想想还是挺有意思的：）
+<br>
+<br><pre name="code"></p>
+
+<h1>encoding = utf-8</h1>
+
+<p>import string</p>
+
+<p>def lzw_compress(s="ababcbababaaaaaaa"):
+    """
+    进行lzw 压缩
+    """
+    dic = {}
+    for i in string.ascii_letters:
+        dic[i]=i</p>
+
+<pre><code>result = ''
+key = s[0]
+#进行向后编码的起始值
+dic_index = 129
+for i in range(1,len(s)):
+    v = s[i]
+    key += v
+    if dic.has_key(key):
+        continue
+    else:
+        print key,
+        dic[key] = unichr(dic_index)
+        dic_index+=1
+        result += dic.get(key[0:-1])
+        #print key[0:-1],result.encode("utf-8")
+        key = v
+return result
+</code></pre>
+
+<p>r = lzw_compress()
+print "result is:" ,r.encode("utf-8")
+</pre>
+<br><pre name="code">ab ba abc cb bab baba aa aaa aaaa result is: ab <em>c</em>‚…*a**‡ˆ</pre>
+<br>
+<br>感兴趣的同学，可以写个解压的算法，有点像破译密码，挺有意思的。注意基于编码表</p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://edisonlz.javaeye.com"&gt;edisonlz&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/906868" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

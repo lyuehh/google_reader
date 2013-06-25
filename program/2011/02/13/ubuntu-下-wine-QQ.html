@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ubuntu 下 wine QQ</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ubuntu 下 wine QQ</h2>
+<p class="meta">13 Feb 2011</p>
+
+<div class="post">
+<h2>ubuntu 下 wine QQ</h2>
+
+<h3>by Amb@HDU</h3>
+
+<h3>at 2011-02-13 14:39:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ambition/archive/2011/02/13/wineqq.html">http://www.cnblogs.com/ambition/archive/2011/02/13/wineqq.html</a></h3>
+
+<p><p>研究一个晚上终于成功的wine了一个用起来稳定，功能完整的qq，分享下安装经验</p>
+<p>显备注，可更换皮肤，聊天，文件传送基本功能均正常，可以单向视频</p>
+<p>参考地址：
+
+<a href="http://forum.ubuntu.org.cn/viewtopic.php?f=121&amp;t=298968">http://forum.ubuntu.org.cn/viewtopic.php?f=121&amp;t=298968</a></p>
+<p>整理下安装过程 ：</p>
+<p>1.安装wine</p>
+<div>
+<pre><div><span style="color:#000000">sudo add</span><span style="color:#000000">-</span><span style="color:#000000">apt</span><span style="color:#000000">-</span><span style="color:#000000">repository ppa:ubuntu</span><span style="color:#000000">-</span><span style="color:#000000">wine</span><span style="color:#000000">/</span><span style="color:#000000">ppa<br>sudo apt</span><span style="color:#000000">-</span><span style="color:#000000">get update<br>sudo apt</span><span style="color:#000000">-</span><span style="color:#000000">get install wine1.</span><span style="color:#000000">3</span></div><div><span style="color:#000000">winecfg</span></div></pre>
+</div>
+<p>2.安装wine插件，及qq运行环境</p>
+<div>
+<pre><div><span style="color:#000000">wget http:</span><span style="color:#000000">//</span><span style="color:#000000">www.kegel.com</span><span style="color:#000000">/</span><span style="color:#000000">wine</span><span style="color:#000000">/</span><span style="color:#000000">winetricks<br>sudo chmod </span><span style="color:#000000">+</span><span style="color:#000000">x winetricks<br>sh winetricks msxml3 gdiplus riched20 riched30 ie6 vcrun6 vcrun2005sp1 vcrun6sp6 flash</span></div><div><span style="font-family:&#39;Courier New&#39;" face="&#39;Courier New&#39;">(一路YES)</span></div></pre>
+</div>
+<p>3.字体设置</p>
+<p>复制Win下的windows/fonts/simsun.ttc(宋体)，或是用别的字体(我是把ubuntu下的文泉驿细黑改名为simsun)复制到wine的虚拟目录下
+
+ (.wine/dosdevice/c:/windows/Fonts)，将下面内容导入注册表：</p>
+<div>
+<pre><div><span style="color:#000000">[HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\FontSubstitutes]<br></span><span style="color:#800000">"</span><span style="color:#800000">Arial</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Arial CE,238</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Arial CYR,204</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Arial Greek,161</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Arial TUR,162</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Courier New</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Courier New CE,238</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Courier New CYR,204</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Courier New Greek,161</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Courier New TUR,162</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">FixedSys</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Helv</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Helvetica</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">MS Sans Serif</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">MS Shell Dlg</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">MS Shell Dlg 2</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">System</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Tahoma</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Times</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Times New Roman CE,238</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Times New Roman CYR,204</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Times New Roman Greek,161</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Times New Roman TUR,162</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span><span style="color:#000000"><br></span><span style="color:#800000">"</span><span style="color:#800000">Tms Rmn</span><span style="color:#800000">"</span><span style="color:#000000">=</span><span style="color:#800000">"</span><span style="color:#800000">simsun</span><span style="color:#800000">"</span></div></pre>
+</div>
+<p><a href="http://files.cnblogs.com/ambition/Fonts.reg.7z">Fonts.reg 下载</a>， 将文件放到一个容易找到的地方，打开regedit</p>
+<p>
+
+</p>
+<div>
+<pre><div><span style="color:#000000">wine .wine</span><span style="color:#000000">/</span><span style="color:#000000">dosdevice</span><span style="color:#000000">/</span><span style="color:#000000">c:</span><span style="color:#000000">/</span><span style="color:#000000">windows</span><span style="color:#000000">/</span><span style="color:#000000">regedit.exe</span></div></pre>
+</div>
+<p>将reg文件导入到注册表</p>
+<p>4. qq安装</p>
+<p>可以在网上搜索下载单文件版的qq 2009， 直接打开即可，下面主要介绍TM2009 Beta 1.0 wine方法：</p>
+<p>TMqq的版本必须时 2009Beta1.0 版的，其他版本均会出错，所以版本自动更新是wine TM时的主要问题</p>
+<p>阻止更新的方法参考自：
+
+<a href="http://forum.ubuntu.org.cn/viewtopic.php?f=73&amp;t=308436">http://forum.ubuntu.org.cn/viewtopic.php?f=73&amp;t=308436</a></p>
+<p>下载地址：<a href="http://dl_dir.qq.com/qqfile/tm/TM2009Beta_chs.exe">http://dl_dir.qq.com/qqfile/tm/TM2009Beta_chs.exe</a></p>
+<p>安装，个人信息保存在 我的文档 下面，安装后千万不要运行TM，将TM2009的目录(/home/amb/.wine/dosdevices/c:/Program Files/Tencent/TM2009)打包为TM2009.tar.gz</p>
+<p>创建空文件TM，并将下面的信息复制到文件里，注意改用户名</p>
+<div>
+<pre><div><span style="color:#008000">#</span><span style="color:#008000">/bin/bash</span><span style="color:#008000"><br></span><span style="color:#000000">cd ~</span><span style="color:#000000">/</span><span style="color:#000000">.wine</span><span style="color:#000000">/</span><span style="color:#000000">drive_c</span><span style="color:#000000">/</span><span style="color:#000000">users</span><span style="color:#000000">/</span><span style="color:#000000">你的用户名</span><span style="color:#000000">/</span><span style="color:#000000">Application\ Data</span><span style="color:#000000">/</span><span style="color:#000000">Tencent<br>rm </span><span style="color:#000000">-</span><span style="color:#000000">rf TM<br>cd ~</span><span style="color:#000000">/</span><span style="color:#000000">.wine</span><span style="color:#000000">/</span><span style="color:#000000">drive_c</span><span style="color:#000000">/</span><span style="color:#000000">Program\ Files</span><span style="color:#000000">/</span><span style="color:#000000">Tencent<br>rm </span><span style="color:#000000">-</span><span style="color:#000000">rf TM2009<br>tar </span><span style="color:#000000">-</span><span style="color:#000000">zxvf TM2009.tar.gz<br>wine </span><span style="color:#800000">"</span><span style="color:#800000">C:\\Program Files\\Tencent\\TM2009\\Bin\\TM.exe</span><span style="color:#800000">"</span></div></pre>
+</div>
+
+建好后加上可执行权限<br><br>然后把TM　拷贝至/usr/bin下(这一步是为了运行方便，也可放在其他位置，下面会提到):
+<div>
+<div>
+<pre><div><span style="color:#000000">sudo cp TM </span><span style="color:#000000">/</span><span style="color:#000000">usr</span><span style="color:#000000">/</span><span style="color:#000000">bin</span></div></pre>
+</div>
+</div>
+<p>在桌面建立启动器，命令为 TM ，如果没有放在usr/bin中则为TM文件的绝对路径</p>
+<p>这样就全部搞定了，运行TM</p>
+
+<p><img src="http://pic002.cnblogs.com/images/2011/174018/2011021314310515.png"></p><img src="http://www.cnblogs.com/aggbug/1953145.html?type=0" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/rss">Amb@HDU</a> 发表于 2011-02-13 14:39 <a href="http://www.cnblogs.com/ambition/archive/2011/02/13/wineqq.html">原文链接</a></p><p>评论: 2　<a href="http://www.cnblogs.com/ambition/archive/2011/02/13/wineqq.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ambition/archive/2011/02/13/wineqq.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/90867/">AT&amp;T今日起5折销售iPad配件</a><span style="color:gray">(2011-02-13 20:54)</span><br>· <a href="http://news.cnblogs.com/n/90866/">五款优秀的Linux机器人软件</a><span style="color:gray">(2011-02-13 20:45)</span><br>· <a href="http://news.cnblogs.com/n/90865/">上海张江今年建无线城市示范区</a><span style="color:gray">(2011-02-13 20:18)</span><br>· <a href="http://news.cnblogs.com/n/90864/">英国互联网广告自3月1日起将面临严格管制</a><span style="color:gray">(2011-02-13 20:04)</span><br>· <a href="http://news.cnblogs.com/n/90863/">数据显示WP7应用程序数量增速为苹果30倍</a><span style="color:gray">(2011-02-13 20:04)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/90763/">分析称诺基亚微软联盟给程序员带来巨大机遇</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

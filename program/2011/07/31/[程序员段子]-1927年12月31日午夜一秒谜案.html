@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[程序员段子] 1927年12月31日午夜一秒谜案</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[程序员段子] 1927年12月31日午夜一秒谜案</h2>
+<p class="meta">31 Jul 2011</p>
+
+<div class="post">
+<h2>[程序员段子] 1927年12月31日午夜一秒谜案</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-07-31 00:07:20</h3>
+
+<h3>original <a href="http://jandan.net/2011/07/30/1927-java-time.html">http://jandan.net/2011/07/30/1927-java-time.html</a></h3>
+
+<p>来自: <a href="http://www.feedzshare.com/b/137/2">煎蛋 - FeedzShare</a>  
+<br>发布时间:2011年07月30日,  已有 10 人推荐 </p>
+
+
+<hr><div><p><a href="http://stackoverflow.com/questions/6841333/why-is-subtracting-these-two-times-in-1927-giving-a-strange-result">via StackOverflow</a></p>
+
+
+<p>虽说是程序员向，不过内容和编程本身其实并没什么太大关系，请各位听我细细道来。</p>
+
+
+<p>StackOverflow是一个程序员向的问答网站，广大程序员们在上面交流经验、提问答疑，三天前，一位名叫Freewind的用户发布了<a href="http://stackoverflow.com/questions/6841333/why-is-subtracting-these-two-times-in-1927-giving-a-strange-result">下面这个问题</a>：<br>
+<img src="http://pic.yupoo.com/jdvip/BfTotBeK/medium.png" alt="[程序员段子] 1927年12月31日午夜一秒谜案" title=""></p>
+
+
+<blockquote><p>我在用Java编写一段比较两个字符串时间间隔的程序，然而当我比较“1927-12-31 23:54:07”和“1927-12-31 23:54:08”这两个时间时，输出结果却不是1……而是353。</p>
+<p>当我把两个时间分别往后调整1秒，变成“1927-12-31 23:54:08”和“1927-12-31 23:54:09”，结果就又是1了！——可为什么那两个时间的结果，却是353呢？</p></blockquote>
+
+
+<p>面对这一诡异的问题，网友们很快追问，“你的区域（Locale）设置是什么？这可能是个区域问题/和当地夏令时之类的东西有关。”</p>
+
+
+<p>楼主很快附上了Java版本号和区域设置：</p>
+
+
+<blockquote><p>sun.util.calendar.ZoneInfo[id="Asia/Shanghai",<br>
+offset=28800000,dstSavings=0,<br>
+useDaylight=false,<br>
+transitions=19,<br>
+lastRule=null]</p></blockquote>
+
+
+<p>（……没错，Freewind君，似乎是一位魔都死程。不知道这里有没有人认识这位老兄？）</p>
+
+
+<p>在这份追加信息出现仅仅两分钟之后，StackOverflow站上的问答狂人Jon Skeet<a href="http://stackoverflow.com/questions/6841333/why-is-subtracting-these-two-times-in-1927-giving-a-strange-result/6841479#6841479">给出了如下答复</a>——<br>
+</p>
+
+
+<blockquote><p>这是因为上海的时区在12月31日发生了变化。</p>
+<p>请看<a href="http://www.timeanddate.com/worldclock/clockchange.html?n=237&amp;year=1927">这里</a>。（网页截图如下）<br>
+<img src="http://pic.yupoo.com/jdvip/BfTouAgU/medium.jpg" alt="[程序员段子] 1927年12月31日午夜一秒谜案" title=""><br>
+<em>（1928年1月1日0点0分，当地时间由<a href="http://baike.baidu.com/view/2553310.htm">地方平时（Local Mean Time）</a>改为北京时间/中国标准时间）</em></p>
+<p>简单地说，在1927年末的最后那一个午夜，时钟被往回拨了5分52秒。所以“1927-12-31 23:54:08”这一秒，事实上，发生了两次，而看起来在计算当地时间时，Java将其视为了后面那一个时间点，于是就产生了这一差别。</p>
+<p>这正是时区世界的奇妙与不可思议啊。
+</p></blockquote>
+
+
+<p>在StackFlow网民们纷纷膜拜Jon Skeet的神速之时，其他程序员也以测试的方式验证了这一结果的正确——美国时间木有这个问题。看来，当一枚程序员，有时真的需要上通天文、下知地理啊……</p>
+
+
+
+
+<table cellspacing="0" cellpadding="3" border="0">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" color="#111111"> </font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="86" valign="top">
+                    <a title="一日一猫，大爱：猫咪与袋子[17p]" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2Fcat-bag.html&amp;from=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2F1927-java-time.html">
+                        <img src="http://static.wumii.com/site_images/2011/07/30/19976889.jpg" width="80px" height="80px" title="" alt="[程序员段子] 1927年12月31日午夜一秒谜案"><br>
+                        <font size="-1" color="#333333">一日一猫，大爱：猫咪与袋子[17p]</font>
+                    </a>
+                </td>
+                <td width="86" valign="top">
+                    <a title="一日一猫：蛋定猫vs蛋定海鸥" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fjandan.net%2F2011%2F07%2F10%2F%25E4%25B8%2580%25E6%2597%25A5%25E4%25B8%2580%25E7%258C%25AB%25EF%25BC%259A%25E8%259B%258B%25E5%25AE%259A%25E7%258C%25ABvs%25E8%259B%258B%25E5%25AE%259A%25E6%25B5%25B7%25E9%25B8%25A5.html&amp;from=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2F1927-java-time.html">
+                        <img src="http://static.wumii.com/site_images/2011/07/10/16849098.jpg" width="80px" height="80px" title="" alt="[程序员段子] 1927年12月31日午夜一秒谜案"><br>
+                        <font size="-1" color="#333333">一日一猫：蛋定猫vs蛋定海鸥</font>
+                    </a>
+                </td>
+                <td width="86" valign="top">
+                    <a title="猫猫在打洞[20秒]" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fjandan.net%2F2009%2F06%2F05%2Fhiding-in-the-couch.html&amp;from=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2F1927-java-time.html">
+                        <img src="http://static.wumii.com/site_images/2010/12/04/1162044.png" width="80px" height="80px" title="" alt="[程序员段子] 1927年12月31日午夜一秒谜案"><br>
+                        <font size="-1" color="#333333">猫猫在打洞[20秒]</font>
+                    </a>
+                </td>
+                <td width="86" valign="top">
+                    <a title="短片：功夫小猫打假人[17秒]" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fjandan.net%2F2009%2F01%2F20%2Fcat-fight-cat-photo.html&amp;from=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2F1927-java-time.html">
+                        <img src="http://static.wumii.com/site_images/2010/12/01/1133374.png" width="80px" height="80px" title="" alt="[程序员段子] 1927年12月31日午夜一秒谜案"><br>
+                        <font size="-1" color="#333333">短片：功夫小猫打假人[17秒]</font>
+                    </a>
+                </td>
+                <td width="86" valign="top">
+                    <a title="一日一猫：大肥" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fjandan.net%2F2011%2F06%2F19%2Fdafei-cat.html&amp;from=http%3A%2F%2Fjandan.net%2F2011%2F07%2F30%2F1927-java-time.html">
+                        <img src="http://static.wumii.com/site_images/2011/06/20/13302684.jpg" width="80px" height="80px" title="" alt="[程序员段子] 1927年12月31日午夜一秒谜案"><br>
+                        <font size="-1" color="#333333">一日一猫：大肥</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+
+
+<div></div>
+
+
+<p>© <a href="http://jandan.net/">煎蛋</a> / <a href="http://jandan.net/?random" title="随机浏览">随便看看</a> / 图片托管于<a href="http://v.yupoo.com/p/jdvip/?utm_source=jandan&amp;utm_medium=jandanlianjie&amp;utm_campaign=jandanrss"><font color="#6b9f1f">又拍网</font></a></p>
+
+
+<p></div><img src="http://img.tongji.linezing.com/1017243/tongji.gif"><img src="http://img.tongji.linezing.com/855372/tongji.gif"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>利用Arduino和Raspberry Pi 学习电子编程</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>利用Arduino和Raspberry Pi 学习电子编程</h2>
+<p class="meta">16 Jul 2012</p>
+
+<div class="post">
+<h2>利用Arduino和Raspberry Pi 学习电子编程</h2>
+
+<h3>by shumeipainet@163.com (designspark)</h3>
+
+<h3>at 2012-07-16 09:40:19</h3>
+
+<h3>original <a href="http://www.shumeipai.net/read.php?tid-489.html">http://www.shumeipai.net/read.php?tid-489.html</a></h3>
+
+<p><br><br>Arduino是一个受欢迎的开放源硬体平台，通常会应用于机械人制作或家居自动化等项目，Arduino使用的是微控制器，而Raspberry Pi使用的是应用处理器，所以它们的应用范围并不会有太大的冲突，Raspberry Pi甚至能够成为Arduino的开发平台，让我为大家分析现时开发者们对这两个开发平台的看法。<br> <br><b>Arduino和Raspberry Pi之间的通讯</b><br><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/boards_sm.jpg" border="0" style="max-width:575px"> <br><a href="http://www.doctormonk.com/2012/04/raspberry-pi-and-arduino.html">Simon Monk的博客</a>中提到了如何使用Python实现两者之间的通讯，Arduino会传送&#39;Hello Pi&#39;的讯号，而Raspberry Pi1便会传送数字讯号给Arduino，Arduino便会根据该讯号闪耀LED特定的次数。<br>Arduino方面，作者推荐使用Arduino Uno型号，软件版本为1.0，较旧的版本会由于FTDI(把USB信号转换成RS-232或TTL串列传输的技术)的讯号产生而引起USB通讯问题，把文章中Arduino的程序烧录到Arduino就可以了。<br>Raspberry Pi方面，我们要使用特定的Python库 - <a href="http://pyserial.sourceforge.net/">pySerial</a> ，这个库包含了Arduino的指令，有关指令可以参考<a href="http://arduino.cc/playground/Interfacing/Python">这个网站</a>。以下的步骤要在Raspberry Pi上执行。<br>步驟1: 在<a href="http://sourceforge.net/projects/pyserial/files/">这个网站</a>下载<a href="http://sourceforge.net/projects/pyserial/files/latest/download?source=files">pyserial-2.5.tar.gz</a> ，然后储存到Raspberry Pi 桌面中的&#39;other&#39;文件夹。<br>步骤2: 由于我们下载的是gziped tar文件，我们需要解压(unzip)和解取(untar)该文件，请于终端器(Terminal)中输入以下指令:<br><i>cd /home/pi/Desktop/other</i><br><i>gunzip pyserial-2.5.tar.gz</i><br><i>tar - xvf pyserial-2.5.tar</i><br><i></i>步骤3: 安装pySerial，请于终端器(Terminal)中输入以下指令:<br><i>cd pyserial-2.5</i><br><i>sudo python setup.py install</i><br><i></i>步骤4: 执行Python 2，在菜单中的&#39;Programming&#39;可以找到。<br> <br>执行以上步骤后，我们便可以利用Python库存取串行口，以下的图片是有关的Python执行代码，是Arduino与Raspberry Pi通讯的主要程序。<br><a href="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/python_crop.png"><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/python_crop.png" border="0" style="max-width:575px"></a><br><i>import serial</i><br><i>ser = serial.Serial(&#39;/dev/ttyACM0&#39;, 9600)</i><br>我们的代码要在这两行代码后，第二行代码的&#39;9600&#39;代表串行通讯的波特率(Baud Rate)，而&#39;/dev/ttyACM0&#39; 代表Arduino通讯的USB介面。要知道USB接口的名称，可以在不连接Arduino的情况下于终端器(Terminal)中输入以下指令，然后连接Arduino并且再次输入命令，若果你看到新的名称，那么这就是你所使用的接口名称:<br><i>ls /dev/tty*</i><br>以下的命令是主要用来读取Arduino传送的讯息和命令Arduino闪耀LED的次数。<br><i>ser.readline()</i><br><i>ser.write(&#39;5&#39;) </i><br> <br><b>Arduino和Raspberry Pi的桥梁 - Ponte</b><br>由于Raspberry Pi只有2个USB接口，直接以USB接口连接Arduino跟Raspberry Pi的话，在开发方面会浪费了这个USB接口，所以外国的Raspberry Pi用家正在开发名为Ponte 的电路板，除了用来连接Arduino和Raspberry Pi外，亦可以连接Arduino扩展板和Raspberry Pi，这个过程不需要用到USB接口。软件方面，他们推荐使用<a href="https://projects.drogon.net/raspberry-pi/wiringpi/">WiringPi</a>，WiringPi提供了C、Ruby和Python版本。硬件方面，他们亦提供了现时的电路图设计和电路布线图。当原型产品成熟后，他们会以开放源硬体项目发放Ponte电路板。<br><a href="http://www.designspark.com/files/ds/imagepicker/54347/ponte-schematic-revc.png"><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/ponte-schematic-revc.png" border="0" style="max-width:575px"></a><br> <br>图. Ponte 电路图设计<br><a href="http://www.designspark.com/files/ds/imagepicker/54347/ponte-layout-revc.png"><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/ponte-layout-revc.png" border="0" style="max-width:575px"></a><br>图. Ponte 电路布线图<br> <br><b>ARDX Arduino 初学者工具包</b><br>介绍了一些Arduino与Raspberry Pi的通讯方法后，我们看看现时的开发者会利用这两个开发平台作什么用途。<b><br></b><br><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/www.seeedstudio.jpg" border="0" style="max-width:575px"><br>上图是<a href="http://www.seeedstudio.com/depot/">Seed Studio</a>提供的ARDX Arduino 初学者工具包，内里提供了十三个不同的教学应用，例如LED闪耀、马达控制、 伺服电动机控制和继电器控制等。当你能够对Arduino进行基本的操作后，可以利用不同类型的扩展板作一些进阶的应用，例如LCD控制和GPS应用等。<br> <br><b>Raspberry Pi的Arduino集成开发环境</b><br><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/rpiardx01.jpg" border="0" style="max-width:575px"><br>如果大家在Raspberry Pi中安装的影像是<a href="http://www.raspbian.org/">Raspbian</a>的话，可以使用内置的Arduino集成开发环境编写和上载程序到Arduino，上图是Arduino和Raspberry Pi的连接实况。<br> <br><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/rpiardx02.jpg" border="0" style="max-width:575px"><br>而Raspberry Pi则连接到12吋的旧式Phillips电视机，除了高清显示器的支援外，Raspberry Pi亦支援旧式的显示器。就是这样的设置，我们就能够同时学习电子编程和应用程式编程了。<br> <br><img src="http://www.designspark.com/files/ds/imagepicker/54347/thumbs/rpiardx03.jpg" border="0" style="max-width:575px"><br>这样的开发环境只要加上WiFi 存取器和手提充电器，便可以在需要的时候存取WiFi网络并下载代码、更新程式，其余的时间便可以专注于Arduino和Raspberry Pi的开发，传统个人电脑的需求亦大大减少。<br> <br><b>总结</b><br><b></b>Arduino的庞大社群支援和多样化的扩展板对于Raspberry Pi的开发十分重要，希望大家能够建立两个平台的通讯后，多设计一些有关Raspberry Pi的应用程式。</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

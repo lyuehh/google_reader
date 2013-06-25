@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>按日期存储Rails日志</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>按日期存储Rails日志</h2>
+<p class="meta">19 Sep 2010</p>
+
+<div class="post">
+<h2>按日期存储Rails日志</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-09-19 15:50:31</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/767333">http://www.javaeye.com/topic/767333</a></h3>
+
+<p>最简单的方法是</p>
+
+
+<p> </p>
+
+
+<pre name="code">RAILS_DEFAULT_LOGGER = Logger.new("#{RAILS_ROOT}/log/#{RAILS_ENV}.log", "daily") </pre>
+
+
+<p> </p>
+
+
+<p>实际上Rails做了一些优化，通过ActiveSupport::BufferedLogger来提高产品环境下的性能。所以比较好的做法是在config/environment.rb加入如下代码：</p>
+
+
+<p> </p>
+
+
+<pre name="code">   config.logger = begin
+        path = config.paths.log.to_a.first
+        logger = ActiveSupport::BufferedLogger.new(path, &quot;daily&quot;)
+        logger.level = ActiveSupport::BufferedLogger.const_get(config.log_level.to_s.upcase)
+        logger.auto_flushing = false if Rails.env.production?
+        logger
+    rescue StandardError =&gt; e
+        logger = ActiveSupport::BufferedLogger.new(STDERR)
+        logger.level = ActiveSupport::BufferedLogger::WARN
+        logger.warn(
+            &quot;Rails Error: Unable to access log file. Please ensure that #{path} exists and is chmod 0666. &quot; +
+            &quot;The log level has been raised to WARN and the output directed to STDERR until the problem is fixed.&quot;
+        )
+        logger
+    end</pre>
+
+
+<p> </p>
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://swordray.javaeye.com"&gt;swordray&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/767333" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">— 软件人才免T免G 赴美带薪读研！—</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

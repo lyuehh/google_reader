@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JRockit读书笔记I — Java代码的高效执行</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JRockit读书笔记I — Java代码的高效执行</h2>
+<p class="meta">16 Dec 2010</p>
+
+<div class="post">
+<h2>JRockit读书笔记I — Java代码的高效执行</h2>
+
+<h3>by bluedavy</h3>
+
+<h3>at 2010-12-16 09:07:01</h3>
+
+<h3>original <a href="http://rdc.taobao.com/team/jm/archives/585">http://rdc.taobao.com/team/jm/archives/585</a></h3>
+
+<p>《Oracle JRockit: The Definitive Guide》一书是由Oracle JRockit的两位资深开发人员写的，其中的Marcus Hirt更是JRockit Mission Control的leader，这本书详细的对Oracle JRockit进行了介绍，最突出的特点非常系统化的介绍了一个JVM通常是如何实现的，而JRockit这样一个极为优秀的JVM又是做了哪些优化，为什么做这些优化，这本书对于对JVM感兴趣的同学而言应该是必读的一本书，其实即使对于JVM兴趣不强的同学，里面的优化思路的介绍也是值得学习，本系列的blog主要是总结看这本书得到的一些收获，由于书中知识量巨大，因此得分成多篇blog来总结了。</p>
+
+
+<p>书的第二章为：Adaptive Code Generation，在这章中作者向我们讲解了一个优秀的JVM是如何来实现代码的高效执行的，感兴趣的同学其实可以在不看下面blog内容之前，先考虑下如果是你做的话，你会怎么做来实现Java代码的高效执行呢，然后再对比下这章的内容，我想你能学到很多的，:)</p>
+
+
+<p>用过Java的同学都知道，Java是通过javac将Java源码编译为class文件，然后通过ClassLoader装载此class文件，之后就可执行此class了，要最高效的执行这个class，最好的方法莫过于class文件直接就是机器码，这样直接执行就可以了，但Java是跨平台的，因此class文件就不能是机器码了。</p>
+
+
+<p>由于class文件不是直接的机器码，要执行它最简单的方法就是采用纯粹的解释方式，解释方式由于每次都得将class文件中的指令翻译为对应的机器环境的指令，效率是很低的。</p>
+
+
+<p>为了能更高效的执行，同时又保持跨平台的特性，另外一个方法就是在执行class时再将其翻译为对应的机器码，这个方法是比较靠谱的，因此无论是 Hotspot、还是JRockit，都采用了这种方式，也就是大家熟知的JIT(Just In Time) Compiler。</p>
+
+
+<p>OK，既然觉得在装载class后翻译成机器码去执行可以比较高效，那这个时候又会出现两种状况，是执行class的时候就立刻翻译成机器码，还是先用解释模式执行，然后到一定时机再翻译成机器码呢，之所以出现这两种状况，原因在于将class翻译为机器码是需要消耗时间的，因此如果执行class 的时候就立刻翻译成机器码的话，也就会导致Java程序启动速度会比较慢，JRockit是这么认为的，JRockit的服务对象是server级应用，这类应用的特点是没那么在乎启动速度，而更在乎的是执行时的高效，而且如果执行的时候就立刻翻译成机器码的话，就意味着压根不需要实现解释器，因此 JRockit采取的方法是在执行class时直接编译为机器码，而Hotspot由于需要同时支持client和server应用，对于client应用而言，启动速度非常重要，因此Hotspot采用的是先解释执行，到了一定时机后再翻译成机器码。</p>
+
+
+<p>如果认为就这样就完成了Java代码的执行的实现，那就太小看JVM了，由于JVM能够知道代码运行的全部状况，自然还可以做出更多更出色的提升代码执行速度的优化，例如标量替换、更好的inline等，后面再来细说，因此这样就出现了一个状况，什么时候对哪些代码来做这些更猛的优化呢。</p>
+
+
+<p>真正值得做更猛的优化的代码自然是所谓的”热点”代码，如何来发现哪些代码是热点代码呢，通常有三种方法：<br>
+1、方法调用计数器<br>
+方法调用计数器是常见的方式，hotspot采用的即为这种，这种方式不好的地方就在于计数器本身经常是cpu cache misses的，因此稍微会有点影响性能。<br>
+2、对线程进行采样<br>
+可采用软件或硬件方式来实现，软件方式实现不好的地方在于采样的时候需要暂停线程，好处是因为是采样，不需要对所有方法进行计数，硬件方式自然是最好的，但不是所有的硬件都支持的，支持的硬件中最典型的是intel IA-64的CPU。</p>
+
+
+<p>在有了发现热点代码的方法后，接下来需要做的就是更猛的优化，有很多种，例如Java的代码中，通常会是接口方式的调用，但因为是接口方式的调用，所以其实默认情况下是不好做inline处理的，但JVM为了更高效的执行代码，如发现这代码为热点代码，那么就会做一些激进的优化，例如会假设这个接口只有一个实现，然后就可以直接将此实现对应的代码inline进来了（至于为什么inline后效率更高，这个请参考编译原理之类的书），这些激进优化同样适合于if、抛异常这些状况，当然，当激进优化的条件失效时，就会逆优化回到之前基本编译的代码。<br>
+而其他的更猛的优化还包括根据线程执行路径进行逃逸分析等，后面再专门写一篇blog来讲解下一些翻译为机器码的优化吧，其实大多都是编译原理的一些东西。</p>
+
+
+<p>书中在介绍JRockit如何实现自己的JIT Compiler时，提到了Bytecode混淆以及bytecode优化，JRockit的态度是bytecode混淆时将name进行混淆是靠谱的，但如果对control flow进行混淆，就不太好了，因为这有可能会导致jit compile时的有些优化也做不了了，而bytecode优化，JRockit的态度是应该避免，因为没什么太大的意义，更主要的优化还是得靠jit compiler。</p>
+
+
+<p>JRockit的JIT Compiler的实现和Hotspot另外一个很大的不同在于JRockit并未采用on-stack replacement，据JRockit的研究，这个没有太大必要，当然，对于编写benchmark代码时则要注意这个不同。</p>
+
+
+<p>JIT Compiler在compile时还需要考虑的几个重点问题：<br>
+1、为GC提供必要的信息；<br>
+2、为查错提供必要的信息，例如代码的行数、变量名等；</p>
+
+
+<p>从这章的内容可以看到，JRockit为了能够让Java代码能够高效的执行，是做出了非常多的努力的，也可以看到很多JRockit与Hotspot不同的地方，甚至可以看出Java代码的执行比C代码的执行高效都是有可能的，:)。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

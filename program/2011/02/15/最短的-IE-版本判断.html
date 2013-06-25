@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>最短的 IE 版本判断</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>最短的 IE 版本判断</h2>
+<p class="meta">15 Feb 2011</p>
+
+<div class="post">
+<h2>最短的 IE 版本判断</h2>
+
+<h3>by sofish</h3>
+
+<h3>at 2011-02-15 15:17:55</h3>
+
+<h3>original <a href="http://sofish.de/1665">http://sofish.de/1665</a></h3>
+
+<p>非常酷的一段代码。使用 conditional comment 来判断 IE 的版本。嗯，是早早有人提出，但没有认真看代码。昨天刚好在看 CSS3 PIE 的时候看到，觉得是不是不靠谱。今天看到 <a href="http://paulirish.com/">Paul Irish</a> 也提起，那么，推荐一下吧。这是<a href="http://james.padolsey.com/javascript/detect-ie-in-js-using-conditional-comments/">作者博客上</a>写的：</p>
+
+
+<pre>
+// ----------------------------------------------------------
+// A short snippet for detecting versions of IE in JavaScript
+// without resorting to user-agent sniffing
+// ----------------------------------------------------------
+// If you&#39;re not in IE (or IE version is less than 5) then:
+//     ie === undefined
+// If you&#39;re in IE (&gt;=5) then you can determine which version:
+//     ie === 7; // IE7
+// Thus, to detect IE:
+//     if (ie) {}
+// And to detect the version:
+//     ie === 6 // IE6
+//     ie &gt; 7 // IE8, IE9 ...
+//     ie &lt; 9 // Anything less than IE9
+// ----------------------------------------------------------
+
+// UPDATE: Now using Live NodeList idea from @jdalton
+
+var ie = (function(){
+
+    var undef,
+        v = 3,
+        div = document.createElement(&#39;div&#39;),
+        all = div.getElementsByTagName(&#39;i&#39;);
+
+    while (
+        div.innerHTML = &#39;&lt;!--[if gt IE &#39; + (++v) + &#39;]&gt;&lt;i&gt;&lt;/i&gt;&lt;![endif]--&gt;&#39;,
+        all[0]
+    );
+
+    return v &gt; 4 ? v : undef;
+
+}());</pre>
+
+
+<p>注意一下这个 while 语句。是我觉得最有趣的。对于逗号操作符。我也不熟悉，还只是停留在像变量定义的用法上。比如：</p>
+
+
+<pre>
+var 2 a= 'b', c = 'd', e = 'f'；
+
+var obj = {
+    a: 'b',
+    c: 'd',
+    e: 'f'
+}
+</pre>
+
+
+<p>问了工友 @kangpangpang，再查了一下书。其实这个比较少见。通常是返回最后一个值。</p>
+
+
+<pre>
+var a = (1,2,3,5,6,0,9,4); // a === 4
+</pre>
+
+
+<p>嗯，大概就是这样。挺有趣的。</p>
+
+
+<div style="color:#888;margin-top:30px"><p><hr>© 2011 <a href="http://sofish.de" title="幸福收藏夹">幸福收藏夹</a>。 版权所有，转载务必注明。域名已经更新为：<a href="http://sofish.de" title="幸福收藏夹">sofish.de</a>。<br><strong>注意：</strong>当你觉得某篇文章有用，请直接看原文，因为通常我都会在写了文章后更新、去错别字、升级观点之类的。</p></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/510209851/sofish/feedsky/s.gif?r=http://sofish.de/1665" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

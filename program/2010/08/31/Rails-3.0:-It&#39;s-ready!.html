@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Rails 3.0: It&#39;s ready!</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Rails 3.0: It&#39;s ready!</h2>
+<p class="meta">31 Aug 2010</p>
+
+<div class="post">
+<h2>Rails 3.0: It&#39;s ready!</h2>
+
+<h3>by David</h3>
+
+<h3>at 2010-08-31 02:13:51</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/RidingRails/~3/INzzvMYtnJ4/rails-3-0-it-s-done">http://feedproxy.google.com/~r/RidingRails/~3/INzzvMYtnJ4/rails-3-0-it-s-done</a></h3>
+
+<p>Rails 3.0 has been underway for a good two years, so it’s with immense pleasure that we can declare it’s finally here. We’ve brought the work of more than 1,600 contributors together to make everything better, faster, cleaner, and more beautiful.</p>
+
+
+<pre><code>&lt;p&gt;This third generation of Rails has seen thousands of commits, so picking what to highlight was always going to be tough and incomplete. But here’s a choice selection of major changes for Rails 3:&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;New Active Record query engine&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>Active Record has adopted <a href="http://github.com/brynary/arel">the ARel query engine</a> to make scopes and queries more consistent and composable. This makes it much easier to build complex queries over several iterations. We also delay the actual execution of the query until it’s needed. Here’s a simple example:</p></p>
+
+<p><code><pre>users = User.where(:name =&gt; &quot;david&quot;).limit(20)
+users = users.where(&quot;age &gt; 29&quot;)</p>
+
+<h1>SELECT * FROM users</h1>
+
+<h1>WHERE name = &quot;david&quot; AND age &gt; 29</h1>
+
+<h1>ORDER BY name</h1>
+
+<h1>LIMIT 20</h1>
+
+<p>users.order(:name).each { |user| puts user.name }</pre></code></p>
+
+<pre><code>&lt;p&gt;Read more in &lt;a href="http://guides.rubyonrails.org/active_record_querying.html"&gt;new Active Record guide&lt;/a&gt; and watch the &lt;a href="http://rubyonrails.org/screencasts/rails3/active-relation-active-model"&gt;Dive into Rails 3: ARel video&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;New router for Action Controller&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>When we switched to a <span>REST</span>-based approach for controllers in Rails 2, we patched on the syntax to the existing router while we were waiting to see if the experiment panned out.</p></p>
+
+<pre><code>&lt;p&gt;It did and for Rails 3 we’ve gone back and revamped the syntax completely to favor the &lt;span&gt;REST&lt;/span&gt; style with less noise and more flexibility:&lt;/p&gt;
+</code></pre>
+
+<p><code><pre>resources :people do
+  resource :avatar</p>
+
+<p>  collection do
+    get :winners, :losers
+  end
+end</p>
+
+<h1>/sd34fgh/rooms</h1>
+
+<p>scope &#39;:token&#39;, :token =&gt; /\w{5,5}/ do
+  resources :rooms
+end</p>
+
+<h1>/descriptions</h1>
+
+<h1>/pl/descriptions</h1>
+
+<h1>/en/descriptions</h1>
+
+<p>scope &#39;(:locale)&#39;, :locale =&gt; /en|pl/ do
+  resources :descriptions
+  root :to =&gt; &#39;projects#index&#39;
+end</pre></code></p>
+
+<pre><code>&lt;p&gt;Read more in the &lt;a href="http://edgeguides.rubyonrails.org/routing.html"&gt;new routing guide&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;New Action Mailer&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>Action Mailer was born with a split-personality of half model, half controller. In Rails 3, we’ve made the choice to make it all controller. This means that the feel and functionality will be much closer to Action Controller and in fact they now share a bunch of underlying code. Here’s a taste of what it looks like now:</p></p>
+
+<p><code><pre>class Notifier &lt; ActionMailer::Base
+  default :from =&gt;
+    &quot;Highrise &lt;system@#{APPLICATION_DOMAIN}&gt;&quot;</p>
+
+<p>  def new_project(digest, project, person)
+    @digest, @project, @person = digest, project, person</p>
+
+<pre><code>attachments[&amp;#39;digest.pdf&amp;#39;] = digest.to_pdf
+attachments[&amp;#39;logo.jpg&amp;#39;]   = File.read(project.logo_path)
+
+mail(
+  :subject =&amp;gt; &amp;quot;Your digest for #{project.name}&amp;quot;,
+  :to =&amp;gt; person.email_address_with_name
+) do |format|
+  format.text { render :text =&amp;gt; &amp;quot;Something texty&amp;quot; }
+  format.html { render :text =&amp;gt; &amp;quot;Something &amp;lt;i&amp;gt;texty&amp;lt;/i&amp;gt;&amp;quot; }
+end
+</code></pre>
+
+<p>  end
+end</pre></code></p>
+
+<pre><code>&lt;p&gt;The new Action Mailer is built on top of &lt;a href="http://github.com/mikel/mail"&gt;the new Mail gem&lt;/a&gt; as well. Say goodbye to TMail headaches.&lt;/p&gt;
+
+
+&lt;p&gt;Read more in &lt;a href="http://edgeguides.rubyonrails.org/action_mailer_basics.html"&gt;new Action Mailer guide&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Manage dependencies with Bundler&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>Managing all the dependencies of a Rails application has long been a hassle of patchworks. We had config.gem, Capistrano externals, custom rake setup tasks, and other incomplete solutions.</p></p>
+
+<pre><code>&lt;p&gt;Bundler cleans all that up and allows you to specify the libraries, frameworks, and plugins that your application depends on. All Rails 3 applications are born with a Gemfile to control it all. See more on &lt;a href="http://gembundler.com/"&gt;the Bundler site&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;XSS&lt;/span&gt; protection by default&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>The internet is a scary place and Rails 3 is watching out for you by default. We’ve had <a href="http://en.wikipedia.org/wiki/Cross-site_request_forgery"><span>CRSF</span></a> protection with form signing for a while and <a href="http://en.wikipedia.org/wiki/SQL_injection"><span>SQL</span>-injection</a> protection since the beginning, but Rails 3 ups the anté with <span>XSS</span> protection as well (hat tip to Django for convincing us).</p></p>
+
+<pre><code>&lt;p&gt;See the &lt;a href="http://railscasts.com/episodes/204-xss-protection-in-rails-3"&gt;Railscast on &lt;span&gt;XSS&lt;/span&gt; video&lt;/a&gt; and &lt;a href="http://rubyonrails.org/screencasts/rails3/xss-ujs"&gt;the Dive into Rails 3: Cross-site scripting video&lt;/a&gt; for more.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Say goodbye to encoding issues&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>If you browse the Internet with any frequency, you will likely encounter the � character. This problem is <a href="http://imysql.cn/docs/MySQL_51_en/ch10s10.html">extremely pervasive</a>, and is caused by mixing and matching content with different encodings.</p></p>
+
+<pre><code>&lt;p&gt;In a system like Rails, content comes from the database, your templates, your source files, and from the user. Ruby 1.9 gives us the raw tools to eliminate these problems, and in combination with Rails 3, � should be a thing of the past in Rails applications. Never struggle with corrupted data pasted by a user from Microsoft Word again!&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Active Model: Validations, callbacks, etc for all models&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>We’ve extracted quite a bit of commonly requested Active Record components into the new Active Model framework. This allows an <span>ORM</span> like <a href="http://github.com/mongoid/mongoid/blob/master/lib/mongoid/validations.rb#L11">Mongoid</a> to use Active Record’s validations, callbacks, serialization, and i18n support.</p></p>
+
+<pre><code>&lt;p&gt;Additionally, in the rewrite of Action Controller, we removed any direct references to Active Record, defining a clean, simple &lt;span&gt;API&lt;/span&gt; that ORMs can implement. If you use an &lt;span&gt;API&lt;/span&gt;-compliant &lt;span&gt;ORM&lt;/span&gt; (like DataMapper, Sequel, or Mongoid), you will be able to use features like form_for, link_to and redirect_to with objects from those ORMs without any additional work.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Official plugin APIs&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>We also rewrote Railties with the express goal of using the new plugin <span>API</span> for all Rails frameworks like <a href="http://github.com/rails/rails/blob/master/activerecord/lib/active_record/railtie.rb#L13">Active Record</a> and <a href="http://github.com/rails/rails/blob/master/actionmailer/lib/action_mailer/railtie.rb#L5">Action Mailer</a>. This means that Rails plugins like the ones for <a href="http://github.com/datamapper/dm-rails/blob/master/lib/dm-rails/railtie.rb#L23">DataMapper</a> and <a href="http://github.com/rspec/rspec-rails/blob/master/lib/rspec-rails.rb#L3">RSpec</a> have access to all of the integration as the built-in support for Active Record and Test::Unit.</p></p>
+
+<pre><code>&lt;p&gt;The new Railtie &lt;span&gt;API&lt;/span&gt; makes it possible to modify the built-in generators, add rake tasks, configure default Rails options, and specify code to run as early, or as late as you need. Rails plugins like &lt;a href="http://github.com/plataformatec/devise"&gt;Devise&lt;/a&gt; were able to add much better integration in the Rails 3 version of their plugin. Expect to see a lot more of that in the months ahead.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Rewritten internals&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>We rewrote the internals of Action Pack and Railties, making them much more flexible and easier to extend. Instead of a single monolithic ActionController::Base, Rails 3 exposes a number of modules, each with defined APIs, that you can mix and match to create special-purpose controllers for your own use. Both <a href="http://github.com/rails/rails/blob/master/actionmailer/lib/action_mailer/base.rb#L333">Action Mailer in Rails</a> and <a href="http://github.com/apotonick/cells/blob/master/lib/cell/rails.rb#L5">the Cells project</a> make heavy use of this new functionality.</p></p>
+
+<pre><code>&lt;p&gt;You can also take a look a &lt;a href="http://yehudakatz.com/2009/12/26/the-rails-3-router-rack-it-up/"&gt;this blog post by Yehuda&lt;/a&gt; (from last year) to see how the new architecture makes it easy to implement Django-style generic actions in Rails by leveraging Rack and ActionController::Metal.&lt;/p&gt;
+
+
+&lt;p&gt;The Rails generator system is got a revamp as well. Instead of monolithic generators that know about all of the Rails frameworks, each generator calls a series of hooks, such as :test_framework and :orm, that plugins can register handlers for. This means that generating a scaffold when using rSpec, DataMapper and Haml will generate a scaffold customized for those plugins.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Agnosticism with jQuery, rSpec, and Data Mapper&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>The rewritten internals and the new plugin APIs have brought true agnosticism to Rails 3 for all components of the framework. Prefer DataMapper to Active Record? <a href="http://github.com/datamapper/dm-rails">No problem</a>. Want to use jQuery instead of Prototype? <a href="http://github.com/rails/jquery-ujs">Go ahead</a>. Eager to test with rSpec instead of test/unit? <a href="http://github.com/rspec/rspec-rails">You got it</a>.</p></p>
+
+<pre><code>&lt;p&gt;It’s never been easier to Have It Your Way™ with Rails 3. And at the same time, we’ve made that happen without making using the excellent default stack any more complicated.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Documentation&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>Rails 3 has had a long development cycle and while that might have lead to some impatience, it has also given book and tutorial authors a chance to catch up and be ready. There’s a wealth of great Rails 3 documentation available already and more is coming shortly.</p></p>
+
+<pre><code>&lt;p&gt;The &lt;a href="http://pragprog.com/titles/rails4/agile-web-development-with-rails"&gt;Agile Web Development with Rails 4th Ed&lt;/a&gt; book is almost ready and there are &lt;a href="http://www.amazon.com/s/ref=nb_sb_ss_c_1_7?url=search-alias%3Dstripbooks&amp;amp;field-keywords=rails+3&amp;amp;x=0&amp;amp;y=0&amp;amp;sprefix=rails+3&amp;amp;ih=5_1_1_0_0_0_0_0_0_1.38_159&amp;amp;fsc=5"&gt;plenty more books coming&lt;/a&gt;. Check out all the &lt;a href="http://guides.rubyonrails.org/"&gt;new guides&lt;/a&gt;, the &lt;a href="http://rubyonrails.org/screencasts/rails3"&gt;new official videos&lt;/a&gt;, &lt;a href="http://railscasts.com/"&gt;new Railscasts&lt;/a&gt;, and a &lt;a href="http://railstutorial.org/book"&gt;new tutorial&lt;/a&gt;. See the recent &lt;a href="http://weblog.rubyonrails.org/2010/8/28/rails-has-great-documentation"&gt;recap of documentation sources&lt;/a&gt; for more.&lt;/p&gt;
+</code></pre>
+
+<p><strong>Installation</strong><br>
+<code>gem install rails --version 3.0.0</code>.</p>
+
+<pre><code>&lt;p&gt;We also have a Rails &lt;a href="http://github.com/rails/rails/tree/v3.0.0"&gt;v3.0.0 tag&lt;/a&gt; and a &lt;a href="http://github.com/rails/rails/tree/3-0-stable"&gt;3-0-stable branch&lt;/a&gt;.&lt;/p&gt;
+
+
+&lt;p&gt;Rails 3.0 has been designed to work with Ruby 1.8.7, Ruby 1.9.2, and JRuby 1.5.2+.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Gratitude and next steps&lt;/strong&gt;&lt;br&gt;
+</code></pre>
+
+<p>I’m personally incredibly proud of this release. I’ve been working on Rails for more than 7 years and the quality of the framework we have today is just astounding. This is only possible as a community effort and Rails 3 has seen so many incredible developers step up and help make this <i>our best release ever</i> (wink). Many thanks to all of you.</p></p>
+
+<pre><code>&lt;p&gt;We’ll continue to develop Rails 3.0 with fixes and tweaks via the stable branch and Rails 3.1 is already cooking on master.&lt;/p&gt;
+
+
+&lt;p&gt;&lt;strong&gt;&lt;span&gt;UPDATE&lt;/span&gt;:&lt;/strong&gt; We’re raising money for Charity:Water in the name of Rails 3.0. Please donate and help us &lt;a href="http://weblog.rubyonrails.org/2010/8/30/appreciate-rails-3-with-charity"&gt;bring clean water to 5,000 people in the name of the Rails community&lt;/a&gt;.&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

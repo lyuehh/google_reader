@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IE6不能主动识别UTF-8编码，导致空白页面的问题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IE6不能主动识别UTF-8编码，导致空白页面的问题</h2>
+<p class="meta">04 Sep 2012</p>
+
+<div class="post">
+<h2>IE6不能主动识别UTF-8编码，导致空白页面的问题</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-09-04 15:13:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/04/2665860.html">http://www.cnblogs.com/rubylouvre/archive/2012/09/04/2665860.html</a></h3>
+
+<p>这篇文章解决了我纠结一晚上的问题！！！推荐。有时ie8也如此。</p>
+
+
+<p><br><p>将Joomla!修改为UTF-8编码之后，发现使用部分模版（如Joomla! 1.03附带的rhuk_solarflare_ii模版）时偶尔会发生打开页面为空白的现象，特别是浏览器未设置为“自动选择”编码的时候。</p><br><p>在windows操作系统上使用IE6作为浏览器时。常常会发生这样的问题：在浏览使用UTF-8编码的网页时，浏览器无法自动侦测（即没有设定“自动选择”编码格式时）该页面所用的编码。即使网页已经声明过编码格式：</p><p>&lt;meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″ /&gt;</p><br><p>由此造成某些含有中文UTF-8编码的页面产生空白输出。</p><br><p>如果使用的是IE7/8、Mozilla、Mozilla Firefox、Sarafi的浏览器这不会造成这个问题。这是由于IE6解析网页编码时以HTML内的标签优先，而后才是HTTP header内的讯息；而mozilla系列的浏览器则刚刚相反。</p><br><p>由于UTF-8为3个字节表示一个汉字，而普通的GB2312或BIG5是两个。页面输出时，由于上述原因，使浏览器解析、输出&lt;title&gt; &lt;/title&gt;的内容时，如果在&lt;/title&gt;前有奇数个全角字符时，IE6把UTF-8当作两个字节解析时出现半个汉字的情况，这时该半个汉字会和&lt;/title&gt;的&lt;结合成一个乱码字，导致IE6无法读完&lt;title&gt;部分，使整个页面为空百输出。而这个时候如果察看源文件的话，会发现实际上整个页面全部已经输出了。</p><br><p>因此最简单的解决办法是在网页文件的标签中一定要把字符定义&lt;meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″ /&gt;放在&lt;title&gt;&lt;/title&gt;之前。</p><br><p>ps:涉及到编码问题的方式</p><p>1.服务器httpd.conf文件：AddDefaultCharset UTF-8<br>这种方法不推荐，因为服务器上很可能有其他编码的网站存在，所以可以使用AddDefaultCharset off来关闭默认文件编码，服务器依靠html文件投中设置的语言来决定编码。<br><br></p><p>2.脚本php.ini文件：default_charset = “UTF-8″<br>作用同httpd.conf文件，也不推荐，可以把该行注释掉，原因同上<br><br></p><p>3..htaccess文档：AddDefaultCharset UTF-8<br>一般人都无法修改httpd.cnf和php.ini，同时也不推荐修改这两个文件。这时也可以在网站根目录下写入.htaccess文档，在该文档中设定网站字符集<br><br></p><p>4.网页文件字符集：<br>&lt;meta http-equiv=”Content-Type” content=”text/html; charset=UTF-8″ /&gt;</p><p>===============================</p><p>这个IE6的BUG终于让我遇到了，今天搞MYOA2的OUTGO（发文表），&lt;title&gt;发文表&lt;/title&gt; 在 IE6里面显示空白，浏览器当成了gbk来解释。于是将&lt;meta utf-8&gt; 提到&lt;title&gt;前，OK！</p><p> 本来以为已经跟IE6拜拜，偶然的机会，发现还是要做足测试。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2665860.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/04/2665860.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

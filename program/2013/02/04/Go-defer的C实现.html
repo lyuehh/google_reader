@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Go defer的C实现</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Go defer的C实现</h2>
+<p class="meta">04 Feb 2013</p>
+
+<div class="post">
+<h2>Go defer的C实现</h2>
+
+<h3>by bigwhite</h3>
+
+<h3>at 2013-02-03 23:48:52</h3>
+
+<h3>original <a href="http://tonybai.com/2013/02/03/implement-go-defer-in-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=implement-go-defer-in-c">http://tonybai.com/2013/02/03/implement-go-defer-in-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=implement-go-defer-in-c</a></h3>
+
+<p><a href="http://golang.org">Go语言</a>中引入了一个新的关键字defer，个人认为这个语法关键字让异常处理也变得得心应手许多，对改善代码的可读性和可维护性大有裨益，是典型的语法棒棒糖^_^。</p>
+
+
+<p>像下面这种代码（伪代码）：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void foo() {<br>
+        apply resource1;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    retv = action1;<br>
+        if not success<br>
+            release resource1</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    apply resource2;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    retv = action2;<br>
+        if not success<br>
+            release resource1<br>
+            release resource2<br>
+    }</span></p>
+
+
+<p>有了defer后，代码就变得优美多了。</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void foo_with_defer() {<br>
+        apply resource1;<br>
+        defer (release_resource1)</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    retv = action1;<br>
+        if not success<br>
+            return</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    apply resource2;<br>
+        defer (release_resource2)</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    retv = action2;<br>
+        if not success<br>
+            return<br>
+    }</span></p>
+
+
+<p>如果能在<a href="http://tonybai.com/tag/C">C语言</a>中实现defer这样的语法糖，那该多棒！是否可行呢？经过一段时间钻研，找到一个不那么美的实现方法，约束也很多，也不甚严谨， 谈不上什么可移植性，切不可用到产品环境，权当一种探讨罢了。</p>
+
+
+<p>Go中defer的语义大致是这样的：<br>
+    * 在使用defer的函数退出前，defer后面的函数将会被执行；<br>
+    * 如果一个函数内有多个defer，那么defer按后进先出（LIFO）的顺行执行；<br>
+    * 即使发生Panic，defer依然可以得到执行</p>
+
+
+<p>最后一个比较难于模拟，这里仅先尝试前两个语义。下面从设计思路说起。</p>
+
+
+<p><strong>* “借东风”</strong></p>
+
+
+<p>要想模拟defer，首先要考虑的一点那就是defer后的语句是在函数return之前执行的。在标准C中，我们无任何举措可以实现这些。要在 C中实现defer，势必要借用一些编译器扩展特性，比如Gcc的扩展。这里实验所使用的编译器是<a href="http://tonybai.com/2006/03/14/explain-gcc-warning-options-by-examples/">Gcc</a>(4.6.3 (<a href="http://tonybai.com/2012/12/04/upgrade-ubuntu-to-1204-lts/">Ubuntu 12.04</a>))。Gcc扩展支持-finstrument-functions编译选项，该选项可以在函数执行前后插入一段运行代码。在之前写过的一篇名 为“<a href="http://tonybai.com/2011/07/13/add-enter-and-exit-trace-for-your-function/">为函数添加enter和exit级trace</a>”的文章中对此有较为详细的说明，这里我们还要用到这个扩展特性。</p>
+
+
+<p><strong>* 偷天换日</strong></p>
+
+
+<p>如果完全模仿Go的语法，在C中使用defer，大致是这样一种形式：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void foo(void) {<br>
+        FILE * fp = NULL;<br>
+        fp = fopen(&quot;foo.txt&quot;, &quot;r&quot;);<br>
+        if (!fp) return;<br>
+        defer(fclose(fp));<br>
+       <br>
+        /* use fp */<br>
+        … …<br>
+        return;<br>
+    }</span></p>
+
+
+<p>但C毕竟是C，一门静态的编译型语言，我们如何将fclose(fp)这个信息传递给编译器自动插入的代码中呢？在C语言中，几乎没有手段获得函 数的元信息以及运行时参数信息，并再通过这些信息重新调用和执行该函数。我们得“想招”将这些信息存储起来。</p>
+
+
+<p>大家知道C语言中的函数，比如这里的fclose，其实是一个函数起始地址；如果我们知道函数地址或又叫函数指针，再加上函数的参数，我们就可以 拼凑在一起执行该函数了。但理论上来说，函数指针也是有类型的，比如：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">typedef int (*FUNC_POINTER)(int, int);</span></p>
+
+
+<p>这个函数指针类型可以用来执行诸如：int foo(int a, int b)这样的函数，比如：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">FUNC_POINTER fp = foo；<br>
+    fp(1, 2);</span></p>
+
+
+<p>但defer后面执行的函数千差万别，我们如何能够得知函数对应的函数指针类型呢？用void*存储？比如：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void *p = foo;<br>
+    p(1, 2);</span></p>
+
+
+<p>编译器会给你一个严重错误！p不是函数指针，不能这么用。那我们如何能让编译器知道这个指针是一个可调用的函数指针呢？我们试试来定义一个“通用 的函数指针”：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">typedef void (*defer_func)();</span></p>
+
+
+<p>没有返回值，没有参数，这样的函数指针能否执行foo这样的函数呢？答案是可以的，但不是那么完美。至少你不会得到返回值。这么做有两点考虑：<br>
+    a) 至少可以让编译器知道这是一个函数指针，可以被用来执行函数。<br>
+    b) 通常我们并不关心defer后面函数的返回值。<br>
+    c) 参数列表的不同至少目前可以逃过编译器的错误检查，至多给个Warning。</p>
+
+
+<p>函数指针的问题暂时算是有着落了，那参数怎么办？也就是说defer(fclose(fp))中的fp如何存储下来呢？如果在C中真的使用 defer(fclose(p))这种形式的语法，那么我是砸破脑袋也想不出啥招了！因此我们应该重新设计一下C中的defer应该如何使用？我 们用下面的语法来替代：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">defer(fclose, 1, p);</span></p>
+
+
+<p>fclose是函数起始地址，1是参数个数，p则是传给fclose的参数。这样fclose和p都可以单独分离出来存储了。但是还是那句 话：defer后面可以执行的函数千万种，哪能穷尽？怎么才能表示成一种通用的方式存储参数呢？回想一下自己在编码过程中用于释放资源的那几类函 数，无非就是关闭文件、关闭文件描述符(包括socket)、释放内存等，这些函数传递的参数不是指针就是整型数，少有传浮点类型或将一个自定义 结构体以传值的方式传入的。我们不妨再次尝试一次“偷天换日” – 用void*存储整型参数或任意指针类型参数。当然其约束就像刚才所说的那些。不过对付大多数资源释放函数而言，应该是足够的了。至于将参数个数也作为一 个固定参数放入defer中，也是鉴于目前无法通过操作可变个数参数列表相关宏来获得参数数量。</p>
+
+
+<p>最后一个问题。由于被defer的函数的参数个数不定。defer无法将<a href="http://tonybai.com/2008/05/07/also-talk-about-c-variable-length-args/">可变个数参数</a>重组后传给被defer的函数。因此目前暂只能通过一种“丑陋”的方式来实现。样例中最多只支持两个参数的被defer函数。</p>
+
+
+<p><strong>* 样例</strong></p>
+
+
+<p>首先看看我们的examples的主函数文件main.c。</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">#include &lt;stdio.h&gt;<br>
+    #include &lt;stdlib.h&gt;<br>
+    #include &quot;defer.h&quot;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">int bar(int a, char *s) {<br>
+        printf(&quot;a = [%d], s = [%s]\n&quot;, a, s);<br>
+    }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">int main() {<br>
+        FILE *fp = NULL;<br>
+        fp = fopen(&quot;main.c&quot;, &quot;r&quot;);<br>
+        if (!fp) return;<br>
+        defer(fclose, 1, fp);</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    int *p = malloc(sizeof(*p));<br>
+        if (!p) return;<br>
+        defer(free, 1, p);</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    defer(bar, 2, 13, &quot;hello&quot;);<br>
+        return 0;<br>
+    }</span></p>
+
+
+<p>从这里我们可以看到defer的用法，但这不是重点，重点是实现。</p>
+
+
+<p>有了上面的一些设计思路的阐述，下面的代码也就不难理解了。核心是defer.c。<br>
+    <span style="font-family:courier new,courier,monospace">/* defer.h */<br>
+    typedef void (*defer_func)();</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">struct zero_params_func_ctx {<br>
+        defer_func df;<br>
+    };</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">struct one_params_func_ctx {<br>
+        defer_func df;<br>
+        void *p1;<br>
+    };</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">struct two_params_func_ctx {<br>
+        defer_func df;<br>
+        void *p1;<br>
+        void *p2;<br>
+    };</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">struct defer_func_ctx {<br>
+        int params_count;<br>
+        union {<br>
+            struct zero_params_func_ctx zp;<br>
+            struct one_params_func_ctx op;<br>
+            struct two_params_func_ctx tp;<br>
+        } ctx;<br>
+    };</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void stack_push(struct defer_func_ctx *ctx);<br>
+    struct defer_func_ctx* stack_pop();<br>
+    int stack_top();</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">/* defer.c */<br>
+    struct defer_func_ctx ctx_stack[10];<br>
+    int top_of_stack = 0; /* stack top from 1 to 10 */</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void stack_push(struct defer_func_ctx *ctx) {<br>
+        if (top_of_stack &gt;= 10) {<br>
+            return;<br>
+        }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    ctx_stack[top_of_stack] = *ctx;<br>
+        top_of_stack++;<br>
+    }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">struct defer_func_ctx* stack_pop() {<br>
+        if (top_of_stack == 0) {<br>
+            return NULL;<br>
+        }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    top_of_stack–;<br>
+        return &amp;ctx_stack[top_of_stack];<br>
+    }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">int stack_top() {<br>
+        return top_of_stack;<br>
+    }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">void defer(defer_func fp, int arg_count, …) {<br>
+        va_list ap;<br>
+        va_start(ap, arg_count);</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    struct defer_func_ctx ctx;<br>
+        memset(&amp;ctx, 0, sizeof(ctx));<br>
+        ctx.params_count = arg_count;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    if (arg_count == 0) {<br>
+            ctx.ctx.zp.df = fp;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    } else if (arg_count == 1) {<br>
+            ctx.ctx.op.df = fp;<br>
+            ctx.ctx.op.p1 = va_arg(ap, void*);</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    } else if (arg_count == 2) {<br>
+            ctx.ctx.tp.df = fp;<br>
+            ctx.ctx.tp.p1 = va_arg(ap, void*);<br>
+            ctx.ctx.tp.p2 = va_arg(ap, void*);<br>
+            ctx.ctx.tp.df(ctx.ctx.tp.p1, ctx.ctx.tp.p2);<br>
+        }</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    va_end(ap);<br>
+        stack_push(&amp;ctx);<br>
+    }</span></p>
+
+
+<p>多个defer的FIFO调用顺序用一个固定大小的stack来实现。这里只是为了演示，所以stack实现的简单和固定些。</p>
+
+
+<p>组装后的函数在funcexit.c中执行：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">extern struct defer_func_ctx ctx_stack[10];</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">__attribute__((no_instrument_function))<br>
+    void __cyg_profile_func_exit(void *this_fn, void *call_site) {<br>
+        struct defer_func_ctx *ctx = NULL;</span></p>
+
+
+<p><span style="font-family:courier new,courier,monospace">    while ((ctx = stack_pop()) != NULL) {<br>
+            if (ctx-&gt;params_count == 0) {<br>
+                ctx-&gt;ctx.zp.df();<br>
+            } else if (ctx-&gt;params_count == 1) {<br>
+                ctx-&gt;ctx.op.df(ctx-&gt;ctx.op.p1);<br>
+            } else if (ctx-&gt;params_count == 2) {<br>
+                ctx-&gt;ctx.tp.df(ctx-&gt;ctx.tp.p1, ctx-&gt;ctx.tp.p2);<br>
+            }<br>
+        }<br>
+    }</span></p>
+
+
+<p>最后我们将defer.c、funcexit.c编译成一个.so文件：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">gcc -g -fPIC -shared -o libcdefer.so funcexit.c defer.c</span></p>
+
+
+<p>而编译main.c的方法如下：</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">gcc -g main.c -o main -finstrument-functions -I ../lib -L ../lib -lcdefer</span></p>
+
+
+<p>一切OK后，先将libcdefer.so放在main同级目录下，执行main即可。</p>
+
+
+<p><span style="font-family:courier new,courier,monospace">$&gt; ./main<br>
+    a = [13], s = [hello]</span></p>
+
+
+<p>具体代码已经传至<a href="http://code.google.com/p/bigwhite-code">这里</a>(trunk/cdefer)，需要的童鞋可自行下载。 </p>
+
+
+<p style="text-align:left">© 2013, <a href="http://tonybai.com">bigwhite</a>. 版权所有. </p>
+
+
+<p><img src="http://www1.feedsky.com/t1/725092459/bigwhite/feedsky/s.gif?r=http://tonybai.com/2013/02/03/implement-go-defer-in-c/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=implement-go-defer-in-c" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>响应式设计的5个CSS实用技巧</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>响应式设计的5个CSS实用技巧</h2>
+<p class="meta">04 Jun 2012</p>
+
+<div class="post">
+<h2>响应式设计的5个CSS实用技巧</h2>
+
+<h3>by Lisober</h3>
+
+<h3>at 2012-06-03 21:21:22</h3>
+
+<h3>original <a href="http://www.webapptrend.com/2012/06/3279.html">http://www.webapptrend.com/2012/06/3279.html</a></h3>
+
+<p>正如我在教程<a href="http://vivienchen.me/2012/01/responsive-design-in-3-steps/">响应式Web设计三步走</a>当中所讲的，响应式的Web设计其实并不难，但是要让元素在布局切换时能够平滑过渡就比较考验技巧了。现在我分享在编码时常用的五个CSS技巧并举例说明。这些技巧都是使用简单的CSS属性，如min-width、max-width、overflow 和相对属性值，但是这些属性在响应式设计中发挥着很大的作用。<a href="http://www.webapptrend.com/wp-content/uploads/2012/06/CSS_logo3.jpg"><img title="CSS_logo" src="http://www.webapptrend.com/wp-content/uploads/2012/06/CSS_logo3-300x176.jpg" alt="" width="300" height="176"></a></p>
+
+
+<p>1. 响应式Video (<a href="http://webdesignerwall.com/demo/responsive-css-tricks/">demo</a>)</p>
+
+
+<p>响应式video的CSS技巧是由<a href="http://www.tjkdesign.com/articles/how-to-resize-videos-on-the-fly.asp">tjkdesign.com</a>发现的。我之前的一篇文章介绍过它，你可以<a href="http://webdesignerwall.com/tutorials/css-elastic-videos">在这里</a>阅读。响应式视频会适应它的容器宽度。</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+<div>6</div>
+<div>7</div>
+<div>8</div>
+<div>9</div>
+<div>10</div>
+<div>11</div>
+<div>12</div>
+<div>13</div>
+<div>14</div>
+<div>15</div>
+<div>16</div>
+</td>
+<td>
+<div>
+<div><code>.video {</code></div>
+<div><code> </code><code>position</code><code>: </code><code>relative</code><code>;</code></div>
+<div><code> </code><code>padding-bottom</code><code>: </code><code>56.25%</code><code>;</code></div>
+<div><code> </code><code>height</code><code>: </code><code>0</code><code>;</code></div>
+<div><code> </code><code>overflow</code><code>: </code><code>hidden</code><code>;</code></div>
+<div><code>}</code></div>
+<div><code>.video iframe,</code></div>
+<div><code>.video object,</code></div>
+<div><code>.video </code><code>embed</code> <code>{</code></div>
+<div><code> </code><code>position</code><code>: </code><code>absolute</code><code>;</code></div>
+<div><code> </code><code>top</code><code>: </code><code>0</code><code>;</code></div>
+<div><code> </code><code>left</code><code>: </code><code>0</code><code>;</code></div>
+<div><code> </code><code>width</code><code>: </code><code>100%</code><code>;</code></div>
+<div><code> </code><code>height</code><code>: </code><code>100%</code><code>;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><span></span></p></div>
+</div>
+
+
+<h2>2. Min &amp; Max Width (<a href="http://webdesignerwall.com/demo/responsive-css-tricks/">demo</a>)</h2>
+
+
+<p>属性设置了元素的最大宽度。其目的是防止元素“越线”。</p>
+
+
+<h4>最大宽度容器</h4>
+
+
+<p>在下面的例子当中，我定义了container的宽度是800px（译注：如果它的父容器不小于800px），但是不超过父容器的90%。</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+</td>
+<td>
+<div>
+<div><code>.container {</code></div>
+<div><code> </code><code>width</code><code>: </code><code>800px</code><code>;</code></div>
+<div><code> </code><code>max-width</code><code>: </code><code>90%</code><code>;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<h4>响应式图片</h4>
+
+
+<p>使用max-width:100% and height:auto，图片能自适应父容器的宽度。</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+</td>
+<td>
+<div>
+<div><code>img {</code></div>
+<div><code> </code><code>max-width</code><code>: </code><code>100%</code><code>;</code></div>
+<div><code> </code><code>height</code><code>: </code><code>auto</code><code>;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<p>上述的CSS在IE7和IE9都能起作用，但是IE8不识别。可以使用width:auto来修复。你可以使用针对IE8的条件CSS，或者使用下面的IE hack：</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+<div>4</div>
+<div>5</div>
+</td>
+<td>
+<div>
+<div><code>@media \</code><code>0</code><code>screen {</code></div>
+<div><code> </code><code>img {</code></div>
+<div><code> </code><code>width</code><code>: </code><code>auto</code><code>; </code><code>/* for ie 8 */</code></div>
+<div><code> </code><code>}</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<h4>Min-Width</h4>
+
+
+<p>相反，它设置了元素的最小宽度。在下面的例子里面，min-width用来定义input的宽度，防止input被拉伸的时候变得过小。</p>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/min-width.png" alt="min width"></p>
+
+<p> </p>
+
+
+<h2>3. 相对值 (<a href="http://webdesignerwall.com/demo/responsive-css-tricks/">demo</a>)</h2>
+
+
+<p>响应式设计中，使用相对值可以简化CSS和改善布局。下面举例说明。</p>
+
+
+<h4>相对Margin</h4>
+
+
+<p>下面的例子是评论列表，使用相对margin来设置。我用百分比的值而不用绝对的像素值来隔开子列表。下面的截图可以看到，如果用像素来定义，子列表会变得越来越小。</p>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/relative-left-margin.png" alt="relative margin"></p>
+
+<p> </p>
+
+
+<h4>相对字体大小</h4>
+
+
+<p>以相对值（如em或%）设置的字体、行高、外边距可以被继承。例如，只要简单地更改父级元素的字体大小，那么它的子元素的字体大小也能随之改变。</p>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/relative-font-size.png" alt="relative font size"></p>
+
+<p> </p>
+
+
+<h4>相对内边距</h4>
+
+
+<p>下面的截图说明了相对的百分比边距比绝对的固定像素边距更好。左边的容器体现了使用像素边距的不平衡。右边的容器则体现了对容器空间的充分利用。</p>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/relative-padding.png" alt="relative padding"></p>
+
+<p> </p>
+
+
+<h2>4. Overflow:hidden技巧 (<a href="http://webdesignerwall.com/demo/responsive-css-tricks/">demo</a>)</h2>
+
+
+<p>如我在之前的文章所说的，可以<a href="http://webdesignerwall.com/tutorials/css-clearing-floats-with-overflow">使用overflow属性来清除浮动</a>。这个技巧很实用。应用overflow:hidden，可以对上一个元素清除浮动，保证当前容器的内容能正常显示。</p>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/overflow-hidden.png" alt="overflow: hidden"></p>
+
+<p> </p>
+
+
+<h2>5. Word-break (<a href="http://webdesignerwall.com/demo/responsive-css-tricks/">demo</a>)</h2>
+
+
+<p>我之前也说过<a href="http://webdesignerwall.com/tutorials/word-wrap-force-text-to-wrap">word-wrap 属性</a>。可以在强制长文本（如长URL链接）换行。</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td>
+<div>1</div>
+<div>2</div>
+<div>3</div>
+</td>
+<td>
+<div>
+<div><code>.break-word {</code></div>
+<div><code> </code><code>word-wrap: break-word;</code></div>
+<div><code>}</code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<p> </p>
+
+
+<p> <img src="http://vivienchen.me/wp-content/uploads/2012/break-word.gif" alt="break-word"></p>
+
+<p> </p>
+
+
+<p>文章来自：<a href="http://webdesignerwall.com/tutorials/5-useful-css-tricks-for-responsive-design">5 Useful CSS Tricks for Responsive Design </a><br>
+译文：<a href="http://vivienchen.me/2012/05/5-useful-css-tricks-for-responsive-design/%20%E2%80%8E">响应式设计的5个CSS实用技巧</a>，译者：<a href="http://vivienchen.me/">Vivien Chen</a></p>
+
+
+<p>本文来自特邀译者@陈伟华vivien，转载请注明出处。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="18款精美CSS3 Web设计" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F04%2F2409.html&amp;from=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F06%2F3279.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/04/02/18681555.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">18款精美CSS3 Web设计</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="W3C组织关于响应图像的提案引发争议" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F05%2F3051.html&amp;from=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F06%2F3279.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/05/17/26698610.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">W3C组织关于响应图像的提案引发争议</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="响应设计的技巧，秘诀和最佳实践" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.webapptrend.com%2F2011%2F12%2F1253.html&amp;from=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F06%2F3279.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/01/05/13493299.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">响应设计的技巧，秘诀和最佳实践</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Twitter为Bootstaps 2.0添加响应设计工具" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F01%2F1603.html&amp;from=http%3A%2F%2Fwww.webapptrend.com%2F2012%2F06%2F3279.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2012/01/31/14534035.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Twitter为Bootstaps 2.0添加响应设计工具</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

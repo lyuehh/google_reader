@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jQuery1.4中创建DOM的新方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>jQuery1.4中创建DOM的新方法</h2>
+<p class="meta">06 Jan 2011</p>
+
+<div class="post">
+<h2>jQuery1.4中创建DOM的新方法</h2>
+
+<h3>by 愚人码头</h3>
+
+<h3>at 2011-01-06 14:50:45</h3>
+
+<h3>original <a href="http://www.css88.com/archives/2987">http://www.css88.com/archives/2987</a></h3>
+
+<p>在jQ1.4以前我们创建DOM并且添加到DOM树大致是这样的： var oNewp = $(&quot;&lt;p&gt;我测试成功了&lt;/p&gt;&quot;); oNewp.addClass(&quot;red&quot;).appendTo(&quot;#target&quot;); 或者，稍微复杂一点： $(&quot;&lt;div&gt;&lt;/div&gt;&quot;) .attr(&quot;id&quot;,&quot;css&quot;) .height(90) .css(&quot;border&quot;,&quot;1px solid #000&quot;) .html(&quot;fuck world!&quot;) .appendTo(document.body); jQuery1.4带来了一个全新的便捷地清晰的DOM对象创建方法，在 jQuery 1.4中，我们可以传递一个对象作为第二个参数。 这个参数接受一个属性的集合，这些可以传递给.attr() 方法。此外，一些event type（事件类型）能通过， 而且后面的jQuery方法能够调用： val, css, html, text, data, width, height, or offset。详见：http://www.css88.com/jqapi/#p=jQuery 例如，我们创建一个文本框： $(&quot;&lt;input /&gt;&quot;,{ &quot;class&quot;:&quot;bg-yellow&quot;, &quot;id&quot;:&quot;fuck&quot;, css:{ &quot;border&quot;:&quot;1px solid #000&quot;, &quot;font-size&quot;:&quot;25px&quot; }, value:&quot;fuck world!&quot;, focusin:function(){ $(this).css(&quot;border&quot;,&quot;5px solid #FF3300&quot;); }, focusout:function(){ $(this).css(&quot;border&quot;,&quot;1px solid #000&quot;); } [...]</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

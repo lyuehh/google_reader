@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>任何时候都适用的20个C++技巧 &lt;5-8&gt;  内存管理篇</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>任何时候都适用的20个C++技巧 &lt;5-8&gt;  内存管理篇</h2>
+<p class="meta">03 Dec 2010</p>
+
+<div class="post">
+<h2>任何时候都适用的20个C++技巧 &lt;5-8&gt;  内存管理篇</h2>
+
+<h3>by 凌云健笔</h3>
+
+<h3>at 2010-12-03 14:10:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/lijian2010/archive/2010/12/03/1895456.html">http://www.cnblogs.com/lijian2010/archive/2010/12/03/1895456.html</a></h3>
+
+<p><p>　　毫无疑问，内存管理是在C++编程中最复杂和最易出错的问题之一。能够直接地访问原始内存，动态地分配内存空间，以及C++的高效性决定它必须有一些非常严格的规则；如果你不遵守将难以避免那些内存相关的错误或者程序运行时的崩溃。</p>
+<p>　　指针是访问内存的主要手段。 C++可以分为两个主要类别：指向数据的指针和指向函数的指针。第二大类又可以分为两个子类类：普通函数指针和成员函数指针。在下面的技巧中，我们将深入探讨这些问题，并学习一些方法，简化指针的使用，同时隐藏它们的笨拙语法。</p>
+<p>　　指向函数的指针很可能是C++中一种最不具可读性的语法结构。唯一的可读性更差的似乎只有成员指针。第一个技巧会教你如何提高普通的函数指针的可读性。这是你理解C++成员指针的前提。接下来，我们将学习如何避免内存碎片，并告诉你其可怕的后果。最后，我们讨论delete和delete []的正确使用方法；它常常会是众多错误和误解的来源。</p>
+<p><span style="text-decoration:underline"><strong>技巧5：函数指针的繁琐语法？！见鬼去吧！！</strong></span></p>
+<p>你能告诉我下面定义的含义么？</p>
+<div>
+<pre><div><span style="color:#0000ff">void</span><span style="color:#000000"> (</span><span style="color:#000000">*</span><span style="color:#000000">p[</span><span style="color:#800080">10</span><span style="color:#000000">]) (</span><span style="color:#0000ff">void</span><span style="color:#000000"> (</span><span style="color:#000000">*</span><span style="color:#000000">)());</span></div></pre>
+</div>
+<p> 　　p是“一个包含10个函数指针的数组，这些函数返回为空，其参数为{【（另外一个无参数返回为空）的函数】的指针}。”如此繁琐的语法几乎难以辨认，难道不是吗？解决之道在何方？你可以通过typedef来合理地大大地去简化这些声明。首先，声明一个无参数、返回空的函数的指针的typedef，如下所示：</p>
+<div>
+<pre><div><span style="color:#000000">typedef </span><span style="color:#0000ff">void</span><span style="color:#000000"> (</span><span style="color:#000000">*</span><span style="color:#000000">pfv)();</span></div></pre>
+</div>
+<p>　　接下来 声明另一个typedef，一个指向参数为pfv返回为空的函数的指针：</p>
+<div>
+<pre><div><span style="color:#000000">typedef </span><span style="color:#0000ff">void</span><span style="color:#000000"> (</span><span style="color:#000000">*</span><span style="color:#000000">pf_taking_pfv) (pfv);</span></div></pre>
+</div>
+<p>　　现在，再去声明一个含有10个这样指针的数组就变得轻而易举，不费吹灰之力了：</p>
+<div>
+<pre><div><span style="color:#000000">pf_taking_pfv p[</span><span style="color:#800080">10</span><span style="color:#000000">]; </span><span style="color:#008000">/*</span><span style="color:#008000">等同于void (*p[10]) (void (*)()); 但更具可读性</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p><span style="text-decoration:underline"><strong>技巧6：函数指针的枝枝节节</strong></span></p>
+<p>　　类有两类成员：函数成员和数据成员。同样，也就有两种类别的成员指针：成员函数指针和数据成员指针。后者不太常见，因为，一般来说，类是没有公共数据成员的。当使用传统C代码的时候，数据成员指针才是有用的，因为传统C代码中包含的结构体或类是具有公开数据成员的。</p>
+<p>　　在C++中，成员指针是最为复杂的语法结构之一；可是，这却是一个非常强大而重要的特性。它们可以使您在不知道这个函数的名字的前提下调用一个对象的成员函数。这是非常方便的回调实现。同样的，你可以使用一个数据成员指针来监测和修改数据成员的值，而不必知道它的名字。</p>
+<p><span style="text-decoration:underline">指向数据成员的指针</span><br>　　虽然成员指针的语法可能会显得有点混乱，但是它与普通指针的形式比较一致和类似，只需要在星号之前加上类名::即可。例如，如果一个普通的整形指针如下所示：</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> </span><span style="color:#000000">*</span><span style="color:#000000"> pi; </span></div></pre>
+</div>
+<p>　　那么，你就可以按照下面的方式来定义一个指向类A的整形成员变量的指针：</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> A::</span><span style="color:#000000">*</span><span style="color:#000000">pmi; </span><span style="color:#008000">/*</span><span style="color:#008000"> pmi is a pointer to an int  member of A</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　你需要按照这样的方式初始化成员指针：</p>
+<div>
+<pre><div><span style="color:#0000ff">class</span><span style="color:#000000"> A<br>{<br></span><span style="color:#0000ff">public</span><span style="color:#000000">:<br>  </span><span style="color:#0000ff">int</span><span style="color:#000000"> num;<br>  </span><span style="color:#0000ff">int</span><span style="color:#000000"> x;<br>};<br></span><span style="color:#0000ff">int</span><span style="color:#000000"> A::</span><span style="color:#000000">*</span><span style="color:#000000">pmi </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">&amp;</span><span style="color:#000000"> A::num; </span><span style="color:#008000">/*</span><span style="color:#008000"> 1 </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　标号1的语句声明了一个指向类A的整形成员的指针，它用A类对象中的成员变量num的地址实现了初始化。使用pmi和内置操作符.*，你可以监测和修改任何一个A类型的对象中的num的值。</p>
+<div>
+<pre><div><span style="color:#000000">A a1, a2;<br></span><span style="color:#0000ff">int</span><span style="color:#000000"> n</span><span style="color:#000000">=</span><span style="color:#000000">a1.</span><span style="color:#000000">*</span><span style="color:#000000">pmi; </span><span style="color:#008000">/*</span><span style="color:#008000"> copy a1.num to n </span><span style="color:#008000">*/</span><span style="color:#000000"><br>a1.</span><span style="color:#000000">*</span><span style="color:#000000">pmi</span><span style="color:#000000">=</span><span style="color:#800080">5</span><span style="color:#000000">; </span><span style="color:#008000">/*</span><span style="color:#008000"> assign the value 5 to a1.num </span><span style="color:#008000">*/</span><span style="color:#000000"><br>a2.</span><span style="color:#000000">*</span><span style="color:#000000">pmi</span><span style="color:#000000">=</span><span style="color:#800080">6</span><span style="color:#000000">; </span><span style="color:#008000">/*</span><span style="color:#008000"> assign the value 6 to a2.num </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　如果有一个指向A的指针，你必须使用-&gt;*操作符：</p>
+<div>
+<pre><div><span style="color:#000000">A </span><span style="color:#000000">*</span><span style="color:#000000"> pa</span><span style="color:#000000">=</span><span style="color:#0000ff">new</span><span style="color:#000000"> A;<br></span><span style="color:#0000ff">int</span><span style="color:#000000"> n</span><span style="color:#000000">=</span><span style="color:#000000">pa</span><span style="color:#000000">-&gt;*</span><span style="color:#000000">pmi;  <br>pa</span><span style="color:#000000">-&gt;*</span><span style="color:#000000">pmi</span><span style="color:#000000">=</span><span style="color:#800080">5</span><span style="color:#000000">;</span></div></pre>
+</div>
+<p><span style="text-decoration:underline">成员函数指针</span><br>　　它由成员函数的返回类型，类名加上::，指针名称，函数的参数列表几部分组成。例如，类型A的一个成员函数返回一个int，无参数，那么其函数指针应该定义如下（注意两对括号是必不可少的）：</p>
+<div>
+<pre><div><span style="color:#0000ff">class</span><span style="color:#000000"> A  <br>{<br></span><span style="color:#0000ff">public</span><span style="color:#000000">:<br>  </span><span style="color:#0000ff">int</span><span style="color:#000000"> func ();  <br>};<br><br></span><span style="color:#0000ff">int</span><span style="color:#000000"> (A::</span><span style="color:#000000">*</span><span style="color:#000000">pmf) ();</span></div></pre>
+</div>
+<p>　　换句话说，pmf是一个指向类A的成员函数的指针，类A的成员函数返回int指针，无参数。事实上，一个成员函数指针看起来和普通的函数指针相似，除了它包含函数名加上::操作符。您可以使用.*操作符来调用pmf指向的成员函数：</p>
+<div>
+<pre><div><span style="color:#000000">pmf</span><span style="color:#000000">=&amp;</span><span style="color:#000000">A::func;<br>A a;<br>(a.</span><span style="color:#000000">*</span><span style="color:#000000">pmf)();  </span><span style="color:#008000">/*</span><span style="color:#008000"> invoke a.func() </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　如果有的是一个对象的指针，你必须使用-&gt;*操作符：</p>
+<div>
+<pre><div><span style="color:#000000">A </span><span style="color:#000000">*</span><span style="color:#000000">pa</span><span style="color:#000000">=&amp;</span><span style="color:#000000">a;<br>(pa</span><span style="color:#000000">-&gt;*</span><span style="color:#000000">pmf)();  </span><span style="color:#008000">/*</span><span style="color:#008000">calls pa-&gt;func() </span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　成员函数指针遵循多态性。因此，如果你通过这样一个指针调用虚成员函数，则会实现动态调用。但是需要注意的是，你不能将成员函数指针指向一个类的构造函数或者析构函数的地址。</p>
+<p><span style="text-decoration:underline"><strong>技巧7：内存碎片，No！！No！！No！！</strong></span></p>
+<p>　　通常而言，应用程序是不受内存泄露影响的；但如果应用程序运行很长一段时间，频繁的分配和释放内存则会导致其性能逐渐下降。最终，程序崩溃。这是为什么呢？因为经常性的动态内存分配和释放会造成堆碎片，尤其是应用程序分配的是很小的内存块。支离破碎的堆空间可能有许多空闲块，但这些块既小又不连续的。为了证明这一点，请参看一下下面的堆空间表示。0表示空闲内存块，1表示使用中的内存块：</p>
+<p>100101010000101010110 </p>
+<p>　　上述堆是高度分散。如果分配一个包含五个单位（即五个0）内存块，这将是不可能的，尽管系统总共中还有12个空闲空间单位。这是因为可用内存是不连续的。另一方面，下面的堆可用内存空间虽然少，但它却不是支离破碎的：</p>
+<p>1111111111000000</p>
+<p>　　你能做些什么来避免这样的堆碎片呢？首先，尽可能少的使用动态内存。在大多数情况下，可以使用静态或自动储存，或者使用STL容器。其次，尽量分配和重新分配大块的内存块而不是小的。例如，不要为一个单一的对象分配内存，而是一次分配一个对象数组。当然，你也可以将使用自定义的内存池作为最后的手段。</p>
+<p><span style="text-decoration:underline"><strong>技巧8：对于Delete 和 Delete []，你要区分清楚</strong></span></p>
+<p>　　在程序员当中流传有一个众所周知的传说：对于内置类型，使用delete 代替delete []来释放内存是完全可以的。例如，</p>
+<div>
+<pre><div><span style="color:#0000ff">int</span><span style="color:#000000"> </span><span style="color:#000000">*</span><span style="color:#000000">p</span><span style="color:#000000">=</span><span style="color:#0000ff">new</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000">[</span><span style="color:#800080">10</span><span style="color:#000000">];<br>delete p; </span><span style="color:#008000">/*</span><span style="color:#008000">bad; should be: delete[] p</span><span style="color:#008000">*/</span></div></pre>
+</div>
+<p>　　这是完全错误的方式。在C++标准明确指出，使用delete来释放任何类型的动态分配的数组，将会导致未定义行为。事实上，在某些平台上应用程序使用delete而非delete[]但是不死机可以归结为纯粹的运气：例如，针对内置数据类型，Visual C++通过调用free()同时实现了delete[]和delete。但是，我们并不能保证的Visual C++未来版本中将仍然坚持这么做。此外，也不会保证这个代码将适用于其他的编译器。总括来说，使用delete来代替delete []，或者用delete []来代替delete都很危险，应当尽量去避免。</p>
+<p> </p>
+<p>// 续 任何时候都适用的20个C++技巧 &lt;9-11&gt;  性能的提高 </p>
+<p>作者: 凌云健笔</p>
+<p>出处：<a href="http://www.cnblogs.com/lijian2010/">http://www.cnblogs.com/lijian2010/</a></p>
+<p>版权：本文版权归作者和博客园共有 <br>转载：欢迎转载，为了保存作者的创作热情，请按要求【转载】 <br>要求：未经作者同意，必须保留此段声明；必须在文章中给出原文连接；否则必究法律责任</p>
+<p> </p><img src="http://www.cnblogs.com/lijian2010/aggbug/1895456.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/lijian2010/">凌云健笔</a> 发表于 2010-12-03 14:10 <a href="http://www.cnblogs.com/lijian2010/archive/2010/12/03/1895456.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/lijian2010/archive/2010/12/03/1895456.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/lijian2010/archive/2010/12/03/1895456.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/83392/">RIM欲通过收购对抗iPhone和Android手机</a><span style="color:gray">(2010-12-03 23:17)</span><br>· <a href="http://news.cnblogs.com/n/83389/">Office2010成史上最畅销办公服务产品</a><span style="color:gray">(2010-12-03 23:06)</span><br>· <a href="http://news.cnblogs.com/n/83388/">Google宣布加强内容版权保护</a><span style="color:gray">(2010-12-03 23:02)</span><br>· <a href="http://news.cnblogs.com/n/83387/">苹果皮520正提交申请MFi标识</a><span style="color:gray">(2010-12-03 22:56)</span><br>· <a href="http://news.cnblogs.com/n/83385/">帮助全球科学家研究环境气候的 Google Earth Engine 发布</a><span style="color:gray">(2010-12-03 22:31)</span><br></p><p>编辑推荐：<a href="http://zt.cnblogs.com/blogswarriors/">“博客无双“活动：写博客、攒园豆、赢大奖</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

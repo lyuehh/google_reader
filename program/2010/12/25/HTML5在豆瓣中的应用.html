@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>HTML5在豆瓣中的应用</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>HTML5在豆瓣中的应用</h2>
+<p class="meta">25 Dec 2010</p>
+
+<div class="post">
+<h2>HTML5在豆瓣中的应用</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-12-24 17:51:36</h3>
+
+<h3>original <a href="http://news.cnblogs.com/n/85824/">http://news.cnblogs.com/n/85824/</a></h3>
+
+<p>　　作为处于发展阶段的新一代Web开发标准，HTML5正以其简洁的书写规范、良好的兼容性以及务实的原则为越来越多的网站所接受，这是WHATWG与 W3C共同努力的结果，作为标准的参与制订者，各浏览器厂商也在积极地为其提供支持。豆瓣一向热衷于新技术的探索和创新，前端团队在HTML5与CSS3 方面也有过很多尝试，从视觉效果到富媒体内容再到本地存储等等，其中一部分已经应用于线上产品，还有一部分以浏览器扩展、客户端、手持设备应用等形式服务于不同需求的用户。下面我就来简单介绍下：</p>
+
+
+<p>　　<strong>在线上产品中的应用</strong></p>
+
+
+<p>　　豆瓣目前主要的流量来源依然是PC端的IE6，这是个颇具中国特色的无奈事实，但我们同时发现，豆瓣的Chrome和Firefox用户量在不断增长，特别是Chrome，目前已超过Firefox位居第二，这让我们有了充足的理由在产品中加入 HTML5 特性来提升用户体验。</p>
+
+
+<p>　　劝导用户升级浏览器是个需要耐心的工作，一般用户并不会因只停留在单方游说层面的所谓更快、更安全、更符合标准做出任何反应，毕竟改变习惯是个痛苦的决定，引导方式不正确会让用户烦躁，甚至对标准浏览器反目成仇。那何不换个思路，先为一部分勇于尝试新鲜事物的用户提供更为友好的视觉、交互体验，在他们享用的同时自然会对身边使用过时浏览器的朋友产生一种更为直观的影响。这虽然没有游戏玩家在比对速度与3D特效后产生为电脑更新换代的念头来得迅猛，但毕竟是种积极而不唐突的方式。</p>
+
+
+<p>　　豆瓣确实这么做了。细心留意可以发现，在近期的产品 UI 中，圆角、阴影、背景渐变均由 CSS3来完成，这也是视觉设计师与前端工程师加深交流的意义所在，使用CSS3来绘制界面节省了大量代码与图片，从而降低了工作量，也为公司节省了带宽，设计师在设计的同时也考虑了在无法识别 CSS3 的浏览器下元素对应的样式，让低端浏览器用户感受到另一种简约的风格。</p>
+
+
+<p>　　表单验证方面，我们优先判断Form 2.0中新增元素的默认属性，比如type、placeholder、pattern、required等，脚本中对于类型、验证规则的处理只在不支持这些属性的浏览器中生效，让高级浏览器用户体会到原生的执行效率。在读书、电影条目方面我们也开始加入Microdata来实现强大的语义结构，让豆瓣不仅能够提供数据，还能提供数据定义。</p>
+
+
+<p>　　HSL是一个全新的色彩空间，它可以方便地定义色彩的色相、亮度、饱和度，这种定义方式对称于亮与暗，更类似于人类感觉颜色的方式。豆瓣小站的风格是用户自定义的，比如导航栏标签的背景色，但标签悬停时的颜色是由系统生成的，生成的规则便是增加当前背景色的饱和度，使其颜色比默认状态下更深，这在传统RGB色彩空间中是不方便做到的。</p>
+
+
+<p>　　除此之外，豆瓣还在桌面客户端、浏览器扩展、手机应用等方面大量使用了HTML5与CSS3特性，相较于传统开发方式，这种利用前端技术实现的跨平台跨设备的开发思路有其明显的优势：学习成本低（HTML &amp; CSS &amp; JS）、开发周期短（类似于网站前端开发）、代码复用性强（除了针对不同设备的接口调用外，界面、逻辑部分大多可以复用），这也得益于浏览器厂商、手机厂商对于 HTML5 的充分肯定与积极支持。当然，Webkit这个优质的浏览器引擎功不可没。</p>
+
+
+<p>　　<strong>桌面客户端</strong></p>
+
+
+<p>　　OneRing是由豆瓣首席架构师洪强宁开发的一款跨平台桌面应用框架，它支持使用前端技术开发桌面客户端。即将发布的豆瓣电台桌面版（PC/Mac）便是基于OneRing 完成的，HTML5 新增的&lt;audio&gt;元素与相应的API在其中发挥了重要的作用，相信很快就会和大家见面。OneRing 项目主页：<a href="http://code.google.com/p/onering-desktop/">http://code.google.com/p/onering-desktop/</a></p>
+
+
+<p style="text-align:center">　　<img src="http://pic003.cnblogs.com/2010/66372/201012/2010122417431298.jpg" alt=""></p>
+
+
+<p style="text-align:center">　　豆瓣电台桌面版（Mac）界面截图</p>
+
+
+<p style="text-align:left">　　<strong>浏览器扩展</strong></p>
+
+
+<p>　　Douban Pulse是一个 Chrome 浏览器的豆瓣扩展，它可以让用户随时关注友邻动态、参与互动，同时收听“豆瓣电台”。整个扩展完全基于豆瓣API并结合HTML5与CSS3特性完成，除了使用代码绘制界面，CSS Animation完成简单动画、&lt;audio&gt;元素实现电台外，还使用了Web Storage与Web Database进行持久化本地存储。</p>
+
+
+<p>　　比如利用Local Storage来保存登录信息与各种状态，用以再次开启扩展时迅速恢复关闭前的界面；之外还用于实时保存用户输入的文字信息，确保信息不会因网络中断、浏览器崩溃而丢失。比起Cookie，Local Storage的优势显而易见：存储空间大、数据不会随请求发送至服务器，存储空间独立等等，你还可以利用浏览器原生的 JSON 支持，用它来保存结构化对象。</p>
+
+
+<p style="text-align:center">　　<img src="http://pic003.cnblogs.com/2010/66372/201012/2010122417443621.jpg" alt=""></p>
+
+
+<p style="text-align:center">Douban Pulse 偏好设置页界面截图</p>
+
+
+<p style="text-align:center"><img src="http://pic003.cnblogs.com/2010/66372/201012/2010122417454459.jpg" alt=""></p>
+
+
+<p style="text-align:center">Douban Pulse 广播列表界面截图</p>
+
+
+<p style="text-align:left">　　Douban Pulse的歌曲信息是保存在Web Database中的，虽然这种使用SQL语句通过Web SQL Database API操作数据的方式在HTML5规范中存在一些争议（W3C 也停止了该文档的维护），但书写SQL存储复杂数据的方式还是让前端开发者眼前一亮，Chrome从4.0开始至今对其有着良好的支持。</p>
+
+
+<p><img style="display:block;margin-left:auto;margin-right:auto" src="http://pic003.cnblogs.com/2010/66372/201012/2010122417464758.jpg" alt=""></p>
+
+
+<p style="text-align:center"> Douban Pulse 电台已播放曲目列表截图</p>
+
+
+<p>　　<strong>手机应用</strong></p>
+
+
+<p>　　如今Webkit在智能手机平台大行其道，iOS中的Safari Mobile、Android的Chrome Lite 都是很好的实践者，这也为基于HTML5的web app的开发提供了便利，利用一些诸如PhoneGap的框架还可以轻松地将web app变成native app上架App Store。我也尝试了这种方式并将Douban Pulse成功地移植到了iOS上：</p>
+
+
+<p style="text-align:center">　<img src="http://pic003.cnblogs.com/2010/66372/201012/2010122417494923.jpg" alt=""></p>
+
+
+<p style="text-align:center">Douban Pulse iPhone 版（Labs 产品，非官方应用）界面截图</p>
+
+
+<p>　　<strong>结束语</strong></p>
+
+
+<p>　　当然除此之外还有很多激动人心的 HTML5 特性没有提及，比如通信方面的Web Sockets、 Web Workers、桌面提醒 Notifications 以及倍受 LBS 应用青睐的 Geolocation 等等，大家在日常开发中也可以尝试使用，享受 HTML5 为我们带来的惊喜与便利。</p>
+
+
+<p>　　虽然正式标准预计要 2022 年才正式发布，但目前 HTML5 已经被广泛实现，随着规范的不断完善、浏览器支持度的提高，其优势也愈加明显，也许会成为未来 web 应用的核心。</p>
+
+
+<p>　　<strong>关于作者</strong> </p>
+
+
+<p>　　石岩，豆瓣前端工程师，关注网站前端开发、移动设备应用开发，他的豆瓣主页：<a href="http://douban.com/people/mockee">ttp://douban.com/people/mockee</a></p>
+
+
+<p>　　另外，感谢豆瓣网张克军先生对InfoQ中文站的大力支持。</p>
+
+
+<p><br>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/79252/">微软急转弯，HTML5 大潮扑面而来</a><span style="color:gray">(2010-11-01)</span><br>　　· <a href="http://news.cnblogs.com/n/80606/">Silverlight面向客户端，HTML5面向Web</a><span style="color:gray">(2010-11-11)</span><br>　　· <a href="http://news.cnblogs.com/n/85372/">微软推出 HTML5 实验室站点，及两项原型技术 WebSockets 与 IndexedDB</a><span style="color:gray">(2010-12-22)</span><br>　　· <a href="http://news.cnblogs.com/n/85224/">Bing 可视化搜索（HTML5）新外观</a><span style="color:gray">(2010-12-20)</span><br>　　· <a href="http://news.cnblogs.com/n/83561/">Netflix 高管在博客上谈论 HTML5 的应用</a><span style="color:gray">(2010-12-06)</span><br></p>
+
+
+<p>　　本文链接：<a href="http://news.cnblogs.com/n/85824/">http://news.cnblogs.com/n/85824/</a></p>
+
+
+<p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=85824" width="1" height="1" alt=""></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>curl网站开发指南</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>curl网站开发指南</h2>
+<p class="meta">04 Sep 2011</p>
+
+<div class="post">
+<h2>curl网站开发指南</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-09-04 11:20:46</h3>
+
+<h3>original <a href="http://www.ruanyifeng.com/blog/2011/09/curl.html">http://www.ruanyifeng.com/blog/2011/09/curl.html</a></h3>
+
+<p>我一向以为，<a href="http://curl.haxx.se/">curl</a>只是一个编程用的函数库。</p>
+
+
+<p>最近才发现，这个命令本身，就是一个无比有用的网站开发工具，请看我整理的它的用法。</p>
+
+
+
+
+<p>===================================</p>
+
+
+
+
+<p><strong>curl网站开发指南</strong></p>
+
+
+
+
+<p>阮一峰 整理</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201109/bg2011090401.png" style="border:none"></p>
+
+
+
+
+<p><a href="http://curl.haxx.se/">curl</a>是一种命令行工具，作用是发出网络请求，然后得到和提取数据，显示在"标准输出"（stdout）上面。</p>
+
+
+
+
+<p>它支持多种协议，下面举例讲解如何将它用于网站开发。</p>
+
+
+
+
+<p><strong>一、查看网页源码</strong></p>
+
+
+
+
+<p>直接在curl命令后加上网址，就可以看到网页源码。我们以网址www.sina.com为例（选择该网址，主要因为它的网页代码较短）：</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<blockquote>
+
+<p>　　&lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&gt;<br>
+　　&lt;html&gt;&lt;head&gt;<br>
+　　&lt;title&gt;301 Moved Permanently&lt;/title&gt;<br>
+　　&lt;/head&gt;&lt;body&gt;<br>
+　　&lt;h1&gt;Moved Permanently&lt;/h1&gt;<br>
+　　&lt;p&gt;The document has moved &lt;a href=&quot;http://www.sina.com.cn/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;<br>
+　　&lt;/body&gt;&lt;/html&gt;</p>
+
+</blockquote>
+
+
+
+
+<p>如果要把这个网页保存下来，可以使用-o参数，这就相当于使用wget命令了。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl -o [文件名] www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<p><strong>二、自动跳转</strong></p>
+
+
+
+
+<p>有的网址是自动跳转的。使用-L参数，curl就会跳转到新的网址。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl -L www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<p>键入上面的命令，结果就自动跳转为www.sina.com.cn。</p>
+
+
+
+
+<p><strong>三、显示头信息</strong></p>
+
+
+
+
+<p>-i参数可以显示http response的头信息，连同网页代码一起。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl -i www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<blockquote>
+
+<p>　　HTTP/1.0 301 Moved Permanently<br>
+　　Date: Sat, 03 Sep 2011 23:44:10 GMT<br>
+　　Server: Apache/2.0.54 (Unix)<br>
+　　Location: http://www.sina.com.cn/<br>
+　　Cache-Control: max-age=3600<br>
+　　Expires: Sun, 04 Sep 2011 00:44:10 GMT<br>
+　　Vary: Accept-Encoding<br>
+　　Content-Length: 231<br>
+　　Content-Type: text/html; charset=iso-8859-1<br>
+　　Age: 3239<br>
+　　X-Cache: HIT from sh201-9.sina.com.cn<br>
+　　Connection: close</p>
+
+<p>　　&lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&gt;<br>
+　　&lt;html&gt;&lt;head&gt;<br>
+　　&lt;title&gt;301 Moved Permanently&lt;/title&gt;<br>
+　　&lt;/head&gt;&lt;body&gt;<br>
+　　&lt;h1&gt;Moved Permanently&lt;/h1&gt;<br>
+　　&lt;p&gt;The document has moved &lt;a href=&quot;http://www.sina.com.cn/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;<br>
+　　&lt;/body&gt;&lt;/html&gt;</p>
+
+</blockquote>
+
+
+
+
+<p>-I参数则是只显示http response的头信息。</p>
+
+
+
+
+<p><strong>四、显示通信过程</strong></p>
+
+
+
+
+<p>-v参数可以显示一次http通信的整个过程，包括端口连接和http request头信息。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl -v www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<blockquote>
+
+<p>　　* About to connect() to www.sina.com port 80 (#0)<br>
+　　*   Trying 61.172.201.195... connected<br>
+　　* Connected to www.sina.com (61.172.201.195) port 80 (#0)<br>
+　　&gt; GET / HTTP/1.1<br>
+　　&gt; User-Agent: curl/7.21.3 (i686-pc-linux-gnu) libcurl/7.21.3 OpenSSL/0.9.8o zlib/1.2.3.4 libidn/1.18<br>
+　　&gt; Host: www.sina.com<br>
+　　&gt; Accept: */*<br>
+　　&gt; <br>
+　　* HTTP 1.0, assume close after body<br>
+　　&lt; HTTP/1.0 301 Moved Permanently<br>
+　　&lt; Date: Sun, 04 Sep 2011 00:42:39 GMT<br>
+　　&lt; Server: Apache/2.0.54 (Unix)<br>
+　　&lt; Location: http://www.sina.com.cn/<br>
+　　&lt; Cache-Control: max-age=3600<br>
+　　&lt; Expires: Sun, 04 Sep 2011 01:42:39 GMT<br>
+　　&lt; Vary: Accept-Encoding<br>
+　　&lt; Content-Length: 231<br>
+　　&lt; Content-Type: text/html; charset=iso-8859-1<br>
+　　&lt; X-Cache: MISS from sh201-19.sina.com.cn<br>
+　　&lt; Connection: close<br>
+　　&lt; <br>
+　　&lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&gt;<br>
+　　&lt;html&gt;&lt;head&gt;<br>
+　　&lt;title&gt;301 Moved Permanently&lt;/title&gt;<br>
+　　&lt;/head&gt;&lt;body&gt;<br>
+　　&lt;h1&gt;Moved Permanently&lt;/h1&gt;<br>
+　　&lt;p&gt;The document has moved &lt;a href=&quot;http://www.sina.com.cn/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;<br>
+　　&lt;/body&gt;&lt;/html&gt;<br>
+　　* Closing connection #0</p>
+
+</blockquote>
+
+
+
+
+<p>如果你觉得上面的信息还不够，那么下面的命令可以查看更详细的通信过程。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --trace output.txt www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<p>或者</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --trace-ascii output.txt www.sina.com</p>
+
+</blockquote>
+
+
+
+
+<p>运行后，请打开output.txt文件查看。</p>
+
+
+
+
+<p><strong>五、发送表单信息</strong></p>
+
+
+
+
+<p>发送表单信息有GET和POST两种方法。GET方法相对简单，只要把数据附在网址后面就行。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl example.com/form.cgi?data=xxx</p>
+
+</blockquote>
+
+
+
+
+<p>POST方法必须把数据和网址分开，curl就要用到--data参数。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --data "data=xxx" example.com/form.cgi</p>
+
+</blockquote>
+
+
+
+
+<p>如果你的数据没有经过表单编码，还可以让curl为你编码，参数是--data-urlencode。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --data-urlencode "date=April 1" example.com/form.cgi</p>
+
+</blockquote>
+
+
+
+
+<p><strong>六、文件上传</strong></p>
+
+
+
+
+<p>假定文件上传的表单是下面这样：</p>
+
+
+
+
+<blockquote>
+
+<p>　　&lt;form method=&quot;POST&quot; enctype=&#39;multipart/form-data&#39; action=&quot;upload.cgi&quot;&gt;<br>
+　　　　&lt;input type=file name=upload&gt;<br>
+　　　　&lt;input type=submit name=press value=&quot;OK&quot;&gt;<br>
+　　&lt;/form&gt;</p>
+
+</blockquote>
+
+
+
+
+<p>你可以用curl这样上传文件：</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --form upload=@localfilename --form press=OK [URL]</p>
+
+</blockquote>
+
+
+
+
+<p><strong>七、Referer字段</strong></p>
+
+
+
+
+<p>有时你需要在http request头信息中，提供一个referer字段，表示你是从哪里跳转过来的。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --referer http://www.example.com http://www.example.com</p>
+
+</blockquote>
+
+
+
+
+<p><strong>八、User Agent字段</strong></p>
+
+
+
+
+<p>这个字段是用来表示客户端的设备信息。服务器有时会根据这个字段，针对不同设备，返回不同格式的网页，比如手机版和桌面版。</p>
+
+
+
+
+<p>iPhone4的User Agent是</p>
+
+
+
+
+<blockquote>
+
+<p>　　Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_0 like Mac OS X; en-us) AppleWebKit/532.9 (KHTML, like Gecko) Version/4.0.5 Mobile/8A293 Safari/6531.22.7</p>
+
+</blockquote>
+
+
+
+
+<p>curl可以这样模拟：</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --user-agent "[User Agent]" [URL]</p>
+
+</blockquote>
+
+
+
+
+<p><strong>九、cookie</strong></p>
+
+
+
+
+<p>使用--cookie参数，可以让curl发送cookie。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --cookie "name=xxx" www.example.com</p>
+
+</blockquote>
+
+
+
+
+<p>至于具体的cookie的值，可以从http response头信息的Set-Cookie字段中得到。</p>
+
+
+
+
+<p><strong>十、增加头信息</strong></p>
+
+
+
+
+<p>有时需要在http request之中，自行增加一个头信息。--header参数就可以起到这个作用。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --header "xxx: xxxxxx" http://example.com</p>
+
+</blockquote>
+
+
+
+
+<p><strong>十一、HTTP认证</strong></p>
+
+
+
+
+<p>有些网域需要HTTP认证，这时curl需要用到--user参数。</p>
+
+
+
+
+<blockquote>
+
+<p>　　curl --user name:password example.com</p>
+
+</blockquote>
+
+
+
+
+<p><strong>【参考资料】</strong></p>
+
+
+
+
+<p>　　* <a href="http://curl.haxx.se/docs/httpscripting.html">Using cURL to automate HTTP jobs</a></p>
+
+
+
+
+<p>　　* <a href="http://bbs.et8.net/bbs/showthread.php?t=568472">教你学用CURL</a></p>
+
+
+
+
+<p>（完）<br>
+ </p>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#aad2f0;border-radius:10px"><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2011/09/curl.html">http://www.ruanyifeng.com/blog/2011/09/curl.html</a></li>
+<li>最后修改时间：2011年9月21日 18:18</li>
+<li>付费支持（<a href="http://www.ruanyifeng.com/blog/2011/05/my_google_adsense_is_disabled.html" style="text-decoration:underline">说明</a>）：<a href="https://lab.alipay.com/p.htm?id=2011081500435188"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" alt="支付宝担保交易" style="border:none;vertical-align:middle"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.3&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="paypal" style="border:none;vertical-align:middle"></a> </li>
+</ul></div>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;border-radius:10px"><p></p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

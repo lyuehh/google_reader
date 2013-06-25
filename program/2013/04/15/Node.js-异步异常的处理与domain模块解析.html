@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Node.js 异步异常的处理与domain模块解析</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Node.js 异步异常的处理与domain模块解析</h2>
+<p class="meta">15 Apr 2013</p>
+
+<div class="post">
+<h2>Node.js 异步异常的处理与domain模块解析</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-04-15 02:59:05</h3>
+
+<h3>original <a href="http://deadhorse.me/nodejs/2013/04/13/exception_and_domain.html">http://deadhorse.me/nodejs/2013/04/13/exception_and_domain.html</a></h3>
+
+<h3>异步异常处理</h3>
+
+
+
+
+<h4>异步异常的特点</h4>
+
+
+
+
+<p>由于node的回调异步特性，无法通过<code>try catch</code>来捕捉所有的异常：   </p>
+
+
+<div><pre><code><span>try</span> <span>{</span>
+  <span>process</span><span>.</span><span>nextTick</span><span>(</span><span>function</span> <span>()</span> <span>{</span>
+    <span>foo</span><span>.</span><span>bar</span><span>();</span>
+  <span>});</span>
+<span>}</span> <span>catch</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+  <span>//can not catch it</span>
+<span>}</span>
+</code></pre></div>
+
+
+<p>而对于web服务而言，其实是非常希望这样的：   </p>
+
+
+<div><pre><code><span>//express风格的路由</span>
+<span>app</span><span>.</span><span>get</span><span>(</span><span>&#39;/index&#39;</span><span>,</span> <span>function</span> <span>(</span><span>req</span><span>,</span> <span>res</span><span>)</span> <span>{</span>
+  <span>try</span> <span>{</span>
+    <span>//业务逻辑</span>
+  <span>}</span> <span>catch</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+    <span>logger</span><span>.</span><span>error</span><span>(</span><span>err</span><span>);</span>
+    <span>res</span><span>.</span><span>statusCode</span> <span>=</span> <span>500</span><span>;</span>
+    <span>return</span> <span>res</span><span>.</span><span>json</span><span>({</span><span>success</span><span>:</span> <span>false</span><span>,</span> <span>message</span><span>:</span> <span>&#39;服务器异常&#39;</span><span>});</span>
+  <span>}</span>
+<span>});</span>
+</code></pre></div>
+
+
+<p>如果<code>try catch</code>能够捕获所有的异常，这样我们可以在代码出现一些非预期的错误时，能够记录下错误的同时，友好的给调用者返回一个500错误。可惜，<code>try catch</code>无法捕获异步中的异常。所以我们能做的只能是：  </p>
+
+
+<div><pre><code><span>app</span><span>.</span><span>get</span><span>(</span><span>&#39;/index&#39;</span><span>,</span> <span>function</span> <span>(</span><span>req</span><span>,</span> <span>res</span><span>)</span> <span>{</span>
+  <span>// 业务逻辑  </span>
+<span>});</span>
+
+<span>process</span><span>.</span><span>on</span><span>(</span><span>&#39;uncaughtException&#39;</span><span>,</span> <span>function</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+  <span>logger</span><span>.</span><span>error</span><span>(</span><span>err</span><span>);</span>
+<span>});</span>
+</code></pre></div>
+
+
+<p>这个时候，虽然我们可以记录下这个错误的日志，且进程也不会异常退出，但是我们是没有办法对发现错误的请求友好返回的，只能够让它超时返回。  </p>
+
+
+
+
+<h4>domain</h4>
+
+
+
+
+<p>在node v0.8+版本的时候，发布了一个模块<code>domain</code>。这个模块做的就是<code>try catch</code>所无法做到的：捕捉异步回调中出现的异常。<br>
+于是乎，我们上面那个无奈的例子好像有了解决的方案：   </p>
+
+
+<div><pre><code><span>var</span> <span>domain</span> <span>=</span> <span>require</span><span>(</span><span>&#39;domain&#39;</span><span>);</span>
+
+<span>//引入一个domain的中间件，将每一个请求都包裹在一个独立的domain中</span>
+<span>//domain来处理异常</span>
+<span>app</span><span>.</span><span>use</span><span>(</span><span>function</span> <span>(</span><span>req</span><span>,</span><span>res</span><span>,</span> <span>next</span><span>)</span> <span>{</span>
+  <span>var</span> <span>d</span> <span>=</span> <span>domain</span><span>.</span><span>create</span><span>();</span>
+  <span>//监听domain的错误事件</span>
+  <span>d</span><span>.</span><span>on</span><span>(</span><span>&#39;error&#39;</span><span>,</span> <span>function</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+    <span>logger</span><span>.</span><span>error</span><span>(</span><span>err</span><span>);</span>
+    <span>res</span><span>.</span><span>statusCode</span> <span>=</span> <span>500</span><span>;</span>
+    <span>res</span><span>.</span><span>json</span><span>({</span><span>sucess</span><span>:</span><span>false</span><span>,</span> <span>messag</span><span>:</span> <span>&#39;服务器异常&#39;</span><span>});</span>
+    <span>d</span><span>.</span><span>dispose</span><span>();</span>
+  <span>});</span>
+
+  <span>d</span><span>.</span><span>add</span><span>(</span><span>req</span><span>);</span>
+  <span>d</span><span>.</span><span>add</span><span>(</span><span>res</span><span>);</span>
+  <span>d</span><span>.</span><span>run</span><span>(</span><span>next</span><span>);</span>
+<span>});</span>
+
+<span>app</span><span>.</span><span>get</span><span>(</span><span>&#39;/index&#39;</span><span>,</span> <span>function</span> <span>(</span><span>req</span><span>,</span> <span>res</span><span>)</span> <span>{</span>
+  <span>//处理业务</span>
+<span>});</span>
+</code></pre></div>
+
+
+<p>我们通过中间件的形式，引入domain来处理异步中的异常。当然，domain虽然捕捉到了异常，但是还是由于异常而导致的堆栈丢失会导致内存泄漏，所以出现这种情况的时候还是需要重启这个进程的，有兴趣的同学可以去看看<a href="https://github.com/fengmk2/domain-middleware">domain-middleware</a>这个domain中间件。  </p>
+
+
+
+
+<h3>诡异的失效</h3>
+
+
+
+
+<p>我们的测试一切正常，当正式在生产环境中使用的时候，发现<code>domain</code>突然失效了！它竟然没有捕获到异步中的异常，最终导致进程异常退出。经过一番排查，最后发现是由于引入了redis来存放session导致的。   </p>
+
+
+<div><pre><code><span>var</span> <span>http</span> <span>=</span> <span>require</span><span>(</span><span>&#39;http&#39;</span><span>);</span>
+<span>var</span> <span>connect</span> <span>=</span> <span>require</span><span>(</span><span>&#39;connect&#39;</span><span>);</span>
+<span>var</span> <span>RedisStore</span> <span>=</span> <span>require</span><span>(</span><span>&#39;connect-redis&#39;</span><span>)(</span><span>connect</span><span>);</span>
+<span>var</span> <span>domainMiddleware</span> <span>=</span> <span>require</span><span>(</span><span>&#39;domain-middleware&#39;</span><span>);</span>
+
+<span>var</span> <span>server</span> <span>=</span> <span>http</span><span>.</span><span>createServer</span><span>();</span>
+<span>var</span> <span>app</span> <span>=</span> <span>connect</span><span>();</span>
+<span>app</span><span>.</span><span>use</span><span>(</span><span>connect</span><span>.</span><span>session</span><span>({</span>
+  <span>key</span><span>:</span> <span>&#39;key&#39;</span><span>,</span>
+  <span>secret</span><span>:</span> <span>&#39;secret&#39;</span><span>,</span>
+  <span>store</span><span>:</span> <span>new</span> <span>RedisStore</span><span>(</span><span>6379</span><span>,</span> <span>&#39;localhost&#39;</span><span>)</span>
+<span>}));</span>
+<span>//domainMiddleware的使用可以看前面的链接</span>
+<span>app</span><span>.</span><span>use</span><span>(</span><span>domainMiddleware</span><span>({</span>
+  <span>server</span><span>:</span> <span>server</span><span>,</span>
+  <span>killTimeout</span><span>:</span> <span>30000</span>
+<span>}));</span>
+</code></pre></div>
+
+
+<p>此时，当我们的业务逻辑代码中出现了异常，发现竟然没有被<code>domain</code>捕获！经过一番尝试，终于将问题定位到了：  </p>
+
+
+<div><pre><code><span>var</span> <span>domain</span> <span>=</span> <span>require</span><span>(</span><span>&#39;domain&#39;</span><span>);</span>
+<span>var</span> <span>redis</span> <span>=</span> <span>require</span><span>(</span><span>&#39;redis&#39;</span><span>);</span>
+<span>var</span> <span>cache</span> <span>=</span> <span>redis</span><span>.</span><span>createClient</span><span>(</span><span>6379</span><span>,</span> <span>&#39;localhost&#39;</span><span>);</span>
+
+<span>function</span> <span>error</span><span>()</span> <span>{</span>
+  <span>cache</span><span>.</span><span>get</span><span>(</span><span>&#39;a&#39;</span><span>,</span> <span>function</span> <span>()</span> <span>{</span>
+    <span>throw</span> <span>new</span> <span>Error</span><span>(</span><span>&#39;something wrong&#39;</span><span>);</span>
+  <span>});</span>
+<span>}</span>
+
+<span>function</span> <span>ok</span> <span>()</span> <span>{</span>
+  <span>setTimeout</span><span>(</span><span>function</span> <span>()</span> <span>{</span>
+    <span>throw</span> <span>new</span> <span>Error</span><span>(</span><span>&#39;something wrong&#39;</span><span>);</span>
+  <span>},</span> <span>100</span><span>);</span>
+<span>}</span>
+<span>var</span> <span>d</span> <span>=</span> <span>domain</span><span>.</span><span>create</span><span>();</span>
+<span>d</span><span>.</span><span>on</span><span>(</span><span>&#39;error&#39;</span><span>,</span> <span>function</span> <span>(</span><span>err</span><span>)</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>err</span><span>);</span>
+<span>});</span>
+
+<span>d</span><span>.</span><span>run</span><span>(</span><span>ok</span><span>);</span>    <span>//domain捕获到异常</span>
+<span>d</span><span>.</span><span>run</span><span>(</span><span>error</span><span>);</span> <span>//异常被抛出</span>
+</code></pre></div>
+
+
+<p>奇怪了！都是异步调用，为什么前者被捕获，后者却没办法捕获到呢？   </p>
+
+
+
+
+<h3>Domain剖析</h3>
+
+
+
+
+<p>回过头来，我们来看看domain做了些什么来让我们捕获异步的请求(代码来自node v0.10.4，此部分可能正在快速变更优化)。如果对domain还不甚了解的同学可以先简单过一下domain的<a href="http://deadhorse.me/nodejs.org/api/domain.html">文档</a>。  </p>
+
+
+
+
+<h4>node事件循环机制</h4>
+
+
+
+
+<p>在看Domain的原理之前，我们先要了解一下<code>nextTick</code>和<code>_tickCallback</code>的<a href="https://github.com/joyent/node/blob/v0.10.4/src/node.js#L395">两个方法</a>。  </p>
+
+
+<div><pre><code><span>function</span> <span>laterCall</span><span>()</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;print me later&#39;</span><span>);</span>
+<span>}</span>
+
+<span>process</span><span>.</span><span>nextTick</span><span>(</span><span>laterCallback</span><span>);</span>
+<span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;print me first&#39;</span><span>);</span>
+</code></pre></div>
+
+
+<p>上面这段代码写过node的人都很熟悉，<code>nextTick</code>的作用就是把laterCallback放到下一个事件循环去执行。而<code>_tickCallback</code>方法则是一个非公开的方法，这个方法是在当前时间循环结束之后，调用之以继续进行下一个事件循环的入口函数。  </p>
+
+
+
+
+<p>换而言之，node为事件循环维持了一个队列，<code>nextTick</code>入队，<code>_tickCallback</code>出列。  </p>
+
+
+
+
+<h4>domain的实现</h4>
+
+
+
+
+<p>在了解了node的事件循环机制之后，我们再来看看domain做了些什么。<br>
+domain自身其实是一个<code>EventEmitter</code>对象，它通过事件的方式来传递捕获的错误。这样我们在研究它的时候，就简化到两个点：  </p>
+
+
+
+
+<ul>
+<li><p>什么时候触发domain的<code>error</code>事件：  </p>
+
+<ul>
+<li>进程抛出了异常，没有被任何的<code>try catch</code>捕获到，这时候将会触发整个process的<code>processFatal</code>，此时如果在domain包裹之中，将会在domain上触发<code>error</code>事件，反之，将会在process上触发<code>uncaughtException</code>事件。<br></li>
+</ul></li>
+<li><p>domain如何在多个不同的事件循环中传递：     </p>
+
+<ol>
+<li>当domain被实例化之后，我们通常会调用它的<code>run</code>方法（如之前在web服务中的使用），来将某个函数在这个domain示例的包裹中执行。被包裹的函数在执行的时候，<code>process.domain</code>这个全局变量将会被指向这个domain实例。当这个事件循环中，抛出异常调用<code>processFatal</code>的时候，发现<code>process.domain</code>存在，就会在domain上触发<code>error</code>事件。<br></li>
+<li>在require引入domain模块之后，会重写全局的<code>nextTick</code>和<code>_tickCallback</code>,注入一些domain相关的<a href="https://github.com/joyent/node/blob/v0.10.4/src/node.js#L426">代码</a>：</li>
+</ol>
+<div><pre><code><span>//简化后的domain传递部分代码</span>
+<span>function</span> <span>nextDomainTick</span><span>(</span><span>callback</span><span>)</span> <span>{</span>
+  <span>nextTickQueue</span><span>.</span><span>push</span><span>({</span><span>callback</span><span>:</span> <span>callback</span><span>,</span> <span>domain</span><span>:</span> <span>process</span><span>.</span><span>domain</span><span>});</span>
+<span>}</span>
+
+<span>function</span> <span>_tickDomainCallback</span><span>()</span> <span>{</span>
+  <span>var</span> <span>tock</span> <span>=</span> <span>nextTickQueue</span><span>.</span><span>pop</span><span>();</span>
+  <span>//设置process.domain = tock.domain</span>
+  <span>tock</span><span>.</span><span>domain</span> <span>&amp;&amp;</span> <span>tock</span><span>.</span><span>domain</span><span>.</span><span>enter</span><span>();</span>
+  <span>callback</span><span>();</span>
+  <span>//清除process.domain</span>
+  <span>tock</span><span>.</span><span>domain</span> <span>&amp;&amp;</span> <span>tock</span><span>.</span><span>domain</span><span>.</span><span>exit</span><span>();</span>        
+  <span>}</span>
+<span>};</span>
+</code></pre></div></li>
+</ul>
+
+
+
+
+<p>这个是其在多个事件循环中传递domain的关键：<code>nextTick</code>入队的时候，记录下当前的domain，当这个被加入队列中的事件循环被<code>_tickCallback</code>启动执行的时候，将新的事件循环的<code>process.domain</code>置为之前记录的<code>domain</code>。这样，在被<code>domain</code>所包裹的代码中，不管如何调用<code>process.nextTick</code>, domain将会一直被传递下去。<br>
+  3. 当然，node的异步还有两种情况，一种是<code>event</code>形式。因此在<code>EventEmitter</code>的<a href="https://github.com/joyent/node/blob/master/lib/events.js#L28">构造函数</a>有如下代码：  </p>
+
+
+<div><pre><code>    <span>if</span> <span>(</span><span>exports</span><span>.</span><span>usingDomains</span><span>)</span> <span>{</span>
+      <span>// if there is an active domain, then attach to it.</span>
+      <span>domain</span> <span>=</span> <span>domain</span> <span>||</span> <span>require</span><span>(</span><span>&#39;domain&#39;</span><span>);</span>
+      <span>if</span> <span>(</span><span>domain</span><span>.</span><span>active</span> <span>&amp;&amp;</span> <span>!</span><span>(</span><span>this</span> <span>instanceof</span> <span>domain</span><span>.</span><span>Domain</span><span>))</span> <span>{</span>
+        <span>this</span><span>.</span><span>domain</span> <span>=</span> <span>domain</span><span>.</span><span>active</span><span>;</span>
+      <span>}</span>
+    <span>}</span>
+</code></pre></div>
+
+
+<p>实例化<code>EventEmitter</code>的时候，将会把这个对象和当前的domain绑定，当通过<code>emit</code>触发这个对象上的事件时，像<code>_tickCallback</code>执行的时候一样，回调函数将会重新被当前的<code>domain</code>包裹住。<br>
+  4. 而另一种情况，是<code>setTimeout</code>和<code>setInterval</code>，同样的，在<code>timer</code>的源码中，我们也可以发现这样的一句<a href="https://github.com/joyent/node/blob/master/lib/timers.js#L214">代码</a>:   </p>
+
+
+<div><pre><code>   <span>if</span> <span>(</span><span>process</span><span>.</span><span>domain</span><span>)</span> <span>timer</span><span>.</span><span>domain</span> <span>=</span> <span>process</span><span>.</span><span>domain</span><span>;</span>
+</code></pre></div>
+
+
+<p>跟<code>EventEmmiter</code>一样，之后这些<code>timer</code>的回调函数也将被当前的domain包裹住了。   </p>
+
+
+
+
+<p><strong>node通过在<code>nextTick</code>, <code>timer</code>, <code>event</code>三个关键的地方插入domain的代码，让它们得以在不同的事件循环中传递。</strong></p>
+
+
+
+
+<h4>更复杂的domain</h4>
+
+
+
+
+<p>有些情况下，我们可能会遇到需要更加复杂的domain使用。   </p>
+
+
+
+
+<ul>
+<li>domain嵌套：我们可能会外层有domain的情况下，内层还有其他的domain，使用情景可以在文档中<a href="http://nodejs.org/api/domain.html#domain_explicit_binding">找到</a><br></li>
+</ul>
+
+
+<div><pre><code><span>// create a top-level domain for the server</span>
+<span>var</span> <span>serverDomain</span> <span>=</span> <span>domain</span><span>.</span><span>create</span><span>();</span>
+
+<span>serverDomain</span><span>.</span><span>run</span><span>(</span><span>function</span><span>()</span> <span>{</span>
+  <span>// server is created in the scope of serverDomain</span>
+  <span>http</span><span>.</span><span>createServer</span><span>(</span><span>function</span><span>(</span><span>req</span><span>,</span> <span>res</span><span>)</span> <span>{</span>
+    <span>// req and res are also created in the scope of serverDomain</span>
+    <span>// however, we&#39;d prefer to have a separate domain for each request.</span>
+    <span>// create it first thing, and add req and res to it.</span>
+    <span>var</span> <span>reqd</span> <span>=</span> <span>domain</span><span>.</span><span>create</span><span>();</span>
+    <span>reqd</span><span>.</span><span>add</span><span>(</span><span>req</span><span>);</span>
+    <span>reqd</span><span>.</span><span>add</span><span>(</span><span>res</span><span>);</span>
+    <span>reqd</span><span>.</span><span>on</span><span>(</span><span>&#39;error&#39;</span><span>,</span> <span>function</span><span>(</span><span>er</span><span>)</span> <span>{</span>
+      <span>console</span><span>.</span><span>error</span><span>(</span><span>&#39;Error&#39;</span><span>,</span> <span>er</span><span>,</span> <span>req</span><span>.</span><span>url</span><span>);</span>
+      <span>try</span> <span>{</span>
+        <span>res</span><span>.</span><span>writeHead</span><span>(</span><span>500</span><span>);</span>
+        <span>res</span><span>.</span><span>end</span><span>(</span><span>&#39;Error occurred, sorry.&#39;</span><span>);</span>
+      <span>}</span> <span>catch</span> <span>(</span><span>er</span><span>)</span> <span>{</span>
+        <span>console</span><span>.</span><span>error</span><span>(</span><span>&#39;Error sending 500&#39;</span><span>,</span> <span>er</span><span>,</span> <span>req</span><span>.</span><span>url</span><span>);</span>
+      <span>}</span>
+    <span>});</span>
+  <span>}).</span><span>listen</span><span>(</span><span>1337</span><span>);</span>
+<span>});</span>
+</code></pre></div>
+
+
+<p>为了实现这个功能，其实domain还会偷偷的自己维持一个domain的stack，有兴趣的童鞋可以在<a href="https://github.com/joyent/node/blob/v0.10.4/lib/domain.js#L44">这里</a>看到。   </p>
+
+
+
+
+<h4>回头解决疑惑</h4>
+
+
+
+
+<p>回过头来，我们再来看刚才遇到的问题：为什么两个看上去都是同样的异步调用，却有一个domain无法捕获到异常？理解了原理之后不难想到，肯定是调用了redis的那个异步调用在抛出错误的这个事件循环内，是不在domain的范围之内的。我们通过一段更加简短的代码来看看，到底在哪里出的问题。   </p>
+
+
+<div><pre><code><span>var</span> <span>domain</span> <span>=</span> <span>require</span><span>(</span><span>&#39;domain&#39;</span><span>);</span>
+<span>var</span> <span>EventEmitter</span> <span>=</span> <span>require</span><span>(</span><span>&#39;events&#39;</span><span>).</span><span>EventEmitter</span><span>;</span>
+
+<span>var</span> <span>e</span> <span>=</span> <span>new</span> <span>EventEmitter</span><span>();</span>
+
+<span>var</span> <span>timer</span> <span>=</span> <span>setTimeout</span><span>(</span><span>function</span> <span>()</span> <span>{</span>
+  <span>e</span><span>.</span><span>emit</span><span>(</span><span>&#39;data&#39;</span><span>);</span>  
+<span>},</span> <span>10</span><span>);</span>
+
+<span>function</span> <span>next</span><span>()</span> <span>{</span>
+  <span>e</span><span>.</span><span>once</span><span>(</span><span>&#39;data&#39;</span><span>,</span> <span>function</span> <span>()</span> <span>{</span>
+    <span>throw</span> <span>new</span> <span>Error</span><span>(</span><span>&#39;something wrong here&#39;</span><span>);</span>
+  <span>});</span>
+<span>}</span>
+
+<span>var</span> <span>d</span> <span>=</span> <span>domain</span><span>.</span><span>create</span><span>();</span>
+<span>d</span><span>.</span><span>on</span><span>(</span><span>&#39;error&#39;</span><span>,</span> <span>function</span> <span>()</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;cache by domain&#39;</span><span>);</span>
+<span>});</span>
+
+<span>d</span><span>.</span><span>run</span><span>(</span><span>next</span><span>);</span>
+</code></pre></div>
+
+
+<p>此时我们同样发现，错误不会被domain捕捉到，原因很清晰了：<code>timer</code>和<code>e</code>两个关键的对象在初始化的时候都时没有在domain的范围之内，因此，当在<code>next</code>函数中监听的事件被触发，执行抛出异常的回调函数时，其实根本就没有处于domain的包裹中，当然就不会被<code>domain</code>捕获到异常了！   </p>
+
+
+
+
+<p>其实node针对这种情况，专门设计了一个<a href="http://nodejs.org/api/domain.html#domain_domain_add_emitter">API：domain.add</a>。它可以将domain之外的<code>timer</code>和<code>event</code>对象，添加到当前domain中去。对于上面那个例子：   </p>
+
+
+<div><pre><code><span>d</span><span>.</span><span>add</span><span>(</span><span>timer</span><span>);</span>
+<span>//or</span>
+<span>d</span><span>.</span><span>add</span><span>(</span><span>e</span><span>);</span>
+</code></pre></div>
+
+
+<p>将<code>timer</code>或者<code>e</code>任意一个对象添加到domain上，就可以让错误被domain捕获了。   </p>
+
+
+
+
+<p>再来看最开始<code>redis</code>导致domain无法捕捉到异常的问题。我们是不是也有办法可以解决呢？<br>
+看<a href="http://weibo.com/81715239">@python发烧友</a> 的这条<a href="http://weibo.com/1640328892/zrP7PdLkG">微博</a>我们就能理解，其实对于这种情况，还是没有办法实现最佳的解决方案的。现在对于非预期的异常产生的时候，我们只能够让当前请求超时，然后让这个进程停止服务，之后重新启动。<a href="https://github.com/fengmk2/graceful">graceful</a>模块配合<code>cluster</code>就可以实现这个解决方案。  </p>
+
+
+
+
+<p><strong><code>domain</code>十分强大，但不是万能的。</strong>希望在看过这篇文章之后，大家能够正确的使用domian，避免踩坑。:)</p>
+
+
+
+
+<hr>
+
+
+
+
+<h4>题外推荐</h4>
+
+
+
+
+<p>在整个问题排查与代码研究过程中，有一个工具起了巨大的作用：<code>node-inspector</code>，它可以让node代码在chrome下进行单步调试，能够跟进到node源码之中，<a href="http://weibo.com/goddyzhao">@goddyzhao</a>的文章<a href="http://blog.goddyzhao.me/post/11522397416/how-to-debug-node-with-node-inspector">使用node-inspector来调试node</a>详细介绍了如何使用<code>node-inspector</code>。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/730123995/deadhorse/feedsky/s.gif?r=http://deadhorse.me/nodejs/2013/04/13/exception_and_domain.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

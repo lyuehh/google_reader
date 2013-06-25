@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jQuery创建实例与原型继承揭秘</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>jQuery创建实例与原型继承揭秘</h2>
+<p class="meta">21 Dec 2011</p>
+
+<div class="post">
+<h2>jQuery创建实例与原型继承揭秘</h2>
+
+<h3>by 小玉西瓜</h3>
+
+<h3>at 2011-12-20 23:42:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/enix/archive/2011/12/20/2295290.html">http://www.cnblogs.com/enix/archive/2011/12/20/2295290.html</a></h3>
+
+<p>在普通情况下我们要用原生类、或者自定义类创建实例要用new运算符，使构造函数创建一个实例，并且实例继承构造器prototype上的所有公有方法。如 new Object()、new Date()等等！（object有{}，数组有[]这样的快捷方式 ，我们主要探讨new这种方式。）</p>
+
+
+<p align="left">我们在使用jQuery时从来没有使用过new，他是不是用其他方法来生成实例呢？是不是没有使用prototype属性呢？事实上他都有使用，只是内部处理的非常巧妙，提高了使用的爽快度。我们来看看他的源码</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">funtion jQuery( selector, context){<br><br>return new jQuery.fn.init( selector, context );<br>}<br></div>
+
+
+<p>这里可以看出jQuery是有构造函数的，也是用了new 创建实例的。那么jQuery.fn是什么呢？后面有个这样的处理：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.fn = jQuery.prototype={<br>       init：function (){}<br>}　</div>
+
+
+<p>这样我们就明白了,<strong>jQuery的构造函数是他原型上的init方法，而不是function jQuery。</strong>这样的话每次调用$()他都会用jQuery原型上的init创建一个实例，那么新的问题来了。如果用init创建实例的话，这个对象继承的是init的prototype上的方法而不会继承jQuery prototype上的方法，那么他是怎么实现原型继承的呢？</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.fn.init.prototype = jQuery.fn;<br></div>
+
+
+<p>这里他有一个这样的处理，把jQuery.fn赋值给了jQuery.fn.init.prototype ，这一步很关键。我门看看这些是什么。</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.fn是jQuery.prototype</div>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.fn.init.prototype是jQuery.prototype.init.prototype</div>
+
+
+<p></p>
+
+
+<p>这个处理相当于</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.prototype = jQuery.prototype.init.prototype</div>
+
+
+<p>那么每当我们调用$()是，jQuery就会用new运算符调用他prototype上的init创建一个实例，这个由init创建实例会继承jQuery protype上的所有方法，并且这个实例的__proto__内部属性会指向jQuery的prototype属性。</p>
+
+
+<p></p>
+
+
+<p>另外我们注意到这个处理：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.fn = jQuery.prototype<br></div>
+
+
+<p>这是他为了避免频繁的操作jQuery.prototype，所以用jQuery.fn缓存了jQuery.prototype。</p>
+
+
+<p></p>
+
+
+<p>这些的处理实在是非常巧妙，内部处理了实例创建不用使用者用new去生成实例，又非常漂亮的处理了prototype保证多实例共享方法减少资源开支，约翰哥真的不简单。</p>
+
+
+<p><br><br></p>
+
+
+<p><img src="http://www.cnblogs.com/enix/aggbug/2295290.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/enix/archive/2011/12/20/2295290.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>重新认识CSS的权重 [11]</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>重新认识CSS的权重 [11]</h2>
+<p class="meta">20 Aug 2011</p>
+
+<div class="post">
+<h2>重新认识CSS的权重 [11]</h2>
+
+<h3>by Ghost</h3>
+
+<h3>at 2011-08-19 18:43:44</h3>
+
+<h3>original <a href="http://www.cssforest.org/blog/index.php?id=185">http://www.cssforest.org/blog/index.php?id=185</a></h3>
+
+<p>今天 <a href="http://www.dabaiii.com/">大白</a> 问了一个关于CSS权重的问题：</p>
+
+
+<pre><code>&lt;blockquote&gt;
+    &lt;p&gt;关于选择器权重的问题 。class的权重是10  标签权重是 1  。比如说  p span{} 权重是2. 如果11标签自选择器的组合的权重11，会不会覆盖 一个class选择器权重10的 样式？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在跟他的讨论中，重新整理了我对CSS权重的理解。&lt;/p&gt;
+
+&lt;p&gt;在《 &lt;a href="http://www.cssforest.org/blog/index.php?id=161"&gt;样式的作用域──页面重构中的模块化设计（一）&lt;/a&gt; 》中有做过总结，其中提到比较重要的两点：&lt;/p&gt;
+
+&lt;blockquote&gt;
+    &lt;p&gt; &lt;ol&gt;
+    &lt;li&gt;权值的大小跟选择器的类型和数量有关&lt;/li&gt;
+    &lt;li&gt;样式的优先级跟样式的定义顺序有关&lt;/li&gt;
+&lt;/ol&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在《 &lt;a href="http://www.cssforest.org/blog/index.php?id=164"&gt;继承──页面重构中的模块化设计（三）&lt;/a&gt; 》的评论中 &lt;a href="http://www.operafans.net/"&gt;operafans&lt;/a&gt; 也提到了 &lt;cite&gt;标签选择器的权值永远都比一个类选器择器的权值低，无论有多少个&lt;/cite&gt; 但一直以来都还是没能想通。&lt;/p&gt;
+
+&lt;p&gt;其实规则很简单： &lt;strong&gt;比较同一级别的个数，数量多的优先级高，如果相同即比较下一级别的个数&lt;/strong&gt; ，至于各级别的优先级，大家应该已经很清楚了，就是：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;important &amp;gt; 内联 &amp;gt; ID &amp;gt; 类 &amp;gt; 标签 | 伪类 | 属性选择 &amp;gt; 伪对象 &amp;gt; &lt;del&gt;继承 &amp;gt; 通配符&lt;/del&gt; &lt;ins&gt;通配符 &amp;gt; 继承&lt;/ins&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;这也就解释了为什么11个标签的定义会比不上1个类的定义，1个类加11个标签会比不上2个类的权重高。&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

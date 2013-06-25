@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[翻译]用 Backbone.js, underscore.js 和 jQuery 创建页面应用</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[翻译]用 Backbone.js, underscore.js 和 jQuery 创建页面应用</h2>
+<p class="meta">29 Dec 2010</p>
+
+<div class="post">
+<h2>[翻译]用 Backbone.js, underscore.js 和 jQuery 创建页面应用</h2>
+
+<h3>by chencheng</h3>
+
+<h3>at 2010-12-29 13:22:33</h3>
+
+<h3>original <a href="http://www.chencheng.org/blog/2010/12/29/building-a-single-page-app-with-backbonejs-undersc/">http://www.chencheng.org/blog/2010/12/29/building-a-single-page-app-with-backbonejs-undersc/</a></h3>
+
+<p>原文：</p>
+
+
+<div><p><img src="http://andyet.net/uploads/backbone-graphic.png" style="border:10px solid #f2f2f2"></p><h2>概览</h2><p>&amp;yet 逐渐有了越来越多的富 JS 应用。直到最近，我们才找到合适通用的应用架构。</p><p>并不出奇，我们发现要重复处理很多相同的问题。</p><p>最近，我看到有个叫  的库，并仔细看了下。结果我被他征服了，接下去会解释为什么用他以及如何用。</p></div>
+
+
+<div><h2>问题<a href="http://www.chencheng.org/blog/#id2" title="Permalink to this headline">¶</a></h2><p>创建复杂的应用肯定会面临很多挑战，首先是要管理日益庞大的代码。此外，由于 JavaScript 没有正式的类，因此也没有明确的方法来组织整个应用。</p><p>因为这些原因，JS 开发新人创建类似应用通常会经历类似以下过程：</p><ol> 
+<li>对 jQuery 等类库很兴奋，尝试在 DOM 中存储数据和应用状态</li> 
+<li>需要记录的内容越来越多，开始觉得第一步很 tricky，尝试在 JS model 中存储状态</li> 
+<li>开始发现绑定 model change 到 UI，通过 model 的 setter 和 getter 调用函数，会变得比较混乱。不得不在 UI 上重复 model 的修改，而且还不清楚在哪里改，于是写出很多意大利面条式的代码</li> 
+<li>开始构建自己的应用框架甚至基础类库</li> 
+<li>最后发现，上面的痛苦，早就有人经历过，并解决了，而且开源了，维护得很好，代码质量很好，社区的人都很聪明</li> 
+</ol></div>
+
+
+<div><h2>目标<a href="http://www.chencheng.org/blog/#id3" title="Permalink to this headline">¶</a></h2><ol> 
+<li>所有 state 和 model 放在同一个地方</li> 
+ 
+<li>清晰可维护的代码结构</li> 
+ 
+</ol></div>
+
+
+<div><h2>开始 Backbone.js<a href="http://www.chencheng.org/blog/#id4" title="Permalink to this headline">¶</a></h2><p>Backbone 没有提供组件或应用，甚至没有提供任何视图层的东西。他只提供了一些关键对象来辅助代码的组织，即：Models, Collections 和 Views。最终是为了在客户端创建清晰的 MVC 应用。此外，还有些基础对象以及处理 change 的事件架构。我们来依次看下。</p><div><h3>MODEL 对象<a href="http://www.chencheng.org/blog/#model" title="Permalink to this headline">¶</a></h3><div></div><p>现在你可以进行实例化，设置和获取属性等操作。</p><div><pre>matrix = new Movie();
+matrix.set({
+    title: "The Matrix",
+    format: "dvd'
+});
+matrix.get('title');</pre></div><p>如果需要在实例化时强制创建特定属性，可提供 <tt><span>initialize()</span></tt> 函数来做初始化检查。基于约定，initialize 函数被调用时会传入你传给构造器的参数。</p><div></div><p>还可以定义 <tt></tt> 方法。他会在设置属性时被调用，可以用来验证属性。只要 <tt><span>validate()</span></tt> 方法返回任何内容都会阻止属性的设置。</p><div><div><pre><span>var</span> <span>Movie</span> <span>=</span> <span>Backbone</span><span>.</span><span>Model</span><span>.</span><span>extend</span><span>({</span> 
+    <span>validate</span><span>:</span> <span>function</span> <span>(</span><span>attrs</span><span>)</span> <span>{</span> 
+        <span>if</span> <span>(</span><span>attrs</span><span>.</span><span>title</span><span>)</span> <span>{</span> 
+            <span>if</span> <span>(</span><span>!</span><span>_</span><span>.</span><span>isString</span><span>(</span><span>attrs</span><span>.</span><span>title</span><span>)</span> <span>||</span> <span>attrs</span><span>.</span><span>title</span><span>.</span><span>length</span> <span>===</span> <span>0</span> <span>)</span> <span>{</span> 
+                <span>return</span> <span>&quot;Title must be a string with a length&quot;</span><span>;</span> 
+            <span>}</span> 
+        <span>}</span> 
+    <span>}</span> 
+<span>});</span> 
+</pre></div></div><p>model 中还有其他非常多的好东西。这里我只做概括，并没有代替原生文档的意思。。我们继续。</p></div><div><h3>COLLECTIONS<a href="http://www.chencheng.org/blog/#collections" title="Permalink to this headline">¶</a></h3><p>collection 是某一类型 model 的有序集合。他除了把 model 储存在一个 JS 数组里，还提供了一堆实用功能。比如获取 model 时，可通过 <tt><span>comparator()</span></tt> 函数定义规则来保持 model 的有序返回。</p><p>先 collection 要保存什么类型的 model，之后的事情就非常简单了：</p><div><div><pre><span>// define our collection</span> 
+<span>var</span> <span>MovieLibrary</span> <span>=</span> <span>Backbone</span><span>.</span><span>Collection</span><span>.</span><span>extend</span><span>({</span> 
+    <span>model</span><span>:</span> <span>Movie</span><span>,</span> 
+    <span>initialize</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>// somthing</span> 
+    <span>}</span> 
+<span>});</span> 
+ 
+<span>var</span> <span>library</span> <span>=</span> <span>new</span> <span>MovieLibarary</span><span>();</span> 
+ 
+<span>// you can add stuff by creating the model first</span> 
+<span>var</span> <span>dumb_and_dumber</span> <span>=</span> <span>new</span> <span>Movie</span><span>({</span> 
+    <span>title</span><span>:</span> <span>&quot;Dumb and Dumber&quot;</span><span>,</span> 
+    <span>format</span><span>:</span> <span>&quot;dvd&quot;</span> 
+<span>});</span> 
+ 
+<span>library</span><span>.</span><span>add</span><span>(</span><span>dumb_and_dumber</span><span>);</span> 
+ 
+<span>// or even by adding the raw attributes</span> 
+<span>library</span><span>.</span><span>add</span><span>({</span> 
+    <span>title</span><span>:</span> <span>&quot;The Big Lebowski&quot;</span><span>,</span> 
+    <span>format</span><span>:</span> <span>&quot;VHS&quot;</span> 
+<span>});</span> 
+</pre></div></div><p>同上，collection 中也还有很多其他好东西，但主要功能是解决有序维护 model 集合的问题。</p></div><div><h3>VIEWS<a href="http://www.chencheng.org/blog/#views" title="Permalink to this headline">¶</a></h3><p>在这里可以操作 DOM ，以及处理一些兼容性问题。这是唯一于依赖 jQuery 的地方。</p><p>通常约定用 view 来向浏览器绘制 model 的改变，可以直接操作 HTML。初始渲染时(首次添加新的model)还需要一些给力的客户端模板引擎。我个人倾向于使用 <a href="http://github.com/andyet/ICanHaz.js">ICanHaz.js</a> 和 <a href="http://github.com/janl/mustache.js/">Mustache.js</a> 。(如果对此感兴趣，可以看 <a href="http://github.com/andyet/ICanHaz.js">ICanHaz.js on github</a>) 此时，view 就可以监听并响应 model 的修改了。</p><p>这里有个 Movie 对应的简单的 view：</p><div><div><pre><span>var</span> <span>MovieView</span> <span>=</span> <span>Backbone</span><span>.</span><span>View</span><span>.</span><span>extend</span><span>({</span> 
+    <span>initialize</span><span>:</span> <span>function</span> <span>(</span><span>args</span><span>)</span> <span>{</span> 
+        <span>_</span><span>.</span><span>bindAll</span><span>(</span><span>this</span><span>,</span> <span>&#39;changeTitle&#39;</span><span>);</span> 
+        <span>this</span><span>.</span><span>model</span><span>.</span><span>bind</span><span>(</span><span>&#39;change:title&#39;</span><span>,</span> <span>this</span><span>.</span><span>changeTitle</span><span>);</span> 
+    <span>},</span> 
+ 
+    <span>events</span><span>:</span> <span>{</span> 
+        <span>&#39;click .title&#39;</span><span>:</span> <span>&#39;handleTitleClick&#39;</span> 
+    <span>},</span> 
+ 
+    <span>render</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>// &quot;ich&quot; is ICanHaz.js magic</span> 
+        <span>this</span><span>.</span><span>el</span> <span>=</span> <span>ich</span><span>.</span><span>movie</span><span>(</span><span>this</span><span>.</span><span>model</span><span>.</span><span>toJSON</span><span>());</span> 
+        <span>return</span> <span>this</span><span>;</span> 
+    <span>},</span> 
+ 
+    <span>changeTitle</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>this</span><span>.</span><span>$</span><span>(</span><span>&#39;.title&#39;</span><span>).</span><span>text</span><span>(</span><span>this</span><span>.</span><span>model</span><span>.</span><span>get</span><span>(</span><span>&#39;title&#39;</span><span>));</span> 
+    <span>},</span> 
+ 
+    <span>handleTitleClick</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>alert</span><span>(</span><span>&#39;you clicked the title: &#39;</span> <span>+</span> <span>this</span><span>.</span><span>model</span><span>.</span><span>get</span><span>(</span><span>&#39;title&#39;</span><span>));</span> 
+    <span>}</span> 
+<span>});</span> 
+</pre></div></div><p>view 处理两类事件。首先， <tt><span>events</span></tt> 属性用于连接用户事件和处理器，这个例子里具体是处理模板中包含 <tt><span>title</span></tt> class 元素的点击事件。另外，backbone 还提供很多强大的功能来确保任何对于 model 的修改会自动更新到 html。</p></div></div>
+
+
+<div><h2>合到一起<a href="http://www.chencheng.org/blog/#id5" title="Permalink to this headline">¶</a></h2><p>目前为止，我们谈论的是一些片段。现在我们来说下如何把他们汇聚到一起，做一个完整的应用。</p><div><h3>全局 CONTROLLER 对象<a href="http://www.chencheng.org/blog/#controller" title="Permalink to this headline">¶</a></h3><p>虽然也可以把 controller 放在 AppView 对象里，但我不喜欢把 model 对象存在 view 里。所以我创建了一个全局的 controller 对象来存所有的东西。我创建了一个名字和应用相同的简单的单例对象，继续我们的例子：</p><div><div><pre><span>var</span> <span>MovieAppController</span> <span>=</span> <span>{</span> 
+    <span>init</span><span>:</span> <span>function</span> <span>(</span><span>spec</span><span>)</span> <span>{</span> 
+        <span>// default config</span> 
+        <span>this</span><span>.</span><span>config</span> <span>=</span> <span>{</span> 
+            <span>connect</span><span>:</span> <span>true</span> 
+        <span>};</span> 
+        <span>// extend our default config with passed in object attributes</span> 
+        <span>_</span><span>.</span><span>extend</span><span>(</span><span>this</span><span>.</span><span>config</span><span>,</span> <span>spec</span><span>);</span> 
+        <span>this</span><span>.</span><span>model</span> <span>=</span> <span>new</span> <span>MovieAppModel</span><span>({</span> 
+            <span>nick</span><span>:</span> <span>this</span><span>.</span><span>config</span><span>.</span><span>nick</span><span>,</span> 
+            <span>account</span><span>:</span> <span>this</span><span>.</span><span>config</span><span>.</span><span>account</span><span>,</span> 
+            <span>jid</span><span>:</span> <span>this</span><span>.</span><span>config</span><span>.</span><span>jid</span><span>,</span> 
+            <span>boshUrl</span><span>:</span> <span>this</span><span>.</span><span>config</span><span>.</span><span>boshUrl</span> 
+        <span>});</span> 
+        <span>this</span><span>.</span><span>view</span> <span>=</span> <span>new</span> <span>MovieAppView</span><span>({</span><span>model</span><span>:</span> <span>this</span><span>.</span><span>model</span><span>});</span> 
+        <span>// standalone modules that respond to document events</span> 
+        <span>this</span><span>.</span><span>sm</span> <span>=</span> <span>new</span> <span>SoundMachine</span><span>();</span> 
+        <span>return</span> <span>this</span><span>;</span> 
+    <span>},</span> 
+ 
+    <span>// any other functions here should be events handlers that respond to</span> 
+    <span>// document level events. In my case I was using this to respond to incoming XMPP</span> 
+    <span>// events. So the logic for knowing what those meant and creating or updating our</span> 
+    <span>// models and collections lived here.</span> 
+    <span>handlePubSubUpdate</span><span>:</span> <span>function</span> <span>()</span> <span>{};</span> 
+<span>};</span> 
+</pre></div></div><p>可以看到我们有一个应用 model，包含所有其他 model, collection 和应用 view。</p><p>这个例子中的应用 model 包含了所有的 collection，以及应用 view 可能要用到的属性：</p><div><div><pre><span>var</span> <span>MovieAppModel</span> <span>=</span> <span>Backbone</span><span>.</span><span>Model</span><span>.</span><span>extend</span><span>({</span> 
+    <span>initialize</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>// init and store our MovieCollection in our app object</span> 
+        <span>this</span><span>.</span><span>movies</span> <span>=</span> <span>new</span> <span>MovieCollection</span><span>();</span> 
+    <span>}</span> 
+<span>});</span> 
+</pre></div></div><p>应用 view 可能是这样：</p><div><div><pre><span>var</span> <span>MovieAppView</span> <span>=</span> <span>Backbone</span><span>.</span><span>View</span><span>.</span><span>extend</span><span>({</span> 
+    <span>initialize</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>// this.model refers the the model we pass to the view when we</span> 
+        <span>// first init our view. So here we listen for changes to the movie collection.</span> 
+        <span>this</span><span>.</span><span>model</span><span>.</span><span>movies</span><span>.</span><span>bind</span><span>(</span><span>&#39;add&#39;</span><span>,</span> <span>this</span><span>.</span><span>addMovie</span><span>);</span> 
+        <span>this</span><span>.</span><span>model</span><span>.</span><span>movies</span><span>.</span><span>bind</span><span>(</span><span>&#39;remove&#39;</span><span>,</span> <span>this</span><span>.</span><span>removeMovie</span><span>);</span> 
+    <span>},</span> 
+ 
+    <span>events</span><span>:</span> <span>{</span> 
+        <span>// any user events (clicks etc) we want to respond to</span> 
+    <span>},</span> 
+ 
+    <span>// grab and populate our main template</span> 
+    <span>render</span><span>:</span> <span>function</span> <span>()</span> <span>{</span> 
+        <span>// once again this is using ICanHaz.js, but you can use whatever</span> 
+        <span>this</span><span>.</span><span>el</span> <span>=</span> <span>ich</span><span>.</span><span>app</span><span>(</span><span>this</span><span>.</span><span>model</span><span>.</span><span>toJSON</span><span>());</span> 
+        <span>// store a reference to our movie list</span> 
+        <span>this</span><span>.</span><span>movieList</span> <span>=</span> <span>this</span><span>.</span><span>$</span><span>(</span><span>&#39;#movieList&#39;</span><span>);</span> 
+        <span>return</span> <span>this</span><span>;</span> 
+    <span>},</span> 
+ 
+    <span>addMovie</span><span>:</span> <span>function</span> <span>(</span><span>movie</span><span>)</span> <span>{</span> 
+        <span>var</span> <span>view</span> <span>=</span> <span>new</span> <span>MovieView</span><span>({</span><span>model</span><span>:</span> <span>movie</span><span>});</span> 
+        <span>// here we use our stored reference to the movie list element and</span> 
+        <span>// append our rendered movie view.</span> 
+        <span>this</span><span>.</span><span>movieList</span><span>.</span><span>append</span><span>(</span><span>view</span><span>.</span><span>render</span><span>().</span><span>el</span><span>);</span> 
+    <span>},</span> 
+ 
+    <span>removeMovie</span><span>:</span> <span>function</span> <span>(</span><span>movie</span><span>)</span> <span>{</span> 
+        <span>// here we can use the html ID we stored to easily find</span> 
+        <span>// and remove the correct element/elements from the view if the</span> 
+        <span>// collection tells us it&#39;s been removed.</span> 
+        <span>this</span><span>.</span><span>$</span><span>(</span><span>&#39;#&#39;</span> <span>+</span> <span>movie</span><span>.</span><span>get</span><span>(</span><span>&#39;htmlId&#39;</span><span>)).</span><span>remove</span><span>();</span> 
+    <span>}</span> 
+<span>});</span> 
+</pre></div></div><p>现在来看整个应用。我引入了全部依赖的文件，以及 ICanHaz.js 模板引擎。然后在 <tt><span>$(document).ready()</span></tt> 里调用 init 函数并传入一些服务端过来的变量，用于模板替换。最后调用 <tt><span>render()</span></tt> 方法渲染应用 view 到 <tt><span>&lt;body&gt;</span></tt> 元素，比如这样：</p><div><pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Movies App&lt;/title&gt;
+ 
+        &lt;!-- libs --&gt;
+        &lt;script src=&quot;jquery.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;underscore.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;backbone.js&quot;&gt;&lt;/script&gt;
+ 
+        &lt;!-- client templating --&gt;
+        &lt;script src=&quot;mustache.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;ICanHaz.js&quot;&gt;&lt;/script&gt;
+ 
+        &lt;!-- your app --&gt;
+        &lt;script src=&quot;Movie.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;MovieCollection.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;MovieView.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;MovieAppModel.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;MovieAppView.js&quot;&gt;&lt;/script&gt;
+        &lt;script src=&quot;MovieAppController.js&quot;&gt;&lt;/script&gt;
+ 
+        &lt;!-- ICanHaz templates --&gt;
+        &lt;script id=&quot;app&quot; type=&quot;text/html&quot;&gt;
+            &lt;h1&gt;Movie App&lt;/h1&gt;
+            &lt;ul id=&quot;movies&quot;&gt;&lt;/ul&gt;
+        &lt;/script&gt;
+        &lt;script id=&quot;movie&quot; type=&quot;text/html&quot;&gt;
+            &lt;li id=&quot;&quot;&gt;&lt;span class=&quot;title&quot;&gt;&lt;/span&gt; &lt;span&gt;&lt;/span&gt;&lt;/li&gt;
+        &lt;/script&gt;
+ 
+        &lt;script&gt;
+            $(document).ready(function () {
+                // init our app
+                window.app = MovieAppController.init({
+                    account: &#39;&#39;,
+                    // etc, etc
+                });
+                // draw our main view
+                $(&#39;body&#39;).append(app.view.render().el);
+            });
+        &lt;/script&gt;
+ 
+    &lt;/head&gt;
+    &lt;body&gt;&lt;/body&gt;
+&lt;/html&gt;</pre></div><p>都做完了，现在从 collection 中添加或移除 movie 或者改变 model 里的 title，这些修改都会通过 MovieView 中定义的方法反映到 HTML 中，非常神奇。</p></div></div>
+
+
+<div><h2>通用技巧<a href="http://www.chencheng.org/blog/#id6" title="Permalink to this headline">¶</a></h2><ol> 
+<li>开发环境，所有对象按文件存放</li> 
+<li>生产环境，压缩合并所有的 JS 到一个文件</li> 
+<li>使用 JSLint</li> 
+<li>在 underscore.js 里扩展实用方法，而不是修改原生对象 (<a href="http://gist.github.com/641397">详见此 gist</a>)</li> 
+<li>jQuery 应该只在 view 里实用，这样可以在服务端对 model 和 collection 进行测试</li> 
+<li>用普通的 jQuery 事件来注册其他 view，避免强耦合</li> 
+<li>尽量保持 model 的简单</li> 
+</ol><p>我知道我写了很多，而且有些内容和 <a href="http://documentcloud.github.com/backbone/">backbone.js 上的文档</a> 重复。但要基于 backbone.js 创建应用时，可能会希望有像这样更高层次的概括，所以我写了这篇文章。感谢 DocumentCloud 和 <a href="http://github.com/jashkenas">Jeremy Ashkenas</a> 创建并分享了 backbone 。</p><p>如果有任何想法，欢迎通过 twitter (<a href="http://twitter.com/HenrikJoreteg">@HenrikJoreteg</a>) 联系我。谢谢！</p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Monad 的意义</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Monad 的意义</h2>
+<p class="meta">06 Jul 2012</p>
+
+<div class="post">
+<h2>Monad 的意义</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-07-06 15:00:00</h3>
+
+<h3>original <a href="http://blog.pmonad.com/2012/07/06/monad-purpose.html">http://blog.pmonad.com/2012/07/06/monad-purpose.html</a></h3>
+
+<h2>Haskell 的意义</h2>
+
+
+
+
+<p>  学习 haskell, 基本上大家的第一个反应是学这东西有什么用? 也是, 学习一个东西之前知道这玩意有啥用, 才有动力去学. 想当年, 刚开始学线性代数的时侯, 矩阵变换来变换去, 我就一直耿耿于怀: 变来变去搞什么名堂, 有啥子用? 因此, 线性代数就没学好. 考试考完就全忘了. 后来才发现这玩意用处还不小: 可以解多元方程, 可意做图形学上的空间变换, 重新捡起书本, 我才对线性代数有了点印象.</p>
+
+
+
+
+<p>  学习 Haskell 有甚么用处呢. 现在想来, 用处也不大, 主要还是兴趣. Haskell 是一门很<strong>优美</strong>的语言, 虽然也有一些来源于兼容性的妥协, 但是大体上而言, Haskell 简单, 一致, 正交, 静态类型, 高性能, 基本符合个人对一门完美编程语言的要求.</p>
+
+
+
+
+<h2>Monad 的意义</h2>
+
+
+
+
+<p>  任何学习 Haskell 的一大成就或者说一大障碍就是 Monad. 好多人学 Haskell 学到 Monad 这一章不禁疑窦丛生: 这劳什子做什么的, 未啥别的语言里面都没遇到过? 下面我就试试来说说 Monad 有甚么意义.</p>
+
+
+
+
+<h2>抽象是程序设计的根本方法</h2>
+
+
+
+
+<p>  CPU 是电路的的抽象, 汇编是 CPU (硬件) 抽象, 操作系统(系统调用)是汇编的抽象. C 语言是操作系统的抽象.</p>
+
+
+
+
+<p>  当程序设计发展到今天, 一个人不太可能象 Donald E. Knuth 一样通晓所有算法. 不太可能象 Bill Joy 一样 3 天写出个操作系统. 各种繁复的功能和硬件被抽象成了几个类库让大家去调用. 大家只要知道类库怎么使用就行了, 不需要知道其实现的原理.</p>
+
+
+
+
+<h2>Haskell 的抽象方法 : Functor</h2>
+
+
+
+
+<p>Haskell 可以使用 ADT 做数据抽象, 例如:</p>
+
+
+
+
+<pre><code>data Maybe a = ...
+data [a] = ...
+data IO a = ...
+</code></pre>
+
+
+
+
+<p>代表的分别是 可能不存在的 a, a 类型的一个列表, a 类型的一个 IO. 具体 <code>Maybe</code>, <code>[]</code>, <code>IO</code> 是怎么定义的实际上我们都不需要关心.</p>
+
+
+
+
+<p>假设我们不知道<code>Maybe</code>, <code>[]</code>, <code>IO</code> 的内部结构, 我们可以对其进行操作吗? 答案是可以. 但是需要该抽象数据类型满足一个条件: 它必须是一个 <code>Functor</code>.</p>
+
+
+
+
+<pre><code>class Functor f where
+fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+
+
+
+
+<p>fmap 这个函数有甚么意义呢?  fmap将一个函数从一个域变换到 f (f 可以是 <code>Maybe</code>, <code>[]</code>, <code>IO</code> , ...)域. 比如我们在 Int 上有一个后继数函数 succ. 那么我们就可以将其变换到 Maybe 域:</p>
+
+
+
+
+<pre><code>fmap succ (Just 1) == Just 2
+fmap succ Nothing == Nothing
+m1 = Just 10
+m2 = Nothing
+fmap succ m1
+fmap succ m2
+</code></pre>
+
+
+
+
+<p>可以将其变换到List 域:</p>
+
+
+
+
+<pre><code>fmap succ [1,2,3] == [2,3,4]
+fmap succ [] == []
+</code></pre>
+
+
+
+
+<p>可以将函数其变换到IO 域:</p>
+
+
+
+
+<pre><code>fmap reverse getLine
+</code></pre>
+
+
+
+
+<p>我们完全不用关心m1, m2, Just 10, getLine 的内部结构是怎么样的, 我们就可以对其内容进行操作了.</p>
+
+
+
+
+<p>我们如果有 <code>Int, Double, Float, String</code> 上的函数, 通过 fmap , 我们不费吹灰之力就有了 <code>Maybe Int, Maybe Double, Maybe String, [Int], [Double], [String], IO Int , IO String , Writer w Int, Reader r String, State s Double</code> ... 上的函数. 这就是抽象的威力.</p>
+
+
+
+
+<h2>数据的映射 :: Appicative</h2>
+
+
+
+
+<p>上面讲到fmap 将函数 <code>a -&gt; b</code> 变换成 <code>f a -&gt; f b</code>. 假如 <code>f</code> 是完全抽象的， 我们怎么的到一个 <code>f a</code> 呢? 这就不仅要变换函数, 还要变换数据. 这就是 Applicative class要解决的问题.</p>
+
+
+
+
+<pre><code>class Functor f =&gt; Applicative f where
+  pure :: a -&gt; f a
+  &lt;*&gt; :: f (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+
+
+
+
+<p>先来看 pure. pure 可以将一个 a 变换成 <code>f a</code> , 例如:</p>
+
+
+
+
+<pre><code>pure 1 == Just 1
+pure 1 == [1]
+pure "type this string" -- == getLine 输入 "type this string"
+</code></pre>
+
+
+
+
+<p>函数实际上也是数据，那么 <code>pure succ</code>　也是可以的. 但是 pure succ 的类型是 <code>f (Int -&gt; Int)</code>. 这个函数我们能拿来干什么呢. 貌似啥都干不了, 因为这个函数被包裹在 f 里面了, 我们不能把他拿出来，不能喂给他一个 Int, 吐出一个Int.</p>
+
+
+
+
+<p>这时候 <code>&lt;*&gt;</code> 就很有用了. 它能够将 <code>f(a -&gt; b)</code> 这个数据变成一个 <code>f a -&gt; f b</code> 的函数. 有了这个函数实际上我们都可以不需要fmap了因为:</p>
+
+
+
+
+<p>pure　把一个函数 <code>a -&gt; b</code> 变换成 <code>f(a -&gt; b)</code>, <code>&lt;*&gt;</code> 把 <code>f(a -&gt; b)</code> 变换成 <code>f a -&gt; f b</code>. 两个一结合:</p>
+
+
+
+
+<pre><code>(&lt;*&gt;) . pure :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+
+
+
+
+<p>再回顾下 fmap 的类型:</p>
+
+
+
+
+<pre><code>fmap :: (a -&gt; b) -&gt; f a -&gt; f b
+</code></pre>
+
+
+
+
+<p>因此:</p>
+
+
+
+
+<pre><code>fmap == (&lt;*&gt;) . pure
+</code></pre>
+
+
+
+
+<p>到此, 我们已经能加任意类型 a, b 以及他们直接的函数 <code>a -&gt; b</code> 转换到 f 域上了.</p>
+
+
+
+
+<p>现在我们就可以对任意 f 域里面的数据进行操作了. 例如对 IO a :</p>
+
+
+
+
+<pre><code>-- t.hs
+import Control.Applicative
+import Data.List(sort)
+
+(==&gt;) :: Applicative f =&gt; f a -&gt; (a -&gt; b) -&gt; f b
+a ==&gt; g = fmap g a
+
+main= getLine ==&gt; words ==&gt; map read ==&gt; (sort::[Int] -&gt; [Int])
+</code></pre>
+
+
+
+
+<p>main 函数把 <code>getLine :: IO String</code> 变成有序的 <code>IO [Int]</code>, 在我们完全不知道 IO a 的内部构造的条件下.</p>
+
+
+
+
+<p>运行一下:</p>
+
+
+
+
+<pre><code>[root@myhost:tmp]$ ghci t.hs
+GHCi, version 7.4.1: http://www.haskell.org/ghc/  :? for help
+Loading package ghc-prim ... linking ... done.
+Loading package integer-gmp ... linking ... done.
+Loading package base ... linking ... done.
+[1 of 1] Compiling Main             ( t.hs, interpreted )
+Ok, modules loaded: Main.
+*Main&gt; main
+1 3 2 4
+[1,2,3,4]
+*Main&gt;
+</code></pre>
+
+
+
+
+<h2>两个世界之间的联系: Monad </h2>
+
+
+
+
+<p>到目前为止, 我们接触到的从世界 a 到 f a 的函数只有 return 一个.</p>
+
+
+
+
+<p>实际上这种转换函数有很多．</p>
+
+
+
+
+<p>假如我们要有很多   <code>a -&gt; f a</code> 的函数，　怎么把它复合合起来呢？</p>
+
+
+
+
+<p>假如我们有这个三个函数 检查输入是否是个数，是个非负数，是个偶数 :</p>
+
+
+
+
+<pre><code>import Control.Applicative
+
+parseInt :: String -&gt; Maybe Int
+parseInt s = let xs = reads s in if null xs then Nothing else pure.fst.head $ xs
+
+notNegative :: Int -&gt; Maybe Int
+notNegative i = if i &lt; 0 then Nothing else pure i
+
+notOdd :: Int -&gt; Maybe Int
+notOdd x = if mod x 2 == 0 then pure x else Nothing
+</code></pre>
+
+
+
+
+<p>最简单的, 我们采用Applicative 函数去复合他们</p>
+
+
+
+
+<pre><code>checkArg :: String -&gt; Maybe (Maybe Int)
+checkArg arg= (fmap $ fmap notOdd) $ (fmap notNegative) (parseInt arg)
+-- checkArg &quot;1234&quot; == Just (Just 1234)
+-- checkArg &quot;-1&quot; == Just Nothing
+-- checkArg &quot;abc&quot; == Nothing
+</code></pre>
+
+
+
+
+<p>问题来了. 不好复用. 多几层检查的话我们的函数签名就要变成 <code>Maybe (Maybe (Maybe (Maybe (Maybe ...))))</code> 了, 那就是 Lisp 了. :D</p>
+
+
+
+
+<p>因此我们需要一个把 Maybe (Maybe Int) 变成 Maybe Int 的一个机制. 当当当:</p>
+
+
+
+
+<pre><code>class Applicative m =&gt; Monad m where
+  join :: m (m a) -&gt; m a
+</code></pre>
+
+
+
+
+<p>这就是所谓的 Monad 了.</p>
+
+
+
+
+<p>上面的例子, 就变成这样:</p>
+
+
+
+
+<pre><code>checkArg2 :: String -&gt; Maybe Int
+checkArg2 = join.fmap notOdd.join.fmap notNegative.parseInt
+</code></pre>
+
+
+
+
+<p>后来呢, 人们嫌每次函数复合都写 join.fmap 太费劲, 于是就整了个语法糖:</p>
+
+
+
+
+<pre><code>(&gt;&gt;=) :: Monad m =&gt; m a -&gt; (a -&gt; m b) -&gt; m b
+m &gt;&gt;= f = join $ fmap f m
+</code></pre>
+
+
+
+
+<p>于是</p>
+
+
+
+
+<pre><code>checkArg3 arg = parseInt arg &gt;&gt;= notNegative &gt;&gt;= notOdd
+</code></pre>
+
+
+
+
+<p>顺眼多了吧.</p>
+
+
+
+
+<h2>参考文献</h2>
+
+
+
+
+<ol>
+<li><a href="http://www.iteye.com/topic/147443">回albertLee:关于Category Theory 和Monad</a></li>
+<li><a href="http://yi-programmer.com/2010-04-06_haskell_and_category_translate.html">Haskell与范畴论</a></li>
+</ol>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

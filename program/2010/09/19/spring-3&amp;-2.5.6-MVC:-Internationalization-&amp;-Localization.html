@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>spring 3&amp; 2.5.6 MVC: Internationalization &amp; Localization</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>spring 3&amp; 2.5.6 MVC: Internationalization &amp; Localization</h2>
+<p class="meta">19 Sep 2010</p>
+
+<div class="post">
+<h2>spring 3&amp; 2.5.6 MVC: Internationalization &amp; Localization</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-09-18 17:41:40</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/766632">http://www.javaeye.com/topic/766632</a></h3>
+
+<p>非注解模式
+<br><pre name="code">
+    &lt;bean id=&quot;localeResolver&quot;
+        class=&quot;org.springframework.web.servlet.i18n.SessionLocaleResolver&quot;&gt;
+        &lt;property name=&quot;defaultLocale&quot; value=&quot;en_US&quot; /&gt;
+    &lt;/bean&gt;</p>
+
+<pre><code>&amp;lt;bean id=&amp;quot;localeChangeInterceptor&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.i18n.LocaleChangeInterceptor&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;paramName&amp;quot; value=&amp;quot;language&amp;quot; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean class=&amp;quot;org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping&amp;quot; &amp;gt;
+    &amp;lt;property name=&amp;quot;interceptors&amp;quot;&amp;gt;
+        &amp;lt;list&amp;gt;
+            &amp;lt;ref bean=&amp;quot;localeChangeInterceptor&amp;quot; /&amp;gt;
+        &amp;lt;/list&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;!-- Register the bean --&amp;gt;
+&amp;lt;bean class=&amp;quot;cn.fishidea.controller.WelcomeController&amp;quot; /&amp;gt;
+
+&amp;lt;!-- Register the messages.properties --&amp;gt;
+&amp;lt;bean id=&amp;quot;messageSource&amp;quot;
+    class=&amp;quot;org.springframework.context.support.ResourceBundleMessageSource&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;basenames&amp;quot;&amp;gt;
+    &amp;lt;list&amp;gt;
+    &amp;lt;value&amp;gt;messages&amp;lt;/value&amp;gt;
+    &amp;lt;value&amp;gt;errors&amp;lt;/value&amp;gt;
+    &amp;lt;/list&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean id=&amp;quot;viewResolver&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.view.InternalResourceViewResolver&amp;quot; &amp;gt;
+    &amp;lt;property name=&amp;quot;prefix&amp;quot;&amp;gt;
+        &amp;lt;value&amp;gt;/WEB-INF/pages/&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+    &amp;lt;property name=&amp;quot;suffix&amp;quot;&amp;gt;
+        &amp;lt;value&amp;gt;.jsp&amp;lt;/value&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
+</code></pre>
+
+<p></pre>
+<br>
+<br>注解模式
+<br><pre name="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd&quot;&gt;</p>
+
+<pre><code>&amp;lt;context:component-scan base-package=&amp;quot;cn.fishidea&amp;quot; /&amp;gt;
+
+&amp;lt;bean
+    class=&amp;quot;org.springframework.web.servlet.view.InternalResourceViewResolver&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;prefix&amp;quot; value=&amp;quot;/WEB-INF/jsp/&amp;quot; /&amp;gt;
+    &amp;lt;property name=&amp;quot;suffix&amp;quot; value=&amp;quot;.jsp&amp;quot; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;!-- 
+&amp;lt;bean id=&amp;quot;messageSource&amp;quot;
+    class=&amp;quot;org.springframework.context.support.ResourceBundleMessageSource&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;basename&amp;quot; value=&amp;quot;messages&amp;quot; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean id=&amp;quot;localeChangeInterceptor&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.i18n.LocaleChangeInterceptor&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;paramName&amp;quot; value=&amp;quot;sitelang&amp;quot; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean
+    class=&amp;quot;org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;interceptors&amp;quot;&amp;gt;
+        &amp;lt;list&amp;gt;
+            &amp;lt;ref bean=&amp;quot;localeChangeInterceptor&amp;quot; /&amp;gt;
+        &amp;lt;/list&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean id=&amp;quot;localeResolver&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.i18n.SessionLocaleResolver&amp;quot; /&amp;gt;
+ --&amp;gt; 
+
+&amp;lt;!-- Application Message Bundle --&amp;gt;
+&amp;lt;bean id=&amp;quot;messageSource&amp;quot;
+    class=&amp;quot;org.springframework.context.support.ReloadableResourceBundleMessageSource&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;basename&amp;quot; value=&amp;quot;classpath:messages&amp;quot; /&amp;gt;
+    &amp;lt;property name=&amp;quot;defaultEncoding&amp;quot; value=&amp;quot;UTF-8&amp;quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean id=&amp;quot;localeChangeInterceptor&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.i18n.LocaleChangeInterceptor&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;paramName&amp;quot; value=&amp;quot;sitelang&amp;quot; /&amp;gt;
+&amp;lt;/bean&amp;gt;
+
+&amp;lt;bean id=&amp;quot;localeResolver&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.i18n.CookieLocaleResolver&amp;quot; /&amp;gt;
+
+&amp;lt;bean id=&amp;quot;handlerMapping&amp;quot;
+    class=&amp;quot;org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping&amp;quot;&amp;gt;
+    &amp;lt;property name=&amp;quot;interceptors&amp;quot;&amp;gt;
+        &amp;lt;ref bean=&amp;quot;localeChangeInterceptor&amp;quot; /&amp;gt;
+    &amp;lt;/property&amp;gt;
+&amp;lt;/bean&amp;gt;   
+</code></pre>
+
+<p>&lt;/beans&gt;
+</pre>
+<br>
+<br>其他相关文件
+<br>
+<br><pre name="code">
+log4j.rootLogger=INFO,R,stdout</p>
+
+<p>log4j.logger.cn.fishidea=INFO</p>
+
+<p>log4j.appender.R=org.apache.log4j.DailyRollingFileAppender</p>
+
+<p>log4j.appender.R.File=${catalina.home}/logs/fishideamvc.log</p>
+
+<p>log4j.appender.R.datePattern='.'yyyy-MM-dd'.log'
+log4j.appender.R.append=true
+log4j.appender.R.layout=org.apache.log4j.PatternLayout
+log4j.appender.R.layout.ConversionPattern=[%-5p] %d{yyyy-MM-dd HH:mm:ss} %c -%m%n</p>
+
+<p>log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.Target=System.out
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%d{ABSOLUTE} %5p %c{1}:%L - %m%n
+</pre>
+<br>
+<br><pre name="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;%@ page language=&quot;java&quot; contentType=&quot;text/html; charset=UTF-8&quot; pageEncoding=&quot;UTF-8&quot;%&gt;
+&lt;%@ taglib prefix=&quot;spring&quot; uri=&quot;http://www.springframework.org/tags&quot; %&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot;%&gt;</p>
+
+<p>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+&lt;title&gt;&lt;spring:message code=&quot;main.title&quot; text=&quot;default text&quot; /&gt;&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;</p>
+
+<p>&lt;h1&gt; &lt;spring:message code=&quot;welcome.springmvc&quot; text=&quot;default text&quot; /&gt;&lt;/h1&gt;</p>
+
+<p>Language : &lt;a href=&quot;?sitelang=en_US&quot;&gt;English&lt;/a&gt;|
+&lt;a href=&quot;?sitelang=zh_CN&quot;&gt;Chinese&lt;/a&gt;</p>
+
+<p>&lt;h3&gt;
+    welcome.springmvc : &lt;spring:message code=&quot;main.body&quot; text=&quot;default text&quot; /&gt;
+&lt;/h3&gt;</p>
+
+<p>Current Locale : ${pageContext.response.locale}</p>
+
+<p>&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<br><pre name="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;web-app xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns=&quot;http://java.sun.com/xml/ns/javaee&quot; xmlns:web=&quot;http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&quot;
+    xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd&quot;
+    id=&quot;WebApp_ID&quot; version=&quot;2.5&quot;&gt;
+    &lt;display-name&gt;fishideamvc&lt;/display-name&gt;</p>
+
+<pre><code>&amp;lt;servlet&amp;gt;
+    &amp;lt;servlet-name&amp;gt;fishideamvc&amp;lt;/servlet-name&amp;gt;
+    &amp;lt;servlet-class&amp;gt;org.springframework.web.servlet.DispatcherServlet&amp;lt;/servlet-class&amp;gt;
+    &amp;lt;init-param&amp;gt;
+        &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+        &amp;lt;param-value&amp;gt;/WEB-INF/applicationDispatcher.xml&amp;lt;/param-value&amp;gt;
+    &amp;lt;/init-param&amp;gt;
+    &amp;lt;load-on-startup&amp;gt;1&amp;lt;/load-on-startup&amp;gt;
+&amp;lt;/servlet&amp;gt;
+
+&amp;lt;servlet-mapping&amp;gt;
+    &amp;lt;servlet-name&amp;gt;fishideamvc&amp;lt;/servlet-name&amp;gt;
+    &amp;lt;url-pattern&amp;gt;*.htm&amp;lt;/url-pattern&amp;gt;
+&amp;lt;/servlet-mapping&amp;gt;
+
+&amp;lt;context-param&amp;gt;
+    &amp;lt;param-name&amp;gt;contextConfigLocation&amp;lt;/param-name&amp;gt;
+    &amp;lt;param-value&amp;gt;/WEB-INF/applicationDispatcher.xml&amp;lt;/param-value&amp;gt;
+&amp;lt;/context-param&amp;gt;
+
+&amp;lt;listener&amp;gt;
+    &amp;lt;listener-class&amp;gt;org.springframework.web.context.ContextLoaderListener&amp;lt;/listener-class&amp;gt;
+&amp;lt;/listener&amp;gt;
+&amp;lt;!-- 出错页面定义 --&amp;gt;
+&amp;lt;error-page&amp;gt;
+    &amp;lt;exception-type&amp;gt;java.lang.Throwable&amp;lt;/exception-type&amp;gt;
+    &amp;lt;location&amp;gt;/common/500.jsp&amp;lt;/location&amp;gt;
+&amp;lt;/error-page&amp;gt;
+&amp;lt;error-page&amp;gt;
+    &amp;lt;error-code&amp;gt;500&amp;lt;/error-code&amp;gt;
+    &amp;lt;location&amp;gt;/common/500.jsp&amp;lt;/location&amp;gt;
+&amp;lt;/error-page&amp;gt;
+&amp;lt;error-page&amp;gt;
+    &amp;lt;error-code&amp;gt;403&amp;lt;/error-code&amp;gt;
+    &amp;lt;location&amp;gt;/common/error.jsp&amp;lt;/location&amp;gt;
+&amp;lt;/error-page&amp;gt;
+
+&amp;lt;error-page&amp;gt;
+    &amp;lt;error-code&amp;gt;404&amp;lt;/error-code&amp;gt;
+    &amp;lt;location&amp;gt;/common/error.jsp&amp;lt;/location&amp;gt;
+&amp;lt;/error-page&amp;gt;
+
+&amp;lt;welcome-file-list&amp;gt;
+    &amp;lt;welcome-file&amp;gt;login.htm&amp;lt;/welcome-file&amp;gt;
+&amp;lt;/welcome-file-list&amp;gt;
+</code></pre>
+
+<p>&lt;/web-app&gt;
+</pre></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://zoff2002.javaeye.com"&gt;zoff2002&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/766632" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

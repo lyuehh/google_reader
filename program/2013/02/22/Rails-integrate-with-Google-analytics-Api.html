@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Rails integrate with Google analytics Api</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Rails integrate with Google analytics Api</h2>
+<p class="meta">22 Feb 2013</p>
+
+<div class="post">
+<h2>Rails integrate with Google analytics Api</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-02-21 22:57:00</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1812201">http://hlee.iteye.com/blog/1812201</a></h3>
+
+<p><a href="https://github.com/chrisle/gattica">https://github.com/chrisle/gattica</a>
+<br>
+<br><a href="https://github.com/robmckinnon/rugalytics">https://github.com/robmckinnon/rugalytics</a>
+<br>
+<br><a href="https://www.ruby-toolbox.com/categories/Web_Analytics">https://www.ruby-toolbox.com/categories/Web_Analytics</a>
+<br>
+<br>Google api Doc
+<br>
+<br><a href="https://developers.google.com/analytics/devguides/reporting/core/v3/">https://developers.google.com/analytics/devguides/reporting/core/v3/</a>
+<br>
+<br>
+<br>
+<br><pre name="code"></p>
+
+<h1>Include the gem</h1>
+
+<p>require &#39;gattica&#39;</p>
+
+<h1>Login</h1>
+
+<p>ga = Gattica.new({
+    :email =&gt; &#39;email@gmail.com&#39;,
+    :password =&gt; &#39;password&#39;
+})</p>
+
+<h1>Get a list of accounts</h1>
+
+<p>accounts = ga.accounts</p>
+
+<h1>Choose the first account</h1>
+
+<p>ga.profile_id = accounts.first.profile_id</p>
+
+<h1>Get the data</h1>
+
+<p>data = ga.get({
+    :start_date   =&gt; &#39;2011-01-01&#39;,
+    :end_date     =&gt; &#39;2011-04-01&#39;,
+    :dimensions   =&gt; [&#39;month&#39;, &#39;year&#39;],
+    :metrics      =&gt; [&#39;visits&#39;, &#39;bounces&#39;],
+})</p>
+
+<h1>Show the data</h1>
+
+<p>puts data.inspect</p>
+
+<h1>Sorting by number of visits in descending order (most visits at the top)</h1>
+
+<p>data = ga.get({
+    :start_date   =&gt; &#39;2011-01-01&#39;,
+    :end_date     =&gt; &#39;2011-04-01&#39;,
+    :dimensions   =&gt; [&#39;month&#39;, &#39;year&#39;],
+    :metrics      =&gt; [&#39;visits&#39;],
+    :sort         =&gt; [&#39;-visits&#39;]
+})</p>
+
+<h1>Return visits and bounces for mobile traffic</h1>
+
+<h1>(Google&#39;s default user segment gaid::-11)</h1>
+
+<p>mobile_traffic = ga.get({
+  :start_date   =&gt; &#39;2011-01-01&#39;,
+  :end_date     =&gt; &#39;2011-02-01&#39;,
+  :dimensions   =&gt; [&#39;month&#39;, &#39;year&#39;],
+  :metrics      =&gt; [&#39;visits&#39;, &#39;bounces&#39;],
+  :segment      =&gt; &#39;gaid::-11&#39;
+})</p>
+
+<h1>Filter by Firefox users</h1>
+
+<p>firefox_users = ga.get({
+  :start_date   =&gt; &#39;2010-01-01&#39;,
+  :end_date     =&gt; &#39;2011-01-01&#39;,
+  :dimensions   =&gt; [&#39;month&#39;, &#39;year&#39;],
+  :metrics      =&gt; [&#39;visits&#39;, &#39;bounces&#39;],
+  :filters      =&gt; [&#39;browser == Firefox&#39;]
+})</p>
+
+<h1>Filter where visits is &gt;= 10000</h1>
+
+<p>lots_of_visits = ga.get({
+  :start_date   =&gt; &#39;2010-01-01&#39;,
+  :end_date     =&gt; &#39;2011-02-01&#39;,
+  :dimensions   =&gt; [&#39;month&#39;, &#39;year&#39;],
+  :metrics      =&gt; [&#39;visits&#39;, &#39;bounces&#39;],
+  :filters      =&gt; [&#39;visits &gt;= 10000&#39;]
+})</p>
+
+<h1>Get the top 25 keywords that drove traffic</h1>
+
+<p>data = ga.get({
+  :start_date =&gt; &#39;2011-01-01&#39;,
+  :end_date =&gt; &#39;2011-04-01&#39;,
+  :dimensions =&gt; [&#39;keyword&#39;],
+  :metrics =&gt; [&#39;visits&#39;],
+  :sort =&gt; [&#39;-visits&#39;],
+  :max_results =&gt; 25
+})</p>
+
+<h1>Output our results</h1>
+
+<p>data.points.each do |data_point|
+  kw = data_point.dimensions.detect { |dim| dim.key == :keyword }.value
+  visits = data_point.metrics.detect { |metric| metric.key == :visits }.value
+  puts &quot;#{visits} visits =&gt; &#39;#{kw}&#39;&quot;
+end</p>
+
+<h1>=&gt;</h1>
+
+<h1>19667 visits =&gt; &#39;(not set)&#39;</h1>
+
+<h1>1677 visits =&gt; &#39;keyword 1&#39;</h1>
+
+<h1>178 visits =&gt; &#39;keyword 2&#39;</h1>
+
+<h1>165 visits =&gt; &#39;keyword 3&#39;</h1>
+
+<h1>161 visits =&gt; &#39;keyword 4&#39;</h1>
+
+<h1>112 visits =&gt; &#39;keyword 5&#39;</h1>
+
+<h1>105 visits =&gt; &#39;seo company reviews&#39;</h1>
+
+<h1>...</h1>
+
+<p></pre></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1812201#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

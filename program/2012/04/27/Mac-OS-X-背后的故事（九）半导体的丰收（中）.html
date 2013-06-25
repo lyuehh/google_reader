@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Mac OS X 背后的故事（九）半导体的丰收（中）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Mac OS X 背后的故事（九）半导体的丰收（中）</h2>
+<p class="meta">27 Apr 2012</p>
+
+<div class="post">
+<h2>Mac OS X 背后的故事（九）半导体的丰收（中）</h2>
+
+<h3>by chenbo</h3>
+
+<h3>at 2012-04-27 10:28:22</h3>
+
+<h3>original <a href="http://www.programmer.com.cn/11557/">http://www.programmer.com.cn/11557/</a></h3>
+
+<p>文 / 王越</p>
+
+
+<p>经过6年时间，4个发行版，苹果终于完成了向64位的迁移，并随着Snow Leopard的发布推出了解决并行编程问题的Grand Central Dispatch（简称GCD）技术，释放了多核系统的潜力。</p>
+
+
+<p>和10.5一样，在10.6 Snow Leopard中，苹果继续利用64位的迁移砍掉了诸多老技术，很多新技术仅以64位的模式被支持。例如重写的QuickTime X框架，虽然QuickTime X应用程序以32位和64位的模式发布，但其API仅暴露给64位。另一个例子是Objective-C 2.1的运行库，快速Vtable调度，新的和C++统一的异常处理模型，<a href="http://en.wikipedia.org/wiki/Fragile_binary_interface_problem">以及彻底解决对象的FBI问题等</a>，都仅限64位程序使用。<span></span></p>
+
+
+<p style="text-align:justify"><span style="color:#008000"><strong>内核的64位化</strong></span></p>
+
+
+<p>读者应该发现，经过这4个发行版，Mac OS X自下而上地对整个系统向64位迁移。10.3内核空间提供了64位整数运算的支持。10.4允许程序以64位模式运行在用户空间，并且提供了64位的libSystem使得开发者可以开发64位的Unix程序，而10.5中系统所有未废弃的函数库、框架都提供64位版本，到了10.6，所有用户空间的程序，包括Unix层和图型界面层，基本都更新到64位。细心的读者不禁会问—那内核是64位的吗？是的，自下而上支持64位后，10.6又从上往下，迁移了整个系统中最后一个也是最重要的部分—内核。</p>
+
+
+<p><strong>内核64位化的意义</strong></p>
+
+
+<p>对于Windows、Linux，以及FreeBSD等操作系统，64位实现的第一步是实现64位的内核。然而Mac OS X却反其道而行。主要原因是，反正32位的内核也能以非模拟、非兼容的方式原生地运行64位用户空间程序，而内核和与内核动态链接的驱动，很少需要用到64位的寻址空间（你什么时候见过内核本身使用4GB内存？），所以该问题可以暂缓。</p>
+
+
+<p>但要记住，用户空间的内存是由内核管理的，虚拟内存、内存分页等机制，都是由内核一一实现的。一旦在不久的将来，随着用户空间的内存占用越来越多，虚拟内存的分页比也会不断膨胀。比方说，一个用户程序使用4GB的空间，每个分页包含4KB的页面，那么总共有1M个页面。因此，假设一个页面<a href="http://en.wikipedia.org/wiki/Page_table">需要64B的PTE</a>来记录该页的位置，那总共也就需要64MB的内核空间来记录这个用户空间程序的虚拟内存，不算太多。而在不久的将来，如果一个64位用户程序使用128GB的空间，则需要32M个页面，每个页面64B的PTE会导致2GB的内核地址空间来寻址（暂不考虑大分页）。32位的内核就显得非常紧张。</p>
+
+
+<p>另外，上一期我们也提到64位的Intel架构提供了比32位多一倍的寄存器，因此，用户空间程序对64位内核的系统调用也会更快。根据苹果的数据，系统调用的响应速度比原先快了250%，而用户空间和内核空间的数据交换也快了70%，因此，64位内核要比32位内核更快。</p>
+
+
+<p><strong>内核完成64位迁移</strong></p>
+
+
+<p>虽然在Mac OS X 10.6中，苹果提供了64位模式运行的内核，但在大部分苹果计算机上，<a href="http://en.wikipedia.org/wiki/Mac_OS_X_Snow_Leopard#64-bit_architecture">这个特性并不默认启用</a>。其原因是，虽然64位程序和32位程序可以在计算机上同时运行，但64位的程序只可以加载64位的库或插件，32位程序只能加载32位的库或插件。因此，如果默认使用64位模式启动，则诸多第三方的32位驱动或内核模块将无法使用。当然，用户可以通过修改com.apple.Boot.plist、nvram，或开机按住6和4<a href="http://en.wikipedia.org/wiki/Mac_OS_X_Snow_Leopard#64-bit_architecture">强制加载64位内核</a>，不过苹果并不推荐这样的方式。直到Mac OS X 10.7时，第三方内核扩展已趋完善，大部分的Mac才默认使用64位内核模式启动。</p>
+
+
+<p>苹果用了整整6年的时间完成64位的迁移，在2009年WWDC的一个讲座上，Bertrand Serlet告诉开发者，我们这个64位技术的讲座，只针对Mac OS X，而iPhone、iPad等iOS设备，由于使用ARM平台，在可预见的未来可能并不会支持64位技术。</p>
+
+
+<p>不过两年之后的2011年10月27日，ARMv8发布，ARM正式宣布支持64位。未来会不会出现基于ARM的Mac，或是64位的iPad，除了苹果，谁知道呢？</p>
+
+
+<div style="width:310px"><a href="http://www.programmer.com.cn/11557/%e5%8d%8a%e5%af%bc%e4%bd%93%e7%9a%84%e4%b8%b0%e6%94%b6%e4%b8%ad/" rel="attachment wp-att-11561"><img title="半导体的丰收中" src="http://www.programmer.com.cn/wp-content/uploads/2012/04/%E5%8D%8A%E5%AF%BC%E4%BD%93%E7%9A%84%E4%B8%B0%E6%94%B6%E4%B8%AD-300x200.jpg" alt="" width="300" height="200"></a><p>Bertrand Serlet在WWDC 2009上介绍Snow Leopard的64位和Grand Central Dispatch技术</p></div>
+
+
+<p><span style="color:#008000"><strong>GCD来临</strong></span></p>
+
+
+<p>很长一段时间以来，处理器靠更快的运行时钟来获得更高的效率。软件开发者无需改动或重新编译他们的代码，就能得到摩尔定律许诺他们的好处，因为处理器顺序地执行计算机指令，新一代的处理器就自动会跑得比原先更快。后来每每达到一个技术极限时，总有一些聪明的方法绕过这些极限，比如超纯量、指令管线化、快取等，不是悄无声息地把多条互相独立的指令同时运行，就是隐藏掉数据读写的延时。</p>
+
+
+<p><strong>GCD出现的缘由</strong></p>
+
+
+<p>到了21世纪，能想的办法基本都想尽了—现代处理器已经足够并行了，也采取了各项优化来不断提升各种预测器的准确率，而时钟频率却是不能无限提高的—提高时钟频率会极大地增加处理器的产热，使得服务器机房或笔记本的散热成为一个头痛的问题。同时对于便携设备而言，高频也意味着短得多的电池时间，因此摩尔定律正在经受重大的考验。</p>
+
+
+<p>因此大约在21世纪头十年过掉一半时，“多核”处理器，终于开始跃入普通消费者的视线。“多核”顾名思义，就是把原先单核的半导体线路复制多份排于同一裸片上，每个核相互独立，又能彼此通信。多核处理器的出现，有效缓解了计算机处理器生产商的设计和制造压力，从而达到忽悠消费者买更新款产品这一不可告人的目的。</p>
+
+
+<p>但这一次技术革新，并不如之前那么顺利，因为程序并不会自动在多核系统上跑得更快，甚至有很多程序每一步都有前后依赖，不能高效地并行运行。即使能够高效并行的程序，也需要大规模改写才能充分利用多核所带来的优势。</p>
+
+
+<p>传统的并发编程模式，就是学习使用线程和锁。这听起来很简单，几句话能说明白：</p>
+
+
+<p>把每个任务独立成一个线程；</p>
+
+
+<p>不允许两个线程同时改动某个变量，因此得把变量“锁”起来；</p>
+
+
+<p>手动管理线程的先后并发顺序和并发数量，让它们均匀地占满系统资源；</p>
+
+
+<p>最好系统中只有这个程序在运行，否则你精心设计好的线程管理算法往往不能达到原来该有的效果；</p>
+
+
+<p>最后祈祷程序在用户那儿不出问题。</p>
+
+
+<p>但是实际操作起来，多线程程序的编写要比单线程难上不止一个数量级。一方面，调用大量内存和数据反复的加解锁本身效率就非常低下；另一个重要原因在于，由于多线程程序可能以任意的次序交错执行，程序再也无法像顺序执行时那样产生确定的结果。多线程程序看似容易编写，但难分析、难调试，更容易出错。即使是最熟练的开发者，在茫茫线程和锁之间，也会迷失方向。且程序的错误在很多时候甚至是不可重现的。所以，程序员使用线程和锁机制编写并行程序的代价是很高的。</p>
+
+
+<p>GCD就是在这种背景下被苹果提出来的。2008年最初提出但未公布细节时，很多人怀疑它是FreeBSD的ULE调度器在Mac OS X上的实现。<a href="http://www.usenix.org/event/bsdcon03/tech/full_papers/roberson/roberson.pdf">ULE</a>是FreeBSD当时最新的内核调度器，用来替换掉老一代的4BSD调度器，当时使FreeBSD上跑多线程程序的效率获得了重大的性能提高，远高于同期Linux和<a href="http://people.freebsd.org/~kris/scaling/7.0%20Preview.pdf">Solaris的算法效率</a>。但当时我就认为GCD依赖FreeBSD这项技术的可能性不大，因为Mac OS X中管理进程和线程主要用的是Mach而不是BSD。不过后来证实我只猜对了一半，GCD的实现，实际上是依赖于FreeBSD的另一项技术<a href="http://people.freebsd.org/~jlemon/papers/kqueue.pdf">kqueue</a>。kqueue是一个由FreeBSD 4时代引入的新功能，内核级别地支持消息通信管理。GCD的队列，其实就是用kqueue实现的。</p>
+
+
+<p><strong>GCD出现的意义</strong></p>
+
+
+<p>在GCD中，开发者不再管理和创建线程，而是将要实现的运算抽象成一个个任务，一起扔给操作系统，转而让操作系统管理，这在计算机科学中，被称为<a href="http://en.wikipedia.org/wiki/Thread_pool_pattern">线程池管理模式</a>。</p>
+
+
+<p>在GCD中，开发者使用很简单的方式就能描述清应用程序所需执行的任务，以及任务之间的相互关联。每一个任务在代码中被描述成块（block），然后开发者把一个一个块显式地按顺序扔到队列（queue）中。使用块和队列两个抽象的表述，开发者无须创建线程，也无须管理线程，更无须考虑数据的加解锁。换之而来的，是更简短可读的代码。剩下的事，全都扔给操作系统去完成。</p>
+
+
+<p>在操作系统那边，GCD在程序运行时，管理着一定数量的线程，线程的数量是自动分配的，取决于用户计算机的配置和用户程序运行时的负载。多核工作站每个程序配到的线程，自然就会比单核手机或双核笔记本来得多。而且这个线程的数量是会动态变化的。当程序非常忙时，线程数会相应增多，而当程序闲置时，系统会自动减少其线程数量。然后，GCD会一一从队列中读入需要执行的块，然后扔到线程上并发执行。</p>
+
+
+<p>相信读者已经看出GCD和传统线程—锁机制的区别来了。传统的方式按劳分配，强调程序自由独立地管理，妄想通过“无形的手”把系统资源平均分配，走的是资本主义市场经济的道路。而GCD按需分配，真正实现了社会主义计划经济管理模式。因此在政治上GCD就是一个代表先进生产力的计算机技术（我被自己雷了，但事实就是这样）。</p>
+
+
+<p>GCD是一个自底向上的技术，它实际上由以下6个部分组成。</p>
+
+
+<p>编译器层面，LLVM为C、Objective-C和C++提供了块语法，这个内容等下会介绍。</p>
+
+
+<p>运行库方面，有一个高效分配管理线程的运行库libdispatch。</p>
+
+
+<p>内核方面，主要基于XNU内核Mach部分提供的Mach semaphores和BSD部分提供的kqueue()机制。关于XNU内核的更多细节，请参考即将发行的四月刊《半导体的丰收（下）》。</p>
+
+
+<p>dispatch/dispatch.h提供了丰富的底层编程接口。</p>
+
+
+<p>在Cocoa层面，NSOperation被重写，因为使用libdispatch，所以先前使用NSOperation的程序不需改动，就自动享受Grand Central Dispatch的最新特性。</p>
+
+
+<p>Instruments和GDB提供了非常完整的分析和调试工具。</p>
+
+
+<p>GCD还有一些工程上的优势。首先，程序的响应速度会更快。GCD让程序员更方便地写多线程程序，因此写一个多线程程序来实现前后台简单多了，极大改善了Mac OS X上应用程序的生态环境。而且GCD的代码块队列开销很小，比传统线程轻量得多。统计表明，传统的Mac OS X上使用的POSIX线程需要数百个计算机汇编指令，<a href="http://arstechnica.com/apple/reviews/2009/08/mac-os-x-10-6.ars/12">占用512KB的内存</a>，而一个代码块队列才用256字节的长度，把块加入队列，只需要15个计算机汇编指令，因此开成百上千个也不费什么事。</p>
+
+
+<p>其次，线程模式是一种静态的模式，一旦程序被执行，其运行模式就被固定下来了。但用户的计算机配置各不相同，运行时别的程序有可能耗用大量的计算资源。这些都会影响该程序的运行效率。而动态分配系统资源则能很好地解决这个问题。苹果自然也是不遗余力地忽悠开发者使用GCD，因为各个软件共享多核运算的资源，如果GCD被更多的开发者采用，整个苹果平台的生态也就更健康。</p>
+
+
+<p>而最重要的，还是GCD采用的线程池模式极大简化了多线程编程，也降低了出错的可能性。著名FreeBSD开发者Robert Watson还发布了一个他修改过的Apache，<a href="http://libdispatch.macosforge.org/trac/wiki/apache">并释出了补丁</a>，声称只需原先1/3至1/2的代码量，就实现了原先的多线程模块，并比原先的效率更好。</p>
+
+
+<p><strong>如何应用GCD</strong></p>
+
+
+<p>当然，老王卖瓜，自卖自夸，没有实际的例子，是不能让读者信服的。下面我们就来简单讲解GCD的技术。</p>
+
+
+<p>首先是块状语法，是一个对C、C++和Objective-C语言的扩展。用来描述一个任务，用^引导的大括号括起来。比如最简单的：</p>
+
+
+<p><span style="color:#008000">x = ^{ printf(“hello world\n”);}</span></p>
+
+
+<p>则 x 就变成了一个块。如果执行：</p>
+
+
+<p><span style="color:#008000">x();</span></p>
+
+
+<p>那么程序会打印hello world出来。当然，blcok像函数一样，可以跟参数，比如：</p>
+
+
+<p><span style="color:#008000">int spec = 4;</span></p>
+
+
+<p><span style="color:#008000">int (^MyBlock)(int) = ^(int aNum){</span></p>
+
+
+<p><span style="color:#008000"> return aNum * spec;</span></p>
+
+
+<p><span style="color:#008000">}; </span></p>
+
+
+<p><span style="color:#008000">spec = 0;</span></p>
+
+
+<p><span style="color:#008000">printf(“Block value is%d”,</span></p>
+
+
+<p><span style="color:#008000">MyBlock(4));</span></p>
+
+
+<p>这里MyBlock是一个带参数的代码块。</p>
+
+
+<p><a href="http://www.programmer.com.cn/11557/%e5%8d%8a%e5%af%bc%e4%bd%93%e7%9a%84%e4%b8%b0%e6%94%b6%e4%b8%ad1/" rel="attachment wp-att-11559"><img title="半导体的丰收中1" src="http://www.programmer.com.cn/wp-content/uploads/2012/04/%E5%8D%8A%E5%AF%BC%E4%BD%93%E7%9A%84%E4%B8%B0%E6%94%B6%E4%B8%AD1-300x123.jpg" alt="" width="300" height="123"></a></p>
+
+
+<p>读者看到这里不禁要问，块到底有什么好处？它和C的函数指针有什么不同？我们依然用上面的例子来说明问题，虽然后面我们把spec变量改为0，但事实上在MyBlock创立时，已经生成了一个闭包，因此它最后输出的结果，仍是16，不受spec值改动的影响。这对于搞函数式编程的人来说再熟悉不过了，因此很多开发者亲切地称呼块语法的C扩展为“带lambda的C”。</p>
+
+
+<p>有了闭包功能的C顿时牛起来—你可以把函数和数据包装在一起—这就是块的真正功能。因为只要一个闭包包含了代码和数据，它的数据就不会被别的闭包轻易改动，所以在它执行时，你根本不用为数据上锁解锁。</p>
+
+
+<p>有了一系列的代码块后，接下来的事是把代码块扔到队列里。比如最简单的：</p>
+
+
+<p><span style="color:#008000">dispatch_queue_t queue = dispatch_get_global_queue(0,0);</span></p>
+
+
+<p>来创建一个轻量级的队列，然后</p>
+
+
+<p><span style="color:#008000">dispatch_async(queue,</span></p>
+
+
+<p><span style="color:#008000">^{printf(“hello world\n”);});</span></p>
+
+
+<p>那这个代码块就被扔进queue这个队列中了。你可以手动依次添加任意多个项目，比如“带着老婆”、“出了城”、“吃着火锅”、“唱着歌”、“突然就被麻匪劫了”等。当然在更多的场合，你会更倾向于使用自动事件源，每当一个事件触发时（比如定时器到点、网络传来包裹，或者用户点击了按钮），相应的代码块被自动添加到队列中。</p>
+
+
+<p><a href="http://www.programmer.com.cn/11557/%e5%8d%8a%e5%af%bc%e4%bd%93%e7%9a%84%e4%b8%b0%e6%94%b6%e4%b8%ad2/" rel="attachment wp-att-11560"><img title="半导体的丰收中2" src="http://www.programmer.com.cn/wp-content/uploads/2012/04/%E5%8D%8A%E5%AF%BC%E4%BD%93%E7%9A%84%E4%B8%B0%E6%94%B6%E4%B8%AD2-300x145.jpg" alt="" width="300" height="145"></a></p>
+
+
+<p>一旦队列不是空的，GCD就开始分配任务到线程中。拿上面的例子来说，“老婆”、“城”等变量可是封在闭包里的，所以在运行时，不用考虑它们被某个别的闭包改掉（当然也有方法来实现这个功能）。总体而言，这个模式比线程—锁模型简单太多—它的执行是并行的，但思维却是传统的异步思维，对没有学习过系统多线程编程的开发者来说，依然能很容易地掌握。</p>
+
+
+<p>读者可能要问，如果闭包之间有复杂的依赖关系，需要申明某两个操作必须同步或异步怎么办？比如“出了城”必须在“吃着火锅”之前。在GCD中，可以使用dispatch_async和dispatch_sync来描述这样的依赖关系，而在Cocoa层面，NSOperation中的队列依赖关系甚至可以被描述成有向图。</p>
+
+
+<p><strong>GCD得到广泛应用</strong></p>
+
+
+<p>GCD一经推出就得到了广泛的应用。苹果自家的软件Final Cut Pro X、Mail等软件，都采用GCD来实现任务并发和调度，因此Mac OS X 10.6成为了有史以来最快的发行版。从iOS 4开始，iPhone和iPad也加入了GCD的支持。更别提原来使用Cocoa的NSOperation相关接口的程序，无需改动即享受GCD的优惠。</p>
+
+
+<p>GCD在Mac OS X 10.6发布后，又以libdispatch为名，作为一个独立的开源项目发布。 所需的外围代码，如编译器的块支持、运行库的块支持、内核的支持，也都能在LLVM和XNU等开源项目代码中找到，所以很快被别的操作系统采用。作为Mac OS X的近亲， FreeBSD在一个月后即完整移植了整套GCD技术，并最终在FreeBSD 9.0和8.1中出现。诸多Linux发行版也提供libdispatch的包，使用Linux内核的epoll来模拟FreeBSD的kqueue。2011年5月5日，<a href="http://lists.macosforge.org/pipermail/libdispatch-dev/2011-May/000515.html"> Windows的移植工作也宣告完成</a>。</p>
+
+
+<p>另外，GCD也成为拯救动态语言的重要法宝。由于受GIL（全局解释锁）的限制，动态语言虽然有操作系统原生线程，但不能在多核处理器上并行执行。而GCD成功绕开了这个限制，如加入GCD支持的Ruby <a href="http://www.macruby.org/documentation/gcd.html">实现MacRuby就能在多核处理器上高效执行</a>。 因此，在苹果生态圈以外，GCD也会得到越来越多的应用。读者马上还会看到，苹果同时推出的另一项主推技术中也使用了GCD，详细内容请关注四月刊《半导体的丰收（下）》。</p>
+
+
+<p> </p>
+
+
+<p><span style="color:#888888"><strong>作者王越，美国宾夕法尼亚大学计算机系研究生，中国著名TeX开发者，非著名OpenFOAM开发者。</strong></span></p>
+
+
+<p><a href="http://www.programmer.com.cn/10430/"><strong>本文选自《程序员》杂志2012年03期，未经允许不得转载。如需转载请联系 market@csdn.net</strong></a></p>
+
+
+<p><strong><a href="http://dingyue.programmer.com.cn/">《程序员》2012年杂志订阅送好礼活动火热进行中</a></strong></p>
+
+
+<p> </p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

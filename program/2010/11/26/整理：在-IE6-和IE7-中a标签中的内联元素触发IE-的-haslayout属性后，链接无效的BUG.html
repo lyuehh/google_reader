@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>整理：在 IE6 和IE7 中a标签中的内联元素触发IE 的 haslayout属性后，链接无效的BUG</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>整理：在 IE6 和IE7 中a标签中的内联元素触发IE 的 haslayout属性后，链接无效的BUG</h2>
+<p class="meta">26 Nov 2010</p>
+
+<div class="post">
+<h2>整理：在 IE6 和IE7 中a标签中的内联元素触发IE 的 haslayout属性后，链接无效的BUG</h2>
+
+<h3>by karry</h3>
+
+<h3>at 2010-11-26 10:14:22</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/PlayGoogleKarry/~8010025/463440062/5589304/1/item.html">http://item.feedsky.com/~feedsky/PlayGoogleKarry/~8010025/463440062/5589304/1/item.html</a></h3>
+
+<p>昨天在工作中遇到一个诡异的现象，老版本IE( IE6 和IE7) 导航栏a标签无法正常使用，但onclick事件能正常执行。</p>
+
+
+<p>经反复测试发现：</p>
+
+
+<p>a标签内嵌套一层或多层内联元素（如span label em 等）, 最终的内联元素包含一个img元素, 这时, 如果触发了a元素和img元素之间的任何一个元素的hasLayout, 那么超链接将失效.</p>
+
+
+<div>
+&lt;a href=”http://playgoogle.com”&gt;
+<p>&lt;span&gt;&lt;img src=”test.jpg” alt=”test” title=”test” /&gt;&lt;/span&gt;</p>
+<p>&lt;/a&gt;</p>
+<p>span {</p>
+<p><em>display: inline-block;</em></p>
+<p>}
+</p></div>
+
+
+<p><strong>有三种解决办法：</strong></p>
+
+
+<ol>
+<li>不要在a标签内嵌套任何内联元素，使用其他方式实现。</li>
+<li>不要触发内联元素的haslayout属性。</li>
+<li>对img 设置相对定位，并把z-index设置为负值。</li>
+</ol>
+
+
+<p>注：内联元素触发haslayout 的条件：</p>
+
+
+<p><a href="http://www.moonless.net/demo/9/">http://www.moonless.net/demo/9/</a></p>
+
+
+<p><img src="http://www1.feedsky.com/t1/463440062/PlayGoogleKarry/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/PlayGoogleKarry/~8010025/463440062/5589304/1/item.html" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/PlayGoogleKarry/463440062/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/PlayGoogleKarry/463440062/art01.gif"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>以优美方式编写JavaScript代码</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>以优美方式编写JavaScript代码</h2>
+<p class="meta">20 Sep 2012</p>
+
+<div class="post">
+<h2>以优美方式编写JavaScript代码</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-20 10:26:43</h3>
+
+<h3>original <a href="http://kb.cnblogs.com/page/158018/">http://kb.cnblogs.com/page/158018/</a></h3>
+
+<p>　　<strong>英文原文：</strong><a href="http://amix.dk/blog/post/19612#CoffeeScript-The-beautiful-way-to-write-JavaScript" rel="nofollow">CoffeeScript: The beautiful way to write JavaScript </a></p>
+
+
+<p>　　我用 JavaScript 编程很多年了，写了大量的 JavaScript 代码，即便是我这样的经历，但我仍然还在努力地去写出更优美的 JavaScript 代码，在这篇文章中，我将探索为什么写出漂亮的 JavaScript 代码是如此困难，如何使用CoffeScript（一种简约且能编译成 JavaScript 的语言）改善它。</p>
+
+
+<p><strong>　　什么是优美的代码？</strong></p>
+
+
+<p>　　我想从个人观点来声明如何定义优美代码</p>
+
+
+<p>　　1、优美的代码是使用更少的代码解决问题；</p>
+
+
+<p>　　2、优美的代码是可读而且易理解的；</p>
+
+
+<p>　　3、优美的代码是一段既没有什么可以需要添加，也没有什么多余的可以去掉代码（就像伟大的的设计）；</p>
+
+
+<p>　　4、最短长度是优美代码的另外一个方面，并不是以此为作为目标或者权衡。</p>
+
+
+<p>　　所以对我来说，优美的代码是最小代码化、可使用、易读的综合效应。</p>
+
+
+<p><strong>　　一段优美 JavaScript 代码的例子：</strong></p>
+
+
+<p>　　以<span>斐波纳契函数</span>举例来说，这个函数对绝大多数<span>程序员</span>来是应该知道的。这里有一个谈不上漂亮的实现，因为代码缺乏结构化，而且使用了很多没必要的冗长代码：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> f(n) {<br></span><span style="color:#0000ff">var</span> s= 0<span style="color:#000000">;<br></span><span style="color:#0000ff">if</span>(n == 0) <span style="color:#0000ff">return</span><span style="color:#000000">(s);<br></span><span style="color:#0000ff">if</span>(n == 1<span style="color:#000000">) {<br>s </span>+= 1<span style="color:#000000">;<br></span><span style="color:#0000ff">return</span><span style="color:#000000">(s);<br>}<br></span><span style="color:#0000ff">else</span><span style="color:#000000"> {<br></span><span style="color:#0000ff">return</span>(f(n - 1) + f(n - 2<span style="color:#000000">));<br>   }<br>}</span></div>
+
+
+<p>　　这里是另外一个版本的实现，我发现了更多优雅和优美之处，尤其是如果你熟悉单行的if else的话(三目条件运算）:</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> fib(n) {<br>    </span><span style="color:#0000ff">return</span> n&lt;2 ? n : fib(n-1) + fib(n-2);<br>}</div>
+
+
+<p>　　同样优美的一段码，代码的行数并不见得那么重要：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> fib(n) {<br>    </span><span style="color:#0000ff">if</span> (n &lt; 2<span style="color:#000000">)<br>        </span><span style="color:#0000ff">return</span><span style="color:#000000"> n;<br>    </span><span style="color:#0000ff">return</span> fib(n-2) + fib(n-1);<br>}</div>
+
+
+<p><strong>　　JavaScript 的毛病</strong></p>
+
+
+<p>　　我认为 JavaScript 的一个主要问题就是它那令人困惑的混杂多种不同语言的模式：</p>
+
+
+<ul><li>JavaScript 是函数式语言</li><li>JavaScript 是面向对象的语言，但它是基于原型的</li><li>JavaScript 是动态的非常接近于 Lisp 而不是 C/Java , 但是有 C/Java 的语法</li><li>JavaScript 的名字就很让人疑惑，但是和 Java 没有半点关系</li></ul>
+
+
+<p>　　这种语言有特性危机，程序员尝试强加范式到 JavaScript 中，但这并不是什么好主意，因为 JavaScript 不是 Java，不是 Sheme，也不是 Python，就像其它语言一样有自己的强项和弱项。</p>
+
+
+<p>　　同时，JavaScript 草率的设计和糟糕的决策表现在 this，像 this 的动态域、用于继承的语法，由于考虑到向后兼容的原因，修复这些问题非常困难。这里是一个很好的引用来自于 JavaScript 的创造者，亮点在 JavaScript 诞生的所处的环境：“JavaScript 听起来像Java，仅此而已，像是 Java 的哑巴小兄弟，但是我不得不在十天完成。（否则）或许比 JavaScript 更糟糕的事情会发生”— Brendan Eich<img style="display:block;margin-left:auto;margin-right:auto" src="http://pic001.cnblogs.com/images/2012/145819/2012091821553334.jpg" alt=""></p>
+
+
+<p><strong>　　CoffeeScript：全新的方式写出更好的 JavaScript</strong></p>
+
+
+<p>　　CoffeeScript 是一种精致的语言，能编译成 JavaScript。它的目的是用简单的方法揭示 JavaScript 优秀的部分。</p>
+
+
+<p><strong>　　CoffeeScript 不会终结你的 JavaScript 代码</strong></p>
+
+
+<p>　　我喜欢 CoffeeScript 的原因之一是它能编译成 JavaScript，这就意味着我可以重用我当前所有的 JavaScript 代码，我不需要重写任何代码到 CoffeeScript，这是一笔伟大的交易，尤其是因为我们的 <a href="http://wedoist.com/" rel="nofollow">Wedoist</a> JavaScript 代码库非常庞大，要是重写成另一种语言够你花上数月的时间。CoffeeScript 同样是一种迷你型的 JavaScript，就像是被改善 JavaScript 版本，糟糕的部分被替换掉了。同时它的语法从 C/Java 语言换成了 Ruby 或者是 Python（棒极了，因为 JavaScript 更接近于Ruby、Python 而不是 C 或者 Java）。  </p>
+
+
+<p><strong>　　CoffeeScript 是怎么样编译成 JavaScript 的<br></strong></p>
+
+
+<p>　　为了阐述编译，我们举一例子，看它是怎么工作的。 CoffeeScript 代码：</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">square = (x) -&gt; x *<span style="color:#000000"> x<br>cube   </span>= (x) -&gt; square(x) * x</div>
+
+
+<p>编译成 JavaScript 代码：<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span><span style="color:#000000"> cube, square;<br>square </span>= <span style="color:#0000ff">function</span><span style="color:#000000">(x) {<br>  </span><span style="color:#0000ff">return</span> x <em><span style="color:#000000"> x;<br>};<br>cube </span>= <span style="color:#0000ff">function</span><span style="color:#000000">(x) {<br>  </span><span style="color:#0000ff">return</span> square(x) </em><span style="color:#000000"> x;<br>};</span></div><p>　　正如你从上例中看到的 CoffeeScript 和 JavaScirpt 的映射非常的直接。在另外一个<a href="http://jashkenas.github.com/coffee-script/" rel="nofollow">网站</a>你可以发现很多例子CoffeeScript如何编译成JavaScript。</p><p><strong>　　CoffeeScript：重写示例</strong></p><p>　　为了给你一种 CoffeeScript 的感觉，这里是个小 JavaScript 例子，我将重写成 CoffeeScript。</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">get: <span style="color:#0000ff">function</span><span style="color:#000000">(offset, callback, limit) {<br>    </span><span style="color:#0000ff">var</span> self = <span style="color:#0000ff">this</span><span style="color:#000000">;<br> <br>    </span><span style="color:#0000ff">var</span> data =<span style="color:#000000"> {<br>        project_id: Projects.getCurrent().id,<br>        limit: limit </span>|| <span style="color:#0000ff">this</span><span style="color:#000000">.default_limit<br>    }<br> <br>    </span><span style="color:#0000ff">if</span><span style="color:#000000">(offset)<br>        data.offset </span>= Calendar.jsonFormat(offset, <span style="color:#0000ff">true</span><span style="color:#000000">);<br> <br>    </span><span style="color:#0000ff">this</span>.ajax.getArchived(data, <span style="color:#0000ff">function</span><span style="color:#000000">(data) {<br>        </span><span style="color:#0000ff">if</span>(!<span style="color:#000000">offset)<br>            self.setCache(data);<br>        callback(data);<br>    });<br>}</span></div><p>　　CoffeeScript 看起来像这样：</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">get: (offset, callback, limit) =&gt;<span style="color:#000000"><br>    data </span>=<span style="color:#000000"><br>        project_id: Projects.getCurrent().id<br>        limit: limit or @default_limit<br> <br>    </span><span style="color:#0000ff">if</span><span style="color:#000000"> offset<br>        data.offset </span>= Calendar.jsonFormat(offset, <span style="color:#0000ff">true</span><span style="color:#000000">)<br> <br>    @ajax.getArchived(data, (data) </span>=&gt;<br>        <span style="color:#0000ff">if</span> !<span style="color:#000000">offset<br>            @setCache(data)<br>        callback(data)<br>    )</span></div><p>　　如你所见，两者看起来非常相似，但是我的观点是 CoffeeScript 看起来更轻快，因为所有非必须的语法被移除仅保留了必须的元素。</p><p><strong>　　现在让我们来看看 CoffeeScript 的亮点：</strong></p><p><strong>　　亮点一：继承更简单</strong></p><p>　　JavaScript 有很强的继承系统，但是语法很恐怖，CoffeeScript 修复了用一种很优雅的继承系统模拟其它很多语言中类和继承机制：</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#000000">class Animal<br>    constructor: (@name) </span>-&gt;<span style="color:#000000"><br> <br>    move: (meters) </span>-&gt;<span style="color:#000000"><br>        alert @name </span>+ " moved " + meters + "m."<span style="color:#000000"><br> <br>class Snake extends Animal<br>    move: </span>-&gt;<span style="color:#000000"><br>        alert </span>"Slithering..."<span style="color:#000000"><br>        super </span>5</div><p><strong>　　亮点二：数组的迭代</strong></p>我喜欢 Python 中的列表推导在 CoffeeScript 也有<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">list = [1, 2, 3, 4, 5<span style="color:#000000">]<br>cubes </span>= (math.cube num <span style="color:#0000ff">for</span> num <span style="color:#0000ff">in</span> list)</div>数组切片：<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">copy = list[0...list.length]</div>数组迭代：<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">countdown = (num <span style="color:#0000ff">for</span> num <span style="color:#0000ff">in</span> [10..1])</div><p><strong>　　亮点三：字符串迭代</strong></p>对于字符创的插入，CoffeeScript 借用了 Ruby 的语法，它能简单的构造字符串。<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">author = "Wittgenstein"<span style="color:#000000"><br>quote  </span>= "A picture is a fact. -- #{ author }"</div>允许多行的字符串：<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">mobyDick = "<span style="color:#000000">Call me Ishmael. Some years ago -<br>never mind how long precisely -- having little<br>or no money in my purse, and nothing particular...</span>"</div><p><strong>　　亮点四：绑定this</strong></p><p>　　this 关键字在 JavaScript 中部分的被破坏，因为他的动态域，CoffeeScript修复了这些，如果你使用=&gt;关键字（它自动为你绑定this或者@）</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">Account = (customer, cart) -&gt;<span style="color:#000000"><br>    @customer </span>=<span style="color:#000000"> customer<br>    @cart </span>=<span style="color:#000000"> cart<br> <br>    $(</span>&#39;.shopping_cart&#39;).bind(&#39;click&#39;, (event) =&gt;<span style="color:#000000"><br>        @customer.purchase @cart<br>    )</span></div><p><strong>　　探索 CoffeeScript</strong></p><p>　　我仅仅抓住 CoffeeScript 的表面所提供的一些东西，更多细节请从他们的站点提取以及带有<a href="http://jashkenas.github.com/coffee-script/documentation/docs/grammar.html" rel="nofollow">注释的源代码</a>。</p><p>　　我仍然在探索 CoffeeScript，目前为止这是我最喜欢的语言，荣誉属于 <a href="https://github.com/jashkenas" rel="nofollow">Jeremy Ashkenas</a>。快乐的编程，我也希望你可以试一把 CoffeeScript 。</p><p>　　编译：<a href="http://www.jobbole.com/">伯乐</a>在线 –<a href="http://blog.jobbole.com/26554">刘志军</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JavaScript游戏之优化篇</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JavaScript游戏之优化篇</h2>
+<p class="meta">05 Nov 2010</p>
+
+<div class="post">
+<h2>JavaScript游戏之优化篇</h2>
+
+<h3>by Floyd</h3>
+
+<h3>at 2010-11-05 14:45:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/floyd/archive/2010/11/05/1869943.html">http://www.cnblogs.com/floyd/archive/2010/11/05/1869943.html</a></h3>
+
+<p><p>最近回头看看自己以前写的游戏代码，总结出几个可以优化改进的地方，当然还有很多地方需要优化，还希望大家指出来。</p>
+<p> </p>
+<p><span style="color:red;font-size:14pt">1。善用DocumentFragment</span> </p>
+<p>之前有个打飞机的游戏。我是用如下方法添加子弹</p>
+<div>
+<div><span style="color:#008080">1</span> <span style="color:#0000ff">for</span><span style="color:#000000">(</span><span style="color:#0000ff">var</span><span style="color:#000000"> i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;i</span><span style="color:#000000">&lt;</span><span style="color:#000000">5</span><span style="color:#000000">;i</span><span style="color:#000000">++</span><span style="color:#000000">){<br>
+</span><span style="color:#008080">2</span> <span style="color:#000000">    </span><span style="color:#0000ff">var</span><span style="color:#000000"> bullet </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Bullet();<br>
+</span><span style="color:#008080">3</span> <span style="color:#000000">    document.body.appendChild(bullet);<br>
+</span><span style="color:#008080">4</span> <span style="color:#000000">}</span></div>
+</div>
+<p> </p>
+<p> 问题就来了，我的目的是希望同时能出现5颗子弹，所以我循环将5个子弹对象添加到body，这样会导致一个结果：浏览器reflow了5次。</p>
+<p>但其实可以找一个载体，来先把这5个子弹类装起来，然后，再一次性添加到body中，这样就只会出现一次flow。节省不少开销。</p>
+<p> </p>
+<div>
+<div>
+<span style="font-family:&#39;Courier New&#39;;font-size:13px"><span style="color:#008080">1</span> <span style="color:#000000"> </span><span style="color:#0000ff">var</span><span style="color:#000000"> df </span><span style="color:#000000">=</span><span style="color:#000000"> document.createDocumentFragment();</span><br></span>
+<span style="color:#008080">2</span> <span style="color:#000000"> </span><span style="color:#0000ff">for</span><span style="color:#000000">(</span><span style="color:#0000ff">var</span><span style="color:#000000"> i</span><span style="color:#000000">=</span><span style="color:#000000">0</span><span style="color:#000000">;i</span><span style="color:#000000">&lt;</span><span style="color:#000000">5</span><span style="color:#000000">;i</span><span style="color:#000000">++</span><span style="color:#000000">){<br>
+</span><span style="color:#008080">3</span> <span style="color:#000000">     </span><span style="color:#0000ff">var</span><span style="color:#000000"> bullet </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Bullet();<br>
+</span><span style="color:#008080">4</span> <span style="color:#000000">     df.appendChild(bullet);<br>
+</span><span style="color:#008080">5</span> <span style="color:#000000"> }<br>
+</span><span style="color:#008080">6</span> <span style="color:#000000"> document.body.appendChild(df);</span></div>
+</div>
+<p> </p>
+<p> DocumentFragment：文档碎片，它不会产生任何标签，只是一个载体。</p><p> </p><p><span style="color:red;font-size:14pt">2。对引用值置空，Dom自定义的引用值也置空。</span></p><p> 发觉自己写的代码，很多引用类型的值，都没有在变量结束的时候置空。</p><p>例如：</p><div><div><span style="color:#008080"> 1</span> <span style="color:#0000ff">var</span><span style="color:#000000"> Bullet </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br></span><span style="color:#008080"> 2</span> <span style="color:#000000">   </span><span style="color:#0000ff">this</span><span style="color:#000000">.dom </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">null</span><span style="color:#000000">;<br></span><span style="color:#008080"> 3</span> <span style="color:#000000">   </span><span style="color:#0000ff">this</span><span style="color:#000000">.init();<br></span><span style="color:#008080"> 4</span> <span style="color:#000000">}<br></span><span style="color:#008080"> 5</span> <span style="color:#000000">Bullet.prototype </span><span style="color:#000000">=</span><span style="color:#000000"> {<br></span><span style="color:#008080"> 6</span> <span style="color:#000000">   </span><span style="color:#0000ff">this</span><span style="color:#000000">.init : </span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br></span><span style="color:#008080"> 7</span> <span style="color:#000000">       </span><span style="color:#0000ff">this</span><span style="color:#000000">.dom </span><span style="color:#000000">=</span><span style="color:#000000"> document.createElement(</span><span style="color:#000000">'</span><span style="color:#000000">div</span><span style="color:#000000">'</span><span style="color:#000000">);<br></span><span style="color:#008080"> 8</span> <span style="color:#000000">       document.body.appendChild(</span><span style="color:#0000ff">this</span><span style="color:#000000">.dom);<br></span><span style="color:#008080"> 9</span> <span style="color:#000000">   }<br></span><span style="color:#008080">10</span> <span style="color:#000000">   </span><span style="color:#0000ff">this</span><span style="color:#000000">.end : </span><span style="color:#0000ff">function</span><span style="color:#000000">(){<br></span><span style="color:#008080">11</span> <span style="color:#000000">       document.body.removeChild(</span><span style="color:#0000ff">this</span><span style="color:#000000">.dom);<br></span><span style="color:#008080">12</span> <span style="color:#000000">   }<br></span><span style="color:#008080">13</span> <span style="color:#000000">}</span></div></div><p> </p><p> 在结束的时候单纯只是将dom对象移除，其实还需要将this.dom = null。免得内存的浪费，特别是IE系列。</p><p> </p><p><span style="color:red;font-size:14pt">3。循环判断中加标识，减少Dom属性判断。</span></p><p> 根据游戏的逻辑，例如是男人就下一百层。</p><p> 当小人站立在一个方块上面，这个时候，其它的方块，可以不需要再判断小人是否会掉落到自己的方块上，只需要往上升就行了。这样，一秒可以减少好几百次</p><p>对dom元素的属性访问，减少开销。当小人离开方块的时候，判断再次生效。合理利用。</p><p> 附上自己写的:<a href="http://www.cnblogs.com/floyd/archive/2010/11/03/1868323.html"><span style="font-size:12pt;color:red">是男人就下100层传送门&gt;&gt;</span></a></p><p> </p><p>暂时就发现那么多，以后发现更多的话，再写吧。。。 </p><img src="http://www.cnblogs.com/floyd/aggbug/1869943.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/floyd/">Floyd</a> 发表于 2010-11-05 14:45 <a href="http://www.cnblogs.com/floyd/archive/2010/11/05/1869943.html">原文链接</a></p><p>评论: 5　<a href="http://www.cnblogs.com/floyd/archive/2010/11/05/1869943.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/floyd/archive/2010/11/05/1869943.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/80019/">纽约时报：机器人让你远程了解住所安全</a><span style="color:gray">(2010-11-06 17:48)</span><br>· <a href="http://news.cnblogs.com/n/80018/">Mozilla发布Firefox 4.0 Beta 7 RC</a><span style="color:gray">(2010-11-06 17:40)</span><br>· <a href="http://news.cnblogs.com/n/80017/">Gmail通话录音功能即将出炉</a><span style="color:gray">(2010-11-06 17:34)</span><br>· <a href="http://news.cnblogs.com/n/80016/">用JavaScript来写Gameboy模拟器</a><span style="color:gray">(2010-11-06 17:20)</span><br>· <a href="http://news.cnblogs.com/n/80015/">Kik Messenger本周在App Store上爆发，冲到排行榜首位</a><span style="color:gray">(2010-11-06 17:15)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/79632/">中国互联网最为惨烈的一场大战：360 VS 腾讯（持续更新）</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

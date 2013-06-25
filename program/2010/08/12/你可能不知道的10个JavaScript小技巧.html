@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>你可能不知道的10个JavaScript小技巧</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>你可能不知道的10个JavaScript小技巧</h2>
+<p class="meta">12 Aug 2010</p>
+
+<div class="post">
+<h2>你可能不知道的10个JavaScript小技巧</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-08-12 13:45:30</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/735413">http://www.javaeye.com/topic/735413</a></h3>
+
+<p><span style="font-family:verdana,sans-serif;line-height:18px">
+<p style="font-size:14px;line-height:25px;text-indent:25px">“<a style="color:#888888;text-decoration:none" href="http://www.cnblogs.com/lhb25/">梦想天空</a>”（网名）曾发表一篇<a style="color:#888888;text-decoration:none" href="http://www.cnblogs.com/lhb25/archive/2010/08/12/1797727.html">博文</a>，为我们介绍了10个JavaScript开发小技巧，现转载于此，供大家学习：</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">尽管我使用Javascript来做开发有很多年了，但它常有一些让我很惊讶的小特性。对于我来说，Javascript是需要持续不断的学习的。在这篇文章中，我将列出10个Javascript使用小技巧，主要面向Javascript新手和中级开发者。希望每个读者都能至少从中学到一个有用的技巧。</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>1.变量转换</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">看起来很简单，但据我所看到的，使用构造函数，像Array()或者Number()来进行变量转换是常用的做法。始终使用原始数据类型（有时也称为字面量）来转换变量，这种没有任何额外的影响的做法反而效率更高。</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>var</span><span> myVar   = </span><span>"3.14159"</span><span>,       </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>      str     = </span><span>""</span><span>+ myVar,</span><span>//  to string      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>      </span><span>int</span><span>     = ~~myVar,  </span><span>//  to integer      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>      </span><span>float</span><span>   = 1*myVar,  </span><span>//  to float      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>      bool    = !!myVar,  </span><span>/*  to boolean - any string with length </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>                              and any number except 0 are true */</span><span>     </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>      array   = [myVar];  </span><span>//  to array  </span><span> </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">转换日期(new Date(myVar))和正则表达式(new RegExp(myVar))必须使用构造函数，而且创建正则表达式的时候要使用/pattern/flags的形式。</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>2.十进制转换为十六进制或者八进制，或者反过来</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">你是不是写个单独的函数来转换十六进制（或者八进制）呢？马上停下吧！有更容易的现成的函数可以用：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>(</span><span>int</span><span>).toString(16); </span><span>// converts int to hex, eg 12 =&gt; &quot;C&quot;      </span><span> </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>(</span><span>int</span><span>).toString(8);  </span><span>// converts int to octal, eg. 12 =&gt; &quot;14&quot;      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>parseInt(string,16) </span><span>// converts hex to int, eg. &quot;FF&quot; =&gt; 255      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>parseInt(string,8) </span><span>// converts octal to int, eg. &quot;20&quot; =&gt; 16  </span><span> </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>3.玩转数字</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">除了上一节介绍的之外，这里有更多的处理数字的技巧：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>0xFF; </span><span>// Hex declaration, returns 255      </span><span> </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>020; </span><span>// Octal declaration, returns 16      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>1e3; </span><span>// Exponential, same as 1 * Math.pow(10,3), returns 1000      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>(1000).toExponential(); </span><span>// Opposite with previous, returns 1e3      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>(3.1415).toFixed(3); </span><span>// Rounding the number, returns "3.142"  </span><span> </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>4.Javascript版本检测</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">你知道你的浏览器支持哪一个版本的Javascript吗？如果不知道的话，去维基百科查一下Javascript版本表吧。出于某种原因，Javascript 1.7版本的某些特性是没有得到广泛的支持。不过大部分浏览器都支持了1.8版和1.8.1版的特性。（注：所有的IE浏览器（IE8或者更老的版本）只支持1.5版的Javascript）这里有一个脚本，既能通过检测特征来检测JavaScript版本，它还能检查特定的Javascript版本所支持的特性。</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>var</span><span> JS_ver  = [];    </span></span></li>
+<li style="padding:0px;margin:0px"><span>     </span></li>
+<li style="padding:0px;margin:0px">
+<span> (Number.prototype.toFixed)?JS_ver.push(</span><span>"1.5"</span><span>):</span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>([].indexOf &amp;&amp; [].forEach)?JS_ver.push(</span><span>"1.6"</span><span>):</span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>((</span><span>function</span><span>(){</span><span>try</span><span> {[a,b] = [0,1];</span><span>return</span><span> </span><span>true</span><span>;}</span><span>catch</span><span>(ex) {</span><span>return</span><span> </span><span>false</span><span>;}})())?JS_ver.push(</span><span>"1.7"</span><span>):</span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>([].reduce &amp;&amp; [].reduceRight &amp;&amp; JSON)?JS_ver.push(</span><span>"1.8"</span><span>):</span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>(</span><span>""</span><span>.trimLeft)?JS_ver.push(</span><span>"1.8.1"</span><span>):</span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>JS_ver.supports = </span><span>function</span><span>()       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>{       </span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>if</span><span> (arguments[0])       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>return</span><span> (!!~</span><span>this</span><span>.join().indexOf(arguments[0] +</span><span>","</span><span>) +</span><span>","</span><span>);       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>else</span><span>     </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>return</span><span> (</span><span>this</span><span>[</span><span>this</span><span>.length-1]);       </span>
+</li>
+<li style="padding:0px;margin:0px"><span> }       </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> alert(</span><span>"Latest Javascript version supported: "</span><span>+ JS_ver.supports());       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>alert(</span><span>"Support for version 1.7 : "</span><span>+ JS_ver.supports(</span><span>"1.7"</span><span>));   </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>5.使用window.name进行简单会话处理</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">这个是我真的喜欢的东西。您可以为指定一个字符串作为window.name属性的值，直到您关闭该标签或窗口。虽然我没有提供任何脚本，但我强烈建议您如充分利用这个方法。举例来说，在建设一个网站或应用程序的时候，在调试和测试模式之间切换是非常有用的。</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>6.判断属性是否存在</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">这个问题包含两个方面，既有检查属性时候存在，还要获取属性的类型。但我们总是忽略了这些小事情：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>// BAD: This will cause an error in code when foo is undefined      </span><span> </span></span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>if</span><span> (foo) {       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     doSomething();       </span></li>
+<li style="padding:0px;margin:0px"><span> }             </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>// GOOD: This doesn't cause any errors. However, even when      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>// foo is set to NULL or false, the condition validates as true      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>if</span><span> (</span><span>typeof</span><span> foo != </span><span>"undefined"</span><span>) {       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     doSomething();       </span></li>
+<li style="padding:0px;margin:0px"><span> }             </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>  </span><span>// BETTER: This doesn't cause any errors and in addition      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>// values NULL or false won't validate as true      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>  </span><span>if</span><span> (window.foo) {       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     doSomething();       </span></li>
+<li style="padding:0px;margin:0px"><span>}  </span></li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">但是，有的情况下，我们有更深的结构和需要更合适的检查的时候，可以这样：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>// UGLY: we have to proof existence of every      </span><span> </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>// object before we can be sure property actually exists      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>if</span><span> (window.oFoo &amp;&amp; oFoo.oBar &amp;&amp; oFoo.oBar.baz) {       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     doSomething();       </span></li>
+<li style="padding:0px;margin:0px"><span> }   </span></li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>7.给函数传递参数</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">当函数既有必选又有可选参数的时候，我们可能是这样做的：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>function</span><span> doSomething(arg0, arg1, arg2, arg3, arg4) {       </span></span></li>
+<li style="padding:0px;margin:0px"><span> ...       </span></li>
+<li style="padding:0px;margin:0px"><span> }             </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>doSomething(</span><span>''</span><span>, </span><span>'foo'</span><span>, 5, [], </span><span>false</span><span>);  </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">而传递一个对象总是比传递一堆的参数更方便：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>function</span><span> doSomething() {       </span></span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>// Leaves the function if nothing is passed      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>if</span><span> (!arguments[0]) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>        </span><span>return</span><span> </span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     }           </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>var</span><span> oArgs   = arguments[0]       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         arg0    = oArgs.arg0 || </span><span>""</span><span>,       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         arg1    = oArgs.arg1 || </span><span>""</span><span>,       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>         arg2    = oArgs.arg2 || 0,       </span></li>
+<li style="padding:0px;margin:0px"><span>         arg3    = oArgs.arg3 || [],       </span></li>
+<li style="padding:0px;margin:0px">
+<span>         arg4    = oArgs.arg4 || </span><span>false</span><span>;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>}            </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px"><span>doSomething({       </span></li>
+<li style="padding:0px;margin:0px">
+<span>     arg1    : </span><span>"foo"</span><span>,       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     arg2    : 5,       </span></li>
+<li style="padding:0px;margin:0px">
+<span>     arg4    : </span><span>false</span><span>     </span>
+</li>
+<li style="padding:0px;margin:0px"><span> });   </span></li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">这只是一个把对象作为参数传递的一个很简单的例子，例如，我们还可以声明一个对象，变量名作为Key，默认值作为Value。</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>8.使用document.createDocumentFragment()</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">您可能需要动态地追加多个元素到文档中。然而，直接将它们插入到文档中会导致这个文档每次都需要重新布局一个，相反的，你应该使用文档碎片，建成后只追加一次：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>function</span><span> doSomething(arg0, arg1, arg2, arg3, arg4) {       </span></span></li>
+<li style="padding:0px;margin:0px"><span> ...       </span></li>
+<li style="padding:0px;margin:0px"><span> }  </span></li>
+<li style="padding:0px;margin:0px"><span>            </span></li>
+<li style="padding:0px;margin:0px">
+<span>doSomething(</span><span>''</span><span>, </span><span>'foo'</span><span>, 5, [], </span><span>false</span><span>);  </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">而传递一个对象总是比传递一堆的参数方便：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>function</span><span> createList() {       </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>var</span><span> aLI = [</span><span>"first item"</span><span>, </span><span>"second item"</span><span>, </span><span>"third item"</span><span>,</span><span>"fourth item"</span><span>, </span><span>"fith item"</span><span>];       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>        </span></li>
+<li style="padding:0px;margin:0px">
+<span>    </span><span>// Creates the fragment      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>var</span><span> oFrag   = document.createDocumentFragment();       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>        </span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>while</span><span> (aLI.length) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>var</span><span> oLI = document.createElement(</span><span>"li"</span><span>);       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>        </span></li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>// Removes the first item from array and appends it      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>// as a text node to LI element      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px"><span>         oLI.appendChild(document.createTextNode(aLI.shift()));       </span></li>
+<li style="padding:0px;margin:0px"><span>         oFrag.appendChild(oLI);       </span></li>
+<li style="padding:0px;margin:0px"><span>     }             </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>      document.getElementById(</span><span>'myUL'</span><span>).appendChild(oFrag);       </span>
+</li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px"><span> }  </span></li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>9.为replace()方法传递一个函数</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">有的时候你想替换字符串的某个部分为其它的值，最好的方法就是给String.replace()传递一个独立的函数。</p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">下面是实现在线扑克游戏中大量输出的一个简单例子：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>var</span><span> sFlop   = </span><span>"Flop: [Ah] [Ks] [7c]"</span><span>;       </span></span></li>
+<li style="padding:0px;margin:0px">
+<span>var</span><span> aValues = {</span><span>"A"</span><span>:</span><span>"Ace"</span><span>,</span><span>"K"</span><span>:</span><span>"King"</span><span>,7:</span><span>"Seven"</span><span>};       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>var</span><span> aSuits  = {</span><span>"h"</span><span>:</span><span>"Hearts"</span><span>,</span><span>"s"</span><span>:</span><span>"Spades"</span><span>,</span><span>"d"</span><span>:</span><span>"Diamonds"</span><span>,</span><span>"c"</span><span>:</span><span>"Clubs"</span><span>};    </span>
+</li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>sFlop   = sFlop.replace(/\[\w+\]/gi, </span><span>function</span><span>(match) {       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     match   = match.replace(match[2], aSuits[match[2]]);       </span></li>
+<li style="padding:0px;margin:0px">
+<span>     match   = match.replace(match[1], aValues[match[1]] +</span><span>" of "</span><span>);            </span>
+</li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>return</span><span> match;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span> });            </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>// string sFlop now contains:      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>// "Flop: [Ace of Hearts] [King of Spades] [Seven of Clubs]" </span><span> </span>
+</li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px"><strong>10.循环中标签的使用</strong></p>
+<p style="font-size:14px;line-height:25px;text-indent:25px">有的时候，循环中又嵌套了循环，你可能想在循环中退出，则可以用标签：</p>
+<pre><ol style="padding:0px;margin:0px">
+<li style="padding:0px;margin:0px"><span><span>outerloop:       </span></span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>for</span><span> (</span><span>var</span><span> iI=0;iI&lt;5;iI++) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>if</span><span> (somethingIsTrue()) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>// Breaks the outer loop iteration      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>break</span><span> outerloop;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>     }       </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px"><span>innerloop:       </span></li>
+<li style="padding:0px;margin:0px"><span> </span></li>
+<li style="padding:0px;margin:0px">
+<span> </span><span>for</span><span> (</span><span>var</span><span> iA=0;iA&lt;5;iA++) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>     </span><span>if</span><span> (somethingElseIsTrue()) {       </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>// Breaks the inner loop iteration      </span><span> </span>
+</li>
+<li style="padding:0px;margin:0px">
+<span>         </span><span>break</span><span> innerloop;       </span>
+</li>
+<li style="padding:0px;margin:0px"><span>         }             </span></li>
+<li style="padding:0px;margin:0px"><span>     }       </span></li>
+<li style="padding:0px;margin:0px"><span> }  </span></li>
+</ol></pre>
+<p style="font-size:14px;line-height:25px;text-indent:25px">原文链接：<a style="color:#888888;text-decoration:none" href="http://www.cnblogs.com/lhb25/archive/2010/08/12/1797727.html">http://www.cnblogs.com/lhb25/archive/2010/08/12/1797727.html</a></p>
+</span></p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://xiayh04.javaeye.com"&gt;xiayh04&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/735413" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>码农干货系列【17】--Wind.js与Promise.js - 【当耐特】</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>码农干货系列【17】--Wind.js与Promise.js - 【当耐特】</h2>
+<p class="meta">01 May 2013</p>
+
+<div class="post">
+<h2>码农干货系列【17】--Wind.js与Promise.js - 【当耐特】</h2>
+
+<h3>by 【当耐特】</h3>
+
+<h3>at 2013-05-01 12:01:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/iamzhanglei/archive/2013/05/01/3052980.html">http://www.cnblogs.com/iamzhanglei/archive/2013/05/01/3052980.html</a></h3>
+
+<p><strong>示例</strong></p>
+
+
+<p>  <p>先引入<a href="http://windjs.org/cn/">wind.js</a>与<a href="http://www.cnblogs.com/iamzhanglei/archive/2013/04/30/3051680.html">promise.js</a>:</p>  <div>       <span>&lt;</span><span>script</span> <span>src</span><span>=&quot;wind-all-0.7.3.js&quot;</span><span>&gt;&lt;/</span><span>script</span><span>&gt;</span>      &lt;script src=<span>&quot;promise.js&quot;</span>&gt;<span>&lt;/</span><span>script</span><span>&gt;</span></div><p>然后create:</p><div>          Wind.Promise.create = <span>function</span> (fn) {              <span>var</span> prms = Promise();              fn(prms.resolve, prms.reject);              <span>return</span> prms;          }</div><p>最后:</p><div>          <span>var</span> testAsync = eval(Wind.compile(<span>&quot;promise&quot;</span>, <span>function</span> () {              <span>for</span> (<span>var</span> i = 0; i &lt; 3; i++) {        <span>//loop  3  times</span>                  <span>var</span> aa = $await(f1());                  alert(aa);                       <span>//alert  &quot;from f1&quot;</span>                  $await(f2().wait(3000));         <span>//sleep  3000ms</span>                  $await(f3());              }          }));             testAsync();             <span>function</span> f1() {              <span>var</span> promise = Promise();              setTimeout(<span>function</span> () {                  console.log(1);                  promise.resolve(<span>&quot;from f1&quot;</span>);              }, 2500)                 <span>return</span> promise;          }             <span>function</span> f2() {              <span>var</span> promise = Promise();              setTimeout(<span>function</span> () {                  console.log(2);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }             <span>function</span> f3() {              <span>var</span> promise = Promise();              setTimeout(<span>function</span> () {                  console.log(3);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }</div><p><strong>Todo</strong></p><p>解决$await(testAsync())之后掉链子的问题。</p><p><strong>扩展阅读</strong></p><p><strong><a href="http://windjs.org/cn/">Wind.js</a></strong></p><p><strong><a href="http://blog.zhaojie.me/2012/06/promise-support-in-jscex.html">Jscex与Promise/A那些事</a></strong></p><img src="http://www.cnblogs.com/iamzhanglei/aggbug/3052980.html?type=1" width="1" height="1" alt=""><br><p>本文链接：<a href="http://www.cnblogs.com/iamzhanglei/archive/2013/05/01/3052980.html">http://www.cnblogs.com/iamzhanglei/archive/2013/05/01/3052980.html</a>，转载请注明。</p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

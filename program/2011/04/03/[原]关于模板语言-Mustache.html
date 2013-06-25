@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[原]关于模板语言 Mustache</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[原]关于模板语言 Mustache</h2>
+<p class="meta">03 Apr 2011</p>
+
+<div class="post">
+<h2>[原]关于模板语言 Mustache</h2>
+
+<h3>by soasme</h3>
+
+<h3>at 2011-04-03 02:12:00</h3>
+
+<h3>original <a href="http://blog.csdn.net/soasme/article/details/6297467">http://blog.csdn.net/soasme/article/details/6297467</a></h3>
+
+<p>@Fenng <span>A client-rendering framework for Facebook by Changhao Jiang<a title="http://mustache.github.com/" rel="nofollow" href="http://t.co/NIo6vCd">http://t.co/NIo6vCd</a></span></p>
+
+
+<p> </p>
+
+
+<p>Fenng推荐了一款模板语言：mustache（意思是胡须）。</p>
+
+
+<p> </p>
+
+
+<p>mustache官网是这么介绍的：</p>
+
+
+<p> </p>
+
+
+<blockquote>
+<p>Logic-less templates.</p>
+<p>Available in <a href="http://github.com/defunkt/mustache">Ruby</a>, <a href="https://github.com/janl/mustache.js">JavaScript</a>, <a href="https://github.com/defunkt/pystache">Python</a>,<a href="https://github.com/mojombo/mustache.erl">Erlang</a>, <a href="https://github.com/bobthecow/mustache.php">PHP</a>, <a href="https://github.com/pvande/Template-Mustache">Perl</a>, <a href="https://github.com/groue/GRMustache">Objective-C</a>, <a href="https://github.com/spullara/mustache.java">Java</a>, <a href="https://github.com/jdiamond/Nustache">.NET</a>,<a href="https://github.com/samskivert/jmustache">Android</a>, <a href="https://github.com/mrtazz/plustache">C++</a>, <a href="https://github.com/hoisie/mustache.go/">Go</a>, <a href="https://github.com/nrk/hige">Lua</a>, <a href="https://github.com/joshthecoder/mustang">ooc</a>, <a href="https://github.com/hyakugei/mustache.as">ActionScript</a>,<a href="https://github.com/pmcelhaney/Mustache.cfc">ColdFusion</a>, <a href="https://github.com/scalate/scalate">Scala</a>, <a href="https://github.com/fhd/clostache">Clojure</a>, <a href="https://github.com/vspy/mustache">Fantom</a>,<a href="https://github.com/pvande/Milk">CoffeeScript</a>, <a href="https://github.com/repeatedly/mustache4d">D</a>, and for <a href="https://github.com/raycmorgan/Mu">node.js</a>.</p>
+<p>Works great with <a href="http://gist.github.com/323624">TextMate</a>, <a href="http://gist.github.com/323622">Vim</a>, <a href="http://gist.github.com/323619">Emacs</a>, and<a href="http://github.com/bobthecow/Mustache.mode">Coda</a>.</p>
+<p>The Manual: <a href="http://mustache.github.com/mustache.5.html">mustache(5)</a> and <a href="http://mustache.github.com/mustache.1.html">mustache(1)</a></p>
+</blockquote>
+
+
+<p> </p>
+
+
+<p>总而言之，支持很多语言，作者是facebook的蒋博士。</p>
+
+
+<p> </p>
+
+
+<p>全部用法详见<a href="http://mustache.github.com/mustache.5.html">http://mustache.github.com/mustache.5.html</a></p>
+
+
+<p><a href="http://mustache.github.com/">github</a>的html彩蛋：</p>
+
+
+<p>&lt;!--
+                                      _  _
+                            _____*~~~  **  ~~~*_____
+                         __* ___     |/__/|     ___ *__
+                       _*  / 888~~/__(8OO8)__/~~888 /  *_
+                     _*   /88888888888888888888888888/   *_
+                     *   |8888888888888888888888888888|   *
+                    /~*  /8888/~/88/~/8888/~/88/~/8888/  *~
+                   /  ~*  /88/   //   (88)   //   /88/  *~
+                  /    ~*  //          //          //  *~
+                 /       ~~*_                      _*~~/
+                /            ~~~~~*___ ** ___*~~~~~  /
+               /                      ~  ~         /
+              /                                  /
+             /                                 /
+            /                                /
+           /                    t__n__r__  /
+          /                    | ####### |
+         /            ___      | ####### |             ____i__           /
+        /  _____p_____l_l____  | ####### |            | ooooo |         qp
+i__p__ /  |  ##############  | | ####### |__l___xp____| ooooo |      |~~~~|
+ oooo |_I_|  ##############  | | ####### |oo%Xoox%ooxo| ooooo |p__h__|##%#|
+ oooo |ooo|  ##############  | | ####### |o%xo%%xoooo%| ooooo |      |#xx%|
+ oooo |ooo|  ##############  | | ####### |o%ooxx%ooo%%| ooooo |######|x##%|
+ oooo |ooo|  ##############  | | ####### |oo%%x%oo%xoo| ooooo |######|##%x|
+ oooo |ooo|  ##############  | | ####### |%x%%oo%/oo%o| ooooo |######|/#%x|
+ oooo |ooo|  ##############  | | ####### |%%x/oo/xx%xo| ooooo |######|#%x/|
+ oooo |ooo|  ##############  | | ####### |xxooo%%/xo%o| ooooo |######|#^x#|
+ oooo |ooo|  ##############  | | ####### |oox%%o/x%%ox| ooooo |~~~$~~|x##/|
+ oooo |ooo|  ##############  | | ####### |x%oo%x/o%//x| ooooo |_KKKK_|#x/%|
+ ooo~/|ooo|~/##############  | ~/####### |oox%xo%%oox%~/ooooo |_|~|~/|xx%/|
+ ooo ||oHo| |####AAAA######  |h||##XX### |x%x%WWx%%/ox||ooDoo |_| |Y||xGGx|
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  | ~~~~~~~
+--&gt; </p>
+
+
+<p>个人觉得比smarty好用多了。不为别的，因为简洁明了。</p>
+
+
+<p>传闻 豆瓣说（http://shuo.douban.com） 运用了这种模板？关注中</p>
+
+
+<p>简要介绍下用法：</p>
+
+
+<p> </p>
+
+
+<p>1<span>A typical Mustache template:</span></p>
+
+
+<p> </p>
+
+
+<pre><code>Hello 
+You have just won $!
+
+Well, $, after taxes.
+ </code></pre>
+
+
+<p>Given the following hash:</p>
+
+
+<pre><code>{
+  "name": "Chris",
+  "value": 10000,
+  "taxed_value": 10000 - (10000 * 0.4),
+  "in_ca": true
+} </code></pre>
+
+
+<p>Will produce the following:</p>
+
+
+<pre><span style="font-family:monospace">Hello Chris
+You have just won $10000!
+Well, $6000.0, after taxes. </span></pre>
+
+
+<pre><span style="font-family:monospace">Mustache可以用在包括html 配置文件 源代码之类的任何地方。通过提供hash或者对象可以渲染出模板中的变量。模板没有if-else,for-loop标记，只有标记（tag）。</span></pre>
+
+
+<pre><span style="font-family:monospace">常用标签有类似,这样语法的标签.如果不提供值，将不会渲染出来。}和将会渲染出没有转义的html内容。</span></pre>
+
+
+<pre><span style="font-family:monospace">区域渲染通过 ... 来实现。例如</span></pre>
+
+
+<pre><span style="font-family:monospace">Shown.
+
+  Never shown!
+ </span></pre>
+
+
+<pre><span style="font-family:monospace">输出</span><span>Shown.（如果没有提供nothin）</span></pre>
+
+
+<pre><span style="font-family:monospace">如果提供了非空列表或者数组，区域渲染将会重复渲染列表或数组每一项。例如</span></pre>
+
+
+<pre><span style="font-family:monospace"><span><p>Template:</p><pre><code>
+  &lt;b&gt;&lt;/b&gt;
+ </code></pre>
+<p>Hash:</p>
+<pre><code>{
+  "repo": [
+    { "name": "resque" },
+    { "name": "hub" },
+    { "name": "rip" },
+  ]
+} </code></pre>
+<p>Output:</p>
+<pre><span style="font-family:monospace">&lt;b&gt;resque&lt;/b&gt;
+&lt;b&gt;hub&lt;/b&gt;
+&lt;b&gt;rip&lt;/b&gt; </span></pre>
+<pre><span style="font-family:monospace">另外，Mustache支持lambda表达式</span></pre>
+<pre><span style="font-family:monospace"><span><p>Template:</p><pre><code>
+   is awesome.
+ </code></pre>
+<p>Hash:</p>
+<pre><code>{
+  &quot;name&quot;: &quot;Willy&quot;,
+  &quot;wrapped&quot;: function() {
+    return function(text) {
+      return &quot;&lt;b&gt;&quot; + render(text) + &quot;&lt;/b&gt;&quot;
+    }
+  }
+} </code></pre>
+<p>Output:</p>
+<pre><span style="font-family:monospace">&lt;b&gt;Willy is awesome.&lt;/b&gt; </span></pre>
+<pre><span style="font-family:monospace">打注释也很方便：</span><span></span></pre>
+<pre>导入别的文件只要像这样：</pre>
+<pre>base.mustache:
+&lt;h2&gt;Names&lt;/h2&gt;
+
+  
+
+
+user.mustache:
+&lt;strong&gt;&lt;/strong&gt; </pre>
+<pre>便能输出</pre>
+<pre>&lt;h2&gt;Names&lt;/h2&gt;
+
+  &lt;strong&gt;&lt;/strong&gt;
+ </pre>
+<pre>另外的另外也是可以自行配置的！</pre>
+<pre>好像没有更多要介绍了，就这么多了。和python一样，简洁明了。</pre>
+</span></span></pre>
+</span></span></pre>
+
+
+<p> </p>
+
+
+<pre><code>        &lt;div&gt;
+            作者：soasme 发表于2011-4-2 11:12:00 &lt;a href="http://blog.csdn.net/soasme/article/details/6297467"&gt;原文链接&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：2775 评论：0 &lt;a href="http://blog.csdn.net/soasme/article/details/6297467#comments"&gt;查看评论&lt;/a&gt;
+        &lt;/div&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

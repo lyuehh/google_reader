@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>名站技术分析 — tudou网首页下列菜单的弹出效果</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>名站技术分析 — tudou网首页下列菜单的弹出效果</h2>
+<p class="meta">02 Jul 2010</p>
+
+<div class="post">
+<h2>名站技术分析 — tudou网首页下列菜单的弹出效果</h2>
+
+<h3>by BearRui(AK-47)</h3>
+
+<h3>at 2010-07-02 08:40:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/BearsTaR/archive/2010/07/02/tudou_easeOutBounce.html">http://www.cnblogs.com/BearsTaR/archive/2010/07/02/tudou_easeOutBounce.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/BearsTaR/"><img src="http://pic.cnblogs.com/face/u14245.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/BearsTaR/">BearRui(AK-47)</a> 发表于 2010-07-02 08:40 <a href="http://www.cnblogs.com/BearsTaR/archive/2010/07/02/tudou_easeOutBounce.html">原文链接</a> 阅读: 1936 评论: 12</p>
+
+
+
+
+<p>　　土豆(tudou.com)首页的导航条,当鼠标移到到“社区”菜单时，对应的菜单的弹出效果比较有意思，类似于一个弹球落地的效果，对于有意思的东西，当然要研究研究。有兴趣的朋友可以自己先去看看效果，然后再来看文章。</p>
+
+
+<p> </p>
+
+
+<p><strong>tudou代码</strong></p>
+
+
+<p>   看了tudou的js代码，发现他们也是使用jquery来实现动画效果的，代码如下：</p>
+
+
+<p>   f.style.height=0;</p>
+
+
+<p>   this.style.visibility=&quot;visible&quot;;</p>
+
+
+<p>   <span style="color:#0000ff">$(f).animate({height:g},500,"easeOutBounce");</span></p>
+
+
+<p>   $(i).addClass(&quot;hover&quot;)</p>
+
+
+<p> </p>
+
+
+<p>   最重要的是上面第三行代码，使用jquery的animate的函数，其中重点就是tudou自定义了animate的easing函数，即easeOutBounce函数，easeOutBounce函数如下。</p>
+
+
+<p> </p>
+
+
+<pre>   easeOutBounce:function(o,p,n,r,q){
+    if((p/=q)&lt;(1/2.75)){
+        return r*(7.5625*p*p)+n
+    }else{
+        if(p&lt;(2/2.75)){
+            return r*(7.5625*(p-=(1.5/2.75))*p+0.75)+n
+        }else{
+            if(p&lt;(2.5/2.75)){
+                return r*(7.5625*(p-=(2.25/2.75))*p+0.9375)+n
+            }else{
+                return r*(7.5625*(p-=(2.625/2.75))*p+0.984375)+n
+            }
+        }
+    }
+   }
+</pre>
+
+
+<p> </p>
+
+
+<div>
+<div><strong>DEMO</strong></div>
+<div>　　先不分析代码，先用tudou的easeOutBounce函数做个demo看看效果。</div>
+<div>　　demo(该demo在IE下点击没有效果，可能是跟博客园的其他代码有冲突，不想花时间去解决。要在IE下看效果，请copy后面的代码在本地进行测试)：</div>
+<div style="height:150px;padding-left:20px">
+  <a href="javascript:void(0);">我的菜单(点击我)</a><br> 
+<ul>
+<li>菜单一</li>
+<li>菜单二</li>
+<li>菜单三</li>
+<li>菜单四</li>
+</ul>
+</div>
+</div>
+
+
+<p> </p>
+
+
+<p>    代码：</p>
+
+
+<p> </p>
+
+
+<pre>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
+&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+    &lt;head&gt;
+    &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=UTF-8&quot; /&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;http://common.cnblogs.com/script/jquery.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    jQuery.extend(jQuery.easing,{
+        def : &quot;easeOutQuad&quot;,
+        swing : function(o, p, n, r, q) {
+            return jQuery.easing[jQuery.easing.def](o, p, n, r,q)
+        },
+        easeOutBounce : function(o, p, n, r, q) {
+            if ((p /= q) &lt; (1 / 2.75)) {
+                return r * (7.5625 * p * p) + n
+            } else {
+                if (p &lt; (2 / 2.75)) {
+                    return r * (7.5625 * (p -= (1.5 / 2.75)) * p + 0.75) + n
+                } else {
+                    if (p &lt; (2.5 / 2.75)) {
+                        return r * (7.5625 * (p -= (2.25 / 2.75))   * p + 0.9375) + n
+                    } else {
+                        return r * (7.5625 * (p -= (2.625 / 2.75)) * p + 0.984375) + n
+                    }
+                }
+            }
+        }
+    });
+    function showMenu(){
+        resetMenu();
+        $(&quot;#b_menu&quot;).animate({height:100},500,&quot;easeOutBounce&quot;);
+    }
+    function resetMenu(){
+        $(&quot;#b_menu&quot;).show();
+        $(&quot;#b_menu&quot;).height(0);
+    }
+    &lt;/script&gt;
+    
+    &lt;style type=&quot;text/css&quot;&gt;
+        #b_menu{border:1px solid #F56E0B;width:100px;list-style:none;padding:0;height:0;overflow:hidden;display:none;}
+        #b_menu li{line-height:25px;width:100px;text-align:center;}
+    &lt;/style&gt;      
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;a href=&quot;javascript:showMenu();void(0)&quot;&gt;我的菜单&lt;/a&gt;&lt;br /&gt;
+      &lt;ul id=&quot;b_menu&quot;&gt;
+        &lt;li&gt;菜单一&lt;/li&gt;  
+        &lt;li&gt;菜单二&lt;/li&gt;  
+        &lt;li&gt;菜单三&lt;/li&gt;  
+        &lt;li&gt;菜单四&lt;/li&gt;  
+      &lt;/ul&gt;       
+  &lt;/body&gt;     
+&lt;/html&gt;  
+</pre>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<div>
+<div><strong>easing函数</strong></div>
+<div>　　jquery默认定义了2个easing函数，分别是swing和linear,easing函数格式如下：function(o, p, n, r, q)</div>
+<div>但对于该几个参数的具体说明，jquery官方也没有文档说明(不知道是否是我没有找到)，经过我看源代码和自己的理解，对几个参数理解如下：</div>
+<div>o = p/q</div>
+<div>p: 当前时间 - animate开始时间的毫秒值</div>
+<div>n: 起始值，一直为0</div>
+<div>r: 这个个人认为是递增值，一直为1</div>
+<div>q: animate中的duration参数，即设置的动画效果运行完毕需要的时间</div>
+<div>返回值：返回1个大于0，小于等于1的百分比值，animate方法通过这个百分比去计算各个参数的值</div>
+<div></div>
+<div>　　知道这几个参数的含义后，再看看tudou的easeOutBounce，就发现其第一行代码写的有问题，if ((p /= q) &lt; (1 / 2.75)) 其实可以直接写成 if ((o) &lt; (1 / 2.75)) 。</div>
+<div>可以看出tudou的开发人员对easing函数的几个参数也不太理解，不然就不会这样写了(也有可能easeOutBounce函数，tudou也是直接从其他地方copy过来的，呵呵)</div>
+</div>
+
+
+<div></div>
+
+
+<div>
+<div><strong><br></strong></div>
+<div><strong>胡言乱语</strong></div>
+<div>　　在查询jquery的easing参数的时候，无意间发现1个专门做easing效果的网站(<a href="http://gsgd.co.uk/sandbox/jquery/easing/">http://gsgd.co.uk/sandbox/jquery/easing/</a>)，而土豆的几个easing效果代码跟该网站的easing效果代码是惊人的相似，除了参数名不同外(这也出现我前面copy 代码的猜测),其实是不是copy都无所谓的，偶也是胡言乱语下，大家也别想太多，贴出2段代码，大家自己看看吧。</div>
+</div>
+
+
+<div></div>
+
+
+<div>下面tudou的代码：</div>
+
+
+<div>
+<pre>jQuery.extend(jQuery.easing,{
+    def : &quot;easeOutQuad&quot;,
+    swing : function(o, p, n, r, q) {
+        return jQuery.easing[jQuery.easing.def](o, p, n, r,q)
+    },
+    easeInQuad : function(o, p, n, r, q) {
+        return r * (p /= q) * p + n
+    },
+    easeOutQuad : function(o, p, n, r, q) {
+        return -r * (p /= q) * (p - 2) + n
+    },
+    easeInOutQuad : function(o, p, n, r, q) {
+        if ((p /= q / 2) &lt; 1) {
+            return r / 2 * p * p * p + n
+        }
+        return r / 2 * ((p -= 2) * p * p + 2) + n
+    },
+    easeInBack : function(o, p, n, u, r, q) {
+        if (q == undefined) {
+            q = 1.70158
+        }
+        return u * (p /= r) * p * ((q + 1) * p - q) + n
+    },
+    easeOutBack : function(o, p, n, u, r, q) {
+        if (q == undefined) {
+            q = 1.70158
+        }
+        return u * ((p = p / r - 1) * p * ((q + 1) * p + q) + 1) + n
+    },
+    easeOutBounce : function(o, p, n, r, q) {
+        if ((p /= q) &lt; (1 / 2.75)) {
+            return r * (7.5625 * p * p) + n
+        } else {
+            if (p &lt; (2 / 2.75)) {
+                return r * (7.5625 * (p -= (1.5 / 2.75)) * p + 0.75) + n
+            } else {
+                if (p &lt; (2.5 / 2.75)) {
+                    return r * (7.5625 * (p -= (2.25 / 2.75))   * p + 0.9375) + n
+                } else {
+                    return r * (7.5625 * (p -= (2.625 / 2.75)) * p + 0.984375) + n
+                }
+            }
+        }
+    }
+});
+</pre>
+</div>
+
+
+<div><a href="http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js">http://gsgd.co.uk/sandbox/jquery/easing/jquery.easing.1.3.js</a> 代码</div>
+
+
+<div>
+<pre>jQuery.extend( jQuery.easing,{
+    def: &#39;easeOutQuad&#39;,
+    swing: function (x, t, b, c, d) {
+        //alert(jQuery.easing.default);
+        return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
+    },
+    easeInQuad: function (x, t, b, c, d) {
+        return c*(t/=d)*t + b;
+    },
+    easeOutQuad: function (x, t, b, c, d) {
+        return -c *(t/=d)*(t-2) + b;
+    },
+    easeInOutQuad: function (x, t, b, c, d) {
+        if ((t/=d/2) &lt; 1) return c/2*t*t + b;
+        return -c/2 * ((--t)*(t-2) - 1) + b;
+    },
+    easeInCubic: function (x, t, b, c, d) {
+        return c*(t/=d)*t*t + b;
+    },
+    easeOutCubic: function (x, t, b, c, d) {
+        return c*((t=t/d-1)*t*t + 1) + b;
+    },
+    easeInOutCubic: function (x, t, b, c, d) {
+        if ((t/=d/2) &lt; 1) return c/2*t*t*t + b;
+        return c/2*((t-=2)*t*t + 2) + b;
+    },
+    easeInQuart: function (x, t, b, c, d) {
+        return c*(t/=d)*t*t*t + b;
+    },
+    easeOutQuart: function (x, t, b, c, d) {
+        return -c * ((t=t/d-1)*t*t*t - 1) + b;
+    },
+    easeInOutQuart: function (x, t, b, c, d) {
+        if ((t/=d/2) &lt; 1) return c/2*t*t*t*t + b;
+        return -c/2 * ((t-=2)*t*t*t - 2) + b;
+    },
+    easeInQuint: function (x, t, b, c, d) {
+        return c*(t/=d)*t*t*t*t + b;
+    },
+    easeOutQuint: function (x, t, b, c, d) {
+        return c*((t=t/d-1)*t*t*t*t + 1) + b;
+    },
+    easeInOutQuint: function (x, t, b, c, d) {
+        if ((t/=d/2) &lt; 1) return c/2*t*t*t*t*t + b;
+        return c/2*((t-=2)*t*t*t*t + 2) + b;
+    },
+    easeInSine: function (x, t, b, c, d) {
+        return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+    },
+    easeOutSine: function (x, t, b, c, d) {
+        return c * Math.sin(t/d * (Math.PI/2)) + b;
+    },
+    easeInOutSine: function (x, t, b, c, d) {
+        return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+    },
+    easeInExpo: function (x, t, b, c, d) {
+        return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+    },
+    easeOutExpo: function (x, t, b, c, d) {
+        return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+    },
+    easeInOutExpo: function (x, t, b, c, d) {
+        if (t==0) return b;
+        if (t==d) return b+c;
+        if ((t/=d/2) &lt; 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b;
+        return c/2 * (-Math.pow(2, -10 * --t) + 2) + b;
+    },
+    easeInCirc: function (x, t, b, c, d) {
+        return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+    },
+    easeOutCirc: function (x, t, b, c, d) {
+        return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+    },
+    easeInOutCirc: function (x, t, b, c, d) {
+        if ((t/=d/2) &lt; 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+        return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
+    },
+    easeInElastic: function (x, t, b, c, d) {
+        var s=1.70158;var p=0;var a=c;
+        if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+        if (a &lt; Math.abs(c)) { a=c; var s=p/4; }
+        else var s = p/(2*Math.PI) * Math.asin (c/a);
+        return -(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+    },
+    easeOutElastic: function (x, t, b, c, d) {
+        var s=1.70158;var p=0;var a=c;
+        if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+        if (a &lt; Math.abs(c)) { a=c; var s=p/4; }
+        else var s = p/(2*Math.PI) * Math.asin (c/a);
+        return a*Math.pow(2,-10*t) * Math.sin( (t*d-s)*(2*Math.PI)/p ) + c + b;
+    },
+    easeInOutElastic: function (x, t, b, c, d) {
+        var s=1.70158;var p=0;var a=c;
+        if (t==0) return b;  if ((t/=d/2)==2) return b+c;  if (!p) p=d*(.3*1.5);
+        if (a &lt; Math.abs(c)) { a=c; var s=p/4; }
+        else var s = p/(2*Math.PI) * Math.asin (c/a);
+        if (t &lt; 1) return -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+        return a*Math.pow(2,-10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )*.5 + c + b;
+    },
+    easeInBack: function (x, t, b, c, d, s) {
+        if (s == undefined) s = 1.70158;
+        return c*(t/=d)*t*((s+1)*t - s) + b;
+    },
+    easeOutBack: function (x, t, b, c, d, s) {
+        if (s == undefined) s = 1.70158;
+        return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+    },
+    easeInOutBack: function (x, t, b, c, d, s) {
+        if (s == undefined) s = 1.70158; 
+        if ((t/=d/2) &lt; 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
+        return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+    },
+    easeInBounce: function (x, t, b, c, d) {
+        return c - jQuery.easing.easeOutBounce (x, d-t, 0, c, d) + b;
+    },
+    easeOutBounce: function (x, t, b, c, d) {
+        if ((t/=d) &lt; (1/2.75)) {
+            return c*(7.5625*t*t) + b;
+        } else if (t &lt; (2/2.75)) {
+            return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+        } else if (t &lt; (2.5/2.75)) {
+            return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+        } else {
+            return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+        }
+    },
+    easeInOutBounce: function (x, t, b, c, d) {
+        if (t &lt; d/2) return jQuery.easing.easeInBounce (x, t*2, 0, c, d) * .5 + b;
+        return jQuery.easing.easeOutBounce (x, t*2-d, 0, c, d) * .5 + c*.5 + b;
+    }
+});
+</pre>
+</div>
+
+
+<div></div>
+
+
+<div>相关链接</div>
+
+
+<div>　　<a href="http://www.cnblogs.com/BearsTaR/archive/2010/06/18/facebook_html_chunk.html">名站技术分析 — facebook奇特的页面加载技术</a></div>
+
+
+<div>　　<a href="http://www.cnblogs.com/BearsTaR/archive/2010/05/25/tudou_lazy_image.html">名站技术分析 - 浅谈tudou.com首页图片延迟加载的效果</a></div>
+
+
+<p><img src="http://www.cnblogs.com/BearsTaR/aggbug/1769591.html?type=1" width="1" height="1" alt=""><p>评论: 12　<a href="http://www.cnblogs.com/BearsTaR/archive/2010/07/02/tudou_easeOutBounce.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/BearsTaR/archive/2010/07/02/tudou_easeOutBounce.html#commentform">发表评论</a></p><p><a href="http://mpd.cnblogs.com/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67481/">AMD将坚持三核心策略</a><span style="color:gray">(2010-07-02 16:42)</span><br>· <a href="http://news.cnblogs.com/n/67477/">欧特克高管：手持游戏终端将成3D先行者</a><span style="color:gray">(2010-07-02 16:05)</span><br>· <a href="http://news.cnblogs.com/n/67475/">摩托罗拉公布分拆详情:分为移动和方案两公司</a><span style="color:gray">(2010-07-02 15:56)</span><br>· <a href="http://news.cnblogs.com/n/67469/">谷歌宣布同性恋员工工资将高于异性恋</a><span style="color:gray">(2010-07-02 15:44)</span><br>· <a href="http://news.cnblogs.com/n/67468/">国内水货黑莓，到底有多少是完整的？</a><span style="color:gray">(2010-07-02 15:43)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/07/01/1769550.html">C#会重蹈覆辙吗？事件背后的臃肿设计哲学</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ES6 for Node</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ES6 for Node</h2>
+<p class="meta">15 Oct 2012</p>
+
+<div class="post">
+<h2>ES6 for Node</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-10-15 07:00:00</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/dailyjs/~3/fGb61pww3gg/preparing-for-esnext">http://feedproxy.google.com/~r/dailyjs/~3/fGb61pww3gg/preparing-for-esnext</a></h3>
+
+<div><div><div></div></div></div>
+
+
+<p><br>
+     <p>In <a href="https://brendaneich.com/2012/10/harmony-of-dreams-come-true/">Harmony of Dreams Come True</a>, Brendan Eich discusses the “new-in-ES6 stuff” that is starting to come to fruition. Although his discussion mostly focuses on Mozilla-based implementations, he does relate upcoming language features to a wide range of JavaScript projects, including games. This is relevant to Node developers because ECMAScript 6 <em>is</em> happening, and changes are already present in V8 itself.</p></p>
+
+<p>Let’s look at some of these changes in a moment. For now you might be wondering how to track such changes as they become available in Node. When new builds of Node are released, the version of V8 is usually mentioned if it has changed. You can also view the commit history on GitHub for a given release tag to see what version of V8 has been used, or take a look at the value of <a href="http://nodejs.org/docs/latest/api/all.html#all_process_versions">process.versions</a>:</p>
+
+
+<div><pre><code>~  node -e &#39;console.log(process.versions)&#39;
+{ http_parser: &#39;1.0&#39;,
+  node: &#39;0.8.12&#39;,
+  v8: &#39;3.11.10.22&#39;,
+  ares: &#39;1.7.5-DEV&#39;,
+  uv: &#39;0.8&#39;,
+  zlib: &#39;1.2.3&#39;,
+  openssl: &#39;1.0.0f&#39; }
+</code></pre>
+</div>
+
+
+<p>Once you’ve got the V8 version, you can check take a look at the <a href="http://v8.googlecode.com/svn/trunk/ChangeLog">V8 ChangeLog</a> to see what has been included. Just searching that text for “Harmony” shows the following for Node 0.8.12:</p>
+
+
+
+
+<ul>
+<li>Block scoping</li>
+
+<li>Harmony semantics for typeof</li>
+
+<li><code>let</code> and <code>const</code></li>
+
+<li><code>Map</code> and <code>WeakMap</code></li>
+
+<li>Module declaration</li>
+
+<li>The <code>Proxy</code> prototype</li>
+</ul>
+
+
+
+
+<h3>Running Node with Harmony Options</h3>
+
+
+
+
+<p>Typing <code>node --v8-options</code> shows all of the available V8 options:</p>
+
+
+
+
+<ul>
+<li><code>--harmony_typeof</code>: Enable harmony semantics for typeof</li>
+
+<li><code>--harmony_scoping</code>: Enable harmony block scoping</li>
+
+<li><code>--harmony_modules</code>: Enable harmony modules (implies block scoping)</li>
+
+<li><code>--harmony_proxies</code>: Enable harmony proxies</li>
+
+<li><code>--harmony_collections</code>: Enable harmony collections (sets, maps, and weak maps)</li>
+
+<li><code>--harmony</code>: Enable all harmony features (except typeof)</li>
+</ul>
+
+
+
+
+<p>To actually use one of these options, just include it when running a script:</p>
+
+
+<div><pre><code><span>node</span> <span>--</span><span>harmony</span> <span>script</span><span>.</span><span>js</span>
+</code></pre>
+</div>
+
+
+<h3>Example: <code>typeof</code></h3>
+
+
+
+
+<p>The <code>--harmony_typeof</code> option is special because it isn’t included with <code>--harmony</code>, this is most likely because the proposal was rejected: <a href="http://wiki.ecmascript.org/doku.php?id=harmony:typeof_null&amp;s=typeof">harmony:typeof_null</a>. The possibility of a proposal being rejected is part of working with cutting edge language features – if you’re unsure about the status of a given feature the best thing to do is search the <a href="http://wiki.ecmascript.org/doku.php">ECMAScript DokuWiki</a>.</p>
+
+
+
+
+<p>With this option enabled, <code>typeof null === &quot;null&quot;</code> is <code>true</code>.</p>
+
+
+
+
+<h3>Example: Type Checking</h3>
+
+
+
+
+<p>Standard Node 0.8 without the <code>--harmony</code> flag supports <code>isNaN</code> and <code>isFinite</code>. However, <code>toInteger</code> and <code>isInteger</code> don’t seem to be supported yet.</p>
+
+
+<div><pre><code><span>var</span> <span>assert</span> <span>=</span> <span>require</span><span>(</span><span>&#39;assert&#39;</span><span>);</span>
+
+<span>assert</span><span>(</span><span>!</span><span>isNaN</span><span>(</span><span>1</span><span>));</span>
+<span>assert</span><span>(</span><span>!</span><span>isNaN</span><span>(</span><span>&#39;1&#39;</span><span>));</span>
+<span>assert</span><span>(</span><span>isNaN</span><span>(</span><span>&#39;test&#39;</span><span>));</span>
+<span>assert</span><span>(</span><span>isFinite</span><span>(</span><span>1</span><span>));</span>
+<span>assert</span><span>(</span><span>!</span><span>isFinite</span><span>(</span><span>1</span><span>/</span><span>0</span><span>));</span>
+</code></pre>
+</div>
+
+
+<h3>Example: Block Scoping</h3>
+
+
+
+
+<p>Strict mode helps fix a major JavaScript design flaw: a missing <code>var</code> statement makes a variable globally visible. ES6 goes a step further by introducing <code>let</code> which can be used to create block-local variables. The following example must be run with <code>node --use-strict --harmony</code>:</p>
+
+
+<div><pre><code><span>for</span> <span>(</span><span>let</span> <span>i</span> <span>=</span> <span>0</span><span>;</span> <span>i</span> <span>&lt;</span> <span>3</span><span>;</span> <span>i</span><span>++</span><span>)</span> <span>{</span>
+  <span>console</span><span>.</span><span>log</span><span>(</span><span>&#39;i:&#39;</span><span>,</span> <span>i</span><span>);</span>
+<span>}</span>
+
+<span>console</span><span>.</span><span>log</span><span>(</span><span>i</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>The final statement, <code>console.log(i)</code>, will cause a <code>ReferenceError</code> to be raised. The variable <code>i</code> is out of scope. Great, but doesn’t that mean forgetting <code>let</code> will just create a global? No, because in that case strict mode causes a <code>ReferenceError</code> to be raised.</p>
+
+
+
+
+<p>The advantages of <code>let</code> are paired with <code>const</code> – by declaring a constant in global code the semantics are clear, and leaking uninitialised properties into the global object is avoided.</p>
+
+
+
+
+<h3>Example: Collections</h3>
+
+
+
+
+<p>ES6 adds new APIs for dealing with groups of values: <code>Map</code>, <code>Set</code>, and <code>WeakMap</code>. The <code>Map</code> constructor allows any object or primitive value to be mapped to another value. This is confusing because it sounds similar to plain old objects, but that’s only because we often use objects to implement what maps are designed to solve more efficiently.</p>
+
+
+<div><pre><code><span>var</span> <span>assert</span> <span>=</span> <span>require</span><span>(</span><span>&#39;assert&#39;</span><span>)</span>
+  <span>,</span> <span>m</span> <span>=</span> <span>new</span> <span>Map</span><span>()</span>
+  <span>,</span> <span>key</span> <span>=</span> <span>{</span> <span>a</span><span>:</span> <span>&#39;Test&#39;</span> <span>}</span>
+  <span>,</span> <span>value</span> <span>=</span> <span>&#39;a test value&#39;</span>
+  <span>;</span>
+
+<span>m</span><span>.</span><span>set</span><span>(</span><span>key</span><span>,</span> <span>value</span><span>);</span>
+
+<span>assert</span><span>.</span><span>equal</span><span>(</span><span>m</span><span>.</span><span>get</span><span>(</span><span>key</span><span>),</span> <span>value</span><span>);</span>
+</code></pre>
+</div>
+
+
+<p>This example shows that map keys don’t need to be converted to strings, unlike with objects.</p>
+
+
+
+
+<p>Node also currently has <code>Set</code> when running with <code>--harmony</code>, but instantiation with an array doesn’t seem to work yet, and neither does <code>Set.prototype.size</code>.</p>
+
+
+<div><pre><code><span>var</span> <span>assert</span> <span>=</span> <span>require</span><span>(</span><span>&#39;assert&#39;</span><span>)</span>
+  <span>,</span> <span>s</span> <span>=</span> <span>new</span> <span>Set</span><span>()</span>
+  <span>;</span>
+
+<span>s</span><span>.</span><span>add</span><span>(</span><span>&#39;a&#39;</span><span>);</span>
+
+<span>assert</span><span>.</span><span>ok</span><span>(</span><span>s</span><span>.</span><span>has</span><span>(</span><span>&#39;a&#39;</span><span>));</span>
+</code></pre>
+</div>
+
+
+<p>Finally, <code>WeakMap</code> is a form of map with <em>weak</em> references. Because <code>WeakMap</code> holds weak references to objects, the keys are not enumerable. The advantage of this is the garbage collector can remove entries when they’re no-longer in use. To justify the relevance of <code>WeakMap</code>, Brendan mentioned the <a href="http://en.wikipedia.org/wiki/Ephemeron">Ephemeron</a>:</p>
+
+
+
+
+<blockquote>
+<p>Ephemerons solve a problem which is commonly found when trying to “attach” properties to objects by using a registry. When some property should be attached to an object, the property should (in terms of GC behavior) typically have the life-time that an instance variable of this object would have.</p>
+</blockquote>
+
+
+
+
+<p>So the <code>WeakMap</code> API should give us a memory-efficient and faster-than-O(n) key/value map.</p>
+
+
+
+
+<p>There’s a post from last year by Andy E called <a href="http://whattheheadsaid.com/2011/10/es6-a-quick-look-at-weak-maps">ES6 – a quick look at Weak Maps</a> that relates <code>WeakMap</code> to jQuery’s expando property:</p>
+
+
+
+
+<blockquote>
+<p>Weak maps come in here because they can do the job much better. They cut out the need for the expando property entirely, along with the requirement of handling JS objects differently to DOM objects. They also expand on jQuery’s ability to allow garbage collection when DOM elements are removed by its own methods, by automatically allowing garbage collection when DOM elements no longer reachable after they’ve been removed by any method.</p>
+</blockquote>
+
+
+
+
+<p>I tried creating some instances of <code>WeakMap</code> with circular references and forcing the garbage collector to run by using <code>node --harmony --expose_gc</code> and calling <code>gc()</code>, but it’s difficult to tell if the object is actually being removed yet:</p>
+
+
+
+
+<blockquote>
+<p>We can’t tell, however: there’s no way to enumerate a <code>WeakMap</code>, as doing so could expose the GC schedule (in browsers, you can’t call <code>gc()</code> to force a collection). Nor can we use <code>wm.has</code> to probe for entries, since we have nulled our <code>objkey</code> references!</p>
+</blockquote>
+
+
+
+
+<h3>Proxies</h3>
+
+
+
+
+<p>The current version of Node seems to include the <a href="http://wiki.ecmascript.org/doku.php?id=harmony:proxies">old Proxy API</a>, so I don’t think it’s worth exploring here. The <a href="http://wiki.ecmascript.org/doku.php?id=harmony:direct_proxies">newer Proxy API</a> doesn’t seem to work as expected, and I can’t find specific mention of a change to the new API style in the V8 issues or developer mailing list.</p>
+
+
+
+
+<h3>Generators, Classes, and Macros</h3>
+
+
+
+
+<p>Generators, classes, and macros are not currently supported by V8. These are still hotly debated areas, which you can read more about on the ECMAScript DokuWiki:</p>
+
+
+
+
+<ul>
+<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:generators">Generators</a></li>
+
+<li><a href="http://wiki.ecmascript.org/doku.php?id=harmony:classes">Classes</a></li>
+</ul>
+
+
+
+
+<p>Andreas Rossberg said <a href="https://groups.google.com/d/msg/v8-users/mV38oWvA2Nk/txtSzVdDhpUJ">the V8 developers are aware of generators</a>, but there aren’t any concrete plans for supporting them yet.</p>
+
+
+
+
+<p><a href="http://wiki.ecmascript.org/doku.php?id=harmony:destructuring">Destructuring</a> has been added to the draft ECMAScript 6 specification.</p>
+
+
+
+
+<p>If you’re desperate to try macros in Node now, Mozilla released <a href="http://sweetjs.org/">sweet.js</a> (GitHub: <a href="https://github.com/mozilla/sweet.js">mozilla / sweet.js</a>, License: <em>BSD</em>, npm: <a href="https://npmjs.org/package/sweet.js">sweet.js</a>) a few weeks ago. It’s a command-line tool that “compiles” scripts, in a similar way to CoffeeScript. This isn’t specifically an ES6 shim, although there are plenty of those out there. Some new features like <code>WeakMap</code> seem like they can be supported using shims, but a complete implementation isn’t always possible in older versions of ECMAScript.</p>
+
+
+
+
+<h3>References</h3>
+
+
+
+
+<ul>
+<li><a href="https://brendaneich.com/2012/10/harmony-of-dreams-come-true/">Harmony of Dreams Come True</a> by Brendan Eich</li>
+
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Map">MDN: Map</a></li>
+
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/Set">MDN: Set</a></li>
+
+<li><a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Global_Objects/WeakMap">MDN: WeakMap</a></li>
+
+<li><a href="http://whattheheadsaid.com/2011/10/es6-a-quick-look-at-weak-maps">ES6 – a quick look at Weak Maps</a> by Andy E</li>
+</ul>
+
+
+<p>   <img src="http://feeds.feedburner.com/~r/dailyjs/~4/fGb61pww3gg" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

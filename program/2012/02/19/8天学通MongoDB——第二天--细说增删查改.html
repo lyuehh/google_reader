@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>8天学通MongoDB——第二天  细说增删查改</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>8天学通MongoDB——第二天  细说增删查改</h2>
+<p class="meta">19 Feb 2012</p>
+
+<div class="post">
+<h2>8天学通MongoDB——第二天  细说增删查改</h2>
+
+<h3>by 一线码农</h3>
+
+<h3>at 2012-02-19 02:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/huangxincheng/archive/2012/02/19/2357846.html">http://www.cnblogs.com/huangxincheng/archive/2012/02/19/2357846.html</a></h3>
+
+<p>&lt;p&gt;看过上一篇，相信大家都会知道如何开启mongodb了，这篇就细说下其中的增删查改，首先当我们用上一篇同样的方式打开mongodb，突然&lt;/p&gt;
+&lt;p&gt;傻眼了，擦，竟然开启不了，仔细观察&amp;ldquo;划线区域&amp;ldquo;的信息，发现db文件夹下有一个类似的&amp;rdquo;lock file&amp;rdquo;阻止了mongodb的开启，接下来我们要做的就&lt;/p&gt;
+&lt;p&gt;是干掉它，之后，开启成功，关于mongodb的管理方式将在后续文章分享。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021822210512.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;一： Insert操作&lt;/p&gt;
+&lt;p&gt;上一篇也说过,文档是采用&amp;ldquo;K-V&amp;rdquo;格式存储的，如果大家对JSON比较熟悉的话，我相信学mongodb是手到擒来，我们知道JSON里面Value&lt;/p&gt;
+&lt;p&gt;可能是&amp;ldquo;字符串&amp;rdquo;，可能是&amp;ldquo;数组&amp;rdquo;，又有可能是内嵌的一个JSON对象，相同的方式也适合于BSON。&lt;/p&gt;
+&lt;p&gt;常见的插入操作也就两种形式存在：&amp;ldquo;单条插入&amp;rdquo;和&amp;ldquo;批量插入&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;① &amp;nbsp;单条插入&lt;/p&gt;
+&lt;p&gt;先前也说了，mongo命令打开的是一个javascript shell。所以js的语法在这里面都行得通，看起来是不是很牛X。&amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021823382560.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;② 批量插入&lt;/p&gt;
+&lt;p&gt;这玩意跟&amp;ldquo;单条插入&amp;rdquo;的差异相信大家应该知道，由于mongodb中没有提供给shell的&amp;ldquo;批量插入方法&amp;rdquo;，没关系，各个语言的driver都打通&lt;/p&gt;
+&lt;p&gt;了跟mongodb内部的批量插入方法，因为该方法是不可或缺的，如果大家非要模拟下批量插入的话，可以自己写了for循环，里面就是insert。&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;二：Find操作&lt;/p&gt;
+&lt;p&gt;日常开发中，我们玩查询，玩的最多的也就是二类：&lt;/p&gt;
+&lt;p&gt;①： &amp;gt;, &amp;gt;=, &amp;lt;, &amp;lt;=, !=, =。&lt;/p&gt;
+&lt;p&gt;②：And，OR，In，NotIn&lt;/p&gt;
+&lt;p&gt;这些操作在mongodb里面都封装好了，下面就一一介绍：&lt;/p&gt;
+&lt;p&gt;&amp;lt;1&amp;gt;&quot;$gt&quot;, &quot;$gte&quot;, &quot;$lt&quot;, &quot;$lte&quot;, &quot;$ne&quot;, &quot;没有特殊关键字&quot;，这些跟上面是一一对应的，举几个例子。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021823495458.png&quot; alt=&quot;&quot; width=&quot;825&quot; height=&quot;280&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;2&amp;gt; &quot;无关键字&amp;ldquo;, &quot;$or&quot;, &quot;$in&quot;，&quot;$nin&quot; 同样我也是举几个例子&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021900175533.png&quot; alt=&quot;&quot; width=&quot;813&quot; height=&quot;300&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;3&amp;gt; 在mongodb中还有一个特殊的匹配，那就是&amp;ldquo;正则表达式&amp;rdquo;，这玩意威力很强的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021900232833.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;4&amp;gt; 有时查询很复杂，很蛋疼，不过没关系，mongodb给我们祭出了大招，它就是$where，为什么这么说，是因为$where中的value&lt;/p&gt;
+&lt;p&gt;就是我们非常熟悉，非常热爱的js来助我们一马平川。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021900575333.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;三：Update操作&lt;/p&gt;
+&lt;p&gt;更新操作无非也就两种，整体更新和局部更新，使用场合相信大家也清楚。&lt;/p&gt;
+&lt;p&gt;&amp;lt;1&amp;gt; 整体更新&lt;/p&gt;
+&lt;p&gt;不知道大家可还记得，我在上一篇使用update的时候，其实那种update是属于整体更新。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021901222512.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;2&amp;gt; 局部更新&lt;/p&gt;
+&lt;p&gt;有时候我们仅仅需要更新一个字段，而不是整体更新，那么我们该如何做呢？easy的问题，mongodb中已经给我们提供了两个&lt;/p&gt;
+&lt;p&gt;修改器： $inc 和 $set。&lt;/p&gt;
+&lt;p&gt;① &amp;nbsp;$inc修改器&lt;/p&gt;
+&lt;p&gt;$inc也就是increase的缩写，学过sql server 的同学应该很熟悉，比如我们做一个在线用户状态记录，每次修改会在原有的基础上&lt;/p&gt;
+&lt;p&gt;自增$inc指定的值，如果&amp;ldquo;文档&amp;rdquo;中没有此key，则会创建key，下面的例子一看就懂。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021901321851.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;② $set修改器&lt;/p&gt;
+&lt;p&gt;啥也不说了，直接上代码&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021901370591.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;3&amp;gt; upsert操作&lt;/p&gt;
+&lt;p&gt;这个可是mongodb创造出来的&amp;ldquo;词&amp;rdquo;，大家还记得update方法的第一次参数是&amp;ldquo;查询条件&amp;rdquo;吗？，那么这个upsert操作就是说：如果我&lt;/p&gt;
+&lt;p&gt;没有查到，我就在数据库里面新增一条，其实这样也有好处，就是避免了我在数据库里面判断是update还是add操作，使用起来很简单&lt;/p&gt;
+&lt;p&gt;将update的第三个参数设为true即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://pic002.cnblogs.com/images/2012/214741/2012021901495450.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;4&amp;gt; 批量更新&lt;/p&gt;
+&lt;p&gt;在mongodb中如果匹配多条，默认的情况下只更新第一条，那么如果我们有需求必须批量更新，那么在mongodb中实现也是很简单&lt;/p&gt;
+&lt;p&gt;的，在update的第四个参数中设为true即可。例子就不举了。&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;p&gt;四: Remove操作&lt;/p&gt;
+&lt;p&gt;这个操作在上一篇简单的说过，这里就不赘述了。&lt;/p&gt;&lt;img src=&quot;http://www.cnblogs.com/huangxincheng/aggbug/2357846.html?type=1&quot; width=&quot;1&quot; height=&quot;1&quot; alt=&quot;&quot;/&gt;&lt;p&gt;&lt;a href=&quot;http://www.cnblogs.com/huangxincheng/archive/2012/02/19/2357846.html&quot; target=&quot;_blank&quot;&gt;本文链接&lt;/a&gt;&lt;/p&gt;</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Phongap开发问题汇总</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Phongap开发问题汇总</h2>
+<p class="meta">16 Mar 2012</p>
+
+<div class="post">
+<h2>Phongap开发问题汇总</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2012-03-15 23:04:47</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/6993.html">http://www.udpwork.com/item/6993.html</a></h3>
+
+<h4>Phonegap相关</h4>
+
+
+<p>1. 隐藏顶部的状态栏</p>
+
+
+<p>         在xxx-Info.plist中新增一项属性：&quot;Status bar is initially hidden&quot; = YES；此外，还可以增加其他的属性，例如Launch image等。</p>
+
+
+<p>2. 用户滑动Webview时，正常情况下会超出边界然后弹回来，也就是Bounce，可以通过以下方式禁止这种行为：</p>
+
+
+<p></p>
+
+
+<p>在AppDelegate.m中的webViewDidFinishLoad方法中添加：</p>
+
+
+<p>    for (id subview in theWebView.subviews)
+<br>
+        if ([[subview class] isSubclassOfClass: [UIScrollView class]])
+<br>
+            ((UIScrollView *)subview).bounces = NO;</p>
+
+
+<p>不过在Phonegap1.5版本中已经可以通过Phonegap.plist中的属性来实现了。</p>
+
+
+<p>3. Phonegap 内购 IAP插件</p>
+
+
+<p><a href="https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/InAppPurchaseManager" title="https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/InAppPurchaseManager">https://github.com/phonegap/phonegap-plugins/tree/master/iPhone/InAppPurchaseManager</a></p>
+
+
+<p>4. 修改Bounce时的背景色</p>
+
+
+<p>theWebView.backgroundColor = [UIColorgrayColor];</p>
+
+
+<p>5. Phonegap的deviceready事件通常要比DOMContentLoaded后触发。</p>
+
+
+<h4>Webkit相关</h4>
+
+
+<p>1. 防止页面一定位数的数字自动变成链接</p>
+
+
+<p>当页面上存在一定位数的数字（例如8位）时，会突然自己变成链接，实际上是被webkit自动解析成电话号码了，可以通过以下方式禁止：</p>
+
+
+<p>在Classes中的AppDelegate.m中的webViewDidStartLoad中添加
+<br>
+theWebView.dataDetectorTypes = UIDataDetectorTypeNone;</p>
+
+
+<p>如果是在Safari中则可以通过添加相关的meta标签来设置，而在phonegap中则只能修改OC代码。</p>
+
+
+<p>2. 阻止a标签长按后打开提示框</p>
+
+
+<p>长按A标签后，iOS会从底部弹出一个列表，允许你选择以何种方式打开，如果要禁止这种提示时，可以添加下列css属性：
+<br>
+-webkit-touch-callout:none</p>
+
+
+<p>3. 长按A标签会造成一定区域出现“蒙板式”的阴影，解决方案是添加以下的CSS代码（只在ipad和iphone中有效）
+<br>
+*{-webkit-tap-highlight-color:rgba(0,0,0,0);}</p>
+
+
+<p>4. 监听视频播放时的全屏事件</p>
+
+
+<p>               // 进入全屏
+<br>
+               video.bind( ‘webkitbeginfullscreen’, function() {
+<br>
+                    alert( ‘begin’ );
+<br>
+               } );             </p>
+
+
+<p>               // 结束全屏
+<br>
+               video.bind( ‘webkitendfullscreen’, function() {
+<br>
+                    alert( ‘end’ );
+<br>
+               } );</p>
+
+
+<p>5. CPU被独占时，Timer会停止，因此需要考虑应对策略。</p>
+
+
+<h4>其他问题</h4>
+
+
+<p>1. IAP如果遇到问题可以检查以下选项</p>
+
+
+<p>机器是否越狱，越狱无法测试，query时会返回invalidProductId</p>
+
+
+<p>Have you enabled In-App Purchases for your App ID?</p>
+
+
+<p>Have you checked Cleared for Sale for your product?</p>
+
+
+<p>Does your project’s .plist Bundle ID match your App ID?</p>
+
+
+<p>Have you configured your project to code sign using this new provisioning profile?Are you using the full product ID when when making an SKProductRequest?Are your bank details active on iTunes Connect?Contracts, Tax, and Banking全部显示Contacts In Effect</p>
+
+
+<p>Have you tried deleting the app from your device and reinstalling?</p>
+
+
+<p>2. APN服务器端 pem的生成
+<br>
+Installing the SSL Certificate and Key on the ServerYou should install the SSL distribution certificate and private cryptographic key you obtained earlier on the server computer on which the provider code runs and from which it connects with the sandbox or production versions of APNs. To do so, complete the following steps:</p>
+
+
+<p>  1). Open Keychain Access utility and click the My Certificates category in the left pane.</p>
+
+
+<p>  2). Find the certificate you want to install and disclose its contents.
+<br>
+You’ll see both a certificate and a private key.</p>
+
+
+<p>  3). Select both the certificate and key, choose File &gt; Export Items, and export them as a Personal Information Exchange (.p12) file.</p>
+
+
+<p>  4). Servers implemented in languages such as Ruby and Perl often are better able to deal with certificates in the Personal Information Exchange format. To convert the certificate to this format, complete the following steps:</p>
+
+
+<p>    (1). In KeyChain Access, select the certificate and choose File &gt; Export Items. Select the Personal Information Exchange (.p12) option, select a save location, and click Save.</p>
+
+
+<p>    (2). Launch the Terminal application and enter the following command after the prompt:
+<br>
+openssl pkcs12 -in CertificateName.p12 -out CertificateName.pem -nodes</p>
+
+
+<p>  5). Copy the .pem certificate to the new computer and install it in the appropriate place.</p>
+
+
+<p>注意：经测试，&lt;iOS5的设备如果连了VPN会收不到PUSH（可以用电脑共享的网络），iOS5是可以的。</p>
+
+
+<p>3. 手机中打开iTunes链接</p>
+
+
+<p>itms-apps://+链接</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/6993.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/6993.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/6993.html#reviews">评论: 0</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

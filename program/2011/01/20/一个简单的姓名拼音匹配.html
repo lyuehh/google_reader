@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一个简单的姓名拼音匹配</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一个简单的姓名拼音匹配</h2>
+<p class="meta">20 Jan 2011</p>
+
+<div class="post">
+<h2>一个简单的姓名拼音匹配</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-01-19 22:32:15</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/889109">http://www.javaeye.com/topic/889109</a></h3>
+
+<pre name="code">
+# 一个简单的姓名拼音匹配
+#
+# 姓名一般是由两三个汉字组成，选其顺序且连续的拼音缩略的组合就算匹配成功。
+#
+require &#39;chinese_pinyin&#39;
+@name = &quot;成吉思汗&quot;
+pinyins = Pinyin.t(@name).split
+
+# 把姓名生成对应的拼音数组
+array = []
+pinyins.each_with_index do |han, index|
+  array[index] = []
+  han.size.times {|num| array[index] &lt;&lt; han[0..(num - 1)] }
+end
+
+as = []
+array.size.times do |x|
+  sub_array = []
+
+  # 第一趟生成姓名拼音缩略的所有满足顺序且连续的组合
+  array.each_with_index do |ele, i|
+    ni = i + x
+    sub_array &lt;&lt; array[i..ni] if array[ni]
+  end
+
+  # 第二趟把每个组合各自归并
+  sub_array.each do |arr|
+    while arr.size &gt; 1
+      sub_as = []
+      arr[0].each {|a1| arr[1].each {|a2| sub_as &lt;&lt; ( a1 + a2 ) } }
+      arr[0..1] = [sub_as]
+    end
+    as &lt;&lt; arr
+    puts arr.join(&#39; &#39;)
+  end
+
+end
+
+as.flatten.join(&#39;,&#39;)
+
+# Ruby标准库里的abbr.rb是排除两个英文单词的共同缩略，见http://ruby-doc.org/stdlib/libdoc/abbrev/rdoc/classes/Abbrev.html
+</pre>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://mvj3.javaeye.com"&gt;mvj3&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/889109" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

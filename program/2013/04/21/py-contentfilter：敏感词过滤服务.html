@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>py-contentfilter：敏感词过滤服务</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>py-contentfilter：敏感词过滤服务</h2>
+<p class="meta">21 Apr 2013</p>
+
+<div class="post">
+<h2>py-contentfilter：敏感词过滤服务</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-04-20 23:41:14</h3>
+
+<h3>original <a href="http://simple-is-better.com/news/990">http://simple-is-better.com/news/990</a></h3>
+
+<p>
+    之前做网站的敏感词过滤服务的时候。没有一个特别合适的项目，适合拿来做后台的服务，要求是以守护进程的方式运行，可以自定义词典组和词典，返回结果以Json形式提供的敏感词列表，包括其所在的字典，足够的轻量级。只找到了一个BBSpam，不过它用的ICE商业应用是需要收费的。于是就用gevent和ahocorasick自己写了一个。</p>
+
+
+<p>
+    在敏感词匹配部分用的是AC自动机的方法，通过上一篇日志的性能比较，选择了Ahocorasick这个工具。在网络编程这部分，直接使用的gevent的WSGIServer，剩下的逻辑就非常简单了，通过WSGIServer获取HTTP Post的发送过来的文本，然后进行关键词匹配，将结果用Json的形式返回。其它的部分就是添加了配置文件，日志和守护进程的部分。代码不多。</p>
+
+
+<p>
+    使用的时候如果没有安装gevent和achorasick的，先安装，然后将py-confilter.tar.gz下载下来，解压，进入bin目录运行sudo python confilterd.py start就可以了，绑定的地址和端口可以在配置文件中设置。客户端发送请求的时候需要以post的方式，在参数中指定g＝词典组名，这个要和配置文件中的词典组名一致，t＝需要过滤的文本。接收请求即可。</p>
+
+
+<p>
+    虽然只是个小模块，但是部署，维护，扩展都很容易。考虑到需要使用关键词过滤的地方也很多，这个项目还是能起到一些作用的。</p>
+
+
+<p>
+    py-contentfilter项目的地址：<a href="http://code.google.com/p/py-contentfilter/">http://code.google.com/p/py-contentfilter/</a></p>
+
+
+<pre><code>                &lt;p&gt;# 来源：&lt;a href="http://blog.cooder.me/?p=81070&amp;amp;utm_source=rss&amp;amp;utm_medium=rss&amp;amp;utm_campaign=py-contentfilter%25ef%25bc%259a%25e6%2595%258f%25e6%2584%259f%25e8%25af%258d%25e8%25bf%2587%25e6%25bb%25a4%25e6%259c%258d%25e5%258a%25a1" title="py-contentfilter：敏感词过滤服务"&gt;弱类型&lt;/a&gt;&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;p&gt;
+                    在微博上关注：
+                    &lt;a href="http://t.sina.com.cn/pythoncn"&gt;新浪&lt;/a&gt;,
+                    &lt;a href="http://t.qq.com/simple-is-better"&gt;腾讯&lt;/a&gt;
+                     
+                    &lt;a href="http://simple-is-better.com/tougao"&gt;投稿&lt;/a&gt;
+                &lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;最新招聘&lt;/strong&gt;&lt;/p&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-461"&gt;[上海] OpenStack研发工程师/架构师&lt;/a&gt; - 携程&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-460"&gt;[上海] 后端python开发工程师&lt;/a&gt; - 点动科技&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-55"&gt;[杭州] python 程序开发( Django，2年+ )&lt;/a&gt; - 杭州三舍贸易有限公司&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-448"&gt;[北京] 云计算项目实施经理&lt;/a&gt; - 易云捷讯科技（北京）有限公司&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-429"&gt;[北京] 急！产品经理&lt;/a&gt; - 易云捷讯科技（北京）有限公司&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;p&gt;&lt;a href="http://simple-is-better.com/jobs/"&gt;更多&amp;gt;&amp;gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://www1.feedsky.com/t1/731880697/simple-is-better/feedsky/s.gif?r=http://simple-is-better.com/news/990" border="0" height="0" width="0"&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

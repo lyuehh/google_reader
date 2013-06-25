@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>HTML5实战之本地存储(2) - 操作同步</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>HTML5实战之本地存储(2) - 操作同步</h2>
+<p class="meta">05 Aug 2011</p>
+
+<div class="post">
+<h2>HTML5实战之本地存储(2) - 操作同步</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2011-08-04 20:04:48</h3>
+
+<h3>original <a href="http://varnow.org/?p=340">http://varnow.org/?p=340</a></h3>
+
+<p>本文介绍Tab之间的操作同步的实现，所谓操作同步是指将用户在某个Tab窗口中的操作同步到所有其他同一站点得Tab中。例如IM窗口的操作（打开、最大化、最小化、关闭、设置等），由于很多用户会在多个Tab之间切换，而IM在每个页面中都存在，因此对于数据同步的要求是比较高的，以前的做法是使用服务器方式来同步，即所有操作都向服务器发请求，然后广播，Tab收到消息后再响应。缺点是比较浪费资源，另外延时也比较严重。</p>
+
+
+<p>  <span></span><br>
+<h4>实现</h4>
+<p>在具体的实现上，只是给封装的Storage添加了一个sync接口，格式如下：</p>
+<pre name="code">/*
+    跨页面同步指定的函数
+    @param {function}   func        需要同步执行的函数(不允许重名，函数参数必须为string类型，否则参数无法同步)
+    @param {Object}     context     返回的函数执行时的上下文
+    @param {Boolean}    onlySync    是否只执行同步，为true时不执行原函数而只执行同步操作
+    @return {function}  当执行新的函数时将会通过本地存储进行同步操作
+*/
+function sync( func, context, onlySync ){ }</pre>
+<p>sync接口会接收一个需要同步的函数A，并对A进行处理，返回函数B。当执行函数B的时候会选择性的执行函数A（有得情况下是已经执行了A，只需要同步，这时是不需要再次执行A函数的)，然后把执行B时的参数通过本地存储方式同步到其他Tab。</p>
+<h5>Key的生成</h5>
+<p>这里比较关键的一步是监听本地存储，而且要求每个函数在每个不同的页面中都需要有一个相同的key，这样才能实现多Tab下数据的精准共享。当前生成key的方式类似于对函数的字符串进行摘要操作，并且通过调整摘要的长度来调整key的唯一性。</p>
+<p>由于基于函数字符串，因此如果是实现完全一致的匿名函数则会造成冲突，这是使用中需要注意的。以下是具体的实现：</p>
+<pre name="code">/*
+    生成函数同步的key
+    算法：
+        1. func.toString
+        2. 获取函数名（因为函数名一般不重名，因此保留整个函数名作为key前缀，但如果是匿名函数则无效）
+        3. 将其中的空白符删除(IE下引号等也会导致问题)
+        4. 在剩余的内容中平均取N个字符拼接成key
+    算法的问题在于不同的函数内容应该不能一样，否则会出现同步异常
+    通过调整字符数可以调整精度
+
+    之所以要如此处理是为了确保每个页面对于同一个函数生成的Key是相同的，故不能使用随机数。
+    这个算法的问题在于不允许函数重名。
+ */
+_genSyncKey: function( func ){
+    //key长度
+    var keyLen = 30,
+        func = func.toString();
+    //获取函数名
+    var funcName = &#39;&#39;,
+        reg = /^function\s+([^\(]+)\s*\(/ig,
+        matches = reg.exec( func );
+    if( matches ){
+        funcName = matches[1];
+        funcName = funcName.replace(/[^\w]+/ig,&#39;&#39;);
+    }
+
+    func = func.replace(/(function|[^\w]+)/ig,&#39;&#39;);
+
+    keyLen -= funcName.length;
+
+    if( keyLen &lt;= 0 ){
+        return funcName.substring( 0, 30 );
+    }
+
+    if( func.length &lt;= keyLen ){
+        return funcName + func;
+    }
+    var leftCharLen = keyLen,
+        funcLeftLen = func.length,
+        step = Math.ceil( func.length / keyLen ),
+        key = [];
+    for( var i = 0; i &lt; func.length; i += step ){
+        key.push( func.substring(i, i+1) );
+        leftCharLen--;
+        funcLeftLen -= step;
+        //检查剩余长度
+        if( funcLeftLen &lt;= leftCharLen ){
+            key.push( func.substring(i) );
+            break;
+        }
+    }
+    return funcName + key.join(&#39;&#39;);
+}</pre>
+<p>具体的实现中会特别保留整个函数名，但是经过压缩的代码意义不会很大，此外需要过滤特殊字符，不然IE下使用userData时会出错。</p>
+<h5>过滤当前页面触发的事件</h5>
+<p>在sync方法的实现中，除了key得生成之外，还需要解决的问题是区分是否当前页面触发，如果是当前页面触发的onstorage则应该忽略掉，否则会造成死循环。实现方案是在特定的浏览器中加入锁进行判断，当页面执行封装后的B函数时表明是由当前页面触发的，此时会忽略onstorage事件。</p>
+<h5>参数同步</h5>
+<p>此外，函数执行时的参数是动态的，因此是需要进行同步的，由于本地同步只限于可以进行序列化的数据，所以对同步函数的参数类型有限制，目前只支持string类型。</p>
+<p>以下是具体的实现：</p>
+<pre name="code">/**
+    跨页面同步指定的函数
+    @param {function}   func        需要同步执行的函数(不允许重名，函数参数必须为string类型，否则参数无法同步)
+    @param {Object}     context     返回的函数执行时的上下文
+    @param {Boolean}    onlySync    是否只执行同步，为true时不执行原函数而只执行同步操作
+    @return {function}  当执行新的函数时将会通过本地存储进行同步操作
+ */
+sync: function( func, context, onlySync ){
+    if( !K.isFunction( func ) ) return;
+    //生成存储key(对于同一个函数而言，生成的key应该相同，这样才能保证多个页面对于同一个函数监听的是同一个key)
+    var key = this._genSyncKey( func );
+
+    //数据项中前缀和数据之间的分隔符
+    var split = &#39;~{##}~&#39;;
+
+    //参数之间的分隔符
+    var argSplit = &#39;~{###}~&#39;;
+
+    //是否当前页面触发
+    //(IE、Firefox3.6下的onstorage事件不论是否当前页面都会收到，所以需要加锁识别，确保当前页面不响应，其他浏览器则不必)
+    var isLocalTrigger = false;
+
+    //监听key变化
+    this.onstorage( key, function(val){
+        if( !isLocalTrigger || (!K.Browser.ie &amp;&amp; parseInt(K.Browser.firefox) &gt;= 4 ) ){
+            var args = val.split( split )[1],
+                arrArg = args.split( argSplit );
+            func.apply( context, arrArg);
+        }
+        isLocalTrigger = false;
+    });
+
+    var ins = this;
+    //返回的函数执行时，传入参数必须为string类型，否则参数无法同步
+    return function( ){
+        //执行原方法
+        if( !onlySync ){
+            func.apply( context, arguments );
+        }
+        isLocalTrigger = true;
+        //同步(加时间戳和随机数是为了让数据项发生变化，否则其他页面无法监听到
+        ins.setItem( key,
+            (new Date())*1
+            + &#39;&#39;
+            + Math.random()
+            + split
+            + ([].slice.call(arguments).join(argSplit))
+        );
+    };
+}</pre>
+<h4>接口的使用</h4>
+<p>参考示例页面：<a href="http://www.varnow.org/pages/html5/storage/sync/action_sync.html">http://www.varnow.org/pages/html5/storage/sync/action_sync.html</a></p>
+<pre name="code">function changeColor( id, color ){
+    $( id ).style.backgroundColor = color;
+}
+changeColor = Storage.sync( changeColor );
+
+$('test').onclick =  function(){
+    var colors = ['red','black','green','blue','yellow'];
+    var color = colors[ Math.floor( Math.random() * 5 ) ];
+    changeColor( 'test',color );
+};
+
+function close1(){
+    this.style.display = 'none';
+}
+
+//绑定this
+close1 = Storage.sync( close1, $('test') );
+
+$('close1').onclick = function(){
+    close1();
+};</pre>
+<p>下一篇将介绍Tab间的通信同步。</p>
+<p>前往下一篇<a href="http://varnow.org/?p=346">http://varnow.org/?p=346</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

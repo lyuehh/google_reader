@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>nodejs构建定时发微博工具，其中几个库的用法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>nodejs构建定时发微博工具，其中几个库的用法</h2>
+<p class="meta">15 Aug 2012</p>
+
+<div class="post">
+<h2>nodejs构建定时发微博工具，其中几个库的用法</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2012-08-15 15:12:01</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/692109216/6618683/1/item.html">http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/692109216/6618683/1/item.html</a></h3>
+
+<p></p>
+
+
+<div>
+<h1><a name="nodejs构建定时发微博工具_其中几个库的用法">nodejs构建定时发微博工具，其中几个库的用法</a></h1>
+<div>
+<p><strong>免责声明：本文并非介绍构建成熟系统，只是实现功能，谨慎用于生产环境。</strong>
+</p>
+</div>
+<h2><a name="用到的外部库">用到的外部库：</a></h2>
+<div>
+<p>
+<strong>express</strong>
+</p>
+<p>
+介绍：一个web框架，提供构建各种web页面的能力。
+</p>
+<p>
+地址：<a href="http://expressjs.com/" title="http://expressjs.com/" rel="nofollow">http://expressjs.com/</a>
+</p>
+<p>
+安装：npm install express
+</p>
+<p><strong>mysql</strong>
+</p>
+<p>
+介绍：在nodejs中操作mysql数据库的库。
+</p>
+<p>
+地址：<a href="https://github.com/felixge/node-mysql/" title="https://github.com/felixge/node-mysql/" rel="nofollow">https://github.com/felixge/node-mysql/</a>
+</p>
+<p>
+安装：npm install mysql
+</p>
+<p>
+<strong>consolidate</strong>
+</p>
+<p>
+介绍：将主流模板引擎集合以便在express中使用。
+</p>
+<p>
+地址：<a href="https://github.com/visionmedia/consolidate.js" title="https://github.com/visionmedia/consolidate.js" rel="nofollow">https://github.com/visionmedia/consolidate.js</a>
+</p>
+<p>
+安装：npm install consolidate
+</p>
+<p><strong>weibo</strong>
+</p>
+<p>
+介绍：一个微博库，支持国内各大微博平台，不过这里只用到了新浪。之所以选用这个而没有选中node-weibo-oauth库，因为它不支持发送图片，慎用。
+</p>
+<p>
+地址：<a href="https://github.com/fengmk2/node-weibo" title="https://github.com/fengmk2/node-weibo" rel="nofollow">https://github.com/fengmk2/node-weibo</a>
+</p>
+<p>
+安装：npm install weibo
+</p>
+</div>
+<h2><a name="运行原理">运行原理</a></h2>
+<div>
+</div>
+</div>
+
+
+<p><span></span></p>
+
+
+<div>
+<p>定时发微博，功能其实很简单，一部分是用户的操作界面，可以设定新的计划或者删除某条计划。一部分是后台，定时遍历数据库中的计划，将到时的计划拿出来放到发送队列。然后再定时检查发送队列，将队列内容按一定时间间隔挨个发送。
+</p>
+<p>
+数据库中有两个表，
+</p>
+<p>
+一个   wb_info 是用来存储用户的consumer key 和consumer secret的，以用户id为索引。
+</p>
+<p>
+另一个 queque  用来存储计划队列，以用户id跟第一个表关联。
+</p>
+<p>
+这样只要定时检查queque表，将信息拿出来跟当前时间做对比，如果需要发送，送到发送队列中。
+</p>
+<p>
+然后定时检查发送队列，如果有需要发送的计划，则根据其用户id从wb_info中取出用户的consumer key和consumer secret，然后用这二者把计划信息发送到微博，并从queque表删除此条计划。
+</p>
+<h2><a name="几个库的使用">几个库的使用</a></h2>
+<div>
+</div>
+<h3><a name="weibo库">1.weibo库</a></h3>
+<div>
+<p>每个库都有很多用法和功能，这里只列本应用用到的功能。
+</p>
+<pre><span>var</span> weibo = require<span>(</span><span>'weibo'</span><span>)</span>;
+<span>//应用的新浪app信息</span>
+<span>var</span> sinaApp = <span>{</span>
+    key : <span>'*******'</span>,
+    secret : <span>'********'</span>,
+    blogType: <span>'tsina'</span>
+<span>}</span>
+<span>//初始化weibo对象。</span>
+weibo.<span>init</span><span>(</span>sinaApp.<span>blogType</span>, sinaApp.<span>key</span>, sinaApp.<span>secret</span><span>)</span>;</pre>
+<p>
+对于绑定微博等功能，weibo提供了一个中间件的东西。说实话我不太懂，只是的确是这么用的。
+</p>
+<pre><span>//weibo中间件,这样，新浪微博的绑定地址就是 /login?type=weibo。app是expess的一个实例</span>
+app.<span>use</span><span>(</span>weibo.<span>oauth</span><span>(</span><span>{</span>
+    loginPath: <span>'/login'</span>,
+    logoutPath: <span>'/logout'</span>,
+    blogtypeField: <span>'type'</span>
+<span>// callbackPath:&quot;/oauth&quot;</span>
+<span>}</span><span>)</span><span>)</span>;</pre>
+<p>
+在浏览器中使用/login？type=weibo 访问之后走完接下来的流程，页面会默认调回根url / 用户的绑定信息写在req.session.oauthUser中。
+</p>
+<pre><span>//首页的代码</span>
+app.<span>get</span><span>(</span><span>'/'</span>, <span>function</span><span>(</span>req, res<span>)</span><span>{</span>
+    <span>var</span> user = req.<span>session</span>.<span>oauthUser</span>
+    <span>if</span><span>(</span>user<span>)</span><span>{</span>
+        <span>//如果认证成功（session里有用户信息）</span>
+        console.<span>log</span><span>(</span><span>&quot;oauth success!&quot;</span><span>)</span>
+        <span>//将用户id和用户名存储到cookie，下次无需认证直接可以使用。</span>
+        res.<span>cookie</span><span>(</span><span>&quot;userid&quot;</span>, user.<span>id</span><span>)</span>;
+        res.<span>cookie</span><span>(</span><span>&quot;username&quot;</span>, user.<span>name</span><span>)</span>;
+        <span>//将用户的consumerkey和consumersecret存储到数据库，在后台可以直接用这两个信息发送微博，无需用户参与。</span>
+        <span>********</span>
+        <span>//认证成功跳转到oauth页面</span>
+        res.<span>redirect</span><span>(</span><span>'oauth'</span><span>)</span>;
+    <span>}</span><span>else</span><span>{</span>
+        res.<span>render</span><span>(</span><span>'index.html'</span><span>)</span>;
+    <span>}</span>
+<span>}</span><span>)</span>;</pre>
+<p>
+这时候你可以在浏览器端做一些跟微博api的交互，例如：
+</p>
+<pre><span>//官方的例子</span>
+weibo.<span>public_timeline</span><span>(</span><span>{</span> user: <span>{</span> blogType: <span>'tsina'</span> <span>}</span> <span>}</span>, <span>function</span> <span>(</span>err, statuses<span>)</span> <span>{</span>
+  <span>if</span> <span>(</span>err<span>)</span> <span>{</span>
+    console.<span>error</span><span>(</span>error<span>)</span>;
+  <span>}</span> <span>else</span> <span>{</span>
+    console.<span>log</span><span>(</span>statuses<span>)</span>;
+  <span>}</span>
+<span>}</span><span>)</span>;</pre>
+<p>
+这段代码之所以可以运行是因为库会自动根据session中信息构建发送请求。
+</p>
+<p>
+如果你的代码不是浏览器触发的，二是服务器自己触发的，这时候根本没有session这个东西。就需要单独使用consumer key 和consumer secret来发送请求。
+</p>
+<pre><span>//send a new weibo</span>
+weibo.<span>update</span><span>(</span><span>{</span>
+    user: <span>{</span>
+        blogType: <span>'tsina'</span>,
+        oauth_token_key:<span>'****'</span>, <span>//consumer key</span>
+        oauth_token_secret:<span>'*******'</span>,<span>//consumer secret</span>
+        authtype: <span>'oauth'</span>
+    <span>}</span>,
+    <span>status</span>:<span>'**********'</span> <span>// the content to send</span>
+<span>}</span>, <span>function</span> <span>(</span>err, statuses<span>)</span> <span>{</span>
+    <span>if</span> <span>(</span>err<span>)</span> <span>{</span>
+        console.<span>error</span><span>(</span>err<span>)</span>;
+    <span>}</span> <span>else</span> <span>{</span>
+        console.<span>log</span><span>(</span><span>&quot;update weibo success&quot;</span><span>)</span>
+    <span>}</span>
+<span>}</span><span>)</span>;</pre>
+</div>
+<h3><a name="express_和_mustache">express 和 mustache</a></h3>
+<div>
+<p>express的基本用法网上很多，就不多说鸟。
+</p>
+<p>
+mustache是一个轻逻辑的小清新模板，使用起来比较简单。因为二者对接起来比较复杂，而且网上的文章大多都过时了，对新版的express来说都不太适用。
+</p>
+<p>
+consolidate库将常用的模板引擎都做了封装。这里使用它来做中间介绍人。使得把mustache引入express变得很简单，只许一句话，如下：
+</p>
+<pre>
+//设置模板引擎为mustache，这里使用了consolidate库
+var cons = require(&#39;consolidate&#39;)
+app.engine(&quot;html&quot;, cons.mustache);
+//设置模板路径
+app.set(&#39;views&#39;, __dirname + &#39;/views&#39;);
+
+app.set(&#39;view engine&#39;, &#39;html&#39;);
+app.set(&#39;view options&#39;, {
+    layout: false
+})
+</pre>
+<p>
+模板文件都放在views里面。渲染页面的操作如下。</p>
+<pre>
+//中间页面，提醒用户认证成功
+app.get(&#39;/oauth&#39;, function(req, res){
+    res.render(&#39;oauth.html&#39;,{data:{}});
+});
+</pre>
+<p>关于mustache的入门，见我的一篇文章：<a href="http://www.html-js.com/?p=1357" title="http://www.html-js.com/?p=1357" rel="nofollow">http://www.html-js.com/?p=1357</a>
+</p>
+</div>
+<h3><a name="mysql">mysql</a></h3>
+<div>
+<p>这个库的使用方法就很普通了，没有什么特别多的内容。
+</p>
+<pre>    <span>var</span> Client = require<span>(</span><span>'mysql'</span><span>)</span>.<span>Client</span>
+    <span>var</span> client = <span>new</span> Client<span>(</span><span>)</span>;
+    client.<span>user</span> = sql_username;
+    client.<span>password</span> =sql_pwd;
+    client.<span>query</span><span>(</span><span>'USE tp_wb'</span><span>)</span>;
+    <span>//这种用法mysql库会帮你自动转义字符，防止xss攻击</span>
+    client.<span>query</span><span>(</span>
+        <span>'INSERT INTO wb_queue '</span>+
+        <span>'SET wb_username= ?,wb_id = ?, pic = ?, send_time = ? ,content=?'</span>,
+        <span>[</span>req.<span>cookies</span>.<span>username</span>,req.<span>cookies</span>.<span>userid</span>,req.<span>target_path</span> , req.<span>time</span>,req.<span>body</span>.<span>wb_content</span><span>]</span><span>)</span>;
+    client.<span>end</span><span>(</span><span>)</span>;</pre>
+</div>
+<h3><a name="静态文件服务">静态文件服务</a></h3>
+<div>
+<p>参考这篇文章：<a href="http://www.infoq.com/cn/news/2011/11/tyq-nodejs-static-file-server" title="http://www.infoq.com/cn/news/2011/11/tyq-nodejs-static-file-server" rel="nofollow">http://www.infoq.com/cn/news/2011/11/tyq-nodejs-static-file-server</a>
+</p>
+<p>
+先设置express的上传文件临时文件夹：
+</p>
+<pre><span>//设置文件上传临时文件夹</span>
+app.<span>use</span><span>(</span>express.<span>bodyParser</span><span>(</span><span>{</span>
+    uploadDir:<span>'./uploads'</span>
+<span>}</span><span>)</span><span>)</span>;</pre>
+<p>
+下面是对接到的images*的请求做处理：
+</p>
+<pre><span>//静态图片服务</span>
+app.<span>get</span><span>(</span><span>&quot;/images/*&quot;</span>,<span>function</span><span>(</span>req,res<span>)</span><span>{</span>
+    <span>var</span> mime= <span>{</span>
+        <span>&quot;css&quot;</span>: <span>&quot;text/css&quot;</span>,
+        <span>&quot;gif&quot;</span>: <span>&quot;image/gif&quot;</span>,
+        <span>&quot;html&quot;</span>: <span>&quot;text/html&quot;</span>,
+        <span>&quot;ico&quot;</span>: <span>&quot;image/x-icon&quot;</span>,
+        <span>&quot;jpeg&quot;</span>: <span>&quot;image/jpeg&quot;</span>,
+        <span>&quot;jpg&quot;</span>: <span>&quot;image/jpeg&quot;</span>,
+        <span>&quot;js&quot;</span>: <span>&quot;text/javascript&quot;</span>,
+        <span>&quot;json&quot;</span>: <span>&quot;application/json&quot;</span>,
+        <span>&quot;pdf&quot;</span>: <span>&quot;application/pdf&quot;</span>,
+        <span>&quot;png&quot;</span>: <span>&quot;image/png&quot;</span>,
+        <span>&quot;svg&quot;</span>: <span>&quot;image/svg+xml&quot;</span>,
+        <span>&quot;swf&quot;</span>: <span>&quot;application/x-shockwave-flash&quot;</span>,
+        <span>&quot;tiff&quot;</span>: <span>&quot;image/tiff&quot;</span>,
+        <span>&quot;txt&quot;</span>: <span>&quot;text/plain&quot;</span>,
+        <span>&quot;wav&quot;</span>: <span>&quot;audio/x-wav&quot;</span>,
+        <span>&quot;wma&quot;</span>: <span>&quot;audio/x-ms-wma&quot;</span>,
+        <span>&quot;wmv&quot;</span>: <span>&quot;video/x-ms-wmv&quot;</span>,
+        <span>&quot;xml&quot;</span>: <span>&quot;text/xml&quot;</span>
+    <span>}</span>;
+    <span>var</span> realPath = <span>&quot;.&quot;</span>+url.<span>parse</span><span>(</span>req.<span>url</span><span>)</span>.<span>pathname</span>;
+    <span>var</span> ext = path.<span>extname</span><span>(</span>realPath<span>)</span>;
+    ext = ext ? ext.<span>slice</span><span>(</span><span>1</span><span>)</span> : <span>'unknown'</span>;
+    <span>var</span> contentType = mime<span>[</span>ext<span>]</span> <span>||</span> <span>&quot;text/plain&quot;</span>;
+    path.<span>exists</span><span>(</span>realPath, <span>function</span> <span>(</span>exists<span>)</span> <span>{</span>
+        <span>if</span> <span>(</span><span>!</span>exists<span>)</span> <span>{</span>
+            console.<span>log</span><span>(</span><span>&quot;404 request to&quot;</span>+realPath<span>)</span>
+            res.<span>writeHead</span><span>(</span><span>404</span>, <span>{</span>
+                <span>'Content-Type'</span>: contentType
+            <span>}</span><span>)</span>;
+            res.<span>write</span><span>(</span><span>&quot;This request URL &quot;</span> + realPath + <span>&quot; was not found on this server.&quot;</span><span>)</span>;
+            res.<span>end</span><span>(</span><span>)</span>;
+        <span>}</span> <span>else</span> <span>{</span>
+            fs.<span>readFile</span><span>(</span>realPath, <span>&quot;binary&quot;</span>, <span>function</span> <span>(</span>err, file<span>)</span> <span>{</span>
+                <span>if</span> <span>(</span>err<span>)</span> <span>{</span>
+                    console.<span>log</span><span>(</span>err<span>)</span>
+                    res.<span>writeHead</span><span>(</span><span>500</span>, <span>{</span>
+                        <span>'Content-Type'</span>: contentType
+                    <span>}</span><span>)</span>;
+                    res.<span>end</span><span>(</span>err<span>)</span>;
+                <span>}</span> <span>else</span> <span>{</span>
+                    res.<span>writeHead</span><span>(</span><span>200</span>, <span>{</span>
+                        <span>'Content-Type'</span>: contentType
+                    <span>}</span><span>)</span>;
+                    res.<span>write</span><span>(</span>file, <span>&quot;binary&quot;</span><span>)</span>;
+                    res.<span>end</span><span>(</span><span>)</span>;
+                <span>}</span>
+            <span>}</span><span>)</span>;
+        <span>}</span>
+    <span>}</span><span>)</span>;
+<span>}</span><span>)</span></pre>
+</div>
+<h3><a name="图片上传">图片上传</a></h3>
+<div>
+<p>表单提交的信息在express中一般存储在req.body中，但是如果有file表单，则文件的信息则会存储到req.files中。
+</p>
+<pre><span>//list页面post处理</span>
+app.<span>post</span><span>(</span><span>'/list'</span>, <span>function</span><span>(</span>req, res<span>)</span> <span>{</span>
+    <span>//获得图片文件的临时路径</span>
+    <span>var</span> tmp_path = req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>path</span>;
+    <span>var</span> type=req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>type</span>
+    <span>//如果存在图片</span>
+    <span>if</span><span>(</span>req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>size</span><span>&gt;</span><span>0</span><span>)</span><span>{</span>
+        <span>if</span><span>(</span>req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>size</span><span>&gt;</span><span>5000000</span><span>)</span><span>{</span>
+            req.<span>session</span>.<span>list_error</span>=<span>&quot;图片大小超过5M，提交失败！&quot;</span>
+            req.<span>method</span> = <span>'get'</span>;
+            res.<span>redirect</span><span>(</span><span>'/list'</span><span>)</span>;
+            <span>return</span>;
+        <span>}</span><span>else</span> <span>if</span><span>(</span><span>!</span><span>(</span>type==<span>&quot;image/png&quot;</span><span>||</span>type==<span>&quot;image/jpg&quot;</span><span>||</span>type==<span>&quot;image/jpeg&quot;</span><span>||</span>type==<span>&quot;image/gif&quot;</span><span>)</span><span>)</span><span>{</span>
+            req.<span>session</span>.<span>list_error</span>=<span>&quot;图片格式不是png，jpg，gif，提交失败！&quot;</span>
+            req.<span>method</span> = <span>'get'</span>;
+            res.<span>redirect</span><span>(</span><span>'/list'</span><span>)</span>;
+            <span>return</span>;
+        <span>}</span><span>else</span><span>{</span>
+            req.<span>session</span>.<span>list_error</span>=<span>&quot;&quot;</span>
+        <span>}</span>
+        <span>// 指定文件上传后的目录</span>
+        <span>var</span> target_path = <span>'./images/'</span>+<span>(</span><span>new</span> Date<span>(</span><span>)</span>.<span>getTime</span><span>(</span><span>)</span><span>)</span> +<span>&quot;-&quot;</span>+parseInt<span>(</span>Math.<span>random</span><span>(</span><span>)</span><span>*</span><span>100000000</span><span>)</span>+<span>&quot;-&quot;</span>+ req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>name</span>;
+        <span>// 移动文件</span>
+        fs.<span>rename</span><span>(</span>tmp_path, target_path, <span>function</span><span>(</span>err<span>)</span> <span>{</span>
+            <span>if</span> <span>(</span>err<span>)</span> <span>throw</span> err;
+            <span>// 删除临时文件夹文件,</span>
+            fs.<span>unlink</span><span>(</span>tmp_path, <span>function</span><span>(</span><span>)</span> <span>{</span>
+                <span>if</span> <span>(</span>err<span>)</span> <span>throw</span> err;
+                console.<span>log</span><span>(</span><span>'File uploaded to: '</span> + target_path + <span>' - '</span> + req.<span>files</span><span>[</span><span>'wb_pic'</span><span>]</span>.<span>size</span> + <span>' bytes'</span><span>)</span>;
+                <span>**********</span>
+            <span>}</span><span>)</span>;
+        <span>}</span><span>)</span>;
+    <span>}</span><span>else</span><span>{</span>
+        <span>//没有图片的时候</span>
+        <span>********</span>
+    <span>}</span>
+<span>}</span><span>)</span>;</pre>
+</div>
+</div>
+
+
+<p></p>
+
+
+<p><img src="http://www1.feedsky.com/t1/692109216/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/692109216/6618683/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>和Lambdas的第一次亲密接触</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>和Lambdas的第一次亲密接触</h2>
+<p class="meta">25 Feb 2013</p>
+
+<div class="post">
+<h2>和Lambdas的第一次亲密接触</h2>
+
+<h3>by Aqee</h3>
+
+<h3>at 2013-02-25 00:01:16</h3>
+
+<h3>original <a href="http://www.aqee.net/java-8-the-first-taste-of-lambdas/">http://www.aqee.net/java-8-the-first-taste-of-lambdas/</a></h3>
+
+<p><a href="http://openjdk.java.net/projects/lambda/">Lambda工程</a>是即将到来的Java8的一大主题，可能也是程序员们最期待已久的东西。随着Java lambdas的到来，还有一个有趣的东西被附带的加进了Java语言——defender(守卫者)方法。在这篇文章里，我的目的是要看看面纱后的东西——看看在运行时环境里lambdas是表现的，在方法的调度过程中涉及到哪些字节码指令。</p>
+
+
+<p>尽管Java 8还没有正式发布，我们仍然可以下载各种平台上的<a href="http://jdk8.java.net/lambda/">早期预览版</a>，在其上做简单的尝试。</p>
+
+
+<h3>你也想试试lambdas，是吗？</h3>
+
+
+<p>如果你熟悉其它的还有lambda表达式的编程语言，比如Groovy 或 Ruby，当第一眼看到Java里的lambda时，你也许会吃惊于它的不简单。在Java里，lambda表达式是<strong>“SAM”(Single Abstract Method)</strong>——一个含有一个抽象方法的接口(是的，现在接口里可以含有一个非抽象的方法，defender守卫方法)。</p>
+
+
+<p>举个例子，大家熟知的<code>Runnable</code>接口就可以完美的被当作一个SAM类型：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace"><span style="color:#003399">Runnable</span> r <span style="color:#339933">=</span> <span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#003399">System</span>.<span style="color:#006633">out</span>.<span style="color:#006633">println</span><span style="color:#009900">(</span><span style="color:#0000ff">"hello lambda!"</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>，这同样也适用于Comparable接口：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">Comparator<span style="color:#339933">&lt;</span>Integer<span style="color:#339933">&gt;</span> cmp <span style="color:#339933">=</span> <span style="color:#009900">(</span>x, y<span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#009900">(</span>x <span style="color:#339933">&lt;</span> y<span style="color:#009900">)</span> <span style="color:#339933">?</span> <span style="color:#339933">-</span><span style="color:#cc66cc">1</span> <span style="color:#339933">:</span> <span style="color:#009900">(</span><span style="color:#009900">(</span>x <span style="color:#339933">&gt;</span> y<span style="color:#009900">)</span> <span style="color:#339933">?</span> <span style="color:#cc66cc">1</span> <span style="color:#339933">:</span> <span style="color:#cc66cc">0</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>写成下面的样子也是一样的：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">Comparator<span style="color:#339933">&lt;</span>Integer<span style="color:#339933">&gt;</span> cmp <span style="color:#339933">=</span> <span style="color:#009900">(</span>x, y<span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#009900">{</span>
+  <span style="color:#000000;font-weight:bold">return</span> <span style="color:#009900">(</span>x <span style="color:#339933">&lt;</span> y<span style="color:#009900">)</span> <span style="color:#339933">?</span> <span style="color:#339933">-</span><span style="color:#cc66cc">1</span> <span style="color:#339933">:</span> <span style="color:#009900">(</span><span style="color:#009900">(</span>x <span style="color:#339933">&gt;</span> y<span style="color:#009900">)</span> <span style="color:#339933">?</span> <span style="color:#cc66cc">1</span> <span style="color:#339933">:</span> <span style="color:#cc66cc">0</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>从中可以看出，单行的lambda表达式似乎是隐含了一个<code>return</code>语句。</p>
+
+
+<p>那么，如何写一个能接受lambda表达式作为参数的方法呢？这样，你需要先把这个参数声明成函数式的接口，然后把lambda传入：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace"><span style="color:#000000;font-weight:bold">interface</span> <span style="color:#003399">Action</span> <span style="color:#009900">{</span>
+   <span style="color:#000066;font-weight:bold">void</span> run<span style="color:#009900">(</span><span style="color:#003399">String</span> param<span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span>
+
+<span style="color:#000000;font-weight:bold">public</span> <span style="color:#000066;font-weight:bold">void</span> execute<span style="color:#009900">(</span><span style="color:#003399">Action</span> action<span style="color:#009900">)</span><span style="color:#009900">{</span>
+   action.<span style="color:#006633">run</span><span style="color:#009900">(</span><span style="color:#0000ff">"Hello!"</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>一旦有了一个能将函数式接口作为参数的方法，我们就可以像下面这样调用它：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">execute<span style="color:#009900">(</span><span style="color:#009900">(</span><span style="color:#003399">String</span> s<span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#003399">System</span>.<span style="color:#006633">out</span>.<span style="color:#006633">println</span><span style="color:#009900">(</span>s<span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>还可以更简洁，这个表达式可以被替换成对一个方法的引用，因为它只是单个方法，而且它们的参数是相同的：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">execute<span style="color:#009900">(</span><span style="color:#003399">System</span>.<span style="color:#006633">out</span><span style="color:#339933">::</span>println<span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>然而，如果参数上有任何其它形式的变化，我们就不能直接引用方法，必须写全lambda表达式：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">execute<span style="color:#009900">(</span><span style="color:#009900">(</span><span style="color:#003399">String</span> s<span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#003399">System</span>.<span style="color:#006633">out</span>.<span style="color:#006633">println</span><span style="color:#009900">(</span><span style="color:#0000ff">"*"</span> <span style="color:#339933">+</span> s <span style="color:#339933">+</span> <span style="color:#0000ff">"*"</span><span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>我觉得这种语法还是相当漂亮的，现在，Java语言里有了一个非常优雅的lambdas解决方案，尽管Java里并不存在函数式类型。</p>
+
+
+<h3>JDK 8里的函数式接口</h3>
+
+
+<p>我们已经知道，lambda在运行时的表现形式是一个函数式的接口(或“SAM类型”)——只有一个抽象方法的接口。尽管JDK里已经有了不少这样的接口，例如<code>Runnable</code> 和 <code>Comparable</code> ，它们符合这种标准，但很显然，对于一个新API的进化来说，这是不够的。我们不可能所有地方都用Runnables接口。</p>
+
+
+<p>在JDK 8 里有个新包，<code>java.util.function</code>，里面包含了很多函数式接口，都是提供在新API里使用的。我不想把它们全列出来——你们自己可以去看一下，学习一下这个新包 <img src="http://www.aqee.net/wordpress/wp-includes/images/smilies/icon_smile.gif?ca541d" alt=":)"> </p>
+
+
+<p>但看起来这个新包在不断的变化，经常性的一些新接口会出现而另一些会消失。例如，以前曾有过 <code>java.util.function.Block</code> 这个类，最新的版本中却没有它，我写这篇博客时使用的版本是：</p>
+
+
+<pre>anton$ java -version
+openjdk version "1.8.0-ea"
+OpenJDK Runtime Environment (build 1.8.0-ea-b75)
+OpenJDK 64-Bit Server VM (build 25.0-b15, mixed mode)</pre>
+
+
+<p>我研究发现，它现在被 <code>Consumer</code> 接口替代，collection包里的所有新方法都将使用它。例如，<code>Collection</code>接口里定义了<code>forEach</code>方法，如下：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace"><span style="color:#000000;font-weight:bold">public</span> <span style="color:#000000;font-weight:bold">default</span> <span style="color:#000066;font-weight:bold">void</span> <span style="color:#000000;font-weight:bold">forEach</span><span style="color:#009900">(</span>Consumer<span style="color:#339933">&lt;?</span> <span style="color:#000000;font-weight:bold">super</span> T<span style="color:#339933">&gt;</span> consumer<span style="color:#009900">)</span> <span style="color:#009900">{</span>
+  <span style="color:#000000;font-weight:bold">for</span> <span style="color:#009900">(</span>T t <span style="color:#339933">:</span> <span style="color:#000000;font-weight:bold">this</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>
+    consumer.<span style="color:#006633">accept</span><span style="color:#009900">(</span>t<span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#009900">}</span>
+<span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p><code>Consumer</code>接口里一个有趣地方是，它实际上定义了一个抽象方法——<code>accept(T t)</code>和一个defender方法——<code>Consumer&lt;T&gt; chain(Consumer&lt;? extend T&gt; consumer)</code>。这就是说你可以链式调用这个接口。我不确定如何使用，因为我在JDK包里没有找到<code>chain(..)</code>的使用方法说明。</p>
+
+
+<p>我还发现所有的接口都使用了<a href="http://download.java.net/jdk8/docs/api/java/lang/FunctionalInterface.html">@FunctionalInterface</a>运行时注注解注释。这个注释不仅仅是个说明，它还被javac使用来验证这个接口是否真是一个函数式接口，是否至少有一个抽象方法在里面。</p>
+
+
+<p>所以，如果我们来编译下面的这段代码</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">@FunctionalInterface
+<span style="color:#000000;font-weight:bold">interface</span> <span style="color:#003399">Action</span> <span style="color:#009900">{</span>
+  <span style="color:#000066;font-weight:bold">void</span> run<span style="color:#009900">(</span><span style="color:#003399">String</span> param<span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#000066;font-weight:bold">void</span> stop<span style="color:#009900">(</span><span style="color:#003399">String</span> param<span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>编译器会告诉我们：</p>
+
+
+<pre>java: Unexpected @FunctionalInterface annotation
+  Action is not a functional interface
+    multiple non-overriding abstract methods found in interface Action</pre>
+
+
+<p>而下面的就能编译通过：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace">@FunctionalInterface
+<span style="color:#000000;font-weight:bold">interface</span> <span style="color:#003399">Action</span> <span style="color:#009900">{</span>
+  <span style="color:#000066;font-weight:bold">void</span> run<span style="color:#009900">(</span><span style="color:#003399">String</span> param<span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#000000;font-weight:bold">default</span> <span style="color:#000066;font-weight:bold">void</span> stop<span style="color:#009900">(</span><span style="color:#003399">String</span> param<span style="color:#009900">)</span><span style="color:#009900">{</span><span style="color:#009900">}</span>
+<span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<h3>反编译lambdas</h3>
+
+
+<p>我对语法语言特征其实并不是很好奇，我更好奇的是这些特征在运行时的表现形式，这就是为什么我像往常一样，拿起我喜爱的<b>javap</b>工具，开始查看lambdas里的这些类的<a href="http://zeroturnaround.com/rebellabs/devs/mastering-java-bytecode/">字节码</a>。</p>
+
+
+<p>目前(在Java 7之前)，如果你想在Java里模拟lambdas，你需要定义一个匿名的内部类。它在编译后会产生一个具体的class。如果你在一段代码里定义了多个这样的类，你会发现这些类后面会跟着一些数字。那lambdas也会这样吗？</p>
+
+
+<p>看看下面的这段代码：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace"><span style="color:#000000;font-weight:bold">public</span> <span style="color:#000000;font-weight:bold">class</span> Main <span style="color:#009900">{</span>
+
+  @FunctionalInterface
+  <span style="color:#000000;font-weight:bold">interface</span> <span style="color:#003399">Action</span> <span style="color:#009900">{</span>
+    <span style="color:#003399">Object</span> run<span style="color:#009900">(</span><span style="color:#003399">String</span> s<span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#009900">}</span>
+
+  <span style="color:#000000;font-weight:bold">public</span> <span style="color:#000066;font-weight:bold">void</span> action<span style="color:#009900">(</span><span style="color:#003399">Action</span> action<span style="color:#009900">)</span><span style="color:#009900">{</span>
+    action.<span style="color:#006633">run</span><span style="color:#009900">(</span><span style="color:#0000ff">"Hello!"</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#009900">}</span>
+
+  <span style="color:#000000;font-weight:bold">public</span> <span style="color:#000000;font-weight:bold">static</span> <span style="color:#000066;font-weight:bold">void</span> main<span style="color:#009900">(</span><span style="color:#003399">String</span><span style="color:#009900">[</span><span style="color:#009900">]</span> args<span style="color:#009900">)</span> <span style="color:#009900">{</span>
+    <span style="color:#000000;font-weight:bold">new</span> Main<span style="color:#009900">(</span><span style="color:#009900">)</span>.<span style="color:#006633">action</span><span style="color:#009900">(</span><span style="color:#009900">(</span><span style="color:#003399">String</span> s<span style="color:#009900">)</span> <span style="color:#339933">-&gt;</span> <span style="color:#003399">System</span>.<span style="color:#006633">out</span>.<span style="color:#006633">print</span><span style="color:#009900">(</span><span style="color:#0000ff">"*"</span> <span style="color:#339933">+</span> s <span style="color:#339933">+</span> <span style="color:#0000ff">"*"</span><span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+  <span style="color:#009900">}</span>
+
+<span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>编译产生了两个类文件：<code>Main.class</code> 和 <code>Main$Action.class</code>，没有匿名类实现里那样的序号化的类。那么，在<code>Main.class</code>里应该会有一些东西来代表我在main方法里定义的lambdas表达式的实现。</p>
+
+
+<pre>$ javap -p Main 
+
+Warning: Binary file Main contains com.zt.Main
+Compiled from "Main.java"
+public class com.zt.Main {
+  public com.zt.Main();
+  public void action(com.zt.Main$Action);
+  public static void main(java.lang.String[]);
+  private static java.lang.Object lambda$0(java.lang.String);
+}</pre>
+
+
+<p>啊哈！编译类了产生了<code>lambda$0</code>方法！使用<b>-c -v</b>指示符会让我们看到真正的字节码，以及常量池的定义。</p>
+
+
+<p>main方法里显示，invokedynamic被用来调度这个调用：</p>
+
+
+<pre>public static void main(java.lang.String[]);
+  Code:
+   0: new               #4    // class com/zt/Main
+   3: dup          
+   4: invokespecial #5        // Method "":()V
+   7: invokedynamic #6,  0    // InvokeDynamic #0:lambda:()Lcom/zt/Main$Action;
+   12: invokevirtual #7       // Method action:(Lcom/zt/Main$Action;)V
+   15: return</pre>
+
+
+<p>而在常量池里，你也可以找到运行时的启动方法：</p>
+
+
+<pre>BootstrapMethods:
+  0: #40 invokestatic java/lang/invoke/LambdaMetafactory.metaFactory:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;
+  Method arguments:
+    #41 invokeinterface com/zt/Main$Action.run:(Ljava/lang/String;)Ljava/lang/Object;
+    #42 invokestatic com/zt/Main.lambda$0:(Ljava/lang/String;)Ljava/lang/Object;
+    #43 (Ljava/lang/String;)Ljava/lang/Object;</pre>
+
+
+<p>你会发现到处都是在使用MethodHandle API，但我们现在不打算深入到里面。现在我们可以确认一点，我们的定义是引用了编译出来<code>lambda$0</code>方法。</p>
+
+
+<p>我很好奇，如果我定义一个相同名字的静态方法会怎样——毕竟“lambda$0”是一个有效的标识符！于是，我定义了自己的<code>lambda$0</code>方法：</p>
+
+
+<div>
+<table>
+<tbody>
+<tr>
+<td>
+<pre style="font-family:monospace"><span style="color:#000000;font-weight:bold">public</span> <span style="color:#000000;font-weight:bold">static</span> <span style="color:#003399">Object</span> lambda$0<span style="color:#009900">(</span><span style="color:#003399">String</span> s<span style="color:#009900">)</span><span style="color:#009900">{</span> <span style="color:#000000;font-weight:bold">return</span> <span style="color:#000066;font-weight:bold">null</span><span style="color:#339933">;</span> <span style="color:#009900">}</span></pre>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<p>而编译失败，编译器不允许我在代码了拥有这个方法：</p>
+
+
+<pre>java: the symbol lambda$0(java.lang.String) conflicts with a 
+           compiler-synthesized symbol in com.zt.Main</pre>
+
+
+<p>同时，如果我删掉这段定义lambdas表达式的代码，程序能顺利编译通过。这就是说，lambdas表达式在编译期间会比类里的其它数据早先分析，不过这只是我的猜测。</p>
+
+
+<p><strong>请注意：</strong>在这个例子中，lambda并没有去引用任何变量，也没有引用类内部的任何方法。这就是为什么产生的<code>lambda$0</code>方法是<b>静态的</b>。如果lambdas引用了上下文中的变量或方法，那生成的将是一个<b>非静态</b>方法。所以，不要被这个例子误导——<span style="text-decoration:underline">lambdas是可以捕获上下文环境内容的！</span></p>
+
+
+<h3>总结lambdas</h3>
+
+
+<p>我可以毫无疑问的说，lambdas和伴随它一起的各种特征(守卫方法(defender)<br>
+,升级的集合类库)将很快给Java带来巨大的冲击。它的语法相当的简单，一旦程序员们意识到这些功能给开发效率带来的好处，我们将会看到大量的程序员都会运用这个功能。</p>
+
+
+<p>看看lambdas会编译成什么样子，这对于我来说是一件非常有趣的事情，我很开心，因为我看到这些所有的<code>invokedynamic</code>指令调用都没有出现匿名内部类。</p>
+
+
+<hr>本文由<a href="http://www.aqee.net">外刊IT评论网</a>(<a href="http://www.aqee.net">www.aqee.net</a>)原创发表，文章地址：<a href="http://www.aqee.net/java-8-the-first-taste-of-lambdas/" rel="bookmark">和Lambdas的第一次亲密接触</a><br><img src="http://www1.feedsky.com/t1/718169126/aqee-net/feedsky/s.gif?r=http://www.aqee.net/java-8-the-first-taste-of-lambdas/" border="0" height="0" width="0">
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

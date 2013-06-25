@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Redis经验谈</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Redis经验谈</h2>
+<p class="meta">10 Jan 2013</p>
+
+<div class="post">
+<h2>Redis经验谈</h2>
+
+<h3>by baiyuzhong</h3>
+
+<h3>at 2013-01-09 23:25:39</h3>
+
+<h3>original <a href="http://www.programmer.com.cn/14577/">http://www.programmer.com.cn/14577/</a></h3>
+
+<p><strong>文/杨海朝</strong></p>
+
+
+<p>新浪作为全世界最大的Redis用户，在开发和运维方面有非常多的经验。本文作者来自新浪，希望能为业界提供一些亲身经历，让大家少走弯路。</p>
+
+
+<div>
+<p><span style="color:#808000"><strong>使用初衷</strong></span></p>
+<p>从2010年上半年起，我们就开始尝试使用Redis，主要出于以下几方面的考虑。</p>
+<ul>
+<li>性能比MySQL好。因为业务的发展对性能的需求越来越强烈。</li>
+<li>丰富的数据类型。在速度就是市场的互联网时代，快速开发是一个不变的需求。</li>
+<li>Cache宕机让人纠结，Redis有半持久化和持久化两种方式，能从某种程度上解决这个问题，以减少Cache宕机带来的雪崩效应。</li>
+<li>在部分业务场景中，使用MySQL+Memcached存在一致性问题，若使用Redis替代，能降低整体架构复杂度。<span></span></li>
+</ul>
+<p><span style="color:#808000"><strong>完善过程</strong></span></p>
+<p>在开始应用Redis时，规模比较小，数据量也很小，没有遇到太多的问题。而随着数据量的增加，遇到了很多问题。总结一句话就是，当数据量变大时，以前不是问题的问题都变成了问题。</p>
+<p><strong>Master/Slave同步问题</strong></p>
+<p>首先遇到的是Master/Slave的同步问题。它的原理是Slave做了Slaveof之后，向Master发送一个Sync，Master把内存的数 据Dump出来，形成rdb文件，然后传到Slave，Slave把这个文件加载到内存，完成之后Master向Slave发送新数据包。</p>
+<p>在网络出现问题时，比如瞬断，会导致Master里的数据全部重传。对单个端口来说，如果数据量小，那么这个影响不大，而如果数据量比较大的话，则会导致网 络瞬间流量暴增，同时在同步时Slave做不了读操作。我们对其进行了修改，加入Position的概念来解决这个问题，确保在网络出现问题时不会重传所 有数据，只重传断开时后面的数据。</p>
+<p><strong>aof的定期归档问题</strong></p>
+<p>Redis默认产生的aof文件需要手工做 bgrewrite-aof，这个操作产生的lock会对写产生一定的影响。因此，我们最开始用脚本在凌晨业务低峰时进行这个操作。而随着数量的增 加，lock的时间越来越不能被业务接受。我们对源代码进行了修改，将bgrewriteaof放到Redis内部去实现，在配置文件内制定执行时间，让这个操作自动执行，并且不会导致写产生的lock问题。</p>
+<p>同时，我们还将aof设计得与MySQL的binlog类似，设定每个aof的大小，在达到一定值时，会自动产生一个新的aof。</p>
+<p><strong>Mytrigger和MytriggerQ的设计</strong></p>
+<p>业务有这样的需求：应用按用户维度写入数据，统计用户的记录数（如关注数、粉丝数）时，需要从数据库中执行count(*)操作。在InnoDB中执行这个 相对较慢，而增加Cache方案又满足不了业务对实时性的要求。因此，我们开发了Mytrigger组件来读取MySQL的binlog，然后通过业务逻 辑转化写入Redis。</p>
+<p>例如，MySQL中存每条记录，Redis中存按用户维度的记录总和。这样实现之后，应用从MySQL中读取数据，从Redis里读取记录条数，MySQL的压力降低很多，同时计数读取性能提高了很多。</p>
+<p>如果应用是数据的写入方，那么它需要将数据写入数据库，同时需要把这些新增或变更通知给另一个应用，另一个应用获得这些新增或更新后开始做自己的业务逻辑处理。</p>
+<p>刚开始，我们采用了写数据库的同时再写一份MemcacheQ的方法，后来更换为MytriggerQ读取MySQL的binlog，将读取到的数据转化为 队列。需要了解数据变化的业务通过读取这个MytriggerQ服务来获取数据的变化。这样，应用只用写一次，简化了应用架构的复杂度。</p>
+<p><span style="color:#808000"><strong>容量设计</strong></span></p>
+<p>在申请使用Redis之前，我们会对业务进行评估。通过填写预计容量和性能需求表格，我们能算出Redis占用的内存量，确保单个端口的数据量不高于机器内存的三分之一。</p>
+<p>当前，我们使用的是96GB的内存型机型，每个端口最终容量控制在30GB以下。当业务需求的容量超过机器最大内存时，采用的拆分方式是Hash到多个端 口，通过基准测试得出在容量允许的情况下，一台机器部署2个实例、4个实例或8个实例的最大性能，预留20%的容量用于增长，根据业务指标计算出需要的资 源数。</p>
+<p>使用了Redis自身的过期策略之后，发现存入Redis的数据有可能出现即使还有大量内存没有使用，Redis还会让key过期去释放内存，或者内存不足时key还没有过期的问题。</p>
+<p>对于过期的数据，我们采用清理和滚动两种方式。清理容易出现内存碎片；滚动即建两组端口，同时写两组端口。比如要保留3个月的数据，那么每个断开保留6个月 的数据，两个同时写，使用奇数端口，在第4个月时，把读写切换到偶数端口，同时清理奇数端口里的数据，但使用这种方式带来了很高的维护成本。</p>
+<p><span style="color:#808000"><strong>应用场景</strong></span></p>
+<p>做Cache还是做Storage是我们一直在思考的问题。Redis有持久化和半持久化两种方式，但即使这样，所有Redis的数据都在内存中。大数据量存储时，数据类型的优势将越来越不明显。</p>
+<p>当数据量小时，可以不用做过多考虑，因为一切都不是问题，可以利用其丰富的数据类型带来业务的快速开发和上线；数据量总量和增加量都相对可控，数据比较精细 可以使用Redis做存储。例如，用户维度的计数就用Redis来做Storage。但对于对象维度，如微博维度的数据使用Redis做Cache。</p>
+<p>有些业务的容量增长过快，与之前的预计有出入，且所有的数据都在内存中，没有冷热区分（降低存储最好的办法就是分级存储），我们就将这部分不再适合放在 Redis的业务使用新的方案代替。例如把它替换成MySQL+Memcached的方式。因为每次做滚动切换的方案运维成本和硬件成本投入都很高，所以 可使用HandlerSocket来替换。例如，前6个月的数据放在Redis中，之后的数据放到MySQL中，在减少切换的同时也能降低运维成本。</p>
+<p><span style="color:#808000"><strong>未来的计划</strong></span></p>
+<p>随着机器规模的不断增加，可用性和自动化需求越来越强烈，目前我们正在结合ZooKeeper设计Redis的自动切换，同时提高Redis自动化维护需 求。我们会开发一个高速数据访问框架和管理系统，将故障切换、数据拆分逻辑和自动数据迁移放到里面，实现其应用的产品化。希望走过的这些路对大家在使用 Redis的过程中有所帮助。</p>
+<p><span style="color:#888888"><strong>作者杨海朝，新浪首席DBA，在大规模高并发、海量访问方面有丰富的管理经验。热衷于整体架构、数据库设计、性能优化、分布式部署方案和高可用性方面的研究。</strong></span></p>
+<p><a href="http://www.programmer.com.cn/14440/"><strong>本文选自《程序员》杂志2013年1期，未经允许不得转载。如需转载请联系 market@csdn.net</strong></a></p>
+<p><strong><a href="http://dingyue.programmer.com.cn/">《程序员》2013年杂志订阅送好礼活动火热进行中</a></strong></p>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]JavaScript中几种愚蠢的写法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]JavaScript中几种愚蠢的写法</h2>
+<p class="meta">15 Nov 2012</p>
+
+<div class="post">
+<h2>[译]JavaScript中几种愚蠢的写法</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-11-15 09:26:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/15/2770948.html">http://www.cnblogs.com/ziyunfei/archive/2012/11/15/2770948.html</a></h3>
+
+<p>原文:<a href="http://james.padolsey.com/javascript/js-adolescence">http://james.padolsey.com/javascript/js-adolescence</a></p>
+
+
+<hr><p>对于我来说,有一段时间可以描述成为是我在编程生涯(更具体点讲是指JavaScript)中的青少年时期.<span lang="zh-CN"><span>这一时期</span><span>的特点是</span><span>懒惰而又</span><span>自大</span></span>.我只认为我自己是对的,其他人都是错的.</p><p>今天,我给出一些我以前认为是对的,但现在发现是很愚蠢(在大多数情况下)的JavaScript写法:</p><p><strong>1.使用逻辑运算符作为语句</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">a() || b.foo.bar(); m &amp;&amp; c() ? d() : l || m.foo[bee](3);</div></div></div><p>为了显示自己的技能有多高超而放弃常规的写法并不会得到什么真正的好处.</p><blockquote><p>译者注:这里我得解释一下.作者的意思是,包含逻辑运算符的表达式只应该作为某个语句的一部分,而不应该作为单独的表达式语句,主要指的是&amp;&amp;和||.下面详细讲一下.</p><p>新手可能不知道JavaScript中逻辑或||和逻辑与&amp;&amp;的特点,他们只会使用这两个运算符最基本的语法:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">if</span> ((x &lt; 100 || x &gt; -100) &amp;&amp; x !== 0<span style="color:#000000">) {<br>    alert(</span>"x的绝对值小于100,且x不等于0"<span style="color:#000000">)<br>}</span></div><p>但其实,JavaScript中的逻辑或和逻辑与运算符返回的并不一定是布尔值,确切的说法是:返回的是两个操作数其中的某一个.由于这个特性,就有了另外一种很常见的用法(下面的例子来自<span>《</span>JavaScript语言精粹<span>》</span>):</p><blockquote><p> 逻辑或||运算符可以用来设置默认值:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> middle = stooge["middle-name"] || "(none)"<span style="color:#000000">;<br></span><span style="color:#0000ff">var</span> status = flight.status || "unknown";<span style="color:#0000ff"> <br></span></div><p>尝试从值为undefined的变量上读取属性值会抛出TypeError异常,可以使用逻辑与&amp;&amp;操作符来防范这种情况:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">flight.equipment                              <span style="color:#008000">//</span><span style="color:#008000"> undefined</span><br>flight.equipment.model                        <span style="color:#008000">//</span><span style="color:#008000"> throw "TypeError"</span><br><span style="color:#0000ff">var</span> model = flight.equipment &amp;&amp; flight.equipment.model    <span style="color:#008000">//</span><span style="color:#008000"> undefined</span></div></blockquote><p>上面的两种用法都把包含逻辑运算符的表达式作为了某个语句的一部分,也就是说:都用到了这些表达式的返回值.下面的使用场景就不一样了:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">typeof</span> x == &quot;object&quot; &amp;&amp; x !== <span style="color:#0000ff">null</span> &amp;&amp; alert(&quot;x是一个对象&quot;)</div><p>这个例子中,整个表达式的值完全没有被用到,表达式作为了一个单独的语句,目的就是为了有条件的执行最右边的函数.如果这么写的话,你应该使用更常规的写法,以提高可读性和可维护性:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">if</span> (<span style="color:#0000ff">typeof</span> x == &quot;object&quot; &amp;&amp; x !== <span style="color:#0000ff">null</span><span style="color:#000000">) {<br>    alert(</span>"x是一个对象"<span style="color:#000000">)<br>}</span></div></blockquote><p><strong>2.总在作用域的最上方定义变量</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> calculate() {<br>  </span><span style="color:#0000ff">var</span> a, m, t, y, This, is, really, understandable = <span style="color:#0000ff">false</span><span style="color:#000000">;<br>  </span><span style="color:#008000">//</span><span style="color:#008000"> 其他代码</span><br>}</div></div></div><p>我现在的做法是:在最合适的地方声明不同的变量.通常情况下,也就是作用域的最上方,但也有例外,这时,不应该被那些所谓的代码风格限制住.</p><blockquote><p>译者注:网上有不少知名人士或者知名公司的代码风格指南,这些东西值的参考,但并不是说必须遵循,因为风格之所以为风格,就是因为这东西是很主观的,很难说谁对谁错.</p><p>下面列举几个比较知名的JavaScript代码风格指南:</p><ul><li><a href="http://javascript.crockford.com/code.html">Douglas Crockford</a></li><li><a href="http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml#JavaScript_Style_Rules">Google</a></li><li><a href="http://docs.jquery.com/JQuery_Core_Style_Guidelines">jQuery</a></li><li><a href="https://github.com/rwldrn/idiomatic.js/">Idiomatic JavaScript</a></li><li><a href="https://github.com/styleguide/javascript">GitHub</a></li><li><a href="https://npmjs.org/doc/coding-style.html">NPM</a></li></ul>就变量声明,下面引用一下"<span>尼古拉斯·泽卡斯</span>"的<span>《</span><span>Maintainable JavaScript</span><span>》</span>一书中的一小段:<br><blockquote><p>我个人的喜好是将所有的var语句都合并,并且每个变量声明都放在单独的一行内.等号也要对齐.那些没有初始化的变量,应该放在该var语句靠后面的部分,如下:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> doSomethingWithItems(items) {<br><br>    </span><span style="color:#0000ff">var</span> value   = 10<span style="color:#000000">,<br>        result  </span>= value + 10<span style="color:#000000">,<br>        i, <br>        len;<br><br>    </span><span style="color:#0000ff">for</span> (i=0, len=items.length; i &lt; len; i++<span style="color:#000000">) {<br>        doSomething(items[i]);<br>    }<br>}</span></div></blockquote></blockquote><p><strong>3.反复使用行内对象字面量</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> prepareRequest(mode, updateId, value) {<br>  </span><span style="color:#0000ff">var</span> req =<span style="color:#000000"> {<br>    mode: mode,<br>    updateId: updateId,<br>    value: value,<br>    uid: genUID()<br>  };<br>  </span><span style="color:#008000">//</span><span style="color:#008000"> 其他代码.</span><br>}</div></div></div><p>如果你需要重复的定义一些结构相同的对象字面量,那么创建一个分离的"类"能够让你的代码更清晰,性能更好.例如,上面的代码可以重构成一个Request"类".</p><blockquote><p>译者注:作者的意思应该是使用构造函数生成对象.</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> Request(mode, updateId, value) {<br>     ...<br>}<br><br></span><span style="color:#0000ff">var</span> req1 = <span style="color:#0000ff">new</span><span style="color:#000000"> Request(...);<br><br></span><span style="color:#0000ff">var</span> req2 = <span style="color:#0000ff">new</span> Request(...);</div></blockquote><p><strong>4.复杂的行内正则表达式</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">if</span> (/r[ -~]?(?:m\d+|\d+[0-3]{2,})_m?$/<span style="color:#000000">.test(thing)) {<br>  </span><span style="color:#008000">//</span><span style="color:#008000"> ... wat</span><br>}</div></div></div><p>如果是多次使用的正则,应该用变量缓存起来.而且如果给它一个名称,别人还可以从变量名称上推断出这个复杂的正则到底是干什么用的.</p><blockquote><p>译者注:如果是多次使用的相同的正则字面量,用变量缓存起来就只会生成一个正则对象,这样可以减少内存占用.不过<a href="http://dancewithnet.com/2011/05/11/what-is-new-about-regular-expression-literals-at-es5/">ES3和ES5有点区别</a>.</p></blockquote><p><strong>5.使用单一的字符作为变量名</strong></p><p>这样的变量名称没有任何意义,除非使用在循环语句中,比如i作为累加器,这已经成为了语言习惯.</p><p><strong>6.到处是严格相等</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">if</span> (<span style="color:#0000ff">typeof</span> x === &#39;string&#39; &amp;&amp; x === &#39;mode:45&#39;<span style="color:#000000">) {<br>  </span><span style="color:#008000">//</span><span style="color:#008000"> ... </span><br>}</div></div></div><p>有时候这样写是没必要的,比如上面的例子,常规的相等就已经足够了.</p><blockquote><p>译者注:关于这一点,可以看一下我翻译的一篇文章<a href="http://www.cnblogs.com/ziyunfei/archive/2012/09/22/2696109.html">什么时候能用==</a>,里面的结论是:任何时候都应该使用严格相等.</p></blockquote><p><strong>7.把真假性当成存在性</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">if</span> (!<span style="color:#000000">cachedReturnValues[key]) {<br>  cachedReturnValues[key] </span>=<span style="color:#000000"> value;<br>}</span></div></div></div><p>上面的代码有潜在的危险.更好的办法是使用‘in’运算符来证明存在性,必要的时候还要配合‘hasOwnProperty’.</p><blockquote><p>译者注:这个例子的本意是,如果不存在key属性的话,就把值value赋值给它.但如果key的值刚好为0或其他假值的话,那么判断也会成立,也就出错了.使用for in为什么要配合hasOwnProperty,请参考我的另一篇文章<a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/03/2752905.html">JavaScript中的属性:如何遍历属性</a></p></blockquote><p><strong>8.不加注释或者过多的注释</strong></p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#008000">//</span><span style="color:#008000"> 下面是一个循环</span><br><span style="color:#0000ff">for</span> (<span style="color:#0000ff">var</span> i = 0; i &lt; arr.length; i++<span style="color:#000000">) {<br>  </span><span style="color:#008000">//</span><span style="color:#008000"> 这里是循环体</span><br>  arr[i] += 1<span style="color:#000000">;<br>} </span><span style="color:#008000">//</span><span style="color:#008000"> 循环结束</span></div></div></div><p>过多的注释会影响代码的清晰度,也表明了你没有搞懂注释的意义.完全没有注释则表明你是一个懒惰而又自大的人.</p><p><strong>9.认为我自己写的代码不需要单元测试</strong></p><p>单元测试可以确保我们自己写的代码正确的实现了想要的功能.</p><p><strong>10.使用过长的太过具体的标识符名称</strong></p><p>过长的命名意味着糟糕的API设计.当你在定义变量/方法的时候,一定要反复思考,要使定义的变量名称即短小又有意义.那么你会得到一个更整洁的API.比如:</p><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#008000">//</span><span style="color:#008000"> 不好的:</span><br><span style="color:#0000ff">var</span> responseCache =<span style="color:#000000"> {};<br></span><span style="color:#0000ff">function</span><span style="color:#000000"> generateNextIDForANewResponseCacheItem() {...}<br></span><span style="color:#0000ff">function</span><span style="color:#000000"> deleteResponseCacheItemsThatDoNotEqual(value) {...}<br> <br></span><span style="color:#008000">//</span><span style="color:#008000"> 好的:</span><br><span style="color:#0000ff">function</span><span style="color:#000000"> ResponseCache() {<br>  </span><span style="color:#0000ff">this</span>.data =<span style="color:#000000"> {};<br>}<br>ResponseCache.prototype </span>=<span style="color:#000000"> {<br>  genNextID: </span><span style="color:#0000ff">function</span><span style="color:#000000">() {...},<br>  remove: </span><span style="color:#0000ff">function</span><span style="color:#000000">(optionalFnCheck) {...}<br>};</span></div></div></div><p><strong>11.严格遵循标准</strong></p><p>这么做并不会解决那些你认为它可以为你解决的一些问题.正确的做法是:自己思考一下到底什么是正确的什么是错误的.这也就是我为什么要防止自己过度热衷于那些代码风格以及其他相关规定的原因.</p><blockquote><p>译者注:如果是团队合作,指公司项目或者开源项目,那么最好遵循大部分通用的代码风格和规则.如果是自己一个人维护的代码,你想怎么写都可以.</p></blockquote><img src="http://www.cnblogs.com/ziyunfei/aggbug/2770948.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/15/2770948.html">本文链接</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

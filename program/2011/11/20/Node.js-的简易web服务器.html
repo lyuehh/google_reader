@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Node.js 的简易web服务器</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Node.js 的简易web服务器</h2>
+<p class="meta">20 Nov 2011</p>
+
+<div class="post">
+<h2>Node.js 的简易web服务器</h2>
+
+<h3>by Shawphy</h3>
+
+<h3>at 2011-11-19 19:57:24</h3>
+
+<h3>original <a href="http://shawphy.com/2011/11/a-simple-nodejs-web-server.html">http://shawphy.com/2011/11/a-simple-nodejs-web-server.html</a></h3>
+
+<p>网上关于Node.js的介绍已经铺天盖地了，但我就没找到一个简单的web服务器给我做测试用。<br>
+实际上Node.js只需要一个exe文件和一个js文件就可以搭建服务器了，用来随便测试页面之类的用起来比nginx还方便。所以我就随手写了一个简单的。只可用于http服务，没有更多功能的js文件。</p>
+
+
+<p>用起来很简单：<br>
+1，先去 <a href="http://nodejs.org/" title="Node.js 官网">http://nodejs.org/</a>下载最新的Node.js可执行的exe文件。比如： <a href="http://nodejs.org/dist/latest/node.exe">http://nodejs.org/dist/latest/node.exe</a><br>
+2，把下面的代码保存为一个 server.js 文件，把它跟刚才下载到的 node.exe 文件放在一起。<br>
+3，把server.js文件拖到node.exe文件上就OK了</p>
+
+
+<p>就这三步之后，整个目录下的文件都可以通过 http://127.0.0.1:8080/ 来访问了，测试用起来非常方便。</p>
+
+
+<p>其他系统下也如法炮制，官网上也有下载mac和linux的版本。</p>
+
+
+<div><ol title="Double click to hide line number."><li><span style="color:Green">var</span><span style="color:Gray"> </span><span style="color:Blue">http</span><span style="color:Gray"> = </span><span style="color:Blue">require</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">http</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">,</span></li>
+<li><span style="color:Gray">    </span><span style="color:Blue">url</span><span style="color:Gray">  = </span><span style="color:Blue">require</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">url</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">,</span></li>
+<li><span style="color:Gray">    </span><span style="color:Blue">path</span><span style="color:Gray"> = </span><span style="color:Blue">require</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">path</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">,</span></li>
+<li><span style="color:Gray">    </span><span style="color:Blue">fs</span><span style="color:Gray">   = </span><span style="color:Blue">require</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">fs</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray"> </span></li>
+<li><span style="color:Blue">http</span><span style="color:Gray">.</span><span style="color:Blue">createServer</span><span style="color:Olive">(</span><span style="color:Green">function</span><span style="color:Gray"> </span><span style="color:Olive">(</span><span style="color:Blue">req</span><span style="color:Gray">, </span><span style="color:Blue">res</span><span style="color:Olive">)</span><span style="color:Gray"> </span><span style="color:Olive">{</span></li>
+<li><span style="color:Gray">    </span><span style="color:Green">var</span><span style="color:Gray"> </span><span style="color:Blue">pathname</span><span style="color:Gray">=</span><span style="color:Blue">__dirname</span><span style="color:Gray">+</span><span style="color:Blue">url</span><span style="color:Gray">.</span><span style="color:Blue">parse</span><span style="color:Olive">(</span><span style="color:Blue">req</span><span style="color:Gray">.</span><span style="color:Blue">url</span><span style="color:Olive">)</span><span style="color:Gray">.</span><span style="color:Blue">pathname</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">    </span><span style="color:Green">if</span><span style="color:Gray"> </span><span style="color:Olive">(</span><span style="color:Blue">path</span><span style="color:Gray">.</span><span style="color:Blue">extname</span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Olive">)</span><span style="color:Gray">==</span><span style="color:#8b0000">&quot;&quot;</span><span style="color:Olive">)</span><span style="color:Gray"> </span><span style="color:Olive">{</span></li>
+<li><span style="color:Gray">        </span><span style="color:Blue">pathname</span><span style="color:Gray">+=</span><span style="color:#8b0000">&quot;</span><span style="color:Red">/</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">    </span><span style="color:Olive">}</span></li>
+<li><span style="color:Gray">    </span><span style="color:Green">if</span><span style="color:Gray"> </span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Gray">.</span><span style="color:Blue">charAt</span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Gray">.</span><span style="color:Blue">length</span><span style="color:Gray">-</span><span style="color:Maroon">1</span><span style="color:Olive">)</span><span style="color:Gray">==</span><span style="color:#8b0000">&quot;</span><span style="color:Red">/</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">){</span></li>
+<li><span style="color:Gray">        </span><span style="color:Blue">pathname</span><span style="color:Gray">+=</span><span style="color:#8b0000">&quot;</span><span style="color:Red">index.html</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">    </span><span style="color:Olive">}</span></li>
+<li><span style="color:Gray"> </span></li>
+<li><span style="color:Gray">    </span><span style="color:Blue">path</span><span style="color:Gray">.</span><span style="color:Blue">exists</span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Gray">,</span><span style="color:Green">function</span><span style="color:Olive">(</span><span style="color:Blue">exists</span><span style="color:Olive">){</span></li>
+<li><span style="color:Gray">        </span><span style="color:Green">if</span><span style="color:Olive">(</span><span style="color:Blue">exists</span><span style="color:Olive">){</span></li>
+<li><span style="color:Gray">            </span><span style="color:Green">switch</span><span style="color:Olive">(</span><span style="color:Blue">path</span><span style="color:Gray">.</span><span style="color:Blue">extname</span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Olive">)){</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.html</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">text/html</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.js</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">text/javascript</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.css</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">text/css</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.gif</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">image/gif</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.jpg</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">image/jpeg</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">case</span><span style="color:Gray"> </span><span style="color:#8b0000">&quot;</span><span style="color:Red">.png</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">image/png</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Green">break</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">                </span><span style="color:Green">default</span><span style="color:Gray">:</span></li>
+<li><span style="color:Gray">                    </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">200</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">application/octet-stream</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">            </span><span style="color:Olive">}</span></li>
+<li><span style="color:Gray"> </span></li>
+<li><span style="color:Gray">            </span><span style="color:Blue">fs</span><span style="color:Gray">.</span><span style="color:Blue">readFile</span><span style="color:Olive">(</span><span style="color:Blue">pathname</span><span style="color:Gray">,</span><span style="color:Green">function</span><span style="color:Gray"> </span><span style="color:Olive">(</span><span style="color:Blue">err</span><span style="color:Gray">,</span><span style="color:Blue">data</span><span style="color:Olive">){</span></li>
+<li><span style="color:Gray">                </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">end</span><span style="color:Olive">(</span><span style="color:Blue">data</span><span style="color:Olive">)</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">            </span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">        </span><span style="color:Olive">}</span><span style="color:Gray"> </span><span style="color:Green">else</span><span style="color:Gray"> </span><span style="color:Olive">{</span></li>
+<li><span style="color:Gray">            </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">writeHead</span><span style="color:Olive">(</span><span style="color:Maroon">404</span><span style="color:Gray">, </span><span style="color:Olive">{</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Content-Type</span><span style="color:#8b0000">&quot;</span><span style="color:Gray">: </span><span style="color:#8b0000">&quot;</span><span style="color:Red">text/html</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">            </span><span style="color:Blue">res</span><span style="color:Gray">.</span><span style="color:Blue">end</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">&lt;h1&gt;404 Not Found&lt;/h1&gt;</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray">        </span><span style="color:Olive">}</span></li>
+<li><span style="color:Gray">    </span><span style="color:Olive">})</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray"> </span></li>
+<li><span style="color:Olive">})</span><span style="color:Gray">.</span><span style="color:Blue">listen</span><span style="color:Olive">(</span><span style="color:Maroon">8080</span><span style="color:Gray">, </span><span style="color:#8b0000">&quot;</span><span style="color:Red">127.0.0.1</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">;</span></li>
+<li><span style="color:Gray"> </span></li>
+<li><span style="color:Blue">console</span><span style="color:Gray">.</span><span style="color:Blue">log</span><span style="color:Olive">(</span><span style="color:#8b0000">&quot;</span><span style="color:Red">Server running at http://127.0.0.1:8080/</span><span style="color:#8b0000">&quot;</span><span style="color:Olive">)</span><span style="color:Gray">;</span></li></ol></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/728648210/shawphy/feedsky/s.gif?r=http://shawphy.com/2011/11/a-simple-nodejs-web-server.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

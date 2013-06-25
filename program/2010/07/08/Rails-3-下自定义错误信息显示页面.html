@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Rails 3 下自定义错误信息显示页面</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Rails 3 下自定义错误信息显示页面</h2>
+<p class="meta">08 Jul 2010</p>
+
+<div class="post">
+<h2>Rails 3 下自定义错误信息显示页面</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-08 15:21:11</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/708334">http://www.javaeye.com/topic/708334</a></h3>
+
+<p>大家都知道想在Rails下自定义错误显示的页面是修改 rescue_action_in_public 这个方法，我之前也写过一篇blog介绍在Rails 2.X下如何自定义错误信息页面 <a href="http://yangzhihuan.javaeye.com/blog/577624">http://yangzhihuan.javaeye.com/blog/577624</a>
+<br>
+<br>不过在 Rails 3中这个方法的位置改变了，上文提到的链接中的方法已经无效了，其它还是修改  rescue_action_in_public 这个方法，只不过这个方法不再放在 ActionController::Rescue 这个module里面了,请看代码：
+<br><pre name="code"></p>
+
+<h1>以下的代码放在 config/initializers 文件夹下，随便弄个文件名都可以，放在这个文件夹下，启动项目时会自动加载，这样就不用像放在 lib 文件夹中，还要手工去加载了。</h1>
+
+<p>module ActionDispatch
+  class ShowExceptions</p>
+
+<pre><code>private
+# customize error handle
+def rescue_action_in_public_with_handle_system_error(exception)
+  logger.error(&amp;quot;rescue_action_in_public executed&amp;quot;)
+  begin
+   # 修改这个文件的主要目的就是为了加上这么一句
+    SystemErrorNotify.system_error(exception).deliver
+  rescue =&amp;gt; e
+    logger.error &amp;quot;****************************&amp;quot;
+    logger.error &amp;quot;#{e.message}&amp;quot;
+    logger.error &amp;quot;#{e.backtrace.join(&amp;#39;\n&amp;#39;)}&amp;quot;
+    logger.error &amp;quot;****************************&amp;quot;
+  end
+
+  # 调用原来的 rescue_action_in_public 方法，该干嘛干嘛去
+  rescue_action_in_public_without_handle_system_error(exception)
+end
+alias_method_chain :rescue_action_in_public,:handle_system_error
+</code></pre>
+
+<p>  end
+end</p>
+
+<h1>注意 rescue_action_in_public 现在放在 ActionDispatch::ShowExceptions 中</h1>
+
+<h1>我也不再直接覆盖 rescue_action_in_public 方法，而是使用了 alias_method_chain ，我觉得这样做扩展更加干净。</h1>
+
+<p></pre></p>
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://yangzhihuan.javaeye.com"&gt;yangzhihuan&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/708334" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

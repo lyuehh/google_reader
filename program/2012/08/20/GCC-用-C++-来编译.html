@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>GCC 用 C++ 来编译</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>GCC 用 C++ 来编译</h2>
+<p class="meta">20 Aug 2012</p>
+
+<div class="post">
+<h2>GCC 用 C++ 来编译</h2>
+
+<h3>by 陈皓</h3>
+
+<h3>at 2012-08-20 08:40:04</h3>
+
+<h3>original <a href="http://coolshell.cn/articles/8115.html">http://coolshell.cn/articles/8115.html</a></h3>
+
+<p>GCC在2012年8月15日的时候，merge了一个patch - <a href="http://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=2b15d2ba7eb3a25dfb15a7300f4ee7a141ee8539">Merge from cxx-conversion branch</a>，这意味着，以后在GCC的编译只能用C++的编译器了，也意味着，gcc的实现代码开始转向C++了。</p>
+
+
+<p>你可能会有两个问题，</p>
+
+
+<ul>
+<li>一个问题是为什么GCC要转成C++的实现？</li>
+</ul>
+
+
+<ul>
+<li>没有C++的编译器，我怎么编译C++编译器的代码？这不是“鸡生蛋还是蛋生鸡”的问题么？</li>
+</ul>
+
+
+<p>那，我们来看一看吧。</p>
+
+
+<h4>为什么要用C++</h4>
+
+
+<p>在<a href="http://gcc.gnu.org/wiki/cxx-conversion">GNU的C++ Conversion文档</a>中，我们可以在Background中看到这样的描述：</p>
+
+
+<blockquote><p>Whether we use C or C++, we need to try to ensure that interfaces are easy to understand, that the code is reasonably modular, that the internal documentation corresponds to the code, that it is possible for new developers to write new passes and to fix bugs. Those are the important issues for us to consider. The C++ features which are not present in C – features which are well documented in many books and many web sites – are not an important issue.</p></blockquote>
+
+
+<p>这句话的意思可以理解为，今天GCC在用C语言的实现已经有点hold不住了，因为，开发人员觉得，不管我们用C或C++，都需要努力确保接口是容易理解的，这样我们的代码是想当理性地被模块化的，这样内部文档和代码一致，这样可以更好地组织代码，这样有利于新人了fix-bug。而C++正好可以让他们更好的完成这些东西。</p>
+
+
+<p>GNU还给出了下面这些理由：</p>
+
+
+<p><span></span></p>
+
+
+<ul>
+<li>C++ 是一种标准化的，大众的，流行的语言。</li>
+<li>C++ 是C90的超集。</li>
+<li>C++作为C的扩展和C在性能上一样好。</li>
+<li>C++ 在一些有意义的案例上支持更干净的代码。</li>
+<li>C++ 让你更容易去写一个更干净的接口。</li>
+<li>C++ 永远不会让你的代码变得更丑。</li>
+<li>C++ 不是万灵药，他是C的一个改进。</li>
+</ul>
+
+
+<p>然后，给了一个PDF <a href="http://airs.com/ian/cxx-slides.pdf">http://airs.com/ian/cxx-slides.pdf</a>，这是Google 的<a href="http://airs.com/ian/"> Ian Lance Taylor</a>的的一个PPT，这个文档可以让大家更好地理解我在《<a title="C++的坑真的多吗？" href="http://coolshell.cn/articles/7992.html">C++的坑多吗？</a>》一文中那些观点。<strong>我都不知道我要说多少遍C++的封装，继承和多态比C语言在代码组织上要好得多得多</strong>。大家还是自己看一下代码吧：</p>
+
+
+<p><strong><span style="color:#800000">数据结构的操作</span> —— </strong>你写的一定不会有STL好</p>
+
+
+<p style="padding-left:30px"><strong><a href="http://coolshell.cn//wp-content/uploads/2012/08/VEC-vs-vector.jpg"><img title="VEC vs vector" src="http://coolshell.cn//wp-content/uploads/2012/08/VEC-vs-vector.jpg" alt="" width="542" height="343"></a></strong></p>
+
+
+<p><span style="color:#800000"><strong>结构套结构还是继承？</strong></span></p>
+
+
+<p style="padding-left:30px"><a href="http://coolshell.cn//wp-content/uploads/2012/08/tree-structure.jpg"><img title="tree-structure" src="http://coolshell.cn//wp-content/uploads/2012/08/tree-structure.jpg" alt="" width="629" height="550"></a></p>
+
+
+<p><span style="color:#800000"><strong>函数指针还是多态？</strong></span></p>
+
+
+<div style="padding-left:30px"><a href="http://coolshell.cn//wp-content/uploads/2012/08/TARGET-vs-Target.jpg"><img title="TARGET vs Target" src="http://coolshell.cn//wp-content/uploads/2012/08/TARGET-vs-Target.jpg" alt="" width="391" height="470"></a></div>
+
+
+<p><span style="color:#800000"><strong>垃圾回收 还是 智能指针？</strong></span></p>
+
+
+<div style="padding-left:30px"><a href="http://coolshell.cn//wp-content/uploads/2012/08/GC-vs-Smart-Pointer.jpg"><img title="GC vs Smart Pointer" src="http://coolshell.cn//wp-content/uploads/2012/08/GC-vs-Smart-Pointer.jpg" alt="" width="473" height="337"></a></div>
+
+
+<p><span style="color:#800000"><strong>Why not C++? </strong></span></p>
+
+
+<ul>
+<li><strong>C++慢吗</strong>？某些特性会慢，但是有时C++更快，你可以只用你喜欢的C++特性。</li>
+<li><strong>C++复杂吗？</strong>它只不过是另一种编程语言，他可以让你对程序员维护更简单。</li>
+<li><strong>FSF不喜欢C++！</strong>因为FSF（自由软件基金会）这些人不写代码。</li>
+</ul>
+
+
+<p><a href="http://coolshell.cn//wp-content/uploads/2012/08/Why-not-C++.jpg"><img title="Why not C++" src="http://coolshell.cn//wp-content/uploads/2012/08/Why-not-C++.jpg" alt="" width="478" height="418"></a></p>
+
+
+<div></div>
+
+
+<h4>Bootstrapping</h4>
+
+
+<p>最后，我想来介绍一下<a href="http://en.wikipedia.org/wiki/Bootstrapping_%28compilers%29">Bootstrapping</a>。 所谓Bootstrapping，就是用自己这个语言写编译器来编译自己，也就是说如果你要编译gcc，你需要用一个c的编译器来编译之，这个就是bootstrapped process，自举过程。包括 <a title="BASIC" href="http://en.wikipedia.org/wiki/BASIC">BASIC</a>, <a title="Algol" href="http://en.wikipedia.org/wiki/Algol">Algol</a>, <a title="C (programming language)" href="http://en.wikipedia.org/wiki/C_(programming_language)">C</a>, <a title="C++" href="http://en.wikipedia.org/wiki/C%2B%2B">C++</a>, <a title="Pascal programming language" href="http://en.wikipedia.org/wiki/Pascal_programming_language">Pascal</a>, <a title="PL/I" href="http://en.wikipedia.org/wiki/PL/I">PL/I</a>, <a title="Factor programming language" href="http://en.wikipedia.org/wiki/Factor_programming_language">Factor</a>, <a title="Haskell (programming language)" href="http://en.wikipedia.org/wiki/Haskell_(programming_language)">Haskell</a>, <a title="Modula-2" href="http://en.wikipedia.org/wiki/Modula-2">Modula-2</a>, <a title="Oberon programming language" href="http://en.wikipedia.org/wiki/Oberon_programming_language">Oberon</a>, <a title="OCaml" href="http://en.wikipedia.org/wiki/OCaml">OCaml</a>,<a title="Common Lisp" href="http://en.wikipedia.org/wiki/Common_Lisp">Common Lisp</a>, <a title="Scheme (programming language)" href="http://en.wikipedia.org/wiki/Scheme_(programming_language)">Scheme</a>, <a title="Java (programming language)" href="http://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>, <a title="Python (programming language)" href="http://en.wikipedia.org/wiki/Python_(programming_language)">Python</a>, <a title="Scala (programming language)" href="http://en.wikipedia.org/wiki/Scala_(programming_language)">Scala</a> 等语言都这么干。</p>
+
+
+<p>这样干的好处主要是，自己可以测试自己，编译器的改善和语言的改善相辅相成。</p>
+
+
+<p>但是，这是一个“鸡生蛋，还是蛋生鸡”的问题，如果你需要用X语言来写一个X语言编译器的语言，你可以这样干：</p>
+
+
+<ul>
+<li>用Y语言来实现X的语言解释器或编译器。 <a title="Niklaus Wirth" href="http://en.wikipedia.org/wiki/Niklaus_Wirth">Niklaus Wirth</a> 说 <a title="Pascal programming language" href="http://en.wikipedia.org/wiki/Pascal_programming_language">Pascal</a> 的第一个编译器是由 <a title="Fortran" href="http://en.wikipedia.org/wiki/Fortran">Fortran</a> 写的。</li>
+<li>已存在用Y语言写的X语言的编译器或解释器。<a title="Scheme (programming language)" href="http://en.wikipedia.org/wiki/Scheme_(programming_language)">Scheme</a> 就是这么干的。</li>
+<li>已经有一个编译器来编译一个早期版本的X语言，然后就可以用早期版本的X语言来编译新版本的X语言了。<a title="Java (programming language)" href="http://en.wikipedia.org/wiki/Java_(programming_language)">Java</a>，<a title="Haskell (programming language)" href="http://en.wikipedia.org/wiki/Haskell_(programming_language)">Haskell</a>, 和最初版的 <a title="Free Pascal" href="http://en.wikipedia.org/wiki/Free_Pascal">Free Pascal</a> 就是这么干的。</li>
+<li>X在某平台上的编译器已经存在，可以使用交叉编译技术来编译另一个平台上X语言，C语言就是这么干的。</li>
+<li>用X语言写一个编译器，然后手动编译之（不需要特别优化），（注：手动编译估计就是手动翻译成机器汇编代码），然后再运行这个手动编译的编译器来编译这个编译器的源码，并优化之。<a title="Donald Knuth" href="http://en.wikipedia.org/wiki/Donald_Knuth">Donald Knuth</a> 在他的 <a title="WEB" href="http://en.wikipedia.org/wiki/WEB">WEB</a> <a title="Literate programming" href="http://en.wikipedia.org/wiki/Literate_programming">literate programming</a> 系统里用到了这个方法。</li>
+</ul>
+
+
+<p>（全文完）<br>
+<hr height="1" width="100%">
+<div style="margin-top:15px;font-size:11px;color:#cc0000">
+<p align="center"><strong>（转载本站文章请注明作者和出处 <a href="http://coolshell.cn/">酷壳 – CoolShell.cn</a> ，请勿用于任何商业用途）</strong></p></div>
+<div style="text-align:center;padding:0px;font-size:11px;margin-bottom:50px">————————============ <b>感谢 <a href="http://42qu.com/">42qu.com</a> 为本站提供 <a href="http://vps.42qu.com/"> VPS</a></b> ============————————</div>
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="恐怖的C++语言" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1724.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2011/05/12/8508808.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">恐怖的C++语言</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="中国的C2C模式" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F3820.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2011/06/21/13630825.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">中国的C2C模式</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Why C++ ? 王者归来" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F6548.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2012/02/03/14687960.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Why C++ ? 王者归来</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="C++ 程序员自信心曲线图" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F2287.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/site_images/2011/06/21/13670426.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">C++ 程序员自信心曲线图</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="初学C#编程的注意事项" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect?url=http%3A%2F%2Fcoolshell.cn%2Farticles%2F1375.html&amp;from=http%3A%2F%2Fcoolshell.cn%2Farticles%2F8115.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.cn/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">初学C#编程的注意事项</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+<h3>相关文章</h3><ul><li>2012年07月13日 -- <a href="http://coolshell.cn/articles/7886.html">代码执行的效率</a></li><li>2011年06月13日 -- <a href="http://coolshell.cn/articles/4826.html">GNU/Linux下有多少是GNU的？</a></li><li>2011年05月04日 -- <a href="http://coolshell.cn/articles/4657.html">狗日的开源软件许可证</a></li><li>2009年05月11日 -- <a href="http://coolshell.cn/articles/799.html">电子书：编译器设计基础</a></li><li>2010年10月18日 -- <a href="http://coolshell.cn/articles/3192.html">一些非常不错的资料</a></li><li>2009年11月11日 -- <a href="http://coolshell.cn/articles/1724.html">恐怖的C++语言</a></li><li>2011年04月02日 -- <a href="http://coolshell.cn/articles/4170.html">我有一个Hello World的C++程序编译不过</a></li></ul></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

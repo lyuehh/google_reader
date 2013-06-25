@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>三谈iOS抓包：HTTPS抓包</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>三谈iOS抓包：HTTPS抓包</h2>
+<p class="meta">16 Aug 2012</p>
+
+<div class="post">
+<h2>三谈iOS抓包：HTTPS抓包</h2>
+
+<h3>by ytzong</h3>
+
+<h3>at 2012-08-15 23:29:54</h3>
+
+<h3>original <a href="http://www.99css.com/archives/1201">http://www.99css.com/archives/1201</a></h3>
+
+<ol>
+<li>确保安装的 fiddler 是最新的 beta 版本，安装地址 <a href="http://www.getfiddler.com/dl/Fiddler2BetaSetup.exe">http://www.getfiddler.com/dl/Fiddler2BetaSetup.exe</a></li>
+<li>关闭 fiddler</li>
+<li>下载并安装 fiddler 证书生成器 <a href="http://www.fiddler2.com/dl/FiddlerCertMaker.exe">http://www.fiddler2.com/dl/FiddlerCertMaker.exe</a> （注：fiddler 证书生成器只能在 Vista 以上系统运行）</li>
+<li>打开 fiddler，依次点击工具栏的 Tools – Fiddler Options…，切换到 HTTPS 选项卡，勾选 Capture HTTPS CONNECTs，勾选 Decrypt HTTPS trafic，之后会弹出安装证书的提示，一路点是或确定安装</li>
+<li>依然停留在 HTTPS 选项卡，在下拉菜单中选择 …from remote clients only，之后点击 Export Root Certificate to Desktop，此时证书会生成到桌面上，名为 FiddlerRoot.cer，点OK保存</li>
+<li>将上一步导出的 FiddlerRoot.cer 通过Email附件发送给自己绑定在iOS设备中的Email</li>
+<li>打开iOS设备的邮箱客户端，接收到刚才自己给自己发的邮件，点击附件进行证书的安装，也就是说，这一步将 fiddler 的证书安装在iOS设备中</li>
+<li>依照 <a href="http://www.99css.com/archives/974">再谈iOS抓包，使用Fiddler</a> 中的步骤配置 fiddler 及iOS的网络代理</li>
+<li>用 fiddler 进行抓包（若抓包不成功重启一下 fiddler 即可）</li>
+</ol>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

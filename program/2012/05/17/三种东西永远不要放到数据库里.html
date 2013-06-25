@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>三种东西永远不要放到数据库里</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>三种东西永远不要放到数据库里</h2>
+<p class="meta">17 May 2012</p>
+
+<div class="post">
+<h2>三种东西永远不要放到数据库里</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-05-16 22:12:06</h3>
+
+<h3>original <a href="http://simple-is-better.com/news/872">http://simple-is-better.com/news/872</a></h3>
+
+<p>
+    我已经在很多演讲里说过，改进你的系统的最好的方法是先避免做“蠢事”。我并不是说你或你开发的东西“蠢”，只是有些决定很容易被人们忽略掉其暗含的牵连，认识不到这样做对系统维护尤其是系统升级带来多大的麻烦。作为一个顾问，像这样的事情我到处都能见到，我还从来没有见过做出这样的决定的人有过好的结果的。</p>
+
+
+<h3>
+    图片，文件，二进制数据</h3>
+
+
+<p>
+    既然数据库支持BLOB类型的数据，把文件塞进BLOB字段里一定没有错了！？错，不是这样的！别的先不提，在很多数据库语言里，处理大字段都不是很容易。</p>
+
+
+<p>
+    把文件存放在数据库里有很多问题：</p>
+
+
+<ul>
+    <li>
+        对数据库的读/写的速度永远都赶不上文件系统处理的速度</li>
+    <li>
+        数据库备份变的巨大，越来越耗时间</li>
+    <li>
+        对文件的访问需要穿越你的应用层和数据库层</li>
+</ul>
+
+
+<p>
+    这后两个是真正的杀手。把图片缩略图存到数据库里？很好，那你就不能使用nginx或其它类型的轻量级服务器来处理它们了。</p>
+
+
+<p>
+    给自己行个方便吧，在数据库里只简单的存放一个磁盘上你的文件的相对路径，或者使用S3或CDN之类的服务。</p>
+
+
+<h3>
+    短生命期数据</h3>
+
+
+<p>
+    使用情况统计数据，测量数据，GPS定位数据，session数据，任何只是短时间内对你有用，或经常变化的数据。如果你发现自己正在使用定时任务从某个表里删除有效期只有一小时，一天或数周的数据，那说明你没有找对正确的做事情的方法。使用<a href="http://redis.io/">redis</a>， <a href="https://github.com/etsy/statsd">statsd</a>/<a href="http://graphite.wikidot.com/">graphite</a>， <a href="http://basho.com/products/riak-overview/">Riak</a>，它们都是干这种事情更合适的工具。这建议也适用于对于收集那些短生命期的数据。</p>
+
+
+<p>
+    当然，用挖土机在后花园里种土豆也是可行的，但相比起从储物间里拿出一把铲子，你预约一台挖土机、等它赶到你的园子里挖坑，这显然更慢。你要选择合适的工具来处理手头上的事。</p>
+
+
+<h3>
+    日志文件</h3>
+
+
+<p>
+    把日志数据存放到数据库里，表面上看起来似乎不错，而且“将来也许我需要对这些数据进行复杂的查询”，这样的话很得人心。这样做并不是一个<strong>特别差</strong>的做法，但如果你把日志数据和你的产品数据存放到一个数据库里就非常不好了。</p>
+
+
+<p>
+    也许你的日志记录做的很保守，每次web请求只产生一条日志。对于整个网站的每个事件来说，这仍然会产生大量的数据库插入操作，争夺你用户需要的数据库资源。如果你的日志级别设置为verbose或debug，那等着看你的数据库着火吧。</p>
+
+
+<p>
+    你应该使用一些比如<a href="http://splunk.com/">Splunk</a> <a href="http://loggly.com/">Loggly</a>或纯文本文件来存放你的日志数据。这样去查看它们也许会不方便，但这样的时候不多，甚至有时候你需要写出一些代码来分析出你想要的答案，但总的来说是值得的。</p>
+
+
+<p>
+    可是稍等一下，你是那片不一样的雪花，你遇到的问题会如此的不同，所以，如果你把上面提到的三种东西中的某一种放到了数据库里也不会有问题。<strong>不，你错了，不，你不特殊。</strong>相信我。 </p>
+
+
+<pre><code>                &lt;p&gt;# 来源：&lt;a href="http://aqee.feedsportal.com/c/34519/f/631690/s/1f58638b/l/0L0Saqee0Bnet0Cthree0Ethings0Eyou0Eshould0Enever0Eput0Ein0Eyour0Edatabase0C/story01.htm" title="三种东西永远不要放到数据库里"&gt;外刊IT评论&lt;/a&gt;&lt;/p&gt;
+                &lt;hr&gt;
+                &lt;p&gt;
+                    在微博上关注：
+                    &lt;a href="http://t.sina.com.cn/pythoncn"&gt;新浪&lt;/a&gt;,
+                    &lt;a href="http://t.qq.com/simple-is-better"&gt;腾讯&lt;/a&gt;
+                     
+                    &lt;a href="http://simple-is-better.com/tougao"&gt;投稿&lt;/a&gt;
+                &lt;/p&gt;
+                &lt;p&gt;&lt;strong&gt;最新招聘&lt;/strong&gt;&lt;/p&gt;
+                &lt;ul&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-334"&gt;[北京] python工程师,前端开发工程师,Linux 运维工程师（SA/DBA）&lt;/a&gt; - 知乎&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-333"&gt;[北京] Python 程序开发(Django, 待遇 8-15k+)&lt;/a&gt; - 易云捷讯&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-332"&gt;[上海] 上海Python/Django/Jquery兼职开发&lt;/a&gt; - 麦邻信息科技有限公司&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-330"&gt;[北京] Python开发工程师&lt;/a&gt; - 创新工场&lt;/li&gt;
+                    &lt;li&gt;&lt;a href="http://simple-is-better.com/jobs/detail-329"&gt;[北京] 高级Python开发工程师&lt;/a&gt; - 北京互联网广告公司&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;p&gt;&lt;a href="http://simple-is-better.com/jobs/"&gt;更多&amp;gt;&amp;gt;&lt;/a&gt;&lt;/p&gt;&lt;img src="http://www1.feedsky.com/t1/641915657/simple-is-better/feedsky/s.gif?r=http://simple-is-better.com/news/872" border="0" height="0" width="0"&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

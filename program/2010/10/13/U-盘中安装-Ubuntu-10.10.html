@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>U 盘中安装 Ubuntu 10.10</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>U 盘中安装 Ubuntu 10.10</h2>
+<p class="meta">13 Oct 2010</p>
+
+<div class="post">
+<h2>U 盘中安装 Ubuntu 10.10</h2>
+
+<h3>by Wow! Ubuntu / Ubuntu 及 Linux 新闻、技巧、软件及游戏！</h3>
+
+<h3>at 2010-10-13 15:30:20</h3>
+
+<h3>original <a href="http://wowubuntu.com/usb-ubuntu.html">http://wowubuntu.com/usb-ubuntu.html</a></h3>
+
+<p><a href="http://sr.ju690.cn/meme/item/86269">玩聚SR还知道：</a></p>
+
+<blockquote>
+<div style="background-color:#e1ecfe!important;width:auto">
+    <div>还有<a href="http://sr.ju690.cn/people/%E5%AD%A6%E5%BF%97@GoogleReader?i=15021" title="学志通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/clogo/4.png?v=690" border="0/"> 学志</a>, <a href="http://sr.ju690.cn/people/wilfredt@GoogleReader?i=14633" title="wilfredt通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/clogo/4.png?v=690" border="0/"> wilfredt</a>, <a href="http://sr.ju690.cn/people/Gowers@GoogleReader?i=5653" title="Gowers通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/clogo/4.png?v=690" border="0/"> Gowers</a>, 推荐，<a href="http://sr.ju690.cn/meme/item/86269"><b>查看全部 <big style="color:#ff7b7a;font-family:&#39;Georgia&#39;;font-size:16px">13</big> 个推荐 </b></a>
+    </div>
+</div></blockquote>
+
+
+
+
+<div style="margin:0;padding:10px 0"><a href="http://sr.ju690.cn/author/Wow%21%20Ubuntu%20/%20Ubuntu%20%E5%8F%8A%20Linux%20%E6%96%B0%E9%97%BB%E3%80%81%E6%8A%80%E5%B7%A7%E3%80%81%E8%BD%AF%E4%BB%B6%E5%8F%8A%E6%B8%B8%E6%88%8F%EF%BC%81"><b>Wow! Ubuntu / Ubuntu 及 Linux 新闻、技巧、软件及游戏！</b></a>发表于2010-10-13 15:30:20</div>
+
+
+<div style="margin:0;padding:5px 0"><p>这两天一直在尝试在 U 盘中安装 Ubuntu ，当然并非是 Live USB 方式，而是像安装在硬盘中一样把 Ubuntu 安装在 U 盘中。这样做的好处是在不会破坏硬盘上 Win 系统的同时，也能像使用硬盘中的系统一样正常安装和更新软件，同时也具备了便携性。</p>
+<p>在经过几次安装后及折腾后，终于试验成功，回过头来看一下，其实还是很简单的，与硬盘安装基本类似，主要需要注意的地方在于安装的时候要选择好把 Boot Loader 安装到 U 盘上而不是硬盘上，这样就不会破坏硬盘的 MBR 了。</p>
+<p>下面就简单的说一下。</p>
+<ol>
+<li>安装条件：我用了一块 16 G 的 U 盘， Ubuntu 安装后要占用 2 G 多的空间，加上 Swap 交换分区的话，4 G 的 U 盘是必须的。个人建议使用 8 G 或 16 G ，这样就有更多的空间来安装所需的软件了。另外，当然还需要一张 Ubntu 10.10 的安装盘， CD 或 USB Live 盘都可以。</li>
+<li>安装注意项：在安装的时候像正常在硬盘上安装 Ubntu 一样，从光盘或 USB Live 盘引导安装程序，当然 U 盘也要插在机器上。关键在于分区的时候要使用手动分区，然后在 Boot Loader 上选择安装到 U 盘，具体见下面的图。<br>
+<a href="http://wowubuntu.com/wp-content/uploads/2010/10/5076974493_495b7abc20_z.jpg"><img title="5076974493_495b7abc20_z" src="http://wowubuntu.com/wp-content/uploads/2010/10/5076974493_495b7abc20_z.jpg" alt="" width="512" height="384">
+<p></p></a><a href="http://wowubuntu.com/wp-content/uploads/2010/10/5076974307_a926347d1e_z.jpg"><img title="5076974307_a926347d1e_z" src="http://wowubuntu.com/wp-content/uploads/2010/10/5076974307_a926347d1e_z.jpg" alt="" width="512" height="384">
+<p></p></a></li>
+<li><a href="http://wowubuntu.com/wp-content/uploads/2010/10/5076974493_495b7abc20_z.jpg"></a>其它的就与硬盘安装一样一步步下去就可以了，安装完后可以在 BIOS 中设置通过 USB 设备来启动。这样机器就会调用 U 盘上的 GRUB boot loader 了，由于我的硬盘上安装的是 Win XP ，你可以从下图中看到，之前在安装 Ubuntu 的时候也把 Win XP 的启动项自动识别出并加入到了 GRUB boot loader 中。
+<p><a href="http://wowubuntu.com/wp-content/uploads/2010/10/5077655622_6ab5d3833f_z.jpg"><img title="5077655622_6ab5d3833f_z" src="http://wowubuntu.com/wp-content/uploads/2010/10/5077655622_6ab5d3833f_z.jpg" alt="" width="512" height="384"></a></p></li>
+</ol>
+<p>整个过程非常简单。当然，由于受到 U 盘 I/O 速度的限制，在 U 盘上使用 Ubuntu ，最主要是在安装软件包这种需要大量读取和写入磁盘操作的时候，整个系统会显得有点卡，其它的操作基本与在硬盘中使用无异。</p>
+# Twitter:<a href="http://twitter.com/ubuntu_tips">@ubuntu_tips</a> 
+/ <a href="https://www.google.com/profiles/wowubuntucom">Google Buzz</a>
+/ <a href="http://t.sina.com.cn/utips">新浪微博</a> 
+/ <a href="http://www.douban.com/group/wowubuntu/">豆瓣小组</a> 
+/ <a href="http://ask.wowubuntu.com/">问答区</a> 
+/ <a href="http://wiki.wowubuntu.com/">Wiki</a> 
+/ <a href="http://wowubuntu.com/submit">投稿</a> <br># 本站架设于 <a href="http://www.photonvps.com/billing/aff.php?aff=129">PhotonVPS</a> 之上，由 <a href="http://www.freebsd.org/">FreeBSD</a> 强力驱动。</div>
+
+
+
+
+<div style="padding-top:20px;border-top:1px solid #cbd9d9;padding-bottom:10px;FONT-SIZE:13px">
+<strong>推荐相关的热文: </strong><br> 
+    <div><img src="https://www.google.com/s2/favicons?domain=blog.zhaojie.me" border="0/"> <a title="Win7 + VirtualBox安装Mac OS X雪豹操作系统图文详解 | 20个推荐" href="http://sr.ju690.cn/meme/item/83907">Win7 + VirtualBox安装Mac OS X雪豹操作系统图文详解 | 20荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.cnbeta.com" border="0/"> <a title="眼见为实 首个GDrive的官方描述(图) | 13个推荐" href="http://sr.ju690.cn/meme/item/7291">眼见为实 首个GDrive的官方描述(图) | 13荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=wowubuntu.com" border="0/"> <a title="一键安装工具 Ninite 发布 Linux 版 | 5个推荐" href="http://sr.ju690.cn/meme/item/83585">一键安装工具 Ninite 发布 Linux 版 | 5荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.diglog.com" border="0/"> <a title="Google Friend增加新Social Bar及使用 | 6个推荐" href="http://sr.ju690.cn/meme/item/10002">Google Friend增加新Social Bar及使用 | 6荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=duanple.blog.163.com" border="0/"> <a title="【google论文一】面向星球的网络搜索：google集群架构 | 6个推荐" href="http://sr.ju690.cn/meme/item/84979">【google论文一】面向星球的网络搜索：google集群架构 | 6荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.vpsee.com" border="0/"> <a title="Bloglines 的技术选择和经验 | 4个推荐" href="http://sr.ju690.cn/meme/item/81613">Bloglines 的技术选择和经验 | 4荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=developers.solidot.org" border="0/"> <a title="Google称Chrome7将比Chrome6快60倍 | 9个推荐" href="http://sr.ju690.cn/meme/item/83038">Google称Chrome7将比Chrome6快60倍 | 9荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.appinn.com" border="0/"> <a title="Partition Wizard Home Edition - 免费磁盘分区管理软件 | 小众软件 &gt; 系统工具 | 11个推荐" href="http://sr.ju690.cn/meme/item/36317">Partition Wizard Home Edition - 免费磁盘分区管理.. | 11荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=linux.solidot.org" border="0/"> <a title="7款优秀的Linux磁盘分析软件 | 9个推荐" href="http://sr.ju690.cn/meme/item/83115">7款优秀的Linux磁盘分析软件 | 9荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.ifanr.com" border="0/"> <a title="HTC 将电脑的待机功能引入旗下 Android 手机 | 15个推荐" href="http://sr.ju690.cn/meme/item/83158">HTC 将电脑的待机功能引入旗下 Android 手机 | 15荐</a>
+    </div>
+</div>
+
+
+<div style="float:left;margin:2px 10px 2px 2px">
+<a href="http://sr.ju690.cn" title="玩聚SR"><img src="http://sr.ju690.cn/static/images/fish.jpg" border="0" width="80px"></a>
+</div>
+
+
+<div><a href="http://sr.ju690.cn/">The readings, filtered by social network!</a><br>阅读<a href="http://sr.ju690.cn/tag/tech">科技</a>频道热文。手机请登录<a href="http://sr.ju690.cn/m">移动版</a>。</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

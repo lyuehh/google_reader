@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>lua程序设计(4)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>lua程序设计(4)</h2>
+<p class="meta">05 Mar 2013</p>
+
+<div class="post">
+<h2>lua程序设计(4)</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2013-03-04 16:38:48</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/601174402013127102147934">http://snoopyxdy.blog.163.com/blog/static/601174402013127102147934</a></h3>
+
+<div>1、table的key是无顺序的，无法保证paris顺序<div><br></div><div>2、lua逐步读取大字符串的方法：</div><div>local t ={}</div><div>for line in io.lines() do </div><div> t[#t+1]  = line</div><div>end</div><div><span style="line-height:22px"> t[#t+1]  = &quot;&quot;</span></div><div>local s = table.concat(t, '\n')</div><div><br></div><div>以上代码速度是直接字符串拼接的数倍</div><div><br></div><div>3、string.format 字符串格式化</div><div>a = 'a "problem" \\string'</div><div>print(string.format(&quot;%q&quot;,a))    -- &quot;a \&quot;problem\&quot; \\string&quot;</div><div><br></div><div>4、让一个table使用默认字段</div><div>window = {}</div><div>window.prototype  = {x=0, y=0, width=100, height=100}</div><div>window.mt = {}</div><div>function <span style="line-height:22px">window.new</span><span style="line-height:22px">(o)</span></div><div><span style="white-space:pre">    </span>setmetatable(o, window.mt)</div><div><span style="white-space:pre">  </span>return o</div><div>end</div><div>window.mt.__index = function(table, key)</div><div><span style="white-space:pre">   </span>return window.prototype[key]</div><div>end</div><div> -- 这里也可以写为</div><div>-- <span style="line-height:22px">window.mt.__index = </span><span style="line-height:22px">window.prototype</span></div><div><br></div><div>w = window.new{x=10, y=20}</div><div>print(w.width)</div><div><br></div><div>5、更简单的默认值table</div><div><div style="line-height:22px">function setDefault(t ,d)</div><div style="line-height:22px"><span style="line-height:22px;white-space:pre">    </span>local mt = { __index = function() return d end}</div><div style="line-height:22px"><span style="line-height:22px;white-space:pre">   </span>setmetatable(t, mt)</div><div style="line-height:22px">end</div><div style="line-height:22px"><span style="line-height:22px"><br></span></div><div style="line-height:22px"><span style="line-height:22px">tab = {x=10, y=20}</span></div><div style="line-height:22px">print(tab.x, tab.z)</div><div style="line-height:22px">setDefault(tab, 0)</div><div style="line-height:22px"><span style="line-height:22px">print(tab.x, tab.z)</span></div></div><div style="line-height:22px"><span style="line-height:22px"><br></span></div><div style="line-height:22px">输出结果：</div><div><div>10<span style="white-space:pre">    </span>nil</div><div>10<span style="white-space:pre">   </span>0</div></div><div><br></div><div>6、设定只读table</div><div><div>function readOnly (t)</div><div><span style="white-space:pre"> </span>local proxy={}</div><div><span style="white-space:pre">  </span>local mt = {</div><div><span style="white-space:pre">        </span>__index = t,</div><div><span style="white-space:pre">        </span>__newindex = function (t, k, v)</div><div><span style="white-space:pre">         </span>error("attempt to update a read-only table", 2)</div><div><span style="white-space:pre">     </span>end</div><div><span style="white-space:pre"> </span>}</div><div><span style="white-space:pre">   </span>setmetatable(proxy,mt)</div><div><span style="white-space:pre">  </span>return proxy</div><div>end</div><div><br></div><div>local days = readOnly{1,2,3,4,5,6,7}</div><div>print(days[1])</div><div>days[2] = 0   --error</div><div>print(days[2])</div></div><div><br></div><div>7、全局环境lua使用_G这个table</div><div>for n in pairs(_G) do</div><div><span style="white-space:pre">   </span>print(n)</div><div>end</div><div><br></div><div>8、setfenv方法改变函数运行环境</div><div>setfenv 的第一个参数，1表示改变当前函数的运行环境，2表示修改调用该函数的函数运行环境，依次类推，可以为3,4,5等</div><div>a=1</div><div>setfenv(1, {})</div><div>print(a)  -- error改变了全局环境，导致代码出错了</div><div><br></div><div>9、lua的require模块函数，是不是似曾相识？对node中也是这样的</div><div><div><img title="lua程序设计(4) - snoopyxdy - snoopyxdy的博客" alt="lua程序设计(4) - snoopyxdy - snoopyxdy的博客" style="margin:0px 10px 0px 0px;width:500px;height:auto" src="http://img1.ph.126.net/zOkmRn87oh2r52ENZdWsjg==/6598286926028980531.png"></div> </div><div>先判断table缓存中是否有改模块，如果有则去package.loaded中返回，如果没有则去fidloader中拿模块。所以lua的模块加载和node是一样的，模块大小写敏感</div><div><br></div><div>10、moudle函数</div><div>moudle(..., seeall)</div><div>让模块可以访问全局变量</div><div><br></div><div>11、弱引用kv</div><div><div>    lua里用弱引用table(weak table)来实现这个机制</div><div>    3种弱引用table</div><div>        1.具有弱引用key的table</div><div>        2.具有弱引用value的table</div><div>        3.同时具有弱引用key和弱引用value的table</div><div>    无论是哪种类型的弱引用table，只要有一个key或value被回收了</div><div>    那么他们所在的整个条目都会从table中删除</div><div>    table的弱引用类型通过其元表中的__mode字段来决定，这个字段是一个字符串</div><div>       1.__mode字段中如果包含&quot;k&quot;则是key的弱引用</div><div>       2.__mode字段中如果包含&quot;v&quot;则是value的弱引用</div><div>       3.__mode字段中包含&quot;k&quot;和&quot;v&quot;则是key、value的弱引用</div><div>            a={}</div><div>            b={__mode=&quot;k&quot;}</div><div>            setmetatable(a,b)    --table a的key就是弱引用</div><div>            key={}               --创建第一个key </div><div>            a[key]=1</div><div>            key={}               --创建第二个key</div><div>            a[key]=2</div><div>            collectgarbage()     --强制进行一次垃圾收集 </div><div>            for k,v in pairs(a) do print(v) end</div><div>            --&gt; 2</div><div>    第二次key={}会覆盖第一个key，这时再没有对第一个key的引用了，所以会回收</div><div>    第二个key由于还被变量key引用，所以不会回收</div><div>    lua只会回收用弱引用table中的对象</div><div>    如果key是number、boolean、string则不会回收，所以上例中用table来当key</div><div>    可以使用弱引用table来实现缓存等机制，热数据不会被回收，不用的数据自动释放</div></div><div><br></div><div>对于弱引用v来说，下面这段代码可以说明问题</div><div><div><img title="lua程序设计(4) - snoopyxdy - snoopyxdy的博客" alt="lua程序设计(4) - snoopyxdy - snoopyxdy的博客" style="margin:0px 10px 0px 0px;width:500px;height:auto" src="http://img0.ph.126.net/FvJzw6kJ6uyvoq8alDPnIA==/2494994193581208010.jpg"></div> </div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

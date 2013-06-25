@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>15个编程好习惯</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>15个编程好习惯</h2>
+<p class="meta">24 Mar 2011</p>
+
+<div class="post">
+<h2>15个编程好习惯</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-03-23 16:00:01</h3>
+
+<h3>original <a href="http://news.cnblogs.com/n/95096/">http://news.cnblogs.com/n/95096/</a></h3>
+
+<p>　　编者按：这是国外程序员Al katib总结的一些编程习惯。</p>
+
+
+<p>　　1. 动手编码之前，你需要对要编码实现的解决方案有一个正式的或粗略的设计。永远不要在没有任何设计的前提下就开始编码，除非所编代码不重要。</p>
+
+
+<p>　　2. 优秀的代码文档跟编程语言知识一样重要。在代码源文件中，为每个主要的代码段添加注释，解释代码的基本逻辑。最好注明程序的构建和修改日期，以及修改的原因也是非常有必要的。</p>
+
+
+<p>　　3. 维护程序的各个版本同样重要。当前有些编程工具都自带一个版本管理工具。无论你什么时候改变自己的程序，它们都会将其保存为.bak文件。</p>
+
+
+<p>　　我的方法是为每个程序维护三个不同的版本。比如说，我有一个名为program.c的文件，这个文件同时也被其他项目组成员使用。我把这个文件复制为program.c.old作为备份文件，并且当我修改时，我会备份另一个名为program.c.wrk的副本文件。当成功完成修改时替换program.c.wrk文件。</p>
+
+
+<p>　　你还可以给自己的程序版本添加一个日期或一些注释，像program260505.c或programReadFnWrking.c。</p>
+
+
+<p>　　4. 如果工程包含多个源文件，则声称一个README文件，注明每个源文件、数据文件、临时文件以及日志文件(如果有的话)的作用。你还可以注明编译和运行步骤。</p>
+
+
+<p>　　5. 有时候，你一定想知道为什么IF语句没有得到预想的结果。可能你使用的是等号，也就是“=”，而不是条件判定符号“==”。一个比较好的办法是用相反的顺序写条件语句。因此，你的条件语句应该如下：</p>
+
+
+<p>　　if(10==i)…因此，如果你错误地写成了单个等于号，在编译的时候也能检查出来并报错。</p>
+
+
+<p>　　6. 使用循环和条件语句时，先把左右括号对应起来，然后再在里面写其他语句。也就是：</p>
+
+
+<p>　　代码:</p>
+
+
+<blockquote>
+<pre><strong>　　1</strong> for(int i=0;i&lt;10;i++)<p>　　<strong>2</strong> {</p><p>　　<strong>4</strong> printf(“i=%dn”,i);</p><p>　　<strong>3</strong> }</p></pre>
+</blockquote>
+
+
+<p>　　注：每一行开头的数字表明写循环代码的顺序。</p>
+
+
+<p>　　7. 避免使用幻数（magic numbers）。例如，不要写</p>
+
+
+<p>　　代码:</p>
+
+
+<blockquote>
+<pre>　　circleArea = 3.14 * pow(radius,2); </pre>
+</blockquote>
+
+
+<p>　　而要使用如下代码：</p>
+
+
+<p>　　代码:</p>
+
+
+<blockquote>
+<pre>　　#define PI 3.14<br>　　circleArea = PI * pow(radius,2);</pre>
+</blockquote>
+
+
+<p>　　8. 使用有意义的变量和函数名称。例如，使用‘radius’来代替圆的半径，而不是用‘r’来表示。同样，函数名‘calculateArea’要比其他任何隐晦的缩写要好得多。匆忙之下，我们也许会使用缩写的变量名，但一开始节省时间的话，之后会浪费更多的时间，去猜测缩写变量名代表什么。（编注：）</p>
+
+
+<p>　　9. 为后面的调试使用打印语句，这是个好习惯。但是，当完成最后代码后，去掉这些语句，有时也是一项危险的任务。添加一个方法，用于输出调试信息。当最终版本生成时，只要把这个方法注释掉就行。因此，只在一个地方做修改就可以了。</p>
+
+
+<p>　　10. 代码编写完之后，开始优化代码。之前声明的一些变量，现在可能没用了。同样，并不依赖循环的一些声明可以移到循环模块之外去。扎实的编译知识同样会对以后的代码优化有所帮助。</p>
+
+
+<p>　　11. 对自己的操作系统和硬件要有足够的了解，你可以从资源占用等方面提升程序的性能。</p>
+
+
+<p>　　12. 编写代码时要合理使用缩进，以使代码清晰可读。</p>
+
+
+<p>　　13. 把项目文件放到SOURCE、HEADERS、MAKE、EXES等不同的文件夹中。</p>
+
+
+<p>　　14. 研究别人编写的代码。这可以让你学习到新的编程技术，以及他们解决和你相同的任务时所使用的方法。</p>
+
+
+<p>　　15. 最后一条（但不是最不重要的一条)，备份源代码文件，这样当硬盘出错或相同的问题发生时，不至于前功尽弃。</p>
+
+
+<p>　　附加：补充一条，<strong>坚持使用一种命名模式。如果你打算用匈牙利命名法，那就坚持并广泛使用，否则将适得其反</strong>。这并不是编者的原话，原话见微软资深工程师 Eric Lippert 的这篇文章《<a href="http://www.jobbole.com/entry.php/438">阅读代码不简单</a>》。</p>
+
+
+<p>　　<strong>编者后话</strong></p>
+
+
+<p>　　编程的好习惯应不止这15条，也许您不认同上文中的某些观点，请标出相应序号，并说明其不足之处。另外，非常欢迎大家补充分享您的好习惯。</p>
+
+
+<p>　　译文出处：<a href="http://www.jobbole.com/">伯乐</a>在线- <a href="http://www.jobbole.com/blog.php">职场</a>博客<br> 　　译文链接：<a href="http://www.jobbole.com/entry.php/581">http://www.jobbole.com/entry.php/581</a></p>
+
+
+<p> 　　原文作者：<a rel="nofollow" href="http://37signals.com/svn/posts/2785-the-end-of-the-it-department">Al katib</a>　　　<a href="http://www.jobbole.com/showthread.php/3902">文章推荐</a>：关关　　翻译：<a href="http://www.jobbole.com/">伯乐</a>在线 <a href="http://www.jobbole.com/showthread.php/3546">敏捷翻译</a>组- <strong><a href="http://www.jobbole.com/member.php/954-%E6%9C%B1%E5%8B%87"><strong><strong>朱勇</strong></strong></a></strong></p>
+
+
+<p> 　　如需转载，但请注明原文/译文出处、译文超链接和译者等信息，否则视为侵权，谢谢合作</p>
+
+
+<p><br>　　本文链接：<a href="http://news.cnblogs.com/n/95096/">http://news.cnblogs.com/n/95096/</a></p>
+
+
+<p>　　相关新闻：<br>　　· <a href="http://news.cnblogs.com/n/94344/">我破解了那位程序员“最饿”的阴谋</a><span style="color:gray">(2011-03-17)</span><br>　　· <a href="http://news.cnblogs.com/n/92405/">漫画：21世纪编程</a><span style="color:gray">(2011-02-28)</span><br>　　· <a href="http://news.cnblogs.com/n/94156/">为什么程序员得到的报酬与他们的生产力不成正比</a><span style="color:gray">(2011-03-15)</span><br>　　· <a href="http://news.cnblogs.com/n/91908/">统计表明C++程序员最爱爆粗口</a><span style="color:gray">(2011-02-23)</span><br>　　· <a href="http://news.cnblogs.com/n/91707/">没事儿别优化！</a><span style="color:gray">(2011-02-22)</span><br></p>
+
+
+<p><img src="http://news.cnblogs.com/news/rssclick.aspx?id=95096" width="1" height="1" alt=""></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

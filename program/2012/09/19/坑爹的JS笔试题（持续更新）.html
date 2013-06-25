@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>坑爹的JS笔试题（持续更新）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>坑爹的JS笔试题（持续更新）</h2>
+<p class="meta">19 Sep 2012</p>
+
+<div class="post">
+<h2>坑爹的JS笔试题（持续更新）</h2>
+
+<h3>by snandy</h3>
+
+<h3>at 2012-09-18 16:10:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/snandy/archive/2012/09/18/2669960.html">http://www.cnblogs.com/snandy/archive/2012/09/18/2669960.html</a></h3>
+
+<p><strong>1，考察this</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var length = 10<br>function fn(){<br>alert(this.length)<br>}<br>var obj = {<br>length: 5,<br>method: function(fn) {<br>fn() // ?<br>arguments[0]() // ?<br>}<br>}<br>obj.method(fn)<br></div>
+
+
+<p>这里的坑主要是arguments，我们知道取对象属于除了点操作符还可以用中括号，这里fn的scope是arguments，即fn内的this===arguments，调用时仅传了一个参数fn，因此length为1。</p>
+
+
+<p> </p>
+
+
+<p><strong>2，函数表达式具名（函数声明同时赋值给另一个变量）或函数声明立即执行时，名仅在该函数内可访问</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">~function() {<br>alert(typeof next) // ?<br>~function next() {<br>alert(typeof next) // ?<br>}()<br>}()<br></div>
+
+
+<p>外层匿名函数自执行，打印next，接着内层具名函数自执行。会发现具名的next仅在其自身函数体内可访问，即输出为function。外面是不可见的，typeof就为undefined了。（<em>注：此题IE6/7/8中输出为function function， 标准浏览器为undefined function</em>）</p>
+
+
+<p>同样的情况也发生在将具名函数赋值给一个变量时，如下</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var func = function a() {<br>alert(typeof a)<br>}<br>func() // ?<br>alert(typeof a) // ?</div>
+
+
+<p>这条规则是标准中(ES3/ES5)都已明确指出，但IE6、7、8没有严格遵从。可参见<a href="http://w3help.org/zh-cn/causes/SJ9001">w3help</a>的分析或李松峰老师的翻译《<a href="http://www.cn-cuckoo.com/main/wp-content/uploads/2009/12/named-function-expressions-demystified.html">命名函数表达式探秘</a>》</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/114013/2012092512035369.png" alt=""></p>
+
+
+<p> </p>
+
+
+<p><strong>3，给基本类型数据添加属性，不报错，但取值时是undefined</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">a = 3<br>a.prop = 4<br>alert(a + a.prop) // ?<br></div>
+
+
+<p>变量a为数字3，给其添加prop属性，值为4（奇怪吧在JS中这是允许的，且不会有语法错误）。然后alert出a+a.prop的结果。结果是NaN。a.prop为undefined，3+undefined为NAN。</p>
+
+
+<p>举一反三，给字符串添加属性</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">str = 'a'<br>str.prop = 'b'<br>alert(str + str.prop) // ?<br></div>
+
+
+<p>结果呢？</p>
+
+
+<p> </p>
+
+
+<p><strong>4，隐式的全局变量</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var a = 1<br>function func() {<br>a = b = 2<br>}<br>func()<br>alert(a)<br>alert(b) // ?<br></div>
+
+
+<p> JS中不用var声明的变量默认是全局变量，而这里的连等使的情况更加隐蔽。这里的b是全局的，因此func外可以访问。</p>
+
+
+<p> </p>
+
+
+<p><strong>5，变量声明早于代码运行（<a href="http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting">Scoping and Hoisting</a>）</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var uname = 'jack'<br>function change() {<br>alert(uname) // ?<br>var uname = 'lily'<br>alert(uname)<br>}<br>change()<br></div>
+
+
+<p>这里容易犯迷糊的是第一个alert，如果认为函数change外已经声明赋值了，此时应该是jack，实际函数内又var了一次（虽然var在其后），预解析时仍然会将其置undefined。这也是为什么书里都建议变量声明都放在代码块的最前面。</p>
+
+
+<p> </p>
+
+
+<p><strong>6，函数声明<a href="http://www.cnblogs.com/snandy/archive/2012/03/01/2373237.html">早于</a>变量声明</strong></p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function change() {<br>alert(typeof fn) // ?<br>function fn() {<br>alert('hello')<br>}<br>var fn<br>}<br>change()<br></div>
+
+
+<p>change内先alert出fn，后函数声明，再变量声明。如果fn没有函数声明而仅是变量声明，那么结果与5一样是undefined。但这里却是function。即同一个作用域内，函数声明放在代码块后面和前面都没有关系，函数可以正常使用。而变量声明则需先置前，先使用则是undefined。</p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/snandy/aggbug/2669960.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2012/09/18/2669960.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

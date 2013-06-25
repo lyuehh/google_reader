@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>地图检索 – 与众不同</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>地图检索 – 与众不同</h2>
+<p class="meta">17 Nov 2011</p>
+
+<div class="post">
+<h2>地图检索 – 与众不同</h2>
+
+<h3>by editor</h3>
+
+<h3>at 2011-11-16 18:09:31</h3>
+
+<h3>original <a href="http://stblog.baidu-tech.com/?p=1136">http://stblog.baidu-tech.com/?p=1136</a></h3>
+
+<h3><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321437725.jpg&amp;type=image%2Fjpeg&amp;width=169&amp;height=172"></a>前言：</h3>
+
+
+<p>半年前，和师弟在一起吃饭时，他忽然抬头，很好奇地问我：“为什么有了百度的大检索，百度地图还要自己做检索呢？”这个问题也一直伴随着我，后来有幸转入检索方向，不断摸索，也才有了这篇文章。</p>
+
+
+<h3>正文：</h3>
+
+
+<p>地图检索，顾名思义，是在地图里的检索。它与大检索大同小异，虽然在切词粒度、专名识别、拉链归并和rank等很多细节上与大检索有一定差异，然而真正让他与众不同、独具风采的，是地图领域所特有的空间位置信息。</p>
+
+
+<p>在地图检索领域中，每条query都富含空间信息，每条数据也都有自己的空间位置。如何解析、利用这些空间信息，就成为了地图检索的特色主线。本文也就这个主题进行介绍，在章节安排上，参考一个普通query的检索过程，分为三大部分：query解析、查询与归并、rank。</p>
+
+
+<p><span></span></p>
+
+
+<h3>1. query解析中的位置信息</h3>
+
+
+<p>传统检索的query解析，主要功能是对query进行类型识别、分词、同义等处理，以便后续查询与rank。地图检索里的query解析，不仅包含了传统解析的功能，而且要从用户的query里去挖掘空间位置信息。</p>
+
+
+<p>为什么要这么做呢？举几个简单的例子：</p>
+
+
+<p style="padding-left:30px"><em>例1</em><em>：北京和上海都存在数据点“第一上海中心”，那么身在北京的用户A</em><em>和身在上海的用户B</em><em>，同时检索“第一上海中心”，结果是否需要有所不同呢？</em></p>
+
+
+<p style="padding-left:30px"><em>例2</em><em>：用户在地图中输入query</em><em>“中关村肯德基”，我们没有叫“中关村肯德基”的数据点，但却有许多位置在中关村附近的肯德基点，那么我们如何召回呢？</em></p>
+
+
+<p>这两个例子形象地描述了用户发起检索所包含的两种空间位置信息，以及我们为什么要去挖掘这些空间信息。</p>
+
+
+<p>首先，例1对应的是一次检索中所隐含的位置倾向信息。用户所在的城市（可用ip地址近似模拟或者无线设备定位）、用户输入query时的上下文场景（主要是底图所在城市）是两种比较直观的位置倾向信息；我们需要利用这两种数据来大致判定结果的位置倾向，以便提供更优秀的检索结果。相对来讲，这是一种粗粒度的位置信息。</p>
+
+
+<p>其次，例2对应的是query的子term中所明确包含的位置信息。地图query的特点在于，某些term是表示检索范围的（空间位置），某些term是表示文本实体的；“中关村肯德基”中，“中关村”表示检索范围，“肯德基”表示实体，这个query可以理解为用户想检索“在中关村附近的肯德基”，也就是在“中关村”附近检索“肯德基”。相对来讲，这是一种细粒度的位置信息。</p>
+
+
+<p>总而言之，地图的query解析需要去挖掘query中的隐含或明确的位置信息，从而真正理解用户的需求。</p>
+
+
+<h3>2. 查询与归并中的位置信息</h3>
+
+
+<p>经过query解析之后，query中的term被分为两种，一种表示空间，一种表示文本，如何利用这些term的属性，来召回最合适的数据，就成为另外一个问题。</p>
+
+
+<p>让我们来看看地图检索的查询归并与传统检索的不同：</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321437428.jpg&amp;type=image%2Fjpeg&amp;width=457&amp;height=277"><img title=" 普通检索与地图检索的查询归并对比" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=11321437428.jpg&amp;type=image%2Fjpeg&amp;width=457&amp;height=277" alt="" width="457" height="277"></a></p>
+
+
+<p>图1. 普通检索与地图检索的查询归并对比</p>
+
+
+<p>如图1所示，普通检索的查询归并结果，是“中关村”和“肯德基”文本查询集合的交集；而地图检索的查询归并结果，除了两者的文本交集之外，还包括“肯德基”的文本查询集合与“中关村”的空间范围的交集，而往往后者召回的比前者要多。</p>
+
+
+<p>也就是说，我们不仅要召回传统文本上的归并结果，也要从空间维度上去做归并，从而得到更多、更准确的召回。</p>
+
+
+<h3>3. rank中的位置信息</h3>
+
+
+<p>与传统检索展示文本列表不同，地图结果以图区加icon的形式，将结果非常形象地展现在底图上，而这也给地图检索的rank提出了新的需求：我们不能停留在文本相关度这一单一维度上，而是要给用户呈现准确而舒适的结果。</p>
+
+
+<p>那么这个舒适体现在什么地方呢？这里也举两个例子给大家看一下：</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321437550.jpg&amp;type=image%2Fjpeg&amp;width=178&amp;height=176"><img title="图2.a" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=21321437550.jpg&amp;type=image%2Fjpeg&amp;width=178&amp;height=176" alt="" width="178" height="176"></a> <a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321437725.jpg&amp;type=image%2Fjpeg&amp;width=169&amp;height=172"><img title="图2.b " src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=31321437725.jpg&amp;type=image%2Fjpeg&amp;width=169&amp;height=172" alt="" width="169" height="172"></a> <a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=41321437792.jpg&amp;type=image%2Fjpeg&amp;width=177&amp;height=178"><img title="图2.c" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=41321437792.jpg&amp;type=image%2Fjpeg&amp;width=177&amp;height=178" alt="" width="177" height="178"></a></p>
+
+
+<p>图2.a                                                图2.b                                                   图2.c</p>
+
+
+<p>北京市下检索“清华大学”，如果在海淀区和朝阳区都有清华大学相关的数据，那么可以有三种结果展现形式，如图2.a – 2.c所示。图2.a是普通的未经空间调权的rank结果，图区拉得很大，右下角的结果对90%以上的用户都是噪声，显示效果不够友好；图2.b则是经过空间调权后的rank结果，视野集中在“清华大学”主点附近，效果要优于图2.a，但是这同样给出了一大堆相关结果列表，也会干扰用户；图2.c则是经过空间内聚形成的结果，精确命中“清华大学”主点，图区大小合适，显示效果最好。</p>
+
+
+<p>这个例子展示了如何利用结果的位置信息来提升体验，下面再给大家介绍一下用户的位置信息的利用：</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=51321437916.jpg&amp;type=image%2Fjpeg&amp;width=243&amp;height=234"><img title="5" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=51321437916.jpg&amp;type=image%2Fjpeg&amp;width=243&amp;height=234" alt="" width="243" height="234"></a> <a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=61321437952.jpg&amp;type=image%2Fjpeg&amp;width=231&amp;height=237"><img title="6" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=61321437952.jpg&amp;type=image%2Fjpeg&amp;width=231&amp;height=237" alt="" width="231" height="237"></a></p>
+
+
+<div>
+<p>图3.a                                                                         图3.b</p>
+<p>当用户检索生活类泛需求词时，那么用户所在位置信息就显得至关重要。如图3所示，用户如果在百度大厦用移动设备检索“餐馆”，图3.a是未经空间距离调权的结果，显得比较杂乱；图3.b则是以用户所在地为中心点，进行距离调权后的结果，则显得更紧凑，优先级更直观。</p>
+<p>由此可见，地图检索的rank仅仅考虑文本相关性是不够的，还需要考虑空间位置信息，包括query和检索结果的位置信息，也包括用户的位置信息。只有充分运用好这些位置信息，才能给用户更准确、更舒适的结果。</p>
+<p>介绍到这里，相信大家已经对地图检索里的空间信息有了直观的认识。事物总有正反两面，空间位置信息的引入虽然使得地图检索充满魅力，但也成为了地图检索的重点与难点。如何有效地利用这些信息，使其与传统的文本相关性、实体重要性等因素相互作用、形成合力，是一个需要我们不断去征服的高峰。</p>
+<p style="text-align:right">by  liyang</p>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

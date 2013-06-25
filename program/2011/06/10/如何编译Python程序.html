@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>如何编译Python程序</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>如何编译Python程序</h2>
+<p class="meta">10 Jun 2011</p>
+
+<div class="post">
+<h2>如何编译Python程序</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-06-09 18:44:35</h3>
+
+<h3>original <a href="http://deepfuture.iteye.com/blog/1074518">http://deepfuture.iteye.com/blog/1074518</a></h3>
+
+<p>py源代码编译pyc 什么是pyc文件<br>pyc是一种二进制文件，是由py文件经过编译后，生成的文件，是一种byte code，py文件变成pyc文件后，加载的速度有所提高，而且pyc是一种跨平台的字节码，是由python的虚拟机来执行的，这个是类似于JAVA或者.NET的虚拟机的概念。pyc的内容，是跟python的版本相关的，不同版本编译后的pyc文件是不同的，2.5编译的pyc文件，2.4版本的 python是无法执行的。</p>
+
+
+<p>什么是pyo文件<br>pyo是优化编译后的程序 python -O 源文件即可将源程序编译为pyo文件 </p>
+
+
+<p><br>什么是pyd文件<br>pyo是python的动态链接库。</p>
+
+
+<p><br>为什么需要pyc文件<br>这个需求太明显了，因为py文件是可以直接看到源码的，如果你是开发商业软件的话，不可能把源码也泄漏出去吧？所以就需要编译为pyc后，再发布出去。当然，pyc文件也是可以反编译的，不同版本编译后的pyc文件是不同的，根据python源码中提供的opcode，可以根据pyc文件反编译出 py文件源码，网上可以找到一个反编译python2.3版本的pyc文件的工具，不过该工具从python2.4开始就要收费了，如果需要反编译出新版本的pyc文件的话，就需要自己动手了（俺暂时还没这能力^--^）,不过你可以自己修改python的源代码中的opcode文件，重新编译 python，从而防止不法分子的破解。</p>
+
+
+<p>生成单个pyc文件<br>python就是个好东西，它提供了内置的类库来实现把py文件编译为pyc文件，这个模块就是 py_compile 模块。</p>
+
+
+<p>使用方法非常简单，如下所示，直接在idle中，就可以把一个py文件编译为pyc文件了。(假设在windows环境下)</p>
+
+
+<p> </p>
+
+
+<p>import py_compile</p>
+
+
+<p>py_compile.compile(r'H:\game\test.py')</p>
+
+
+<p> </p>
+
+
+<p>compile函数原型：</p>
+
+
+<p>compile(file[, cfile[, dfile[, doraise]]])</p>
+
+
+<p>file 表示需要编译的py文件的路径</p>
+
+
+<p>cfile 表示编译后的pyc文件名称和路径，默认为直接在file文件名后加c 或者 o，o表示优化的字节码</p>
+
+
+<p>dfile 这个参数英文看不明白，请各位大大赐教。(鄙视下自己)原文：it is used as the name of the source file in error messages instead of file</p>
+
+
+<p>doraise 可以是两个值，True或者False，如果为True，则会引发一个PyCompileError，否则如果编译文件出错，则会有一个错误，默认显示在sys.stderr中，而不会引发异常</p>
+
+
+<p>(来自python2.5文档)</p>
+
+
+<p>批量生成pyc文件<br>一般来说，我们的工程都是在一个目录下的，一般不会说仅仅编译一个py文件而已，而是需要把整个文件夹下的py文件都编译为pyc文件，python又为了我们提供了另一个模块：compileall 。使用方法如下：</p>
+
+
+<p> </p>
+
+
+<p>import compileall</p>
+
+
+<p>compileall.compile_dir(r'H:\game')</p>
+
+
+<p><br>这样就把game目录，以及其子目录下的py文件编译为pyc文件了。嘿嘿，够方便吧。来看下compile_dir函数的说明：</p>
+
+
+<p> </p>
+
+
+<p>compile_dir(dir[, maxlevels[, ddir[, force[, rx[, quiet]]]]])</p>
+
+
+<p>dir 表示需要编译的文件夹位置</p>
+
+
+<p>maxlevels 表示需要递归编译的子目录的层数，默认是10层，即默认会把10层子目录中的py文件编译为pyc</p>
+
+
+<p>ddir 英文没明白，原文：it is used as the base path from which the filenames used in error messages will be generated。</p>
+
+
+<p>force 如果为True，则会强制编译为pyc，即使现在的pyc文件是最新的，还会强制编译一次，pyc文件中包含有时间戳，python编译器会根据时间来决定，是否需要重新生成一次pyc文件</p>
+
+
+<p>rx 表示一个正则表达式，比如可以排除掉不想要的目录，或者只有符合条件的目录才进行编译</p>
+
+
+<p>quiet 如果为True，则编译后，不会在标准输出中，打印出信息</p>
+
+
+<p>(来自python2.5文档)</p>
+
+
+<p> </p>
+
+
+<p>总结<br>通过上面的方法，可以方便的把py文件编译为pyc文件了，从而可以实现部分的源码隐藏，保证了python做商业化软件时，保证了部分的安全性吧，继续学习下，看怎么修改opcode。<br> </p>
+
+
+<p> <br> <br> 原文地址 <a href="http://blog.csdn.net/sislcb/archive/2009/03/18/4002414.aspx">http://blog.csdn.net/sislcb/archive/2009/03/18/4002414.aspx</a>  <br> <br>py源代码编译pyc 什么是pyc文件<br>pyc是一种二进制文件，是由py文件经过编译后，生成的文件，是一种byte code，py文件变成pyc文件后，加载的速度有所提高，而且pyc是一种跨平台的字节码，是由python的虚拟机来执行的，这个是类似于JAVA或者.NET的虚拟机的概念。pyc的内容，是跟python的版本相关的，不同版本编译后的pyc文件是不同的，2.5编译的pyc文件，2.4版本的 python是无法执行的。</p>
+
+
+<p>什么是pyo文件<br>pyo是优化编译后的程序 python -O 源文件即可将源程序编译为pyo文件 </p>
+
+
+<p><br>什么是pyd文件<br>pyo是python的动态链接库。</p>
+
+
+<p><br>为什么需要pyc文件<br>这个需求太明显了，因为py文件是可以直接看到源码的，如果你是开发商业软件的话，不可能把源码也泄漏出去吧？所以就需要编译为pyc后，再发布出去。当然，pyc文件也是可以反编译的，不同版本编译后的pyc文件是不同的，根据python源码中提供的opcode，可以根据pyc文件反编译出 py文件源码，网上可以找到一个反编译python2.3版本的pyc文件的工具，不过该工具从python2.4开始就要收费了，如果需要反编译出新版本的pyc文件的话，就需要自己动手了（俺暂时还没这能力^--^）,不过你可以自己修改python的源代码中的opcode文件，重新编译 python，从而防止不法分子的破解。</p>
+
+
+<p>生成单个pyc文件<br>python就是个好东西，它提供了内置的类库来实现把py文件编译为pyc文件，这个模块就是 py_compile 模块。</p>
+
+
+<p>使用方法非常简单，如下所示，直接在idle中，就可以把一个py文件编译为pyc文件了。(假设在windows环境下)</p>
+
+
+<p> </p>
+
+
+<p>import py_compile</p>
+
+
+<p>py_compile.compile(r'H:\game\test.py')</p>
+
+
+<p> </p>
+
+
+<p>compile函数原型：</p>
+
+
+<p>compile(file[, cfile[, dfile[, doraise]]])</p>
+
+
+<p>file 表示需要编译的py文件的路径</p>
+
+
+<p>cfile 表示编译后的pyc文件名称和路径，默认为直接在file文件名后加c 或者 o，o表示优化的字节码</p>
+
+
+<p>dfile 这个参数英文看不明白，请各位大大赐教。(鄙视下自己)原文：it is used as the name of the source file in error messages instead of file</p>
+
+
+<p>doraise 可以是两个值，True或者False，如果为True，则会引发一个PyCompileError，否则如果编译文件出错，则会有一个错误，默认显示在sys.stderr中，而不会引发异常</p>
+
+
+<p>(来自python2.5文档)</p>
+
+
+<p>批量生成pyc文件<br>一般来说，我们的工程都是在一个目录下的，一般不会说仅仅编译一个py文件而已，而是需要把整个文件夹下的py文件都编译为pyc文件，python又为了我们提供了另一个模块：compileall 。使用方法如下：</p>
+
+
+<p> </p>
+
+
+<p>import compileall</p>
+
+
+<p>compileall.compile_dir(r'H:\game')</p>
+
+
+<p><br>这样就把game目录，以及其子目录下的py文件编译为pyc文件了。嘿嘿，够方便吧。来看下compile_dir函数的说明：</p>
+
+
+<p> </p>
+
+
+<p>compile_dir(dir[, maxlevels[, ddir[, force[, rx[, quiet]]]]])</p>
+
+
+<p>dir 表示需要编译的文件夹位置</p>
+
+
+<p>maxlevels 表示需要递归编译的子目录的层数，默认是10层，即默认会把10层子目录中的py文件编译为pyc</p>
+
+
+<p>ddir 英文没明白，原文：it is used as the base path from which the filenames used in error messages will be generated。</p>
+
+
+<p>force 如果为True，则会强制编译为pyc，即使现在的pyc文件是最新的，还会强制编译一次，pyc文件中包含有时间戳，python编译器会根据时间来决定，是否需要重新生成一次pyc文件</p>
+
+
+<p>rx 表示一个正则表达式，比如可以排除掉不想要的目录，或者只有符合条件的目录才进行编译</p>
+
+
+<p>quiet 如果为True，则编译后，不会在标准输出中，打印出信息</p>
+
+
+<p>(来自python2.5文档)</p>
+
+
+<p> </p>
+
+
+<p>总结<br>通过上面的方法，可以方便的把py文件编译为pyc文件了，从而可以实现部分的源码隐藏，保证了python做商业化软件时，保证了部分的安全性吧，继续学习下，看怎么修改opcode。<br> </p>
+
+
+<p> <br> <br> 原文地址 <a href="http://blog.csdn.net/sislcb/archive/2009/03/18/4002414.aspx">http://blog.csdn.net/sislcb/archive/2009/03/18/4002414.aspx</a>  <br> </p>
+
+
+<p><br>========================</p>
+
+
+<p> </p>
+
+
+<p>如何编译Python程序（或者如何由Python生成可执行文件）是一个非常常见的问题，总是有人问，列出来，google搜索的时候就可以看到了。如果还有人说"找不到相关资料"，唯一的解释就是这个人太懒了，根本没有去找。</p>
+
+
+<p>如果转载，请注明作者是牡蛎，出自<a href="http://blender.blogchina.com/523381.html">http://blender.blogchina.com/523381.html</a>。</p>
+
+
+<p> </p>
+
+
+<p>   0. Python（及其它高级的脚本语言）不存在把指令编译到本地代码的工具，但是总是可以发布可执行文件。</p>
+
+
+<p>　 </p>
+
+
+<p>py2exe     <a href="http://py2exe.sf.net">http://py2exe.sf.net</a><br>只支持windows平台，应该是大家听到最多的一个名字了，用户不少，所以有问题的话在它的mail list里面很容易找到答案。文档中提到了"无法找到某某code"、使用opengl等模块的问题 <br>　</p>
+
+
+<p>PyPackage    <a href="http://codereactor.net/projects/pypack/index.html">http://codereactor.net/projects/pypack/index.html</a><br>我觉得py2exe等等工具还是罗嗦得像唐僧，需要在配置文件中写上需要的数据文件。作者完全无视这样一个事实：我需要发布可执行文件的时候，程序已经完工了，所有的数据文件就在主程序所在目录下，所以多数情况下，根本不用到别的地方搜索。现在终于有人站了出来，PyPackage实际上并不是一个程序打包的工具，而只是简化py2exe的操作，甚至可以自动调用InnoSetup 5制作安装文件——不过这个软件并不智能，会打包很多不需要的文件 <br>　</p>
+
+
+<p>Installer     <a href="http://www.mcmillan-inc.com/installer_dnld.html">http://www.mcmillan-inc.com/installer_dnld.html</a><br>可以产生windows、linux平台的可执行文件，现在作者主页连不上去了，但是搜索一下可以在其它地方下载<br>自带一个小程序写配置文件，如果程序较复杂，还是需要手工修改这个配置文件。支持从py15以来的所有Python版本<br>2005年9月，冰冻牡蛎更新：Giovanni Bajo获得Gordon McMillan's Installer的授权、版权改变为GPL，并在<a href="http://pyinstaller.hpcf.upr.edu/">http://pyinstaller.hpcf.upr.edu/</a>继续开发PYinstaller。2006年9月更新：这里可以看到Gordon McMillan's的原始网站的镜像 <br>　</p>
+
+
+<p>Python自带的freeze.py（不过windows版本不带这个，你可以自己下载Python的源程序再找）。这个是我最不推荐的一种方法（为什么？自己看），不过如果你的Python程序要发布到其它工具不支持的平台上，可以考虑这个方法 <br>　</p>
+
+
+<p>新出来的Pyco    <a href="http://www.pythonapocrypha.com/projects/pyco/">http://www.pythonapocrypha.com/projects/pyco/</a><br>还没用过 <br>　</p>
+
+
+<p>Squeeze    <a href="http://starship.python.net/crew/fredrik/ipa/squeeze.htm">http://starship.python.net/crew/fredrik/ipa/squeeze.htm</a><br>还没用过，只支持Python 1.4 <br>　</p>
+
+
+<p>cx_Freeze  <a href="http://starship.python.net/crew/atuining/cx_Freeze/">http://starship.python.net/crew/atuining/cx_Freeze/</a><br>winodws、linux平台。简单的程序甚至都不需要写配置文件 <br>　</p>
+
+
+<p>Stand alone Python for Windows <a href="http://arctrix.com/nas/python/standalone.html">http://arctrix.com/nas/python/standalone.html</a><br>如果你不介意源程序太过"暴露"的话，用这个吧<br>会不会觉得Updated: Sun, 09 Apr 2000 18:39:54 -0600 扎眼？如果你看一看它的VC源代码，就不会这么想了——其实这是普遍适用于ｗｉｎ系统的方法，无论是９８、２０００或者ｘｐ。也许也可以用到ｌｉｎｕｘ上——我不懂ｌｉｎｕｘ，如果真的可以这么做，还请告诉我。 <br>　</p>
+
+
+<p>py2app    <a href="http://undefined.org/python/">http://undefined.org/python/</a><br>支持linux平台的工具可能也支持mac os，或者直接使用这个py2app。具体就不知道了，只吃过苹果，还没玩过苹果呢 <br>　</p>
+
+
+<p>Movable Python  <a href="http://www.voidspace.org.uk/python/movpy/">http://www.voidspace.org.uk/python/movpy/</a><br>这个其实是使用py2exe制作的、可以放在U盘上的绿色Python。有使用py2app制作苹果版movpy和用cx_Freeze制作Linux版movpy的计划。懒到都不愿意学习py2exe、py2app或者cx_Freeze的人可以看看。 <br>　</p>
+
+
+<p>Shed Skin - A Python-to-C++ Compiler： 试验项目，windows上，连他的例子我都没有编译成功 :(。 <br>　</p>
+
+
+<p>Psyco： 给Python程序加速的东西，看不出对发布Python程序的直接好处，并且作者以后将致力于PyPy。 <br>　</p>
+
+
+<p>PyPy： 项目目标是纯Python实现的Python、速度比CPython快，将来可以帮助实现编译Python。 <br>　</p>
+
+
+<p>pyc： Python compiler in Python，一个用纯Python写的Python的bytecode编译器，可以优化输出的pyc文件。和PyPy一样，现在还看不出对发布Python程序的直接好处。只有py24的bytecode。pyc是pyvm这个新的python虚拟机的一部分。 <br>　</p>
+
+
+<p>Jungle： 使用GNU工具（as、ld和winres）把Python程序编译到windows的exe可执行文件。该可执行文件只使用基于python24的的pythonic.dll。猜测它支持的模块仅限于内部模块以及jungle.jgl列出的模块。只有可执行文件下载，而这个可执行文件也是用Jungle自己编译的。目前版本号都到1.10了，经常看0.xx的版本号，这个数字好大啊，娃哈哈。 <br>　</p>
+
+
+<p>另类的方法，对Python语言特性都还不是100％支持，众多的CPython模块也不可以使用，还有，我也没有试过：</p>
+
+
+<p>for .NET的Python编译器（如Visual Python、IronPython），不过我可不喜欢为了一个芝麻大的软件安装.NET framework</p>
+
+
+<p>用jython，然后用jbuilder、jsmooth、NativeJ之类的包裹一下，或者用gcj编译成本地代码 <br>　</p>
+
+
+<p>2006年11月26日，近来有些人问，如何保护python开发的商业软件/闭源软件。</p>
+
+
+<p>我的观点是，纯Python程序，又不想用C语言（其实C语言程序也可以破解，所以最好的方法就是不发布任何程序，嘿嘿），可以试试pyobfuscate混淆源代码，增加可能被反编译获得的源代码的阅读难度。不过pyobfuscate也好久没有更新了，娃哈哈。而实际上，没必要考虑别人会获得源代码的问题。 考虑（尤其是在自己的程序还没有写出来的时候）别人会反编译自己的Python程序，有点杞人忧天。</p>
+
+
+<p>在*nix下的话，似乎可以（我不用*nix，并不确定）使用Python自带的freeze.py，把源程序的字节码转换成C程序，然后使用GCC编译，这样应该看不到字节码了。在windows下，不知道怎么使用freeze.py，总报错——谁知道的话告诉我吧。但是如果想实现跨平台，使用freeze.py的方法似乎不可取。</p>
+
+
+<p><br>首先我相信，目前没有软件可以很好反编译Python 2.4及之后的版本生成的字节码，所以采用新版本Python“编译”到可执行文件，是安全的。</p>
+
+
+<p>其次，据我所知，目前最成熟的反编译软件只有decompyle。而不是象某些人为了夸大问题的重要性，而口吐莲花所说的“现在有很多Python的反编译软件”。而我不相信有人愿意花钱买这个“唯一的且很多的”反编译软件，理由有二</p>
+
+
+<p>看看decompyle页面更新日期，是2004年。我猜测作者把这个软件商业化之后并不成功，并没有太多人需要反编译自己或者他人的Python程序。导致作者没有足够的收入或者兴趣继续完善了</p>
+
+
+<p>有人愿意花钱去反编译一个还不存在地软件，或者一个不出名的程序？</p>
+
+
+<p> </p>
+
+
+<p>次成熟的反编译软件是decompiler.py。但是它比商业软件decompyle差远了。我没有去做试验，是他自己的主页承认说有很多局限的。</p>
+
+
+<p>最后，真诚请教那些有“很多”Python反编译程序的高手，两个问题：</p>
+
+
+<p>subsystem.htm<br>这是将数独游戏和消除游戏结合起来的益智游戏，未注册的话，只能累积玩60分钟。这是Python+pygame制作的软件，使用py2exe发布，可否麻烦高手——别怕，我不要它的源程序——看看它的注册部分，整个注册机/注册码出来？</p>
+
+
+<p>wingide<br>这个有名的Python商业ide，我不确定它是不是使用py2exe制作的，而且它的规模比较大。我对它的源代码有点兴趣，有人说看不到它的源代码，但是我觉得\bin\2.4\src.zip里面的一堆pyo，是如假包换的源代码的字节码，如果真是如此，麻烦高手在空余时间，反编译一份喽。</p>
+
+
+<p> </p>
+
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://deepfuture.iteye.com/blog/1074518#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://deepfuture.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

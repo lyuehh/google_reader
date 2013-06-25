@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>android 游戏导引(1. 建立 OpenGL 项目)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>android 游戏导引(1. 建立 OpenGL 项目)</h2>
+<p class="meta">01 Jan 2011</p>
+
+<div class="post">
+<h2>android 游戏导引(1. 建立 OpenGL 项目)</h2>
+
+<h3>by 圣斗士</h3>
+
+<h3>at 2010-12-31 23:53:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/shengdoushi/archive/2010/12/31/1923570.html">http://www.cnblogs.com/shengdoushi/archive/2010/12/31/1923570.html</a></h3>
+
+<p>
+
+
+<div>
+<h1>android 游戏导引(1. 建立 OpenGL 项目)</h1>
+<div>
+<h2>Table of Contents</h2>
+<div> 
+<ul>
+<li><a href="http://www.cnblogs.com/rss#sec-1">1 搭建环境 </a></li>
+<li><a href="http://www.cnblogs.com/rss#sec-2">2 创建一个 android 项目 </a></li>
+<li><a href="http://www.cnblogs.com/rss#sec-3">3 建立 OpenGL 程序框架 </a></li>
+</ul>
+</div>
+</div>
+<div>
+<h2><span>1</span> 搭建环境 </h2>
+<div>
+<p>我的环境是 mac， 鉴于 windows 下搭建的教程网上很多，大家可以 google 之。说一下 mac 下的环境搭建过程。
+</p>
+<ol>
+<li> 
+下载 mac 版本的 android SDK。天朝墙很坚固，贴下 2.3 下载地址，可以用超强盗链功能的迅雷下载。
+ 
+<table border="2" cellspacing="0" cellpadding="6">
+<caption><td><br></td></caption> 
+<colgroup><col align="left"><col align="left"><col align="left"><col align="left"> 
+</colgroup> 
+<tbody>
+<tr>
+<td>Platform</td>
+<td>Package</td>
+<td>Size</td>
+<td>MD5 Checksum</td>
+</tr>
+<tr>
+<td>Mac OS X (intel)</td>
+<td><a href="http://dl.google.com/android/android-sdk_r08-mac_86.zip">android-sdk_r08-mac_86.zip</a></td>
+<td>28797617 bytes</td>
+<td>d2e392c4e4680cbf2dfd6dbf82b662c7</td>
+</tr>
+<tr>
+<td>Linux (i386)</td>
+<td><a href="http://dl.google.com/android/android-sdk_r08-linux_86.tgz">android-sdk_r08-linux_86.tgz</a></td>
+<td>26817291 bytes</td>
+<td>3b626645b223d137d27beefbda0c94bc</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li> 
+解压文件。点击 tool 目录下的 android 文件。选择要下载的相应版本的 SDK， 文档，工具等。
+ 
+</li>
+<li> 
+android 要求 jdk 版本大于 1.5, mac os x上预装的是 1.6 的版本。(java -version查看)。所以不必再下 jdk 了(想下官网也没提供mac版本)。
+ 
+</li>
+<li> 
+下载 Eclipse, 版本是 for Java Developers 的就可以。解压到某个文件夹下，直接运行其中的eclipse 就使用。
+ 
+</li>
+<li> 
+安装 adt。 Eclipse 的  Help菜单下的 Install new Software…. 点击 add 按钮， 在弹出的对话框 Location 中，输入 <a href="http://dl-ssl.google.com/android/eclipse/">http://dl-ssl.google.com/android/eclipse/</a>, OK, 省略。。。
+ 
+</li>
+<li> 
+配置 Eclipse 的android 环境。重启 Eclipse, 点击Eclipse 菜单下的 Preferences, 打开设置界面。找到android 项， 设置好 android sdk 目录，点 apply, 会显示你所有的 sdk 版本。OK。
+ 
+</li>
+<li> 
+建立一个 avd。 打开 Eclipse 的 Windows 菜单下的 "Android SDK and AVD"，创建好一个 avd。就正式配置成功了。
+ 
+</li>
+</ol>      <img src="http://pic002.cnblogs.com/images/2010/110976/2010123123501311.png" alt=""></div>
+</div>
+<div>
+<h2><span>2</span> 创建一个 android 项目 </h2>
+<div>
+<p>&quot;File&quot; -&gt; &quot;New&quot;-&gt; &quot;Project&quot;: 选择 android 工程: </p>
+<p><img src="http://pic002.cnblogs.com/images/2010/110976/2010123123430614.png" alt=""></p>
+<p> 
+设置好项目的信息和sdk版本: </p>
+<p><img src="http://pic002.cnblogs.com/images/2010/110976/2010123123432527.png" alt=""></p>
+<p> 
+好了一个项目就创建完了。
+</p>
+</div>
+</div>
+<div>
+<h2><span>3</span> 建立 OpenGL 程序框架 </h2>
+<div>
+<p>默认的，建立的程序中，一个 activity 的源码如下:<span style="color:#00ffff"> </span></p>
+<p> </p>
+<div>
+<pre>public class GlGame extends Activity {
+    /** Called when the activity is first created. */ 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+    }
+}
+</pre>
+</div>
+<span style="color:#00ffff"> </span>
+<p> </p>
+<p> 
+OpenGL 有自己的Surface: GLSurfaceView, 它内部提供了一个 Renderer 接口，我们所要做的就是注册一个自己的 Renderer。好了，先看我们的 activity:</p>
+<p> </p>
+<div>
+<pre>import android.app.Activity;
+import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.Renderer;
+import android.os.Bundle;
+ 
+public class GlGame extends Activity {
+    /** Called when the activity is first created. */ 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // setContentView(R.layout.main);
+        Renderer render = new MyRenderer();//要实现的 Renderer
+        GLSurfaceView glView = new GLSurfaceView(this);
+        glView.setRenderer(render);
+        setContentView(glView);        
+    }
+}
+</pre>
+</div>
+<p> </p>
+<p> 
+Renderer 必须要实现3个抽象方法:
+</p>
+<ul>
+<li> 
+public void onDrawFrame(GL10 gl) 绘制
+</li>
+<li> 
+public void onSurfaceChanged(GL10 gl, int width, int height) 窗口大小改变
+</li>
+<li> 
+public void onSurfaceCreated(GL10 gl, EGLConfig config) 窗口建立
+ 
+</li>
+</ul>
+<p>添加类 MyRenderer:</p>
+<p> </p>
+<div>
+<pre>import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+ 
+import android.opengl.GLSurfaceView.Renderer;
+ 
+public class MyRenderer implements Renderer{
+ 
+    public void onDrawFrame(GL10 gl) {
+        gl.glClearColor(1, 0, 0, 0);
+        // 清除屏幕和深度缓存
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT) | GL10.GL_DEPTH_BUFFER_BIT);
+    }
+ 
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        // 设置 OpenGL 场景的大小
+        gl.glViewport(0, 0, width, height);     
+    }
+ 
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        // TODO Auto-generated method stub
+        
+    }
+ 
+}
+</pre>
+</div>
+<p> </p>
+<p> 
+好了一个 OpenGL 框架就搭好了。接下来我们就进行可爱地屏幕绘制相关地东西了。下次再说吧。 </p>
+<p> </p>
+<p><img src="http://pic002.cnblogs.com/images/2010/110976/2010123123452352.png" alt=""></p>
+</div>
+</div>
+</div><img src="http://www.cnblogs.com/shengdoushi/aggbug/1923570.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/shengdoushi/">圣斗士</a> 发表于 2010-12-31 23:53 <a href="http://www.cnblogs.com/shengdoushi/archive/2010/12/31/1923570.html">原文链接</a></p><p>评论: 4　<a href="http://www.cnblogs.com/shengdoushi/archive/2010/12/31/1923570.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/shengdoushi/archive/2010/12/31/1923570.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/86988/">360称遭金山抹黑 详解用户隐私相关问题</a><span style="color:gray">(2011-01-01 17:13)</span><br>· <a href="http://news.cnblogs.com/n/86987/">2011年值得关注的8大社会化媒体应用</a><span style="color:gray">(2011-01-01 17:12)</span><br>· <a href="http://news.cnblogs.com/n/86985/">病毒发威 我国数万安卓手机受袭</a><span style="color:gray">(2011-01-01 15:34)</span><br>· <a href="http://news.cnblogs.com/n/86984/">魏武挥：关于网络媒体的资讯运营</a><span style="color:gray">(2011-01-01 15:16)</span><br>· <a href="http://news.cnblogs.com/n/86983/">新浪微博单秒发送峰值破万 成传递祝福主流平台</a><span style="color:gray">(2011-01-01 15:02)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2010/12/31/1923530.html">祝大家新年快乐</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

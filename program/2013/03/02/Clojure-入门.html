@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Clojure 入门</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Clojure 入门</h2>
+<p class="meta">02 Mar 2013</p>
+
+<div class="post">
+<h2>Clojure 入门</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-03-02 14:38:04</h3>
+
+<h3>original <a href="http://blog.jobbole.com/34539/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=clojure-%25e5%2585%25a5%25e9%2597%25a8">http://blog.jobbole.com/34539/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=clojure-%25e5%2585%25a5%25e9%2597%25a8</a></h3>
+
+<p>英文原<a style="font-style:normal;font-weight:bold" href="http://jrheard.tumblr.com/post/40024238467/getting-started-with-clojure">getting started with clojure</a>，翻译：<a href="http://blog.jobbole.com/www.oschina.net/translate/getting-started-with-clojure">开源中国</a></p>
+
+
+<p>我将尝试教一些人(主要是Python开发者，在OS X操作系统运行)如何使用Clojure， 因为我觉得目前已经存在的一些教人如何从零开始学习Clojure的文档不尽如人意。 当我自己在几个月前亲身经历这一切，这是一个奇怪的时期， 好几个星期我一直处于迷茫中， 我基本上找不到一个关于Clojure生态系统的概念路线图，也不知道如何组织一个。</p>
+
+
+<p>我这篇文章的目标是创建该资源（我本该六个月前就创建它）。我将假设您正使用OS X操作系统并且有些许编程经验</p>
+
+
+<p><strong>关于 Clojure 的书籍</strong></p>
+
+
+<p>你首先应该购买并开始阅读 Clojure Programming. 还有另外一本叫“Programming Clojure” (书名有点容易混淆) ，我不能保证说它更好或者更差， 但我喜欢 “Clojure Programming” 并且一直使用它，所以我推荐它。 写这本书的人都是那些你搜索Clojure社区时常常见到的大牛们的名字。在Clojure社区， 所有主要的人物似乎都毫无人性地多产。</p>
+
+
+<p><strong>让我们开始吧</strong></p>
+
+
+<p><strong></strong>现在，让我们开始配置你的环境。 获取Homebrew -“OS X缺省的包管理器” – 准备好后， 运行下面的命令：</p>
+
+
+<pre>brew install clojure</pre>
+
+
+<p>这个命令将安装一个Clojure 副本，你可以通过‘clj’ 命令进行访问。 继续并运行它，你会看到REPL启动， 随便发挥吧。 你会发现自己并不是常常用到这个副本， 但是有它总是好的，特别是当你想直接运行一个Clojure 文件可以通过命令`clj a_file.clj`进行。</p>
+
+
+<p>你不会经常用到’clj’ 是因为REPL默认的原始的Clojure环境非常的垃圾。它不支持使用向上箭头访问之前计算的表达式； 它不支持使用’C-a’ 和’C-e’到达每一行的开始/末尾；这真的非常气人， 你会讨厌它的， 因此别使用它。</p>
+
+
+<p>你下一个步骤是安装Leiningen, 从现在开始你几乎会从不间断地用到它。通常， 你需要安装 Leiningen 2, 虽然它目前还不是Leiningen的公开的发行版本，但相信我它就是你要安装的版本。你可以通过运行下面的命令得到它：</p>
+
+
+<pre>brew install leiningen --devel</pre>
+
+
+<p>这个 –devel 标记， 告诉Homebrew 我们需要的是 Leiningen 2 而不是 Leiningen 1.x. 我花了不少时间才搞懂它。</p>
+
+
+<p><strong>那么Leiningen究竟是什么鬼东西?</strong></p>
+
+
+<p>Leiningen是你的主要工具， 它用于：</p>
+
+
+<ul>
+<li>启动一个 REPL</li>
+<li>下载+安装类库</li>
+<li>运行你的程序</li>
+<li>启动一个服务器， 运行你所写的webapps</li>
+</ul>
+
+
+<p>接着运行 `lein repl`. 它会启动一个真正有用的 REPL, 任何时候，当你需要一个REPL，用这个命令就行。 使用向上方向键你会得到之前用过的计算表达式， 而快捷键 C-a 和 C-e 也能生效（到达行首/行尾）， 一切都像你所期望的那样。另外，如果你在顶级目录运行一个Clojure 项目，它会根据实际情况处理连接类路径和诸如此类的东西，这样你就可以导入和玩玩你项目的代码和库了。 稍后我们再讨论这个。现在，让我们通过下面的命令创建一个骨架项目玩玩：</p>
+
+
+<pre>lein new foo</pre>
+
+
+<p>命令完成后， cd 到 foo 目录，你会看到它已经有了一些文件和目录：</p>
+
+
+<pre>[jrheard@jrheard-air:~/dev/foo] $ ll
+ total 16
+ -rw-r--r-- 1 jrheard staff 193B Jan 5 15:17 README.md
+ drwxr-xr-x 3 jrheard staff 102B Jan 5 15:17 doc
+ -rw-r--r-- 1 jrheard staff 263B Jan 5 15:17 project.clj
+ drwxr-xr-x 3 jrheard staff 102B Jan 5 15:17 src
+ drwxr-xr-x 3 jrheard staff 102B Jan 5 15:17 test</pre>
+
+
+<p>当你写一个Clojure 库/程序/或者任何东西，你的源代码都保存在“src”目录，你的测试代码则保存在“test”目录。非常简单。 让我们来看看 src 目录：</p>
+
+
+<pre>[jrheard@jrheard-air:~/dev/foo] $ cat src/foo/core.clj</pre>
+
+
+<pre>(ns foo.core) (defn foo &quot;I don&#39;t do a whole lot.&quot; [x] (println x &quot;Hello, World!&quot;))</pre>
+
+
+<p>看起来 Leiningen 已经创建了一个叫 “src/foo/core.clj” 的文件。这是一个Clojure程序， 它定义了一个“foo.core”的命名空间， 然后声明该命名空间包含一个名为“foo”的函数。 我们来看看它。用`lein repl`启动一个REPL 并浏览一下。 还记得我前面提到过Leiningen会负责处理你的类路径和相关的goop，这样你就可以从REPL访问你的项目代码了？ 看看这个：</p>
+
+
+<pre>user=&gt; (use &#39;foo.core) nil
+ user=&gt; foo #&lt;core$foo foo.core$foo@6ad591a6&gt;
+ user=&gt; (foo &quot;jrheard&quot;) jrheard Hello, World!
+ nil</pre>
+
+
+<p>真棒 – 我们已经能够导入我们的代码并运行它。 `use` 提供了类似于Python里面的`from foo.core import *` 相同 的功能，因此不鼓励在源代码中再使用它（ from foo.core import *）， 出于相同的原因， import *也不再鼓励使用。不过像 import * （ 这样的功能）， 在你查找（浏览）REPL 的时候是相当有用的。<br>
+嘿，非常酷 – 我们已经创建了一个项目， 里面还生成一些代码， 我们已经知道如何启动一个能运行的REPL 还可以在里面浏览那些代码。 第一阶段已经完成啦， 让我们来看看第二个阶段：</p>
+
+
+<p><strong>下装并安装类库</strong></p>
+
+
+<p>你可能习惯在命令行运行一些命令来获取类库。例如 `pip install this_great_library_i_found`， 它会下载你指定的类库， 并安装到全局的或者你当前的虚拟环境中（virtualenv）。 但是在 Clojure 里， 有一点点不一样。</p>
+
+
+<p>首先，你必须找到一个看起来还不错的类库。 Clojure Toolbox 是一个奇妙的工具，这是我发现的最好的资源。 我们选择一个库玩玩： 创建HTTP请求很有意思 – 让我们先到 “HTTP Clients” 的章节， 看看我们都有哪些选择。 看起来我们得在 clj-http 和 http.async.client 之间挑一个 -但是选哪一个呢？</p>
+
+
+<p>目前，在多个存在竞争关系的类库之间做选择时，我最喜欢的方式是：把它们从<span><a href="http://blog.jobbole.com/6492/" title="GitHub如何运作：时间并不决定一切">GitHub</a></span>仓库里拉下来，然后比较加星数和fork数之和，如果最近两个月有提交代码可以加分，用这个数代表社区的健壮性、<span><a href="http://www.amazon.cn/gp/product/B0044KME2E/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=vastwork-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B0044KME2E" title="影响力" rel="nofollow">影响力</a></span>或适应能力，可能不是特别科学，不过我用着挺好的。在写这篇文章的时候，clj-http有242个星号，http.async.client只有127个，所以我选择clj-http。</p>
+
+
+<p><strong>所以… 怎么搞到它？</strong></p>
+
+
+<p>让我们打开 clj-http’s github repo。README中关于安装那一段有如下代码:</p>
+
+
+<pre>[clj-http &quot;0.6.3&quot;]</pre>
+
+
+<p>这就是我们需要的信息 – 这是一个 Clojure vector，它包含两个条目，第一个条目是类库的名字， 第二个条目标识最新的稳定版本。我们打算把它添加到我们的（你之前在查看’foo’ 目录的内容看到的那一个） project.clj. 打开 project.clj, 看起来就像这样：</p>
+
+
+<pre>(defproject foo &quot;0.1.0-SNAPSHOT&quot;
+  :description &quot;FIXME: write description&quot;
+  :url &quot;http://example.com/FIXME&quot;
+  :license {:name &quot;Eclipse Public License&quot;
+            :url &quot;http://www.eclipse.org/legal/epl-v10.html&quot;}
+  :dependencies [[org.clojure/clojure &quot;1.4.0&quot;]])</pre>
+
+
+<p>注意：dependencies 那段 – 这是一个包含一个条目的Clojure vector， 该条目本身也是一个包含两个条目的的 Clojure vector. 这个 vector 告诉 Leiningen 我们的项目要运行在版本是1.4.0的Clojure 上.够公平的了,现在让我们添加我们之前看到的那个clj-http vector。 现在 project.clj 看起来应该像这样：</p>
+
+
+<pre>(defproject foo &quot;0.1.0-SNAPSHOT&quot;
+  :description &quot;FIXME: write description&quot;
+  :url &quot;http://example.com/FIXME&quot;
+  :license {:name &quot;Eclipse Public License&quot;
+            :url &quot;http://www.eclipse.org/legal/epl-v10.html&quot;}
+  :dependencies [[org.clojure/clojure &quot;1.4.0&quot;]
+                 [clj-http &quot;0.6.3&quot;]])</pre>
+
+
+<p>就是这样！现在我们已经指定了我们需要的clj-http类库和版本号。让我们试一下 -使用`lein repl`命令启动一个REPL，来测试我们精选的新类库。要注意的是，在REPL启动的时候Leiningen会首先下载clj-http，这是因为基本上在我们的所有操作之前，它会先在后台执行`lein deps`命令扫描 project.clj文件，并且确保已经获取到了所有我们需要的依赖类库。<br>
+好的，回到我们的REPL会话，这里有一个从clj-http的github上返回的README，它告诉我们需要在REPL上运行</p>
+
+
+<pre>(require ‘[clj-http.client :as client])</pre>
+
+
+<p>好吧我们运行一下，-这跟Python中’from clj.http import client’是一样的(与`from clj.http.client import *`截然相反,这也是’use’函数的工作)</p>
+
+
+<pre>user=&gt; (require &#39;[clj-http.client :as client]) nil
+user=&gt; (client/get &quot;http://www.yelp.com&quot;) ;; a big huge blob of data pops out!</pre>
+
+
+<p>哇，好了，看到它能运行了！那些排列读起来很糟糕——你会发现以”}”结束的超大块的数据，那大概是Clojure map类型的小许数据。接下来试试下面的代码：</p>
+
+
+<pre>user=&gt; (def resp (client/get &quot;http://www.yelp.com&quot;)) #&#39;user/resp
+user=&gt; (type resp) clojure.lang.PersistentArrayMap
+user=&gt; (keys resp) (:cookies :trace-redirects :request-time :status :headers :body)
+user=&gt; (:status resp) 200
+user=&gt; (:headers resp) {&quot;server&quot; &quot;Apache&quot;, &quot;content-encoding&quot; &quot;gzip&quot;, &quot;x-proxied&quot; &quot;lb2&quot;,
+&quot;content-type&quot; &quot;text/html; charset=UTF-8&quot;, &quot;date&quot; &quot;Sun, 06 Jan 2013 00:02:58 GMT&quot;,
+&quot;cache-control&quot; &quot;private&quot;, &quot;vary&quot; &quot;Accept-Encoding,User-Agent&quot;,
+&quot;transfer-encoding&quot; &quot;chunked&quot;, &quot;x-node&quot; &quot;wsgi, web40, www_all&quot;,
+&quot;x-mode&quot; &quot;ro&quot;, &quot;connection&quot; &quot;close&quot;}</pre>
+
+
+<p>运行之后，我们发现了一个HTTP客户端库，下载它，并且指出怎样在REPL中交互使用。<br>
+把它们都找出会花掉我一些时间——在用头撞了一天墙之后，我终于不得不来到#clojure IRC 频道请示帮助。现在你不用那样做了！想进一步阅读的，请看 the official Leiningen tutorial。</p>
+
+
+<p><strong>把它们全部放一起</strong></p>
+
+
+<p>让我们通过弄清如何实际运行一个Clojure程序来完成。我们尝试一个典型的`lein run`:</p>
+
+
+<pre>[jrheard@jrheard-air:~/dev/foo] $ lein run
+ No :main namespace specified in project.clj.</pre>
+
+
+<p>好的，这没成功运行。返回之前提到过的Leiningen手册然后搜索下:main，我们看到你可以第一个一个:main关键字在你的project.clj定义里来指定`lein run`会执行的命名空间，也就是说这个命名空间必需包含一个`-main`的函数来为你的程序提供入口点。让我们把这行代码加入到我们的project.clj定义里：</p>
+
+
+<pre>:main foo.core</pre>
+
+
+<p>最后我们修改src/foo/core.clj，然后它的代码如下：</p>
+
+
+<pre>(ns foo.core
+  (:require [clj-http.client :as client]))
+
+(defn -main
+  &quot;Prints the first 50 characters of the HTML source of yelp.com.&quot;
+  [&amp; args]
+  (println (apply str
+                  (take 50
+                        (:body (client/get &quot;http://www.yelp.com&quot;))))))</pre>
+
+
+<p>到这里，我们继续尝试`lein run`:</p>
+
+
+<pre>[jrheard@jrheard-air:~/dev/foo] $ lein run
+ Compiling foo.core
+ &lt;!DOCTYPE HTML&gt;
+&lt;!--[if lt IE 7 ]&gt; &lt;html xmlns:fb</pre>
+
+
+<p>它成功了！</p>
+
+
+<p>目前来说-你现在有了一个可运行的REPL来玩耍，安装和使用库的能力，让你的程序访问这些库以及运行的知识，还有一本真正能给你一切你所需知道的关于Clojure语言的好书。</p>
+
+
+<p><strong>我为何必须写这篇文章</strong></p>
+
+
+<p>Clojure还是一门非常年轻的语言。跟Python比的话，它的社区也还特别小。尽管我说过它的核心API非常稳定，但很多周边工具都是新的而且还在快速变化。最重要的是你会发现很多最新的文档都没有做好SEO，大部分的Google搜索结果都会转到richhickey.github.com，而它上面的很多东西都过时了。所以你会觉得Clojure很难上手。</p>
+
+
+<p>希望本文能让你少迷茫几个星期，避免重蹈我的覆辙。我保证成长的痛苦是值得的，Clojure会让你享受到编程的真正乐趣。</p>
+
+
+<p><strong>各种资源</strong></p>
+
+
+<ul>
+<li> 看看 Rich Hickey(clojure 的创始人)的两个演讲 : <a href="http://www.infoq.com/presentations/Are-We-There-Yet-Rich-Hickey" rel="nofollow">“Are We There Yet?”</a> 和<a href="http://www.infoq.com/presentations/Simple-Made-Easy" rel="nofollow">“Simple Made Easy”</a>. 特别注意的是，过几个月看下第一个演讲三到四次。</li>
+</ul>
+
+
+<ul>
+<li>  我花了过去的几个星期看了所有有关clojure的演讲。官方youtube频道不错 <a href="http://www.youtube.com/clojuretv" rel="nofollow">official Clojure youtube channel</a> ,  InfoQ也有很多不错的内容（ <a href="http://www.infoq.com/bycategory/contentbycategory.action?idx=3&amp;alias=Clojure&amp;ct=5" rel="nofollow">great content on InfoQ </a>），我在这最少看了25个演讲。</li>
+<li><a href="http://www.clojure-toolbox.com/" rel="nofollow">The Clojure Toolbox</a>, 寻找现成的库</li>
+<li><a href="http://dev.clojure.org/display/design/Where+Did+Clojure.Contrib+Go" rel="nofollow">Where Did Clojure.Contrib Go</a> - 你要查看一些库的手册，比如“clojure.contrib.monads， 正像你看到的，  clojure.contrib 这个库不会存在多久,  这个页面会告诉你 库被合并到哪去了。</li>
+<li><a href="https://github.com/technomancy/leiningen/blob/master/sample.project.clj" rel="nofollow">This example project.clj</a>  展示了很多Leiningen提供的钩子（hooks）不同的高级用法，轻松定制，构建你的项目</li>
+<li> 你可以在twitter上 following clojure 社团的核心成员 @cgrand, @cemerick, @marick, @weavejester, @stuartsierra, @seancorfield, @Baranonsky, @richhickey</li>
+<li>读 <a href="http://joyofclojure.com/" rel="nofollow">“The Joy of Clojure”</a>  如果你已经看完了 “Clojure Programming”.</li>
+<li><strong>特别注意</strong>，Noir已经不维护了，使用Compojure代替吧</li>
+</ul>
+
+
+<h4>相关文章</h4>
+
+
+<ul>
+<li><a href="http://blog.jobbole.com/26991/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/02/linux-logo-150x150.jpg" alt="每个程序员都应该知道的8个Linux命令"></a><a href="http://blog.jobbole.com/26991/">每个程序员都应该知道的8个Linux命令</a></li>
+<li><a href="http://blog.jobbole.com/15384/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/03/the-c-programming-language-150x150.jpg" alt="the c programming language"></a><a href="http://blog.jobbole.com/15384/">如何成为一名优秀的C程序员</a></li>
+<li><a href="http://blog.jobbole.com/21351/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/06/python-icon-150x150.jpg" alt="python-icon"></a><a href="http://blog.jobbole.com/21351/">深刻理解Python中的元类(metaclass)</a></li>
+<li><a href="http://blog.jobbole.com/25748/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/08/A-Generation-Lost-in-the-Bazaar-150x150.jpg" alt="写给在集市中迷失的一代"></a><a href="http://blog.jobbole.com/25748/">写给在集市中迷失的一代</a></li>
+<li><a href="http://blog.jobbole.com/34212/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/02/scalability-150x150.jpg" alt="可伸缩系统的架构经验"></a><a href="http://blog.jobbole.com/34212/">可伸缩系统的架构经验</a></li>
+<li><a href="http://blog.jobbole.com/28506/"><img src="http://blog.jobbole.com/wp-content/uploads/2012/02/python-logo.png" alt="Python关键字yield详解"></a><a href="http://blog.jobbole.com/28506/">Python关键字yield详解</a></li>
+<li><a href="http://blog.jobbole.com/31817/"><img src="http://akamaicovers.oreilly.com/images/9781565922259/cat.gif" alt="《sed &amp; awk》读书笔记之 awk 篇"></a><a href="http://blog.jobbole.com/31817/">《sed &amp; awk》读书笔记之 awk 篇</a></li>
+<li><a href="http://blog.jobbole.com/15801/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/03/Jon-Purdy-150x150.png" alt="Jon Purdy"></a><a href="http://blog.jobbole.com/15801/">也谈编程改革</a></li>
+<li><a href="http://blog.jobbole.com/31985/"><img width="127" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/01/TIOBE-Software-Tiobe-Index-Programming-Language-of-the-Year-127x150.png" alt="TIOBE Software Tiobe Index Programming Language of the Year"></a><a href="http://blog.jobbole.com/31985/">2013年1月编程语言排行榜：Objective-C成为2012年度语言</a></li>
+<li><a href="http://blog.jobbole.com/20874/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/02/Summer_Glau_as_River_Tam_in_Serenity_Wallpaper__yvt2-300x2253-150x150.jpg" alt="我的大脑不能再处理面向对象编程了 "></a><a href="http://blog.jobbole.com/20874/">我的大脑不能再处理面向对象编程了 </a></li>
+</ul>
+
+
+<p><a href="http://blog.jobbole.com/34539/">Clojure 入门</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

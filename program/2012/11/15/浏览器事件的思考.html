@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>浏览器事件的思考</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>浏览器事件的思考</h2>
+<p class="meta">15 Nov 2012</p>
+
+<div class="post">
+<h2>浏览器事件的思考</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-11-14 20:08:14</h3>
+
+<h3>original <a href="http://blog.jobbole.com/30385/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e6%25b5%258f%25e8%25a7%2588%25e5%2599%25a8%25e4%25ba%258b%25e4%25bb%25b6%25e7%259a%2584%25e6%2580%259d%25e8%2580%2583">http://blog.jobbole.com/30385/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e6%25b5%258f%25e8%25a7%2588%25e5%2599%25a8%25e4%25ba%258b%25e4%25bb%25b6%25e7%259a%2584%25e6%2580%259d%25e8%2580%2583</a></h3>
+
+<p>来源：<a href="http://ued.alimama.com/posts/528">一淘 UX</a></p>
+
+
+<p>先看下面的代码：</p>
+
+
+<p>var $ = KISSY.all;</p>
+
+
+<p>$(‘a’).on(‘click’,function(e){</p>
+
+
+<p>doSomeThing();//这个方法貌似很有名<span></span></p>
+
+
+<p>e.halt();</p>
+
+
+<p>});</p>
+
+
+<p>上面的代码看起来像是很好的完成了我们交给它的工作，<span><a href="http://blog.jobbole.com/12749/" title="浏览器">浏览器</a></span>不会再将我们重定向到href中的链接，但这么做到底有什么不对呢？</p>
+
+
+<p>在解释有什么不对前，我们来看看浏览器中事件中的几个概念</p>
+
+
+<p><strong>浏览器默认行为</strong></p>
+
+
+<p><strong></strong>当我们点击某一个链接的时候，浏览器会直接跳转，在表单中按回车，表单会自动提交，这些都是浏览器的默认行为。</p>
+
+
+<p><strong>Javascript事件传播的机制</strong></p>
+
+
+<p><strong>什么是事件冒泡？</strong></p>
+
+
+<p>比如点击了一个按钮，这个元素上的事件被触发，同时该事件将会传播到它的所有父级元素中被触发。(a-&gt;div-&gt;body-&gt;document-&gt;window)这一过程被称为事件冒泡。事件冒泡是从子级元素到父级元素。</p>
+
+
+<p>注意：不是所有的事件都能冒泡，blur、focus、load和unload不能像其它事件一样冒泡</p>
+
+
+<p><strong>什么是事件捕获？</strong></p>
+
+
+<p><strong></strong>和事件冒泡恰恰相反，事件捕获是从父级元素到子级元素。</p>
+
+
+<p><strong>什么是事件目标？</strong></p>
+
+
+<p><strong></strong>简单的说也就是事件开始的那个元素，也就是上面说的a</p>
+
+
+<div></div>
+
+
+<div> <a href="http://blog.jobbole.com/wp-content/uploads/2012/11/T1uqT.Xl8cXXb1upjX.jpg" rel="lightbox[30385]" title="浏览器事件的思考"><img title="浏览器事件的思考" src="http://blog.jobbole.com/wp-content/uploads/2012/11/T1uqT.Xl8cXXb1upjX.jpg" alt="浏览器事件的思考" width="540" height="486"></a></div>
+
+
+<div></div>
+
+
+<p>不同浏览器下的事件模型</p>
+
+
+<p><strong>● 支持W3C标准的浏览器：先捕获在冒泡。在添加事件时用addEventListener(event,fn,useCapture)方法，基中第3个参数useCapture是一个Boolean值，为true，则采用事件捕获，为false，则采用事件冒泡。</strong></p>
+
+
+<p><strong></strong><strong>● 不兼容W3C的浏览器(IE)：IE只支持事件冒泡，它也不支持addEventListener函数，不过提供了attachEvent()方法来处理事件。</strong></p>
+
+
+<p><strong></strong>看完上文，是否有感觉什么地方不对？没有？那再看看下文。</p>
+
+
+<p><strong>”halt“到底做了什么？</strong></p>
+
+
+<p><strong></strong><strong>当你每次调用”halt“的时候，它实际上做了2件事情：</strong></p>
+
+
+<p><strong></strong><strong>● </strong>e.preventDefault();//阻止浏览器执行默认行为</p>
+
+
+<p><strong>● </strong>e.stopPropagation();//取消事件冒泡</p>
+
+
+<p>preventDefault和stopPropagation翻译成原生js后</p>
+
+
+<pre>function preventDefault(e) {
+//如果提供了事件对象，则这是一个非IE浏览器
+if(e &amp;&amp; e.preventDefault) {
+　　//阻止默认浏览器动作(W3C)
+　　e.preventDefault();
+} else {
+　　//IE中阻止函数器默认动作的方式
+　　window.event.returnValue = false;
+}
+return false;
+}
+
+function stopPropagation(e) {
+//如果提供了事件对象，则这是一个非IE浏览器
+if(e &amp;&amp; e.stopPropagation) {
+　　//因此它支持W3C的stopPropagation()方法
+　　e.stopPropagation();
+} else {
+　　//否则，我们需要使用IE的方式来取消事件冒泡
+　　window.event.cancelBubble = true;
+}
+return false;
+}</pre>
+
+
+<p>不是吧，我写最开始的代码只是想阻止浏览器的默认行为，不需要取消事件冒泡。</p>
+
+
+<p>但是，这样写也没有什么问题啊！（嘴硬，啪啪……）。</p>
+
+
+<div></div>
+
+
+<p>确实，大多数情况下，这样的代码没有任何问题，那如果我们把这段代码放大到一个大环境中，会出现什么状况</p>
+
+
+<div>
+<pre>&lt;div&gt;
+&lt;h2&gt;&lt;a href=&quot;http://etao.com/page1&quot;&gt;Page1&lt;/a&gt;&lt;/h2&gt;
+&lt;div&gt;
+    Teaser text...
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;h2&gt;&lt;a href=&quot;http://etao.com/page2&quot;&gt;Page2&lt;/a&gt;&lt;/h2&gt;
+&lt;div&gt;
+    Teaser text...
+ &lt;/div&gt;
+&lt;/div&gt;</pre>
+</div>
+
+
+<p>现在假设我们想要在用户点击文章标题时，将文章动态载入到div.content中(也就是doSomeThing做的事情),</p>
+
+
+<p>哈哈：上文的js代码也还是会执行啊(年轻人太急)。</p>
+
+
+<p>我们顺着这个思路继续，如果我想要在用户点击了一个div.post元素（或者任何一个它的子元素）时，给它加上一个active类，我就需要给div.post绑定click</p>
+
+
+<pre>var posts = $(&#39;div.post&#39;);
+posts.on(&#39;click&#39;,function () {
+posts.removeClass(&quot;active&quot;);
+$(this).addClass(&quot;active&quot;);
+});</pre>
+
+
+<p>这个代码就会有时候执行有时候不执行，因为你在点击a的时候取消了事件冒泡。</p>
+
+
+<p>我们把这个代码的执行范围再次放大，产品提了一个需求，要求监听页面上所有的点击情况，一个同学接到需求，开心的在document上用了事件代理，向服务端发送了数据，回头数据一统计，似乎少了什么。回头一看，有人在a标签的点击事件中用了halt。</p>
+
+
+<p>其实这就是本文想传递的信息，大多数情况下，当你使用halt时，你其实真正需要的是e.preventDefault()，在你写通用的组件时候这个问题尤其突出。</p>
+
+
+<p> </p>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/8524/">浏览器开发工具的25个秘密</a></li><li><a href="http://blog.jobbole.com/30526/">网页编码就是那点事</a></li><li><a href="http://blog.jobbole.com/30091/">前端工程师的价值体现在哪里？</a></li><li><a href="http://blog.jobbole.com/29692/">页面构建和js前端不得不说的那点事儿</a></li><li><a href="http://blog.jobbole.com/28904/">使用 node.js 开发前端打包程序</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

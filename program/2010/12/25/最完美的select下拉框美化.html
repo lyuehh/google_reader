@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>最完美的select下拉框美化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>最完美的select下拉框美化</h2>
+<p class="meta">25 Dec 2010</p>
+
+<div class="post">
+<h2>最完美的select下拉框美化</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-12-24 16:50:28</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/851317">http://www.javaeye.com/topic/851317</a></h3>
+
+<p><span>很多人为</span><span lang="EN-US">select</span><span>的诸多不完善而头痛，如无法自定义样式、</span><span lang="EN-US">IE6</span><span>中无法被浮动层遮住等等。下面介绍一款堪称最完美的下拉框组件：</span><span lang="EN-US">UU</span><span>人下拉框。感兴趣的可以从最后的链接地址下载代码研究与交流。</span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">1</span></strong><strong><span>：美化的并且可自定义的外观</span></strong></p>
+
+
+<p><span lang="EN-US">UU</span><span>人下拉框使用</span><span lang="EN-US">JS</span><span>进行渲染。当页面引入了脚本和</span><span lang="EN-US">CSS</span><span>后，页面中的下拉框都会变成如下外观：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375415/779cc448-644a-3637-bd22-50a533ec1cfd.jpg" alt=""></p>
+
+
+<p><span>该外观是由</span><span lang="EN-US">CSS</span><span>和图片控制。通过修改</span><span lang="EN-US">CSS</span><span>可以很方便地实现更改外观。</span></p>
+
+
+<p><span lang="EN-US">UU</span><span>人下拉框不存在</span><span lang="EN-US">IE6</span><span>中无法被浮动层遮住等问题。</span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">2</span></strong><strong><span>：使用简单</span></strong></p>
+
+
+<p><span lang="EN-US">UU</span><span>人下拉框代码写法与原来的写法一样，都是如下代码：</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;&quot;&gt;</span></span><span>请选择功能</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;1&quot;&gt;</span></span><span>新增图片</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;2&quot;&gt;</span></span><span>维护图片</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;3&quot;&gt;</span></span><span>新增新闻</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p><span style="font-size:10pt" lang="EN-US"><span> </span></span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p><span style="font-size:10pt" lang="EN-US"> </span></p>
+
+
+<p><span>也可以动态创建</span><span lang="EN-US">UU</span><span>人下拉框。</span></p>
+
+
+<p><span style="font-size:10pt" lang="EN-US"> </span></p>
+
+
+<p><span style="font-size:10pt" lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">3</span></strong><strong><span>：宽度处理</span></strong></p>
+
+
+<p><span>你是否遇到以下两种情况：</span></p>
+
+
+<p><span>（</span><span lang="EN-US">1</span><span>）不设置下拉框宽度，那么下拉框宽度默认为最宽的选项的宽度。当其选项过长时轻则会导致整个表单不整齐，重则会撑坏页面布局；</span></p>
+
+
+<p><span>（</span><span lang="EN-US">2</span><span>）设置下拉框宽度，但是由于下拉框的选项宽度有可能会很长，可能会导致内容显示不完全。</span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span lang="EN-US">UU</span><span>人下拉框对于宽度的处理方式是：默认会有一个宽度，即使选项里面有很长的文字。效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375417/eb6f0d9d-2b86-3219-bd39-3e172d7f3c9c.jpg" alt=""></p>
+
+
+<p><span>这样就保证了表单元素宽度一致又不影响内容。放在表单中的整体效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375419/683b5194-10f5-37d1-94bc-b5c94b97c6ee.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span>如果希望下拉框的宽度自适应最长选项，为其设置一个参数即可，效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375421/1cdf0822-0583-374b-8071-180edf496cba.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span>另外还可以通过</span><span lang="EN-US">style</span><span>强制一个宽度。</span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">4</span></strong><strong><span>：支持分组</span></strong></p>
+
+
+<p><span>下拉框支持分组，代码与普通</span><span lang="EN-US">select</span><span>分组代码一样。如</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span><span>请选择权限</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">optgroup</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">label</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>首页信息发布</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>       </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>新增图片</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span><span>新增图片</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>       </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>维护图片</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span><span>维护图片</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>       </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>新增新闻</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span><span>新增新闻</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">optgroup</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">optgroup</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">label</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>人员维护</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>       </span><span> </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>新增用户</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span><span>新增用户</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>         </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">"</span></span><span>用户列表</span><span style="font-size:10pt" lang="EN-US">&quot;&gt;</span><span>用户列表</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">optgroup</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p><span>效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375423/9ddfa5dc-a0c2-3842-aa22-a936023ba304.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">5</span></strong><strong><span>：下拉列表展开的方向智能化</span></strong></p>
+
+
+<p><span>原始的下拉框如果在网页中的位置比较偏下，向下展开肯能会导致内容显示不全。</span></p>
+
+
+<p><span lang="EN-US">UU</span><span>人下拉框在这种情况会进行智能判断从而向上展开。效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375425/a35dcd9a-0ce7-3e1e-82de-a77852a270b4.jpg" alt=""></p>
+
+
+<p><span>当下拉列表选项过多，向上也无法展示完全时，</span><span lang="EN-US">UU</span><span>人下拉框会判断一下向上和向下哪里空间大，就向哪里展开，并出现滚动条。效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375427/fb484bd6-d8d9-3c78-a775-1ea431e7ba84.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">6</span></strong><strong><span>：下拉框可编辑</span></strong></p>
+
+
+<p><span>为下拉框代码添加一个属性，就把它变成了一个可编辑的下拉框，效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375429/196e57bd-ba6b-3f7f-a321-6c5145513ee1.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">7</span></strong><strong><span>：集成了</span><span lang="EN-US">ajax</span></strong><strong><span>联动功能</span></strong></p>
+
+
+<p><span>通过设置可以很简单地实现下拉框联动功能。可支持的联动级数为无限级！</span></p>
+
+
+<p><span>例如如下代码就创建了一个二级联动的下拉框：</span></p>
+
+
+<p style="text-align:left" align="left"><span>所学专业：</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">id</span><span style="color:black">=</span><span style="color:blue">"sel01"</span> <span style="color:red">childId</span><span style="color:black">=</span><span style="color:blue">"sel02"</span> <span style="color:red">childDataPath</span><span style="color:black">=</span><span style="color:blue">"
+http://localhost/kj/trainplan.do?method="</span> <span style="color:blue">&gt;</span></span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;&quot;&gt;</span></span><span>请选择专业</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;bj1&quot;&gt;</span></span><span>专业</span><span style="font-size:10pt" lang="EN-US">1</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;bj2&quot;&gt;</span></span><span>专业</span><span style="font-size:10pt" lang="EN-US">2</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US">&gt;</span><span style="font-size:10pt" lang="EN-US"><span>  </span></span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span> </span></span><span>所属班级：</span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span> </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">select</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">id</span><span style="color:black">=</span><span style="color:blue">&quot;sel02&quot;&gt;</span></span></p>
+
+
+<p style="text-align:left" align="left"><span style="font-size:10pt" lang="EN-US"><span>    </span></span><span style="font-size:10pt" lang="EN-US">&lt;</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US"> <span style="color:red">value</span><span style="color:black">=</span><span style="color:blue">&quot;0&quot;&gt;</span></span><span>请先选择专业</span><span style="font-size:10pt" lang="EN-US">&lt;/</span><span style="font-size:10pt" lang="EN-US">option</span><span style="font-size:10pt" lang="EN-US">&gt;</span></p>
+
+
+<pre><span style="font-size:10pt;line-height:150%" lang="EN-US"><span> </span></span><span style="font-size:10pt;line-height:150%" lang="EN-US">&lt;/</span><span style="font-size:10pt;line-height:150%" lang="EN-US">select</span><span style="font-size:10pt;line-height:150%" lang="EN-US">&gt;</span><span lang="EN-US"><span>  </span></span></pre>
+
+
+<p><span>代码中的</span><span lang="EN-US">childId</span><span>指定要联动的下拉框的</span><span lang="EN-US">ID</span><span>，</span><span><span lang="EN-US">childDataPath</span></span><span><span>指定二级下拉框数据来源，与一级下拉框的</span><span lang="EN-US">value</span></span><span><span>关联来获取数据。</span></span></p>
+
+
+<p><span>效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375431/e81be583-7f9f-356e-aba8-4fdfb6244032.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">8</span></strong><strong><span>：自定义下拉列表的列数</span></strong></p>
+
+
+<p><span>当下拉框项目过多时，可以通过添加一个属性来指定列数，并可自定义列宽。效果如下：</span></p>
+
+
+<p><br><img src="http://dl.javaeye.com/upload/attachment/375433/36dad3a0-c336-3c59-8334-455362dc2b18.jpg" alt=""></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><strong><span>特点</span><span lang="EN-US">9</span></strong><strong><span>：完美的浏览器兼容性</span></strong></p>
+
+
+<p><span>无论是</span><span lang="EN-US">IE6</span><span>、</span><span lang="EN-US">IE7</span><span>、</span><span lang="EN-US">IE8</span><span>还是</span><span lang="EN-US">FireFox</span><span>、</span><span lang="EN-US">Chrome</span><span>、</span><span lang="EN-US">Safira</span><span>，甚至在</span><span lang="EN-US">Linux</span><span>下都保持功能与外观的一致性。</span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><a href="http://web.uur.cn/split/3-5_%E5%8D%95%E9%80%89%E4%B8%8B%E6%8B%89%E6%A1%86/demo.html"><span>点击这里查看在线示例</span></a></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span lang="EN-US"> </span></p>
+
+
+<p><span>通过</span><a href="http://web.uur.cn"><span lang="EN-US">http://web.uur.cn</span></a><span>可以查看更多</span><span lang="EN-US">UU</span><span>人组件并下载</span><span lang="EN-US">.</span></p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://fukai.javaeye.com"&gt;fukai&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/851317" style="color:red"&gt;已有 &lt;strong&gt;8&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

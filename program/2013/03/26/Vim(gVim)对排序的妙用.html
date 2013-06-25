@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Vim(gVim)对排序的妙用</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Vim(gVim)对排序的妙用</h2>
+<p class="meta">26 Mar 2013</p>
+
+<div class="post">
+<h2>Vim(gVim)对排序的妙用</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-03-25 19:04:01</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/vimer/~7891736/692562843/5995078/1/item.html">http://item.feedsky.com/~feedsky/vimer/~7891736/692562843/5995078/1/item.html</a></h3>
+
+<p>前段时间有博友在群里问了一个关于vim排序的问题，因为时间问题一直没帮忙解决，今天时间正好空出来，就帮忙搞了一下。</p>
+
+
+<p>原文的问题如下:</p>
+
+
+
+
+<div><div><pre style="font-family:monospace">vimuser 说：
+2012年03月1日 于 5:04 下午  (编辑)
+今天折腾了一下午，研究vim的排序，看了教程和搜索了一些文档，还是没弄明白，vim的正则表达式跟一般的又不一样，来请教下博主。
+ 
+|1 | 11 | 111| 1111|
+|2 | 22 | 222| 2222|
+要根据第3个|和第4个|之间的列进行排序该如何写命令呢？</pre></div></div>
+
+
+
+
+<p>其实之前也只是简单的用过vim的sort命令，没有想过vim是否能完成如此复杂的排序，不过抱着试试看的态度，我看了一下sort的描述(:h :sort)，其中一段话如下:</p>
+
+
+
+
+<div><div><pre style="font-family:monospace">:[range]sor[t][!] [i][u][r][n][x][o] [/{pattern}/]
+ 
+When /{pattern}/ is specified and there is no [r] flag
+the text matched with {pattern} is skipped, so that
+you sort on what comes after the match.
+Instead of the slash any non-letter can be used.
+For example, to sort on the second comma-separated
+field:
+    :sort /[^,]*,/</pre></div></div>
+
+
+
+
+<p>翻译过来就是，sort确实可以指定跳过的字段，也就是说，我们只要能通过正则把</p>
+
+
+
+
+<div><div><pre style="font-family:monospace">|1 | 11 | 
+|2 | 22 |</pre></div></div>
+
+
+
+
+<p>这一部分跳过就可以了~~</p>
+
+
+<p>这部分的正则表达式是:</p>
+
+
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+</span>\s<span style="color:#000000">*</span></pre></td></tr></table></div>
+
+
+
+
+<p>所以最终的sort命令如下:</p>
+
+
+
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#000000">:</span><span style="color:#25bb4d">sort</span> <span style="color:#000000">/|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+|</span><span style="color:#000000">[</span><span style="color:#000000">^|</span><span style="color:#000000">]</span>\<span style="color:#000000">+</span>\s<span style="color:#000000">*/</span></pre></td></tr></table></div>
+
+
+
+
+<p>原文给的例子不好看效果，我们改成如下的例子:</p>
+
+
+
+
+<div><div><pre style="font-family:monospace">|1 | 11 | 222| 1111|
+|2 | 22 | 111| 2222|</pre></div></div>
+
+
+
+
+<p>调用:sort命令的结果是和原来的样子一致的，而调用我们的新命令的结果是:</p>
+
+
+
+
+<div><div><pre style="font-family:monospace">|2 | 22 | 111| 2222|
+|1 | 11 | 222| 1111|</pre></div></div>
+
+
+
+
+<p>OK，就这样~</p>
+
+
+<p>&lt;img src=&quot;http://www1.feedsky.com/t1/692562843/vimer/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/v</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>我从jQuery源码中学到的10堂课</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>我从jQuery源码中学到的10堂课</h2>
+<p class="meta">22 Apr 2011</p>
+
+<div class="post">
+<h2>我从jQuery源码中学到的10堂课</h2>
+
+<h3>by yuanyi</h3>
+
+<h3>at 2011-04-22 01:54:47</h3>
+
+<h3>original <a href="http://heikezhi.com/2011/04/21/10-things-i-learned-from-the-jquery-source/">http://heikezhi.com/2011/04/21/10-things-i-learned-from-the-jquery-source/</a></h3>
+
+<p><iframe title="YouTube video player" width="560" height="349" src="http://www.youtube.com/embed/i_qE1iAmjFg" frameborder="0"></iframe></p>
+
+
+<p>这是<a href="http://twitter.com/paul_irish">Paul Irish</a>录制的一段讲述<a href="http://paulirish.com/2010/10-things-i-learned-from-the-jquery-source/">他从jQuery源码中学到的10堂课</a>的非常生动有趣的视频，因为是在<a href="http://texasjavascript.com/">TXJS会议</a>现场录制的，所以有点拖沓，如果翻墙不便或者没有时间，可以看看下面我总结的亮点，每一条都很受用：</p>
+
+
+<p>1. jQuery的精华所在：</p>
+
+
+<pre name="code">
+(function(window,document,undefined){ ... })(this,this.document);
+</pre>
+
+
+<p>2. jQuery.props</p>
+
+
+<pre name="code">
+$(elem).attr('averylongattribute', 'some value');
+$.props['avla'] = 'averylongattribute';
+$('elem').attr('avla', 'aaaa');
+</pre>
+
+
+<p>3. jQuery.noConflict, 防止命名冲突的绝佳实现</p>
+
+
+<p>4. 自定义fade speed</p>
+
+
+<pre name="code">
+jQuery.fx.speeds.fastopen = ($.browser.msie &amp; $.browser.version &lt; 8) ? 800 : 400;
+$(&quot;#stuff&quot;).fadeIn(&quot;fastopen&quot;);
+</pre>
+
+
+<p>5. $.getJSON()以及$.getScript()，下面是一段很神奇的代码，一定要在firebug或者inspector中执行一下：</p>
+
+
+<pre name="code">
+$.getScript('http://www.cornify.com/js/cornify.js',  function(){
+  var times = [42, 28, 75, 50, 62];
+        times = times[Math.floor(Math.random()*times.length)];
+
+  while(--times)
+    cornify_add();
+});
+</pre>
+
+
+<p>6. selector performance, $("#id").find("tag.thing") 快于 $("#id tag.thing")</p>
+
+
+<p>7. JSON parse, 优先使用原生JSON parser</p>
+
+
+<pre name="code">
+window.JSON &amp;&amp; window.JSON.parse ?
+                  window.JSON.parse(data) :
+                  (new Function(&quot;return &quot; + data))();
+</pre>
+
+
+<p>8. $.unique, 扩展unique方法可以作用于所有元素：<a href="http://paulirish.com/2010/duck-punching-with-jquery/">http://paulirish.com/2010/duck-punching-with-jquery/</a></p>
+
+
+<pre name="code">
+$.unique(["first", 7, true, 2, 7, true, 'last', 'last']); // ['first', 7. true, 2, 'last']
+</pre>
+
+
+<p>9. delay，如果想直接使用delay，可以试试下面的方法：</p>
+
+
+<pre name="code">
+$(elem).fadeIn().delay(2000).fadeOut();
+$(elem).queue(function() {
+     $(elem).delay(2000).fadeOut();
+});
+</pre>
+
+
+<p>10. jQuery.support和<a href="https://github.com/jquery/jquery/blob/master/Makefile">Makefile</a></p>
+
+
+<p>如果还没尽兴，这里还有一个升级版的11堂课：<a href="http://www.youtube.com/watch?v=ARnp9Y8xgR4&amp;feature=related">http://www.youtube.com/watch?v=ARnp9Y8xgR4&amp;feature=related</a></p>
+
+
+<p>想和我们一道传播黑客精神？<a href="http://heikezhi.com/join">快来加入吧！</a></p>
+
+
+
+
+<div>
+<p><a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img src="http://i.creativecommons.org/l/by/3.0/88x31.png" alt="Creative Commons Attribution 3.0 Unported" style="margin-top:4px">
+</a>此作品采用 <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported</a>.</p>
+</div>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="jQuery事件处理: 别再乱用“return false”了" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F18%2Fjquery-events-stop-misusing-return-false%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F21%2F10-things-i-learned-from-the-jquery-source%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">jQuery事件处理: 别再乱用“return false”了</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="世界，你准备好了吗？" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F11%2Fworld-are-you-ready%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F21%2F10-things-i-learned-from-the-jquery-source%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/13/3474857.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">世界，你准备好了吗？</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="打印从1到1000的整数，无循环，不判断" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F19%2Fprinting-1-to-1000-without-loop-or-conditionals%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F21%2F10-things-i-learned-from-the-jquery-source%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">打印从1到1000的整数，无循环，不判断</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="蛋疼之字母人像" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F15%2Fletter-heads%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F21%2F10-things-i-learned-from-the-jquery-source%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/16/3622440.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">蛋疼之字母人像</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/506230075/heikezhi/feedsky/s.gif?r=http://heikezhi.com/2011/04/21/10-things-i-learned-from-the-jquery-source/" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/heikezhi/506230075/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/heikezhi/506230075/art01.gif"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>用doctype激活浏览器模式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>用doctype激活浏览器模式</h2>
+<p class="meta">14 Jun 2009</p>
+
+<div class="post">
+<h2>用doctype激活浏览器模式</h2>
+
+<h3>by 秦歌</h3>
+
+<h3>at 2009-06-14 15:19:36</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/dancewithnet/~3/5wytCIFCfTg/">http://feedproxy.google.com/~r/dancewithnet/~3/5wytCIFCfTg/</a></h3>
+
+<p>为了处理根据Web标准创作的网页和根据在20世纪90年代末流行的陈旧实践创作的网页，现代的Web浏览器实现了各种不同的引擎模式。本文说明了那些模式是什么以及如何触发它们。</p>
+
+
+<p>原文：<a href="http://hsivonen.iki.fi/author/">Henri Sivonen</a>的<a href="http://hsivonen.iki.fi/doctype/">Activating Browser Modes with Doctype</a><sup>2009.05.19</sup></p>
+
+
+<h3>文档范围</h3>
+
+
+<p>本文包括的模式转换（mode switching）适用于Firefox和其他基于Gecko的浏览器，Safari、Chrome和其他基于Webkit的浏览器，Opera、 Konqueror、Mac版Internet Explorer、Windows版Internet Explorer和内嵌IE的浏览器。避免提及<a href="http://hsivonen.iki.fi/engines/">浏览器引擎的名字</a>，取而代之的是使用该引擎最知名浏览器的名字。</p>
+
+
+<p>本文着重介绍模式的选择机制，而不是记录每个模式的确切行为。</p>
+
+
+<p><span></span></p>
+
+
+<h3>模式</h3>
+
+
+<p>以下是各种不同的模式：</p>
+
+
+<h4>内容类型为text/html的模式</h4>
+
+
+<p>text/html内容的模式选择取决于doctype嗅探（doctype sniffing，<a href="http://dancewithnet.com/#sniffing">本文后面有讨论</a>）。在IE8中，模式也取决于其他因素。然而在IE8的默认情况下，那些不在微软提供黑名单上的非局域网（non- intranet）站点的模式取决于文档类型。</p>
+
+
+<p>再怎么强调每个浏览器中模式精确行为的不同也是不过分的，即使本文中进行了统一的讨论。</p>
+
+
+<dl>
+<dt>怪癖模式（Quirks Mode）</dt>
+<dd>怪癖模式中，为了避免“破坏”那些根据在20世纪90年代末流行的实践创作的页面，浏览器违反了现代的Web格式规范。不同的浏览器实现了不同的怪癖行为。Internet Explorer6、7和8中，怪癖模式有效地冻结在IE5.5 。其他浏览器中，怪癖模式是对准标准模式的少量偏移。
+</dd>
+<dd>如果正在创作新网页，你应该符合相关的规范（特别是CSS2.1）且使用标准模式。</dd>
+<dd></dd>
+<dt>标准模式（Standards Mode）</dt>
+<dd>标准模式中，浏览器尝试给符合标准的文档在规范上的正确处理达到在指定浏览器中的程度。</dd>
+<dd>不同的浏览器遵循不同的阶段，所以标准模式也不是一个单一目标。</dd>
+<dd>HTML5把这种模式叫“非怪癖模式（no quirks mode）”</dd>
+<dt>准标准模式（Almost Standards Mode）</dt>
+<dd>irefox、Safari、Chrome、Opera(从7.5开始)和IE8也有个叫“准标准模式”的模式，它按照传统的做法来实现表格单元格的垂直尺寸而不是严格的遵照CSS2规范。Mac IE5、Windows IE6和7、Opera7.5以前版本和Konqueror无需准标准模式，因为它们至少没有在各自的标准模式下严格遵循CSS2规范来实现表格单元格垂直尺寸。实际上，它们的标准模式更接近Mozilla的准标准模式而不是Mozilla的标准模式。</dd>
+<dd>HTML5把这种模式叫着“受限怪癖模式(limited quirks mode)”。</dd>
+<dd></dd>
+<dt>IE7模式</dt>
+<dd>IE8有个模式主要是冻结了IE7标准模式的副本。其他浏览器没有像这样的模式，且该模式也未被HTML5指定。</dd>
+</dl>
+
+
+<h4>内容类型为application/xhtml+xml的模式（XML模式）</h4>
+
+
+<p>Firefox、Safari、Chrome和Opera中，application/xhtml+xml HTTP内容类型（不是meta元素也不是doctype!）会触发XML模式。在XML模式中，浏览器尝试给XML文档在规范上的正确处理达到在制定浏览器中的程度。</p>
+
+
+<p>IE6、7和8不支持application/xhtml+xml，Mac IE5也如此。</p>
+
+
+<p>基于WebKit的Nokia S60 浏览器中，application/xhtml+xml HTTP内容类型不能触发XML模式，因为在移动的围墙花园（mobile walled gardens）中关注点是对不规范内容的兼容性。（<a href="http://simon.html5.org/articles/mobile-results">旧式的“移动浏览器”无法使用真正的XML解析器</a>，因为不规范内容已被标记为XML。）</p>
+
+
+<p>由于没有充分地测试Konqueror，我无法确切说出在这个浏览器中会发生什么。</p>
+
+
+<h4>非Web模式（Non-Web Modes）</h4>
+
+
+<p>某些引擎拥有的模式与Web内容无关。为了完整性，它们仅仅在这里被提到。Opera有个WML2.0模式。Leopard上的WebKit有个用于旧式Dashboard widgets的特定模式。</p>
+
+
+<h3>影响</h3>
+
+
+<p>以下是这些模式的主要影响：</p>
+
+
+<h4>布局</h4>
+
+
+<p>text/html的模式主要是影响CSS布局。例如，表格不继承样式是个怪癖。在某些浏览器的怪癖模式下，盒模型（box model）变成IE5.5的盒模型。本文档没有列举出所有的布局怪癖。</p>
+
+
+<p>准标准模式（有这种模式的浏览器中）中，仅包含图片的表格单元格的高和标准模式中不同。</p>
+
+
+<p>XML模式中，选择器有不同的区分大小写行为。此外，用于HTML body元素的特有规则不能应用在那些没有实现最新CSS2.1改变的较旧版本的浏览器。</p>
+
+
+<h4>解析</h4>
+
+
+<p>也有一些怪癖影响HTML和CSS的解析且会导致符合标准的网页被错误解析。怪癖布局决定了这些怪癖是否开启。无论如何，了解怪癖模式和标准模式在CSS布局和解析（非HTML解析）上的主要异同是非常重要的。</p>
+
+
+<p>一些人错误地把标准模式称为“严格解析模式（strict parsing mode）”，其让人误解了浏览器强制执行HTML语法规则和用浏览器评估标记的正确性。情况并非如此。即使当标准模式布局生效时，浏览器依旧会做标签杂烩汤（tag soup，http://en.wikipedia.org/wiki/Tag_soup）修正工作。（在2000年Netscape6发布前，Mozilla的确有用于强制执行HTML语法规则的解析模式。这些模式和现有的Web内容不兼容而被遗弃。）</p>
+
+
+<p>另一个常见的误解是关于XHTML解析的。通常认为用XHTML doctype得到不同的解析。其实并非如此，内容类型是text/html的XHTML文档所用解析器和HTML文档的是同一个。目前浏览器在意的是文档类型为text/html的XHTML仅是“撒面包丁的标签杂烩汤（tag soup with croutons）”（到处是额外的斜线）。</p>
+
+
+<p>仅当使用XML文档类型的文档（例如：application/xhtml+xml或xmapplication/）会触发XML模式来解析，这时的解析器完全不同于HTML解析器。</p>
+
+
+<h4>脚本</h4>
+
+
+<p>虽然怪癖模式主要是关于CSS的，但也有一些是关于脚本的。例如，Firefox的怪癖模式中，HTML id 属性像在IE一样建立了全局脚本作用域的对象引用。IE8中关于脚本的影响比其他浏览器更值得关注。</p>
+
+
+<p>XML模式中，某些DOM API的行为彻底不同，因为XML的DOM API行为被定义时不兼容HTML的行为。</p>
+
+
+<h3>doctype嗅探（也叫doctype转换）</h3>
+
+
+<p>现代浏览器使用doctype嗅探来决定text/html文档的引擎模式。这意味着模式的选择是基于HTML文档开始的文档类型声明（或缺少）。（这不适于使用XML文档类型的文档。）</p>
+
+
+<p>文档类型声明（doctype）是SGML的语法伪造，SGML是个旧式的标记框架，HTML5之前的HTML就是依据其定义的。HTML4.01规范中，文档类型声明描述的是HTML的<a href="http://www.w3.org/TR/html4/struct/global.html#h-7.2">版本信息</a>。尽管名字叫“文档类型声明”且HTML 4.01规范所描述的是关于“版本信息”，文档类型声明并不适用把SGML或XML文档分类为特定类型的文档，即使它看起来像是（因为名字）。（<a href="http://dancewithnet.com/#xml">更多内容在附录中</a>）</p>
+
+
+<p>HTML4.01规范和ISO 8879（SGML）都没有说关于使用文档类型声明作为引擎模式转换的任何事情。doctype嗅探是基于观察，在doctype嗅探被设计时，绝大部分的怪癖文档既没有文档类型声明也没有引用旧的DTD。HTML5接受这个事实，且定义了text/html中doctype作为唯一的模式转换。</p>
+
+
+<p>典型的预HTML5（pre-HTML5）文档类型声明包含（被空白分开）“&lt;!DOCTYPE”字符串，根元素（“html”）的通用标识符， “PUBLIC”字符串，处于引号中的DTD公共标识符，同一DTD的可能系统标识符（URL）和字符 “&gt;”。文档类型声明位于文档的根元素开始标签之前。</p>
+
+
+<h3>选择doctype</h3>
+
+
+<h4>text/html</h4>
+
+
+<p>下面是创建新的text/html文档时如何选择doctype的简单指南：</p>
+
+
+<dl>
+<dt>标准模式，最前沿的验证</dt>
+<dd><code>&lt;!DOCTYPE html&gt;</code></dd>
+<dd>如果想<a href="http://html5.validator.nu/">验证</a>诸如<code>&lt;video&gt;</code>、<code>&lt;canvas&gt;</code>和ARIA这样的新特性，那么这样做是对的。注意，HTML5的有效定义依旧在变化中，请确保在Firefox、Safari、Chrome、Opera9或Opera10中测试图像对齐。在Internet Explorer中测试图像对齐是不足够的，无论如何请确保在IE8中也进行了测试。</dd>
+<dt>标准模式，更稳定的验证目标</dt>
+<dd><code>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;</code></dd>
+<dd>这个doctype也会触发标准模式，且10岁大的HTML4.01有效定义是稳定的。请确保在Firefox、Safari、Chrome、 Opera9或Opera10中测试图像对齐。在Internet Explorer中测试图像对齐是不足够的，无论如何请确保在IE8中也进行了测试。</dd>
+<dt>要使用标准模式，但仍要验证不推荐标记或在表格布局中使用切片图像且不想去修复它们。</dt>
+<dd><code>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot; &quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</code></dd>
+<dd>它会触发准标准模式（和老掉牙的Mozilla中的完全标准模式full Standards mode）。请注意，如果以后移植到HTML5上，基于利用表格实现的切片图像的布局可能会<a href="http://www.mozilla.org/docs/web-developer/faq.html#gaps">被破坏</a>（且完整标准模式也如此）。</dd>
+<dt>故意要使用怪癖模式</dt>
+<dd>没有doctype。</dd>
+<dd>请别这样做。故意为怪癖模式所做的设计将会困扰你，在将来你的同事或继任者甚至没有人关心Windows IE6（Netscape4.x和IE5已经没有人关心了）。为怪癖模式设计是个坏主意。相信我。</dd>
+<dd>如果你想依旧支持Windows IE6，对它做一个特别的hack使用<a href="http://www.quirksmode.org/css/condcom.html">条件注释</a>比使其他浏览器退步到怪癖模式好。</dd>
+</dl>
+
+
+<p>我不推荐任何的XHTML doctype，因为<a href="http://hixie.ch/advocacy/xhtml">XHTML被用作text/html被认为是有害的</a>。无论如何，如果你选择使用XHTML doctype，请注意XML声明会使IE6（但不是IE7！）触发怪癖模式。</p>
+
+
+<h4>application/xhtml+xml</h4>
+
+
+<p>对application/xhtml+xml的简单指南是绝不使用doctype。该方式下的网页不是“严格一致”的XHMTL1.0，但这并不重要。（请看后面的<a href="http://dancewithnet.com/#xml">附录</a>）</p>
+
+
+<h3>IE8 并发症</h3>
+
+
+<p><a href="http://www.alistapart.com/articles/beyonddoctype">A List Apart 曾介绍</a> ，IE8除doctype外会使用基于meta元素的模式转换作为模式选择的因素之一。（请看<a href="http://ln.hixie.ch/?start=1201080691&amp;count=1">Ian Hickson</a>、<a href="http://lists.w3.org/Archives/Public/public-html/2007Apr/0279.html">David Baron</a>、<a href="http://dbaron.org/log/2008-01#e20080124a">David Baron again</a>、<a href="http://weblogs.mozillazine.org/roc/archives/2008/01/post_2.html">Robert O’Callahan</a> 和 <a href="http://webkit.org/blog/155/versioning-compatibility-and-standards/">Maciej Stachowiak</a>的评论。）</p>
+
+
+<p>IE8有4种模式：IE5.5怪癖模式、IE7标准模式、IE8 准标准模式 和IE8标准模式。模式的选择取决于来自几个方面的数据：doctype、meta元素、HTTP头、来自微软的定期下载数据、局域网域、用户所做设置、局域网管理员所做设置、父框架的模式（如果有）和地址栏兼容视图按钮被用户触发。（对于嵌入该引擎的其他应用，模式也取决于嵌入的应用。）</p>
+
+
+<p>幸运的是如果出现下列情况，IE8大体上会像其他浏览器一样使用doctype嗅探：</p>
+
+
+<ul>
+<li>作者没有设置X-UA-Compatible HTTP头</li>
+<li>作者没有设置X-UA-Compatible meta标签</li>
+<li>微软没有在黑名单中放置该站点的域名</li>
+<li>局域网管理员没有把该站点放置到<a href="http://go.microsoft.com/fwlink/?LinkId=145413">黑名单</a>上</li>
+<li>用户没有按下兼容视图按钮（Compatibility View button） (或以其他方式添加到某个特定的用户黑名单中)</li>
+<li>该站点不在局域网域中</li>
+<li>用户没有选择在IE7中显示所有站点</li>
+<li>页面没有通过frame嵌入到兼容模式的页面中</li>
+</ul>
+
+
+<p>上述除两个关于X-UA-Compatible的情况外，IE8像IE7一样执行doctype嗅探。IE7仿真（ IE7 emulation）叫兼容视图。</p>
+
+
+<p>在 X-UA-Compatible 情况下，IE8的行为和其他浏览器完全不同。想看本页的<a href="http://dancewithnet.com/#ie8modes">附录</a>或<a href="http://hsivonen.iki.fi/doctype/ie8-mode.pdf">PDF</a>和<a href="http://hsivonen.iki.fi/doctype/ie8-mode.png">PNG</a>格式的流程图。</p>
+
+
+<p>不幸的是，没有 X-UA-Compatible的HTTP头或meta标签，即使使用了合适的doctype，IE8让用户无意间使页面从IE8的标准模式降到IE7模式，这是一种仿真的IE7标准模式。更糟糕的是，局域网管理员也可以这么做。微软也可以把你所用的所有域名到列入黑名单。</p>
+
+
+<p>为了对付这些影响，doctype是不够的，你需要X-UA-Compatible HTTP头和meta标签。</p>
+
+
+<p>下面的简单指南是针对已经有doctype在其他浏览器触发标准模式或者准标准模式的新的text/html文档如何选择X-UA-Compatible HTTP头或meta标签的：
+</p>
+
+
+<dl>
+<dt>你的域名没有在微软的黑名单上，你更关注是没有浏览器专属的令人讨厌的东西而不是确保用户无法回退去呈现IE7的行为。</dt>
+<dd>你不需要包括X-UA-Compatible HTTP头或meta标签。</dd>
+<dt>你的域名在微软的黑名单中，由于你域名中的其他作者破坏了站点或许导致用户对整个域启用了兼容视图，你担心Google或Digg用frame嵌入你的站点或你想确保用户无法使用兼容视图</dt>
+<dd>首先，在你的页面包含后面的meta元素（它在HTML5中是非法的） <code>&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=Edge&quot;&gt;</code> （在任何脚本元素前），或者设置后面的HTTP头：X-UA-Compatible: IE=Edge</dd>
+<dt>你的站点在IE7中工作但在IE8中破坏</dt>
+<dd>首先，在你的页面包含后面的meta元素（它在HTML5中是非法的）（在任何脚本元素前），或者设置后面的HTTP头： X-UA-Compatible: IE=EmulateIE7，然后修复你的站点不依赖非标准的IE7行为和迁移到IE=Edge。</dd>
+</dl>
+
+
+<h3>相关链接</h3>
+
+
+<ul>
+<li>Eric Meyer在<a href="http://www.oreillynet.com/pub/a/network/2000/04/14/doctype/index.html">使用正确doctype</a>中写的关于Mac IE5的模式</li>
+<li><a href="http://www.mozilla.org/docs/web-developer/quirks/doctypes.html">Mozilla的doctype嗅探</a> by David Baron</li>
+<li>Lance Silver在<a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnie60/html/cssenhancements.asp">IE6中的CSS增强</a>中讨论了在Windows IE6中的模式和doctype嗅探</li>
+<li><a href="http://www.opera.com/docs/specs/doctype/">Opera9的doctype转换</a></li>
+<li>Faruk Ateş的<a href="http://farukat.es/journal/2009/05/245-ie8-and-the-x-ua-compatible-situation">IE8和X-UA-Compatible解决方案</a></li>
+</ul>
+
+
+<h3>补遗：对XML的实现者和规范作者的恳求</h3>
+
+
+<p>请不要把doctype嗅探带到XML。</p>
+
+
+<p>doctype嗅探是用签杂烩汤似的方法解决一个标签杂烩汤问题。doctype嗅探是在HTML4和CSS2规范发布后设计的一种试探方法，它从文档中区分出过时文档以符合其作者可能期望的行为。</p>
+
+
+<p>偶尔有人建议在XML上使用doctype嗅探来调度不同的处理、识别正在使用的词汇表或激活特性。这是个坏主意。调度和词汇表识别应该是基于名字空间的，而特性激活应该是基于明确的处理指令或元素。</p>
+
+
+<p>良构（well-formedness）的整个思想是介绍允许XML的无DTD解析，且推广无doctype文档。在正式情况下，两个XML文档有相同的规范形式且应用不同地处理它们（且不同之处并非因为没有选择处理外部实体），这个应用或许被破坏了。在实践情况下，如果两个XML文档导致同样的内容被报告（qnames忽略）给SAX2<a href="http://www.saxproject.org/apidoc/org/xml/sax/ContentHandler.html">内容处理器</a>且应用不同地处理文档，这个应用或者被破坏了。考虑到作为 Web作者无法相信每个人都会使用解决额外实体的XMLprocessor来解析其页面（即使一些浏览器看起来这样做，因为它们会映射一定公共的标识符到一个有删节的定义实体的DTD），插入doctype到XML中用于Web是毫无意义的且通常会导致货运崇拜（cargo cultish）习惯。(您仍然使用W3C验证器的<a href="http://validator.w3.org/docs/users.html#option-doctype">DTD覆盖功能</a>来对一个DTD进行验证，虽然W3C验证器会说结果仅仅是暂时有效。或更好的是，你可以用<a href="http://validator.nu/">放宽NG验证</a>，它不会污染模式引用的文档。)为了嗅探而要求doctype是非常愚蠢的，即使那是在HTML实践中的解决方法。</p>
+
+
+<p>此外，当低级别的规范定义两个相等的东西时，高级别的规范不应该尝试给它们不同的含义。请考虑<code>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</code>。如果删除公共标识符，依旧指定了同样的DTD，因此doctype <code>&lt;!DOCTYPE html SYSTEM &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</code>表示和前面的doctype一样。应该不同地嗅探它们么？可以进一步理论。假设复制给example.com一个叫foobar.dtd的DTD：<code>&lt;!DOCTYPE html SYSTEM &quot;http://example.com/foobar.dtd&quot;&gt;</code>。这该如何嗅探？应该是同一个意思。甚至整个DTD可以贴在文档中。</p>
+
+
+<p>换句话说，如果有#include “foo.h”，你不应该给名字foo.h绑定任何black magic，因为它应该允许复制foo.h的内容到文档中或复制foo.h到bar.h中且表示#include “bar.h”。</p>
+
+
+<p>我不担心HTML和SGML构造相同的参数的原因是Web浏览器不会使用真正的SGML解析器去解析HTML，所以我认为伪装成SGML进行处理是没有用的。无论如何，如果你还不相信，请看<a href="http://groups.google.com/group/comp.text.sgml/msg/c3e53dee2c152a81">W. Eliot Kimber关于此事的文章 comp.text.sgml</a> </p>
+
+
+<h3>附录：text/html中一些doctype的处理方式</h3>
+
+
+<p>下表中，怪癖模式、标准模式和准标准分别表示为Q、S和A。当浏览器仅有两种模式时，如果表格单元格的行高和Mozilla的标准模式表现一致时，标准模式标记为“S”，如果表格单元格的行高和Mozilla的准标准模式表现一致时，则标记为“A”。</p>
+
+
+<p>请注意使用XML内容模型提供服务的XHTML在XML模式下渲染。</p>
+
+
+<p>本表的目的并不是说表中所有的doctype都是新建页面的合理选择。本表的目的是为了展示我的推荐是依据什么样的数据。</p>
+
+
+<p>下列的简写符号是用于列标题：</p>
+
+
+<dl>
+<dt>NS6</dt>
+<dd>Mozilla 0.6…0.9.4 和 Netscape 6.0…6.2.3</dd>
+<dt>Old Moz</dt>
+<dd>Mozilla 0.9.5 到 1.1 alpha 和 Mozilla 1.0</dd>
+<dt>Moz &amp; Safari &amp; Opera 10 &amp; HTML5</dt>
+<dd>Mozilla 1.0.1, Mozilla 1.1 beta和更高版本, Firefox 到 Netscape 7, Safari 0.9 到 Safari 4.0 beta, Opera 10, Chrome, Konqueror 3.5, HTML5指定的行为</dd>
+<dt>Opera 9.0</dt>
+<dd>Opera 9.0…9.20</dd>
+<dt>IE 8 &amp; Opera 9.5</dt>
+<dd>无 X-UA-Compatible和兼容模式覆盖的默认IE8（该情况下“A”意味着IE8准标准模式）、 Opera 7.5…8.54 和 9.5…9.6</dd>
+<dt>IE 7 &amp; Opera 7.10</dt>
+<dd>IE7、兼容模式且无X-UA-Compatible覆盖的IE8（这种情况下“A”意味IE7模式）和Opera 7.10…7.23</dd>
+<dt>IE 6 &amp; Opera 7.0</dt>
+<dd>Windows IE 6 和 Opera 7.0…7.03</dd>
+<dt>Mac IE 5</dt>
+<dd>Mac IE 5.0…5.2.3</dd>
+<dt>Konq 3.2</dt>
+<dd>Konqueror 3.2.2…3.3 (也可能包括 3.1…3.2.1; 我尚未确定)</dd>
+</dl>
+
+
+<table>
+<thead>
+<tr>
+<th>Doctype</th>
+<th>NS6 </th>
+<th>Old Moz </th>
+<th>Moz &amp; Safari &amp; Opera10 &amp; HTML5</th>
+<th>Opera9.0</th>
+<th>IE8 &amp; Opera9.5 </th>
+<th>IE7 &amp; Opera7.10 </th>
+<th>IE6 &amp; Opera7.0 </th>
+<th>Mac IE5 </th>
+<th>Konq3.2 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th> <a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=">None</a>
+      </th>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+3.2+Final%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.0%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.01%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.0%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fhtml4%2Fstrict.dtd%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"<br>
+&quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.01%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fhtml4%2Fstrict.dtd%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"<br>
+&quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.0+Transitional%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.01+Transitional%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;-//W3C//DTD HTML 4.01 Transitional//EN&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.01+Transitional%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fhtml4%2Floose.dtd%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"<br>
+&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.01+Transitional%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2F1999%2FREC-html401-19991224%2Floose.dtd%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"<br>
+&quot;http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd&quot;&gt;</a></code>
+</th>
+<td>Q</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+HTML+4.0+Transitional%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fhtml4%2Floose.dtd%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"<br>
+&quot;http://www.w3.org/TR/html4/loose.dtd&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.1%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml11%2FDTD%2Fxhtml11.dtd%22%3E">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+Basic+1.0%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml-basic%2Fxhtml-basic10.dtd%22%3E">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot; &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.0+Strict%2F%2FEN%22+%22http%3A%2F%20%2Fwww.w3.org%2FTR%2Fxhtml1%2FDTD%2Fxhtml1-strict.dtd%22%3E">&lt;!DOCTYPE<br>
+html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.0+Transitional%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml1%2FDTD%2Fxhtml1-transitional.dtd%22%3E">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;<br>
+&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a></code>
+      </th>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.1%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml11%2FDTD%2Fxhtml11.dtd%22%3E">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.1//EN&quot; &quot;http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>Q</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+Basic+1.0%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml-basic%2Fxhtml-basic10.dtd%22%3E">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML Basic 1.0//EN&quot; &quot;http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>Q</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.0+Strict%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml1%2FDTD%2Fxhtml1-strict.dtd%22%3E">&lt;?xml<br>
+version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;<br>
+&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>Q</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%3Fxml+version%3D%221.0%22+encoding%3D%22UTF-8%22%3F%3E%3C%21DOCTYPE+html+PUBLIC+%22-%2F%2FW3C%2F%2FDTD+XHTML+1.0+Transitional%2F%2FEN%22+%22http%3A%2F%2Fwww.w3.org%2FTR%2Fxhtml1%2FDTD%2Fxhtml1-transitional.dtd%22%3E">&lt;?xml<br>
+version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot;<br>
+&quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</a></code>
+</th>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22ISO%2FIEC+15445%3A2000%2F%2FDTD+HTML%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;ISO/IEC 15445:2000//DTD HTML//EN&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>S</td>
+<td>S</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22ISO%2FIEC+15445%3A2000%2F%2FDTD+HyperText+Markup+Language%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "ISO/IEC 15445:2000//DTD HyperText Markup<br>
+Language//EN&quot;&gt;</a></code> </th>
+<td>Q</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22ISO%2FIEC+15445%3A1999%2F%2FDTD+HTML%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC &quot;ISO/IEC 15445:1999//DTD HTML//EN&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://hsivonen.iki.fi/doctype/test-quirks.php?doctype=%3C%21DOCTYPE+HTML+PUBLIC+%22ISO%2FIEC+15445%3A1999%2F%2FDTD+HyperText+Markup+Language%2F%2FEN%22%3E">&lt;!DOCTYPE<br>
+HTML PUBLIC "ISO/IEC 15445:1999//DTD HyperText Markup<br>
+Language//EN&quot;&gt;</a></code> </th>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td>Q</td>
+</tr>
+<tr>
+<th><code><a href="http://dancewithnet.com/test-quirks.php?doctype=%3C!DOCTYPE+html%3E">&lt;!DOCTYPE html&gt;</a></code></th>
+<td>Q</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>S</td>
+<td>A</td>
+<td>A</td>
+<td>A</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>历史记录</h4>
+
+
+<p>Moziila的doctype嗅探代码在2000年10月、2001年9月和2002年6月有大幅度的修改。本文档描述的Mozilla（和 Netscape 6.x）建立的状态可以自2000.10.19起在ftp.mozilla.org上看到。本文档未涉及Mozilla M18（和Netscape 6.0 PR3）中的doctype嗅探的工作方式。Safari的doctype嗅探代码自第一个公开的测试版起也有大幅度的修改。本文档不包括比版本V73也叫0.9更早的行为。
+</p>
+
+
+<p>Konqueror3.5之前的doctype嗅探代码似乎来自于Safari的很早的一个版本。Konqueror现在和Safari匹配，其doctype嗅探代码来自Mozilla。</p>
+
+
+<p>从表中可见，Opera的doctype嗅探正由规律的从类似IE向类似Mozilla转变，虽然Opera9.5和9.6在倒退的路上。同时，Opera怪癖模式的布局行为已从仿效IE6的怪癖模式转换到Mozilla的怪癖模式。</p>
+
+
+<h3>附录：IE8的模式选择</h3>
+
+
+<dl>
+<dt>开始：进入“X-UA-Compatible meta?”</dt>
+<dt>X-UA-Compatible meta?</dt>
+<dd>IE=7：使用IE7标准</dd>
+<dd>IE=EmulateIE7: 进入“怪癖或无doctype?(兼容模式)”</dd>
+<dd>IE=IE8 或 IE=IE7 或 IE=a 或 IE=EmulateIE8 或没有或首先出现 script：进入”X-UA-Compatible HTTP头?”</dd>
+<dd>IE=8 或 IE=Edge 或 IE=99 或 IE=9.9：进入“准标准模式?”</dd>
+<dd>IE=5：使用怪癖模式（IE5.5）</dd>
+<dt>X-UA-Compatible HTTP头?</dt>
+<dd>IE=7：使用IE7标准模式</dd>
+<dd>IE=EmulateIE7：进入“怪癖或无doctype？（兼容模式）”</dd>
+<dd>IE=IE8 或 IE=IE7 或 IE=a 或 IE=EmulateIE8 或没有：进入“显示所有站点…预设置？”</dd>
+<dd>IE=8 或 IE=Edge 或 IE=99 或 IE=9.9：进入“准标准模式？”</dd>
+<dd>IE=5：使用怪癖模式（IE5.5）</dd>
+<dt>怪癖模式或无doctype?(兼容模式)</dt>
+<dd>是：使用怪癖模式（IE5.5）</dd>
+<dd>否：使用IE7标准模式</dd>
+<dt>显示所有站点…预设置？</dt>
+<dd>是：进入“怪癖模式或无doctype?(兼容模式)”</dd>
+<dd>否：进入“显示局域网站点…预设置？”</dd>
+<dt>显示局域网站点…预设置？</dt>
+<dd>是：进入“站点位于局域网域？”</dd>
+<dd>否：进入“域名在微软维护的名单上？”</dd>
+<dt>域名在微软维护的名单上？</dt>
+<dd>是：进入“怪癖模式或无doctype?(兼容模式)”</dd>
+<dd>否：进入“被兼容模式页面用Frame嵌入？”</dd>
+<dt>被兼容模式页面用Frame嵌入？</dt>
+<dd>是：进入“怪癖模式或无doctype?(兼容模式)”</dd>
+<dd>否：进入“按下了兼容模式按钮？”</dd>
+<dt>按下了兼容模式按钮？</dt>
+<dd>是：进入“怪癖模式或无doctype?(兼容模式)”</dd>
+<dd>否：进入“怪癖模式或无doctype?(IE8)”</dd>
+<dt>怪癖模式或无doctype?(IE8)</dt>
+<dd>是：进入“使用怪癖模式（IE5.5）”</dd>
+<dd>否：进入“准标准模式？”</dd>
+<dt>准标准模式？</dt>
+<dd>是：使用IE8准标准模式</dd>
+<dd>否：使用IE8标准模式</dd>
+</dl>
+
+
+<p>这些步骤都可以通过<a href="http://hsivonen.iki.fi/doctype/ie8-mode.pdf">PDF</a>和<a href="http://hsivonen.iki.fi/doctype/ie8-mode.png">PNG</a>格式的流程图看到。</p>
+
+
+<h3>鸣谢</h3>
+
+
+<p>感谢Simon Pieters、Simon Pieters和Anne van Kesteren帮助我改正了各种Opera版本的模式表和他们的评论。感谢Simon Pieters制作了另一份IE8的流程图。</p>
+
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/ka5vlcfdf54v3h685pgp7mnqq4/300/250?ca=1&amp;fh=280#http%3A%2F%2Fdancewithnet.com%2F2009%2F06%2F14%2Factivating-browser-modes-with-doctype%2F" width="100%" height="280" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/dancewithnet/~4/5wytCIFCfTg" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

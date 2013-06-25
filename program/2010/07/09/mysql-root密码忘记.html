@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>mysql root密码忘记</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>mysql root密码忘记</h2>
+<p class="meta">09 Jul 2010</p>
+
+<div class="post">
+<h2>mysql root密码忘记</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-09 12:40:26</h3>
+
+<h3>original <a href="http://my.oschina.net/huxuanhui/blog/5987">http://my.oschina.net/huxuanhui/blog/5987</a></h3>
+
+<p>停止mysql服务 service mysqld stop
+找到 mysqld_safe所在目录，这个可以通过 rpm -ql mysql-server 来找到，
+然后运行 mysqld_safe --skip-grant-tables （注意这里是两条中划线，网上很多都是一条，一条不行）
+然后mysql -u root -p
+在 Enter password: 这里直接回车
+use mysql;
+update user set password=pass...</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

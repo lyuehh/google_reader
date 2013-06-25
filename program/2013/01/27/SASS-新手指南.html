@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>SASS 新手指南</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>SASS 新手指南</h2>
+<p class="meta">27 Jan 2013</p>
+
+<div class="post">
+<h2>SASS 新手指南</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-01-26 23:32:14</h3>
+
+<h3>original <a href="http://blog.jobbole.com/32741/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=saas-%25e6%2596%25b0%25e6%2589%258b%25e6%258c%2587%25e5%258d%2597">http://blog.jobbole.com/32741/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=saas-%25e6%2596%25b0%25e6%2589%258b%25e6%258c%2587%25e5%258d%2597</a></h3>
+
+<p>英文原文：<a href="http://blog.teamtreehouse.com/the-absolute-beginners-guide-to-sass">teamtreehouse.com</a>，编译：<a href="http://www.w3cplus.com/css/the-absolute-beginners-guide-to-sass.html" rel="nofollow">w3cplus – 大漠</a></p>
+
+
+<p><strong>什么是Sass？</strong></p>
+
+
+<p>Sass是一门非常优秀的CSS预处语言，他是由Hampton Catlin创立的。它可以减化CSS的工作流，使开发者更加容易开发，维护CSS样式。</p>
+
+
+<p>例如，你是否在特定的样式表中查找和替换一个十六进制的颜色而烦恼？或者你正在寻找一个计算器为多栏布局的宽度计算而头痛？（不用担心，Sass能帮你解决这样的烦恼）。</p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/css.jpg" rel="lightbox[32741]" title="Saas 新手指南"><img title="Saas 新手指南" src="http://blog.jobbole.com/wp-content/uploads/2013/01/css.jpg" alt="Saas 新手指南" width="532" height="210"></a></p>
+
+
+<p>本文将介绍Sass的一些基本概念，比如说“变量”、“混合参数”、“嵌套”和“选择器继承”等。</p>
+
+
+<p>Sass和CSS非常相似，但是在Sass中是没有花括号（｛｝）和分号（；）的。</p>
+
+
+<p>如下面的CSS：</p>
+
+
+<pre>#skyscraper_ad { 
+  display: block; 
+  width: 120px; 
+  height: 600px; 
+} 
+#leaderboard_ad { 
+  display: block; 
+  width: 728px; 
+  height: 90px; 
+}</pre>
+
+
+<p>在Sass中，上面的CSS代码你要写成下面这样：</p>
+
+
+<pre>#skyscraper_ad 
+  display: block 
+  width: 120px 
+  height: 600px 
+#leaderboard_ad 
+  display: block 
+  width: 728px 
+  height: 90px</pre>
+
+
+<p>Sass使用两个空格琮定义嵌套的区别。</p>
+
+
+<p>你现在看过了Sass是如何书写的，接下来我们一起看一些Sass方面的介绍，让Sass在你手中变得不在可怕。</p>
+
+
+<p><strong>变量（Variables）</strong></p>
+
+
+<p>在Sass中定义变量，是用“$”符号声明，然后后面跟变量名称。在这个例子中，定义变量“red”，在变量名后使用冒号（：），然后紧跟变量值：</p>
+
+
+<pre>$red: #ff4848</pre>
+
+
+<p>Sass还内置了函数功能，例如变暗（darken）和变亮（lighten），他们可以帮助你修改变量。</p>
+
+
+<p>在这个例子中，段落要使用一个比“h1”标签更深的红色，就可以这样使用：</p>
+
+
+<pre>$red: #ff4848
+$fontsize: 12px
+h1
+  color: $red
+p
+  color: darken($red,10%)</pre>
+
+
+<p>你也可以在相同的变量上做加减运算的操作。如果我们想将颜色变黑，我们也可以在变量的基础上减一个十六进制的颜色，例如“#101”。如果我们想把字号调大“10px”，我们也可以在字号的变量基础上加上这个值。</p>
+
+
+<pre>/*加法和减法*/
+color: $red - #101
+font-size: $fontsize + 10px</pre>
+
+
+<p><strong>嵌套（Nesting）</strong></p>
+
+
+<p>Sass有两种嵌套规则：</p>
+
+
+<p><strong>选择器嵌套</strong></p>
+
+
+<p>选择器嵌套是Sass嵌套规则中的第一种。</p>
+
+
+<p>Sass的嵌套类似于你的HTML嵌套：</p>
+
+
+<pre>$fontsize: 12px
+.speaker
+  .name
+    font:
+      weight: bold
+      size: $fontsize + 10px
+  .position
+    font:
+      size: $fontsize</pre>
+
+
+<p>如果你看了Sass生成的CSS，你可以看到“.name”嵌套在“.speaker”内，这里生成的CSS选择器是“.speaker .name”。</p>
+
+
+<pre>.speaker .name {
+  font-weight: bold;
+  font-size: 22px;
+}   
+.speaker .position {
+  font-size: 12px;  
+}</pre>
+
+
+<p><strong>属性嵌套</strong></p>
+
+
+<p>属性嵌套是Sass嵌套的第二种</p>
+
+
+<p>相同前缀的属性，你可以进行嵌套：</p>
+
+
+<pre>$fontsize: 12px
+.speaker
+  .name
+    font:
+      weight: bold
+      size: $fontsize + 10px
+  .position
+    font:
+      size: $fontsize</pre>
+
+
+<p>在上面的例子中，我们有一个“font:”，在新的一行增加两个空格放置他的属性（通常我们看到的是使用连字符“-”来连接）。</p>
+
+
+<p>因此我们先写“font:”属性，然后断行空两格，写“weight:”属性，在CSS中就变成了“font-weight:”属性。</p>
+
+
+<pre>.speaker .name {
+  font-weight: bold;
+  font-size: 22px;
+}   
+.speaker .position {
+  font-size: 12px;  
+}</pre>
+
+
+<p>所有连字符的选择器都支持。</p>
+
+
+<p>这种嵌套用来组织你的CSS结构是非常棒的，可以让你不在写一些重复的代码。</p>
+
+
+<p><strong>混合（Mixins）</strong></p>
+
+
+<p>混合是Sass中另一个很优秀的特性。混合可以让你定义一整块的Sass代码，甚至你可以给他们定义参数，更酷的是你还可以设置默认值。</p>
+
+
+<p>使用关键词“@mixin”来定义Sass的混合，你可以你自己的喜好定义一个混合的名称。如果你需要设置一些参数，你还可以将参数设置到这些代码片段中；如果你需要设置默认值，你也可以在混合的代码片段中设置默认值。</p>
+
+
+<p>调用混合代码片段，可以使用Sass中的关键词“@include”调用，并在其后面跟上你的混合代码片段的名称，你还可以使用括号，在里面设置一些参数。</p>
+
+
+<p>来看一个简单的例子：</p>
+
+
+<pre>@mixin border-radius($amount: 5px)
+  -moz-border-radius: $amount
+  -webkit-border-radius: $amount
+  border-radius: $amount
+h1
+  @include border-radius(2px)
+.speaker
+  @include border-radius</pre>
+
+
+<p>上面的Sass代码将转译成下面的CSS代码：</p>
+
+
+<pre>h1 {
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}   
+.speaker {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}</pre>
+
+
+<p>我们给“h1”元素指定了一个特定的圆角值，但是并没有给“.speaker”指定任何值，因此他将使用的是默认值“5px”。</p>
+
+
+<p><strong>选择器继承</strong></p>
+
+
+<p>选择器的继承可以让你的选择器继承另一个选择器的所有样式风格，这是一个非常优秀的特性。</p>
+
+
+<p>使用选择器的继承，要使用Sass的关键词“@extend”，后而跟上你需要继承的选择器，那么这个选择器就会继承另一个选择器的所有样式。（当然他们是有继承和被继承的关系）</p>
+
+
+<pre>h1
+  border: 4px solid #ff9aa9
+.speaker
+  @extend h1
+  border-width: 2px</pre>
+
+
+<p>上面的Sass代码将转译成下面的CSS代码：</p>
+
+
+<pre>h1,
+.speaker {
+  border: 4px solid #ff9aa9;
+}
+.speaker {
+  border-width: 2px;
+}</pre>
+
+
+<p><strong>尝试Sass</strong></p>
+
+
+<p><strong>网上尝试</strong></p>
+
+
+<p>如果你的本地电脑没有安装Sass，你可以在<a href="http://sass-lang.com/try.html">网上</a>尝试使用。</p>
+
+
+<p>在转译之前，你需要选择底部的“Indented Syntax”选项。</p>
+
+
+<p><strong>安装</strong></p>
+
+
+<p>Sass是一个Ruby gem。如果你的本地已经安装了Ruby gems，那么可以在你命令终端直接运行：</p>
+
+
+<pre>gem install sass</pre>
+
+
+<p>Sass也可以使用命令行工具将Sass文件转译成CSS文件。</p>
+
+
+<p>你可以键入“sass –watch sass_folder:stylesheets_folder”，这个时候你的Sass文件（文件扩展名必须是.sass）stylesheets_folder就会把转译的样式文件保存在“sass_folder”目录，当然你的sass文件必须保存在这个文件目录中。“–watch”选项的意思就是将这个目录中的sass文件转译成样式文件。</p>
+
+
+<p><strong>CSS转换成Sass</strong></p>
+
+
+<p>在现有的项目中通过“sass-convert”使用sass。</p>
+
+
+<p>在终端进入你的目录中，键入“sass-convert –from css –to sass -R .”。将CSS转换成Sass。其中“-R”表示递归，“.”表示当前目录。</p>
+
+
+<p><strong>Scss</strong></p>
+
+
+<p>在这里我们只介绍了Sass的语法，然后还有一个新的名称叫SCSS或者Sassy CSS。不同的是SCSS看起来更像CSS，但他也像Sass一样具有变量、混合、嵌套和选择器继承等特性。</p>
+
+
+<p><strong>总结</strong></p>
+
+
+<p>在你组织和管理CSS时，Sass真的很优秀。还有个项目<a title="Compass" href="http://compass-style.org/">Compass</a>,它在CSS框架中使用混合模式，而不是去修改你的HTML结构或者重新定义你的类名。</p>
+
+
+<p>那你还在等什么呢？在你的下一个项目中就尝试使用Sass吧。</p>
+
+
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/22186/">SASS用法指南</a></li><li><a href="http://blog.jobbole.com/31147/">CSS架构</a></li><li><a href="http://blog.jobbole.com/10408/">如何将页脚固定在页面底部</a></li><li><a href="http://blog.jobbole.com/24845/">网页设计师必备的10个CSS技巧</a></li><li><a href="http://blog.jobbole.com/20264/">响应式设计的5个CSS实用技巧</a></li><li><a href="http://blog.jobbole.com/28088/">爱上朴实的CSS细节</a></li><li><a href="http://blog.jobbole.com/28681/">初步认识 LESS</a></li><li><a href="http://blog.jobbole.com/31926/">CSS基线之道</a></li><li><a href="http://blog.jobbole.com/1564/">30个最常用CSS选择器解析</a></li><li><a href="http://blog.jobbole.com/8966/">编写出色CSS代码的13个建议</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

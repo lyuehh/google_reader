@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用jekyll写博客</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用jekyll写博客</h2>
+<p class="meta">31 Mar 2012</p>
+
+<div class="post">
+<h2>使用jekyll写博客</h2>
+
+<h3>by 于仁颇黎</h3>
+
+<h3>at 2012-03-30 18:24:31</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/brucebot/~3/Snv5DI4FU-k/">http://feedproxy.google.com/~r/brucebot/~3/Snv5DI4FU-k/</a></h3>
+
+<ul>
+<li>2012-03-30 初成</li>
+<li>2012-04-17 完成jekyll分页显示和自动摘要</li>
+<li>2012-04-25 增加源码链接</li>
+<li>2012-06-29 增加<a href="http://brucebot.com/gallery/">我的相册</a></li>
+</ul>
+
+
+
+
+<p>关于网上使用jekyll的文章,有非常之多,这里就只是记录一下目前我的博客的使用方案.</p>
+
+
+
+
+<h2>需要的Gem:</h2>
+
+
+
+
+<ul>
+<li>gem install exifr</li>
+<li>gem install rmagick</li>
+<li>gem install nokogiri</li>
+<li>gem install rdiscount</li>
+</ul>
+
+
+
+
+<p>Refer:<a href="http://brandonbohling.com/2011/08/27/Installing-Jekyll-on-Mac/">How to install Jekyll on Mac OSX</a></p>
+
+
+
+
+<ol>
+<li><del>jekyll 本地运行,用来生成静态网站</del></li>
+<li>评论交由disqus处理</li>
+<li>Mou 用来编辑markdown,写博客</li>
+<li>生成博客markdown<code>rake post["post tile",category]</code>
+
+<pre><code> #Usage: rake post[&quot;title&quot;,category]
+ desc &quot;Given a title as an argument, create a new post file&quot;
+ task :post, [:title, :category] do |t, args|
+   filename = &quot;#{Time.now.strftime(&#39;%Y-%m-%d&#39;)}-#{args[:title].gsub(/\s/, &#39;-&#39;).downcase}.md&quot;
+   path = File.join(&quot;_post&quot;, filename)
+   if File.exist? path; raise RuntimeError.new(&quot;Won&#39;t clobber #{path}&quot;); end
+   File.open(path, &#39;w&#39;) do |file|
+     file.write &lt;&lt;-EOS
+ ---
+ layout: post
+ categories: 
+  - #{args[:category]}
+ title: #{args[:title]}
+ tags:
+   - 
+ draft: true
+ date: #{Time.now.strftime(&#39;%Y-%m-%d %k:%M:%S&#39;)}
+ ---
+ EOS
+     end
+     puts &quot;Now open #{path} in an editor.&quot;
+     system &quot;open #{path}&quot;
+  end #task rake write
+</code></pre>
+
+<p>执行这个命令后会自动生成新的文章,保存在_posts下面,并自动用Mou打开写文章了. 新的文章会有一个draft:开关，写文章时设置为<code>true</code>，则不会发表，当写完后改为<code>false</code>就会自动发表了。</p></li>
+<li>生成页面 <code>rake page["title"]</code>
+
+<pre><code>     #Usage: rake page[&quot;title&quot;]
+ desc &quot;Given a title as an argument, create a new post file&quot;
+ task :page, :title do |t, args|
+   filename = &quot;#{args.title.gsub(/\s/, &#39;-&#39;).downcase}.markdown&quot;
+   path = File.join(&quot;pages&quot;, filename)
+   if File.exist? path; raise RuntimeError.new(&quot;Won&#39;t clobber #{path}&quot;); end
+   File.open(path, &#39;w&#39;) do |file|
+     file.write &lt;&lt;-EOS
+ ---
+ layout: page
+ title: #{args.title}
+ date: #{Time.now.strftime(&#39;%Y-%m-%d %k:%M:%S&#39;)}
+ ---
+ EOS
+     end
+     puts &quot;Now open #{path} in an editor.&quot;
+     system &quot;open #{path}&quot;
+  end #task rake page
+</code></pre>
+
+<p>执行这个命令后会自动生成新的文章,保存在pages下面,并自动用Mou打开写文章了.</p></li>
+<li>使用<a href="http://brucebot.com/2012/03/29/automator-images-resize-and-watermark/">resize/watermark</a>的automator应用给设置图片大小和加水印效果</li>
+<li>文章写好后,执行<code>rake preview</code>可以预览效果.
+
+<pre><code> desc "Launch preview environment"
+ task :preview do
+   system "jekyll --rdiscount --server"
+ end # task :preview
+</code></pre></li>
+<li><del>文章发布<code>rake deploy</code>
+
+<pre><code> desc &quot;Building the site and deploy to remote&quot;
+ task :deploy do
+  system &quot;jekyll --rdiscount &amp;&amp; rsync -avz --delete _site/ xxx@xxx.com:/home/xxx/&quot;
+ end # task :deploy&lt;/del&gt;
+</code></pre></del></li>
+<li>文章发布<code>rake deploy</code>
+
+<pre><code> desc &quot;deploy site to remote&quot;
+ task :delpoy do
+   system &quot;git add . &amp;&amp; git commit -m &#39;update post&#39; &amp;&amp; git push deploy master&quot;
+ end # task :deploy
+</code></pre>
+
+<p> 参考:<a href="https://github.com/mojombo/jekyll/wiki/Deployment">https://github.com/mojombo/jekyll/wiki/Deployment</a></p></li>
+<li>左边的Instagram照片,参考@lianxu的文章<a href="http://www.lianxu.me/blog/2011/12/21/integrate-instagram-into-octopress/">整合instagrm到jekyll</a>生成.</li>
+<li>jekyll分页显示
+在_config.xml里面增加一项 <code>paginate: 5</code> 5表示每页显示文章的数目然后查看:<a href="https://github.com/mojombo/jekyll/wiki/Pagination">https://github.com/mojombo/jekyll/wiki/Pagination</a> 里面选择一个代码加入到主页当中去,我是选择第二个考虑page1的.</li>
+<li>自动摘要
+使用10的分页显示后,因为原来的文章每有用到more的摘要功能,看起来每一页会相当长,于是加一个自动摘要的功能,这样单页显示就好看多了.从
+<a href="https://github.com/MattHall/truncatehtml/blob/master/html_filters.rb">https://github.com/MattHall/truncatehtml/blob/master/html_filters.rb</a>下载<em>html_filter.rb</em>插件放入<strong>_plugin</strong>文件夹.
+原始的<em>html_filter.rb</em>不支持中文,使用文本编辑器打开,找到一行代码:
+
+<pre><code>doc = Nokogiri::HTML(Iconv.conv('ASCII//TRANSLIT//IGNORE', 'UTF8', raw))
+</code></pre>
+
+将其更改成
+
+<pre><code>doc = Nokogiri::HTML(Iconv.conv('UTF8//TRANSLIT//IGNORE', 'UTF8', raw))
+</code></pre></li>
+<li>所有源码可以在github上查看,链接:<a href="https://github.com/brucebot/brucebot.com.site">https://github.com/brucebot/brucebot.com.site</a></li>
+<li><a href="http://brucebot.com/gallery/">我的相册</a> 使用<a href="https://github.com/brucebot/jekyll-gallery-generator">jekyll-gallery-generator</a>搭建</li>
+</ol>
+
+
+
+
+<p><iframe src="http://feedads.g.doubleclick.net/~ah/f/d2o5eehf2bdlt0kuu463a5f8hs/468/60#http%3A%2F%2Fbrucebot.com%2F2012%2F03%2Fblog_with_jekyll_and_markdown%2F" width="100%" height="60" frameborder="0" scrolling="no" marginwidth="0" marginheight="0"></iframe></p>
+
+
+<p><img src="http://feeds.feedburner.com/~r/brucebot/~4/Snv5DI4FU-k" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

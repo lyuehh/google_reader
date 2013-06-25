@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>C#中的 ref 传进出的到底是什么 解惑篇</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>C#中的 ref 传进出的到底是什么 解惑篇</h2>
+<p class="meta">05 Sep 2010</p>
+
+<div class="post">
+<h2>C#中的 ref 传进出的到底是什么 解惑篇</h2>
+
+<h3>by 路过秋天</h3>
+
+<h3>at 2010-09-04 19:04:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/cyq1162/archive/2010/09/04/1817822.html">http://www.cnblogs.com/cyq1162/archive/2010/09/04/1817822.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/cyq1162/"><img src="http://pic.cnblogs.com/face/u17408.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/cyq1162/">路过秋天</a> 发表于 2010-09-04 19:04 <a href="http://www.cnblogs.com/cyq1162/archive/2010/09/04/1817822.html">原文链接</a> 阅读: 1016 评论: 20</p>
+
+
+<p>今天在浏览博文时，看到这篇文章：<a href="http://www.cnblogs.com/crazycoding/archive/2010/09/04/1817762.html">C#中的ref 传进出的到底是什么 ？ 在传对象时使用ref的疑问</a></p>
+
+
+<p>另附言：</p>
+
+
+<div>
+<div><span style="color:#000000">本文写于早上，就在想发布的那瞬间，靠，公司断网了，原来修改的部分丢失了。<br>网一断就是一天了，现在回到家才把之发布。<br></span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>一直我们都知道，引用类型就传的就是地址，值类型传的就是值，可是还仍有那么多人迷惑，网上虽然流传着很多ref 的相关文章，似乎都没为大伙解下惑。</p>
+
+
+<p>最近有人在看我 <a href="http://www.cnblogs.com/cyq1162/category/216965.html">CYQ.Data 框架</a> 的时候说起，既然class是引用地址，本身传的就是地址，你代码中还要写ref传递来干什么;</p>
+
+
+<p>原来以前明白的，被忽悠一下变不明白了，还以为自己原来的代码写错了。</p>
+
+
+<p> </p>
+
+
+<p>今天在帮人家解惑时，才把自己的惑给解了。</p>
+
+
+<p>这里我把上篇文章原问题的代码小修改了一下</p>
+
+
+<p>贴出来做示例：</p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#000000">  </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#008000"><br>    </span><span style="color:#808080">///</span><span style="color:#008000"> by 路过秋天 </span><span style="color:#008000;text-decoration:underline">http://cyq1162.cnblogs.com</span><span style="color:#008000"><br>    </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#808080"><br></span><span style="color:#000000">    </span><span style="color:#0000ff">class</span><span style="color:#000000"> Program<br>    {<br>        </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Main(</span><span style="color:#0000ff">string</span><span style="color:#000000">[] args)<br>        {<br>           Person p </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Person(</span><span style="color:#800000">"</span><span style="color:#800000">张三</span><span style="color:#800000">"</span><span style="color:#000000">);<br>           Change(p);<br>           Write(p.Name); </span><span style="color:#008000">//</span><span style="color:#008000">输出的是张三 并不是李四</span><span style="color:#008000"><br></span><span style="color:#000000"><br>           Change(p, </span><span style="color:#800000">"</span><span style="color:#800000">李四</span><span style="color:#800000">"</span><span style="color:#000000">);</span><span style="color:#008000">  </span><span style="color:#008000"><br></span><span style="color:#000000">           Write(p.Name);<span style="color:#008000">//</span><span style="color:#008000">输出的是李四</span><br><br>          Change(</span><span style="color:#0000ff">ref</span><span style="color:#000000"> p);<br>          Write(p.Name); </span><span style="color:#008000">//</span><span style="color:#008000">输出的是王五 </span><span style="color:#000000"><br>          Console.ReadKey();<br>    }   <br>        </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Change(Person p)<br>        {<br>           p </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Person(</span><span style="color:#800000">"</span><span style="color:#800000">李四</span><span style="color:#800000">"</span><span style="color:#000000">);<br>        }<br>        </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Change(Person p, </span><span style="color:#0000ff">string</span><span style="color:#000000"> name)<br>        {<br>            p.Name </span><span style="color:#000000">=</span><span style="color:#000000"> name;<br>        }<br>        </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Change(</span><span style="color:#0000ff">ref</span><span style="color:#000000"> Person p)<br>        {<br>            p </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Person(</span><span style="color:#800000">"</span><span style="color:#800000">王五</span><span style="color:#800000">"</span><span style="color:#000000">);<br>        }<br>    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>这里顺便截图让大伙看看是怎么调试而解惑的。</p>
+
+
+<p>F5运行:</p>
+
+
+<p><strong>1：我们运行到第一行代码，断点：</strong></p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/ref_Demo_1.jpg" border="0"></p>
+
+
+<div>
+<div><span style="color:#000000">重点说明：</span><span style="color:red"><strong>p地址：0x044becf8</strong></span><span style="color:#000000"><br></span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><strong>2：我们运行到Change(p)内部中</strong></p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/ref_Demo_2.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">重点说明：p地址发生变化：0x044becd0</span></div>
+<div><span style="color:#000000">简单说：你这内部的p和外面的p都不一样，所以不会影响外面p的地址。<br><strong>备注p值的地址变化了，是因为断点在第一行代码时还没执行实例化，所以其值是一样的。</strong></span></div></div>
+
+
+<p> </p>
+
+
+<p>于是第一行结果输出：张三</p>
+
+
+<p> </p>
+
+
+<p><strong>3：接下来运行到Change(p,"李四") 函数内部</strong></p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/ref_Demo_3.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">重点说明：这里内部的p的地址还是发生了变化，变成了0x044becd0<br>然而其指向的值是一样的，所以你把值改了，所以“李四”就出来了。<br></span><span style="color:red">备注：<strong>内部的p和外面的p虽然不一样，但是指向的值是一样的</strong>。</span><span style="color:#000000"><br></span></div></div>
+
+
+<p> </p>
+
+
+<p>于是第一行结果输出：李四</p>
+
+
+<p><strong>4：最后是 Change(ref p) 函数内部</strong></p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/ref_Demo_4.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">重点说明：</span><span style="color:red"><strong>这里内部的p地址和外部的p地址是一样的，没有发生变化</strong></span><span style="color:#000000">。<br>然后重新指向一个新的对象，只是对象的值地址发生了变化。<br>备注：外部p地址=内部p地址，所以其指向的值都是新的对象的值。<br></span></div></div>
+
+
+<p> </p>
+
+
+<p>于是第三行结果输出：张三</p>
+
+
+<p> </p>
+
+
+<p>最终结果图如下：</p>
+
+
+<p><img alt="" src="http://images.cnblogs.com/cnblogs_com/cyq1162/201009/ref_Demo_5.jpg" border="0"></p>
+
+
+<p> </p>
+
+
+<p>最后结言：</p>
+
+
+<p> </p>
+
+
+<div>
+<div><span style="color:#000000">对于Class类型使用 ref，是为了保持引用的地址是一致的。<br>所以，不要仅仅意识到引用类型传地址，值类型传值就了事了，要切切的注意到，引用类型传址时，内部传参会产生一个新地址。<br>所以我们在传递类引用时，喜欢在内部使用 new的民工们得注意注意了。</span></div>
+<div><span style="color:#000000">这里似乎也是传参领域的问题，只是附上了 ref 。<br></span></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/cyq1162/aggbug/1817822.html?type=1" width="1" height="1" alt=""><p>评论: 20　<a href="http://www.cnblogs.com/cyq1162/archive/2010/09/04/1817822.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/cyq1162/archive/2010/09/04/1817822.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73203/">数据显示Facebook成全球第二大网络攻击诱饵</a><span style="color:gray">(2010-09-05 15:22)</span><br>· <a href="http://news.cnblogs.com/n/73202/">苹果TV vs 谷歌TV：思路不尽相同</a><span style="color:gray">(2010-09-05 15:16)</span><br>· <a href="http://news.cnblogs.com/n/73200/">中国企业500强名单出炉</a><span style="color:gray">(2010-09-05 15:08)</span><br>· <a href="http://news.cnblogs.com/n/73198/">A Design Odyssey 苹果设计之路</a><span style="color:gray">(2010-09-05 14:14)</span><br>· <a href="http://news.cnblogs.com/n/73197/">分析称个人社交网络信息对商家价值惊人</a><span style="color:gray">(2010-09-05 14:10)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/73189/">揭秘淘宝286亿海量图片存储与处理架构</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

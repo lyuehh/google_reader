@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>NHibernate in action翻译——第二章 2.2节 理解NHibernate的结构</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>NHibernate in action翻译——第二章 2.2节 理解NHibernate的结构</h2>
+<p class="meta">23 Jun 2010</p>
+
+<div class="post">
+<h2>NHibernate in action翻译——第二章 2.2节 理解NHibernate的结构</h2>
+
+<h3>by 苦-咖啡</h3>
+
+<h3>at 2010-06-23 12:15:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/kukafeiso/archive/2010/06/23/1763486.html">http://www.cnblogs.com/kukafeiso/archive/2010/06/23/1763486.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/kukafeiso/">苦-咖啡</a> 发表于 2010-06-23 12:15 <a href="http://www.cnblogs.com/kukafeiso/archive/2010/06/23/1763486.html">原文链接</a> 阅读: 828 评论: 1</p>
+
+
+<p><strong><span style="color:green">2.2 </span></strong><strong><span style="font-family:宋体;color:green">理解</span><span style="color:green">NHibernate</span></strong><strong><span style="font-family:宋体;color:green">的结构</span><span style="color:green"></span></strong></p>
+
+
+<p style="text-indent:0.75pt;margin:0cm 0cm 0pt 21pt"><span style="font-family:宋体">程序的接口是你最先要学习的。</span>API<span style="font-family:宋体">设计的目的是越少越好，但是</span>ORM<span style="font-family:宋体">的</span>API<span style="font-family:宋体">并不是那么的小。不过不要担心，你不必一次性全部理解所有的</span>NHibernate<span style="font-family:宋体">接口。</span></p>
+
+
+<p style="text-indent:0.75pt;margin:0cm 0cm 0pt 21pt">Figure2.1<span style="font-family:宋体">说明了</span>NHibernate<span style="font-family:宋体">最重要的接口的角色在业务逻辑层和持久化层。把</span>business<span style="font-family:宋体">层在持久化层的上面是因为业务逻辑是持久化层的一个使用者。</span></p>
+
+
+<p style="text-indent:0.75pt;margin:0cm 0cm 0pt 21pt"><span style="font-family:宋体">在</span>Figure2.1<span style="font-family:宋体">中的</span>NHibernate<span style="font-family:宋体">接口可以大概分类如下：</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 51pt"><span>1、 </span><span style="font-family:宋体">接口被程序调用去展示基本的操作（增删查改）。这些是</span>NHibernate<span style="font-family:宋体">的主要接口。它们包括</span>ISession<span style="font-family:宋体">、</span>ITracsaction<span style="font-family:宋体">、</span>IQuery<span style="font-family:宋体">和</span>ICriteria<span style="font-family:宋体">。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 51pt"><span>2、 </span><span style="font-family:宋体">接口用来配置</span>NHibernate<span style="font-family:宋体">。最重要的是</span>Configuration<span style="font-family:宋体">类。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 51pt"><span>3、 </span><span style="font-family:宋体">回调接口，使程序对事件器作用。例如</span>IInterceptor<span style="font-family:宋体">、</span>ILifecycle<span style="font-family:宋体">和</span>IValidatable<span style="font-family:宋体">。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 51pt"><span>4、 </span><span style="font-family:宋体">接口允许扩展</span>NHibernate<span style="font-family:宋体">的映射功能。例如</span>IUserType<span style="font-family:宋体">、</span>ICompositeUserType<span style="font-family:宋体">和</span>IIdentifierGenerator<span style="font-family:宋体">。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"><span>    NHibernate</span><span style="font-family:宋体">使用</span>.NET<span style="font-family:宋体">的</span>API<span style="font-family:宋体">，包括</span>ADO.NET<span style="font-family:宋体">和</span>ITransactionAPI<span style="font-family:宋体">。</span>ADO.NET<span style="font-family:宋体">提供了最基础的与数据库发生交互，而且使用</span>ADO.NET<span style="font-family:宋体">可以几乎跟所有的数据库打交道。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"><span style="font-family:宋体"><span><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/kukafeiso/n2.1.png" width="631" height="336"></span></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"><span>    </span><span style="font-family:宋体">在这一节，我们不必覆盖</span>NHibernate API<span style="font-family:宋体">的所有细节，只要知道每一个主要接口的角色就好。我们会逐渐的讨论</span>API<span style="font-family:宋体">方法在下一章。你可以找到</span>NHibernate<span style="font-family:宋体">接口的详细说明在</span>NHibernate<span style="font-family:宋体">的参考文档。让我们主要看一下每一个接口把。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"> </p>
+
+
+<p><strong><span style="color:green">2.2.1 </span></strong><strong><span style="font-family:宋体;color:green">接口的核心</span></strong></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.25pt"><span>     </span><span style="font-family:宋体">有五个核心的接口我们要讨论，这五个接口会应用在每一个</span>NHibernate<span style="font-family:宋体">应用程序中。使用这些接口，你可以存储、检索持久化类和控制事务。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 21pt"><span>    <strong><span style="color:green"> ISESSION INTERFACE</span></strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.25pt"><strong><span style="color:green">     </span></strong>ISession<span style="font-family:宋体">接口主要被</span>NHibernate<span style="font-family:宋体">应用程序调用。它提供了查找、保存、更新和删除对象的方法。</span>ISession<span style="font-family:宋体">的实例是轻量的，创建和销毁它是不昂贵的。这是非常重要的，因为在你的程序中，你需要经常去创建和销毁</span>session<span style="font-family:宋体">，或许每个</span>ASP.NET<span style="font-family:宋体">页面都要这样做。</span>NHibernate<span style="font-family:宋体">的</span>session<span style="font-family:宋体">不是线程安全的，因此每次只可以有一个线程使用。这个将在后面的章节详细的讨论。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     NHibernate</span><span style="font-family:宋体">可以发现持久化类的改变。我们有时叫</span>ISession<span style="font-family:宋体">为持久化管理器，因为它是持久化对象的操作接口，例如存储、检索对象。</span>NHibernate<span style="font-family:宋体">的</span>session<span style="font-family:宋体">各</span>ASP.NET<span style="font-family:宋体">的</span>session<span style="font-family:宋体">是完全不同的。当我们使用</span>session<span style="font-family:宋体">在这本书时，是指</span>NHibernate<span style="font-family:宋体">的</span>session<span style="font-family:宋体">。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">我们将会讨论</span>ISession<span style="font-family:宋体">接口在</span>4.2<span style="font-family:宋体">节。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     <strong><span style="color:green">ISESSIONFACTORY INTERFACE</span></strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     ISession</span><span style="font-family:宋体">接口来自于</span>ISessionFactory<span style="font-family:宋体">。对比起</span>ISession<span style="font-family:宋体">接口，这个接口会没有那么激动人心。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     ISessionFactory</span><span style="font-family:宋体">不是轻量级的。它是用来在很多的程序线程中共享的。一般整个应用程序只有一个</span>ISessionFactory<span style="font-family:宋体">的实例——在程序初始化时创建。但是如果你的程序要访问多个数据库，那么你就需要为每一个数据库添加一个</span>SessionFactory<span style="font-family:宋体">了。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     SessionFactory</span><span style="font-family:宋体">可以生成</span>SQL<span style="font-family:宋体">和其他</span>NHibernate<span style="font-family:宋体">在运行时使用的元元素。它同样可以缓存一些数据以便复用。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     <strong><span style="color:green">CONFIGURATION INTERFACE</span></strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     Configuration</span><span style="font-family:宋体">对象是用来配置</span>NHibernate<span style="font-family:宋体">的。应用程序使用一个</span>Configuration<span style="font-family:宋体">实例来指定映射文件的位置，和在创建</span>ISessionFactory<span style="font-family:宋体">之前去设置</span>NHibernate<span style="font-family:宋体">的指定属性。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">即使</span>Configuration<span style="font-family:宋体">接口在</span>NHibernate<span style="font-family:宋体">应用程序中只是作用的范围很少，但是当你使用</span>NHibernate<span style="font-family:宋体">时，它是你首先要接触的对象。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     <strong><span style="color:green">ITRANSACTION INTERFACE</span></strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">在</span>Figure2.1<span style="font-family:宋体">中，</span>ITransaction<span style="font-family:宋体">接口就在</span>ISession<span style="font-family:宋体">接口的旁边。</span>ITransaction<span style="font-family:宋体">接口是可选的。</span>NHibernate<span style="font-family:宋体">程序可以选择不使用这个接口，而使用一些底层的代码来管理事务。</span>ITransaction<span style="font-family:宋体">接口是从底层的事务继承而来的——例如</span>ADO.NET<span style="font-family:宋体">事务或其他类型的事务。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">我们会在整本书中使用</span>ITransaction<span style="font-family:宋体">的</span>API<span style="font-family:宋体">。我们将会在第五章讨论</span>Transaction<span style="font-family:宋体">和</span>ITransaction<span style="font-family:宋体">接口。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>    <strong><span style="color:green"> IQUERY AND ICRITERIA INTERFACES</span></strong></span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     IQuery</span><span style="font-family:宋体">接口给了你一种非常有效的方法去对数据库进行查询。</span>Query<span style="font-family:宋体">是用</span>HQL<span style="font-family:宋体">或者数据库的自然语言</span>SQL<span style="font-family:宋体">来书写。一个</span>IQury<span style="font-family:宋体">实例是轻量级的，我们不可以在</span>ISession<span style="font-family:宋体">之外使用它，因为</span>IQuery<span style="font-family:宋体">是由</span>ISession<span style="font-family:宋体">创建的。它用来绑定查询的参数，控制返回结果的数量和执行查询语句。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     ICriteria</span><span style="font-family:宋体">接口类似；它云系你创建和执行面向对象的查询。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">我们将在第七章讨论</span>IQuery<span style="font-family:宋体">接口的特性。现在我已经向你介绍了</span>NHibernate<span style="font-family:宋体">的主要</span>API<span style="font-family:宋体">。下一节，我将介绍一些高级的特性。之后我会介绍怎么配置</span>NHibernate<span style="font-family:宋体">和怎样才能看到</span>NHibernate<span style="font-family:宋体">在后台是怎样执行的。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"> </p>
+
+
+<p style="margin:0cm 0cm 0pt 26.25pt"><strong><span style="color:green">2.2.2 Callback</span></strong><strong><span style="font-family:宋体;color:green">接口</span></strong></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     Callback</span><span style="font-family:宋体">接口允许程序当对象发生一些事情的时候，程序会收到一个通知。例如，当一个对象加载、保存或者删除时，程序会收到一个通知，然后程序会作出一些反应（用户自定义）。</span>NHibernate<span style="font-family:宋体">应用程序不必应用这些回调函数，但是在一些特定情况下，它们是非常有用的。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     ILifecycle</span><span style="font-family:宋体">和</span>IValidatable<span style="font-family:宋体">接口允许持久化对象对自身的的一些生命周期的事件发生反应。持久化对象的生命周期包括创建、检索、更新和删除。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     IInterceptor</span><span style="font-family:宋体">接口可以让对象发生回调而不用让持久化类继承特定的</span>API<span style="font-family:宋体">，只需要把</span>IInterceptor<span style="font-family:宋体">作为参数传到持久化类的实例即可。我们将在第八章讨论。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"> </p>
+
+
+<p style="margin:0cm 0cm 0pt 26.25pt"><strong><span style="color:green">2.2.3 </span></strong><strong><span style="font-family:宋体;color:green">类型</span></strong></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     NHibernate</span><span style="font-family:宋体">中的类型是非常值得关注的。一个</span>NHibernate<span style="font-family:宋体">的类型匹配一个</span>.NET<span style="font-family:宋体">类型到一个数据库类型。</span>NHibernate<span style="font-family:宋体">的设计非常的灵活，因为每一个数据库的类型对应</span>.NET<span style="font-family:宋体">中的类型都是不一样的，但是</span>NHibernate<span style="font-family:宋体">做到了。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     NHibernate</span><span style="font-family:宋体">包括丰富的内置类型，包括所有</span>.NET<span style="font-family:宋体">的基础类型和很多</span>CLR<span style="font-family:宋体">类，包括</span>System.DateTime<span style="font-family:宋体">、</span>System.Enum<span style="font-family:宋体">、</span>byte[]<span style="font-family:宋体">、</span>Serializable<span style="font-family:宋体">等等。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">而且，</span>NHibernate<span style="font-family:宋体">支持用户自定义类型。</span>IUserType<span style="font-family:宋体">、</span>ICompositeUserType<span style="font-family:宋体">和</span>IParameterizedType<span style="font-family:宋体">提供了让你创建自定义的类型。你也可以使用</span>IUserCollectionType<span style="font-family:宋体">来创建自己的集合类型。自定义类型被认为是</span>NHibernate<span style="font-family:宋体">的中心特性。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>     </span><span style="font-family:宋体">我们将在</span>6.1<span style="font-family:宋体">节介绍</span>NHibernate<span style="font-family:宋体">的类型和用户自定义类型。我们现在继续讨论底层接口，你可能不需要使用或明白所有的接口，但是知道他们的存在可以让你在设计的时候更加灵活。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"> </p>
+
+
+<p style="margin:0cm 0cm 0pt 26.25pt"><strong><span style="color:green">2.2.4 Extesion</span></strong><strong><span style="font-family:宋体;color:green">接口</span></strong></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"><span>    </span><span style="font-family:宋体">大部分的功能都是</span>NHibernate<span style="font-family:宋体">定义好的了。但是当你发现内置的功能不能满足你的时候，你可以使用</span>Extesion<span style="font-family:宋体">来扩展</span>NHibernate<span style="font-family:宋体">。</span>Extesion<span style="font-family:宋体">接口包括以下几点：</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>1、 </span><span style="font-family:宋体">主键生成（</span>IIdentifierGenerator<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>2、 </span><span style="font-family:宋体">支持</span>SQL<span style="font-family:宋体">方言（</span>Dialect<span style="font-family:宋体">抽象类）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>3、 </span><span style="font-family:宋体">缓存策略（</span>ICache<span style="font-family:宋体">和</span>ICacheProvider<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>4、 </span>ADO.NET<span style="font-family:宋体">连接管理（</span>IConnectionProvider<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>5、 </span><span style="font-family:宋体">事务管理（</span>ITransactionFactory<span style="font-family:宋体">和</span>ITransaction<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>6、 </span>ORM<span style="font-family:宋体">策略（</span>IClassPersister<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>7、 </span><span style="font-family:宋体">属性访问策略（</span>IPropertyAccessor<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 60.75pt"><span>8、 </span><span style="font-family:宋体">代理（</span>IProxyFactory<span style="font-family:宋体">接口）</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 31.5pt"><span>      </span><span style="font-family:宋体">你不必知道所有的</span>API<span style="font-family:宋体">和接口。我们不需要所有的。例如一个简单的应用程序，你可能只需要</span>Configuration<span style="font-family:宋体">和</span>ISession<span style="font-family:宋体">接口，如“</span>Hello World<span style="font-family:宋体">”例子那样。但是在你开始使用</span>NHibernate<span style="font-family:宋体">之前，你应该要明白</span>NHibernate<span style="font-family:宋体">的配置是怎么样的，我们将在下一节讨论。</span></p>
+
+
+<p style="margin:0cm 0cm 0pt 26.15pt"> </p>
+
+
+<p><img src="http://www.cnblogs.com/kukafeiso/aggbug/1763486.html?type=1" width="1" height="1" alt=""><p>评论: 1　<a href="http://www.cnblogs.com/kukafeiso/archive/2010/06/23/1763486.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/kukafeiso/archive/2010/06/23/1763486.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35451/">软件研发团队管理年会(上海，7.10-7.11)</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66849/">Google Music 云音乐服务细节出炉</a><span style="color:gray">(2010-06-23 22:15)</span><br>· <a href="http://news.cnblogs.com/n/66848/">eBay前CEO入选全球最富有白手起家女性</a><span style="color:gray">(2010-06-23 21:40)</span><br>· <a href="http://news.cnblogs.com/n/66847/">App Store对苹果毛利润贡献仅为1%</a><span style="color:gray">(2010-06-23 21:32)</span><br>· <a href="http://news.cnblogs.com/n/66846/">IE9 Platform Preview 3今天发布 提供HTML5视频支持</a><span style="color:gray">(2010-06-23 20:21)</span><br>· <a href="http://news.cnblogs.com/n/66845/">谁是MySQL的新主人</a><span style="color:gray">(2010-06-23 20:19)</span><br></p><p>编辑推荐：<a href="http://kb.cnblogs.com/page/66804/">苹果编程语言和 API 的未来</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

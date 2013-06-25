@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>kernel和OS跨公司交流</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>kernel和OS跨公司交流</h2>
+<p class="meta">19 Jun 2013</p>
+
+<div class="post">
+<h2>kernel和OS跨公司交流</h2>
+
+<h3>by RobinDong</h3>
+
+<h3>at 2013-06-18 17:48:48</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/10042.html">http://www.udpwork.com/item/10042.html</a></h3>
+
+<p>今天和百度、腾讯做kernel和OS的同学交流了一下，不算特别正式的技术交流，就是互相说说最近一年的工作和收获。</p>
+
+
+<p>文件系统这块，阿里和百度都遇到了ext4在快写满盘时append写很慢的问题，原因是ext4会扫描整盘的group descriptor来寻找free block，造成大量的io读。目前还没有upstream的解决方案，临时的解决方案可以把group descriptor直接保留在内存不释放。
+<br>
+存储上，百度已经“去raid化”，将硬件的细节尽可能多的暴露给应用，说白了，能应用或者用户态library解决的问题，就不用硬raid或软raid方案，这点跟我们不一样，他们是不用mysql，我们是大量用mysql，要让mysql去支持多盘位自动负载均衡和数据恢复，估计不现实，对于DB，至少目前还是用传统一些的raid方案比较合适。百度用的sata盘居多，用SAS卡而不用硬raid卡（如前所说）。我乘机问了一下百度的”把硬盘槽位和盘符绑定“的方案，他们表示可以公开原理细节，嗯，还是比较开放的，感谢他们。不过硬盘坏盘后read/write系统调用超时的问题，他们也还有panic的bug，看来工作还不是十分完美，还要继续做。
+<br>
+腾讯的同学也在做软raid，不过主要集中在磁盘的软raid工作上，由于他们用的是upstream的2.6.32，遇到不少性能bug，有一个性能退化bug还是在cfq上的，好在我们偷懒用的是rhel-6u的2.6.32，目前还没有发现磁盘软raid有性能瓶颈。</p>
+
+
+<p>虚拟化是个大头，每家公司都在做，阿里和腾讯的虚拟化主要用xen，而百度用的是kvm，据百度的同学说，他们本来想上kvm后，修几个大bug让其稳定的，结果上去几个月，一个bug都没有，看来redhat在kvm上花了不少功夫，想想也是，做企业软件市场的，kvm虚拟化方案正如火如荼，你卖linux发行办才赚几个钱？卖虚拟机集群方案就来钱得多了看，redhat想来测得是非常仔细，bug非常稀少。像阿里的T4这样用lxc做container的好像就我们一家，其它公司还是选用虚拟机来做，毕竟我们是私有云方案，定制化会多一些。百度还有同学在研究openstack。
+<br>
+来自<a href="http://weibo.com/hd8003">百度谢广军</a>同学的补充：”百度也用类似lxc的container技术来做内部的集群操作系统，而且对lxc的使用也不是所有的都用，基本只用到cgroup以及container目录相关的东西。xen/kvm主要是开发测试或者对外云。”
+<br>
+来自<a href="http://weibo.com/u/1844105817">@rony_85</a>同学的补充：“腾讯也有使用lxc的container技术来做内部云，现在在qzone业务中用的很多，规模应该比你们t4大很多“，看来lxc可以继续搞搞。</p>
+
+
+<p>内核的网络部分，我是懂得很少，粗略听来，不管是百度还是阿里，主要的大头是客服和调参数优化（<a href="http://weibo.com/clocktick">李雨同学</a>很辛苦:),这边也有tcp friends和openflow等工作，也还有SDN相关的研究。</p>
+
+
+<p></p>
+
+
+<p><br>
+<a href="http://www.yupoo.com/photos/kernelroad/88823287/" title="image"><img src="http://pic.yupoo.com/kernelroad/CWGDdrbP/medium.jpg" alt="kernel和OS交流"></a>
+<br>
+参会同学合影
+<br></p>
+
+<p>腾讯原先的OS组现在调了很多去深圳做虚拟化相关的工作，北京就留了两个人。这个事，很有代表性，现在kernel方面的工作，都在朝虚拟化集中，如果你还在修ext4的bug、修vfs的bug、修io层的bug、甚至是做“分布式文件系统”，那么你肯定会比较寂寞比较冷清比较被忽视，但是如果你在给xen或者kvm修bug、或者你说你的“分布式文件系统”是“面向对象的“，适合存”虚拟机镜像“，那么恭喜你，你成功的傍上了“虚拟化”这个“大款”，身价大涨，会有人和公司来找你的<img src="http://blog.donghao.org/wp-includes/images/smilies/icon_smile.gif" alt=":)">
+<br>
+没办法，虚拟化是个大潮，你顺着它还怕赶不上浪头，岂敢逆着？</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/10042.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/10042.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/10042.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

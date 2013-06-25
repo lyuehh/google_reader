@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ext传值</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ext传值</h2>
+<p class="meta">08 Jul 2010</p>
+
+<div class="post">
+<h2>Ext传值</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-07-07 21:37:00</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/707818">http://www.javaeye.com/topic/707818</a></h3>
+
+<p>最近一直在做负载均衡的项目 可能是我刚刚接触Ext吧     项目中用Ext传值的问题  头疼了很久</p>
+
+
+<p> </p>
+
+
+<p>本人常用的传值  有一下几种  </p>
+
+
+<p> </p>
+
+
+<p>1 首先 是超链接传值  这个大家都熟的不能在熟了吧  哈哈</p>
+
+
+<p> </p>
+
+
+<p>2 Ext  里Grid 涉及到的有 </p>
+
+
+<p>     1. 在store加载的时候把分页参数传过去</p>
+
+
+<pre name="code">store.load({params:{start:0,limit:10}});</pre>
+
+
+<p> </p>
+
+
+<p>     2.beforeload 这个可是基本上最常用的了  本人写东西的时候这个函数基本用的最多了 </p>
+
+
+<pre name="code">store.on('beforeload', function() {
+        Ext.apply(
+        this.baseParams,
+        {
+            region: Ext.getCmp('region').getValue(),
+            modeIds:modeIds.toString()  //选中的数据***********
+        }
+
+        )
+    })</pre>
+
+
+<p>  3.就是在表单提交的时候 单独传的一些值</p>
+
+
+<p>  </p>
+
+
+<pre name="code">       form.form.submit({
+          params:{
+                                modifyIds:modifyIds.toString()  ,
+                                modifyValues:modifyValues.toString() ,
+                                p1:parames.toString() ,
+                                modeIds:modeIds.toString() //选中的id
+                        }</pre>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://zhangxl1984.javaeye.com"&gt;zhangxl1984&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/707818" style="color:red"&gt;已有 &lt;strong&gt;1&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/269"><span style="color:red;font-weight:bold">北京：手机之家网站诚聘PHP程序员</span></a></li><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘Python开发人员</span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

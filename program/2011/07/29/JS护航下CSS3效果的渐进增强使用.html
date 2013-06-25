@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JS护航下CSS3效果的渐进增强使用</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JS护航下CSS3效果的渐进增强使用</h2>
+<p class="meta">29 Jul 2011</p>
+
+<div class="post">
+<h2>JS护航下CSS3效果的渐进增强使用</h2>
+
+<h3>by 张 鑫旭</h3>
+
+<h3>at 2011-07-29 02:13:53</h3>
+
+<h3>original <a href="http://www.zhangxinxu.com/wordpress/2011/07/js%e6%8a%a4%e8%88%aa%e4%b8%8bcss3%e6%95%88%e6%9e%9c%e7%9a%84%e6%b8%90%e8%bf%9b%e5%a2%9e%e5%bc%ba%e4%bd%bf%e7%94%a8/">http://www.zhangxinxu.com/wordpress/2011/07/js%e6%8a%a4%e8%88%aa%e4%b8%8bcss3%e6%95%88%e6%9e%9c%e7%9a%84%e6%b8%90%e8%bf%9b%e5%a2%9e%e5%bc%ba%e4%bd%bf%e7%94%a8/</a></h3>
+
+<p>by <a href="http://www.zhangxinxu.com/">zhangxinxu</a> from <a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a><br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=1822">http://www.zhangxinxu.com/wordpress/?p=1822</a></p>
+
+
+<h3>一、渐进增强噔噔蹬蹬</h3>
+
+
+<p>何为“渐进增强(Progressive Enhancement)”？去年春暖花开的时候，我曾写过篇“<a href="http://www.zhangxinxu.com/wordpress/?p=788">CSS渐进增强在web制作中常见应用举例</a>”的文章，part 1就相对详细地介绍了我个人对“渐进增强”的一些认识和理解，这里我就不重复口水了，建议您阅读本文之前先围观下这篇文章。我自己现在回头看这篇文章都觉得：这小子写的还真不错！</p>
+
+
+<p>不过，but，however，diemo(日)，本文的标题虽然挂着“渐进增强”的名号，实际的内容却又不是真正意义上的“渐进增强”。怎么讲呢？真正意义上的“渐进增强”的终效果是不兼容的，颓废的浏览器效果OK，还带的出去；带感的浏览器效果更上一层楼，锦上添花。而本文的内容却是讲如何实现兼容性的锦上添花，笑容绽放的效果，主旨是有差异的。</p>
+
+
+<p>目前正处于CSS2.1 → CSS3使用过渡的阵痛期，随着IE9浏览器支持了不少CSS3属性，这种阵痛感越来越明显。例如，我们要实现一个大于4像素的圆角效果，怎么办？考虑到兼容性，我们是不是还是依照老路，牺牲点前端性能，花点功夫切个圆角图片，或定位或移位实现圆角效果。但是，又想到，IE9, FireFox，Chrome浏览器都支持CSS3 border-radius圆角效果，且现在前缀都不需要了。这么好的东西，不用又可惜。一边是兼容性，一边是优秀省力的CSS属性。难道非要等到IE6~8浏览器都坐动车回家那天才能使用CSS3属性吗？于是，我们就会产生阵痛。</p>
+
+
+<p>有这种阵痛感的同行们很多，在国外，似乎要比我们早很多，许多优秀的web工程师们会想一些招缓解这些阵痛。即既可以有效使用现代浏览器的CSS3属性，又能使用其他手段实现诸如IE浏览器下的兼容性的效果。</p>
+
+
+<p>例如比较有名的CSS3 pie（具体可参见我之前的“<a href="http://www.zhangxinxu.com/wordpress/?p=967">PIE使IE浏览器支持圆角盒阴影和渐变渲染</a>”一文），文中还列举了些其他方法或工具：</p>
+
+
+<ol>
+<li>Dean Edwards的<a href="http://code.google.com/p/ie7-js/">IE7.js</a> (以及 IE8.js, IE9.js)</li>
+<li>Aaron Gustafson的 <a href="http://ecsstender.org/">eCSStender</a></li>
+<li>Drew Diller的 <a href="http://www.dillerdesign.com/experiment/DD_roundies/">DD_roundies</a></li>
+<li>Remiz Rahnas的<a href="http://code.google.com/p/curved-corner/">border-radius.htc</a></li>
+<li>Nick Fetchak的 <a href="http://www.fetchak.com/ie-css3/">ie-css3.htc</a></li>
+<li>Keith Clark的<a href="http://www.keithclark.co.uk/labs/ie-css3/">ie-css3.js</a></li>
+<li>zoltandulac的<a href="http://www.useragentman.com/blog/csssandpaper-a-css3-javascript-library/">cssSandpaper</a></li>
+</ol>
+
+
+<p>我写过的其他相关文章还有：“<a href="http://www.zhangxinxu.com/wordpress/?p=783">让IE6/IE7/IE8浏览器支持CSS3属性</a>”，“<a href="http://www.zhangxinxu.com/wordpress/?p=818">cssSandpaper-兼容IE的CSS3 JavaScript库</a>”。</p>
+
+
+<p>不过，but，however，diemo(日)，本文虽然也是来缓解CSS3过渡时期的阵痛的，但是不同于上面的工具或是库之类，不是借助浏览器特殊特性（例如IE浏览器的VML）实现一些效果。而是把传统的兼容IE6/IE7/IE8浏览器效果部分通过JS的实现。例如，我们过去实现圆角可能需要多个标签和图片，但是在现代浏览器下，我们只要单独一个标签，且无需图片。我们的原始HTML就是CSS3属性下的单标签，此时IE6~8浏览器肯定效果一般般，此时，可以借助JS的元素创建等兼容低版本IE浏览器下的效果。这就是JS护航下的CSS3效果使用。因为无JavaScript部分的内容，实际上走的是“渐进增强”路线。因此，才有了本文的标题。</p>
+
+
+<p>所谓一图胜千言，一例胜千图。下面看几个例子就知道我的想法和做法究竟是什么？</p>
+
+
+<h3>二、实例之JS护航下CSS3大圆角和盒阴影的实现</h3>
+
+
+<p><img alt="圆角效果截图 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_003448.png" title="圆角效果截图 张鑫旭-鑫空间-鑫生活" width="145" height="101"></p>
+
+
+<p><strong>demo页面</strong><br>
+您可以狠狠地点击这里：<a href="http://www.zhangxinxu.com/study/201107/js-and-css3-progressive-enhancement.html">JS护航下CSS3大圆角和盒阴影demo</a></p>
+
+
+<p>当你使用Firebug或是Chrome浏览器自带的的元素审查查看demo页面圆角效果和下阴影效果，会发现他们是一个孤单单的类名为<code>box</code>的div实现的，效果驱动来自CSS3 <code>border-radius</code>和<code>box-shadow</code>属性。</p>
+
+
+<p><img alt="单标签下的CSS3实现 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_004345.png" title="单标签下的CSS3实现 张鑫旭-鑫空间-鑫生活" width="589" height="173"></p>
+
+
+<p>当你查看HTML源代码，你会发现，HTML代码很干净，没有多余的每个实现效果而不得不使用的多余标签。按照我们经验，孤单单的一个标签是不可能在IE6/7浏览器下实现圆角外加盒阴影效果的，所以，我们可能就会认为此demo页面在IE6/7/8下会是类似下面的直接白板：<br>
+<img alt="假象IE下的直角 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_004846.png" title="假象IE下的直角 张鑫旭-鑫空间-鑫生活" width="294" height="152"></p>
+
+
+<p>然而，实际上，demo页面在IE6/IE7下是效果很赞的圆角：<br>
+<img alt="实际IE7下的圆角效果 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_005204.png" title="实际IE7下的圆角效果 张鑫旭-鑫空间-鑫生活" width="213" height="128"></p>
+
+
+<p>这是怎么回事？实际上IE6~8浏览器下的圆角借助了图片、额外标签元素和JS实现的。</p>
+
+
+<p><strong>具体实现</strong><br>
+对于IE9浏览器，FireFox等现代浏览器，我们直接使用简单标签和CSS3就可以实现很赞的效果了。对于IE6~8浏览器，我们需要按照传统做法来处理。</p>
+
+
+<p><strong>①切图</strong><br>
+上下圆角图片，考虑到自适应，上下边缘的圆角图片长度要足够长1000像素宽度以上。</p>
+
+
+<p><code>②CSS</code><br>
+使用传统CSS实现，如下CSS代码，可以完全不使用CSS hack。</p>
+
+
+<div>
+<pre>
+/*图片式圆角*/
+.radius_bot_ie,.radius_bot_ie_in {
+    background: url(/study/image/radius_bot_ie.png)\9;
+}
+
+.radius_top_ie,.radius_top_ie_in {
+    background: url(/study/image/radius_top_ie.png)\9;
+}
+
+.radius_bot_ie,.radius_top_ie {
+    height: 9px;
+    padding-left: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.radius_bot_ie_in,.radius_top_ie_in {
+    height: 100%;
+    background-position: 100% 0;
+}
+
+.radius_top_ie {
+    margin-bottom: -9px;
+}
+
+.radius_bot_ie {
+    margin-top: -9px;
+}
+</pre>
+</div>
+
+
+<p><strong>③JS护航</strong><br>
+使用JS护航，在IE6~8浏览器下，将含有圆角图片样式的HTML护航到对应的位置。本demo中是<code>box</code>类名所在div的前后。在jQuery库下，就会有如下的JS代码：</p>
+
+
+<div>
+<pre><span style="color:green">//检测是否是不支持圆角的IE6/IE7/IE8浏览器</span>
+var $isIe6_8 = !navigator.geolocation,
+    htmlBefore = &#39;&lt;div class=&quot;radius_top_ie&quot;&gt;&lt;div class=&quot;radius_top_ie_in&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;,
+    htmlAfter = &#39;&lt;div class=&quot;radius_bot_ie&quot;&gt;&lt;div class=&quot;radius_bot_ie_in&quot;&gt;&lt;/div&gt;&lt;/div&gt;&#39;;
+
+if ($isIe6_8) {
+    $(&quot;.forSelector&quot;).before($(htmlBefore)).after($(htmlAfter));
+}</pre>
+</div>
+
+
+<p>于是不干扰IE9以及火狐等现代浏览器的情况下实现了低版本的IE浏览器的圆角和盒阴影效果。</p>
+
+
+<p><strong>说明：</strong><code>navigator.geolocation</code>是浏览器地图API是否支持的判断，IE6-8浏览器不支持，其他浏览器支持，可以用来区分IE6~8和其他浏览器。<code>navigator.geolocation</code>的实际使用可以参见前不久我整理的“<a href="http://www.zhangxinxu.com/wordpress/2011/06/%e6%b5%8f%e8%a7%88%e5%99%a8%e5%9c%b0%e7%90%86%e4%bd%8d%e7%bd%aegeolocation-api-%e7%ae%80%e4%bb%8b/">浏览器地理位置(Geolocation)API 简介</a>”</p>
+
+
+<p>更多技术实现细节可以直接查看demo页面的源代码。</p>
+
+
+<h3>三、实例之JS护航下CSS3小圆角的实现</h3>
+
+
+<p><img alt="小圆角的CSS3实现 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_011505.png" title="小圆角的CSS3实现 张鑫旭-鑫空间-鑫生活" width="207" height="114"></p>
+
+
+<p><strong>demo页面</strong><br>
+您可以狠狠地点击这里：<a href="http://www.zhangxinxu.com/study/201107/js-and-css3-progressive-enhancement-2.html">JS护航下CSS3小圆角实现demo</a></p>
+
+
+<p>本demo页面实现的效果很简单，就是有个暗红色背景的2像素圆角选中效果。我们可能知道，一些小的圆角，我们可以直接使用CSS模拟的，虽然效果不及浏览器的圆角渲染来得平滑，但是，对于用户而言，已经不会产生足已形成差异感的影响。</p>
+
+
+<p>与上面的例子类似，在现代浏览器下，直接就是一个单纯的标签加一个<code>border-radius:2px</code>实现，如下CSS代码和HTML代码：</p>
+
+
+<div>
+<pre>.ron {
+    display: inline-block;
+    line-height: 16px;
+    padding: 1px 8px;
+    <span style="color:#800">border-radius: 2px;</span>
+    background-color: #800;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+}</pre>
+</div>
+
+
+<div>
+<pre>&lt;a class=&quot;ron forSelector&quot; href=&quot;#&quot;&gt;全部&lt;/a&gt;</pre>
+</div>
+
+
+<p>按照上面的CSS + HTML组合，如果不是遇到妖孽的话，IE6等浏览器下应该是看上去不太舒服的直角角：<br>
+<img alt="假象的IE7下面的直角效果 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_012620.png" title="假象的IE7下面的直角效果 张鑫旭-鑫空间-鑫生活" width="237" height="109"></p>
+
+
+<p>而实际上，在demo页面中，IE7浏览器下的效果是有个小圆角的：<br>
+<img alt="IE7下demo页面中实际的小圆角 张鑫旭-鑫空间-鑫生活" src="http://image.zhangxinxu.com/image/blog/201107/2011-07-29_013009.png" title="IE7下demo页面中实际的小圆角 张鑫旭-鑫空间-鑫生活" width="223" height="123"></p>
+
+
+<p><strong>实现原理</strong><br>
+IE6~8下还不支持border-radius属性，因此这些浏览器实现圆角效果无法使用CSS3，如果采用CSS模拟，则没有两层标签或多个标签是搞不定的。</p>
+
+
+<p>我们可以当这世界上只有IE6~8浏览器，我们的实现应该会这样：<br>
+外面再套一层标签，使用负移位实现小像素的圆角效果。</p>
+
+
+<p>外层嵌套CSS代码如下：</p>
+
+
+<div>
+<pre>.ron_out {
+    display: inline-block;
+    padding: 1px 0;
+    background-color: #800;
+}
+
+.ron_out .ron {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0 -1px;
+    _position: relative;
+    _left: -1px;
+}</pre>
+</div>
+
+
+<p>然后，我们使用JavaScript护航，将这个外层标签带到IE9之类支持圆角浏览器的单标签的外面（jQuery库下）：</p>
+
+
+<div>
+<pre><span style="color:green">//检测是否是不支持圆角的IE6/IE7/IE8浏览器</span>
+var $isIe6_8 = !navigator.geolocation,
+    htmlOut = &#39;&lt;span class=&quot;ron_out&quot;&gt;&lt;/span&gt;&#39;;
+
+if ($isIe6_8) {
+    $(&quot;.forSelector&quot;).wrap(htmlOut);
+}</pre>
+</div>
+
+
+<p>于是，就有了我们在低版本IE下看到的效果了。</p>
+
+
+<h3>四、干净自由灵活的JS护航</h3>
+
+
+<p>本文的内容实质上就是将CSS hack应该实现的东西，纯生CSS3实现之外多余的HTML全部交给JavaScript实现了。</p>
+
+
+<p>我们可以对比下JS护航法和传统CSS Hack + HTML做法以及CSS3 Javascript库之间的优劣。</p>
+
+
+<p>和传统传统CSS Hack + HTML做法相比，JS护航法的HTML源代码更加干净了，不用考虑CSS hack的问题，省掉了不少CSS代码，且效果实现可以公用，这比日后一个一个删除多余HTML代码省事的多。不足之处在于，需要JavaScript的支持，部分对JavaScript不熟悉的人员可能上手有些不易，其次如果脚本位置放置不当或遭遇阻塞，在IE6等浏览器下很看到页面明显的直接变圆角的效果，体验上可能少少打了点折扣。</p>
+
+
+<p>和CSS3 Javascript库相比，JS护航法更易懂，更易维护，更灵活。CSS3 JS库的使用一般需要不少限制条件，例如元素相对或决定定位。对页面环境也要有要求，因为不少是htc文件。然后还有其他一些不知名的问题。出了问题后又因为是不熟知的VML或是封装好的滤镜，往往不知该怎么办。同时，CSS3 JS库尺寸有一点，功能稍稍多了点。往往不能很好的有的放矢。</p>
+
+
+<p>就我个人而言，我是强烈推荐本文的JS护航下的CSS3效果实现。即最大限度地使用了很多浏览器的CSS3特性，又兼顾了低版本浏览器的兼容性效果，代码干净，使用简单，灵活。权衡来看，是上上之选。</p>
+
+
+<h3>五、关注想法本身</h3>
+
+
+<p>本文的两个例子本身其实没什么，因为web页面各种情况千奇百怪，记住两个例子顶个小鸡用。关键是想法本身，通过JS转移 CSS hack和多层级或多标签的HTML，保证IE9和现代浏览器下有最大限度的CSS3使用和最好的web性能。</p>
+
+
+<p>时刻有这种意识，并且去做了，那么目前CSS3过渡时间的阵痛就会随着时间的推移完全消失的。否则，守着所谓的兼容性的顽固想法，等（说不定不要2年）到CSS3时代真正到来，过去的啰哩吧嗦的实现想改都改不了，只会有后续的不断疼痛。</p>
+
+
+<p>做人做事都需要要远见，不要再抱残守缺，试试一些新的想法，一些新的做法吧。</p>
+
+
+<p>欢迎讨论，提出异议！</p>
+
+
+<p>原创文章，转载请注明来自<a href="http://www.zhangxinxu.com/">张鑫旭-鑫空间-鑫生活</a>[<a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a>]<br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=1822">http://www.zhangxinxu.com/wordpress/?p=1822</a></p>
+
+
+<p>（本篇完）</p>
+
+
+<div>有话要说，点击<a href="http://www.zhangxinxu.com/wordpress/2011/07/js%e6%8a%a4%e8%88%aa%e4%b8%8bcss3%e6%95%88%e6%9e%9c%e7%9a%84%e6%b8%90%e8%bf%9b%e5%a2%9e%e5%bc%ba%e4%bd%bf%e7%94%a8/#response">这里</a>发表评论。</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

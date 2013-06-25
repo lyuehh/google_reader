@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>判定模块加载时是否存在循环依赖</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>判定模块加载时是否存在循环依赖</h2>
+<p class="meta">21 Nov 2012</p>
+
+<div class="post">
+<h2>判定模块加载时是否存在循环依赖</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-11-21 10:07:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2780054.html">http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2780054.html</a></h3>
+
+<p>循环依赖是所有语言的加载器都是大头的问题，除非你的模块都是像spring那么利用Ioc进行控制反转，那么出现循环依赖就是死结。对此，我们唯一能做的事是，在第一个循环依赖出现时就立即通知用户查看它们的依赖列表。</p>
+
+
+<p>在AMD大肆普及动态加载的好处后，大家应该隐藏知道有两个方法干这事。一个定义模块的define方法，另一个是加载模块的require方法。</p>
+
+
+<p>define方法的参数为define(name?, deps? ,factroy), 换言之模块名与依赖列表都不是必须的，require参数为require(names , callback)。当我们用require一组模块，将它们的返回值传到回调中前，它实质上做了许多事情，其中为了实现跨域加载脚本，我们使用了script标签进行加载。但这不重点。script标签加载回来的脚本有个严格的格式，里面就是一个define方法。这与JSONP非常相近。为了实现匿名模块，我们通常不使用第1个参数，但第2参数有时就不能省略。不过没有问题，我们可以从请求的URL中还原回模块名，因此最终还是得到三个参数，第二个参数依赖列表不存在，我们就置为空数组。当一个模块被加载回来，并且它的依赖列表为空，我们就可以说它是可用的。若一个模块存在依赖列表，那么当它的所有模块都可用时，它才可用。当两个模块存在循环依赖时，就变成你等我，我等你的状态，因此在每加载一个模块回来时，就检测它的依赖列表，不断回溯它的上级依赖，上上级依赖，但这些链中是否存在我们当前这个模块名。如果有就是循环依赖，立即抛错。这个检测我们也可以做些优化，这因为这是个图，经过的路径会非常复杂，我们可以跳过所有已发出请求但没有加载回来的模块或所有可用的模块。</p>
+
+
+<p><br>//这些是定义在种子模块（核心模块）中<br>var loadings = []; var modules = {};<br><br>function define(name, deps, factory){<br>    var el = modules[name] = {<br>        deps:deps,<br>        name: name,<br>        factory:factory,<br>        status: !deps.length//是否可用<br>    }<br><br>    if(!el.status){//踢进列队进行检测<br>        loadings.push(el);<br>    }<br>    <em>checkDeps();<br>    if( </em>checkCircle(deps, name) ){<br>        throw new Error( name +"模块与之前的某些模块存在循环依赖")<br>    }<br>}<br>function <em>checkCircle(list, nick){//检测是否存在循环依赖<br>    for(var i = 0, name; name = list[ i++ ];){<br>        var el =  modules[name];<br>        if(el ){<br>            if( el.name == nick || el.deps.length &amp;&amp; </em>checkCircle(el.deps, nick)){<br>                return true;<br>            }<br>        }<br>    }<br>}<br>function <em>checkDeps(){//检测模块有没有加载成功<br>    loop:<br>    for ( var i = loadings.length, el; el = loadings[ --i ]; ) {<br>        var deps = el.deps;<br>        var ok = true;<br>        for(var j = 0, name; name = deps[j++];){<br>            if(!modules[name] || !modules[name].status){<br>                ok = false;<br>                continue loop<br>            }<br>        }<br>        if(ok){<br>            el.status = true;<br>            loadings.splice( i, 1 );<br>            </em>checkDeps()<br>        }<br>    }<br>}<br>//这是a.js的内容<br>define("a",["b"])<br>//这是b.js的内容<br>define("b",["c"])<br>//这是c.js的内容<br>define("c",["a"])<br>//方便自己用firebug肉眼确认<br>console.log(modules)<br>console.log(loadings)<br><p>上面只是判定依赖关系的代码，实质上模块加载系统非常复杂，分为拆分模块名，别名映射，转换为URL，创建加载用的iframe与script(iframe是为了更好地在opera与旧式IE判定死链)，处理加载回来define方法的最后一个参数factory，还原它模块名，判定是否可用，是否循环依赖，如果存在依赖再加载它的依赖等步骤，具体搜我博客有关模块加载的其他文章。</p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2780054.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/11/21/2780054.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

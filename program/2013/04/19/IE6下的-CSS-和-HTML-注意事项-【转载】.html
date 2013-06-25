@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IE6下的 CSS 和 HTML 注意事项 【转载】</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IE6下的 CSS 和 HTML 注意事项 【转载】</h2>
+<p class="meta">19 Apr 2013</p>
+
+<div class="post">
+<h2>IE6下的 CSS 和 HTML 注意事项 【转载】</h2>
+
+<h3>by 晴方好玲</h3>
+
+<h3>at 2013-04-19 14:35:20</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_897db7b50101auph.html">http://blog.sina.com.cn/s/blog_897db7b50101auph.html</a></h3>
+
+<p>1, 关于图片</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+IE6只支持8位的PNG透明图片，所以，所有透明图片，需要转换成GIF格式的才能正常显示。</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+2,关于float以后的margin-left双倍问题</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+所有float:left后面，都要加上</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+display:inline;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+3,float以后，撑开边框的方法</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+在float层的父层，加上：</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+#main-body:after {</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+content: "";</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+height: 0;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+display: block;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+clear: both;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+}</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+如果上述方法无效的话，在float的层最后，加一个DIV层</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<div style="clear:both"></div>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+例如：</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<div>
+<div>
+<div>Html代码 <a title="复制代码" href="http://miyulano.iteye.com/blog/1102644#"><img alt="复制代码" src="http://miyulano.iteye.com/images/icon_copy.gif"></a> <a title="收藏这段代码"><img alt="收藏代码" src="http://miyulano.iteye.com/images/icon_star.png"><img src="http://miyulano.iteye.com/images/spinner.gif"></a></div>
+</div>
+<ol>
+<li><span><span>&lt;&lt;/SPAN&gt;<span>div</span> <span>class</span><span>=</span><span>"float-father"</span><span>&gt;</span> </span></span></li>
+<li><span><span>&lt;&lt;/SPAN&gt;<span>div</span> <span>class</span><span>=</span><span>"float-left"</span><span>&gt;</span><span>......</span><span>&lt;/&lt;/SPAN&gt;<span>div</span><span>&gt;</span>
+</span></span></span></li>
+<li><span><span>&lt;&lt;/SPAN&gt;<span>div</span> <span>class</span><span>=</span><span>"float-left"</span><span>&gt;</span><span>......</span><span>&lt;/&lt;/SPAN&gt;<span>div</span><span>&gt;</span>
+</span></span></span></li>
+<li><span><span>&lt;&lt;/SPAN&gt;<span>div</span> <span>style</span><span>=</span><span>"clear:both"</span><span>&gt;</span><span>&lt;/&lt;/SPAN&gt;<span>div</span><span>&gt;</span>
+</span></span></span></li>
+<li><span><span>&lt;/&lt;/SPAN&gt;<span>div</span><span>&gt;</span>
+</span></span></li>
+</ol>
+</div>
+
+
+<pre title="IE6下的 CSS 和 HTML 注意事项" name="code">
+</pre>
+
+
+<div>
+<div>......</div>
+<div>......</div>
+<div style="clear:both"></div>
+</div>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+4, padding-left and margin-left感觉都失效的问题</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+使用之前，需要在父层定义：</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+text-align:left;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+同样的，如果想要使用padding-right,父层也不许加上定义</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+text-align:right;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+5，关于javascript:void(0)</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+估计写ajax，现在很多人都会用到这个，但是在IE6，在a标签的href属性中使用javascript:void(0)，会导致一定的bug。</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+例如：gif格式的动态图片突然没反应了</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+解决方法：避免a标签与javascript：的混合使用。比如，可以用span标签和css代码伪装一个超链接</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<div style="BACKGroUnD-CoLor:rgb(231,229,220);MArGin:18px 0px;WiDTH:915px;FonT-FAMiLY:Consolas,&#39;Courier new&#39;,Courier,mono,serif;FonT-siZe:12px;pADDinG-Top:1px">
+<div style="pADDinG-LeFT:45px">
+<div><a href="http://blog.csdn.net/madoking/archive/2010/10/23/5960216.aspx">view
+plain</a><a href="http://blog.csdn.net/madoking/archive/2010/10/23/5960216.aspx">copy
+to clipboard</a><a href="http://blog.csdn.net/madoking/archive/2010/10/23/5960216.aspx">print</a><a href="http://blog.csdn.net/madoking/archive/2010/10/23/5960216.aspx">?</a></div>
+</div>
+<ol style="pADDinG-BoTToM:0px;BACKGroUnD-CoLor:rgb(255,255,255);MArGin:0px 0px 1px 45px;pADDinG-LeFT:0px;pADDinG-riGHT:0px;CoLor:rgb(92,92,92);pADDinG-Top:0px">
+<li style="BorDer-BoTToM-sTYLe:none;BorDer-LeFT:rgb(108,226,108) 3px solid;pADDinG-BoTToM:0px!important;Line-HeiGHT:14px;BACKGroUnD-CoLor:rgb(255,255,255);MArGin:0px;pADDinG-LeFT:10px!important;pADDinG-riGHT:3px!important;BorDer-Top-sTYLe:none;CoLor:inherit;BorDer-riGHT-sTYLe:none;pADDinG-Top:0px!important">a-link-span {</li>
+<li style="BorDer-BoTToM-sTYLe:none;BorDer-LeFT:rgb(108,226,108) 3px solid;pADDinG-BoTToM:0px!important;Line-HeiGHT:14px;BACKGroUnD-CoLor:rgb(248,248,248);MArGin:0px;pADDinG-LeFT:10px!important;pADDinG-riGHT:3px!important;BorDer-Top-sTYLe:none;CoLor:rgb(92,92,92);BorDer-riGHT-sTYLe:none;pADDinG-Top:0px!important">
+color: #8d9393;</li>
+<li style="BorDer-BoTToM-sTYLe:none;BorDer-LeFT:rgb(108,226,108) 3px solid;pADDinG-BoTToM:0px!important;Line-HeiGHT:14px;BACKGroUnD-CoLor:rgb(255,255,255);MArGin:0px;pADDinG-LeFT:10px!important;pADDinG-riGHT:3px!important;BorDer-Top-sTYLe:none;CoLor:inherit;BorDer-riGHT-sTYLe:none;pADDinG-Top:0px!important">cursor: pointer;</li>
+<li style="BorDer-BoTToM-sTYLe:none;BorDer-LeFT:rgb(108,226,108) 3px solid;pADDinG-BoTToM:0px!important;Line-HeiGHT:14px;BACKGroUnD-CoLor:rgb(248,248,248);MArGin:0px;pADDinG-LeFT:10px!important;pADDinG-riGHT:3px!important;BorDer-Top-sTYLe:none;CoLor:rgb(92,92,92);BorDer-riGHT-sTYLe:none;pADDinG-Top:0px!important">
+}</li>
+</ol>
+</div>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+6. DIV 的高度失效问题</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+因为IE6 默认的字体显示大小在12-14px之间，当DIV的高度小于这个值的时候，IE6就会自作聪明把数值调大= =+</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+解决方法是加一个font的值：</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+font-size: 0px;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+7. font-size: 13px失效问题</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+IE6 不能识别这个，解决方法是换成font-size: 9pt</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+8. min-height的问题</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+IE6
+不能识别min-height，但是当高度超过height值时，它会自动加高。解决方法是。另外需要注意的是，设置了min-height的话，父层的overflow不能设置成hidden</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+min-height: 300px;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+height: auto !important;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+height: 300px;</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+ </p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+9. li 左边的小圆点有时候去不掉</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+IE 6下，彻底去掉list-style要用：</p>
+
+
+<p style="pADDinG-BoTToM:0px;MArGin:1em 0px 0.5em;pADDinG-LeFT:0px;pADDinG-riGHT:0px;pADDinG-Top:0px">
+list-style: none outside none;</p>
+
+
+<p>10. position fix失效的问题</p>
+
+
+<p>IE 6下的做法是：</p>
+
+
+<p>postion:absolute;</p>
+
+
+<p>bottom:auto;</p>
+
+
+<p>top:expression_r(eval_r(document.documentElement.scrollTop));</p>
+
+
+<p>11. input相同size下，text和password宽度不同的问题</p>
+
+
+<p>这个是由于字体问题引起的，解决方法：</p>
+
+
+<p>input{font-family:'Verdana';}</p>
+
+
+<p>12. :hover失效问题</p>
+
+
+<p>IE 6下，只有a支持:hover。尽量避免在其它标签内使用hover，必须用的话，用动态修改class实现</p>
+
+
+<p>13. position:absolute 绝对定位偏移的问题</p>
+
+
+<p>这个问题最近头疼死我了……ORZ</p>
+
+
+<p>要注意的有两点，一个是absolute的父层最好定义成relative。另一个是，left要定义成0。就是IE6
+和IE7下，绝对定位要把上/下，左/右都定义了。</p>
+
+
+<p>14.float的层会另起一行的问题。</p>
+
+
+<p>这个问题也哭死我了……ORZ，特别是，当要用float：right的时候。</p>
+
+
+<p>解决方法一：把float：right的层放在前面，但是这样有时会影响语意，我对代码有洁癖，不喜欢这方法= =</p>
+
+
+<p>
+解决方法二：把float:right的前面一层设置成float:left。但是这样就要考虑撑开父层的方法，代码量也比较多。总之都很纠结=
+=。</p>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=9"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

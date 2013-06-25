@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>或许你从小就一直在思考的两个算术问题</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>或许你从小就一直在思考的两个算术问题</h2>
+<p class="meta">31 May 2011</p>
+
+<div class="post">
+<h2>或许你从小就一直在思考的两个算术问题</h2>
+
+<h3>by Matrix67</h3>
+
+<h3>at 2011-05-30 23:13:38</h3>
+
+<h3>original <a href="http://www.matrix67.com/blog/archives/4365">http://www.matrix67.com/blog/archives/4365</a></h3>
+
+<p>    你是否很小就注意到了下面这两个有趣的算术现象？这两个简单的算术谜题是否一直都困扰着你？今天，大家终于有机会解开谜团了。</p>
+
+
+<p>    <strong>问题一： 2 加 2 等于 4 ， 2 乘 2 也等于 4 。还有其它的整数对，它们的和与积也相等吗？</strong></p>
+
+
+<p>    我们要求的就是 mn = m+n 的整数解。方程可以变为</p>
+
+
+<p>      mn - m - n + 1 = 1</p>
+
+
+<p>    也就是</p>
+
+
+<p>      (m - 1)(n - 1) = 1</p>
+
+
+<p>    由于 m 、 n 都是整数，因此 m - 1 和 n - 1 也都是整数。两个整数之积为 1 ，只有两种情况——这两个数都是 1，或者这两个数都是 -1 。前者对应了 m = 2, n = 2 ，后者解出来则是 m = 0, n = 0 。如果把 (0, 0) 看作平凡解（或者如果我们把问题限制在正整数范围）的话，非平凡解就只有 (2, 2)，没有其它的了。</p>
+
+
+<p><span></span><br>
+    有趣的是，如果三个正整数之和恰好等于它们的乘积，解也只有一个：(1, 2, 3) 。更有趣的是，如果四个正整数之和恰好等于它们的乘积，解仍然是唯一的：(1, 1, 2, 4) 。如果五个数呢？这一回，解就不止一个了，(1, 1, 2, 2, 2) 、 (1, 1, 1, 3, 3) 、 (1, 1, 1, 2, 5) 都是满足要求的解。<br>
+    我们自然想问，对于哪些 n，“n 个正整数的和恰好等于它们的积”有唯一解。让人意想不到的是，这竟然是一个数学未解之谜。目前已经知道，在 n &lt; 13 587 782 064 的范围内，只有 n = 2, 3, 4, 6, 24, 114, 174, 444 时有唯一解。是否有其它满足要求的 n ，这个问题至今仍未解决。</p>
+
+
+<p> <br>
+ <br>
+    <strong>问题二： 2 的 4 次方等于 16 ， 4 的 2 次方也等于 16 。还有其它的正整数 m 和 n ，使得 m 的 n 次方和 n 的 m 次方也相等吗？</strong></p>
+
+
+<p>    当然，我们忽略所有 m = n 的平凡解。另外，当 m = 1 时，有 1<sup>n</sup> = n<sup>1</sup> ，于是 m = n = 1 。因此，下面我们都假设 2 ≤ m &lt; n 。</p>
+
+
+<p>    等式两边同时除以 m<sup>m</sup>，有</p>
+
+
+<p>      m<sup>n</sup>/m<sup>m</sup> = n<sup>m</sup>/m<sup>m</sup></p>
+
+
+<p>    即</p>
+
+
+<p>      m<sup>n - m</sup> = (n/m)<sup>m</sup></p>
+
+
+<p>    由于等式左边是一个整数，因此等式右边也一定是一个整数，可见 n 一定是 m 的整数倍。不妨令 n = k·m ，其中 k 是一个大于等于 2 的整数。于是上式继续变为：</p>
+
+
+<p>      m<sup>km - m</sup> = k<sup>m</sup></p>
+
+
+<p>    即</p>
+
+
+<p>      m<sup>m(k - 1)</sup> = k<sup>m</sup></p>
+
+
+<p>    两边同时开 m 次方，有</p>
+
+
+<p>      m<sup>k - 1</sup> = k</p>
+
+
+<p>    当 k = 2 时，上式化为 m<sup>1</sup> = 2，于是我们找到一组非平凡解 m = 2, n = 4 。<br>
+    如果 k = 3 呢？上式将变为 m<sup>2</sup> = 3。注意到我们的 m 至少等于 2 ，因此 m<sup>2</sup> 至少也是 4 ，是不可能等于 3 的。<br>
+    如果 k 更大呢？m<sup>k - 1</sup> 肯定会更大，更不可能等于 k 了。我们用数学归纳法证明这一点。<br>
+    假设 m<sup>k - 2</sup> &gt; k - 1，那么m<sup>k - 1</sup> = m · m<sup>k - 2</sup> &gt; m(k - 1) ；但 m 是大于等于 2 的，因而 m(k - 1) ≥ 2(k - 1) ；但 k 是大于等于 3 的，因此 2(k - 1) = 2k - 2 &gt; k。<br>
+    因此， (2, 4) 是这个算术问题的唯一一组非平凡解。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/526871266/matrix67/feedsky/s.gif?r=http://www.matrix67.com/blog/archives/4365" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

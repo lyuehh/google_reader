@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ubuntu 11.10 运行QQ、迅雷、MS Office</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ubuntu 11.10 运行QQ、迅雷、MS Office</h2>
+<p class="meta">17 Nov 2011</p>
+
+<div class="post">
+<h2>Ubuntu 11.10 运行QQ、迅雷、MS Office</h2>
+
+<h3>by tuhaihe</h3>
+
+<h3>at 2011-11-16 20:38:56</h3>
+
+<h3>original <a href="http://www.bentutu.com/2011/11/ubuntu-11-10-install-qq-thunder-ms-office.html/">http://www.bentutu.com/2011/11/ubuntu-11-10-install-qq-thunder-ms-office.html/</a></h3>
+
+<p>公司的生存在于利益的寻求。批评无益，要看自身对市场的发掘和拓展。虽然平日多多鄙视，不能不说，某些软件在一定时刻是必需品。暂把道德抛一旁，看看Ubuntu 11.10 如何更好地运行QQ、迅雷、MS Office。</p>
+
+
+<p>最近尝试过几款各牛人同学搞的QQ，当属Deepin wine 一套较方便稳定些。<br>
+下载链接：<a href="http://dl.dbank.com/c0ubxrf11t">click here</a>(包括QQ，office和迅雷)<br>
+下载安装即可。其他情况可访问<a href="http://blog.ubuntusoft.com/deepwine.html">ubuntusoft</a>。<br>
+<span></span><br>
+<strong>PS：</strong><br>
+#1，free eBook《Linux 101 Hacks》（2nd Edition）<br>
+<img src="http://i.imgur.com/0J94z.png"></p>
+
+
+<pre>
+Chapter 1: Powerful CD Command Hacks
+Chapter 2: Essential Linux Commands
+Chapter 3: SSH Commands and Tips
+Chapter 4: Date Manipulation
+Chapter 5: PS1, PS2, PS3, PS4 and PROMPT_COMMAND
+Chapter 6: Archive and Compression
+Chapter 7: Command Line History
+Chapter 8: System Administration Tasks
+Chapter 9: Install Packages
+Chapter 10: LAMP Stack
+Chapter 11: Bash Scripting
+Chapter 12: System Monitoring and Performance
+</pre>
+
+
+<p>下载链接：<a href="http://www.thegeekstuff.com/2011/11/linux-101-hacks-2nd-edition-download-free-ebook/">thegeekstuff.com</a></p>
+
+
+<p>#2,护眼软件F.lux<br>
+长期用电脑，保护眼睛要做到。该软件许久以前介绍过，在此重提。<br>
+F.lux 会判断日出、日落时间，分析出特定时间的光照强度，并以此为依据调节屏幕。国内用户设定好当地经纬度即可。</p>
+
+
+<pre>
+sudo add-apt-repository ppa:kilian/f.lux
+sudo apt-get update
+sudo apt-get install fluxgui
+</pre>
+
+
+<p><a href="http://www.bentutu.com/stereopsis.com/flux/flux-setup.exe">Windows 用户</a>|<a href="https://secure.herf.org/flux/Flux.zip">Mac OS</a>|<a href="http://stereopsis.com/flux/ios.html">iOS</a></p>
+
+
+<p>#3，经有心同学提示，<a href="https://launchpad.net/~linux-deepin-team/+archive/linux-deepin/+packages">Linux Deepin launchpad 处</a>已上传许多打包好的软件工具:</p>
+
+
+<p>主题：<br>
+包括 Equinox Evolution Midnight、 Equinox Evolution Dawn、Equinox Evolution Light、Equinox Evolution Dusk、Function、Lambda SO X、GekosMac等漂亮主题。<br>
+需下载并安装deepin-icons软件包：<br>
+下载：<a href="https://launchpadlibrarian.net/78465702/deepin-icons_1.0.8.6_all.deb">deepin-icons</a> | <a href="https://launchpadlibrarian.net/77990961/deepin-themes_1.0.11.1_all.deb">deepin-themes</a></p>
+
+
+<p>同时，还有totem-pps\totem-sopcast插件:<br>
+totem-pps（安装后“插件选项”没有？）:<br>
+<a href="https://launchpadlibrarian.net/77782015/libppswrapper_0.0.18.2-0_i386.deb">libppswrapper&gt;</a><br>
+<a href="https://launchpadlibrarian.net/77784761/gst-plugins-pps_0.0.18-0.2_i386.deb"> gst-plugins-pps</a><br>
+<a href="https://launchpadlibrarian.net/77779557/totem-plugin-pps_0.0.19.5-0_i386.deb">totem-plugin-pps</a></p>
+
+
+<p>安装第三个软件包时候，可能会出现错误提示“totem-plugin-pps 依赖于 python-beautifulsoup；然而：未安装软件包 python-beautifulsoup。”<br>
+我们可以用下面命令安装缺损依赖包：</p>
+
+
+<pre>sudo apt-get install python-beautifulsoup</pre>
+
+
+<p>感兴趣的同学自己安装totem-sopcast插件。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

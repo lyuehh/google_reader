@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]FireClosure – JavaScript闭包检查器</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]FireClosure – JavaScript闭包检查器</h2>
+<p class="meta">08 Nov 2012</p>
+
+<div class="post">
+<h2>[译]FireClosure – JavaScript闭包检查器</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-11-08 13:39:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/08/2760137.html">http://www.cnblogs.com/ziyunfei/archive/2012/11/08/2760137.html</a></h3>
+
+<p>原文:<a href="https://blog.getfirebug.com/2012/11/07/fireclosure-javascript-closure-inspector/">https://blog.getfirebug.com/2012/11/07/fireclosure-javascript-closure-inspector/</a></p>
+
+
+<hr><p><a href="https://addons.mozilla.org/en-US/firefox/addon/fireclosure/">FireClosure</a>是一个值得关注的Firebug扩展.它能很好的集成到Firebug目前的UI中(实际上我们正在考虑是否要把该扩展内置到Firebug中),它的作用是用来查看(Inspector)JavaScript中的闭包.</p><p>该扩展的作者是 <a href="https://github.com/simonlindholm"><strong>Simon Lindholm</strong></a>.(译者注:非知名人士,这是他AMO上唯一的一个扩展)</p><p><strong>例子</strong></p><p>首先,让我们看一个简单的例子:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> PersonFactory = <span style="color:#0000ff">function</span><span style="color:#000000">(name, age)<br>{<br>    </span><span style="color:#0000ff">return</span><span style="color:#000000"> {<br>        getName: </span><span style="color:#0000ff">function</span>() { <span style="color:#0000ff">return</span><span style="color:#000000"> name; },<br>        getAge: </span><span style="color:#0000ff">function</span>() { <span style="color:#0000ff">return</span><span style="color:#000000"> age; },<br>    };<br>};<br><br></span><span style="color:#0000ff">var</span> person = PersonFactory("Bob", 58);</div><p>现在,假如我们需要"检查"(inspect)<code>person这个对象,但该操作并不是那么简单,因为该对象实际上没有任何属性</code>.只有两个函数类型的属性使用到了闭包,通过闭包能够访问到传给<em>PersonFactory</em>函数的变量(参数name和age).</p><p>所以,我们不能在Firebug的命令行下执行下面的表达式:</p><p><code>person.name</code> <code>//无法获取到name属性</code></p><p>可是,如果你安装了<strong>FireClosure</strong>,你可以使用下面的语法:</p><p><code>person.%name</code></p><p><img title="Local variables in a closure" src="http://pic002.cnblogs.com/images/2012/116671/2012110811330677.jpg" alt="" width="520" height="216"></p><p>另外,<strong>FireClosure</strong>也集成到了DOM面板中,查看下面的截图</p><p><img title="Scoped variables in the DOM panel" src="http://pic002.cnblogs.com/images/2012/116671/2012110811330370.jpg" alt="" width="520" height="270"></p><p>多出了一个新的区域"作用域变量"<em>(scoped variables</em><em>)</em>,显示出了闭包中的所有局部变量.<br> <br>你还可以使用Watch侧边栏来检查(inspect)闭包.</p><p><img title="Scoped variables in the Watch side panel" src="http://pic002.cnblogs.com/images/2012/116671/2012110811331441.jpg" alt="" width="520" height="270"><br> </p><p><strong>注意</strong></p><ul><li>Firefox经常会<a href="https://developer.mozilla.org/zh-CN/SpiderMonkey/Internals/Functions#Script_functions">优化掉一些闭包和变量</a>.在调试的时候,你可以故意在相关代码周围临时添加一些无意义的eval语句,来防止这种优化(当然代码的性能会降低).(译者注:eval和with都会影响性能,随着JIT的引入,这种性能差异应该会越来越大)</li><li>一些对象可能有些意外的作用域.这是因为非函数(non-function)的对象并没有真正的作用域,这种功能是通过它的函数类型的属性来实现的.</li></ul><p><strong>反馈</strong></p><p>我们非常希望得到关于该功能的反馈,请告诉我们你的想法.</p><ul><li>关于该功能,我们还能做哪些改进?</li><li>你喜欢该功能目前的语法吗 <strong>.%</strong>?</li><li>我们应该把该功能集成到Firebug中吗?</li></ul><p>请到<a href="http://groups.google.com/group/firebug/browse_thread/thread/26ab4cd7466c27d1">讨论组</a>中提交反馈,谢谢!</p><p>Jan 'Honza' Odvarko (译者注:他是Firebug的作者,目前自由职业,全职开发Firebug)</p><img src="http://www.cnblogs.com/ziyunfei/aggbug/2760137.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/08/2760137.html">本文链接</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

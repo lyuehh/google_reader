@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>安装 log.io 实时日志监控工具</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>安装 log.io 实时日志监控工具</h2>
+<p class="meta">06 Nov 2012</p>
+
+<div class="post">
+<h2>安装 log.io 实时日志监控工具</h2>
+
+<h3>by vpsee</h3>
+
+<h3>at 2012-11-05 16:36:42</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/vpsee/~3/_yzB88iQOk4/">http://feedproxy.google.com/~r/vpsee/~3/_yzB88iQOk4/</a></h3>
+
+<p>日志是个好东西，对技术人员来说写日志能纪录成长，分享经验；对机器来说纪录日志能及时发现错误，为日后的排错提供信息。如果还在一台机器上用 tail -f 监听单个日志或者<a href="http://www.vpsee.com/2012/09/use-multitail-to-track-openstack-logs/">用 multitail 监听多个日志</a>也太 out 了，我们需要一种工具能纪录上百台机器、不同类型的日志，并最好能汇集到一个界面里方便查看，最好还是实时的。<a href="http://logio.org">log.io</a> 就是这样一个实时日志监控工具，采用 node.js + socket.io 开发，使用浏览器访问，每秒可以处理超过5000条日志变动消息。有一点要指出来的是 log.io 只监视日志变动并不存储日志，不过这个没关系，我们知道日志存储在哪个机器上。</p>
+
+
+<p>和其他的监控工具一样，log.io 也采用服务器－客户端的模式。log.io 由两部分组成：server 和 harvester, server 运行在机器 A（服务器）上监视和纪录其他机器发来的日志消息；log harvester 运行在机器 B（客户端）上用来监听和收集机器 B 上的日志改动，并将改动发送给机器 A，每个需要纪录日志的机器都需要一个 harvester.</p>
+
+
+<h2>在机器 A 和 B 上</h2>
+
+
+<p>因为 log.io 基于 node.js，所以在服务器和客户端都要安装 node.js，这里采用编译安装的办法，首先安装需要的依赖包：</p>
+
+
+<pre>
+$ sudo apt-get install g++ make git libssl-dev pkg-config
+</pre>
+
+
+<p>下载 node.js 源代码，编译并安装：</p>
+
+
+<pre>
+$ wget http://nodejs.org/dist/v0.8.14/node-v0.8.14.tar.gz
+$ tar zxvf node-v0.8.14.tar.gz
+$ cd node-v0.8.14/ 
+$ ./configure
+$ make
+$ sudo make install
+</pre>
+
+
+<p>安装 NPM：</p>
+
+
+<pre>
+$ curl https://npmjs.org/install.sh | sudo sh 
+</pre>
+
+
+<p>安装 log.io（包含了 log server 和 log harvester）</p>
+
+
+<pre>
+$ sudo npm config set unsafe-perm true 
+$ sudo npm install -g --prefix=/usr/local log.io
+</pre>
+
+
+<h2>在机器 A 上启动 server</h2>
+
+
+<pre>
+$ sudo log.io server start
+</pre>
+
+
+<h2>在机器 B 上配置和启动 harvester</h2>
+
+
+<p>server 用来监听各个机器发来的日志消息，harvester 用来把本机的日志发给 server，所以 harvester 配置的时候需要指定 server 的主机地址（或域名）。如何告诉 harvester 哪些日志需要监控呢？log_file_paths 就是指定日志路径的地方。下面的配置是 harvester 把 auth.log 和 harvester.log 这两个日志的改动发送给 server：</p>
+
+
+<pre>
+$ sudo vi /etc/log.io/harvester.conf
+exports.config = {
+  // Log server host &amp; port
+  server: {
+    host: &#39;log.vpsee.com&#39;, // 也可以用 IP 地址
+    port: 8998,
+  },
+
+  // Watch the following log files, defined by label:path mappings
+  log_file_paths: {
+    logio_auth: &#39;/var/log/auth.log&#39;,
+    logio_harvester: &#39;/var/log/log.io/harvester.log&#39;,
+  },
+
+  instance_name : &#39;log_node_1&#39;
+}
+</pre>
+
+
+<p>启动 harvester：</p>
+
+
+<pre>
+$ sudo log.io harvester start
+</pre>
+
+
+<h2>测试</h2>
+
+
+<p>打开浏览器访问 log server 所在的机器 A，域名是 log.vpsee.com（也可以用 IP 地址），端口是 8998（注：为了隐私和保护内部信息，文章里面出现的 IP、域名、密码以及任何敏感信息都是处理过的，所以这里的 log.vpsee.com 是参考用的、是打不开的，囧，下面还有人留言问为啥打不开～）：</p>
+
+
+<p><img style="clear:both;float:left;width:560px;display:block" src="http://www.vpsee.com/wp-content/uploads/2012/11/logio.png" alt="log.io"></p>
+
+
+<p>
+<img src="http://feeds.feedburner.com/~r/vpsee/~4/_yzB88iQOk4" height="1" width="1"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

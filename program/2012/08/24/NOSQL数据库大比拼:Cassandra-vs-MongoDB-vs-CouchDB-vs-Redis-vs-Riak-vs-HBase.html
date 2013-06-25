@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>NOSQL数据库大比拼:Cassandra vs MongoDB vs CouchDB vs Redis vs Riak vs HBase</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>NOSQL数据库大比拼:Cassandra vs MongoDB vs CouchDB vs Redis vs Riak vs HBase</h2>
+<p class="meta">24 Aug 2012</p>
+
+<div class="post">
+<h2>NOSQL数据库大比拼:Cassandra vs MongoDB vs CouchDB vs Redis vs Riak vs HBase</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-08-23 16:26:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/23/2652664.html">http://www.cnblogs.com/rubylouvre/archive/2012/08/23/2652664.html</a></h3>
+
+<p>话说，尽管 SQL 数据库一直是我们IT行业中最有用的工具，然而，它们这样在行业中超过15年以上的“转正”终于就要寿终正寝了。现在，虽然关系型数据库仍然无所不在，但它越来越不能满足我们的需要了。NoSQL成为了业界的新宠。</p>
+
+
+<p>但是，各种 &quot;NoSQL&quot; 数据库之间的差异比当年众多关系型数据库之间的差异要大许多。这就加大了人们在建设自己的应用是选择合适的数据库的难度。</p>
+
+
+<p>在这篇汇总的PK中，我们对 <a href="http://cassandra.apache.org/"><font color="#4488aa">Cassandra</font></a>, <a href="http://www.mongodb.org/"><font color="#4488aa">Mongodb</font></a>, <a href="http://couchdb.apache.org/"><font color="#4488aa">CouchDB</font></a>, <a href="http://redis.io/"><font color="#4488aa">Redis</font></a>, <a href="http://www.basho.com/Riak.html"><font color="#4488aa">Riak</font></a> 和 <a href="http://hbase.apache.org/"><font color="#4488aa">HBase</font></a> 进行了比较，以供参考：</p>
+
+
+<div><p><strong>CouchDB</strong></p><ul>    <li><strong>Written in:</strong> Erlang</li>    <li><strong>Main point</strong><span>关键点</span><strong>:</strong> DB consistency<span>一致性</span>, ease of use<span>易用</span></li>    <li><strong>License 许可协议:</strong> Apache</li>    <li><strong>Protocol 协议:</strong> HTTP/REST</li>    <li>Bi-directional (!) replication<span>双向复制</span>,</li>    <li>continuous or ad-hoc,</li>    <li>with conflict detection<span>冲突检测</span>,</li>    <li>thus, master-master replication. (!) <span>主主复制</span></li>    <li>MVCC - write operations do not block reads <span>写操作不会阻塞读操作 </span></li>    <li>Previous versions of documents are available <span>文本式</span></li>    <li>Crash-only (reliable) design <span>可靠性设计</span></li>    <li>Needs compacting from time to time</li>    <li>Views: embedded<span>内部嵌入</span> map/reduce<span>算法</span></li>    <li>Formatting views: lists &amp; shows</li>    <li>Server-side document validation possible</li>    <li>Authentication possible</li>    <li>Real-time updates via _changes (!) <span>实时更新</span></li>    <li>Attachment handling</li>    <li>thus, <a href="http://couchapp.org/"><font color="#4488aa">CouchApps</font></a> (standalone js apps)</li>    <li>jQuery library included</li></ul><p><strong>适用:</strong> <span>累计 堆积计算, 偶尔改变数据, 预先定义的查询. 非常注重版本控制的场合.</span></p><p><strong>举例:</strong> <span>CRM, CMS系统. 主-主复制是其特别亮点，可以易于多个站点部署。</span></p><p>教程：http://guide.couchdb.org/editions/1/en/index.html</p></div>
+
+
+<div><p><strong>Redis</strong></p><ul>    <li><strong>Written in:</strong> C/C++</li>    <li><strong>Main point </strong><span>关键点</span><strong>:</strong> Blazing fast <span>超快</span></li>    <li><strong>License:</strong> BSD</li>    <li><strong>Protocol:</strong> Telnet-like</li>    <li>Disk-backed in-memory database, <span>磁盘后备，内存数据库</span></li>    <li>but since 2.0, it can swap to disk. <span>但是从2.0开始直接交换到磁盘</span></li>    <li>Master-slave replication <span>主-从复制</span></li>    <li>Simple keys and values, <span>简单的key-value形式</span></li>    <li>but <a href="http://redis.io/commands"><font color="#4488aa">complex operations</font></a> like ZREVRANGEBYSCORE <span>但是复杂操作类似ZREVRANGEBYSCORE</span></li>    <li>INCR &amp; co (good for rate limiting or statistics)</li>    <li>Has sets (also union/diff/inter)</li>    <li>Has lists (also a queue; blocking pop)</li>    <li>Has hashes (objects of multiple fields)</li>    <li>Of all these databases, only Redis does transactions (!) <span>在这些数据库中，只有Redis有<b>事务</b>机制。</span></li>    <li>Values can be set to expire (as in a cache) <span>如同<b>缓存</b>一样，值能被设置为超过一定时间过期失效。</span></li>    <li>Sorted sets (high score table, good for range queries) <span>有排序的sets，善于range查询。</span></li>    <li>Pub/Sub and WATCH on data changes (!) <span>采取Pub/Sub 和观察者WATCH事件触发数据变化。</span></li></ul><p><strong>适用</strong><strong>:</strong> <span>在可以控制的数据库大小情况下(放得下整个内存)，快速改变数据，快速写数据。</span></p><p><strong>举例</strong><strong>:</strong> <span>股票价格系统 分析，实时数据收集，联系等等。</span></p></div>
+
+
+<div><p><strong>MongoDB</strong></p><ul>    <li><strong>Written in:</strong> C++</li>    <li><strong>Main point:</strong> Retains some friendly properties of SQL. <span>保留类似SQL风格.</span>(Query, index)</li>    <li><strong>License:</strong> AGPL (Drivers: Apache)</li>    <li><strong>Protocol:</strong> Custom, binary (BSON)</li>    <li>Master/slave replication <span>主从复制(分布式状态<b>集群</b>方式)</span></li>    <li>Queries are javascript expressions <span>查询是javascript表达式</span></li>    <li>Run arbitrary javascript functions server-side</li>    <li>Better update-in-place than CouchDB  <span>比CouchDB更好地就地更新</span></li>    <li>Sharding built-in <span>内置分片碎片</span></li>    <li>Uses memory mapped files for data storage <span>使用内存对应文件方式实现数据存储</span></li>    <li>Performance over features</li>    <li>After crash, it needs to repair tables <span>当崩溃后，需要修复表。</span></li></ul><p><strong>适用</strong><strong>:</strong> <span>需要动态查询. 愿意事先定义索引indexes, 不需要 map/reduce 功能. 你需要巨大的数据库有良好性能，你需要CouchDB但是你数据变化改变很频繁，需要频繁写。 </span></p><p><strong>举例</strong><strong>:</strong> <span>适合所有MySQL 或者 PostgreSQL场合，它也适合</span></p></div>
+
+
+<div><p><strong>Cassandra</strong></p><ul>    <li><strong>Written in:</strong> Java</li>    <li><strong>Main point:</strong> <span>大表模型BigTable 和 Dynamo中最好的</span></li>    <li><strong>License:</strong> Apache</li>    <li><strong>Protocol:</strong> Custom, binary (Thrift)</li>    <li>Tunable trade-offs for distribution and replication (N, R, W)</li>    <li>Querying by column, range of keys <span>按列查询</span></li>    <li>BigTable-like features: columns, column families <span>列</span></li>    <li>Writes are much faster than reads (!) <span>写快于读</span></li>    <li>Map/reduce possible with Apache Hadoop</li>    <li><span>部分复杂性可能由于Java自身原因(如配置configuration, seeing exceptions, etc)</span></li></ul><p><strong>适用</strong><strong>:</strong> <span>当写操作多于读操作 (如日志logging).</span></p><p><strong>举例</strong><strong>:</strong> <span>银行Banking, 金融系统，写必须快于都的场合，实时的数据分析等.</span></p></div>
+
+
+<div><p><strong>Riak</strong></p><ul>    <li><strong>Written in:</strong> Erlang &amp; C, some Javascript</li>    <li><strong>Main point:</strong> <span>容错性Fault tolerance 失败恢复 可靠性好</span></li>    <li><strong>License:</strong> Apache</li>    <li><strong>Protocol:</strong> HTTP/REST</li>    <li>Tunable trade-offs for distribution and replication (N, R, W)</li>    <li>Pre- and post-commit hooks,</li>    <li>for validation and security.</li>    <li>Built-in full-text search <span>内置全文本搜索</span></li>    <li>在 Javascript 中Map/reduce 或 Erlang <span>支持</span></li>    <li>Comes in &quot;open source&quot; and &quot;enterprise&quot; editions <span>有两个版本</span></li></ul><p><strong>适用</strong><strong>:</strong> <span>如果你希望有类似Cassandra-like (Dynamo-like)风格, 但是你不想处理器复杂性和膨胀性。单服务器有良好可<b>伸缩性</b>scalability, 可用性availability 和容错性 fault-tolerance, 采取是昂贵的多站点复制multi-site replication.</span></p><p><strong>举例</strong><strong>:</strong> <span>销售点数据收集，工厂控制系统，那些不能允许几秒当机的场合。</span></p></div>
+
+
+<div><p><strong>HBase</strong></p><p>(With the help of ghshephard)</p><ul>    <li><strong>Written in:</strong> Java</li>    <li><strong>Main point:</strong> <span>十亿级别的行  X  百万级别的列 大容量</span></li>    <li><strong>License:</strong> Apache</li>    <li><strong>Protocol:</strong> HTTP/REST (also Thrift)</li>    <li>Modeled after BigTable <span>大表模型</span></li>    <li>Map/reduce with Hadoop <span>内置Map/reduce </span></li>    <li>Query predicate push down via server side scan and get filters</li>    <li>Optimizations for real time queries <span>能够实时获得基于查询的优化</span></li>    <li>A high performance Thrift gateway <span>高性能的Thrift型网关</span></li>    <li>HTTP supports XML, Protobuf, and binary</li>    <li>Cascading, hive, and pig source and sink modules</li>    <li>Jruby-based (JIRB) shell</li>    <li>No single point of failure <span>无单点风险</span></li>    <li>Rolling restart for configuration changes and minor upgrades</li>    <li>Random access performance is like MySQL <span>随机访问的性能类似MySQL</span></li></ul><p><strong>适用</strong><strong>:</strong> <span>如果你喜欢大表模型BigTable. :) 你需要随机 实时的读写操作</span></p><p><strong>举例</strong><strong>:</strong> <span>Facebook 消息数据库</span></p></div>
+
+
+<p>当然，所有这些数据库系统都有比列在这里多得多的功能特性。我这里仅仅依据我个人认识列出一些关键特性，并且这些项目的开发也很活跃，我将尽力保持更新。</p>
+
+
+<p>-- Kristof</p>
+
+
+<p>来源：<a href="http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis">http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis</a></p>
+
+
+<table border="0" width="80%"><tbody><tr style="font-weight:bold"><td width="122">项目名称</td><td width="42">语言</td><td width="67">容错性</td><td width="115">持久性存储介质</td><td width="70">客户端协议</td><td width="77">数据模型</td><td width="27">文档</td><td width="96">赞助商/社区</td></tr><tr><td style="font-weight:bold"><a href="http://project-voldemort.com/" title="http://project-voldemort.com/">Project Voldemort</a></td><td>Java</td><td>分区, 复制,<br>  read-repair</td><td>Pluggable: BerkleyDB,<br>  Mysql</td><td>Java API</td><td>Structured /<br>  blob / text</td><td>A</td><td>Linkedin, no</td></tr><tr><td style="font-weight:bold"><a href="http://github.com/tuulos/ringo/tree/master" title="http://github.com/tuulos/ringo/tree/master">Ringo</a></td><td>Erlang</td><td>分区, 复制, <br>  immutable</td><td>Custom on-disk<br>  (append only log)</td><td>HTTP</td><td>blob</td><td>B</td><td>诺基亚, no</td></tr><tr><td style="font-weight:bold"><a href="http://code.google.com/p/scalaris/" title="http://code.google.com/p/scalaris/">Scalaris</a></td><td>Erlang</td><td>分区, 复制,<br>  paxos</td><td>In-memory only</td><td>Erlang, Java,<br>  HTTP</td><td>blob</td><td>B</td><td>OnScale, no</td></tr><tr><td style="font-weight:bold"><a href="http://kai.wiki.sourceforge.net/" title="http://kai.wiki.sourceforge.net/">Kai</a></td><td>Erlang</td><td>分区, 复制?</td><td>On-disk Dets file</td><td>Memcached</td><td>blob</td><td>C</td><td>no</td></tr><tr><td style="font-weight:bold"><a href="http://github.com/cliffmoon/dynomite/tree/master" title="http://github.com/cliffmoon/dynomite/tree/master">Dynomite</a></td><td>Erlang</td><td>分区, 复制</td><td>Pluggable: couch,<br>  dets</td><td>Custom ascii,<br>  Thrift</td><td>blob</td><td>D+</td><td>Powerset, no</td></tr><tr><td style="font-weight:bold"><a href="http://memcachedb.org/" title="http://memcachedb.org/">MemcacheDB</a></td><td>C</td><td>复制</td><td>BerkleyDB</td><td>Memcached</td><td>blob</td><td>B</td><td>新浪网, some</td></tr><tr><td style="font-weight:bold"><a href="http://code.google.com/p/thrudb/" title="http://code.google.com/p/thrudb/">ThruDB</a></td><td>C++</td><td>复制</td><td>Pluggable: BerkleyDB,<br>  Custom, Mysql, S3</td><td>Thrift</td><td>Document<br>  oriented</td><td>C+</td><td>Third rail, unsure</td></tr><tr><td style="font-weight:bold"><a href="http://couchdb.apache.org/" title="http://couchdb.apache.org/">CouchDB</a></td><td>Erlang</td><td>复制, 分区?</td><td>Custom on-disk</td><td>HTTP, json</td><td>Document<br>  oriented (json)</td><td>A</td><td>Apache, yes</td></tr><tr><td style="font-weight:bold"><a href="http://code.google.com/p/the-cassandra-project/" title="http://code.google.com/p/the-cassandra-project/">Cassandra</a></td><td>Java</td><td>复制, 分区</td><td>Custom on-disk</td><td>Thrift</td><td>Bigtable meets<br>  Dynamo</td><td>F</td><td>Facebook, no</td></tr><tr><td style="font-weight:bold"><a href="http://hadoop.apache.org/hbase/" title="http://hadoop.apache.org/hbase/">HBase</a></td><td>Java</td><td>复制, 分区</td><td>Custom on-disk</td><td>Custom API,<br>  Thrift, Rest</td><td>Bigtable</td><td>A</td><td>Apache, yes</td></tr><tr><td style="font-weight:bold"><a href="http://hypertable.org/" title="http://hypertable.org/">Hypertable</a></td><td>C++</td><td>复制, 分区</td><td>Custom on-disk<br>  (HDFS, KFS)</td><td>Thrift, other</td><td>Bigtable</td><td>A</td><td>Zvents, 百度, yes</td></tr><tr><td style="font-weight:bold"><a href="http://tokyocabinet.sourceforge.net/index.html" title="http://tokyocabinet.sourceforge.net/index.html">Tokyo Tyrant</a></td><td>C</td><td>复制</td><td>Tokyo Cabinet</td><td>Memcached,<br>  HTTP, other</td><td>blob</td><td>A</td><td>mixi.jp, no</td></tr></tbody></table>
+
+
+<p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2652664.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/23/2652664.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

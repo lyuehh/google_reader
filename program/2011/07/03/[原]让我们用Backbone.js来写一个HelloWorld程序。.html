@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[原]让我们用Backbone.js来写一个HelloWorld程序。</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[原]让我们用Backbone.js来写一个HelloWorld程序。</h2>
+<p class="meta">03 Jul 2011</p>
+
+<div class="post">
+<h2>[原]让我们用Backbone.js来写一个HelloWorld程序。</h2>
+
+<h3>by soasme</h3>
+
+<h3>at 2011-07-03 13:57:56</h3>
+
+<h3>original <a href="http://blog.csdn.net/soasme/article/details/6581029">http://blog.csdn.net/soasme/article/details/6581029</a></h3>
+
+<div><p>新建一个<span style="font-family:Times New Roman">api.php</span><span style="font-family:宋体">文件，内容：</span></p><p></p><pre name="code">header(&#39;Content-Type: application/json; charset=utf-8&#39;);
+die(json_encode(array(&#39;name&#39;=&gt;&#39;tom&#39;)));</pre><br><br><p></p><p>新建一个<span style="font-family:Times New Roman">index.html</span><span style="font-family:宋体">文件。(backbone基于jquery、underscore，我们使用Mustache来做模板解析，当然用其他的haml、jade，或者underscore里面的模板也都是可以)</span></p><p>内容：</p><p></p><pre name="code">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
+&lt;HTML&gt;
+ &lt;HEAD&gt;
+  &lt;TITLE&gt; New Document &lt;/TITLE&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;./jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;./underscore.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;./backbone.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;./mustache.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;./custom.js&quot;&gt;&lt;/script&gt;
+ &lt;/HEAD&gt;
+ &lt;BODY&gt;
+  <p>&lt;script id=&quot;hello-container-template&quot; type=&quot;text/template&quot;&gt;</p><p>&lt;div&gt; says:  &lt;/div&gt;</p><p>&lt;/script&gt;</p>
+ &lt;/BODY&gt;
+&lt;/HTML&gt;</pre><br><br><p></p><p>新建一个<span style="font-family:Times New Roman">custom.js</span><span style="font-family:宋体">文件，内容：</span></p><p></p><pre name="code">// 这是一个管理着 视图/控制/模型 的全局类
+var App = {
+    Models: {},
+Views: {},
+Controllers: {},
+Collections: {},
+initialize: function() {
+new App.Controllers.Routes();
+        Backbone.history.start() // 要驱动所有的Backbone程序，Backbone.history.start()是必须的。
+    }
+};
+App.Models.Hello = Backbone.Model.extend({
+    url: function() {
+        return &#39;/api.php&#39;; // 获得数据的后台地址。
+    },
+    initialize: function() {
+        this.set({&#39;message&#39;:&#39;hello world&#39;}); // 前端定义一个message字段，name字段由后端提供。
+    }
+});
+App.Views.Hello = Backbone.View.extend({
+el: $(&quot;body&quot;),
+template: $(&quot;#<span style="font-family:monospace;white-space:pre">hello-container-template</span>&quot;).html(),
+initialize: function(options){
+this.options = options;
+this.bind(&#39;change&#39;, this.render);
+this.model = this.options.model;
+},
+render: function(){ // render方法，目标只有两个：填充this.el，返回this以便链式操作。
+$(this.el).html(Mustache.to_html($(this.el).template,this.model.toJSON()) );
+return this
+}
+});
+App.Controllers.Routes = Backbone.Controller.extend({
+routes: {
+&quot;!/hello&quot; : &quot;hello&quot;,//使用#!/hello驱动路由
+},
+hello : function() {
+//新建一个模型，模型向后端请求更新内容成功后根据模型渲染新页面
+var helloModel = new App.Models.Hello;
+helloModel.fetch({
+success: function(model){
+var helloView = new App.Views.Hello({model: model});
+helloView.trigger(&#39;change&#39;);
+}
+})
+}});
+App.initialize();</pre><br><br><p></p></div>
+
+
+<pre><code>        &lt;div&gt;
+            作者：soasme 发表于2011-7-2 22:57:56 &lt;a href="http://blog.csdn.net/soasme/article/details/6581029"&gt;原文链接&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：15734 评论：13 &lt;a href="http://blog.csdn.net/soasme/article/details/6581029#comments"&gt;查看评论&lt;/a&gt;
+        &lt;/div&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

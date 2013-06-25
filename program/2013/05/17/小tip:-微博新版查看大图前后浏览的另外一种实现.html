@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>小tip: 微博新版查看大图前后浏览的另外一种实现</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>小tip: 微博新版查看大图前后浏览的另外一种实现</h2>
+<p class="meta">17 May 2013</p>
+
+<div class="post">
+<h2>小tip: 微博新版查看大图前后浏览的另外一种实现</h2>
+
+<h3>by 张 鑫旭</h3>
+
+<h3>at 2013-05-17 15:17:29</h3>
+
+<h3>original <a href="http://www.zhangxinxu.com/wordpress/2013/05/weibo-image-large-preview-another-achieve/">http://www.zhangxinxu.com/wordpress/2013/05/weibo-image-large-preview-another-achieve/</a></h3>
+
+<p>by <a href="http://www.zhangxinxu.com/">zhangxinxu</a> from <a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a><br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=3321">http://www.zhangxinxu.com/wordpress/?p=3321</a></p>
+
+
+<h3>一、新浪微博新版查看大图</h3>
+
+
+<p>你说我是先讲些废话呢还是讲些废话呢~~</p>
+
+
+<p>搜索“新版微博查看大图”，结果前三如下：<br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/2013-05-16_202045.png" width="514" height="446" alt="网友对新版新浪微博查看大图的吐槽"></p>
+
+
+<p>其实这种效果，我在人人先见到，然后贴吧啊，还有我不使用的QQ空间等……按照我以往的经验，估计是从老美哪个网站copy过来的，然后，A闯红灯，B闯红灯，C也闯红灯，此时D觉得自己不闯红灯就不正常，于是也朝着红色的方向大步夺去。</p>
+
+
+<p>数据上的好与不好，我不是专业的，随便乱说会烂舌头的。从个人感性认识上，微博似乎多了一件饰品。<br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/weiboruwo.jpg" width="300" height="233" alt="永远都差一件饰品"></p>
+
+
+<p>青菜萝卜各有所爱，复杂与丰富也是一种气质，也会有人喜欢。</p>
+
+
+<p>虽说事不关已高高挂起，微博是死是活我静观其变即可，但人在江湖身不由已，微博的产品以及开发人员必须有说不出的苦，甚至如下面的卡卡西般焦虑，因此，对于新的改版，我是大大的支持，奋力前进吧！<br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/kakaxi.jpg" width="440" height="303" alt="焦虑的卡卡西"></p>
+
+
+<p><span>//zxx:  <img src="http://mat1.gtimg.com/www/mb/images/face/98.gif"> 看到木有，我并不是只会黑渣浪。</span></p>
+
+
+<p>开头的废话到此，回到自己真正感兴趣的技术，对大围脖大图片大浏览的前后浏览感兴趣（图片左半边左箭头，右半边右箭头，见下截图）：<br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/2013-05-16_205728.png" width="514" height="330" alt="微博大图查看左右箭头"></p>
+
+
+<p>经过查看，发现（90%+的确定），左右半区手形的变化是通过JS判断鼠标在图片的左半区还是右半区实现的，图片的垂直以及水平居中也是通过JS计算得到的。</p>
+
+
+<p>这两点我都想吐槽：<br>
+1. JS判断鼠标在图片左半球还是右半区，势必要使用<code>mousemove</code>事件，经查阅，IE外的浏览器似乎不能直接获得鼠标相对于引起事件的对象的坐标，因此，还要一番额外计算，似乎还要与外部容器尺寸做比对，元素尺寸多半使用<code>clientWidth</code>，重绘触发，…… 其实性能的那点差异，容我IE6下观摩下，30秒后，终于看到界面啦，鼓掌！！<img src="http://mat1.gtimg.com/www/mb/images/face/99.gif">然后是这个……一顿汗哦~~ <img src="http://mat1.gtimg.com/www/mb/images/face/190.gif"><br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/2013-05-16_212542.png" width="510" height="158" alt="IE6浏览器不支持的提示"></p>
+
+
+<p>不过应该要致敬的！ <img src="http://mat1.gtimg.com/www/mb/images/face/189.gif"></p>
+
+
+<p>其实性能那点差异对于用户而言（尤其把IE6踢掉了），远不会达到<code>100ms</code>这个用户无法忍受的顿感时间的。因此，该实现主要问题在于实现的复杂，伤脑细胞，耗费时间，无论开发以及调试，因此，加班可能就少不了。</p>
+
+
+<p>其实，我觉得，此功能实现的前辈肯定知道我这里想要实现的方法（层覆盖），但是，出于用户的考虑——喜欢右键存图等，这里使用了这种原图暴露在最上层的实现。</p>
+
+
+<p>2. 我们都知道CSS是可以实现图片的水平以及居中效果的，从回流的角度讲（HTML变化了）（opacity透明度变化似乎不算），这里图片使用绝对定位是正确的选择；但是，考虑到，本身整个弹出层固定定位/绝对定位，所谓的回流非常有限（回流与DOM深度关系大大），因此，此处图片绝对定位，JS计算margin负偏移其实跟纯CSS实现水平垂直居中而言要逊色一点。</p>
+
+
+<h3>二、新人也能实现的实现方法</h3>
+
+
+<p>对于很多与页面打交道的前端而言，对CSS的熟悉要大于对JS的了解。因此，对于大多数同行而言，一个交互要想简单易实现就要充分发挥<code>CSS/HTML</code>的潜力，有的功能JS上百行的，如果你CSS处理得足够精致，JS可能就寥寥数行，实现的结果说不定会更甚一筹。当然，如果你的CSS纯粹就是会写写页面这种半吊子水平，多半上述对你而言只是美好理想，除非……你去让留几手来个惊世的点评，或者你对下面的内容的阅读与理解不是打马虎眼。不是开玩笑，一点一点沉寂的不断的积累，总会产生质变的。<span>//zxx: 对了，也不能过分沉寂，只有技术是面不到好工作，泡不到好妹子的，能说会道为人处事的能力也很重要~~</span></p>
+
+
+<p>左右半区的判断我们交给CSS/HTML完成，原理如下，一目了然：<br>
+<img src="http://image.zhangxinxu.com/image/blog/201305/slide-theory.jpg" width="506" height="417" alt="左右半区覆盖点击原理"></p>
+
+
+<p>假设左边覆盖层的类名是<code>prev</code>，右边的覆盖层是<code>next</code>，父容器<code>position:realtive</code>，考虑到父容器的高度不定或以后潜在的尺寸变动性，我们要自适应处理，于是有如下CSS代码：</p>
+
+
+<div>
+<pre>.prev, .next{
+    <span style="color:green">/* 50%自适应于父容器 */</span>
+    width:50%;
+    <span style="color:green">/* IE6下top:0; bottom:0 无法高度100%自适应，使用个超级高度，总归会100%显示的 */</span>
+    _height:2000px;
+    <span style="color:green">/* 据说IE6/IE7下空的绝对定位层会镂空，使用个空背景意思下，使可点击 */</span>
+    background-image:url(about:blank);
+    position:absolute;
+    <span style="color:green">/* IE7+以及其他浏览器高度100%与父容器 */</span>
+    top:0; bottom:0;
+}
+<span style="color:green">/* 下面是手型以及左右定位 */</span>
+.prev{cursor:url(pic_prev.cur), auto; left:0;}
+.next{cursor:url(pic_next.cur), auto; right:0;}</pre>
+</div>
+
+
+<p>对应的HTML其实老简单了，为：</p>
+
+
+<div>
+<pre>&lt;div class=&quot;box&quot;&gt;                  
+    &lt;s class=&quot;prev&quot; title=&quot;上一张&quot;&gt;&lt;/s&gt;
+    &lt;s class=&quot;next&quot; title=&quot;下一张&quot;&gt;&lt;/s&gt;
+    &lt;img src=&quot;mm1.jpg&quot; /&gt;
+&lt;/div&gt; </pre>
+</div>
+
+
+<p>这种实现的好处除了些许的性能提高，节省了不少JS代码以及脑细胞外，我们还可以增加<code>title</code>属性，通过动态改变，告诉用户是否已经是最后一张图片了，一定程度上提高了用户体验。不过，金无足赤人无完人，此方法有个比较致命的影响体验的地方，就是，我们无法：右键-图片另存为|复制图片地址|……等浏览器相关的图片操作，因为我们右键的实际是覆盖层。</p>
+
+
+<p>要修复这个问题并不难，右键上下文菜单为<code>contextmenu</code>事件，在IE6+, FireFox以及Chrome浏览器中，<code>contextmenu</code>事件都是紧随<code>mouseup</code>事件之后触发的。因此，我们只要在<code>mouseup</code>事件中让覆盖层隐藏，然后随即而来的<code>contextmenu</code>事件的目标元素就是下面的图片了，代码示意如下：</p>
+
+
+<div>
+<pre>element.onmouseup = function(event) {
+    <span style="color:green">/* 都懂的，兼容处理 */</span>
+    event = event || window.event;
+
+    var target = this;
+    <span style="color:green">/* 如果是右键或者包含右键点击 */</span>
+    if (/^2|6|4|7$/.test(event.button)) {
+        target.style.visibility = "hidden";
+        <span style="color:green">/* 小小定时器，正好跳过contextmenu事件 */</span>
+        setTimeout(function() { target.style.visibility = "visible";}, 16);            
+    }        
+};        
+</pre>
+</div>
+
+
+<p>您可以狠狠地点击这里：<a href="http://www.zhangxinxu.com/study/201305/prvious-next-image-preview.html">覆盖层实现的前一张后一张切换效果demo</a></p>
+
+
+<p><img src="http://image.zhangxinxu.com/image/blog/201305/2013-05-17_115449.png" width="406" height="350" alt="IE6下右键存图功能的实现"></p>
+
+
+<p><strong>其他说明：</strong><br>
+1. window下是Safari浏览器中，上下文菜单是紧随<code>mousedown</code>事件后触发的，而不是<code>mouseup</code>，如果您也想兼容此浏览器，需要多做点判断处理。我个人建议是，忽略之，除非Mac下也是如此。</p>
+
+
+<p>2. CSS实现图片的垂直居中等已经嚼得太烂了，这里不再叙述。</p>
+
+
+<p>3. demo共5张图片浏览。代码实现并不具有太多实用性，仅供参考，知其原理即可。</p>
+
+
+<h3>三、最后再唠叨点什么</h3>
+
+
+<p><img src="http://image.zhangxinxu.com/image/emtion/litter-sad.png" width="150" height="150" alt="若沉思、略悲伤">我比较钦佩那些非常优秀的设计师，做的东西确实很赞！我也很钦佩那些语言算法很厉害的开发者，逻辑思维相当的强大！但是，我非常不屑那些以纯语言标准来评判前端优秀与否的人。很多前端是从后台过来的，我不清楚他们做前端的动机是什么，可能本身混不下去，觉得前端好欺负；或者是觉得前端更有前途，比较好混饭吃；或者是公司没人，自己顶上，顶着顶着就上了。因此，其思维或侧重更偏向于程序这边，在他们看来，如果你算法不懂、语言底层不了解，做开发难有大成。这种定律适用于纯开发性质的，你用C++写软件的，或者做JS底层的等。但是，对于前端这个职业，鉴于其复杂性、跨越性、职称难以鉴定性，这种判断我是很不屑的。</p>
+
+
+<p>就PC网页端而言，我们制作的页面本身就是依附在浏览器中的，如果你是开发制作浏览器的，必须的，算法、底层等势必要了解；但是，我们只是在浏览器中折腾东西。实际本质上，跟在photoshop中美化图片没什么区别。要看到最终的目的是实现用户友好、节省成本的网页。对于大部分的网页而言，CSS/HTML绝对是绝大多数，所谓的JS交互，不过尔尔，用不上什么面向对象思想，用不到什么继承，像jQuery如此臃肿的东西显然也是没必要的。如果你不使用JS就能兼容实现所有想要的效果，没有哪个傻逼会因为你不会JS说你不是优秀的前端的。但是，实际上，很多人会因为你JS不擅长，就认为你前端也就那样。于是，“7级的JS+3级的CSS”就会认为“9级的CSS水平+3级的JS”没有自己牛逼。</p>
+
+
+<p>看看，本文的展示，左右区域判断、图片垂直水平居中实现等，10分钟的CSS工作时间至少PK了20分钟的JS工作时间，还不算后期维护等。几乎同样的效果，你说，是JS主驱动的人优秀呢，还是CSS主驱动的人优秀？</p>
+
+
+<p>这个问题其实是个坑，无论回答哪个都是不妥的。应该说，能够采用最优的方式实现我们想要效果的才是最优秀的前端。因此，那些有着所谓程序员自我良好感觉的人千万不要觉得页面仔们没什么技术含量，说不定，你正在被偷笑呢！——这个傻逼，明明几行CSS就可以实现的选项卡效果，这丫的居然写了上百行JS代码，笑屎了~~~</p>
+
+
+<p>纯粹语言层面牛逼的人不见得是好前端，CSS/JS等各方面游刃有余的才能得心应手。善用软件的不见得比开发软件的逊，您说是吧，马云老师！</p>
+
+
+<p>原创文章，转载请注明来自<a href="http://www.zhangxinxu.com/">张鑫旭-鑫空间-鑫生活</a>[<a href="http://www.zhangxinxu.com/">http://www.zhangxinxu.com</a>]<br>
+本文地址：<a href="http://www.zhangxinxu.com/wordpress/?p=3321">http://www.zhangxinxu.com/wordpress/?p=3321</a></p>
+
+
+<p>（本篇完）</p>
+
+
+<div>有话要说？点击<a href="http://www.zhangxinxu.com/wordpress/2013/05/weibo-image-large-preview-another-achieve/#respond">这里</a>发表评论。</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

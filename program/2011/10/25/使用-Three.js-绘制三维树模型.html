@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用 Three.js 绘制三维树模型</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用 Three.js 绘制三维树模型</h2>
+<p class="meta">25 Oct 2011</p>
+
+<div class="post">
+<h2>使用 Three.js 绘制三维树模型</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2011-10-24 19:47:35</h3>
+
+<h3>original <a href="http://www.hiwebgl.com/?p=509">http://www.hiwebgl.com/?p=509</a></h3>
+
+<div>
+<p>编者按：qiao是一名大三学生，目前就读于中山大学计算机系，热爱计算机科学与计算机技术，沉迷编程，推崇开源社区的自由精神，系 Linux 用户及其传播者。这是他在今年8月发表在自己<a href="http://typedef.me/2011/08/18/three-js-webgl-tree">博客</a>上的一篇使用Three.js绘制一棵树木的文章。虽然目前Three.js的接口发生了变化，文章中提到的某些API在调用时会提示“已废弃”，但是思路仍然是值得借鉴的！推荐给大家！</p>
+<p>另外感谢作者qiao，他的博客地址是：<a href="http://typedef.me/">http://typedef.me/</a> 。</p>
+<p><span style="font-size:20px;font-weight:bold">前言</span></p>
+<p>最近读了一本关于使用 Javascript 构建 Web 图形应用的新书(今年8月才出版的)：<a href="http://book.douban.com/subject/6688829/">Supercharged JavaScript Graphics</a>。虽然只有短短200多页，但收获不少。其中有一节展示了如何使用 HTML5 的 canvas 来绘制一颗树。虽然其中使用的递归方法已经是老生常谈了，但其颇为美丽的结果和短小精悍的代码却依然令人眼前一亮。</p>
+<p>正好自己最近关注了下<a href="https://github.com/mrdoob/three.js">Three.js</a>这款 3D 引擎，于是就想拿它做一颗三维的树来试试。经过两天的各种折腾，终于得到了一个令人满意的成果。这里就简要的讲讲如何用 Three.js 来制作三维的树模型吧。</p>
+<div><p>目录</p><ul><li><a href="http://www.hiwebgl.com/#1_-1">1 1. 基本介绍</a></li><li><a href="http://www.hiwebgl.com/#2_-2">2 2. 浏览器支持</a></li><li><a href="http://www.hiwebgl.com/#3_-3">3 3. 基本元素的搭建</a></li><li><a href="http://www.hiwebgl.com/#4_-4">4 4. 添加物体</a></li><li><a href="http://www.hiwebgl.com/#i-5">5 生成三维树</a></li><li><a href="http://www.hiwebgl.com/#i-6">6 截图和演示</a></li><li><a href="http://www.hiwebgl.com/#i-7">7 源码获取</a></li></ul></div>
+<h2><span>1. 基本介绍</span></h2>
+<p>首先，Three.js 是一款运行在浏览器中的 3D 引擎，你可以用它创建各种三维场景，包括了摄影机、光影、材质等各种对象。你可以在它的<a href="https://github.com/mrdoob/three.js">主页</a>上看到许多精采的演示。不过，这款引擎目前还处在比较不成熟的开发阶段，其不够丰富的 API 以及匮乏的文档增加了初学者的学习难度（尤其是文档的匮乏），你可以看下它的<a href="https://github.com/mrdoob/three.js/wiki/API-Reference">官方API文档</a>，这玩意简直是坑爹么，怒 &gt;_&lt;。我当时不知道读了多少示例代码还有这个引擎的源码（源码里面也基本没啥注释）才大致的了解了几个常用类的用法。如果你也有兴趣学习这个引擎，希望这篇文章可以对你能有所帮助。</p>
+<h2><span>2. 浏览器支持</span></h2>
+<p>Three.js 支持三种图像渲染/输出的方式，分别为 SVG，Canvas 以及 WebGL，其中 WebGL 的性能最优秀，它可以使用 GPU 而不是 CPU 来进行图像运算。但这项技术目前还处于实验性阶段，许多浏览器如 IE 和 Opera 尚不支持。另外，在运行 Three.js 的展示的时候，推荐使用 Chrome，因为它的 V8 引擎是目前所有 Js 引擎中性能最为出色的，很多演示只有在 Chrome 下才可流畅的运行。</p>
+<h2><span>3. 基本元素的搭建</span></h2>
+<p>创建一个 html 文件并导入下载好的<a href="http://mrdoob.github.com/three.js/build/Three.js">Three.js</a>，这一步就不必多说了吧。</p>
+<p>一个标准的 Three.js 演示包含以下四种元素。</p>
+<ol>
+<li><strong>scene（场景）</strong><br>
+场景是用户所创建的各种物体以及光源的容器</li>
+<li><strong>renderer（渲染器）</strong><br>
+用户可以根据上文提到的三种渲染方式选择对应的渲染器，用于将场景绘制到屏幕上。</li>
+<li><strong>camera（摄像机）</strong><br>
+使用渲染器渲染场景时，我们需要提供一个摄像机来指定视线的位置、方向和视野等参数。</li>
+<li><strong>object（对象）</strong><br>
+此处的对象泛指由用户创建的各种物体和光源等。</li>
+</ol>
+<p>首先，我们创建一个场景， 平淡无奇的一行代码：</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> scene <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Scene</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后，创建 renderer：</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> renderer <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">WebGLRenderer</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+renderer.<span style="color:#660066">setSize</span><span style="color:#009900">(</span>window.<span style="color:#660066">innerWidth</span><span style="color:#339933">,</span> window.<span style="color:#660066">innerHeight</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>上面代码的第一行处可选 <code>CanvasRenderer </code>以及 <code>SVGRenderer</code>， 如果想用其它的渲染方式的话，改个名字就行了。这里不得不赞一下 Three.js 的模块化设计，非常完美的将界面与数据解耦了。</p>
+<p>第二行处是声明图像容器的大小，这里我就直接全屏了。你可按照自己的需求的改动数值。</p>
+<p>接下来，我们在页面内创建一个容器，把 renderer 绑定上去，用于显示图形。</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace">document.<span style="color:#660066">body</span>.<span style="color:#660066">appendChild</span><span style="color:#009900">(</span>renderer.<span style="color:#660066">domElement</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>之后，创建 camera</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> camera <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Camera</span><span style="color:#009900">(</span><span style="color:#cc0000">45</span><span style="color:#339933">,</span> window.<span style="color:#660066">innerWidth</span> <span style="color:#339933">/</span> window.<span style="color:#660066">innerHeight</span><span style="color:#339933">,</span> <span style="color:#cc0000">1</span><span style="color:#339933">,</span> <span style="color:#cc0000">5000</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>Camera 的四个参数从左至右以此为：</p>
+<ol>
+<li>FOV（视野广度）， 以度为单位。</li>
+<li>Aspect（长宽比）， 摄像机视野的长宽比，一般与 scene 保持一致</li>
+<li>Near（近点），如果一个物体距离摄像机镜头的的距离小于这个值，则这个物体不可见</li>
+<li>Far（远点），距离大于这个值则不可见</li>
+</ol>
+<p>另外注意，所有物体生成时默认的位置都为 &lt; 0, 0, 0 &gt;，所以我们先将摄像机的位置调整一下：</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace">camera.<span style="color:#660066">position</span>.<span style="color:#660066">set</span><span style="color:#009900">(</span><span style="color:#cc0000">400</span><span style="color:#339933">,</span> <span style="color:#cc0000">600</span><span style="color:#339933">,</span> <span style="color:#cc0000">800</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>OK，现在我们的初始化工作完成了。</p>
+<h2><span>4. 添加物体</span></h2>
+<p>现在让我们往场景塞些物体吧，在 Three.js 里面，我们可以使用?<code>THREE.Mesh</code>?这个类来生成多面体，此外还有<code>Bone</code>, <code>Line</code>, <code>Particle</code>?等其它类用于生成相应的其它对象。</p>
+<p><code>THREE.Mesh </code>接收两个参数:</p>
+<ol>
+<li>geometry: THREE.Geometry 的实例，储存了物体的点线面的信息。</li>
+<li>material: THREE.Material 的实例，也即物体的材质，包括颜色、透明度、反光率等属性。</li>
+</ol>
+<p>我们先来生成一个立方体：</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> geometry <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">CubeGeometry</span><span style="color:#009900">(</span><span style="color:#cc0000">200</span><span style="color:#339933">,</span> <span style="color:#cc0000">200</span><span style="color:#339933">,</span> <span style="color:#cc0000">200</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#003366;font-weight:bold">var</span> material <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">MeshLambertMaterial</span><span style="color:#009900">(</span><span style="color:#009900">{</span> color<span style="color:#339933">:</span> 0xff0000 <span style="color:#009900">}</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#003366;font-weight:bold">var</span> cube <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Mesh</span><span style="color:#009900">(</span>geometry<span style="color:#339933">,</span> material<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后将这个立方体添加到场景里面</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace">scene.<span style="color:#660066">addObject</span><span style="color:#009900">(</span>cube<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>接着我们创建一个平行光，并将其加入场景中</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> light <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">DirectionalLight</span><span style="color:#009900">(</span>0xffffff<span style="color:#009900">)</span><span style="color:#339933">;</span>
+light.<span style="color:#660066">position</span>.<span style="color:#660066">set</span><span style="color:#009900">(</span><span style="color:#cc0000">500</span><span style="color:#339933">,</span> <span style="color:#cc0000">1000</span><span style="color:#339933">,</span> <span style="color:#cc0000">1500</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+scene.<span style="color:#660066">addLight</span><span style="color:#009900">(</span>light<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>光线默认是往 &lt; 0, 0, 0 &gt; 的方向照射。另外注意，添加光线到场景中时用的是 <code>addLight </code>方法而不是 <code>addObject </code>方法。</p>
+<p>之后，执行下面的代码，你就可以看到渲染后的结果了</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace">renderer.<span style="color:#660066">render</span><span style="color:#009900">(</span>scene<span style="color:#339933">,</span> camera<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>将上面的过程整合一下并略加修改，得到如下代码：</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> scene<span style="color:#339933">,</span> renderer<span style="color:#339933">,</span> camera<span style="color:#339933">,</span> 
+ 
+    WIDTH <span style="color:#339933">=</span> window.<span style="color:#660066">innerWidth</span><span style="color:#339933">,</span>
+    HEIGHT <span style="color:#339933">=</span> window.<span style="color:#660066">innerHeight</span><span style="color:#339933">,</span>
+ 
+    FOV <span style="color:#339933">=</span> <span style="color:#cc0000">45</span><span style="color:#339933">,</span>
+    NEAR <span style="color:#339933">=</span> <span style="color:#cc0000">1</span><span style="color:#339933">,</span>
+    FAR <span style="color:#339933">=</span> <span style="color:#cc0000">3000</span><span style="color:#339933">;</span>
+ 
+scene <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Scene</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+renderer <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">WebGLRenderer</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+renderer.<span style="color:#660066">setSize</span><span style="color:#009900">(</span>WIDTH<span style="color:#339933">,</span> HEIGHT<span style="color:#009900">)</span><span style="color:#339933">;</span>
+document.<span style="color:#660066">body</span>.<span style="color:#660066">appendChild</span><span style="color:#009900">(</span>renderer.<span style="color:#660066">domElement</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+camera <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Camera</span><span style="color:#009900">(</span>FOV<span style="color:#339933">,</span> WIDTH <span style="color:#339933">/</span> HEIGHT<span style="color:#339933">,</span> NEAR<span style="color:#339933">,</span> FAR<span style="color:#009900">)</span><span style="color:#339933">;</span>
+camera.<span style="color:#660066">position</span>.<span style="color:#660066">set</span><span style="color:#009900">(</span><span style="color:#cc0000">400</span><span style="color:#339933">,</span> <span style="color:#cc0000">600</span><span style="color:#339933">,</span> <span style="color:#cc0000">800</span><span style="color:#009900">)</span><span style="color:#339933">;</span> 
+ 
+<span style="color:#003366;font-weight:bold">var</span> cube <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Mesh</span><span style="color:#009900">(</span>
+    <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">CubeGeometry</span><span style="color:#009900">(</span><span style="color:#cc0000">200</span><span style="color:#339933">,</span> <span style="color:#cc0000">200</span><span style="color:#339933">,</span> <span style="color:#cc0000">200</span><span style="color:#009900">)</span><span style="color:#339933">,</span>
+    <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">MeshLambertMaterial</span><span style="color:#009900">(</span><span style="color:#009900">{</span> color<span style="color:#339933">:</span> 0xff0000 <span style="color:#009900">}</span><span style="color:#009900">)</span>
+<span style="color:#009900">)</span><span style="color:#339933">;</span>
+scene.<span style="color:#660066">addObject</span><span style="color:#009900">(</span>cube<span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+<span style="color:#003366;font-weight:bold">var</span> light <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">DirectionalLight</span><span style="color:#009900">(</span>0xffffff<span style="color:#009900">)</span><span style="color:#339933">;</span>
+light.<span style="color:#660066">position</span>.<span style="color:#660066">set</span><span style="color:#009900">(</span><span style="color:#cc0000">500</span><span style="color:#339933">,</span> <span style="color:#cc0000">1000</span><span style="color:#339933">,</span> <span style="color:#cc0000">1500</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+scene.<span style="color:#660066">addLight</span><span style="color:#009900">(</span>light<span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+renderer.<span style="color:#660066">render</span><span style="color:#009900">(</span>scene<span style="color:#339933">,</span> camera<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>上面的代码生成的便是如下的效果：</p>
+<p><a href="http://www.hiwebgl.com/wp-content/uploads/2011/10/cube1.png"><img title="cube[1]" src="http://www.hiwebgl.com/wp-content/uploads/2011/10/cube1.png" alt="" width="226" height="192"></a></p>
+<h2><span>生成三维树</span></h2>
+<p>OK，现在进入重点了， 下面的便是我这次生成三维树模型的核心代码，我来一段一段讲解：</p>
+<p>首先是一些变量的定义，不必细看，只要知道有这么个变量就行了。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">var</span> renderer<span style="color:#339933">,</span> scene<span style="color:#339933">,</span> camera<span style="color:#339933">,</span>
+ 
+    sin <span style="color:#339933">=</span> Math.<span style="color:#660066">sin</span><span style="color:#339933">,</span>
+    cos <span style="color:#339933">=</span> Math.<span style="color:#660066">cos</span><span style="color:#339933">,</span>
+    tan <span style="color:#339933">=</span> Math.<span style="color:#660066">tan</span><span style="color:#339933">,</span>
+    rand <span style="color:#339933">=</span> Math.<span style="color:#660066">random</span><span style="color:#339933">,</span>
+    floor <span style="color:#339933">=</span> Math.<span style="color:#660066">floor</span><span style="color:#339933">,</span>
+    round <span style="color:#339933">=</span> Math.<span style="color:#660066">round</span><span style="color:#339933">,</span>
+    PI <span style="color:#339933">=</span> Math.<span style="color:#660066">PI</span><span style="color:#339933">,</span>
+ 
+    SCREEN_WIDTH <span style="color:#339933">=</span> window.<span style="color:#660066">innerWidth</span><span style="color:#339933">,</span>
+    SCREEN_HEIGHT <span style="color:#339933">=</span> window.<span style="color:#660066">innerHeight</span><span style="color:#339933">,</span>
+ 
+    <span style="color:#006600;font-style:italic">// tree params</span>
+    MAX_BRANCHES <span style="color:#339933">=</span> <span style="color:#cc0000">4</span><span style="color:#339933">,</span>
+    MIN_BRANCHES <span style="color:#339933">=</span> <span style="color:#cc0000">3</span><span style="color:#339933">,</span>
+ 
+    RADIUS_SHRINK <span style="color:#339933">=</span> <span style="color:#cc0000">0.6</span><span style="color:#339933">,</span>
+ 
+    MIN_LENGTH_FACTOR <span style="color:#339933">=</span> <span style="color:#cc0000">0.5</span><span style="color:#339933">,</span>
+    MAX_LENGTH_FACTOR <span style="color:#339933">=</span> <span style="color:#cc0000">0.8</span><span style="color:#339933">,</span>
+ 
+    MIN_OFFSET_FACTOR <span style="color:#339933">=</span> <span style="color:#cc0000">0.7</span><span style="color:#339933">,</span>
+ 
+    MAX_SPREAD_RADIAN <span style="color:#339933">=</span> PI <span style="color:#339933">/</span> <span style="color:#cc0000">4</span><span style="color:#339933">,</span>
+    MIN_SPREAD_RADIAN <span style="color:#339933">=</span> PI <span style="color:#339933">/</span> <span style="color:#cc0000">10</span><span style="color:#339933">,</span>
+ 
+    BASE_LEAF_SCALE <span style="color:#339933">=</span> <span style="color:#cc0000">5</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>首先是函数头，</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace"><span style="color:#003366;font-weight:bold">function</span> drawTree<span style="color:#009900">(</span>start_position<span style="color:#339933">,</span> direction<span style="color:#339933">,</span> length<span style="color:#339933">,</span> depth<span style="color:#339933">,</span> radius<span style="color:#009900">)</span> <span style="color:#009900">{</span></pre></td></tr></table></div>
+
+</div>
+<p>这个函数接收5个参数，分别为树枝的起点，生长的方向，长度，递归的深度以及枝干的半径。<br>
+调用的示例如下，注意那个8代表的即是用8层递归来生成这棵树。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+</pre></td><td><pre style="font-family:monospace">drawTree<span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Vector3</span><span style="color:#009900">(</span><span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// start position</span>
+         <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Vector3</span><span style="color:#009900">(</span><span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#cc0000">1</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// direction</span>
+         <span style="color:#cc0000">150</span><span style="color:#339933">,</span>                        <span style="color:#006600;font-style:italic">// length</span>
+         <span style="color:#cc0000">8</span><span style="color:#339933">,</span>                          <span style="color:#006600;font-style:italic">// depth</span>
+         <span style="color:#cc0000">10</span><span style="color:#009900">)</span><span style="color:#339933">;</span>                        <span style="color:#006600;font-style:italic">// radius</span></pre></td></tr></table></div>
+
+</div>
+<p>回到函数中来，下面是一些局部变量，其中 cylinder（柱体）便是树的每个枝干。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#003366;font-weight:bold">var</span> cylinder<span style="color:#339933">,</span> half_length_offset<span style="color:#339933">,</span>
+        new_position<span style="color:#339933">,</span> new_direction<span style="color:#339933">,</span> new_length<span style="color:#339933">,</span> new_depth<span style="color:#339933">,</span> new_radius<span style="color:#339933">,</span>
+        new_base_position<span style="color:#339933">,</span> offset_vector<span style="color:#339933">,</span>
+        num_branches<span style="color:#339933">,</span> color<span style="color:#339933">,</span> num_segs<span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>下面这段代码根据递归深度的不同来产生不同的颜色，注意我们的深度是从8一直往下递减，如果深度小于2，我们就生成一个随机的绿色，代表树叶，否则生成一个随机的褐色，代表树枝或树干。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#006600;font-style:italic">// determine branch color</span>
+    <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>depth <span style="color:#339933">&amp;</span>lt<span style="color:#339933">;</span> <span style="color:#cc0000">3</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>
+        color <span style="color:#339933">=</span> <span style="color:#009900">(</span>rand<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#cc0000">128</span> <span style="color:#339933">+</span> <span style="color:#cc0000">64</span><span style="color:#009900">)</span> <span style="color:#339933">&amp;</span>lt<span style="color:#339933">;&amp;</span>lt<span style="color:#339933">;</span> <span style="color:#cc0000">8</span><span style="color:#339933">;</span> <span style="color:#006600;font-style:italic">// random green color</span>
+    <span style="color:#009900">}</span> <span style="color:#000066;font-weight:bold">else</span> <span style="color:#009900">{</span>
+        color <span style="color:#339933">=</span> <span style="color:#009900">(</span><span style="color:#009900">(</span>rand<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#cc0000">48</span> <span style="color:#339933">+</span> <span style="color:#cc0000">64</span><span style="color:#009900">)</span> <span style="color:#339933">&amp;</span>lt<span style="color:#339933">;&amp;</span>lt<span style="color:#339933">;</span> <span style="color:#cc0000">16</span><span style="color:#009900">)</span> <span style="color:#339933">|</span> 0x3311<span style="color:#339933">;</span> <span style="color:#006600;font-style:italic">// random brown color</span>
+    <span style="color:#009900">}</span></pre></td></tr></table></div>
+
+</div>
+<p>下面这里 num_segs 这个变量表示树干的 cylinder 的圆是由多少条线段逼近的，值越高则越圆，但同时渲染速度也越低。我这里直接使用了 depth + 2 的值。这样一来，越细的树干其精细度就越低，可以稍微提升些性能。</p>
+<div>
+
+<div><table><tr><td><pre>1
+</pre></td><td><pre style="font-family:monospace">    num_segs <span style="color:#339933">=</span> depth <span style="color:#339933">+</span> <span style="color:#cc0000">2</span><span style="color:#339933">;</span> <span style="color:#006600;font-style:italic">// min num_segs = 3</span></pre></td></tr></table></div>
+
+</div>
+<p>然后，我们生成当前的树枝， 并将其转动，使其面向 direction 这个变量指定的方向。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td><pre style="font-family:monospace">    cylinder <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Mesh</span><span style="color:#009900">(</span>
+           <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">CylinderGeometry</span><span style="color:#009900">(</span>num_segs<span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// numSegs</span>
+                                      radius<span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// topRad</span>
+                                      radius <span style="color:#339933">*</span> RADIUS_SHRINK<span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// botRad</span>
+                                      length<span style="color:#339933">,</span> <span style="color:#006600;font-style:italic">// height</span>
+                                      <span style="color:#cc0000">0</span><span style="color:#339933">,</span>    <span style="color:#006600;font-style:italic">// topOffset</span>
+                                      <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#339933">,</span>   <span style="color:#006600;font-style:italic">// botOffset</span>
+           <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">MeshLambertMaterial</span><span style="color:#009900">(</span><span style="color:#009900">{</span> color<span style="color:#339933">:</span> color <span style="color:#009900">}</span><span style="color:#009900">)</span>
+    <span style="color:#009900">)</span><span style="color:#339933">;</span>
+    <span style="color:#006600;font-style:italic">// rotate the cylinder to follow the direction</span>
+    cylinder.<span style="color:#660066">lookAt</span><span style="color:#009900">(</span>direction<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>接下来，指定 cylinder 的位置。注意，它是以 cylinder 的中心点为依据的。所以我们在计算位置时需要将 direction 这个向量乘以一半的树枝长度，再加上起点位置的坐标。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#006600;font-style:italic">// get the offset from start position to cylinder center position</span>
+    half_length_offset <span style="color:#339933">=</span> direction.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+    half_length_offset.<span style="color:#660066">setLength</span><span style="color:#009900">(</span>length <span style="color:#339933">/</span> <span style="color:#cc0000">2</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+    <span style="color:#006600;font-style:italic">// calculate center position</span>
+    cylinder.<span style="color:#660066">position</span> <span style="color:#339933">=</span> start_position.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+    cylinder.<span style="color:#660066">position</span>.<span style="color:#660066">addSelf</span><span style="color:#009900">(</span>half_length_offset<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后是一些光影的设定。castShadow 表示这个物体是否会在其它物体上产生影子，receiveShadow 表示这个物体是否会接收其它物体在它身上投下的影子。这里出于效率的考虑，我把 receiveShadow 给关了。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+</pre></td><td><pre style="font-family:monospace">    cylinder.<span style="color:#660066">castShadow</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">true</span><span style="color:#339933">;</span>
+    cylinder.<span style="color:#660066">receiveShadow</span> <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">false</span><span style="color:#339933">;</span>
+ 
+    scene.<span style="color:#660066">addObject</span><span style="color:#009900">(</span>cylinder<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>下面这里的代码便是递归终止的 base case</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#006600;font-style:italic">// stop recursion if depth reached 1</span>
+    <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>depth <span style="color:#339933">==</span> <span style="color:#cc0000">1</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>
+        <span style="color:#000066;font-weight:bold">return</span><span style="color:#339933">;</span>
+    <span style="color:#009900">}</span></pre></td></tr></table></div>
+
+</div>
+<p>如果继续的话，我们就必须为接下来的递归调用生成新的参数。</p>
+<p>首先是计算新的枝干的生长点，注意一个枝干上可以生成多个新的子枝，生长点从当前枝干的长度乘以 MIN_OFFSET_FACTOR 一直到 1 之间随机分配。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#006600;font-style:italic">// calculate the base start position for next branch</span>
+    <span style="color:#006600;font-style:italic">// a random offset will be added to it later</span>
+    new_base_position <span style="color:#339933">=</span> start_position.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+    new_base_position.<span style="color:#660066">addSelf</span><span style="color:#009900">(</span>
+            half_length_offset.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span>.<span style="color:#660066">multiplyScalar</span><span style="color:#009900">(</span><span style="color:#cc0000">2</span> <span style="color:#339933">*</span> MIN_OFFSET_FACTOR<span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后是新的递归深度，枝干半径和随机的枝干个数。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+</pre></td><td><pre style="font-family:monospace">    new_depth <span style="color:#339933">=</span> depth <span style="color:#339933">-</span> <span style="color:#cc0000">1</span><span style="color:#339933">;</span>
+    new_radius <span style="color:#339933">=</span> radius <span style="color:#339933">*</span> RADIUS_SHRINK<span style="color:#339933">;</span>
+ 
+    <span style="color:#006600;font-style:italic">// get a random branch number</span>
+    num_branches <span style="color:#339933">=</span> round<span style="color:#009900">(</span><span style="color:#009900">(</span>rand<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#009900">(</span>MAX_BRANCHES <span style="color:#339933">-</span> MIN_BRANCHES<span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#009900">)</span>
+                   <span style="color:#339933">+</span> MIN_BRANCHES<span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>接下来便开始枚举每个新的枝干了</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+</pre></td><td><pre style="font-family:monospace">    <span style="color:#006600;font-style:italic">// recursively draw the children branches</span>
+    <span style="color:#000066;font-weight:bold">for</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">var</span> i <span style="color:#339933">=</span> <span style="color:#cc0000">0</span><span style="color:#339933">;</span> i <span style="color:#339933">&amp;</span>lt<span style="color:#339933">;</span> num_branches<span style="color:#339933">;</span> <span style="color:#339933">++</span>i<span style="color:#009900">)</span> <span style="color:#009900">{</span></pre></td></tr></table></div>
+
+</div>
+<p>每个新的枝干都会在当前枝干的生长方向的基础上，往旁边旋转一定的角度，以形成分散的效果。这里用了些向量的计算。</p>
+<p>首先是生成一个随机的分散的角度。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// random spread radian</span>
+        <span style="color:#003366;font-weight:bold">var</span> spread_radian <span style="color:#339933">=</span> rand<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#009900">(</span>MAX_SPREAD_RADIAN <span style="color:#339933">-</span> MIN_SPREAD_RADIAN<span style="color:#009900">)</span> <span style="color:#339933">+</span>
+                            MIN_SPREAD_RADIAN<span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后是通过当前的方向向量和 (1,0,0) 这个单位向量的叉乘产生一个垂直于当前方向的向量。记其为 perp_vec<br>
+并通过三角函数计算这个垂直的向量的长度</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// generate a vector which is prependicular to the original direction</span>
+        <span style="color:#003366;font-weight:bold">var</span> perp_vec <span style="color:#339933">=</span> <span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Vector3</span><span style="color:#009900">(</span><span style="color:#cc0000">1</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#009900">)</span>.<span style="color:#660066">crossSelf</span><span style="color:#009900">(</span>direction<span style="color:#009900">)</span><span style="color:#339933">;</span>
+        perp_vec.<span style="color:#660066">setLength</span><span style="color:#009900">(</span>direction.<span style="color:#660066">length</span><span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> tan<span style="color:#009900">(</span>spread_radian<span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>接下来将这个垂直的向量加上原先的方向向量产生一个新的方向向量： new_direction。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// the new direction equals to the sum of the perpendicular vector</span>
+        <span style="color:#006600;font-style:italic">// and the original direction</span>
+        new_direction <span style="color:#339933">=</span> direction.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span>.<span style="color:#660066">addSelf</span><span style="color:#009900">(</span>perp_vec<span style="color:#009900">)</span>.<span style="color:#660066">normalize</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>之后，我们以原先的方向向量为旋转轴，在每个循环中将刚才生成的新的方向向量绕着这根轴旋转一定的角度，以产生数个分散的方向。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// generate a rotation matrix to rotate the new direction with</span>
+        <span style="color:#006600;font-style:italic">// the original direction being the rotation axis</span>
+        <span style="color:#003366;font-weight:bold">var</span> rot_mat <span style="color:#339933">=</span> <span style="color:#003366;font-weight:bold">new</span> THREE.<span style="color:#660066">Matrix4</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+        rot_mat.<span style="color:#660066">setRotationAxis</span><span style="color:#009900">(</span>direction<span style="color:#339933">,</span> PI <span style="color:#339933">*</span> <span style="color:#cc0000">2</span> <span style="color:#339933">/</span> num_branches <span style="color:#339933">*</span> i<span style="color:#009900">)</span><span style="color:#339933">;</span>
+        rot_mat.<span style="color:#660066">rotateAxis</span><span style="color:#009900">(</span>new_direction<span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>并生成一个随机的枝干长度</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// random new length for the next branch</span>
+        new_length <span style="color:#339933">=</span> <span style="color:#009900">(</span>rand<span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#009900">(</span>MAX_LENGTH_FACTOR <span style="color:#339933">-</span> MIN_LENGTH_FACTOR<span style="color:#009900">)</span> <span style="color:#339933">+</span>
+                     MIN_LENGTH_FACTOR<span style="color:#009900">)</span> <span style="color:#339933">*</span> length<span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>然后计算新的枝干生长点。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// caculate the position of the new branch</span>
+        new_position <span style="color:#339933">=</span> new_base_position.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+        offset_vector <span style="color:#339933">=</span> half_length_offset.<span style="color:#660066">clone</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+        new_position.<span style="color:#660066">addSelf</span><span style="color:#009900">(</span>
+                offset_vector.<span style="color:#660066">multiplyScalar</span><span style="color:#009900">(</span>
+                    <span style="color:#cc0000">2</span> <span style="color:#339933">*</span> i <span style="color:#339933">/</span> <span style="color:#009900">(</span>num_branches <span style="color:#339933">-</span> <span style="color:#cc0000">1</span><span style="color:#009900">)</span> <span style="color:#339933">*</span> <span style="color:#009900">(</span><span style="color:#cc0000">1</span> <span style="color:#339933">-</span> MIN_OFFSET_FACTOR<span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<p>在循环的最后递归调用 drawTree 来生成子树干。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td><pre style="font-family:monospace">        <span style="color:#006600;font-style:italic">// using setTimeout to make the drawing procedure non-blocking</span>
+        setTimeout<span style="color:#009900">(</span><span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span>a<span style="color:#339933">,</span> b<span style="color:#339933">,</span> c<span style="color:#339933">,</span> d<span style="color:#339933">,</span> e<span style="color:#009900">)</span> <span style="color:#009900">{</span>
+            <span style="color:#000066;font-weight:bold">return</span> <span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>
+                drawTree<span style="color:#009900">(</span>a<span style="color:#339933">,</span> b<span style="color:#339933">,</span> c<span style="color:#339933">,</span> d<span style="color:#339933">,</span> e<span style="color:#009900">)</span><span style="color:#339933">;</span>
+            <span style="color:#009900">}</span><span style="color:#339933">;</span>
+        <span style="color:#009900">}</span><span style="color:#009900">)</span><span style="color:#009900">(</span>new_position<span style="color:#339933">,</span> new_direction<span style="color:#339933">,</span> new_length<span style="color:#339933">,</span> new_depth<span style="color:#339933">,</span> new_radius<span style="color:#009900">)</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#339933">;</span>
+ 
+    <span style="color:#009900">}</span>
+<span style="color:#009900">}</span></pre></td></tr></table></div>
+
+</div>
+<p>最后那段代码中我使用了 setTimeout 来防止绘图的过程出现阻塞的行为。</p>
+<p>另外上面的闭包写法也值得注意，由于闭包对自由变量是按引用访问的，且我们依然处在循环中，所以如果写成下面这样的话每次函数调用的参数都是一样的，即都为参数在循环结束时的值，造成非预期的结果。</p>
+<div>
+
+<div><table><tr><td><pre>1
+2
+3
+</pre></td><td><pre style="font-family:monospace">setTimeout<span style="color:#009900">(</span><span style="color:#003366;font-weight:bold">function</span><span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span>
+    drawTree<span style="color:#009900">(</span>new_position<span style="color:#339933">,</span> new_direction<span style="color:#339933">,</span> new_length<span style="color:#339933">,</span> new_depth<span style="color:#339933">,</span> new_radius<span style="color:#009900">)</span><span style="color:#339933">;</span>
+<span style="color:#009900">}</span><span style="color:#339933">,</span> <span style="color:#cc0000">0</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre></td></tr></table></div>
+
+</div>
+<h2><span>截图和演示</span></h2>
+<p>OK，再加上雾化、阴影、抗锯齿等诸多效果后，最后的成品如下：</p>
+<p> </p>
+<p style="text-align:center"><a href="http://qiao.github.com/javascript-playground/webgl-tree/"><img title="screenshot[1]" src="http://www.hiwebgl.com/wp-content/uploads/2011/10/screenshot1.png" alt="" width="612" height="551"></a></p>
+<p>点击上面的截图便可进入演示地址，不过首先注意：</p>
+<ol>
+<li>这个演示是基于 WebGL 的，在 Firefox 6.0 和 Chromium 15.0.854.0 中测试通过(最好使用 Chromium/Chrome, 因为它们的 Javascript 虚拟机性能最好)。<strong>IE 还有 Opera 目前不支持 WebGL， 所以无法运行这个演示</strong>。</li>
+<li>在进入网址后，生成树的过程有可能会花 5-10 秒，你的浏览器可能暂时会出现未响应的状态，此外，CPU 使用率将会维持在一个很高的水平。</li>
+<li>由于生成的算法含有随机参数，所以每次刷新都会取得不同的结果。</li>
+</ol>
+<h2><span>源码获取</span></h2>
+<p>查看网页源代码自然是可以的啦，另外，也可以在<a href="https://github.com/qiao/javascript-playground/tree/master/webgl-tree">github</a>上看到源码。（以后会在这个 repo 里面添加更多的演示的）</p>
+</div>
+
+
+<div>
+
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>深入MongoDB内部结构</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>深入MongoDB内部结构</h2>
+<p class="meta">18 Jun 2011</p>
+
+<div class="post">
+<h2>深入MongoDB内部结构</h2>
+
+<h3>by nosqlfan</h3>
+
+<h3>at 2011-06-18 09:46:03</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/nosqlfan/~8149226/525955434/6253001/1/item.html">http://item.feedsky.com/~feedsky/nosqlfan/~8149226/525955434/6253001/1/item.html</a></h3>
+
+<p>下面slide的作者是10gen的工程师<a href="http://dirolf.com/">Mike Dirolf</a> ，其中对<span><a href="http://blog.nosqlfan.com/tags/mongodb" title="查看 MongoDB 的全部文章">MongoDB</a></span>的内部数据结构，文件存储结构等都做了深入的讲解。 作者在开始就警告大家，可能内容有点难，但是<span><a href="http://blog.nosqlfan.com/tags/mongodb" title="查看 MongoDB 的全部文章">MongoDB</a></span>用起来还是很简单的。</p>
+
+
+<p><a href="http://blog.nosqlfan.com/wp-content/uploads/2011/06/Screen-shot-2011-06-18-at-9.44.40-AM.png"><img title="Screen shot 2011-06-18 at 9.44.40 AM" src="http://blog.nosqlfan.com/wp-content/uploads/2011/06/Screen-shot-2011-06-18-at-9.44.40-AM.png" alt="" width="591" height="443"></a></p>
+
+
+<div style="width:595px"><strong><a title="Inside MongoDB: the Internals of an Open-Source Database" href="http://www.slideshare.net/mdirolf/inside-mongodb-the-internals-of-an-opensource-database">Inside MongoDB: the Internals of an Open-Source Database</a></strong> <iframe src="http://reader.googleusercontent.com/reader/embediframe?src=http://static.slidesharecdn.com/swf/ssplayer2.swf?doc%3Dinternals-100527122106-phpapp02%26stripped_title%3Dinside-mongodb-the-internals-of-an-opensource-database%26userName%3Dmdirolf&amp;width=595&amp;height=497" width="595" height="497"></iframe>
+<div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/mdirolf">Mike Dirolf</a></div>
+</div>
+
+
+<p style="font-weight:bold"><span style="padding-top:10px;float:left">觉得文章还不错？快分享给更多的人吧！</span><a href="http://twitter.com/share?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html&amp;text=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan" title="Twitter" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKEJk/ga3Zw.png"></a><a href="http://v.t.sina.com.cn/share/share.php?title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html" title="新浪微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVKrzm/b6giQ.png"></a><a href="http://v.t.qq.com/share/share.php?title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html" title="腾讯微博" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJX6o/HMY8k.png"></a><a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan%20&amp;url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html" title="QQ空间" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJSKI/6hVj7.png"></a><a href="http://www.douban.com/recommend/?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html&amp;title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan" title="豆瓣9点" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJrri/SB2B.png"></a><a href="http://xianguo.com/service/submitdigg?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html&amp;title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan%20&amp;content=utf-8" title="鲜果" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVJ4v4/3CHaH.png"></a><a href="http://share.renren.com/share/buttonshare.do?link=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html" title="人人网" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVI86k/1yDki.png"></a><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html&amp;title=%E6%B7%B1%E5%85%A5MongoDB%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84%20@nosqlfan" title="FaceBook" style="text-decoration:none;margin:2px"><img src="http://pic.yupoo.com/iammutex/B8hVHr67/ftAKQ.png"></a></p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">您可能还喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="MongoDB Schema Design" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F798.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/9MymB.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB Schema Design</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="Foursquare的MongoDB存储实践" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2101.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/9MymB.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Foursquare的MongoDB存储实践</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB发布1.5.1" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F196.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://pic.yupoo.com/iammutex/B8sPBDdj/9MymB.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB发布1.5.1</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB 索引数据类型优化，节省60％内存" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2064.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/06/17/12875848.jpg" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB 索引数据类型优化，节省60％内存</font>
+                    </a>
+                </td>
+                <td width="106" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="MongoDB的内部构造 From 《MongoDB The Definitive Guide》" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F740.html&amp;from=http%3A%2F%2Fblog.nosqlfan.com%2Fhtml%2F2079.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:100px!important;height:100px!important" src="http://static.wumii.com/site_images/2011/06/09/11642467.png" width="100px" height="100px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:106px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">MongoDB的内部构造 From 《MongoDB The Definitive Guide》</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/525955434/nosqlfan/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/nosqlfan/~8149226/525955434/6253001/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

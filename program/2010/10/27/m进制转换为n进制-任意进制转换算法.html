@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>m进制转换为n进制-任意进制转换算法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>m进制转换为n进制-任意进制转换算法</h2>
+<p class="meta">27 Oct 2010</p>
+
+<div class="post">
+<h2>m进制转换为n进制-任意进制转换算法</h2>
+
+<h3>by pkuoliver@hotmail.com</h3>
+
+<h3>at 2010-10-27 09:03:00</h3>
+
+<h3>original <a href="http://blog.redfox66.com/post.aspx?id=aa01094b-aecb-403c-80db-03931de3ba09">http://blog.redfox66.com/post.aspx?id=aa01094b-aecb-403c-80db-03931de3ba09</a></h3>
+
+<p>这种题也是一道经典的面试题，主要考察进制转换细想，Coding质量等。</p>
+
+
+<p>当我们把十进制转成二进制的时候，我们通过辗转相除，取余，逆置余数序列的过程得到新的进制的数。因此我们可以借助这种思想把M进制转成N进制的数。</p>
+
+
+<p>如下是C的详细的实现方法</p>
+
+
+<pre><pre>void m2n(int m, char* mNum, int n, char* nNum) 
+{
+    int i = 0;
+    char c, *p = nNum;
+
+    //这是一个考察地方，是否能用最少乘法次数。
+    while (*mNum != &#39;\0&#39;)
+        i = i*m + *mNum++ - &#39;0&#39;;
+    
+    //辗转取余
+    while (i) {
+        *p++ = i % n + &#39;0&#39;;
+        i /= n;
+    }
+    *p-- = &#39;\0&#39;;
+
+    //逆置余数序列
+    while (p &gt; nNum) {
+        c = *p;
+        *p-- = *nNum;
+        *nNum++ = c;
+    }
+}
+</pre>
+</pre>
+
+
+<p> </p>
+
+
+<p>观察上面的代码，存在着众多的不足。例如，要对输入参数做检查，数值的大小收到int值最大值的限制等。不过好在一点，该算法的时间复杂度是O(n)的。</p>
+
+
+<p>但是我们霹雳无敌的赵大叔又提供了一种用Java实现的通用的进制转换方法，即使Windows的计算器也转不了的大数，这个算法也可以转。算和上面的算法相比，他的基本思想不变，还是辗转除，但是用了字符串做大数相除，很不错的创新点，赞一个。代码如下：</p>
+
+
+<pre><pre>package test;
+
+/**
+ * 功能：将一个数从M进制转换成N进制
+ * MValue：M进制数的字符串表示方法
+ * Shang：保存中间运算结果
+ * M：M进制
+ * N：N进制
+ */
+public class M2N {
+    // 在这里对输入赋值
+    public static String MValue = &quot;1231412423534674574757&quot;;
+    public static String Shang = null;
+    public static int M = 10;
+    public static int N = 8;
+
+    public static void main(String[] args) {
+        String nValue = &quot;&quot;;
+        Shang = MValue;
+        while(Shang.length() &gt; 0) {
+            nValue = qiuyu(Shang) + nValue;
+        }
+        System.out.println(nValue);
+    }
+
+    /**
+     * 功能：对给定的M进制字符串对n求余。
+     * 
+     * @param MTempValue
+     * @param m
+     * @param n
+     * @return
+     */
+    public static String qiuyu(String MTempValue) {
+        Shang = &quot;&quot;;
+        int temp = 0;
+        while (MTempValue.length() &gt; 0) {
+            int t = getIntFromStr(MTempValue.substring(0, 1));
+            MTempValue = MTempValue.substring(1);
+            temp = temp * M + t;
+            Shang += getStrFromInt(temp / N);
+            temp = temp % N;
+        }
+        while(Shang.length() &gt; 0 &amp;&amp; Shang.charAt(0) == &#39;0&#39;){
+            Shang = Shang.substring(1);
+        }
+        return getStrFromInt(temp);
+    }
+
+    public static int getIntFromStr(String str){
+        return str.charAt(0) &lt;= &#39;9&#39; &amp;&amp; str.charAt(0) &gt;= &#39;0&#39;? 
+            str.charAt(0) - &#39;0&#39; : str.charAt(0) - &#39;a&#39; + 10;
+    }
+
+    public static String getStrFromInt(int value){
+        String result = null;
+        if (value &gt;= 0 &amp;&amp; value &lt;= 9)
+            result = String.valueOf((char)(&#39;0&#39; + value));
+        else if (value &gt; 9 &amp;&amp; value &lt; 36)
+        {
+            result = String.valueOf((char)(&#39;a&#39; + value - 10));
+        }
+        else
+        {
+            result = &quot;-1&quot;;// 出错误了
+        }
+        return result;
+    }
+}
+</pre>
+</pre>
+
+
+<p>赵大叔的算法好了不少，除了参数检查，大小写之外都很好。值得我们借鉴。    <br>下载源码：</p>
+
+
+<p><a href="http://blog.redfox66.com/file.axd?file=2010%2f10%2fM2N.Java">M2N.Java (2.90 kb)</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

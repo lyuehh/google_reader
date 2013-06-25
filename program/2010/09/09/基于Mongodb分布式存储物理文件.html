@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>基于Mongodb分布式存储物理文件</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>基于Mongodb分布式存储物理文件</h2>
+<p class="meta">09 Sep 2010</p>
+
+<div class="post">
+<h2>基于Mongodb分布式存储物理文件</h2>
+
+<h3>by 代震军</h3>
+
+<h3>at 2010-09-08 18:03:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html">http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/daizhj/"><img src="http://pic.cnblogs.com/face/u13406.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/daizhj/">代震军</a> 发表于 2010-09-08 18:03 <a href="http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html">原文链接</a> 阅读: 789 评论: 5</p>
+
+
+<p>        在<a title="基于Mongodb进行分布式数据存储" href="http://www.cnblogs.com/daizhj/archive/2010/09/07/1820528.html">之前的文章</a>中介绍了如何对关系型数据数据通过auto-sharding进行分布式数据存储，今天介绍如何对物理文件（小文件，基本小于100K）进行分布式存储。<br>    <br>        接着看一下要配置的测试环境(与前一篇中类似)：</p>
+
+
+<p>        模拟2个shard服务和一个config服务, 均运行在10.0.4.85机器上，只是端口不同：    <br>       Shard1：27020<br>       Shard2：27021<br>       Config：27022<br>       Mongos启动时默认使用的27017端口</p>
+
+
+<p> </p>
+
+
+<p>       在C,D,E磁盘下分别建立如下文件夹：</p>
+
+
+<p>               mongodb\bin </p>
+
+
+<p>               mongodb\db</p>
+
+
+<p> </p>
+
+
+<p>       然后用CMD命令行依次打开相应文件夹下的mongd文件:</p>
+
+
+<p>       c:\mongodb\bin\mongod --dbpath c:\mongodb\db\ --port 27020</p>
+
+
+<p>       d:\mongodb\bin\mongod --dbpath d:\mongodb\db\ --port 27021</p>
+
+
+<p>       e:\mongodb\bin\mongod --configsvr --dbpath e:\mongodb\db\ --port 27022          (注:config配置服务器)</p>
+
+
+<p> </p>
+
+
+<p>      启动mongos时，默认开启了27017端口</p>
+
+
+<p>      e:\mongodb\bin\mongos --configdb 10.0.4.85:27022</p>
+
+
+<p> </p>
+
+
+<p>      然后打开mongo:</p>
+
+
+<p>      E:\mongodb\bin&gt;mongo   回车  （有时加端口会造成下面的addshard命令出问题）</p>
+
+
+<p>      &gt; <span style="color:red">use admin</span><br>          switched to db admin<br>      &gt; <span style="color:red">db.runCommand( { addshard : &quot;10.0.4.85:27020&quot;, allowLocal : 1, maxSize:2 , minKey:1, maxKey:10} )  </span></p>
+
+
+<p>         --添加sharding,maxsize单位是M,此处设置比较小的数值只为演示sharding效果</p>
+
+
+<p>         { &quot;shardAdded&quot; : &quot;shard0000&quot;, &quot;ok&quot; : 1 }<br>      &gt; <span style="color:red">db.runCommand( { addshard : "10.0.4.85:27021", allowLocal : 1, minKey:1000} )</span><br>         { &quot;shardAdded&quot; : &quot;shard0001&quot;, &quot;ok&quot; : 1 }      </p>
+
+
+<p>          注：如果要移除sharding，可用下面写法</p>
+
+
+<p>          db.runCommand( { removeshard : &quot;localhost:10000&quot; } );</p>
+
+
+<p> </p>
+
+
+<p>      &gt; <span style="color:red">db.runCommand({listshards:1});   --</span>查看shard节点列表           <br>      <br>      <br>      &gt; <span style="color:red">config = connect("10.0.4.85:27022")</span><br>      &gt; <span style="color:red">config = config.getSisterDB("config")</span><br>      &gt; <span style="color:red">dnt_mongodb=db.getSisterDB("dnt_mongodb");</span><br>          dnt_mongodb<br>      &gt; <span style="color:red">db.runCommand({enablesharding:"dnt_mongodb"})</span><br>          { &quot;ok&quot; : 1 }<br>          <br>      &gt; <span style="color:red">db.printShardingStatus()   </span>      <br>  </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#000000">--- Sharding Status ---<br>  sharding version: { &quot;_id&quot; : 1, &quot;version&quot; : 3 }<br>  shards:<br>      {<br>        &quot;_id&quot; : &quot;shard0000&quot;,<br>        &quot;host&quot; : &quot;10.0.4.85:27020&quot;,<br>        &quot;maxSize&quot; : NumberLong( 2 )<br>      }<br>      { &quot;_id&quot; : &quot;shard0001&quot;, &quot;host&quot; : &quot;10.0.4.85:27021&quot; }<br>  databases:<br>        { &quot;_id&quot; : &quot;admin&quot;, &quot;partitioned&quot; : false, &quot;primary&quot; : &quot;config&quot; }<br>        { &quot;_id&quot; : &quot;dnt_mongodb&quot;, &quot;partitioned&quot; : true, &quot;primary&quot; : &quot;shard0001&quot; }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>      &gt; <span style="color:red">db.runCommand( { shardcollection : "dnt_mongodb.attach_gfstream.chunks", key : { files_id : 1 } } )</span>  --此处与之前的数据存储方式有些不同,目前shard似乎仅支持files_id<br>       { &quot;collectionsharded&quot; : &quot;dnt_mongodb.attach_gfstream.chunks&quot;, &quot;ok&quot; : 1 }<br>       <br>       注：运行上面命令之前需要设置files_id为唯一索引[unique index]。        <br>       <br>       创建完sharding和设置相应信息后，我们加载一下测试数据，我用下面代码来读取要本地文件，然后批量向mongodb中添加（通过循环修改文件名来添加相同大小的文件）。       <br>        </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>代码</span> 
+<div>
+<div><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#008000"><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> 上传文件到mongodb<br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#008000"><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;param name=&quot;uploadDir&quot;&gt;</span><span style="color:#008000">要上传文件所在路径</span><span style="color:#808080">&lt;/param&gt;</span><span style="color:#008000"><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;param name=&quot;fileName&quot;&gt;</span><span style="color:#008000">要上传的文件名</span><span style="color:#808080">&lt;/param&gt;</span><span style="color:#008000"><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;returns&gt;&lt;/returns&gt;</span><span style="color:#808080"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">bool</span><span style="color:#000000"> UploadFile(</span><span style="color:#0000ff">string</span><span style="color:#000000"> uploadDir, </span><span style="color:#0000ff">string</span><span style="color:#000000"> fileName)<br>        {<br>            </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">1</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> </span><span style="color:#800080">10000</span><span style="color:#000000">; i</span><span style="color:#000000">++</span><span style="color:#000000">)<br>            {<br>                </span><span style="color:#0000ff">try</span><span style="color:#000000"><br>                {<br>                    Mongo mongo </span><span style="color:#000000">=</span><span style="color:#000000"> mongoDB;<br>                    mongo.Connect();<br>                    IMongoDatabase DB </span><span style="color:#000000">=</span><span style="color:#000000"> mongo[</span><span style="color:#800000">"</span><span style="color:#800000">dnt_mongodb</span><span style="color:#800000">"</span><span style="color:#000000">];<br><br>                    </span><span style="color:#0000ff">using</span><span style="color:#000000"> (FileStream fileStream </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> FileStream(uploadDir </span><span style="color:#000000">+</span><span style="color:#000000"> fileName, FileMode.Open))<br>                    {<br>                        </span><span style="color:#0000ff">int</span><span style="color:#000000"> nFileLen </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000">)fileStream.Length;<br><br>                        </span><span style="color:#0000ff">byte</span><span style="color:#000000">[] myData </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Byte[nFileLen];<br>                        fileStream.Read(myData, </span><span style="color:#800080">0</span><span style="color:#000000">, nFileLen);<br><br>                        GridFile fs </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> GridFile(DB, </span><span style="color:#800000">"</span><span style="color:#800000">attach_gfstream</span><span style="color:#800000">"</span><span style="color:#000000">);<br>                        </span><span style="color:#0000ff">using</span><span style="color:#000000"> (GridFileStream gfs </span><span style="color:#000000">=</span><span style="color:#000000"> fs.Create(fileName </span><span style="color:#000000">+</span><span style="color:#000000"> i))<br>                        {<br>                            gfs.Write(myData, </span><span style="color:#800080">0</span><span style="color:#000000">, nFileLen);<br>                        }<br>                    }<br>                    mongo.Disconnect();<br>                }<br>                </span><span style="color:#0000ff">catch</span><span style="color:#000000"> { }                <br>            }<br>            </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">;<br>        }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>        <br>        在批量添加约10000次(约10000个文件)之后，mongodb开始把sharding出来的chunk从shard0000分布到shard0001上，我们可以用下面指令来进行验证：        <br>       <br>       &gt; db.printShardingStatus()</p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#000000">--- Sharding Status ---<br>  sharding version: { &quot;_id&quot; : 1, &quot;version&quot; : 3 }<br>  shards:<br>      {<br>        &quot;_id&quot; : &quot;shard0000&quot;,<br>        &quot;host&quot; : &quot;10.0.4.85:27020&quot;,<br>        &quot;maxSize&quot; : NumberLong( 2 )<br>      }<br>      { &quot;_id&quot; : &quot;shard0001&quot;, &quot;host&quot; : &quot;10.0.4.85:27021&quot; }<br>  databases:<br>        { &quot;_id&quot; : &quot;admin&quot;, &quot;partitioned&quot; : false, &quot;primary&quot; : &quot;config&quot; }<br>        { &quot;_id&quot; : &quot;dnt_mongodb&quot;, &quot;partitioned&quot; : true, &quot;primary&quot; : &quot;shard0000&quot; }<br><br>                dnt_mongodb.attach_gfstream.chunks chunks:<br>                        { &quot;files_id&quot; : { $minKey : 1 } } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fd02145a9b1534010d89&quot;) } on : shard0001 { &quot;t&quot; : 2000, &quot;i&quot; : 0 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fd02145a9b1534010d89&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fdec145a9b0b340005a7&quot;) } on : shard0000 { &quot;t&quot; :3000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fdec145a9b0b340005a7&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe08145a9b0b34000aaf&quot;) } on : shard0001 { &quot;t&quot; :3000, &quot;i&quot; : 4 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe08145a9b0b34000aaf&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe27145a9b0b34000fb7&quot;) } on : shard0001 { &quot;t&quot; :4000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe27145a9b0b34000fb7&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe43145a9b0b340014bf&quot;) } on : shard0000 { &quot;t&quot; :4000, &quot;i&quot; : 7 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe43145a9b0b340014bf&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe61145a9b0b340019c7&quot;) } on : shard0000 { &quot;t&quot; :4000, &quot;i&quot; : 8 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe61145a9b0b340019c7&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe7b145a9b0b34001ecf&quot;) } on : shard0000 { &quot;t&quot; :5000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe7b145a9b0b34001ecf&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fe9a145a9b0b340023d7&quot;) } on : shard0001 { &quot;t&quot; :5000, &quot;i&quot; : 4 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fe9a145a9b0b340023d7&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85feb7145a9b0b340028df&quot;) } on : shard0001 { &quot;t&quot; :6000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85feb7145a9b0b340028df&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85feea145a9b0b340032ef&quot;) } on : shard0000 { &quot;t&quot; :6000, &quot;i&quot; : 4 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85feea145a9b0b340032ef&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85ff25145a9b0b34003cff&quot;) } on : shard0000 { &quot;t&quot; :7000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85ff25145a9b0b34003cff&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85ff57145a9b0b3400470f&quot;) } on : shard0001 { &quot;t&quot; :7000, &quot;i&quot; : 4 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85ff57145a9b0b3400470f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85ff87145a9b0b3400511f&quot;) } on : shard0001 { &quot;t&quot; :8000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85ff87145a9b0b3400511f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85ffcd145a9b0b34005b2f&quot;) } on : shard0000 { &quot;t&quot; :8000, &quot;i&quot; : 16 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85ffcd145a9b0b34005b2f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c85fff7145a9b0b3400653f&quot;) } on : shard0000 { &quot;t&quot; :8000, &quot;i&quot; : 17 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c85fff7145a9b0b3400653f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c860021145a9b0b34006f4f&quot;) } on : shard0000 { &quot;t&quot; :8000, &quot;i&quot; : 18 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c860021145a9b0b34006f4f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c86004f145a9b0b3400795f&quot;) } on : shard0000 { &quot;t&quot; :8000, &quot;i&quot; : 19 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c86004f145a9b0b3400795f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c860080145a9b0b3400836f&quot;) } on : shard0000 { &quot;t&quot; :9000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c860080145a9b0b3400836f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c8600b5145a9b0b34008d7f&quot;) } on : shard0001 { &quot;t&quot; :9000, &quot;i&quot; : 7 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c8600b5145a9b0b34008d7f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c860115145a9b0b3400a183&quot;) } on : shard0001 { &quot;t&quot; :9000, &quot;i&quot; : 8 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c860115145a9b0b3400a183&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c860198145a9b0b3400b587&quot;) } on : shard0001 { &quot;t&quot; :10000, &quot;i&quot; : 1 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c860198145a9b0b3400b587&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c8601fc145a9b0b3400c98b&quot;) } on : shard0000 { &quot;t&quot; :10000, &quot;i&quot; : 11 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c8601fc145a9b0b3400c98b&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c86025b145a9b0b3400dd8f&quot;) } on : shard0000 { &quot;t&quot; :10000, &quot;i&quot; : 12 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c86025b145a9b0b3400dd8f&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c8602ca145a9b0b3400f193&quot;) } on : shard0000 { &quot;t&quot; :10000, &quot;i&quot; : 13 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c8602ca145a9b0b3400f193&quot;) } --&gt;&gt; { &quot;files_id&quot; : ObjectId(&quot;4c860330145a9b0b34010597&quot;) } on : shard0000 { &quot;t&quot; :10000, &quot;i&quot; : 14 }<br>                        { &quot;files_id&quot; : ObjectId(&quot;4c860330145a9b0b34010597&quot;) } --&gt;&gt; { &quot;files_id&quot; : { $maxKey : 1 } } on : shard0000 { &quot;t&quot; : 10000, &quot;i&quot; : 15 }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>  <br>      当前，综合比较，发现还是chunks的值要远大于files集合所占用的磁盘空间（前者存储文件二进制流信息，后者存储结构化数据信息（如文件名称大小等）：<br>      <br>  <img height="581" alt="" src="http://images.cnblogs.com/cnblogs_com/daizhj/mongo_sharding_file1.gif" width="884" border="0">    </p>
+
+
+<p>  <img height="581" alt="" src="http://images.cnblogs.com/cnblogs_com/daizhj/mongo_sharding_file2.gif" width="883" border="0">  <br>  <span style="color:#000000"><img height="580" alt="" src="http://images.cnblogs.com/cnblogs_com/daizhj/mongo_sharding_file3.gif" width="883" border="0"></span><br>      </p>
+
+
+<p>      下面是一个测试，用于读写shard0001（注意不是shard0000）上的图片数据，因为mongos可以很好的管理sharding下各分区下的数据chunk，所以我们只要告诉它要取的文件名称即可:)<br>      <br>      比如要获取&quot;2010\09\07\2\2856090617370.gif6243&quot;这个文件(带日期型文件路径只是一种格式，因为我们的产品会将上传的附件放到相应磁盘目录下，这种带路径的命名方式会方便与磁盘路径进行对应)，其目前位于shard0001中，我们只要通过下面html代码即可获取图文件信息：      <br>      </p>
+
+
+<div>
+<div><span style="color:#000000"> </span><span style="color:#0000ff">&lt;</span><span style="color:#800000">img </span><span style="color:#ff0000">src</span><span style="color:#0000ff">="getfile.aspx?filename=2010\09\07\2\2856090617370.gif6243"</span><span style="color:#ff0000">  width</span><span style="color:#0000ff">="30"</span><span style="color:#ff0000"> </span><span style="color:#0000ff">/&gt;</span></div></div>
+
+
+<p> </p>
+
+
+<p>       <br>      相应的getfile.aspx.cs 代码参见如下：       <br>    </p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">partial</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> getfile : System.Web.UI.Page<br>    {<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> Mongo Mongo { </span><span style="color:#0000ff">get</span><span style="color:#000000">; </span><span style="color:#0000ff">set</span><span style="color:#000000">; }<br><br>        </span><span style="color:#0000ff">public</span><span style="color:#000000"> IMongoDatabase DB<br>        {<br>            </span><span style="color:#0000ff">get</span><span style="color:#000000"><br>            {<br>                </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#0000ff">this</span><span style="color:#000000">.Mongo[</span><span style="color:#800000">"</span><span style="color:#800000">dnt_mongodb</span><span style="color:#800000">"</span><span style="color:#000000">];<br>            }<br>        }<br><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;summary&gt;</span><span style="color:#008000"><br>        </span><span style="color:#808080">///</span><span style="color:#008000"> Sets up the test environment.  You can either override this OnInit to add custom initialization.<br>        </span><span style="color:#808080">///</span><span style="color:#008000"> </span><span style="color:#808080">&lt;/summary&gt;</span><span style="color:#808080"><br></span><span style="color:#000000">        </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">virtual</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Init()<br>        {<br>            </span><span style="color:#0000ff">string</span><span style="color:#000000"> ConnectionString </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">Server=10.0.4.85:27017;ConnectTimeout=30000;ConnectionLifetime=300000;MinimumPoolSize=512;MaximumPoolSize=51200;Pooled=true</span><span style="color:#800000">"</span><span style="color:#000000">;<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (String.IsNullOrEmpty(ConnectionString))<br>                </span><span style="color:#0000ff">throw</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> ArgumentNullException(</span><span style="color:#800000">"</span><span style="color:#800000">Connection string not found.</span><span style="color:#800000">"</span><span style="color:#000000">);<br>            </span><span style="color:#0000ff">this</span><span style="color:#000000">.Mongo </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Mongo(ConnectionString);<br>            </span><span style="color:#0000ff">this</span><span style="color:#000000">.Mongo.Connect();         <br>        }        <br><br>        </span><span style="color:#0000ff">protected</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> Page_Load(</span><span style="color:#0000ff">object</span><span style="color:#000000"> sender, EventArgs e)<br>        {<br>            </span><span style="color:#0000ff">if</span><span style="color:#000000"> (</span><span style="color:#000000">!</span><span style="color:#0000ff">string</span><span style="color:#000000">.IsNullOrEmpty(Request.QueryString[</span><span style="color:#800000">"</span><span style="color:#800000">filename</span><span style="color:#800000">"</span><span style="color:#000000">]))<br>            {<br>                </span><span style="color:#0000ff">string</span><span style="color:#000000"> filename </span><span style="color:#000000">=</span><span style="color:#000000"> Request.QueryString[</span><span style="color:#800000">"</span><span style="color:#800000">filename</span><span style="color:#800000">"</span><span style="color:#000000">];<br>                Init();<br>                String filesystem </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">attach_gfstream</span><span style="color:#800000">"</span><span style="color:#000000">;<br><br>                GridFile fs </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> GridFile(DB, filesystem);<br>                GridFileStream gfs </span><span style="color:#000000">=</span><span style="color:#000000"> fs.OpenRead(filename);<br><br>                Byte[] buffer </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Byte[gfs.Length];<br><br>                </span><span style="color:#008000">//</span><span style="color:#008000">下面的Expires和Cache-Control设置主要用于squid反向加速，更多内容参见  </span><span style="color:#008000;text-decoration:underline">http://www.cnblogs.com/daizhj/archive/2010/08/19/1803454.html</span><span style="color:#008000"><br></span><span style="color:#000000">                HttpContext.Current.Response.AddHeader(</span><span style="color:#800000">"</span><span style="color:#800000">Expires</span><span style="color:#800000">"</span><span style="color:#000000">, DateTime.Now.AddDays(</span><span style="color:#800080">20</span><span style="color:#000000">).ToString(</span><span style="color:#800000">"</span><span style="color:#800000">r</span><span style="color:#800000">"</span><span style="color:#000000">));<br>                HttpContext.Current.Response.AddHeader(</span><span style="color:#800000">"</span><span style="color:#800000">Cache-Control</span><span style="color:#800000">"</span><span style="color:#000000">, </span><span style="color:#800000">"</span><span style="color:#800000">public</span><span style="color:#800000">"</span><span style="color:#000000">);<br>         <br>                </span><span style="color:#008000">//</span><span style="color:#008000"> 需要读的数据长度</span><span style="color:#008000"><br></span><span style="color:#000000">                </span><span style="color:#0000ff">long</span><span style="color:#000000"> dataToRead </span><span style="color:#000000">=</span><span style="color:#000000"> gfs.Length;<br>                </span><span style="color:#0000ff">int</span><span style="color:#000000"> length;<br>                </span><span style="color:#0000ff">while</span><span style="color:#000000"> (dataToRead </span><span style="color:#000000">&gt;</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">)<br>                {<br>                    </span><span style="color:#008000">//</span><span style="color:#008000"> 检查客户端是否还处于连接状态</span><span style="color:#008000"><br></span><span style="color:#000000">                    </span><span style="color:#0000ff">if</span><span style="color:#000000"> (HttpContext.Current.Response.IsClientConnected)<br>                    {<br>                        length </span><span style="color:#000000">=</span><span style="color:#000000"> gfs.Read(buffer, </span><span style="color:#800080">0</span><span style="color:#000000">, </span><span style="color:#800080">10000</span><span style="color:#000000">);<br>                        HttpContext.Current.Response.OutputStream.Write(buffer, </span><span style="color:#800080">0</span><span style="color:#000000">, length);<br>                        HttpContext.Current.Response.Flush();<br>                        buffer </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Byte[</span><span style="color:#800080">10000</span><span style="color:#000000">];<br>                        dataToRead </span><span style="color:#000000">=</span><span style="color:#000000"> dataToRead </span><span style="color:#000000">-</span><span style="color:#000000"> length;<br>                    }<br>                    </span><span style="color:#0000ff">else</span><span style="color:#000000"><br>                    {<br>                        </span><span style="color:#008000">//</span><span style="color:#008000"> 如果不再连接则跳出死循环</span><span style="color:#008000"><br></span><span style="color:#000000">                        dataToRead </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">-</span><span style="color:#800080">1</span><span style="color:#000000">;<br>                    }<br>                }<br>                gfs.Dispose();<br>                </span><span style="color:#0000ff">this</span><span style="color:#000000">.Mongo.Disconnect();<br>                HttpContext.Current.Response.End();                <br>            }<br>        }<br>    }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>      <br>      <br>     当然，上面只是对chunks进行sharding，如果要对files集合分片时，可以用下面命令行：            <br>     &gt; <span style="color:red">db.runCommand( { shardcollection : &quot;dnt_mongodb.attach_gfstream.files&quot;, key : { _id : 1 } } )  </span><br>     <br>     { &quot;collectionsharded&quot; : &quot;dnt_mongodb.attach_gfstream.files&quot;, &quot;ok&quot; : 1 }<br>     <br>     在我添加了近50万记录后，mongos开始将新的文件信息保存到shard0001上，如下图：</p>
+
+
+<p><br>    <img height="580" alt="" src="http://daizhj.cnblogs.com/images/cnblogs_com/daizhj/mongodb_file_sharding4.gif" width="884" border="0">          </p>
+
+
+<p>    </p>
+
+
+<p>     可以使用如下命令行来查看 shard上的信息：</p>
+
+
+<p>    &gt; <span style="color:red">db.printShardingStatus()</span></p>
+
+
+<p>       .../省略之前files_id的shard信息</p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#000000">              { &quot;filename&quot; : { $minKey : 1 } } --&gt;&gt; { &quot;filename&quot; : &quot;2010\\09\\08\\2\\1393993713076.gif1&quot; } on : shard0000 { &quot;t&quot; : 1000, &quot;i&quot; : 6 }<br>              { &quot;filename&quot; : &quot;2010\\09\\08\\2\\1393993713076.gif1&quot; } --&gt;&gt; { &quot;filename&quot; : &quot;2010\\09\\08\\2\\2396571814760.gif9999&quot; } on : shard0000 { &quot;t&quot; : 1000, &quot;i&quot; : 7 }<br>              { &quot;filename&quot; : &quot;2010\\09\\08\\2\\2396571814760.gif9999&quot;} --&gt;&gt; { &quot;filename&quot; : &quot;2010\\09\\08\\2\\2819270318096.gif25366&quot; } on : shard0000 { &quot;t&quot; : 2000, &quot;i&quot; : 2 }<br>              { &quot;filename&quot; : &quot;2010\\09\\08\\2\\2819270318096.gif25366&quot; } --&gt;&gt; { &quot;filename&quot; : &quot;2010\\09\\08\\2\\3100748419355.gif999&quot; } on : shard0000{ &quot;t&quot; : 2000, &quot;i&quot; : 3 }<br>             { &quot;filename&quot; : &quot;2010\\09\\08\\2\\3100748419355.gif999&quot; } --&gt;&gt; { &quot;filename&quot; : { $maxKey : 1 } } on : shard0001 { &quot;t&quot; : 2000, &quot;i&quot; : 0 }</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>     下面是mongos上进行sharding时的信息：</p>
+
+
+<p><br></p>
+
+
+<div><img alt="" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif"><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"> 
+<div>
+<div><span style="color:#000000">     Wed Sep 08 17:25:44 [conn5] ns: dnt_mongodb.attach_gfstream.files ClusteredCursor::query ShardConnection had to change attempt: 0<br>     Wed Sep 08 17:32:34 [conn6] ns: dnt_mongodb.attach_gfstream.files ClusteredCursor::query ShardConnection had to change attempt: 0<br>     Wed Sep 08 17:38:49 [conn55] autosplitting </span><span style="color:red">dnt_mongodb.attach_gfstream.chunks </span><span style="color:#000000">size: 188884488 shard: ns:dnt_mongodb.attach_gfstream.chunks at: shard0001:10.0.4.85:27021 lastmod: 11|3 min: { files_id: ObjectId(&#39;4c8755b3145a9b16d41d5dc9&#39;) } m<br>ax: { files_id: MaxKey } on: { files_id: ObjectId(&#39;4c8759a5145a9b16d42300d7&#39;) }(splitThreshold 188743680)<br>     Wed Sep 08 17:38:49 [conn55] config change: { _id: &quot;4_85-2010-09-08T09:38:49-10&quot;, server: &quot;4_85&quot;, time: new Date(1283938729648), what: &quot;split&quot;, ns: &quot;dnt_mongodb.attach_gfstream.chunks&quot;, details: { before: { min: { files_id: ObjectId(&#39;4c8755<br>b3145a9b16d41d5dc9&#39;) }, max: { files_id: MaxKey } }, left: { min: { files_id: ObjectId(&#39;4c8755b3145a9b16d41d5dc9&#39;) }, max: { files_id: ObjectId(&#39;4c8759a5145a9b16d42300d7&#39;) } }, right: { min: { files_id: ObjectId(&#39;4c8759a5145a9b16d42300d7&#39;)<br>}, max: { files_id: MaxKey } } } }<br>     Wed Sep 08 17:38:49 [conn98] ns: dnt_mongodb.attach_gfstream.chunks ClusteredCursor::query ShardConnection had to change attempt: 0</span></div></div></div>
+
+
+<p> </p>
+
+
+<p>      如果访问的图片分别位于shard0000和shard0001时，mongos会自行将请求调度到相应sharding上，比如下面的链接文件分别指定shard000和shard0001:</p>
+
+
+<p>     &lt;img src=&quot;getfile.aspx?filename=2010\09\08\2\1393993713076.gif5&quot;  width=&quot;30&quot; /&gt; 位于shard0000</p>
+
+
+<p>     &lt;img src=&quot;getfile.aspx?filename=2010\09\08\2\3197962515515.gif9&quot;  width=&quot;30&quot; /&gt; 位于shard0001</p>
+
+
+<p><br>      好了，今天的文章就先到这里了。    </p>
+
+
+<p><br>      原文链接:<a title="view: 基于Mongodb分布式存储物理文件" href="http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html"><font color="#002c99">http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html</font></a> </p>
+
+
+<p>      BLOG: <a href="http://daizhj.cnblogs.com/"><font color="#78afd3">http://daizhj.cnblogs.com/</font></a></p>
+
+
+<p>      作者:daizhj,代震军</p>
+
+
+<p><br>    <br>    </p>
+
+
+<p><img src="http://www.cnblogs.com/daizhj/aggbug/1821481.html?type=1" width="1" height="1" alt=""><p>评论: 5　<a href="http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/daizhj/archive/2010/09/08/1821481.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/73676/">解读马云动刀淘宝黑色产业链</a><span style="color:gray">(2010-09-09 11:15)</span><br>· <a href="http://news.cnblogs.com/n/73674/">谷歌美女副总裁阐述Google Instant工作机制</a><span style="color:gray">(2010-09-09 11:04)</span><br>· <a href="http://news.cnblogs.com/n/73675/">拆解 iPod touch 四代</a><span style="color:gray">(2010-09-09 11:00)</span><br>· <a href="http://news.cnblogs.com/n/73673/">Google TV比Apple TV更具吸引力10大原因</a><span style="color:gray">(2010-09-09 10:59)</span><br>· <a href="http://news.cnblogs.com/n/73672/">惠普临时CEO：满意CEO人选 不会与甲骨文闹僵</a><span style="color:gray">(2010-09-09 10:58)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/KnightsWarrior/archive/2010/09/08/1821098.html">云计算之旅5—实战第一个云程序</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

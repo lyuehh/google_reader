@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]JavaScript对象模型简介</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]JavaScript对象模型简介</h2>
+<p class="meta">09 Dec 2012</p>
+
+<div class="post">
+<h2>[译]JavaScript对象模型简介</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-12-09 13:01:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/12/09/2809121.html">http://www.cnblogs.com/ziyunfei/archive/2012/12/09/2809121.html</a></h3>
+
+<p>原文:<a href="http://soft.vub.ac.be/%7Etvcutsem/invokedynamic/js-object-model">http://soft.vub.ac.be/~tvcutsem/invokedynamic/js-object-model</a></p>
+
+
+<hr><p>本文中,我将会对Javascript中的对象模型(object model)进行简要介绍.这里的"对象模型",我指的是开发者们对一个对象的结构和行为所持有的心智模型(mental model).文章最后,我还会提到如何使用ES6中的代理(Proxy)来实现这个对象模型.</p><p><strong>对象作为映射</strong></p><p>让我们先从最简单的对象模型开始,然后慢慢完善.一个Javascript对象从核心上说不是别的,仅仅是一些属性的集合.每个属性都是一个字符串到值的映射:<code></code></p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> point =<span style="color:#000000"> {<br>  x: </span>0<span style="color:#000000">,<br>  y: </span>0<span style="color:#000000"><br>};</span></div><p><tt>point对象将字符串</tt>"x"和"y"映射到值0.</p><p>在Javascript中,我们可以在这些映射上进行多种操作,包括五种最基本的操作:属性查找(property lookup),比如<tt>point.x</tt>,属性添加(property addition),比如<tt>point.z = 0</tt>,属性更新(property update)比如<tt>point.x = 1</tt>,属性删除(property deletion),比如<tt>delete point.x,以及属性查询(</tt>property query),比如<tt>"x" in point</tt>.</p><p><strong>方法属性(Method Properties)</strong></p><p>我认为这是Javascript中很好的一个特性,就是,如果把对象的"方法"考虑进对象模型中,我们并不需要修改已有的对象模型:在Javascript中,一个方法就是一个值为函数的属性.从下面的语法中就能看出:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">var</span> point =<span style="color:#000000"> {<br>  x: </span>0<span style="color:#000000">,<br>  y: </span>0<span style="color:#000000">,<br>  toString: </span><span style="color:#0000ff">function</span>() { <span style="color:#0000ff">return</span> <span style="color:#0000ff">this</span>.x + "," + <span style="color:#0000ff">this</span><span style="color:#000000">.y; }<br>};</span></div><p>方法的调用操作<tt>point.toString()本质上就是</tt>"toString"属性的查找操作加上属性值(一个函数)的执行过程:<tt>(point.toString).apply(point, [])</tt>.所以,即使加入了方法和方法调用,我们也无需调整我们的对象模型.</p><p><strong>原型继承(Prototype inheritance)</strong></p><p>上节给出的对象模型并不完整:我们知道,Javascript中的对象还有一个特殊的"原型链接"(prototype link),指向了自己的父(parent)对象(译者注:也就是直接原型),原对象可以从该父对象身上继承到额外的属性.使用对象字面量语法<tt>{…}创建的对象默认会继承内置的的</tt><tt>Object.prototype对象</tt>.例如,我们上面给出的<tt>point对象,它的内置方法</tt><tt>hasOwnProperty就是从<tt>Object.prototype</tt>身上继承而来的</tt>,该方法可以用来判断一个属性是否是自身属性:</p><div><div><div><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">point.hasOwnProperty("x") <span style="color:#008000">//</span><span style="color:#008000"> true</span></div></div></div></div><p>一个对象的原型链接可以通过调用<tt>Object.getPrototypeOf(point)来获取到</tt>,同时还有很多浏览器把原型链接作为了对象的一个常规属性暴露出来,还起了个有趣的名字<tt>__proto__</tt>.</p><p>但我不喜欢把原型链接暴露成常规属性,因为这个链接几乎会影响到所属对象上的每一个操作.原型链接实在是太特殊了,设置<tt>point.__proto__的值为另一个对象会给point对象的后续行为到来极大的影响.</tt></p><p><tt>然后我们需要把原型链接考虑进我们的对象模型中</tt>:一个Javascript对象 = 一个常规属性的映射 + 一个特殊的原型链接.</p><p><strong>属性特性(Property attributes)</strong></p><p>刚刚描述的对象模型(对象=字符串-&gt;值 + 一个原型链接)只能足够准确的描述Ecmascript 3中用户自定义的对象.可是,Ecmascript 5使用了若干的新特性扩展了Javascript中的对象模型,这些特性主要包括属性特性(property attributes),不可扩展(non-extensible)的对象以及访问器属性(accessor properties).John Resig有一篇很好的<a href="http://ejohn.org/blog/ecmascript-5-objects-and-properties/">文章</a>讲到了这些.这里我只会简要的概括一下最主要的特性.</p><p>首先讲属性特性.基本上说,在ES5中,对象的每个属性都和三个特性(attributes)所关联,每个特性的值都是一个简单的布尔标识:</p><ul><li>writable: 该属性是否可以被更新</li><li>enumerable: 该属性是否可以被枚举(<tt>for-in循环)</tt></li><li>configurable: 属性特性是否可以被更新</li></ul><p>属性特性的查询和更新操作可以借助ES5的内置函数<tt>Object.getOwnPropertyDescriptor和</tt> <tt>Object.defineProperty</tt>.例如:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">Object.getOwnPropertyDescriptor(point, "x"<span style="color:#000000">)<br></span><span style="color:#008000">//</span><span style="color:#008000"> 返回了:{</span><span style="color:#008000"><br>//</span><span style="color:#008000">   value: 0,</span><span style="color:#008000"><br>//</span><span style="color:#008000">   writable: true,</span><span style="color:#008000"><br>//</span><span style="color:#008000">   enumerable: true,</span><span style="color:#008000"><br>//</span><span style="color:#008000">   configurable: true }</span><br>Object.defineProperty(point, "x"<span style="color:#000000">, {<br>  value: </span>1<span style="color:#000000">,<br>  writable: </span><span style="color:#0000ff">false</span><span style="color:#000000">,<br>  enumerable: </span><span style="color:#0000ff">false</span><span style="color:#000000">,<br>  configurable: </span><span style="color:#0000ff">false</span><span style="color:#000000"><br>});</span></div><p>该操作让"x"成为了一个不可写(non-writable)的,不可配置的(non-configurable)的属性,就像Java中的"final"字段一样.<tt>getOwnPropertyDescriptor()返回的对象以及传入</tt><tt>defineProperty()的对象统称为属性描述符(</tt>property descriptors),因为它们描述了对象的属性.</p><p>所以,在ES5中,我们需要调整我们的对象模型.Javascript对象不再是简单的字符串到值的映射了,而是字符串到属性描述符的映射.</p><p><strong>不可扩展(Non-extensible)对象</strong></p><p>ES5添加了能让对象变的不可扩展的能力:在执行了<tt>Object.preventExtensions(point)之后</tt>,任何尝试给<tt>point对象添加新属性的操作都会失败</tt>.这可以防止该对象在作为外部接口时被意外修改的情况发生.一旦一个对象变的不可扩展,则它永远不可能再变回可扩展状态.</p><p>我们需要使用一个表示该对象是否可扩展的布尔标识来扩展一下我们的对象模型.所以现在,一个Javascript对象 = 一个字符串到属性描述符的映射 + 一个原型链接 + 一个可扩展性标识.</p><p><strong>访问器属性(Accessor properties)</strong></p><p>ES5标准化了"getters"和"setters"的概念,也就是计算出的属性(computed properties).比如,一个点的"y"坐标要始终等于它的"x"坐标,可以这么来定义:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#0000ff">function</span><span style="color:#000000"> makeDiagonalPoint(x) {<br>  </span><span style="color:#0000ff">return</span><span style="color:#000000"> {<br>    get x() { </span><span style="color:#0000ff">return</span><span style="color:#000000"> x; },<br>    set x(v) { x </span>=<span style="color:#000000"> v; },<br>    get y() { </span><span style="color:#0000ff">return</span><span style="color:#000000"> x; },<br>    set y(v) { x </span>=<span style="color:#000000"> v; }<br>  };<br>};<br> <br></span><span style="color:#0000ff">var</span> dpoint = makeDiagonalPoint(0<span style="color:#000000">);<br>dpoint.x </span><span style="color:#008000">//</span><span style="color:#008000"> 0</span><br>dpoint.y = 1<span style="color:#000000"><br>dpoint.x </span><span style="color:#008000">//</span><span style="color:#008000"> 1</span></div><p>ES5中把使用getters/setters来实现的属性称之为访问器属性.与之对应的正常属性称之为数据属性(data properties).这个point对象有两个访问器属性"x"和"y".一个访问器属性的属性描述符和数据属性的属性描述符差别很明显:</p><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">Object.getOwnPropertyDescriptor(dpoint, "x"<span style="color:#000000">)<br></span><span style="color:#008000">//</span><span style="color:#008000"> 返回{</span><span style="color:#008000"><br>//</span><span style="color:#008000">   get: function() { return x; },</span><span style="color:#008000"><br>//</span><span style="color:#008000">   set: function(v) { x = v; },</span><span style="color:#008000"><br>//</span><span style="color:#008000">   enumerable: true,</span><span style="color:#008000"><br>//</span><span style="color:#008000">   configurable: true</span><span style="color:#008000"><br>//</span><span style="color:#008000"> }</span></div><p>访问器属性的属性描述符没有"value"和"writable"特性.取而代之的是,它们有"get"和"set"特性,当一个访问器属性被访问或者被修改时,对应的getter/setter函数就会被调用.如果没有getter/setter函数,可以把对应的"get"/"set"特性设置为<tt>undefined</tt>.访问/更新一个getter/setter为undefined的访问器属性会让操作失败.</p><p>即使新加了访问器属性,我们也不需要进一步扩展我们的对象模型,因为在上面的提到的属性描述符,就包括了数据属性描述符和访问器属性描述符.</p><p>因此,最终的结果出来了,一个Javascript对象 =</p><ul><li>一个字符串到数据或访问器属性描述符的映射</li><li>+ 一个原型链接</li><li>+ 一个可扩展标识</li></ul><p>这就是一个精确的ES5中自定义对象的对象模型.</p><p><strong>实现你自己的对象</strong></p><p>上面讲的对象模型可以认为是为Javascript对象提供的接口.有了ES6中的<a href="http://soft.vub.ac.be/%7Etvcutsem/invokedynamic/js-object-model?q=esharmony_reflect">代理(proxies)</a>,Javascript开发者们实际上获得了自己实现这些接口的能力,从而能自定义自己的对象.不仅可以模拟Javascript中默认的对象模型,还可以定义一些小的变化,来探索不同的对象模型.</p><p>这种变化的例子包括有:延迟属性初始化(lazy property initialization)的Javascript对象,不可萃取(non-extractable)或者叫死绑定(bound-only)的方法,具有无限个属性(infinite properties)的对象, 具有多重原型链接支持及多重继承(multiple-inheritance)的对象等.这些东西已经出现在了github上,感谢<a href="https://github.com/DavidBruant/HarmonyProxyLab">David Bruant</a>和<a href="https://github.com/Benvie/meta-objects">Brandon Benvie</a>.</p><p>我最近在<a href="http://soft.vub.ac.be/%7Etvcutsem/invokedynamic/presentations/JSMop_ECOOP.pdf">ECOOP的演讲</a>中更详细的讲解了这些想法.演讲内容包括有:描述了Javascript的对象模型,把对象模型与元对象协议(meta-object protocols)联系起来,以及如何利用Javascript的代理API首次让Javascript的元对象协议显现出来,让开发者们实现它们自己的对象.Firefox和Chrome已经实现了代理API.如果想要尝试使用最新版本的ES6代理API,我推荐使用<a href="https://github.com/tvcutsem/harmony-reflect">reflect.js</a> shim.</p><img src="http://www.cnblogs.com/ziyunfei/aggbug/2809121.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/12/09/2809121.html">本文链接</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

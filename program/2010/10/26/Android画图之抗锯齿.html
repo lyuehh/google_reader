@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Android画图之抗锯齿</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Android画图之抗锯齿</h2>
+<p class="meta">26 Oct 2010</p>
+
+<div class="post">
+<h2>Android画图之抗锯齿</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-10-26 15:25:05</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/794505">http://www.javaeye.com/topic/794505</a></h3>
+
+<p><span style="font-size:small">    在画图的时候，图片如果旋转或缩放之后，总是会出现那些华丽的锯齿。其实Android自带了解决方式。<br>
+    方法一：给Paint加上抗锯齿标志。然后将Paint对象作为参数传给canvas的绘制方法。<br><br></span>
+</p>
+
+
+<pre name="code">paint.setAntiAlias(true);</pre>
+
+
+<p> </p>
+
+
+<p><span style="font-size:small"><br>
+    方法二：给Canvas加上抗锯齿标志。<br>
+有些地方不能用paint的，就直接给canvas加抗锯齿，更方便。</span>
+</p>
+
+
+<pre name="code">canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG));</pre>
+
+
+<p> </p>
+
+
+<p><span style="font-size:small">      测试代码如下：</span>
+</p>
+
+
+<pre name="code">import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.view.View;
+
+public class MyView extends View {
+    private PaintFlagsDrawFilter pfd;
+    private Paint mPaint = new Paint();
+    private Matrix matrix = new Matrix();;
+    private Bitmap bmp;
+
+    public MyView(Context context) {
+        super(context);
+        initialize();
+    }
+
+    private void initialize() {
+        pfd = new PaintFlagsDrawFilter(0, Paint.ANTI_ALIAS_FLAG|Paint.FILTER_BITMAP_FLAG);      
+        mPaint.setAntiAlias(true);
+        matrix.setRotate(30);
+        matrix.postScale(0.5f, 0.5f);
+        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.show);
+    }
+    
+    @Override
+    public void dispatchDraw(Canvas canvas) {
+        canvas.translate(100, 0);
+        canvas.drawBitmap(bmp, matrix, null);
+        canvas.translate(0, 250);
+        canvas.drawBitmap(bmp, matrix, mPaint);
+        canvas.setDrawFilter(pfd);
+        canvas.translate(0, 250);
+        canvas.drawBitmap(bmp, matrix, null);
+    }
+}</pre>
+
+
+<p> </p>
+
+<p>    <span style="font-size:small">下图是效果：</span>
+</p>
+
+
+<p><img src="http://dl.javaeye.com/upload/picture/pic/74764/ffbc2f26-aa4c-389a-9c99-02f4f561b13c.png" alt=""></p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:small">      可以看出，两种方式都挺有效的。</span></p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://chroya.javaeye.com"&gt;chroya&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/794505" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

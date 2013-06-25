@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>从零开始设计一个漂亮的网页（译）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>从零开始设计一个漂亮的网页（译）</h2>
+<p class="meta">20 Sep 2009</p>
+
+<div class="post">
+<h2>从零开始设计一个漂亮的网页（译）</h2>
+
+<h3>by joe</h3>
+
+<h3>at 2009-09-20 13:58:42</h3>
+
+<h3>original <a href="http://xiebiji.com/2009/09/design_a_beautiful_website/">http://xiebiji.com/2009/09/design_a_beautiful_website/</a></h3>
+
+<p>难得国外有这样好的教程，我就用我仅有的英文水平翻译一下啦。建议将本博客的中栏和右栏隐藏后观看本文。</p>
+
+
+<p><strong>转载请注明：</strong></p>
+
+
+<div style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px">
+<p style="padding-left:30px">译者：Joe</p>
+<p style="padding-left:30px">译文来源：<a href="http://xiebiji.com/2009/09/design_a_beautiful_website/">http://xiebiji.com/2009/09/design_a_beautiful_website/</a><span style="color:#3366ff"><span><a href="http://xiebiji.com/2009/09/design_a_beautiful_website/"></a></span></span></p>
+<p style="padding-left:30px">原文来自：<a href="http://net.tutsplus.com/tutorials/html-css-techniques/design-a-beautiful-website-from-scratch/">Design a Beautiful Website From Scratch</a></p>
+</div>
+
+
+<p><strong>引言</strong></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px">你是否曾经想过设计一个漂亮的网页，但是却不知道怎样入手？说实话，几年前我也是这样。当我浏览网页的时候我看到这么多好看的网页，我就希望自己有技术创作这样的设计作品。<br>
+今天我可以这么做了，而且我将教你怎么做这样的设计！从根本上，对于这种设计你需要一点photoshop的操作技能和观察细节的能力。通过以下的教程，我将会指出其中极细微的细节之处，而这些细节讲使你的网页设计漂亮起来。打开photoshop,我们开始啦！</p>
+
+
+<p><strong>正文</strong><br>
+先看效果图（点击可放大）<a title="效果图" rel="singlepic405" href="http://nettuts.s3.amazonaws.com/307_designSite/62.jpg"><br>
+<img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/62.jpg" alt="效果图" width="60%"><br>
+</a></p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第一步 — 下载960网格模板</h1>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">我一直以来做的设计几乎全部是基于960网格模板的. 因此在我们开始创作之前，先下载这个模板. 你能在<a href="http://960.gs/">960.gs</a>上找到这些模板. 下载之后解压zip里面关于PSD的模板. 你会发现有两种规格: 一个是12栏式的而另一个是16栏式的. 他们的区别就像名字所说的，一个是按12栏分布一个按16栏. 更详细的介绍一下吧, 如果你的设计里面分3个区块你就选择12栏式的,那是因为12能被3整除; 同理假如你的设计分四个区块, 你可以选12栏式或者16栏式，那时因为12和16都可以被4整除. 你会发现这个技巧将用于下面教程.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二步 — 构造你想象的结构</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/0.jpg"><br>
+<img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/0.jpg" alt="效果图" width="60%"><br>
+</a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在我们打开PSD网格模板创作前, 我们首先需要先构造一下想象中的结构. 从上面的这张图，你可以看出来：因为在一个排版中又有排版，所以这是一个有点复杂的结构.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/1.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/1.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">构造了结构之后我们继续. 打开16栏式的PSD模板文件. 打开 “图像 &gt;画布大小” . 把画布的宽度设置为 1200px 高度设置为 1700px .把背景色设置为 <strong>#ffffff 既白色</strong>.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第四步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/2.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/2.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">用<strong>长方形工具</strong>在顶部画一个宽100%高大概80px的长方形. 用颜色： <strong>#dddddd</strong> 填充它.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第五步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/3.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/3.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在长方形那层上面创建一个新层. 按住CRTL键鼠标点击长方形层<strong></strong>. 长方形就被选中了，然后把目标移至刚建的新层上. 选择半径 <strong>600px 的软笔刷（如图）</strong>, 把其颜色设置为白色, 然后就像图片所示那样在选框上边缘点几下. 通过这个技巧你画出了一个微妙的照亮效果. 你现在可以把这两层联合起来了.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第六步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/4.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/4.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">建一个新层，再用长方形工具如图所示在上端画一个深灰色的小长方形.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第七步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/5.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/5.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/6.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/6.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在距离上端长方形500px处开始画一个宽 100% 高 575px 的长方形. 设置其由 <strong>#d2d2d0到 #ffffff</strong> 的渐变色, 角度为-90,缩放为100%</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第八步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/7.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/7.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">现在我们如第五步那样添加照亮效果. 这个技巧我们将很频繁地使用;因此下次用到的时候我只提示是第五步的效果 .</p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在当前层之上简历一个新层. Ctrl+鼠标点击这个大的长方形. 选择 600px的软笔刷, 设置颜色为白色，如图所示对选区的边缘点击多下.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第九步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/8.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/8.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">创建一个新层画一个400px高的长方形. 这是用作我们网页页头的. 给它设置一个线性渐变，由颜色 <strong>#2787b7 to #258fcd</strong>.</p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">以下展示颜色的微妙变化：</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/9.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/9.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/10.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/10.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/11.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/11.jpg" alt="效果图" width="60%"></a></p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/12.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/12.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在<strong>页首</strong>长方形块底端画一条<strong>1px</strong>的<strong>灰蓝色</strong>的线, 混合属性中添加阴影效果. 阴影参数: 正底叠加, 透明度: 65%, 方向: -90, 距离: 1px ， 宽度: 6px. 之后再建一个新层，在灰蓝色线下面画一条1px的白线.通过这种方式，我们就可以创建一个轮廓鲜明的边缘. 可以说在你的设计中，你可以把这个技巧用于其他色块.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十一步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/13.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/13.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">创建一个新层,在画布顶端用“长方形”工具化一个50px高的长方形,就如图所示，这个长方形是用作导航的.</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/14.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/14.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">为其添加阴影效果.参数如图所示.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十二步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/15.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/15.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="border:1px solid #cecfd0;padding:15px;background:#f0f0f0 none repeat scroll 0% 0%;margin-bottom:20px">开始话导航啦.使用“<strong>圆角工具</strong>” <strong>，设置半径为5px</strong>,画一个圆角长方形，用颜色 <strong>#f6a836 填充它</strong>, 之后给他添加以下效果:</p>
+
+
+<p>1.内阴影- 颜色: #ffffff, 混合模式:正底叠加, 透明度: 60%, 角度: 120*, 距离: 7px, 大小: 6px.</p>
+
+
+<p>2.内发光 – 混合模式: 正常, 颜色: #ffffff, 大小: 4px. 其他参数默认设置.</p>
+
+
+<p>3.描边 – 大小: 1px, 位置: 内部, 颜色: #ce7e01.</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/16.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/16.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="border:1px solid #cecfd0;padding:15px;background:#f0f0f0 none repeat scroll 0% 0%;margin-bottom:20px">Ctrl+鼠标点击层产生如图选区. 选择： <strong>选择-&gt; 修改 &gt; 收缩</strong> 然后在弹出框中输入1px，确定.</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/17.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/17.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">在上面再建一层, 把混合模式设置成<strong>叠加<strong> ,然后好像第五步那样加照亮效果,不过这次用的是小笔刷</strong> </strong>. 然后就是增加导航文字了.我用 <strong>Arial</strong> 字体作为导航的连接字体, 所有效果设置为 “无”.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十三步</h1>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/18.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/18.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">现在我们开始创建搜索框, <strong>圆角长方形，半径5px</strong>,在如第四步所示的网格的右边、顶端灰色背景网格纹中间创建一个用于搜索的色块. 为它增加以下样式:</p>
+
+
+<p>内阴影 – 颜色: #000000,混合模式: 正片叠加, 透明度: 9%, 角度: 90*,距离: 0px, 大小: 6px</p>
+
+
+<p>描边 – 大小: 1px, 位置:内部, 颜色: #dfdfdf.</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/19.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/19.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">给它添加“search”的文本和一个亮底暗色的“GO”按钮.如下图所示：</p>
+
+
+<p><a title="效果图" href="http://nettuts.s3.amazonaws.com/307_designSite/20.jpg"><img title="效果图" src="http://nettuts.s3.amazonaws.com/307_designSite/20.jpg" alt="效果图" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">到目前为止已经创建了很多层了，为了条例清楚，我们建立一个叫“search”的层文件夹. 把所有于搜索相关的层一并拖到这个层文件夹里面去. 迟点，我们都会这样处理，可以让我们的创作更合理.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十四步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/21.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">新建一个新层，然后就像画”搜索框”一样在这层上面画一个”Sign Up”按钮（字长刚好为背景长的一半）. 把这个组合放在搜索框下方条纹竖直方向中间.</p>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/22.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">再一次如第五步那样创建亮光效果.</p>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/23.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p style="background:#f0f0f0;border:1px solid #cecfd0;padding:15px;margin-bottom:20px">使用更小的软笔刷.这次的笔触大小为45px.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十五步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/24.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>加了logo和网站描述之后，我们的网页就如上所示.</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十六步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/25.jpg" border="0" alt="" width="60%"></a><br>
+现在我们回到层结构那里提早做一些工作.创建一个空的层文件夹并命名为”top_bar” .移动所有的图层到这个文件夹里面（包括logo,条纹,搜索框,注册按钮，导航和背景）.<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/26.jpg" border="0" alt="" width="60%"></a><br>
+创建另外一个空层文件夹并命名为”header”.这里用于放置头部图层 .如上图所示</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十七步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/27.jpg" border="0" alt="" width="60%"></a><br>
+头部看起来有的平淡，因此我们可以再任意位置加相同的亮光效果. 选中蓝色的头部区域.在它上面创建一个新层并设置其混合样式为 叠加.</p>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/28.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>选一个大点的600px软笔刷,颜色为#ffffff白色。然后再导航下方点击几次。假如想更有层次感，你还可以把颜色调为黑色，然后在头部区底部重复同样操作。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十八步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/29.jpg" border="0" alt="" width="60%"></a><br>
+在这一步我介绍一下我是怎么实现头部图片的反光效果的。选择两张图片，我用了我自己另外做的两个网页模板图片，缩放其中一个然后把他放在比较大的那个的下方。复制这两层，用自由变换工具按住shift键等比例缩放一下，用长方形工具在上层的图片下端外部画一个选区，到选择-&gt;修改-&gt;羽化，填入30px或者大点羽化一下选框。（这里原教程说得不大清楚，我实现的方法是这样的：羽化之后选择反选，然后选取画笔工具，选白色，再在图片的左边角和右下角点击数下，然后用长方形选框和delete键修整边缘）<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/30.jpg" border="0" alt="" width="60%"></a><br>
+为了让两个图片更加突出，可以新建一层，设置该层模式为叠加，重复第五步的效果添加的操作。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/31.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>在添加了一些按钮和漂亮的条纹之后，头部区域就是像上面那样子的。不要方剂把图层都放在’header’层文件夹里面。:)</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第十九步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/32.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>最终效果图里面你会看到在内容区域里面有很漂亮的切换页。为了创建这种切换页我们需要实现额外的一些操作，这是很有必要的。首先用圆角长方形工具创建一个高70px圆角半径为10px的图形（注意要画路径图），现在我们不要底部圆角的部分而为它郑家一个更好的角效果。用直接选取工具单击这个图形的路径，单击垂直点然后按住shift键往下拉直到如图所示状态.现在看起来不错了，但是还是比较简陋。然后…(把圆角变直角！？？？我汗，那还不如直接画个直角的长方形？)<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/33.jpg" border="0" alt="" width="60%"></a><br>
+如图创建了一个比较好的角（我汗）</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/34.jpg" border="0" alt="" width="60%"></a><br>
+选择直线工具，设置大小为1px</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十一步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/35.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>按住shift键画灰色的分割线。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十二步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/36.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>为每个切换标题添加小图标。我用了来自WebAppers.com的图标。通常一个切换标题激活了其他的就处于非激活状态了。为了清楚表达这一点，我们需要想个办法完成它。我降低其他图标的饱和度并且降低标题字眼和描述文字的透明度一保证激活的标题处于高亮状态。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十三部</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/37.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>为了使激活的按钮更加明显，我们将给它添加一个时尚的背景。为了达到这样的效果我们把整个对象选中然后裁切选区（按住alt画选区即可把不要的选区去掉）最终使选中的范围只有第一个按钮。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/38.jpg" border="0" alt="" width="60%"></a><br>
+如上图所示即为所要达到的选区。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/39.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>用一个更小的软笔刷，画出一个白色背景。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十四步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/40.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>增加一个阴影：在切换菜单的后面如上图所示画一个深灰色的长方形。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/41.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>点击图层区底部的小图标给该层增加一个蒙版。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/42.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>把前景色设置为黑色，选一个大的软笔刷，在蒙版层上面点击（如图所示，蒙板上面出了白色之外的颜色都会遮挡图层）使部分黑色去掉。结果，我们创建了一个比较好看的阴影效果。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/43.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>最后我们加点细节。在切换菜单下方画一个1px的灰线。然后如上一步一样用蒙版的方式使左右两端渐变。现在我们就得到一条比较时尚好看的线了。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/44.jpg" border="0" alt="" width="60%"></a><br>
+现在切换菜单就像这样。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十五步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/45.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>现在开始设计第一个切换按钮的内容。我们需要一个精准设计的图像（有好看的标题和一些文字内容）。首先我们得创建这个精准的图片。这里我认为我们最好打破这个图片尖锐的棱角设计，从而创造一个多彩的效果。因此我现在画一个<strong>白色有1像素灰色边框的长方形</strong>，再给它加上细微的阴影效果。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/46.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>复制这一层并用<strong>变形工具</strong>稍微旋转。重复这个操作几次<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/47.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>把你选好的图片导进来，放在白色长方形上面。不用担心图片会溢出，我们会修整它。选中最上层的长方形，按<strong>选择-&gt;修改-&gt;收缩</strong> ，输入<strong>5px</strong>,确认，然后在图层管理区下方点击<strong>添加图层蒙版</strong>，这样图片就只显示选区范围。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/48.jpg" border="0" alt="" width="60%"></a><br>
+这就是你现在图层的状态。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十六步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/49.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>不要忘记整理图层，这里新建图层夹把图层归类。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/50.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>增加一个漂亮的标题、一些文本和列表，我们的设计工作又完成一部分。现在继续下一步吧。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/51.jpg" border="0" alt="" width="60%"></a><br>
+再组织一下图层。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十七步: 感谢信</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/52.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>我认为这一个部分要比较大的，因此我把范围限定在主区域上的一个大的盒子里面。首先创建一个大的淡灰色的大概高220像素的长方形。设置其有<strong>1像素的灰色边</strong>。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/53.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>然后再画一个上下左右都比它<strong>小10像素</strong>的另一个长方形。同样设置其1像素的淡灰色边框。<br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/54.jpg" border="0" alt="" width="60%"></a><br>
+最后写上文本就可以了。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十八步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/55.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>终于要做页脚啦。画一个400像素高的、深黑色的长方形。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第二十九步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/56.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>如<strong>第五步</strong>一样给它加亮光效果。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三十步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/57.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>下来，如图所示，在区域上方画一个10像素高的长方形，并且通过在顶端和底部各多加两条线增强细节处理。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三十一步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/58.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>创建低端部分用于放置重复的导航。你可以拷贝顶端放置导航的长方形，移动并变形使其<strong>40像素</strong>高。把它放到你画布的最低端。你要注意你可能要扩张你的画布使所有东西都有适合的位置。制约扩张画布的操作你可以这样：<strong>图像</strong>-&gt;<strong>画布大小</strong> 设置即可。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三十二步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/59.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>再次强化细节。给页脚的导航区顶端加一条白色边，这样有比较好的边框效果。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三十三步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/60.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>给页脚增加内容，你可以依据网格合理安置它们。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">第三十四步</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/61.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>然后就是把页脚相关的图层整合起来。</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">最终设计</h1>
+
+
+<p><a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/62.jpg" border="0" alt="" width="60%"></a><br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/63.jpg" border="0" alt="" width="60%"></a><br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/64.jpg" border="0" alt="" width="60%"></a><br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/65.jpg" border="0" alt="" width="60%"></a><br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/66.jpg" border="0" alt="" width="60%"></a><br>
+<a title="效果图"><img src="http://nettuts.s3.amazonaws.com/307_designSite/67.jpg" border="0" alt="" width="60%"></a></p>
+
+
+<p>做到这里，我们的设计就完成了。（这里做的设计作者改了一下之后放在<a href="http://themeforest.net/">ThemeForest.net</a>上卖了）</p>
+
+
+<h1 style="font-size:20px;font-weight:bolder">最后总结</h1>
+
+
+<p>我希望你喜欢本教程并且从中或多或少学到点知识。现在是你创作的时候了。记住，只要你注重于细节，你就会创造出漂亮的网页设计，尽管你photoshop只会那么两三个工具。现在你有设计的冲动没？<br>
+<h3>RELATED POSTS</h3>
+<ul>
+<li><a href="http://xiebiji.com/2009/02/feijigao/" title="倒霉事接二连三，两天画了个飞机稿。">倒霉事接二连三，两天画了个飞机稿。</a></li>
+<li><a href="http://xiebiji.com/2008/09/huazhuang3/" title="零基础学会建立一个简单化妆品网站—前台设计篇0[到底怎么开始？]">零基础学会建立一个简单化妆品网站—前台设计篇0[到底怎么开始？]</a></li>
+<li><a href="http://xiebiji.com/2008/09/huazhuang2/" title="零基础学会建立一个简单化妆品网站—理论篇2[网站建设的分工过程]">零基础学会建立一个简单化妆品网站—理论篇2[网站建设的分工过程]</a></li>
+<li><a href="http://xiebiji.com/2009/09/50%e4%b8%aa%e6%af%8f%e4%b8%aa%e8%ae%be%e8%ae%a1%e8%80%85%e8%a6%81%e7%9c%8b%e7%9a%84aiillustrator%e6%95%99%e7%a8%8b/" title="50个每个设计者要看的AI(illustrator)教程">50个每个设计者要看的AI(illustrator)教程</a></li>
+<li><a href="http://xiebiji.com/2009/04/%e7%bd%91%e9%a1%b5%e8%ae%be%e8%ae%a1%e6%95%99%e7%a8%8b%e4%b9%8b%e8%ae%be%e8%ae%a1%e6%ad%a5%e9%aa%a4%e5%8f%8a%e6%80%9d%e8%80%83/" title="网页设计教程之设计步骤及思考">网页设计教程之设计步骤及思考</a></li>
+</ul></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

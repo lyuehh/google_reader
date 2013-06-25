@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Git 201: 就高了那么一点点</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Git 201: 就高了那么一点点</h2>
+<p class="meta">01 Apr 2011</p>
+
+<div class="post">
+<h2>Git 201: 就高了那么一点点</h2>
+
+<h3>by yuanyi</h3>
+
+<h3>at 2011-04-01 13:54:17</h3>
+
+<h3>original <a href="http://heikezhi.com/2011/03/31/git-201-slightly-more-advanced/">http://heikezhi.com/2011/03/31/git-201-slightly-more-advanced/</a></h3>
+
+<p><img src="http://heikezhi.com/wp-content/uploads/2011/03/header.gif" alt="" title="header" width="788" height="106"></p>
+
+
+<p>我想你应该已经看过了<a href="http://cmurphycode.posterous.com/git-102">Git 102</a>，并且想要了解更多，Git 102只不过是对一些常用Git技巧的简单解释，以及我个人对版本控制系统的一些使用心得，相信你已经了解了那些，现在让我们来看一些Git鲜为人知的技巧。</p>
+
+
+<p><strong>寻找问题</strong></p>
+
+
+<p>“The Pickaxe”</p>
+
+
+<p>如果你正在对某个你平时很少碰的程序进行代码审查，并且你注意到Person类里忽然出现了一个新属性。你可能会想知道，我们的锻炼程序什么时候开始追踪社会保险号码（social_security_number）了？pickaxe实际上是gitdiffcore内核的一部分，但是在我们平常使用的git命令里你不会看到这个名字，取而代之，我们一般通过传递-S参数来进行搜索，在这个例子里，你只要输入下面的命令：</p>
+
+
+<p>$ git log -Ssocial_security_number</p>
+
+
+<p>这条命令会为你显示仓库历史里包含”social_security_number“字符串的每一次提交。有时这会非常管用，只要你知道你要找什么东西。pickaxe其实是diff命令的几种变形用法之一，但我就用过这一个，我不确定是不是还有其它可以做这个事情的命令。</p>
+
+
+<p>你或许已经知道了git log加上-p参数的作用，它可以显示每次提交的代码变化。你可以将它和pickaxe命令结合起来，这样搜索的时候你就可以看到相关的上下文了。如果你使用pickaxe来显示改动，你或许会发现–pickaxe-all开关十分有用，这个参数会为你显示pickaxe命令发现的每一次提交中的全部变化，而不只是你要找的那个字符串所在行的变化，试试下面的命令：</p>
+
+
+<p>$ git log -Ssomething -p<br>
+$ git log -Ssomething -p –pickaxe-all </p>
+
+
+<p>相当强大的工具。</p>
+
+
+<p><strong>Git Blame</strong></p>
+
+
+<p>有时候，你可能不知道自己应该搜索什么，但是你知道你想要检查的文件，git提供了一个很有用的工具来帮你完成这个任务：git blame，让我们试试它：</p>
+
+
+<p>$ git blame </p>
+
+
+<p>这条命令会向你展示谁应该对哪一行代码负责，换句话说，也就是谁最后动了哪一行代码。这非常有用，但可别用它来问责，除非他们真的做了什么难以容忍的事情，当然，最好还是不要发生这种事情。</p>
+
+
+<p>另外，这是我为数不多的需要使用git GUI的情况之一。git blame会输出很长的结果（即使你调整了输出开关也一样），所以你可以试试下面的命令：</p>
+
+
+<p>$ git gui blame</p>
+
+
+<p>这和上面那条命令的结果完全一样，不过现在结果显示在了一个更漂亮的GUI界面里，你可以更清楚的看到谁最后改动了哪一行代码，并且还可以很方便的浏览提交记录。</p>
+
+
+<p><strong>Git Bisect</strong></p>
+
+
+<p>Bisect是个非常有才的命令：二分查找，交互式执行以及运行测试，将这3者结合起来，会发生什么？那只有一个词能形容：幸福。假设有个用户报告了一个程序Bug，并且你已经找出了重现的方法，然后你写了一个测试，这个测试在当前的build的确无法通过，这时，你可能会想知道到底是那一次提交引入了这个Bug。现在就该bisect出场了，如果你可以确定在某个版本之前这个bug是不存在的，你就告诉bisect从那个版本开始，如果你不能确定，那就从头开始：</p>
+
+
+<p>$ git bisect start<br>
+$ git bisect good <br>
+$ git bisect bad master</p>
+
+
+<p>git会为你完成所有的工作，你只需要在每个提交的提示符下运行你的测试，然后告诉git是否通过就可以了：</p>
+
+
+<p>$ git bisect bad (or good)</p>
+
+
+<p>感谢二分查找，你会非常快的发现问题出在哪个版本，不过到目前为止，我还没有遇到什么情况需要派上这个命令，但是我做了一些简单测试，它的表现实在是非常棒，就算没有bug，如果你想试试这个命令也很简单，你只需对git撒个小慌，告诉它哪些commit成功，哪些失败就行了。</p>
+
+
+<p>如果你还能通过Unix命令执行你的测试并返回通用的Unix返回码（0表示成功，非0表示失败），git bisect会为你完成所有的工作，你可以看下面Sam Stoker的评论。</p>
+
+
+<p><strong>分支管理</strong></p>
+
+
+<p>如果你能很好的使用分支，你会注意到最简单的用法就是将你当前工作的分支合并回master，但如果你有很多分支，并且你需要不断的从其他分支拉取（pull）更新，这很快就会变成一场灾难，当然你可以通过调整团队的git策略来避免这种情况，但如果你不得不面对这种情况，git还是有办法可以让事情更简单。</p>
+
+
+<p><strong>Cherry Pick</strong></p>
+
+
+<p>git cherry-pick是个非常有用的命令，你可以使用它来有选择的从其他分支合并代码，我一般用它来从其他分支合并一些bug修复或是其他人添加的新功能。</p>
+
+
+<p>如同其它git命令一样，你可以使用<a href="http://www.kernel.org/pub/software/scm/git/docs/gitrevisions.html">许多方式</a>来告诉git你想要合并哪次提交，但是说实在的，我几乎总是使用sha-1，你可以使用git log或者gitk来找到某次提交的sha-1，然后：</p>
+
+
+<p>$ git cherry-pick </p>
+
+
+<p>这里我们再一次看到了从逻辑上分离每次提交的好处。否则，一小行简单的改变也会导致手动修改，并且很容易出错，为什么不让git来帮我们完成这些呢？</p>
+
+
+<p><strong>Rebase (onto)</strong></p>
+
+
+<p>Git 102中已经对Rebase做了介绍，大部分情况下，我们只需要rebase master分支，但是我们也可以对其他分支进行rebase，如果你不想要master上为合并创建一个单独的提交，你可以先在你要合并到master的分支上执行：</p>
+
+
+<p>$ git rebase master<br>
+$ git checkout master<br>
+$ git merge feature-branch</p>
+
+
+<p>因为你已经在你的当前分支上对将要合并到master的代码进行了rebase，所以，当你再将它们合并到master的时候，你的提交就变成了一次简单的fast-forward合并，不会再产生一个专门的合并提交。</p>
+
+
+<p>下来我们要讲讲多个分支的rebase。如果你经常需要在多个Bug修补分支间进行切换，下面的命令就是为你准备的。通常，你可以通过<a href="http://progit.org/book/ch3-6.html">手册（man page）</a>找到你想要的所有信息，只是可能理解起来稍微困难一点，下面让我们看看我们可以用–onto参数做些什么：</p>
+
+
+<p>git rebase [-i | --interactive] [options] [--onto ]  []</p>
+
+
+<p>如果你觉得这条命令看起来还有点意思，那就请你继续看下去。</p>
+
+
+<p>你需要为rebase的–onto标识提供3个参数： 一个执行rebase的分支，以及另外两个用来比较提交的地方，因此，按照手册，你可以先试试下面这条简单的命令：</p>
+
+
+<p>$ git rebase master~5 master~3 master</p>
+
+
+<p>在我们的例子里，master分支包含以下commits：</p>
+
+
+<p>A-B-C-D-E-F (F = HEAD)</p>
+
+
+<p>现在，git会先查看master以及master~3（HEAD前面的第3个的提交）然后计算除了master~3，有哪些提交已经在在master上，在这种情况下，就应该是DEF。它将这些提交应用到第一个参数，也就是master~5(commit A)上，使用git的术语来说，就是它会rewinds HEAD到master～5（这和reset –hard是一个效果），然后再恢复D，E，F提交，所以，现在新的经过rebase的master分支就成了：</p>
+
+
+<p>A-D-E-F</p>
+
+
+<p>简单点说，就是rebase从你的树中删除了B和c提交，这很酷，不是吗？下面让我们再来看看更复杂的情况：</p>
+
+
+<p>让我们继续回到手册中的例子，topicA是Master的分支，topicB则是TipicA的分支（图的格式看起来不太对，所以你还是自己去看下手册，不好意思）</p>
+
+
+<p>手册说运行git rebase –onto master topicA topicB将会把H，I以及J这3个commit合并到master，因为topicB是topicsA的分支，所以TopicA上的所有commits它都有，但是topicA没有topicB上的commits，所以rebase会发现H，I和J这3个commits需要被合并到目标分支，也就是master。</p>
+
+
+<p>你应该会发现手册中的这两个例子其实是完全一样的，唯一的区别就是在第二个例子里master在分支之后又有了些commits。这个例子很好的演示了如何将其他分支的commits合并到master的HEAD上（这正是我们想要的）。而对于第一个分支，也就是tipicA，则不会有任何改变。</p>
+
+
+<p><strong>错误恢复</strong></p>
+
+
+<p>git reset</p>
+
+
+<p>有时候，一次意外的合并可能会让你的代码变得一团糟，很难通过手工合并或是rebase来处理这些冲突。</p>
+
+
+<p>$ git reset –hard </p>
+
+
+<p>这条命令会让你的当前分支回归平静，它会重置一切改动，大多数情况下，我用它来对抗origin/somebranch，通过重置来回到最近一次的push状态。</p>
+
+
+<p>好吧，你可能已经知道了这条命令，但是如果你的代码里包含了些没有提交到仓库里的文件该怎么办？（像windows上的p4merge那样让那些.orig文件一直留在那里？）</p>
+
+
+<p>git clean -fd</p>
+
+
+<p>你需要git clean，它会帮你删除所有没有提交到仓库中并且你也不准备提交的文件，因为git对数据安全非常敏感，所以你最好加上-f，如果你想和目录一块删除，那再加上-d，有了reset和clean，现在你可以和rm -rf以及重新克隆仓库说白白了。</p>
+
+
+<p><strong>The reflog</strong></p>
+
+
+<p>上面这些强行reset，rebase的情况或许还没让你感到害怕，但是如果你不小心将你过去2天的工作都给hard reset了该怎么办？不管你多么小心，有时这种事情还是会不可避免的发生。放心吧，git不会真的物理删除你的任何东西，至少在你手动执行gc之前，如果你一不小心误删了什么东西，试试git reflog，你会看到一个最近操作的列表，就像下面这样：</p>
+
+
+<p>$ git reset –hard HEAD~2<br>
+$ git reflog<br>
+7298e1e HEAD@{0}: HEAD~2: updating HEAD<br>
+ca9164c HEAD@{1}: Oh man this is the best algorithm ever. It sorts in constant time!!<br>
+$ git reset –hard ca9164c</p>
+
+
+<p>当然，你不能总是依靠这个，如果你每天都用reflog命令，那你肯定需要重新评估下你的git策略，但有个保险箱让你不用担心丢掉东西总是件让人安心的事情。</p>
+
+
+<p><strong>Filter-branch</strong></p>
+
+
+<p>最后一个小技巧：如果你为一个开源项目工作（比如，将代码推到github），你会很小心的避免提交任何敏感的信息，就像我们前面说到的，你的任何提交都将被仓库永久保存，除非你重建整个仓库，这就是filter-branch显身手的时候了，你应该能想到的，github有个<a href="http://help.github.com/removing-sensitive-data/">很棒的文章</a>教你如何保护自己。</p>
+
+
+<p>另外，不用担心，任何等待GC清理并且可以用reflot还原的东西都不会被push到github，所以不用担心那个，如果你愿意，你仍然可以通过手动gc来清理它们。</p>
+
+
+<p>奖励技巧：如果你经常需要从其它分支合并提交，然后或者reset或者re-merge或者rebase，你或许可以试试rerere。如果你启用了它，git会追踪所有你的冲突解决方案，所以你只要执行一次，以后就不用再手工合并了，今天是我最后一次重复进行这么多的手工合并了，不过这个我讲得没有Chacon好，所以你可以最好还是看看他的<a href="http://progit.org/2010/03/08/rerere.html">这个帖子</a>！</p>
+
+
+<p><a href="http://cmurphycode.posterous.com/git-201-slightly-more-advanced">原文链接</a>，原文作者：<a href="http://posterous.com/people/5AqgB5AABVIZ">CHRIS MURPHY</a></p>
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="4"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">无觅猜您也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="Github的第一年教给我的10堂课" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F03%2Ften-lessons-from-githubs-first-year%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2Fgit-201-slightly-more-advanced%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">Github的第一年教给我的10堂课</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="网站背后的面孔" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F04%2F02%2Fthe-face-behind-your-website%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2Fgit-201-slightly-more-advanced%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/04/02/4907868.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">网站背后的面孔</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="10个你不曾知道Steve Jobs的故事（第二部分）" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2F10%25E4%25B8%25AA%25E4%25BD%25A0%25E4%25B8%258D%25E6%259B%25BE%25E7%259F%25A5%25E9%2581%2593steve-jobs%25E7%259A%2584%25E6%2595%2585%25E4%25BA%258B%25EF%25BC%2588%25E7%25AC%25AC%25E4%25BA%258C%25E9%2583%25A8%25E5%2588%2586%25EF%25BC%2589%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2Fgit-201-slightly-more-advanced%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/images/blogWidget/wordpress_default.gif" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">10个你不曾知道Steve Jobs的故事（第二部分）</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="蛋疼之字母人像" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F15%2Fletter-heads%2F&amp;from=http%3A%2F%2Fheikezhi.com%2F2011%2F03%2F31%2Fgit-201-slightly-more-advanced%2F">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/03/16/3622440.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">蛋疼之字母人像</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="4" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><img src="http://www1.feedsky.com/t1/494773522/heikezhi/feedsky/s.gif?r=http://heikezhi.com/2011/03/31/git-201-slightly-more-advanced/" border="0" height="0" width="0"><p><a href="http://www1.feedsky.com/r/l/feedsky/heikezhi/494773522/art01.html"><img border="0" ismap src="http://www1.feedsky.com/r/i/feedsky/heikezhi/494773522/art01.gif"></a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

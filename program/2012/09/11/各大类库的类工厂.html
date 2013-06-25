@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>各大类库的类工厂</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>各大类库的类工厂</h2>
+<p class="meta">11 Sep 2012</p>
+
+<div class="post">
+<h2>各大类库的类工厂</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-09-10 17:17:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/10/2678663.html">http://www.cnblogs.com/rubylouvre/archive/2012/09/10/2678663.html</a></h3>
+
+<p>类工厂是指用于生成类的函数，我们不能每写一个类都重复以下代码，要好好封装一下！</p>
+
+
+<p><br>var F = function(){}<br>F.prototype = SuperClass.prototype;<br>SubClass.prototype = new F;<br>SubClass.prototype.constructor = SubClass<br><p><strong>Prototype.js1.6之后的类工厂</strong></p><br>var Animal = Class.create({<br>  initialize: function(name, sound) {<br>    this.name  = name;<br>    this.sound = sound;<br>  },<br><br>  speak: function() {<br>    alert(this.name + " says: " + this.sound + "!");<br>  }<br>});<br><br>// subclassing Animal<br>var Snake = Class.create(Animal, {<br>  initialize: function($super, name) {<br>    $super(name, 'hissssssssss');<br>  }<br>});<br><br>var ringneck = new Snake("Ringneck");<br>ringneck.speak();<br>//-&gt; alerts &quot;Ringneck says: hissssssssss!&quot;<br><br>var rattlesnake = new Snake("Rattler");<br>rattlesnake.speak();<br>//-&gt; alerts &quot;Rattler says: hissssssssss!&quot;<br><br>// mixing-in Enumerable<br>var AnimalPen = Class.create(Enumerable, {  <br>  initialize: function() {<br>    var args = $A(arguments);<br>    if (!args.all( function(arg) { return arg instanceof Animal }))<br>      throw "Only animals in here!"<br><br>    this.animals = args;<br>  },<br><br>  // implement <em>each to use Enumerable methods<br>  </em>each: function(iterator) {<br>    return this.animals.<em>each(iterator);<br>  }<br>});<br><br>var snakePen = new AnimalPen(ringneck, rattlesnake);<br>snakePen.invoke('speak');<br>//-&gt; alerts &quot;Ringneck says: hissssssssss!&quot;<br>//-&gt; alerts &quot;Rattler says: hissssssssss!&quot;<br><p>通过Class.create来创建一个类与连结一个父类与其他材料构成一个子类。想调用同名父方法，需要在此方法的参数中传入一个$super参数。</p><p><strong>dojo的类工厂：</strong></p><br>var F = function(){}<br>F.prototype = SuperClass.prototype;<br>SubClass.prototype = new F();<br>SubClassprototype.constructor = SubClass<br><p>Prototype.js1.6之后的类定义</p><br>dojo.declare(<br>    "TestClass",<br>    null,<br>    {<br>        id:"",<br>        info: { name : "",age:""},<br>        staticValue:{count:0},<br>        constructor : function(id,name,age) {<br>            this.id=id;<br>            this.info.name=name;<br>            this.info.age=age             <br>            this.staticValue.count++;  <br>             }<br>    }<br>);<br><br><p>它有三个参数，类名，父类，与一个对象，里面包含构建这个类的材料。</p><p><strong>YUI的类工厂</strong></p><br>// http://blog.csdn.net/phphot/article/details/4325823<br><br>YUI().use('oop', function(Y) {<br>    var Bird = function(name) {<br>        this.name = name;<br>    };<br>    Bird.prototype.getName = function(){ return this.name; };<br><br>    var Chicken = function(name) {<br>        Chicken.superclass.constructor.call(this, name);<br>    };<br>    Y.extend(Chicken, Bird);<br><br>    var chicken = new Chicken('Tom');<br>    Y.log(chicken.getName());<br>});<br><p>supperclass 有两个作用：一是可以用来调用父类的方法，二是可以通过 supperclass.constructor 调用父类的构造函数。一举两得.</p><p>不过它相对于其他类工厂来说是非常原始的，只负责连结子类与父类。</p><p><strong>Simple JavaScript Inheritance</strong></p><p>这是jquery作者搞的东西</p><br>// http://ejohn.org/blog/simple-javascript-inheritance/<br><br>var Person = Class.extend({<br>  init: function(isDancing){<br>    this.dancing = isDancing;<br>  },<br>  dance: function(){<br>    return this.dancing;<br>  }<br>});<br><br>var Ninja = Person.extend({<br>  init: function(){<br>    this.</em>super( false );<br>  },<br>  dance: function(){<br>    // Call the inherited version of dance()<br>    return this._super();<br>  },<br>  swingSword: function(){<br>    return true;<br>  }<br>});<br><br>var p = new Person(true);<br>p.dance(); // =&gt; true<br><br>var n = new Ninja();<br>n.dance(); // =&gt; false<br>n.swingSword(); // =&gt; true<br><br>// Should all be true<br>p instanceof Person &amp;&amp; p instanceof Class &amp;&amp;<br>n instanceof Ninja &amp;&amp; n instanceof Person &amp;&amp; n instanceof Class<br><br><br><br><br><p>由Class.create来创建父类,然后通过父类的extend方法加个属性包创建子类.</p><p><strong>mootools的类工厂</strong></p><br>//  http://hmking.blog.51cto.com/3135992/682098<br>    var Animal = new Class({ <br>        initialize: function (age) { <br>            this.age = age; <br>        } <br>    }); <br>    var Cat = new Class({ <br>        Extends: Animal, <br>        initialize: function (name, age) { <br>            this.parent(age); // calls initalize method of Animal class <br>            this.name = name; <br>        } <br>    }); <br>     <br>    var cat = new Cat('Micia', 20); <br>    console.log(cat.name); // 'Micia' <br>    console.log(cat.age); // 20 <br><p>它应该是所有框架中最复杂也是最强大的,涉及的API就有Mutator Extends Implements还有从Type继承过来的extend implement，它内部拷贝父类属性还用到了深拷贝！</p><p>Extends: 可以实现父类，也可以调用父类初始化 this.parent()。而且会覆盖父类定义的变量或者函数。</p><p>Implements: 实现父类，子类不可以覆盖父类的方法或者变量。即使子类定义与父类相同的变量或者函数，也会被父类取代掉。</p><p>implement: 是用于调整已经创建好的类的原型成员.</p><p>extend: 调用子类(非其实例)的extend方法创建一个新的子类.</p><p><strong>mass Framework的类工厂</strong></p><br>//http://rubylouvre.github.com/doc/index.html<br><br>$.require("class,spec", function() {<br> <br>    var Shape = $.factory({<br>        init: function(len) {<br>            $.log(len)<br>            this.length = len || 0;<br>        },<br>        getLength: function() {<br>            return this.length;<br>        },<br>        setLength: function(len) {<br>            this.length = len;<br>        },<br>        getArea: function() {<br>            throw "Subclasses must implement this method"<br>        }<br>    })<br> <br>    var Triangle = $.factory({<br>        inherit: Shape,<br>        init: function(len, hei) { //len属性在父类中已定义，这里可以省去<br>            this.height = hei || 0;<br>        },<br>        getArea: function() {<br>            return this.length * this.height / 2<br>        }<br>    })<br>    var Square = $.factory({<br>        inherit: Shape,<br>        getArea: function() {<br>            return this.length * this.length;<br>        }<br>    });<br>    var t = new Triangle(3, 4)<br>    $.log(t.getArea(), true)<br>    var s = new Square(4)<br>    $.log(s.getArea(), true)<br>});<br><br><p>$.factory为类工厂,参数为一个普通对象,此对象拥有如下可选属性</p><ul><li>init为新类的构造器,没有默认传入空函数进去</li><li>inherit为新类的父类</li><li>extend的参数是一个对象或对象数组,不管怎么样,这些对象的属性只是为新类添加静态成员,或者说它们是添加到类之上的</li><li>implement的参数是一个对象或对象数组或类(类即函数),这些对象的属性只是为新类添加实例成员,或者说它们是添加到类的原型上.</li></ul><img src="http://www.cnblogs.com/rubylouvre/aggbug/2678663.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/09/10/2678663.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

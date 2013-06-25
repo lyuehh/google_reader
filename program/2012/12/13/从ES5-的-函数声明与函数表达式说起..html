@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>从ES5 的 函数声明与函数表达式说起.</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>从ES5 的 函数声明与函数表达式说起.</h2>
+<p class="meta">13 Dec 2012</p>
+
+<div class="post">
+<h2>从ES5 的 函数声明与函数表达式说起.</h2>
+
+<h3>by Franky</h3>
+
+<h3>at 2012-12-13 01:16:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/_franky/archive/2012/12/13/2815624.html">http://www.cnblogs.com/_franky/archive/2012/12/13/2815624.html</a></h3>
+
+<div><div>我们先从阿灰 的蛋疼的例子开始.</div><div> </div><div> demo1：</div><table style="width:100%" border="1" cellspacing="0" cellpadding="2"><tbody><tr><td valign="top"><div>  function test() {</div><div>        var x = 1;</div><div>        with ({x: 2}) {</div><div>            eval(&#39;function foo() { console.log(x); }&#39;);</div><div>            eval(&#39;var bar = function() { console.log(x); }&#39;);</div><div>        }</div><div>        foo();</div><div>        bar();</div><div>    }</div><div>    test();</div></td></tr></tbody></table><div> </div><div> </div><div>大多数按照ES5实现的引擎(除了Opera12-)的结果. 打印的都是 两个2 .我必须先强调下.这个结果,按照标准是错的. 按照标准都应该是 1 , 2 . Opera12- 会打印两个1 .这个我们就不讨论了.因为错的更离谱了.</div><div> </div><div>开始正题:</div><div>为什么说两个2不对呢. 这就要从ES5的函数声明，以及函数表达式说起了.</div><div>坦白说.写这篇东西的时候我很抗拒.因为要说清楚这里边的细节.实在涉及到太多的东西了.如果每个涉及到的概念都要说到位.有些浪费对ES5很熟悉的朋友的时间.而我并不认为不熟悉ES5的朋友通过一篇详细的介绍就能建立起正确的认识.所以还是一切从简吧.</div><div> </div><div>我在这里假设您知道什么是 函数声明的概念,以及函数表达式的概念，以及二者在语法层面的区别.以及 Lexical Environments , LexicalEnvironment,  VariableEnvironmet 以及之间的关系 以及 Environment Records<strong>,  </strong>Declarative Environment Records, Object Environment Records 这些东西的相关概念.</div><div> </div><div> </div><div>     ES5 中函数定义章节描述的两种定义方式 :</div><div>          1. 函数声明</div><div>          2. 函数表达式</div><div> </div><div>     这两种方式定义时不仅仅是语法上的差异.还有创建函数对象时的一些细节差异. 我们要讨论的就是 函数声明使用其所在执行环境的当前的VariableEnvironmet  作为创建函数对象时提供的scope参数.而函数表达式则使用 LexicalEnvironment 作为scope参数.</div><div>这就导致我们上面例子中的最直接的问题了.</div><div> </div><div>     我们知道,在非严格模式下,ES5是允许使用with(<em>expression</em>) <em>Statement</em> 语法的. 但是我们要先明确几件事.</div><div>          1. <em>Statement  </em>语法产生式中.是不能出现 <em>FunctionDeclaration</em><em> </em>的. 相对于我们类似的 catch从句的 <em>block</em> 语法产生式也是如此.(显然所有浏览器都没有按标准实现这部分规范,也就是说我所见过的所有javascript引擎的都允许在with,catch里 甚至if <em>statement</em>中等等位置使用函数声明)</div><div>          2. 我们的例子和第一条并不冲突. 因为我们前面例子中的函数声明是放在eval中. 而eval code是<em>Program</em> .是允许进行函数声明的.</div><div>          3. with会在其作用范围内 创建一个新的LexicalEnvironment .并把其所在执行环境相关联的LexicalEnvironment 设置为这个新创建的LexicalEnvironment .(也就是说with改变了当前执行环境的LexicalEnvironment)</div><div>          4. with并没有改变VariableEnvironmet.在改变LexicalEnvironment 前, LexicalEnvironment 和 VariableEnvironmet指向相同的引用.(with强迫他俩各玩各的了)</div><div>          5. with 还会为这个LexicalEnvironment 创建一个object environment record .目的自然是 with(<em>expression</em>) 中的ToObject(<em>expression</em>)的结果作为标识符搜索的整个责任链的顶端.</div><div>          6. 非严格模式下的eval内部的代码被执行时.会使用eval的调用环境LexicalEnvironment,以及VariableEnvironmet  作为其内部代码的执行环境的对应的 Lexical Environments(注意我这里是复数.且单词间有空格,希望你理解这里的意思.不详细解释了)</div><div> </div><div>          </div><div>     现在问题来了.你应该注意到按照我们的已知条件. foo是函数声明.那么它的标识符查找的下一个 Lexical Environment 显然是原来的 VariableEnvironmet. 而 bar 的则是with创建的新的 LexicalEnvironment . 那么显然整个例子的结果就应该是1,2 . 但遗憾的是,我们还没有找到一款已知的javascript引擎,在此处的实现是符合标准的....</div><div>     但是知道这些，并不是我们今天讨论的重点.我们的重点是.为啥标准会这样定义.</div><div> </div><div>     以下部分为我个人猜测.  </div><div>demo2:</div><div><table style="width:100%" border="1" cellspacing="0" cellpadding="2"><tbody><tr><td valign="top">function test(){<br>    var x = 1;<br>   <br><br>    with({x:2}){<br><div>        function foo(){<br>            console.log(x);<br>        }</div>        var bar = function(){<br>                console.log(x);<br>        };<br>    }<br>    <br>    foo();<div>    bar();</div>}<br><br>test();</td></tr></tbody></table><div> </div></div><div>   </div><div align="left"><em> </em>    如果我的对标准的解读没有错误的话。 我就可以断定此处规范的制定者，自己陷入混乱. 他似乎就是在考虑类似demo2情形是.思路是这样的:</div><div align="left">     foo的函数声明,所定义的函数对象,不应该受到with的影响. 但是他似乎忘记了两件事. </div><div align="left">          1. 函数声明是在 控制器一进入执行环境,进行变量初始化阶段进行的. 而with 语句的执行,却是在解释执行期进行的. 显然foo的函数定义是早于 with执行的.当with执行时篡改当前执行环境相关联的  LexicalEnvironment 时. 所有函数声明早就处理结束了.foo.[[Scope]]早就引用了最初的LexicalEnvironment 了.根本就不应该受到with的影响. 所以这个设计完全是多余的.. </div><div align="left"> </div><div align="left">          2. 设计者忘了<em>Statement</em> 以及 <em>blok</em> 两个语法产生式中根本就不存在<em>FunctionDeclaration</em><em> </em> .那还折腾什么呢? 所以从标准角度.也许根本就不应该生生的把Lexical Environments 拆分成 LexicalEnvironment 和 VariableEnvironmet  . 要对付with和catch前插的责任链节点. 只需要概念描述下即可.但可能是为了描述精准吧?毕竟他要描述with本身特有的那种特性.总之这个屁股并没有在ES5里被擦干净.</div><div align="left"> </div><div align="left">          <span style="color:#339966">ps: 虽然所有已知引擎都没有遵守第二条. 但我们讨论的毕竟是标准.而不是实现的差异.</span></div><div align="left"><span style="color:#339966"> </span></div><div align="left"><span style="color:#339966">　　　 ps: catch从句有类似的创建并篡改当前执行环境LexicalEnvironment 的能力.不过它对应的产生式是 block.且catch并不会使用object environment record</span></div><div align="left"><span style="color:#339966"> </span></div><div align="left"><span style="color:#339966">          ps: SpiderMoneky的早期版本 包括中间的各种跟猴子的分支.都支持<em> Block</em><em>FunctionDeclaration  .</em>这种被称为语句块函数声明的特殊的，非标准语法.它会导致上面的demo2的结果有差异.不属于本文讨论范围</span></div><div align="left">　　简单来说就是:</div><table style="width:100%" border="1" cellspacing="0" cellpadding="2"><tbody><tr><td valign="top"><div align="left">     typeof fn;// undefined</div><div align="left"> </div><div align="left">     {</div><div align="left">         function fn(){}</div><div align="left">     }</div></td></tr></tbody></table><div> </div><div align="left"> </div><div align="left"> </div><div align="left">     最后. 似乎ES6草案中 函数声明也不再使用VariableEnvironmet  作为其[[Scope]]了. 不知道标准委员会中,是否有人意识到了这个问题.而做出了修正. 暂时没精力继续去问了. 我对ES6的态度还处于观望状态.什么时候release状态了.再去跟进好了..</div><div align="left"> </div><div align="left">     好吧.就这样吧. 感谢阿灰写出了这个蛋疼的例子. 感谢 Bosn 和 kenny 还有abcd同学花时间大家一起讨论它. 最后.真心话.相比ES5 取消了 scope chain 的概念而用 内外层词法环境来代替. 我更喜欢ES3的描述.因为那种描述直接是数据结构上的描述.更适合码农啊显然.  </div><div> </div><div> </div><div align="left"><strong><strong> </strong></strong><hr><strong><strong> 最后,附加一点东西, 因为前阵子有看到,有朋友认为 function declaration 不能被当做statment那样出现在 block中,是ES5严格模式的一个限制. 下面来说说这个问题 .</strong></strong></div><div align="left"><p><strong>关于 函数声明出现在block 或 其他statement应该出现的地方的问题, ES5 12.0 章节末尾有这样一段描述:</strong></p><p>Several widely used implementations of ECMAScript are known to support the use of <span>FunctionDeclaration </span>as a <span>Statement</span>. However there are significant and irreconcilable variations among the implementations in the semantics applied to such <span>FunctionDeclarations</span>. Because of these irreconcilable differences, the use of a <span>FunctionDeclaration </span>as a <span>Statement </span>results in code that is not reliably portable among implementations. It is recommended that ECMAScript implementations either disallow this usage of <span>FunctionDeclaration </span>or issue a warning when such a usage is encountered. Future editions of ECMAScript may define alternative portable means for declaring functions in a <span>Statement </span>context.</p><p> </p><p>基本上就是说,已知的绝大多数ES引擎,都支持把函数声明,作为一个语句来处理的这种实现.   而实际上这带来了语意冲突.  ES5的建议是禁止这种行为, 或者发出一个警告..  并且在将来的ES版本中 基于这两种建议中的一个.来作为标准的行为… </p><p> </p><p>也就是说,更加强调ES引擎,不应该让函数声明 出现在block 等地方…   所以部分引擎(比如v8和猴子)在实现ES5 严格模式时, 顺便也明确禁止了这种行为(但应该明白, 这个严格模式限制,并不来自ES5 严格模式的官方限制.而是引擎实现者自己出于某种考虑而实现的)… 但我个人认为. 这个约束是多余的. 因为本身我们观察产生式就会发现.  本来就不应该出现这种支持的. 也就是说, 非严格模式变体 , 也不应该出现这种使用函数声明的方式… 何必多此一举的在样模式中强调呢? .. 哦 当然, 出于对事实现状的尊重,如果粗暴进制非严格模式变体代码也抛异常的话, 老代码可能就会出问题….所以 这也许是 部分引擎实现者的弥补措施吧.</p><p> </p><p>至于ES6如何规定这里, 我们拭目以待吧.<strong> 坐等ES6 release .</strong></p><p> </p><p><strong>另附ES5严格模式 一篇链接 : <a href="http://www.cnblogs.com/_franky/articles/2184461.html"><span style="color:#0000ff">http://www.cnblogs.com/_franky/articles/2184461.html</span></a></strong></p></div><div align="left"><strong> <br></strong></div><div> </div><div> </div><div align="left"><strong> <br></strong></div><div> </div><div> </div><div> </div><div> </div><div> </div><div> </div><div> </div><div> </div></div>
+
+
+<p><img src="http://www.cnblogs.com/_franky/aggbug/2815624.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/_franky/archive/2012/12/13/2815624.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

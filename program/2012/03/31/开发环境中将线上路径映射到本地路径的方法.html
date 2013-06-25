@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>开发环境中将线上路径映射到本地路径的方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>开发环境中将线上路径映射到本地路径的方法</h2>
+<p class="meta">31 Mar 2012</p>
+
+<div class="post">
+<h2>开发环境中将线上路径映射到本地路径的方法</h2>
+
+<h3>by oldj</h3>
+
+<h3>at 2012-03-30 20:56:36</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/oldj/~8217290/682456369/6320477/1/item.html">http://item.feedsky.com/~feedsky/oldj/~8217290/682456369/6320477/1/item.html</a></h3>
+
+<p>　　日常开发过程中，我们经常需要修改一些放在 CDN 上的静态文件（如 JavaScript、CSS、HTML 文件等），这个过程中，我们希望能有一种方式将线上 CDN 的目录映射为本地硬盘上的某个目录，这样，当我们在本地修改了某个文件时，不需要发布，刷新后马上能看到效果。</p>
+
+
+
+
+<p>　　比如，我们的 CDN 域名是：http://a.mycdn.com，本地对应的目录是：D:\work\assets，我们希望所有对 http://a.mycdn.com/* 的访问被映射到本地的 D:\work\assets\* 下。如访问 http://a.mycdn.com/s/atp.js 时，实际上是读取的是本地的 D:\work\assets\s\atp.js，而不需要从网上下载线上的文件。</p>
+
+
+
+
+<p>　　实现这个功能很简单，关键点如下：</p>
+
+
+
+
+<p>　　1、在本地开启一个 HTTP 服务，监听 80 端口；<br>
+　　2、修改系统 hosts 文件，添加“127.0.0.1 a.mycdn.com”，将 CDN 域名绑定为本地服务器地址；<br>
+　　3、配置本地 HTTP 服务，接收到一个 GET 请求后，先检查本地硬盘上是否存在对应的文件，如存在，则返回这个文件的内容，如不存在，则返回线上对应的内容。</p>
+
+
+
+
+<p>　　可以看到，关键部分是需要搭建一个本地的 HTTP 服务。这方面有很多教程，比如在本地安装 Apache 或 Ngnix 等服务器软件，再配置相应的转发规则等。不过个人觉得这类方法还是有点复杂，本文要介绍的，是另外的不需要安装服务器软件的方法。</p>
+
+
+
+
+<p>　　因为我们是在本地开发调试，对性能、并发性的要求并不高，因此我们其实并不需要一个像 Apache/Ngnix 这样的专业的 HTTP 软件，我们只需要一段能提供 HTTP 服务的脚本即可。比如用 <a href="http://nodejs.org">nodejs</a> 来实现。</p>
+
+
+
+
+<pre>
+/**
+ * author: oldj
+ * blog: http://oldj.net
+ *
+ **/
+
+var http = require(&quot;http&quot;),
+    url = require(&quot;url&quot;),
+    path = require(&quot;path&quot;),
+    fs = require(&quot;fs&quot;),
+    local_folders,
+    base_url;
+
+local_folders = [ // 本地路径，代理将在这个列表中的目录下寻找文件，如果没有找到则转到线上地址
+    &quot;D:/work/assets&quot;
+];
+base_url = &quot;http://10.232.133.214&quot;; // 线上路径，如果找不到文件，则转向到这个地址
+
+
+function loadFile(pathname, response) {
+    var i, l = local_folders.length,
+        fn;
+
+    console.log(&quot;try to load &quot; + pathname);
+
+    for (i = 0; i &lt; l; i++) {
+
+        fn = local_folders[i] + pathname;
+        if (path.existsSync(fn) &amp;&amp; fs.statSync(fn).isFile()) {
+            fs.readFile(fn, function (err, data) {
+                response.writeHead(200);
+                response.write(data);
+                response.end();
+            });
+
+            return;
+        }
+
+    }
+
+    response.writeHead(302, {
+        &quot;Location&quot;:base_url + pathname
+    });
+    response.end();
+}
+
+http.createServer(
+    function (request, response) {
+
+        var req_url = request.url,
+            pathname;
+
+        // 处理类似 http://a.tbcdn.cn/??p/global/1.0/global-min.css,tbsp/tbsp.css?t=20110920172000.css 的请求
+        pathname = req_url.indexOf(&quot;??&quot;) == -1 ? url.parse(request.url).pathname : req_url;
+        console.log(&quot;Request for &#39;&quot; + pathname + &quot;&#39; received.&quot;);
+        loadFile(pathname, response);
+
+    }).listen(80);
+
+</pre>
+
+
+
+
+<p>　　注意将上面的 local_folders 和 base_url 两个变量的值修改为你需要的值。将这个文件保存下来，比如保存为 local-cdn-proxy.js，然后在命令行里执行“node local-cdn-proxy.js”，本地服务器就运行起来了，当然，别忘了绑定 hosts 。</p>
+
+
+
+
+<p>　　当通过 http 访问一个路径时，上面的脚本会先在本地对应的目录下查找，找到则返回对应文件的内容，找不到则直接 302 跳转到线上对应的地址。对于找不到的情况，还有一种处理办法是由本地服务器从线上下载对应的内容并返回，不过对这个需求来说，302 跳转就足够了。</p>
+
+
+
+
+<p>　　除了 nodejs 版本，我也写了一个 Python 的版本：</p>
+
+
+
+
+<pre>
+# -*- coding: utf-8 -*-
+#
+# author: oldj
+# blog: http://oldj.net
+#
+
+import os
+import BaseHTTPServer
+
+LOCAL_FOLDERS = [
+    "D:/work/assets"
+]
+BASE_URL = "http://10.232.133.214"
+
+class WebRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+
+    def do_GET(self):
+        print "Request for '%s' received." % self.path
+        for folder in LOCAL_FOLDERS:
+            fn = os.path.join(folder, self.path.replace("/", os.sep)[1:])
+            if os.path.isfile(fn):
+                self.send_response(200)
+                self.wfile.write(open(fn, "rb").read())
+                break
+
+        else:
+            self.send_response(302)
+            self.send_header("Location", "%s%s" % (BASE_URL, self.path))
+
+server = BaseHTTPServer.HTTPServer(("0.0.0.0", 80), WebRequestHandler)
+server.serve_forever()
+</pre>
+
+
+
+
+<p>　　可以看到，Python 版本的代码比 nodejs 版本的精简了很多。</p>
+
+
+
+
+<p>　　上面的两段代码的功能还相对比较简单，比如没有输出内容的 MIME-Type、Content-Length 等头信息，对可能的阻塞操作（如读取文件超时等）也没有做特别的处理。对于本地开发环境来说，它们已经是可以工作的版本了，你也可以继续扩展这两个脚本，以便满足更多的需求。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/682456369/oldj/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/oldj/~8217290/682456369/6320477/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

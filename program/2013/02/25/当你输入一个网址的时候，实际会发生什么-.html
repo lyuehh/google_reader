@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>当你输入一个网址的时候，实际会发生什么?</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>当你输入一个网址的时候，实际会发生什么?</h2>
+<p class="meta">25 Feb 2013</p>
+
+<div class="post">
+<h2>当你输入一个网址的时候，实际会发生什么?</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-02-25 15:29:57</h3>
+
+<h3>original <a href="http://blog.jobbole.com/33951/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%25bd%2593%25e4%25bd%25a0%25e8%25be%2593%25e5%2585%25a5%25e4%25b8%2580%25e4%25b8%25aa%25e7%25bd%2591%25e5%259d%2580%25e7%259a%2584%25e6%2597%25b6%25e5%2580%2599%25ef%25bc%258c%25e5%25ae%259e%25e9%2599%2585%25e4%25bc%259a%25e5%258f%2591%25e7%2594%259f%25e4%25bb%2580%25e4%25b9%2588">http://blog.jobbole.com/33951/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%25bd%2593%25e4%25bd%25a0%25e8%25be%2593%25e5%2585%25a5%25e4%25b8%2580%25e4%25b8%25aa%25e7%25bd%2591%25e5%259d%2580%25e7%259a%2584%25e6%2597%25b6%25e5%2580%2599%25ef%25bc%258c%25e5%25ae%259e%25e9%2599%2585%25e4%25bc%259a%25e5%258f%2591%25e7%2594%259f%25e4%25bb%2580%25e4%25b9%2588</a></h3>
+
+<p>英文原文：<a style="font-style:normal" title="Link to What really happens when you navigate to a URL" href="http://igoro.com/archive/what-really-happens-when-you-navigate-to-a-url/" rel="bookmark">What really happens when you navigate to a URL</a>，编译：<a href="http://www.cnblogs.com/wenanry/archive/2010/02/25/1673368.html">寒冬星空</a></p>
+
+
+<p>作为一个软件开发者，你一定会对网络应用如何工作有一个完整的层次化的认知，同样这里也包括这些应用所用到的技术：像<span><a href="http://blog.jobbole.com/12749/" title="浏览器">浏览器</a></span>，HTTP，HTML，网络服务器，需求处理等等。</p>
+
+
+<p>本文将更深入的研究当你输入一个网址的时候，后台到底发生了一件件什么样的事～</p>
+
+
+<p><strong>1. 首先嘛，你得在浏览器里输入要网址:</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image4.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image4.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p> </p>
+
+
+<p><strong>2. 浏览器查找域名的IP地址</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image13.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image13.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>导航的第一步是通过访问的域名找出其IP地址。DNS查找过程如下：</p>
+
+
+<div>
+<ul>
+<li><strong>浏览器缓存 – </strong>浏览器会缓存DNS记录一段时间。 有趣的是，操作系统没有告诉浏览器储存DNS记录的时间，这样不同浏览器会储存个自固定的一个时间（2分钟到30分钟不等）。</li>
+<li><strong>系统缓存</strong> – 如果在浏览器缓存里没有找到需要的记录，浏览器会做一个系统调用（windows里是gethostbyname）。这样便可获得系统缓存中的记录。</li>
+<li><strong>路由器缓存</strong> – 接着，前面的查询请求发向路由器，它一般会有自己的DNS缓存。</li>
+<li><strong>ISP DNS 缓存</strong> – 接下来要check的就是ISP缓存DNS的服务器。在这一般都能找到相应的缓存记录。</li>
+<li><strong>递归搜索</strong> – 你的ISP的DNS服务器从跟域名服务器开始进行递归搜索，从.com顶级域名服务器到Facebook的域名服务器。一般DNS服务器的缓存中会有.com域名服务器中的域名，所以到顶级服务器的匹配过程不是那么必要了。</li>
+</ul>
+</div>
+
+
+<p>DNS递归查找如下图所示：</p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/500pxAn_example_of_theoretical_DNS_recursion_svg.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/500pxAn_example_of_theoretical_DNS_recursion_svg.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<div>
+<p>DNS有一点令人担忧，这就是像wikipedia.org 或者 facebook.com这样的整个域名看上去只是对应一个单独的IP地址。还好，有几种方法可以消除这个瓶颈：</p>
+<ul>
+<li><a href="http://baike.baidu.com/view/1527368.html"><strong>循环 DNS</strong></a> 是DNS查找时返回多个IP时的解决方案。举例来说，Facebook.com实际上就对应了四个IP地址。</li>
+<li><a href="http://baike.baidu.com/view/486970.htm"><strong>负载平衡器</strong></a> 是以一个特定IP地址进行侦听并将网络请求转发到集群服务器上的硬件设备。 一些大型的站点一般都会使用这种昂贵的高性能负载平衡器。</li>
+<li><strong>地理 DNS </strong>根据用户所处的地理位置，通过把域名映射到多个不同的IP地址提高可扩展性。这样不同的服务器不能够更新同步状态，但映射静态内容的话非常好。</li>
+<li><a href="http://baike.baidu.com/view/1398775.htm"><strong>Anycast</strong> </a>是一个IP地址映射多个物理主机的路由技术。 美中不足，Anycast与TCP协议适应的不是很好，所以很少应用在那些方案中。</li>
+</ul>
+</div>
+
+
+<div>
+<p>大多数DNS服务器使用Anycast来获得高效低延迟的DNS查找。</p>
+</div>
+
+
+<p><strong>3. 浏览器给web服务器发送一个HTTP请求</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image22.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image22.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>因为像Facebook主页这样的动态页面，打开后在浏览器缓存中很快甚至马上就会过期，毫无疑问他们不能从中读取。</p>
+
+
+<p>所以，浏览器将把一下请求发送到Facebook所在的服务器：</p>
+
+
+<pre>GET http://facebook.com/ HTTP/1.1
+ Accept: application/x-ms-application, image/jpeg, application/xaml+xml, [...]
+ User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; [...]
+ Accept-Encoding: gzip, deflate
+ Connection: Keep-Alive
+ Host: facebook.com
+ Cookie: datr=1265876274-[...]; locale=en_US; lsd=WW[...]; c_user=2101[...]</pre>
+
+
+<p>GET 这个请求定义了要读取的<strong>URL</strong>： “http://facebook.com/”。 浏览器自身定义 (<strong>User-Agent</strong> 头)， 和它希望接受什么类型的相应 (<strong>Accept</strong> and <strong>Accept-Encoding</strong> 头). <strong>Connection</strong>头要求服务器为了后边的请求不要关闭TCP连接。</p>
+
+
+<p>请求中也包含浏览器存储的该域名的<strong>cookies</strong>。可能你已经知道，在不同页面请求当中，cookies是与跟踪一个网站状态相匹配的键值。这样cookies会存储登录用户名，服务器分配的密码和一些用户设置等。Cookies会以文本文档形式存储在客户机里，每次请求时发送给服务器。</p>
+
+
+<div>
+<p>用来看原始HTTP请求及其相应的工具很多。作者比较喜欢使用fiddler，当然也有像FireBug这样其他的工具。这些软件在网站优化时会帮上很大忙。</p>
+</div>
+
+
+<p>除了获取请求，还有一种是发送请求，它常在提交表单用到。发送请求通过URL传递其参数(e.g.: http://robozzle.com/puzzle.aspx?id=85)。发送请求在请求正文头之后发送其参数。</p>
+
+
+<p>像“http://facebook.com/”中的斜杠是至关重要的。这种情况下，浏览器能安全的添加斜杠。而像“http: //example.com/folderOrFile”这样的地址，因为浏览器不清楚folderOrFile到底是文件夹还是文件，所以不能自动添加 斜杠。这时，浏览器就不加斜杠直接访问地址，服务器会响应一个重定向，结果造成一次不必要的握手。</p>
+
+
+<p><strong>4. facebook服务的永久重定向响应</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image8.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image8.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>图中所示为Facebook服务器发回给浏览器的响应：</p>
+
+
+<pre>HTTP/1.1 301 Moved Permanently
+ Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0,
+ pre-check=0
+ Expires: Sat, 01 Jan 2000 00:00:00 GMT
+ Location: http://www.facebook.com/
+ P3P: CP=&quot;DSP LAW&quot;
+ Pragma: no-cache
+ Set-Cookie: made_write_conn=deleted; expires=Thu, 12-Feb-2009 05:09:50 GMT;
+ path=/; domain=.facebook.com; httponly
+ Content-Type: text/html; charset=utf-8
+ X-Cnection: close
+ Date: Fri, 12 Feb 2010 05:09:51 GMT
+ Content-Length: 0</pre>
+
+
+<p>服务器给浏览器响应一个301永久重定向响应，这样浏览器就会访问“http://www.facebook.com/” 而非“http://facebook.com/”。</p>
+
+
+<div>
+<p>为什么服务器一定要重定向而不是直接发会用户想看的网页内容呢？这个问题有好多有意思的答案。</p>
+<p>其中一个原因跟<strong>搜索引擎排名</strong>有 关。你看，如果一个页面有两个地址，就像http://www.igoro.com/ 和http://igoro.com/，搜索引擎会认为它们是两个网站，结果造成每一个的搜索链接都减少从而降低排名。而搜索引擎知道301永久重定向是 什么意思，这样就会把访问带www的和不带www的地址归到同一个网站排名下。</p>
+<p>还有一个是用不同的地址会造成<strong>缓存友好性</strong>变差。当一个页面有好几个名字时，它可能会在缓存里出现好几次。</p>
+</div>
+
+
+<p><strong>5. 浏览器跟踪重定向地址</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image23.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image23.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>现在，浏览器知道了“http://www.facebook.com/”才是要访问的正确地址，所以它会发送另一个获取请求：</p>
+
+
+<pre>GET http://www.facebook.com/ HTTP/1.1
+ Accept: application/x-ms-application, image/jpeg, application/xaml+xml, [...]
+ Accept-Language: en-US
+ User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; [...]
+ Accept-Encoding: gzip, deflate
+ Connection: Keep-Alive
+ Cookie: lsd=XW[...]; c_user=21[...]; x-referer=[...]
+ Host: www.facebook.com</pre>
+
+
+<p>头信息以之前请求中的意义相同。</p>
+
+
+<p><strong>6. 服务器“处理”请求</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image9.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image9.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>服务器接收到获取请求，然后处理并返回一个响应。</p>
+
+
+<p>这表面上看起来是一个顺向的任务，但其实这中间发生了很多有意思的东西- 就像作者博客这样简单的网站，何况像facebook那样访问量大的网站呢！</p>
+
+
+<ul>
+<li><strong>Web 服务器软件<br>
+</strong>web服务器软件（像IIS和阿帕奇）接收到HTTP请求，然后确定执行什么请求处理来处理它。请求处理就是一个能够读懂请求并且能生成HTML来进行响应的程序（像ASP.NET,PHP,RUBY…）。举 个最简单的例子，需求处理可以以映射网站地址结构的文件层次存储。像http://example.com/folder1/page1.aspx这个地 址会映射/httpdocs/folder1/page1.aspx这个文件。web服务器软件可以设置成为地址人工的对应请求处理，这样 page1.aspx的发布地址就可以是http://example.com/folder1/page1。</li>
+<li><strong>请求处理<br>
+</strong>请求处理阅读请求及它的参数和cookies。它会读取也可能更新一些数据，并讲数据存储在服务器上。然后，需求处理会生成一个HTML响应。</li>
+</ul>
+
+
+<div>
+<p>所 有动态网站都面临一个有意思的难点 -如何存储数据。小网站一半都会有一个SQL数据库来存储数据，存储大量数据和/或访问量大的网站不得不找一些办法把数据库分配到多台机器上。解决方案 有：sharding （基于主键值讲数据表分散到多个数据库中），复制，利用弱语义一致性的简化数据库。</p>
+</div>
+
+
+<div>
+<p>委 托工作给批处理是一个廉价保持数据更新的技术。举例来讲，Fackbook得及时更新新闻feed，但数据支持下的“你可能认识的人”功能只需要每晚更新 （作者猜测是这样的，改功能如何完善不得而知）。批处理作业更新会导致一些不太重要的数据陈旧，但能使数据更新耕作更快更简洁。</p>
+</div>
+
+
+<p><strong>7. 服务器发回一个HTML响应</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image10.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image10.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>图中为服务器生成并返回的响应：</p>
+
+
+<pre>HTTP/1.1 200 OK
+ Cache-Control: private, no-store, no-cache, must-revalidate, post-check=0,
+ pre-check=0
+ Expires: Sat, 01 Jan 2000 00:00:00 GMT
+ P3P: CP=&quot;DSP LAW&quot;
+ Pragma: no-cache
+ Content-Encoding: gzip
+ Content-Type: text/html; charset=utf-8
+ X-Cnection: close
+ Transfer-Encoding: chunked
+ Date: Fri, 12 Feb 2010 09:05:55 GMT
+
+ 2b3Tn@[...]</pre>
+
+
+<p>整个响应大小为35kB，其中大部分在整理后以blob类型传输。</p>
+
+
+<p><strong>内容编码</strong>头告诉浏览器整个响应体用gzip算法进行压缩。解压blob块后，你可以看到如下期望的HTML：</p>
+
+
+<pre>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot;    
+ &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+ &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;en&quot;
+ lang=&quot;en&quot; id=&quot;facebook&quot;&gt;
+ &lt;head&gt;
+ &lt;meta http-equiv=&quot;Content-type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+ &lt;meta http-equiv=&quot;Content-language&quot; content=&quot;en&quot; /&gt;
+ ...</pre>
+
+
+<p>关于压缩，头信息说明了是否缓存这个页面，如果缓存的话如何去做，有什么cookies要去设置（前面这个响应里没有这点）和隐私信息等等。</p>
+
+
+<div>
+<p>请注意报头中把<strong>Content-type</strong>设置为“<strong>text/html</strong>”。报头让浏览器将该响应内容以HTML形式呈现，而不是以文件形式下载它。浏览器会根据报头信息决定如何解释该响应，不过同时也会考虑像URL扩展内容等其他因素。</p>
+</div>
+
+
+<p><strong>8. 浏览器开始显示HTML</strong></p>
+
+
+<p>在浏览器没有完整接受全部HTML文档时，它就已经开始显示这个页面了：</p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image6.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image6.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p><strong>9. 浏览器发送获取嵌入在HTML中的对象</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image11.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image11.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>在浏览器显示HTML时，它会注意到需要获取其他地址内容的标签。这时，浏览器会发送一个获取请求来重新获得这些文件。</p>
+
+
+<p>下面是几个我们访问facebook.com时需要重获取的几个URL：</p>
+
+
+<ul>
+<li><strong>图片<br>
+</strong>http://static.ak.fbcdn.net/rsrc.php/z12E0/hash/8q2anwu7.gif
+<p>http://static.ak.fbcdn.net/rsrc.php/zBS5C/hash/7hwy7at6.gif</p>
+<p>…</p></li>
+<li><strong>CSS 式样表<br>
+</strong>http://static.ak.fbcdn.net/rsrc.php/z448Z/hash/2plh8s4n.css
+<p>http://static.ak.fbcdn.net/rsrc.php/zANE1/hash/cvtutcee.css</p>
+<p>…</p></li>
+<li><strong>JavaScript 文件</strong>
+<p>http://static.ak.fbcdn.net/rsrc.php/zEMOA/hash/c8yzb6ub.js</p>
+<p>http://static.ak.fbcdn.net/rsrc.php/z6R9L/hash/cq2lgbs8.js</p>
+<p>…</p></li>
+</ul>
+
+
+<p>这些地址都要经历一个和HTML读取类似的过程。所以浏览器会在DNS中查找这些域名，发送请求，重定向等等…</p>
+
+
+<p>但 不像动态页面那样，静态文件会允许浏览器对其进行缓存。有的文件可能会不需要与服务器通讯，而从缓存中直接读取。服务器的响应中包含了静态文件保存的期限 信息，所以浏览器知道要把它们缓存多长时间。还有，每个响应都可能包含像版本号一样工作的ETag头（被请求变量的实体值），如果浏览器观察到文件的版本 ETag信息已经存在，就马上停止这个文件的传输。</p>
+
+
+<div>
+<p>试着猜猜看“<strong>fbcdn.net</strong>”在地址中代表什么？聪明的答案是”Facebook内容分发网络”。Facebook利用内容分发网络（CDN）分发像图片，CSS表和JavaScript文件这些静态文件。所以，这些文件会在全球很多CDN的数据中心中留下备份。</p>
+<p>静态内容往往代表站点的带宽大小，也能通过CDN轻松的复制。通常网站会使用第三方的CDN。例如，Facebook的静态文件由最大的CDN提供商Akamai来托管。</p>
+<p>举例来讲，当你试着ping static.ak.fbcdn.net的时候，可能会从某个akamai.net服务器上获得响应。有意思的是，当你同样再ping一次的时候，响应的服务器可能就不一样，这说明幕后的负载平衡开始起作用了。</p>
+</div>
+
+
+<p><strong>10. 浏览器发送异步（AJAX）请求</strong></p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2013/02/image12.png" rel="lightbox[33951]" title="当你输入一个网址的时候，实际会发生什么？"><img title="当你输入一个网址的时候，实际会发生什么？" src="http://blog.jobbole.com/wp-content/uploads/2013/02/image12.png" alt="当你输入一个网址的时候，实际会发生什么？"></a></p>
+
+
+<p>在Web 2.0伟大精神的指引下，页面显示完成后客户端仍与服务器端保持着联系。</p>
+
+
+<p>以 Facebook聊天功能为例，它会持续与服务器保持联系来及时更新你那些亮亮灰灰的好友状态。为了更新这些头像亮着的好友状态，在浏览器中执行的 JavaScript代码会给服务器发送异步请求。这个异步请求发送给特定的地址，它是一个按照程式构造的获取或发送请求。还是在Facebook这个例 子中，客户端发送给http://www.facebook.com/ajax/chat/buddy_list.php一个发布请求来获取你好友里哪个 在线的状态信息。</p>
+
+
+<p>提起这个模式，就必须要讲讲”AJAX”– “异步JavaScript 和 XML”，虽然服务器为什么用XML格式来进行响应也没有个一清二白的原因。再举个例子吧，对于异步请求，Facebook会返回一些JavaScript的代码片段。</p>
+
+
+<div>
+<p>除了其他，fiddler这个工具能够让你看到浏览器发送的异步请求。事实上，你不仅可以被动的做为这些请求的看客，还能主动出击修改和重新发送它们。AJAX请求这么容易被蒙，可着实让那些计分的在线游戏开发者们郁闷的了。（当然，可别那样骗人家~）</p>
+</div>
+
+
+<div>
+<p>Facebook聊天功能提供了关于AJAX一个有意思的问题案例：把数据从服务器端推送到客户端。因为HTTP是一个请求-响应协议，所以聊天服务器不能把新消息发给客户。取而代之的是客户端不得不隔几秒就轮询下服务器端看自己有没有新消息。</p>
+<p>这些情况发生时长轮询是个减轻服务器负载挺有趣的技术。如果当被轮询时服务器没有新消息，它就不理这个客户端。而当尚未超时的情况下收到了该客户的新消息，服务器就会找到未完成的请求，把新消息做为响应返回给客户端。</p>
+</div>
+
+
+<p><strong>总结一下</strong></p>
+
+
+<p>希望看了本文，你能明白不同的网络模块是如何协同工作的</p>
+
+
+<h4>相关文章</h4>
+
+
+<ul>
+<li><a href="http://blog.jobbole.com/24698/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/08/TM%E6%88%AA%E5%9B%BE%E6%9C%AA%E5%91%BD%E5%90%8D5-150x150.jpg" alt="魏兴国：深入浅出DDoS攻击防御"></a><a href="http://blog.jobbole.com/24698/">魏兴国：深入浅出DDoS攻击防御</a></li>
+<li><a href="http://blog.jobbole.com/12749/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/02/How-browsers-work1-150x150.png" alt="现代浏览器的工作原理"></a><a href="http://blog.jobbole.com/12749/">现代浏览器的工作原理</a></li>
+<li><a href="http://blog.jobbole.com/30385/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2012/11/T1uqT.Xl8cXXb1upjX-150x150.jpg" alt="浏览器事件的思考"></a><a href="http://blog.jobbole.com/30385/">浏览器事件的思考</a></li>
+<li><a href="http://blog.jobbole.com/10301/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2011/12/1.Before-150x150.png" alt="图1：滚动前"></a><a href="http://blog.jobbole.com/10301/">浏览器的错误滚动</a></li>
+<li><a href="http://blog.jobbole.com/32823/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2013/01/browser-to-notepad-in-a-line-of-code-150x150.jpg" alt="browser to notepad in a line of code"></a><a href="http://blog.jobbole.com/32823/">一行代码，浏览器变临时编辑器</a></li>
+<li><a href="http://blog.jobbole.com/26064/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/02/XSS-Cross-Site-Script-Execution1-150x150.jpg" alt="几种极其隐蔽的XSS注入的防护"></a><a href="http://blog.jobbole.com/26064/">几种极其隐蔽的XSS注入的防护</a></li>
+<li><a href="http://blog.jobbole.com/19598/"><img src="http://blog.jobbole.com/wp-content/uploads/2011/11/adobe-logo.gif" alt="Adobe、标准和HTML5"></a><a href="http://blog.jobbole.com/19598/">Adobe、标准和HTML5</a></li>
+<li><a href="http://blog.jobbole.com/1386/"><img src="http://blog.jobbole.com/wp-content/plugins/wordpress-23-related-posts-plugin/static/thumbs/6.jpg" alt="10个针对Web开发者的优秀Chrome插件"></a><a href="http://blog.jobbole.com/1386/">10个针对Web开发者的优秀Chrome插件</a></li>
+<li><a href="http://blog.jobbole.com/1332/"><img src="http://blog.jobbole.com/wp-content/uploads/2013/02/firefox4-e1314094946262-150x150.jpg" alt="2011年互联网十大浏览器"></a><a href="http://blog.jobbole.com/1332/">2011年互联网十大浏览器</a></li>
+<li><a href="http://blog.jobbole.com/8524/"><img width="150" height="150" src="http://blog.jobbole.com/wp-content/uploads/2011/11/25-Secrets-of-the-Browser-Developer-Tools1-150x150.png" alt="浏览器开发工具的25个秘密"></a><a href="http://blog.jobbole.com/8524/">浏览器开发工具的25个秘密</a></li>
+</ul>
+
+
+<p><a href="http://blog.jobbole.com/33951/">当你输入一个网址的时候，实际会发生什么?</a>，首发于<a href="http://blog.jobbole.com">博客 - 伯乐在线</a>。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

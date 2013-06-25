@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IE8出现“网页有错误，找不到元素”错误解决方法</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IE8出现“网页有错误，找不到元素”错误解决方法</h2>
+<p class="meta">16 Nov 2012</p>
+
+<div class="post">
+<h2>IE8出现“网页有错误，找不到元素”错误解决方法</h2>
+
+<h3>by 枯藤昏鸦</h3>
+
+<h3>at 2012-11-16 09:03:45</h3>
+
+<h3>original <a href="http://ioio.name/ie8-ieframe.html">http://ioio.name/ie8-ieframe.html</a></h3>
+
+<p>如果IE8出现“网页有错误，找不到元素”的错误，有可能是注册表中的值被修改了导致的，通常情况下将如下内容保存成一个.reg注册表文件，导入注册表即可：</p>
+
+
+
+
+<div><table><tr><td><pre style="font-family:monospace"><span style="color:#0000ff">Windows Registry Editor Version 5.00</span>
+ 
+<span style="color:#000000">[</span><span style="color:#800000">HKEY_CLASSES_ROOT</span>\TypeLib\<span style="color:#ff6600"><span style="color:#000000">{</span>EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B<span style="color:#000000">}</span></span>\1.1\0\win32<span style="color:#000000">]</span>
+<span>@</span><span style="color:#000000">=</span><span>&quot;C:\\WINDOWS\\system32\\ieframe.dll&quot;</span></pre></td></tr></table></div>
+
+
+
+
+<p>若是开发者的话，还是不要直接忽略这个错误，走查脚本还是能够定位到具体问题的，比如有可能是<strong>window.external</strong>对象不能访问。</p>
+
+
+<p>参考资料: <a href="http://answers.microsoft.com/zh-hans/ie/forum/ie8-windows_xp/IE8%E6%96%B0%E5%BB%BA%E9%80%89%E9%A1%B9%E5%8D%A1/d5e3e2c3-60e4-4aac-be46-41d63a3bb0f7">IE8新建选项卡“网页有错误，找不到元素”</a><br>
+-EOF-</p>
+
+
+<hr><small>Copyright © 2005~2011 | <a href="http://ioio.name/ie8-ieframe.html" title="Permalink">Permalink</a> | <a href="http://ioio.name/ie8-ieframe.html#comments">0 Comments</a> | <a href="http://closetou.com" title="Close To U">Close To U</a> <br>
+
+
+<p><a href="http://feeds.feedburner.com/miss">订阅</a> <a href="https://twitter.com/tearnon">Twitter</a> <a href="http://www.linode.com/?r=8dd6ddd391fc320d9f55ad101e051bde767df599">Linode VPS</a>
+</small> )</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

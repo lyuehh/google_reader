@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>软件开发人员真的了解SQL索引吗(索引原理)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>软件开发人员真的了解SQL索引吗(索引原理)</h2>
+<p class="meta">19 Dec 2010</p>
+
+<div class="post">
+<h2>软件开发人员真的了解SQL索引吗(索引原理)</h2>
+
+<h3>by 姜敏</h3>
+
+<h3>at 2010-12-18 22:16:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ASPNET2008/archive/2010/12/18/1910183.html">http://www.cnblogs.com/ASPNET2008/archive/2010/12/18/1910183.html</a></h3>
+
+<p><p>      上篇文章我粗略的总结了些SQL聚集索引与非聚集索引的区别，但看起来好像不太清晰，这篇我通过索引原理来再一次分析下。<br>      </p>
+<p>      <strong>说明：</strong>下面所指的B树是指平衡树。<br>      索引是为检索而存在的,就是说索引并不是一个表必须的。表索引由多个页面组成，这些页面一起组成了一个树形结构,即我们通常说的B树， 首先来看下表索引的组成部分：<br>   <br>      根极节点,root,它指向另外两个页，把一个表的记录从逻辑上分成非叶级节点Non-Leaf Level(枝)，它指向了更加小的叶级节点Leaf Level(叶)。 根节点、非叶级节点和叶级节点都位于索引页中，统称为索引叶节点，属于索引页的范筹。这些“枝”、“叶”最终指向数据页Page。根级节点和叶级节点之间的叶又叫数据中间页。根节点对应了sysindexes表的Root字段，记载了非叶级节点的物理位置（即指针）；非叶级节点位于根节点和叶节点之间，记载了指向叶级节点的指针；而叶级节点则最终指向数据页，这就是最后的B树。    <br>   <br>      数据库是怎样访问表数据的：<br>   <br>     第一：没有创建任何索引的表。<br>     这种表我们称为堆表，因为所有的数据页都是无序的，杂乱无章的，在查询数据时，需要一条一条记录查询，有时第一条记录就能找到，最坏的情况是在最后一条记录中查找到,但是千万不要认为SQL此时查找到数据后会当成结果立即返回，SQL即使查找到了记录，也会将所有数据遍历一次，这能从最终的执行计划中得知，就是平时说的表扫描，对于没有索引的表也能查询，就是效率会特别低，如果数据量稍大的话。<br>   <br>     问题：SQL是如何得知表没有索引呢？<br>    SQL在接到查询请求的时候，会分析sysindexes表中索引标志符(INDID: Index ID)的字段的值，如果该值为0，表示这是一张数据表而不是索引表，SQL就会使用sysindexes表的另一个字段FirstIAM值中找到该表的IAM 页链也就是所有数据页集合。至于什么是IAM,大家可以网上搜索下。<br>   <br>     第二：访问创建有非聚集索引的表。<br>     非聚集索引可以建多个,形成B树结构，叶级节点不包含数据页，只包含索引行。如果表中只有非聚集索引，则每个索引行包含了非聚集索引键值以及行定位符（ROW ID,RID），他们指向具有该键值的数据行。RID由文件ID、页编号和在页中行的编号组成。当 INDID的值在2-250之间时，说明表中存在非聚集索引页。SQL调用ROOT字段的值指向非聚集索引B树的ROOT，查找与被查询最相近的值，根据这个值找到在非叶级节点中的页号，在叶级节点相应的页面中找到该值的RID，最后根据这个RID在Heap中定位所在的页和行并返回到查询端。<br>   上篇文章的cityid上建立了非聚集索引，执行Select * From student Where cityid=’0101’时，查询过程是：<br>   1:在sysindexes表查询INDID值为2,说明有非聚集索引；<br>   2:从根出发，在非叶级节点中定位最接近0101的值(枝节点)，查到其位于叶级页面的第n页；<br>   3:在叶级页面的第n页下搜寻0101的RID，其RID显示为N∶i∶j，表示cityid字段中名为0101的记录位于堆的第i页的第j行，N代表文件的ID值。<br>   4:在堆的第 i页第j行将该记录返回给客户端。</p>
+<p>   下图可做参考：<br>                                 <img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/aspnet2008/2010-12-18-1.JPG"><br>   </p>
+<p>    第三：访问创建有聚集索引的表。<br>    聚集索引中，数据所在的数据页是叶级，索引数据所在的索引页是非叶级。原理和上述非聚集索引的查询差不多，由于记录是按聚集索引键值进行排序，即聚集索引的索引键值也就是具体的数据页。这种情况比起非聚集索引要简单很多,因为比非聚集索引少了一层节点查询。<br>   上篇文章的username字段上建立了聚集索引，此时执行Select* From student Where username=’1’时，查询过程是：<br>   1:在sysindexes表查询INDID值为1，说明表中建立了聚集索；<br>   2:从根出发，在非叶级节点中定位最接近1的值(枝节点)，再查到其位于叶级页面的第n页；<br>   3:在叶级页面第n页下搜寻值为1的条目，而这一条目就是数据记录本身；<br>   4:将该记录返回客户端。<br>   下图可做参考：<br></p>
+<p>                            <img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/aspnet2008/2010-12-18-2.JPG"></p>
+<p><br>    第四：怎样访问既有聚集索引、又有非聚集索引的数据表：<br>    username字段上建立了聚集索引，cityid上建立了非聚集索引，当执行Select * From student Where cityid=’0101’时，查询过程是：<br>    1:在sysindexes表查询INDID值为2,说明有非聚集索引；<br>    2:从根出发，在cityid的非聚集索引的非叶级节点中定位最接近0101的条目；<br>    3:从上面条目下的叶级页面中查到0101的逻辑位置，是聚集索引的指针；<br>    4:根据指针所指示位置，进入位于username的聚集索引中的叶级页面中找到0101数据记录；<br>    5:将该记录返回客户端。<br>   <br>    通过上面数据库访问索引的原理，我们就很容易解释聚集索引与非聚集索引的区别了，原理都一样，关键看什么场合应用什么索引了,下一篇我来总结一些不同场合最适合采用什么样的索引，不对之外多多指点。</p>
+<p>    注：此篇文章的图以及部分文字均来自网上。</p>
+<div>
+<p style="border-bottom:#e0e0e0 1px dashed;border-left:#e0e0e0 1px dashed;padding-bottom:10px;padding-left:60px;padding-right:10px;font-family:微软雅黑;background:url() #e5f1f4 no-repeat 1% 50%;font-size:14px;border-top:#e0e0e0 1px dashed;border-right:#e0e0e0 1px dashed;padding-top:10px"><br>作者：<a href="http://www.cnblogs.com/aspnet2008/">姜敏</a> <br>出处：<a href="http://www.cnblogs.com/aspnet2008/">http://www.cnblogs.com/aspnet2008/</a>  </p>　</div>
+<p> </p> <img src="http://www.cnblogs.com/ASPNET2008/aggbug/1910183.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/ASPNET2008/">姜敏</a> 发表于 2010-12-18 22:16 <a href="http://www.cnblogs.com/ASPNET2008/archive/2010/12/18/1910183.html">原文链接</a></p><p>评论: 3　<a href="http://www.cnblogs.com/ASPNET2008/archive/2010/12/18/1910183.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ASPNET2008/archive/2010/12/18/1910183.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/85080/">电帆可能成为全宇宙最快飞行装置</a><span style="color:gray">(2010-12-19 16:18)</span><br>· <a href="http://news.cnblogs.com/n/85079/">Fanhattan欲成网络视频管家 整合多家视频网站</a><span style="color:gray">(2010-12-19 16:14)</span><br>· <a href="http://news.cnblogs.com/n/85078/">雅虎通信产品工程主管离职 已供职11年</a><span style="color:gray">(2010-12-19 16:02)</span><br>· <a href="http://news.cnblogs.com/n/85077/">谷歌取消实时定位跟踪服务Latitude提示功能</a><span style="color:gray">(2010-12-19 14:54)</span><br>· <a href="http://news.cnblogs.com/n/85076/">雅虎员工曝内幕：并购屡败因雅虎缺乏远见</a><span style="color:gray">(2010-12-19 12:48)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/85067/">2010年移动开发平台大回顾</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>页面加载时间度量</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>页面加载时间度量</h2>
+<p class="meta">10 Jan 2012</p>
+
+<div class="post">
+<h2>页面加载时间度量</h2>
+
+<h3>by oldj</h3>
+
+<h3>at 2012-01-09 20:34:53</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/oldj/~8217290/640450476/6320477/1/item.html">http://item.feedsky.com/~feedsky/oldj/~8217290/640450476/6320477/1/item.html</a></h3>
+
+<p>　　页面加载时间（Site Speed 或 User Latency）是网站可用性的一个重要指标，指的是网站的页面从加载开始到加载完成所花费的时间。这个时间反映了网站的访问速度，有一个说法是，如果一个页面超过 8 秒还没有打开，用户就会失去耐心，从而关闭窗口或转向别的页面。关于这个时间的度量，主要有以下几种方法。</p>
+
+
+
+
+<p>　　<strong>方法一、前后端协同度量</strong></p>
+
+
+
+
+<p>　　服务器端收到当前页面的请求时，记下当前时间 t0，并输出到页面上。页面加载完成时（onload 事件触发），客户端 JavaScript 脚本将当前时间与 t0 比较，得到页面加载时间。</p>
+
+
+
+
+<p>　　这种方法的不足是需要服务器端配合，并且由于服务器端时间与客户端时间不一定完全相同，还涉及比较复杂的时间同步问题，看似简单，做起来却并不容易。</p>
+
+
+
+
+<p>　　<strong>方法二、纯前端方法在当前页面度量</strong></p>
+
+
+
+
+<p>　　这种方法的原理为，在页面的顶部放一段 JavaScript 代码，记下当前时间 t0，然后在页面 onload 时再计算当前时间与 t0 的时间差，这个时间差即为页面加载时间。</p>
+
+
+
+
+<p>　　示例如下：</p>
+
+
+
+
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+
+var t0 = new Date().getTime();
+function onLoad() {
+  var now = new Date().getTime();
+  var latency = now - t0;
+  alert(&quot;page loading time: &quot; + latency);
+}
+
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body onload=&quot;onLoad()&quot;&gt;
+&lt;!- Main page body goes from here. --&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+
+
+<p>　　这种方法操作简单，而且使用的都是客户端时间，没有时间同步的问题。但不足是顶部记录 t0 的代码执行之前的时间（建立连接、网络延迟、接收并解析最初数据的时间）被忽略了，因此得到的时间一般比真实的页面加载时间要小。</p>
+
+
+
+
+<p>　　<strong>方法三、前一个页面和当前页面协同度量</strong></p>
+
+
+
+
+<p>　　这种方法的原理为，用户在前一个页面点击到链接或在前一个页面被卸载之前（onbeforeunload），先记下当前时间 t0，然后下一个页面加载完成时（onload）计算当前时间与 t0 的时间差，这个时间差即为页面加载时间。</p>
+
+
+
+
+<p>　　那么，用户离开前一个页面的时间 t0 保存在哪里呢？可以看看 IBM 奥斯汀研究实验室在 2001 年写的这篇论文：<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.69.7329&amp;rep=rep1&amp;type=pdf">Measuring Client-Perceived Response Times on the WWW</a>。里面详细地整理了各种 HTML5 之前的可用的跨页面传递信息的方法，如 cookie、独立窗口、框架等。最令人惊讶的是还提到使用 Window Name 来保存信息，几年之后，这种<a href="http://www.planabc.net/2008/09/01/window_name_transport/">使用 window.name 传递信息</a>的方法才开始在前端工程师中流传开来。</p>
+
+
+
+
+<p>　　这种方法的优点是包含了网络延迟时间，得到的数据更真实。缺点是实现和部署较为复杂，并且访客访问的第一个页面的加载时间无法计算，因为在第一个页面之前没有哪个页面能先记下 t0。</p>
+
+
+
+
+<p>　　另外，前面三种方法都需要添加额外的记录 t0 时间的代码，这会增加页面的计算量，从而影响到页面的交付时间，并影响最终的结果，虽然这个影响非常微小。这类似于物理学中的<a href="http://en.wikipedia.org/wiki/Observer_effect_(physics)">观察者效应</a>。</p>
+
+
+
+
+<p>　　<strong>方法四、使用浏览器插件或工具栏</strong></p>
+
+
+
+
+<p>　　比如<a href="http://ecmanaut.blogspot.com/2010/06/google-bom-feature-ms-since-pageload.html">使用 Google Toolbar 获取页面加载时间</a>，见下面的例子：</p>
+
+
+
+
+<pre>
+function msSincePageLoad() {
+  try {
+    var t = null;
+    if (window.chrome &amp;&amp; chrome.csi)
+      t = chrome.csi().pageT;
+    if (t === null &amp;&amp; window.gtbExternal)
+      t = window.gtbExternal.pageT();
+    if (t === null &amp;&amp; window.external)
+      t = window.external.pageT;
+  } catch (e) {};
+  return t;
+}
+</pre>
+
+
+
+
+<p>　　当然，这个方法需要浏览器插件或工具栏的支持，通用性比较小，一般只能辅助使用。</p>
+
+
+
+
+<p>　　<strong>方法五、使用 HTML5 中的 Navigation Timing 度量</strong></p>
+
+
+
+
+<p>　　HTML5 中引入了一个 <a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html">Navigation Timing</a> 接口，专门用于记录页面导航的时间。使用这个接口，能完美地记录页面加载时间。</p>
+
+
+
+
+<p>　　示例代码如下：</p>
+
+
+
+
+<pre>
+&lt;html&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+function onLoad() {
+  var now = new Date().getTime();
+  var page_load_time = now - performance.timing.navigationStart;
+  alert(&quot;User-perceived page loading time: &quot; + page_load_time);
+}
+
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body onload=&quot;onLoad()&quot;&gt;
+&lt;!- Main page body goes from here. --&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+
+
+
+<p>　　下面的图片展示了 Navigation Timing 接口所记录的各个时间点。</p>
+
+
+
+
+<p>　　<img src="http://oldj.net/uploads/files/201201/09/20120109112858_wFaa2.png" alt="Navigation Timing" style="width:720px">
+<br>　　<span style="font-size:12px;color:gray">（图片来源：<a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming/Overview.html#processing-model">W3C 网站</a>）</span></p>
+
+
+
+
+<p> </p>
+
+
+
+
+<p>　　目前，Google Analytics 的 <a href="http://support.google.com/analytics/bin/answer.py?hl=en&amp;answer=1205784">Site Speed</a> 功能使用了上面提到的方法四和方法五，因此现阶段还只能在安装了 Google Toolbar 或支持 HTML5 的浏览器上才能统计页面加载时间。</p>
+
+
+
+
+<p>　　最后，有一些专门用于计算页面上各种计时的 JavaScript 框架，比如 Yahoo 的 <a href="http://yahoo.github.com/boomerang/doc/">boomerang</a> 和 Google 的 <a href="http://stevesouders.com/episodes2/">Episodes</a>，都可计算页面加载时间，它们综合使用了上面提到的方法三（使用 cookie 记录上一个页面离开的时间）和方法五，其中 Episodes 在不支持 Navigation Timing 的浏览器上还会尝试方法四，如果用户浏览器安装了 Google Toolbar 的话。另外，Episodes 的目标不仅仅是计算页面加载时间，它还提供了对更多的自定义计时的支持，并试图发展为一个工业标准，但似乎有段时间没有更新了。</p>
+
+
+<p><img src="http://www1.feedsky.com/t1/640450476/oldj/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/oldj/~8217290/640450476/6320477/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

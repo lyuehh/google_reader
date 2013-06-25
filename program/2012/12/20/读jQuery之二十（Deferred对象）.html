@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>读jQuery之二十（Deferred对象）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>读jQuery之二十（Deferred对象）</h2>
+<p class="meta">20 Dec 2012</p>
+
+<div class="post">
+<h2>读jQuery之二十（Deferred对象）</h2>
+
+<h3>by snandy</h3>
+
+<h3>at 2012-12-19 16:32:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/snandy/archive/2012/12/19/2812935.html">http://www.cnblogs.com/snandy/archive/2012/12/19/2812935.html</a></h3>
+
+<p>Deferred对象是由$.Deferred构造的，$.Deferred被实现为<a href="http://www.cnblogs.com/snandy/archive/2012/11/15/2771128.html">简单工厂模式</a>。</p>
+
+
+<p>它用来解决JS中的异步编程，它遵循 <a href="http://wiki.commonjs.org/wiki/Promises/A">Common Promise/A</a> 规范。实现此规范的还有 <a href="https://github.com/cujojs/when">when.js</a> 和 <a href="http://dojotoolkit.org/api/">dojo</a>。</p>
+
+
+<p> </p>
+
+
+<p>$.Deferred作为新特性首次出现在版本<a href="http://blog.jquery.com/2011/01/31/jquery-15-released/">1.5</a>中，这个版本利用Deferred又完全重写了Ajax模块。</p>
+
+
+<p>$.Deferred在jQuery代码自身四处被使用，分别是<a href="http://api.jquery.com/promise/">promise</a>方法、<a href="http://api.jquery.com/ready/">DOM ready</a>、<a href="http://api.jquery.com/category/ajax/">Ajax</a>模块、<a href="http://api.jquery.com/category/effects/">动画</a>模块。</p>
+
+
+<p>这里以版本1.8.3分析，由于<a href="http://blog.jquery.com/2011/11/03/jquery-1-7-released/">1.7</a>后<a href="http://www.cnblogs.com/snandy/archive/2012/11/15/2770237.html">$.Callbacks</a>从Deferred中抽离出去了，目前版本的deferred.js代码不过150行，而真正$.Deferred的实现只有100行左右。</p>
+
+
+<p> </p>
+
+
+<p><a href="http://www.cnblogs.com/snandy/archive/2011/06/03/2070483.html">$.extend</a>给<a href="http://www.cnblogs.com/snandy/archive/2011/03/01/1967806.html">标示符</a>$上挂了两个方法，如下</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">jQuery.extend({<br>Deferred: function( func ) {<br>var tuples = [<br>// action, add listener, listener list, final state<br>[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],<br>[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],<br>[ "notify", "progress", jQuery.Callbacks("memory") ]<br>],<br>...<br><br>// All done!<br>return deferred;<br>},<br>// Deferred helper<br>when: function( subordinate /* , ..., subordinateN */ ) {<br>var i = 0,<br>resolveValues = core_slice.call( arguments ),<br>length = resolveValues.length,<br>....<br><br>return deferred.promise();<br>}<br>});<br></div>
+
+
+<p> </p>
+
+
+<p><strong><strong>$.Deferred的实现</strong></strong></p>
+
+
+<ol><li>创建三个$.Callbacks对象，分别表示成功，失败，处理中三种状态</li><li>创建了一个promise对象，具有state、always、then、primise方法</li><li>通过扩展primise对象生成最终的Deferred对象，返回该对象</li></ol>
+
+
+<p> </p>
+
+
+<p><strong>$.when的实现</strong></p>
+
+
+<ol><li>接受若干个对象，参数仅一个且非Deferred对象将立即执行回调函数</li><li>Deferred对象和非Deferred对象混杂时，对于非Deferred对象remaining减1</li><li>Deferred对象总数 = 内部构建的Deferred对象 + 所传参数中包含的Deferred对象</li><li>所传参数中所有Deferred对象每当resolve时remaining减1，直到为0时（所有都resolve）执行回调</li></ol>
+
+
+<p> </p>
+
+
+<p>这就是$.Deferred和$.when的全部了，各个方法及使用稍后介绍。</p>
+
+
+<p>代码阅读中会发现then和when方法的实现最难理解，看多次，后感回味无穷，非常巧妙。then内部会用到不同寻常的递归，when用到了计数，每次异步成功后减一，直到为0后表示全部异步操作成功，这时才可执行回调。</p>
+
+
+<p> </p>
+
+
+<p>上面提到Deferred里有3个$.Callbacks的实例，Deferred自身则围绕这三个对象进行更高层次的抽象。以下是Deferred对象的核心方法</p>
+
+
+<ul style="margin:0"><li>done/fail/progress 是 <a href="http://www.cnblogs.com/snandy/archive/2012/11/15/2770237.html#add">callbacks.add</a>，将回调函数存入</li><li>resolve/reject/notify 是 <a href="http://www.cnblogs.com/snandy/archive/2012/11/15/2770237.html#fireWith">callbacks.fire</a>，执行回调函数(或队列)</li></ul>
+
+
+<p> </p>
+
+
+<p>下面举一些示例看看如何使用Deferred对象。</p>
+
+
+<p> </p>
+
+
+<p>一、done/resolve</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function cb() {<br>alert('success')<br>}<br>var deferred = $.Deferred()<br>deferred.done(cb)<br>setTimeout(function() {<br>deferred.resolve()<br>}, 3000)<br></div>
+
+
+<p>在HTTP中表示后台返回成功状态（如200）时使用，即请求成功后可执行成功回调函数。</p>
+
+
+<p> </p>
+
+
+<p>二、fail/reject</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function cb() {<br>alert('fail')<br>}<br>var deferred = $.Deferred()<br>deferred.fail(cb)<br>setTimeout(function() {<br>deferred.reject()<br>}, 3000)<br></div>
+
+
+<p>在HTTP中表示后台返回非成功状态时使用，即请求失败后可执行失败回调函数。</p>
+
+
+<p> </p>
+
+
+<p>三、progress/notify</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function cb() {<br>alert('progress')<br>}<br>var deferred = $.Deferred()<br>deferred.progress(cb)<br>setInterval(function() {<br>deferred.notify()<br>}, 2000)<br></div>
+
+
+<p>在HTTP中表示请求过程中使用，即请求过程中不断执行回调函数。这可用在文件上传时的loading百分比或进度条。</p>
+
+
+<p> </p>
+
+
+<p>四、链式操作</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function fn1() {<br>alert('success')<br>}<br>function fn2() {<br>alert('fail')<br>}<br>function fn3() {<br>alert('progress')<br>}<br>var deferred = $.Deferred()<br>deferred.done(fn1).fail(fn2).progress(fn3) // 链式操作<br>setTimeout(function() {<br>deferred.resolve()<br>//deferred.reject()<br>//deferred.notify()<br>}, 3000)<br></div>
+
+
+<p>这样可以很方便了添加成功，失败，进度回调函数。</p>
+
+
+<p> </p>
+
+
+<p>五，便利函数then，一次添加成功，失败，进度回调函数</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function fn1() {<br>alert('success')<br>}<br>function fn2() {<br>alert('fail')<br>}<br>function fn3() {<br>alert('progress')<br>}<br>var deferred = $.Deferred()<br>deferred.then(fn1, fn2, fn3)<br></div>
+
+
+<p>调用then后还可以继续链式调用then添加多个不同回调函数，这个then也正是jQuery对 <a href="http://wiki.commonjs.org/wiki/Promises/A">Common Promise/A</a> 的实现。</p>
+
+
+<p> </p>
+
+
+<p>六、使用always方法为成功，失败状态添加同一个回调函数</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var deferred = $.Deferred()<br>deferred.always(function() {<br>var state = deferred.state() <br>if ( state === 'resolved') {<br>alert('success')<br>} else if (state === 'rejected') {<br>alert('fail')<br>}<br>})<br>setTimeout(function() {<br>deferred.resolve()<br>//deferred.reject()<br>}, 3000)<br></div>
+
+
+<p>回调函数中可以使用deferred.state方法获取异步过程中的最终状态，这里我调用的是deferred.resolve，因此最后的状态是resolved，表示成功。</p>
+
+
+<p> </p>
+
+
+<p>七、when方法保证多个异步操作全部成功后才回调</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">function fn1() {<br>alert('done1')<br>}<br>function fn2() {<br>alert('done2')<br>}<br>function fn3() {<br>alert('all done')<br>}<br><br>var deferred1 = $.Deferred()<br>var deferred2 = $.Deferred()<br><br>deferred1.done(fn1)<br>deferred2.done(fn2)<br>$.when(deferred1, deferred2).done(fn3)<br><br>setTimeout(function() {<br>deferred1.resolve()<br>deferred2.resolve()<br>}, 3000)<br></div>
+
+
+<p>先后弹出了done1、done2、all done。 如果setTimeout中有一个reject了，fn3将不会被执行。</p>
+
+
+<p> </p>
+
+
+<p>八、deferred.promise()方法返回只能添加回调的对象，这个对象与$.Deferred()返回的对象不同，只能done/fail/progress，不能resolve/reject/notify。即只能调用callbacks.add，没有callbacks.fire。它是正统Deferred对象的阉割版。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>有了Deferred，我们使用jQuery书写ajax的风格可以这样了</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">$.ajax(url)<br> .done(success)<br> .fail(fail)<br></div>
+
+
+<p> </p>
+
+
+<p>看似和以前比较也没什么优点，但它还可以添加多个回调</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">$.ajax(url)<br> .done(success1)<br> .done(success2)<br> .fail(fail2)<br> .fail(fail2)<br></div>
+
+
+<p>1.5之前的则不行</p>
+
+
+<p> </p>
+
+
+<p>如果多个请求完成后才算成功，1.5之前的是无法解决的，现在则可以用$.when搞定</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">var ajax1 = $.ajax(url1)<br>var ajax2 = $.ajax(url2)<br>$.when(ajax1, ajax2).done(success)<br></div>
+
+
+<p> </p>
+
+
+<p>如果项目中有一些异步问题不妨用用Derferred。</p>
+
+
+<p> </p>
+
+
+<p>相关：</p>
+
+
+<p><a href="http://jimliu.net/?p=64">http://jimliu.net/?p=64</a></p>
+
+
+<p><a href="http://www.infoq.com/cn/news/2011/09/js-promise">http://www.infoq.com/cn/news/2011/09/js-promise</a></p>
+
+
+<p><a href="http://www.erichynds.com/jquery/using-deferreds-in-jquery/">http://www.erichynds.com/jquery/using-deferreds-in-jquery/</a></p>
+
+
+<p><a href="http://sitr.us/2012/07/31/promise-pipelines-in-javascript.html">http://sitr.us/2012/07/31/promise-pipelines-in-javascript.html</a></p>
+
+
+<p><a href="http://www.ruanyifeng.com/blog/2011/08/a_detailed_explanation_of_jquery_deferred_object.html">http://www.ruanyifeng.com/blog/2011/08/a_detailed_explanation_of_jquery_deferred_object.html</a></p>
+
+
+<p> </p>
+
+
+<p><img src="http://www.cnblogs.com/snandy/aggbug/2812935.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/snandy/archive/2012/12/19/2812935.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

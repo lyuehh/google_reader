@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Asp.net Mvc2中重构View的三种方式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Asp.net Mvc2中重构View的三种方式</h2>
+<p class="meta">14 Jul 2010</p>
+
+<div class="post">
+<h2>Asp.net Mvc2中重构View的三种方式</h2>
+
+<h3>by 麒麟</h3>
+
+<h3>at 2010-07-14 10:41:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/zhuqil/archive/2010/07/14/Asp-net-Mvc2-View-Refactoring.html">http://www.cnblogs.com/zhuqil/archive/2010/07/14/Asp-net-Mvc2-View-Refactoring.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/zhuqil/"><img src="http://pic.cnblogs.com/face/u38542.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/zhuqil/">麒麟</a> 发表于 2010-07-14 10:41 <a href="http://www.cnblogs.com/zhuqil/archive/2010/07/14/Asp-net-Mvc2-View-Refactoring.html">原文链接</a> 阅读: 1289 评论: 16</p>
+
+
+<p>    我们在Asp.net mvc的view开发过程中，如果不注意可能会写大量的重复的代码。这篇文章介绍3种方式重构View的代码，来减少View中的重复代码。 </p>
+
+
+<p><strong><font size="4">   1、母板页</font></strong> </p>
+
+
+<p>    在Asp.net mvc中保留了母板页的使用，我们可以使用母板页对我们的站点进行布局。看下面母板页的代码： </p>
+
+
+<pre><span style="background:yellow">&lt;%</span><span style="color:blue">@ </span><span style="color:maroon">Master </span><span style="color:red">Language</span><span style="color:blue">="C#" </span><span style="color:red">Inherits</span><span style="color:blue">="System.Web.Mvc.ViewMasterPage" </span><span style="background:yellow">%&gt;
+
+</span><span style="color:blue">&lt;!</span><span style="color:maroon">DOCTYPE </span><span style="color:red">html PUBLIC </span><span style="color:blue">&quot;-//W3C//DTD XHTML 1.0 Strict//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd&quot;&gt;
+&lt;</span><span style="color:maroon">html </span><span style="color:red">xmlns</span><span style="color:blue">=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;</span><span style="color:maroon">head </span><span style="color:red">runat</span><span style="color:blue">=&quot;server&quot;&gt;
+    &lt;</span><span style="color:maroon">title</span><span style="color:blue">&gt;&lt;</span><span style="color:maroon">asp</span><span style="color:blue">:</span><span style="color:maroon">ContentPlaceHolder </span><span style="color:red">ID</span><span style="color:blue">="TitleContent" </span><span style="color:red">runat</span><span style="color:blue">=&quot;server&quot; /&gt;&lt;/</span><span style="color:maroon">title</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">link </span><span style="color:red">href</span><span style="color:blue">="http://www.cnblogs.com/Content/Site.css" </span><span style="color:red">rel</span><span style="color:blue">="stylesheet" </span><span style="color:red">type</span><span style="color:blue">=&quot;text/css&quot; /&gt;
+&lt;/</span><span style="color:maroon">head</span><span style="color:blue">&gt;
+&lt;</span><span style="color:maroon">body</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">div </span><span style="color:red">class</span><span style="color:blue">=&quot;page&quot;&gt;
+        &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;header&quot;&gt;
+            &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;title&quot;&gt;
+                &lt;</span><span style="color:maroon">h1</span><span style="color:blue">&gt;</span>My MVC Application<span style="color:blue">&lt;/</span><span style="color:maroon">h1</span><span style="color:blue">&gt;
+            &lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+            &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;logindisplay&quot;&gt;
+                </span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.Action(<span style="color:#a31515">"LogOnWidget"</span>, <span style="color:#a31515">"Account"</span>) <span style="background:yellow">%&gt;
+</span>            <span style="color:blue">&lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt; 
+            &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;menucontainer&quot;&gt;
+                &lt;</span><span style="color:maroon">ul </span><span style="color:red">id</span><span style="color:blue">=&quot;menu&quot;&gt;              
+                    &lt;</span><span style="color:maroon">li</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"Home"</span>, <span style="color:#a31515">"Index"</span>, <span style="color:#a31515">"Home"</span>)<span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">li</span><span style="color:blue">&gt;
+                    &lt;</span><span style="color:maroon">li</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"Profiles"</span>, <span style="color:#a31515">"Index"</span>, <span style="color:#a31515">"Profile"</span>)<span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">li</span><span style="color:blue">&gt;
+                    &lt;</span><span style="color:maroon">li</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"About"</span>, <span style="color:#a31515">"About"</span>, <span style="color:#a31515">"Home"</span>)<span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">li</span><span style="color:blue">&gt;
+                &lt;/</span><span style="color:maroon">ul</span><span style="color:blue">&gt;
+            &lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+        &lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+        &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;main&quot;&gt;
+            &lt;</span><span style="color:maroon">asp</span><span style="color:blue">:</span><span style="color:maroon">ContentPlaceHolder </span><span style="color:red">ID</span><span style="color:blue">="MainContent" </span><span style="color:red">runat</span><span style="color:blue">=&quot;server&quot; /&gt;
+            &lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;footer&quot;&gt;&lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+        &lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+    &lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">body</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">html</span><span style="color:blue">&gt;
+
+</span></pre>
+
+
+<p><a href="http://11011.net/software/vspaste"></a></p>
+
+<p>    在Asp.net mvc中使用母板页和Web Form中类似，需要定义ContentPlaceHolder，加上使用一些常用的HTML标签进行布局。 当多个页面都有同样的内容的时候，使用母板页是非常有用的。</p>
+
+
+<p><font size="4"><strong>2、Partial</strong></font></p>
+
+
+<p>    Partial类似于Web Form中的用户控件。用它来渲染成内容页，使用Partial最大的好处是这些代码段定义在View页面，而不是代码中。下面举例说明：</p>
+
+
+<p>    渲染partial非常简单，我们可以在父View中使用RenderPartial和Partial方法，Profiles的代码如下，在Profiles中使用RenderPartial渲染Profile。</p>
+
+
+<pre><span style="background:yellow">&lt;%</span><span style="color:blue">@ </span><span style="color:maroon">Control </span><span style="color:red">Language</span><span style="color:blue">="C#" </span><span style="color:red">Inherits</span><span style="color:blue">=&quot;System.Web.Mvc.ViewUserControl&lt;IEnumerable&lt;Profile&gt;&gt;&quot; </span><span style="background:yellow">%&gt;
+</span><span style="color:blue">&lt;</span><span style="color:maroon">h2</span><span style="color:blue">&gt;</span>Profiles<span style="color:blue">&lt;/</span><span style="color:maroon">h2</span><span style="color:blue">&gt;
+&lt;</span><span style="color:maroon">table</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">tr</span><span style="color:blue">&gt;
+        &lt;</span><span style="color:maroon">th</span><span style="color:blue">&gt;</span>Username<span style="color:blue">&lt;/</span><span style="color:maroon">th</span><span style="color:blue">&gt;
+        &lt;</span><span style="color:maroon">th</span><span style="color:blue">&gt;</span>First name<span style="color:blue">&lt;/</span><span style="color:maroon">th</span><span style="color:blue">&gt;
+        &lt;</span><span style="color:maroon">th</span><span style="color:blue">&gt;</span>Last name<span style="color:blue">&lt;/</span><span style="color:maroon">th</span><span style="color:blue">&gt;
+        &lt;</span><span style="color:maroon">th</span><span style="color:blue">&gt;</span>Email<span style="color:blue">&lt;/</span><span style="color:maroon">th</span><span style="color:blue">&gt;
+    &lt;/</span><span style="color:maroon">tr</span><span style="color:blue">&gt;
+    </span><span style="background:yellow">&lt;%</span> <span style="color:blue">foreach </span>(<span style="color:blue">var </span>profile <span style="color:blue">in </span>Model) { <span style="background:yellow">%&gt;
+</span>        <span style="background:yellow">&lt;%</span> Html.RenderPartial(<span style="color:#a31515">"Profile"</span>, profile); <span style="background:yellow">%&gt;
+</span>    <span style="background:yellow">&lt;%</span> } <span style="background:yellow">%&gt;
+</span><span style="color:blue">&lt;/</span><span style="color:maroon">table</span><span style="color:blue">&gt;
+</span></pre>
+
+
+<p><a href="http://11011.net/software/vspaste"></a></p>
+
+<p>   上面的代码，我将一个profile的List渲染成一个table。每一行定义了一个Partial，用来渲染成一行。即使内容页不能与其他View分享，在一个View中使用partial可以简化和减少HTML的标签数量。RenderPartial方法需要一个partial名字和一个Model参数。根据的partial名字用来搜索本地的partial文件，需遵循下面的规则：</p>
+
+
+<p>    1 &lt;Area&gt;\&lt;Controller&gt;\&lt;PartialName&gt;.aspx and .ascx <br>    2 &lt;Area&gt;\Shared\&lt;PartialName&gt;.aspx and .ascx <br>    3 \&lt;Controller&gt;\&lt;PartialName&gt;.aspx and .ascx <br>    4 \Shared\&lt;PartialName&gt;.aspx and .ascx</p>
+
+
+<p>    这些搜索类似于根据view的name搜索view，也可以使用&lt;%= Html.Partial(&quot;Profile&quot;, profile) %&gt; 渲染。Profile文件即可以是一个ASCX文件，如果必要也可以是一个aspx的文件。Profile的代码如下：</p>
+
+
+<pre><span style="background:yellow">&lt;%</span><span style="color:blue">@ </span><span style="color:maroon">Control </span><span style="color:red">Language</span><span style="color:blue">="C#" </span><span style="color:red">Inherits</span><span style="color:blue">=&quot;System.Web.Mvc.ViewUserControl&lt;Profile&gt;&quot; </span><span style="background:yellow">%&gt;
+</span><span style="color:blue">&lt;</span><span style="color:maroon">tr</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">td</span><span style="color:blue">&gt;
+        </span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(Model.Username, <span style="color:#a31515">"Show"</span>, <span style="color:blue">new</span>{ username = Model.Username }) <span style="background:yellow">%&gt;
+</span>    <span style="color:blue">&lt;/</span><span style="color:maroon">td</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">td</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Model.FirstName<span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">td</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">td</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Model.LastName<span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">td</span><span style="color:blue">&gt;
+    &lt;</span><span style="color:maroon">td</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Model.Email <span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">td</span><span style="color:blue">&gt;
+&lt;/</span><span style="color:maroon">tr</span><span style="color:blue">&gt;
+
+</span></pre>
+
+
+<p>我们在View中如下渲染Profiles：</p>
+
+
+<pre>    <span style="background:yellow">&lt;%</span> Html.RenderPartial(<span style="color:#a31515">"Profiles"</span>, Model); <span style="background:yellow">%&gt;
+</span></pre>
+
+
+<p>渲染效果如下：</p>
+
+
+<p><a href="http://images.cnblogs.com/cnblogs_com/zhuqil/WindowsLiveWriter/Asp.netMvcView_877B/ttt_2.jpg"><img style="border-right-width:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px" title="ttt" border="0" alt="ttt" src="http://images.cnblogs.com/cnblogs_com/zhuqil/WindowsLiveWriter/Asp.netMvcView_877B/ttt_thumb.jpg" width="776" height="384"></a> </p>
+
+
+<p><strong><font size="4">3、Child Action</font></strong></p>
+
+
+<p>    Partial用来显示已经存在Model的信息时非常方便的。但是有时候View上显示的数据源自其他Model。例如，登录控件可能会显示当前用户的名称和电子邮件，但该View的主体部分与用户关系不大。可以使用ViewDataDictionary来传递没联系的Model，但是我们可以使用Child Action。对于在View中显示与主体没有多大关系的信息，这里介绍一下Child Action的使用。下面举例子说明。</p>
+
+
+<p>   在模板页中显示当前的用户信息，当用户登录之后，显示用户名，邮箱之类的信息，当用户没有登录，给出登录的连接。在模板页中加入下面代码：</p>
+
+
+<pre>            <span style="color:blue">&lt;</span><span style="color:maroon">div </span><span style="color:red">id</span><span style="color:blue">=&quot;logindisplay&quot;&gt;
+                </span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.Action(<span style="color:#a31515">"LogOnWidget"</span>, <span style="color:#a31515">"Account"</span>) <span style="background:yellow">%&gt;
+</span>            <span style="color:blue">&lt;/</span><span style="color:maroon">div</span><span style="color:blue">&gt; 
+</span></pre>
+
+
+<p><a href="http://11011.net/software/vspaste"></a></p>
+
+<p>    LogOnWidget的代码如下，<span style="color:#2b91af">ChildActionOnly</span>确保只能通过RenderAction调用此方法。</p>
+
+
+<pre>[<span style="color:#2b91af">ChildActionOnly</span>]
+<span style="color:blue">public </span><span style="color:#2b91af">ViewResult </span>LogOnWidget()
+{
+    <span style="color:blue">bool </span>isAuthenticated = Request.IsAuthenticated;
+    <span style="color:#2b91af">Profile </span>profile = <span style="color:blue">null</span>;
+
+    <span style="color:blue">if </span>(isAuthenticated)
+    {
+        <span style="color:blue">var </span>username = HttpContext.User.Identity.Name;
+        profile = _profileRepository.Find(username);
+        <span style="color:blue">if </span>(profile == <span style="color:blue">null</span>)
+        {
+            profile = <span style="color:blue">new </span><span style="color:#2b91af">Profile</span>(username);
+            _profileRepository.Add(profile);
+        }
+    }
+
+    <span style="color:blue">return </span>View(<span style="color:blue">new </span><span style="color:#2b91af">LogOnWidgetModel</span>(isAuthenticated, profile));
+}</pre>
+
+
+<p><a href="http://11011.net/software/vspaste"></a></p>
+
+<p>用一个用户控件来显示这个Action的Model的信息，用户控件代码如下。</p>
+
+
+<pre><span style="background:yellow">&lt;%</span><span style="color:blue">@ </span><span style="color:maroon">Control </span><span style="color:red">Language</span><span style="color:blue">="C#" </span><span style="color:red">Inherits</span><span style="color:blue">="System.Web.Mvc.ViewUserControl" </span><span style="background:yellow">%&gt;
+&lt;%</span><span style="color:blue">@ </span><span style="color:maroon">Import </span><span style="color:red">Namespace</span><span style="color:blue">="AccountProfile.Controllers"</span><span style="background:yellow">%&gt;
+&lt;%
+</span>    <span style="color:blue">if </span>(Request.IsAuthenticated) {
+<span style="background:yellow">%&gt;
+</span>        Welcome <span style="color:blue">&lt;</span><span style="color:maroon">b</span><span style="color:blue">&gt;</span><span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.Encode(Page.User.Identity.Name) <span style="background:yellow">%&gt;</span><span style="color:blue">&lt;/</span><span style="color:maroon">b</span><span style="color:blue">&gt;</span>!
+        [ <span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"Log Off"</span>, <span style="color:#a31515">"LogOff"</span>, <span style="color:#a31515">"Account"</span>) <span style="background:yellow">%&gt;</span> | <span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"Profile"</span>, <span style="color:#a31515">"Show"</span>, <span style="color:#a31515">"Profile"</span>, <span style="color:blue">new </span><span style="color:#2b91af">RouteValueDictionary</span>(<span style="color:blue">new </span>{ username = Html.Encode(Page.User.Identity.Name) }), <span style="color:blue">null</span>)<span style="background:yellow">%&gt;</span> ]
+<span style="background:yellow">&lt;%
+</span>    }
+    <span style="color:blue">else </span>{
+<span style="background:yellow">%&gt;</span> 
+        [ <span style="background:yellow">&lt;%</span><span style="color:blue">= </span>Html.ActionLink(<span style="color:#a31515">"Log On"</span>, <span style="color:#a31515">"LogOn"</span>, <span style="color:#a31515">"Account"</span>) <span style="background:yellow">%&gt;</span> ]
+<span style="background:yellow">&lt;%
+</span>    }
+<span style="background:yellow">%&gt;
+</span></pre>
+
+
+<p> </p>
+
+
+<p><strong><font size="4">总结：</font></strong>本文阐述了三种方式来重构你View的代码，使用这三种方式可以大量减少View层重复出现的代码。由于也是最近开始学习asp.net mvc，如果叙述和理解有问题欢迎批评指正。</p>
+
+
+<p><font size="4"><strong>参考：</strong></font><font size="3">Asp.net  mvc2 in action</font></p>
+
+
+<p> <img src="http://www.cnblogs.com/zhuqil/aggbug/1777042.html?type=1" width="1" height="1" alt=""><p>评论: 16　<a href="http://www.cnblogs.com/zhuqil/archive/2010/07/14/Asp-net-Mvc2-View-Refactoring.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/zhuqil/archive/2010/07/14/Asp-net-Mvc2-View-Refactoring.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/68326/">Google 社会化服务：龙虾与熊猫可兼得否？</a><span style="color:gray">(2010-07-14 21:47)</span><br>· <a href="http://news.cnblogs.com/n/68325/">出师未捷身先死 微软Kin缘何沉沙折戟？</a><span style="color:gray">(2010-07-14 21:46)</span><br>· <a href="http://news.cnblogs.com/n/68324/">乔布斯VS盖茨：35年硅谷情仇</a><span style="color:gray">(2010-07-14 19:43)</span><br>· <a href="http://news.cnblogs.com/n/68323/">Firefox 4将采用全新引擎</a><span style="color:gray">(2010-07-14 19:40)</span><br>· <a href="http://news.cnblogs.com/n/68322/">Google首席搜索工程师：没有搜索的搜索</a><span style="color:gray">(2010-07-14 19:38)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/68230/">WPF 那些事</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

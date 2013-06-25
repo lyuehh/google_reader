@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>RE:JS判断页面是否出现滚动条</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>RE:JS判断页面是否出现滚动条</h2>
+<p class="meta">07 Dec 2010</p>
+
+<div class="post">
+<h2>RE:JS判断页面是否出现滚动条</h2>
+
+<h3>by ppchen（陈荣林）</h3>
+
+<h3>at 2010-12-06 20:58:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ppchen/archive/2010/12/06/test_scroll.html">http://www.cnblogs.com/ppchen/archive/2010/12/06/test_scroll.html</a></h3>
+
+<p><p>原文地址：<a title="http://www.cnblogs.com/yazdao/archive/2010/12/06/1897742.html" href="http://www.cnblogs.com/yazdao/archive/2010/12/06/1897742.html">http://www.cnblogs.com/yazdao/archive/2010/12/06/1897742.html</a></p>
+<p>该博文是想用JS检测浏览器是否出滚动条。</p>
+<p> </p>
+<p>这边想到一个比较取巧的方法，</p>
+<p>假如没有出滚动条的时候，手工给增加一个滚动值会怎么样？</p>
+<p>程序上就是给body或documentElement的scrollLeft、scrollTop赋值，</p>
+<p>马上动手实现了一下，结果跟我意想的差不多，呵呵</p>
+<p>浏览器在没有出滚动条的时候，赋值后该值不会发生变化，始终是0。</p>
+<p> </p>
+<p> </p>
+<p>另外扩展了一下，该检测方法，不仅可以检测页面滚动条，</p>
+<p>传入要检测的节点，一样可以得到想要的结果。</p>
+<p> </p>
+<p>以下是我的实现，没有做太多异常处理：</p>
+<p>（给scrollLeft，scrollTop赋负数值时会报错，此外scrollLeft，scrollTop的值不能大于实际最大的滚动值）</p>
+<p> </p>
+<div>
+<div><span style="color:#008080"> 1</span> <span style="color:#000000">        </span><span style="color:#0000ff">var</span><span style="color:#000000"> isScroll </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">function</span><span style="color:#000000"> (el) {<br></span><span style="color:#008080"> 2</span> <span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000"> test targets</span><span style="color:#008000"><br></span><span style="color:#008080"> 3</span> <span style="color:#008000"></span><span style="color:#000000">            </span><span style="color:#0000ff">var</span><span style="color:#000000"> elems </span><span style="color:#000000">=</span><span style="color:#000000"> el </span><span style="color:#000000">?</span><span style="color:#000000"> [el] : [document.documentElement, document.body];<br></span><span style="color:#008080"> 4</span> <span style="color:#000000">            </span><span style="color:#0000ff">var</span><span style="color:#000000"> scrollX </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">, scrollY </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">false</span><span style="color:#000000">;<br></span><span style="color:#008080"> 5</span> <span style="color:#000000">            </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">var</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> elems.length; i</span><span style="color:#000000">++</span><span style="color:#000000">) {<br></span><span style="color:#008080"> 6</span> <span style="color:#000000">                </span><span style="color:#0000ff">var</span><span style="color:#000000"> o </span><span style="color:#000000">=</span><span style="color:#000000"> elems[i];<br></span><span style="color:#008080"> 7</span> <span style="color:#000000">                </span><span style="color:#008000">//</span><span style="color:#008000"> test horizontal</span><span style="color:#008000"><br></span><span style="color:#008080"> 8</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#0000ff">var</span><span style="color:#000000"> sl </span><span style="color:#000000">=</span><span style="color:#000000"> o.scrollLeft;<br></span><span style="color:#008080"> 9</span> <span style="color:#000000">                o.scrollLeft </span><span style="color:#000000">+=</span><span style="color:#000000"> (sl </span><span style="color:#000000">&gt;</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">) </span><span style="color:#000000">?</span><span style="color:#000000"> </span><span style="color:#000000">-</span><span style="color:#000000">1</span><span style="color:#000000"> : </span><span style="color:#000000">1</span><span style="color:#000000">;<br></span><span style="color:#008080">10</span> <span style="color:#000000">                o.scrollLeft </span><span style="color:#000000">!==</span><span style="color:#000000"> sl </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> (scrollX </span><span style="color:#000000">=</span><span style="color:#000000"> scrollX </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">);<br></span><span style="color:#008080">11</span> <span style="color:#000000">                o.scrollLeft </span><span style="color:#000000">=</span><span style="color:#000000"> sl;<br></span><span style="color:#008080">12</span> <span style="color:#000000">                </span><span style="color:#008000">//</span><span style="color:#008000"> test vertical</span><span style="color:#008000"><br></span><span style="color:#008080">13</span> <span style="color:#008000"></span><span style="color:#000000">                </span><span style="color:#0000ff">var</span><span style="color:#000000"> st </span><span style="color:#000000">=</span><span style="color:#000000"> o.scrollTop;<br></span><span style="color:#008080">14</span> <span style="color:#000000">                o.scrollTop </span><span style="color:#000000">+=</span><span style="color:#000000"> (st </span><span style="color:#000000">&gt;</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">) </span><span style="color:#000000">?</span><span style="color:#000000"> </span><span style="color:#000000">-</span><span style="color:#000000">1</span><span style="color:#000000"> : </span><span style="color:#000000">1</span><span style="color:#000000">;<br></span><span style="color:#008080">15</span> <span style="color:#000000">                o.scrollTop </span><span style="color:#000000">!==</span><span style="color:#000000"> st </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> (scrollY </span><span style="color:#000000">=</span><span style="color:#000000"> scrollY </span><span style="color:#000000">||</span><span style="color:#000000"> </span><span style="color:#0000ff">true</span><span style="color:#000000">);<br></span><span style="color:#008080">16</span> <span style="color:#000000">                o.scrollTop </span><span style="color:#000000">=</span><span style="color:#000000"> st;<br></span><span style="color:#008080">17</span> <span style="color:#000000">            }<br></span><span style="color:#008080">18</span> <span style="color:#000000">            </span><span style="color:#008000">//</span><span style="color:#008000"> ret</span><span style="color:#008000"><br></span><span style="color:#008080">19</span> <span style="color:#008000"></span><span style="color:#000000">            </span><span style="color:#0000ff">return</span><span style="color:#000000"> {<br></span><span style="color:#008080">20</span> <span style="color:#000000">                scrollX: scrollX,<br></span><span style="color:#008080">21</span> <span style="color:#000000">                scrollY: scrollY<br></span><span style="color:#008080">22</span> <span style="color:#000000">            };<br></span><span style="color:#008080">23</span> <span style="color:#000000">        };</span></div></div>
+<p> </p>
+<p> </p><img src="http://www.cnblogs.com/ppchen/aggbug/1898113.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/ppchen/">ppchen（陈荣林）</a> 发表于 2010-12-06 20:58 <a href="http://www.cnblogs.com/ppchen/archive/2010/12/06/test_scroll.html">原文链接</a></p><p>评论: 0　<a href="http://www.cnblogs.com/ppchen/archive/2010/12/06/test_scroll.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/ppchen/archive/2010/12/06/test_scroll.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/83719/">为人民服务：王建硕从博客到高管</a><span style="color:gray">(2010-12-07 10:20)</span><br>· <a href="http://news.cnblogs.com/n/83718/">九城提前终止《FIFA Online 2》授权</a><span style="color:gray">(2010-12-07 10:13)</span><br>· <a href="http://news.cnblogs.com/n/83717/">苹果背后的芯片黑马ARM：山寨并不邪恶</a><span style="color:gray">(2010-12-07 10:12)</span><br>· <a href="http://news.cnblogs.com/n/83716/">马云回应减持华谊：不卖股票对创新行业是打击</a><span style="color:gray">(2010-12-07 10:05)</span><br>· <a href="http://news.cnblogs.com/n/83715/">盛大游戏总裁回应裁员：若是真的我就去喂鲨鱼</a><span style="color:gray">(2010-12-07 10:02)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2010/12/06/1897727.html">博客园电子期刊2010年11月刊发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

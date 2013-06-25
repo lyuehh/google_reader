@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一些特殊的IP地址</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一些特殊的IP地址</h2>
+<p class="meta">25 Oct 2011</p>
+
+<div class="post">
+<h2>一些特殊的IP地址</h2>
+
+<h3>by iGFW</h3>
+
+<h3>at 2011-10-24 17:57:58</h3>
+
+<h3>original <a href="http://igfw.tk/archives/5932">http://igfw.tk/archives/5932</a></h3>
+
+<p>1、0.0.0.0<br>
+应该说，这不是一个真正的IP地址，你可以把它理解成为IP地址的黑洞，所以不明确的主机及目标地址，都会被扔进这里。如果你在网络设置中设置了缺省网关，那么Windows系统会自动产生一个目的地址为0.0.0.0的缺省路由。</p>
+
+
+<p><span></span></p>
+
+
+<p>2、255.255.255.255<br>
+限制广播地址。对本机来说，这个地址指本网段内(同一广播域)的所有主机。这个地址不能被路由器转发。</p>
+
+
+<p>3、127.0.0.1<br>
+本机默认地址，主要用于测试。在Windows系统中，这个地址有一个别名“Localhost”。如果你在自己的机子上安装一个IIS系统的话，那么你就可以用这个地址对本地建好的web站进行测试了。</p>
+
+
+<p>4、224.0.0.1<br>
+组播地址，注意它和广播的区别。从224.0.0.0到239.255.255.255都是这样的地址。224.0.0.1特指所有主 机，224.0.0.2特指所有路由器。这样的地址多用于一些特定的程序以及多媒体程序。如果你的主机开启了IRDP(Internet路由发现协议，使 用组播功能)功能，那么你的主机路由表中应该有这样一条路由。</p>
+
+
+<p>5、169.254.x.x<br>
+如果你的主机使用了DHCP功能自动获得一个IP地址，那么当你的DHCP服务器发生故障，或响应时间太长而超出了一个系统规定的时间，Windows系 统会为你分配这样一个地址。如果你发现你的主机IP地址是一个诸如此类的地址，很不幸，十有八九是你的网络不能正常运行了。最常见的就是洛阳网通原来用的 DHCP+拨号方式，那时网卡会从网络上先获取一个IP地址，才能正常拨号，而当网络出现问题或是系统出现问题不能获取时，电脑右下角的本地连接图标就会 有个三角形的黄色叹号，而现在基本上都使用pppoe拨号方式时，物理网卡并不获取公网IP，因此都会出现一个黄色叹号。但它并不表示有问题，只要在本地 连接属性中将“受限或无连接时提示”的勾打掉即可。</p>
+
+
+<p>6、10.x.x.x、172.16.x.x～172.31.x.x、192.168.x.x<br>
+私有地址，这些地址被大量用于企业内部网络中。一些宽带路由器，也往往使用192.168.1.1作为缺省地址。私有网络由于不与外部互连，因而可能使用 随意的IP地址。保留这样的地址供其使用是为了避免以后接入公网时引起地址混乱。使用私有地址的私有网络在接入Internet时，要使用地址翻译 (NAT)，将私有地址翻译成公用合法地址。在Internet上，这类地址是不能出现的。对一台网络上的主机来说，它可以正常接收的合法目的网络地址有 三种：本机的IP地址、广播地址以及组播地址。</p>
+
+
+<p><strong>来源</strong>：<a href="http://www.ssbbcc.com/1248.html">http://www.ssbbcc.com/1248.html</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

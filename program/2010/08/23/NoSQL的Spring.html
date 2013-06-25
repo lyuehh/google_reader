@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>NoSQL的Spring</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>NoSQL的Spring</h2>
+<p class="meta">23 Aug 2010</p>
+
+<div class="post">
+<h2>NoSQL的Spring</h2>
+
+<h3>by 吴朱华</h3>
+
+<h3>at 2010-08-23 15:15:53</h3>
+
+<h3>original <a href="http://peopleyun.com/?p=900">http://peopleyun.com/?p=900</a></h3>
+
+<p>  这几天一直在研究NoSQL的技术，所以在这段时间内也看了很多NoSQL的文档和资料，其中最让我获益匪浅的莫过于发表InfoQ的NoSQL in the Enterprise（中文版），而且本篇文章也是对此文的有感而发。   随着Web2.0网站兴起和非结构化数据的膨胀，使得NoSQL产品在短短一年间像雨后春笋一样不断涌现，并提供诸如灵活的格式（Schema），对数据的高并发读写和灵活扩展等传统关系型数据库所无法提供的特性。但瑕不掩瑜，NoSQL产品还是存在很多的不足，而且这些不足导致了现在NoSQL还是处于“雷声大雨点小”的情况，而本文会试着为这一窘境提出一个称为“NoSQL的Spring”的解决方案，但在切入这个解决方案之前，会先介绍一下NoSQL的整体结构和其现有问题来作为铺垫。 NoSQL的整体架构 虽然很多产品都归属于NoSQL旗下，但是各种产品之间差异非常大，所以为了帮助大家理清头绪，在这里向大家介绍一下由Sourav Mazumder提出的NoSQL总体架构，具体请看下图： 图1. NoSQL的整体架构图 NoSQL的整体架构主要可被分为四层： 接口层（Interfaces）：这层的主要作用是为上层应用提供合适和方便的数据调用接口，而且提供的选择远多于传统的关系型数据库，主要有六大类接口：其一是常见的REST（Representational State Transfer），采用REST的产品有HBase和CouchDB等。其二是源自Facebook的RPC协议Thrift，支持Thrift的产品有HBase和Cassandra等。其三是用于大规模数据处理的Map Reduce，其相关产品有HBase，CouchDB和MongoDB等。其四是类似于Memcached的Get/Put方式，采用Get/Put的产品有Voldemort等。其五是提供语言特定（Language Specific）的API，比如Java，在这方面做的不错是MongoDB。最后一个是提供SQL的子集，虽然“Join”在NoSQL属于禁忌，但是提供一个SQL的基本子集来方便用户也是一个不错的想法。 数据逻辑模型层（Logical Data Model）：这层的主要作用是描述数据的逻辑表现形式，而且与关系型数据库相比NoSQL在逻辑表现形式方面相当灵活，主要有四种形式：首先是最普通的Key-Value形式，这种形式在表现形式是比较单一，但是在扩展方面很有优势，采用Key-Value形式产品的有Voldemort等。接着是列式（Column Family），这种形式与Key-Value相比其能支持更复杂的数据，但是在扩展方面稍逊一筹，其相关产品有BigTable，HBase和Cassnadra等。最后是文档（Doucument）形式和图（Graph）式。文档形式源自于著名协作软件Lotus Notes，并且本质上与Key-Value形式非常相似，主要区别在于是那个Value只能存储文档形式的数据，同时文档形式在对复杂数据的支持和扩展这两方面表现都还可以，采用文档形式的产品有Couch DB和MongoDB等。图式的使用场景不是很广，主要是为基于图数据结构的数据“度身定做”的，比如SNS应用中的关系等，其最知名的产品就是Neo4j。 数据分布层（Data Distribution Model）：这层的主要作用是定义了数据是如何分布的，和关系型数据库不同的是NoSQL数据库可选择的机制比较多，主要有三种：其一是用于水平扩展的CAP机制，支持CAP的产品有HBase，MongoDB和Cassandra等。其二是对多数据中心的支持，通过这个机制能够保证横跨多数据中心的NoSQL数据库能非常平稳地运行，相关的产品有Cassandra等。其三是支持动态部署，也就是能在一个生产集群中能动态并且平滑地添加或者删去一个节点。 数据持久层（Data Persistence）：这层主要作用是定义了数据的存储形式，主要有四种形式：首先是基于内存和基于硬盘这两种形式，基于内存的这种形式速度最快，但是存在丢失数据的可能性，采用内存的有Redis等，而基于硬盘的这种形式，在数据耐久性方面表现不错，但是在速度方面远不如基于内存的，其相关产品有MongoDB等。接着是基于内存和硬盘的形式，因为这种形式主要结合前面两者的优点，所以其在速度上表现不错，同时数据也不会丢失，而且常被认为是最合适的方案，采用这种形式的产品有HBase和Cassandra等。最后是定制可插拔（Custom Pluggable）形式，这种形式以灵活著称。   虽然分四层，但并不意味着每个产品只能在每一层选择一个特性，而是可以选择多个特性，比如，在接口层HBase支持REST，Thrift和Map Reduce这三种接口，而在数据分布层，Cassandra即支持CAP，又对多数据中心有所支撑。 现有问题 虽然现在在NoSQL的天空中，各种各样的产品就像漫天繁星那样璀璨夺目，但对用户而言，NoSQL产品还有很多的不足，主要集中在下面这三个方面： 产品的选择：由于过多的产品和过多相似的特性，使得在用户很难在选择产品之前获悉各个产品的主要特点和之间的区别，从而使用户难于做出合适的选择。 兼容性：首先，由于大多数NoSQL产品本身还处于测试阶段，所以在功能和对外接口等方面都不是很成熟，导致很有可能在今后一段时间内出现一定的改动，这样将造成在产品升级之后，基于其的应用有可能无法正常地运行。其次，各种产品之间使用不同的接口或者API，这将导致用户的应用很难在多个NoSQL产品之间迁移。 用户体验：由于现在每个NoSQL产品团队都希望能在产品范围上纵向扩展，也就说在上面提到的四层上都有所涉及，而不是在某一个方面做得很精，导致在用户体验上面欠佳，因为NoSQL产品团队基本都属于小型团队，如果要实现纵向扩展的话，必然会将所有资源花在功能上面，而不是在用户体验方面。   NoSQL的Spring 其实现在NoSQL纷繁复杂的情况曾在本世纪初的Java领域出现过，那时各种各样的Java技术层出不穷，比如：在显示（Presentation）层，有Struts，WebWork和JSF等；在业务逻辑（Business Logic）层，有EJB，Pico Container，AspectJ和JOTM等；在持久层有Hibernate和iBATIS等，但是这种“百花齐放”的局面并没有带给用户极大地便利，而且同时重新发明轮子（Reinvent the Wheel）的事情时有发生，就在这个纷繁杂乱的时刻，Rod Johnson推出了革命性的Spring框架来整合这些技术。Spring框架的核心是IOC（Inversion of Control，控制反转），IOC机制就是：不直接调用某个模块，而是描述创建它们的方式或者定义调用它们的接口，并在运行的时候通过（Container）容器来创建或者调用所需的模块。因为这种方式在通过一个抽象化层来规范模块的调用，所以能减少各组件间和各层之间的相互依赖性，并增强了隔离性，从容让用户在某一层能自由替换模块，而不会影响到与其临近的层，比如，在显示层，用户可以轻松地在Struts和JSF之间进行替换，而不会对临近的业务逻辑层有任何影响，这样极大地方便了用户。下图为Spring的架构图： 图2. Spring的架构图 接下来，就跟大家聊一下NoSQL的Spring这个想法：其本质就是在NoSQL这个领域引入类似于Spring这样的框架，也就是，首先在开发的时候不对每一层所使用技术进行限定，但在每一层都定义一套标准的调用接口，最后通过一个容器来在每层动态地装载所需要的模块。这样将让用户在每一个层次都能自由选择合适的技术，而不会影响整体的稳定性，比如，用户可以在接口层选择用于大规模处理的Map Reduce和常用的REST，在数据逻辑模型层选择Key Value的形式，在数据分布层选择支持CAP机制，而在数据持久层选择基于内存和硬盘的形式。 总体而言，NoSQL的Spring主要有下面这三个优点： 满足用户不同的需求：因为用户是众口难调的，比如有些用户只需要灵活的格式或者高性能读写，而有些用户则要分布式的系统和各式各样的数据调用接口，甚至有时用户的需求长期处于不断变化中，这些因素将使用户很难选择合适的产品，但NoSQL的Spring这种想法能让用户根据自己的需要自由地选择不同功能模块，而且随着需要的变化，可以进行动态地添加和修改，这样能随时随地满足用户不同且善变的需求。<a href="http://peopleyun.com/?p=900"> <br><br> (More)…</a></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

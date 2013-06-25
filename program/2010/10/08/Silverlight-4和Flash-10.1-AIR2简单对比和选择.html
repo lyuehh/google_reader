@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Silverlight 4和Flash 10.1/AIR2简单对比和选择</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Silverlight 4和Flash 10.1/AIR2简单对比和选择</h2>
+<p class="meta">08 Oct 2010</p>
+
+<div class="post">
+<h2>Silverlight 4和Flash 10.1/AIR2简单对比和选择</h2>
+
+<h3>by jv9</h3>
+
+<h3>at 2010-10-08 07:00:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/jv9/archive/2010/10/08/1845513.html">http://www.cnblogs.com/jv9/archive/2010/10/08/1845513.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/jv9/"><img src="http://pic.cnblogs.com/face/u29306.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/jv9/">jv9</a> 发表于 2010-10-08 07:00 <a href="http://www.cnblogs.com/jv9/archive/2010/10/08/1845513.html">原文链接</a> 阅读: 2113 评论: 19</p>
+
+
+<p><img style="width:273px;height:160px" border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jv9/silverlight-vs-flash.jpg" width="273" height="160"></p>
+
+
+<p> </p>
+
+
+<p>互联网经历过Web 2.0的洗礼后，网络用户不仅仅局限于简单的交互功能，而对网络产品的体验性要求越来越高，对此RIA（Rich Internet Application）技术随之而来。目前RIA技术的焦点主要集中在微软的Silverlight技术和Adobe的Flash技术，相对来说，Silverlight比Flash晚推出数年，但是其发展势头和发展方向一直和Flash遥相呼应。近些日子，在<a href="http://forum.csdn.net/SList/Silverlight/">CSDN论坛</a>和<a href="http://bbs.silverlightchina.net/viewthread.php?tid=20&amp;extra=page%3D1">银光中国网专注Silverlight的QQ群</a>，经常会看到一些新人的提问，什么情况下使用Silverlight技术，而什么情况下使用Flash技术呢？ 本文将对此进行简单的对比和描述，但是在正文开始前，我想提前说一下，文章中没有对某一门技术进行抨击或者贬低的言语，只是提出个人观点，供大家参考，如果您有不同的看法，欢迎留言讨论。</p>
+
+
+<p> </p>
+
+
+<p><strong>Flash 10.1 &amp; AIR2</strong></p>
+
+
+<p> </p>
+
+
+<p>Flash的开发工具，Adobe的Flash开发平台提供开源的Flex SDK，另外提供免费Flex编译器，IDE开发工具是使用基于Eclipse IDE的<a href="http://www.adobe.com/products/flashbuilder/">Flash Builder</a>。其运行环境是基于浏览器的Flash Player和Adobe的AIR，该运行环境支持Windows，Mac和Linux平台，并且支持RIA应用直接安装到桌面，其运行效果和功能与本地应用相同。 另外，Adobe利用其自身强大的设计开发工具背景，提供一系列Flash开发辅助工具，为开发人员或者美工设计人员提供强大的并且专业的交互设计支持，这里值得一提的是<a href="http://www.adobe.com/products/flashcatalyst/">Flash Catalyst</a>，该软件快速的设计出专业的Flash用户界面和行为脚本。</p>
+
+
+<p> </p>
+
+
+<p>按照目前市场占有率分析，Flash仍旧具有较大的用户群，这不仅仅是归功于Flash Player的普及，Flash本身强大的Digital权限管理，流媒体功能，以及Flash Access 2.0数据下载等功能也是功不可没。在远程网络方面，Flash支持SOAP和REST Web Services，另外支持ASP.NET，J2EE，PHP，BlazeDS和ColdFusion等不同语言平台的数据服务。在开发语言上，ActionScript 3从早期的脚本语言发展到现在面向对象，事件驱动的强大的开发语言，也是一个强大的优势。新版的AIR 2发布后，Adobe将重心放在桌面应用开发上，其强大的调用本地代码类库的功能使其应用功能更为强大，AIR2的桌面应用可调用.Net或者Java的已有类库，同时该桌面应用支持UDP,IPv6等网络协议。作为Windows客户端，其强大的DRM控制可以提供流媒体数字版权控制。</p>
+
+
+<p> </p>
+
+
+<p><strong>Silverlight 4</strong></p>
+
+
+<p> </p>
+
+
+<p>微软的Silverlight开发平台同样为开发人员提供专用的运行环境和SDK，其IDE开发工具是Visual Studio系列，同样，微软也提供了免费开发工具<a href="http://www.microsoft.com/express/downloads/">Visual Web Developer Express版本</a>，Silverlight应用也是基于浏览器Silverlight Runtime，该运行环境直接Windows，Mac和Linux平台，Silverlight 3版本以后，支持<a href="http://silverlightchina.net/html/zhuantixilie/getstart/2010/0809/1709.html">Out-of-Browser模式应用</a>，可将Silverlight应用作为桌面应用方式安装到本地运行。不仅如此，微软将F#运行环境同时集成到Silverlight中，这样可以轻松开发出Silverlight和基于Ajax技术的应用。对于辅助设计软件，微软提供了Expression Studio系列产品，该产品包括<a href="http://silverlightchina.net/html/tips/2010/0310/820.html">Blend，Design，Encoder</a>等系列辅助设计工具，用于Silverlight项目布局，素材，动画等设计功能，其中需要特别说明的是<a href="http://silverlightchina.net/html/zhuantixilie/getstart/2010/0409/978.html">Expression Blend</a>，该工具和Flash Catalyst很相似，辅助设计Silverlight项目交互界面，另外Blend和Visual Studio可以实现无缝结合，减轻了开发人员和设计人员的后期项目综合的负担。</p>
+
+
+<p> </p>
+
+
+<p>对于Silverlight 4的新功能介绍和其优势，这里我不在赘述，大家可以参考这篇文章“<a href="http://www.cnblogs.com/jv9/archive/2010/04/16/1713155.html">Silverlight 4正式版</a>”</p>
+
+
+<p>在对比过Silverlight和Flash后，大家也许能发现，微软Silverlight中时常会发现许多Flash的影子，而在有了Flash的基础上，似乎更容易为Silverlight做出评估。这里我使用一个简单的表格进行对比：</p>
+
+
+<p> </p>
+
+
+<p>
+<table style="border-bottom:medium none;border-left:medium none;border-collapse:collapse;border-top:medium none;border-right:medium none" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr style="height:48.45pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:48.45pt;border-top:black 1pt solid;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri"> </font></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:48.45pt;border-top:black 1pt solid;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="text-align:center;line-height:normal;margin:0cm 0cm 0pt" align="center"><strong><span style="font-size:16pt" lang="EN-US"><font face="Calibri">Silverlight 4</font></span></strong></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:48.45pt;border-top:black 1pt solid;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="text-align:center;line-height:normal;margin:0cm 0cm 0pt" align="center"><strong><span style="font-size:16pt" lang="EN-US"><font face="Calibri">Flash 10.1/AIR 2</font></span></strong></p></td></tr>
+<tr style="height:120.75pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:120.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">客户端平台支持</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:120.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri">Silverlight 4</font></span><span style="font-family:宋体" lang="ZH-CN">支持运行在</span><span lang="EN-US"><font face="Calibri">Windows XP SP3</font></span><span style="font-family:宋体" lang="ZH-CN">，</span><span lang="EN-US"><font face="Calibri">Windows 7/Vista</font></span><span style="font-family:宋体" lang="ZH-CN">，</span><span lang="EN-US"><font face="Calibri">Windows Server 2003 SP2</font></span><span style="font-family:宋体" lang="ZH-CN">，</span><font face="Calibri"><span lang="ZH-CN"> </span><span lang="EN-US">Windows Server 2008 SP2</span></font><span style="font-family:宋体" lang="ZH-CN">，</span><span lang="EN-US"><font face="Calibri"> Windows Phone 7</font></span><span style="font-family:宋体" lang="ZH-CN">，</span><span lang="EN-US"><font face="Calibri"> Symbian</font></span><span style="font-family:宋体" lang="ZH-CN">系统平台，另外支持</span><span lang="EN-US"><font face="Calibri">Windows</font></span><span style="font-family:宋体" lang="ZH-CN">，</span><span lang="EN-US"><font face="Calibri">Mac</font></span><span style="font-family:宋体" lang="ZH-CN">和</span><span lang="EN-US"><font face="Calibri">Linux</font></span><span style="font-family:宋体" lang="ZH-CN">下主流浏览器作为运行平台。</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:120.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri">Flash</font></span><span style="font-family:宋体" lang="ZH-CN">支持运行在</span><span lang="EN-US"><font face="Calibri">Windows XP SP3, Windows 7/Vista, Mac OS X, and Linux (Fedora Core 12, Ubuntu 9.10, OpenSuse 11.2); Flash Player 10.1 for Android. </font></span><span style="font-family:宋体" lang="ZH-CN">当前仍旧没有支持</span><span lang="EN-US"><font face="Calibri">64</font></span><span style="font-family:宋体" lang="ZH-CN">位</span><span lang="EN-US"><font face="Calibri">Windows</font></span><span style="font-family:宋体" lang="ZH-CN">系统的</span><span lang="EN-US"><font face="Calibri">Flash Player</font></span><span style="font-family:宋体" lang="ZH-CN">。</span><span lang="EN-US"></span></p></td></tr>
+<tr style="height:133.75pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:133.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">开发</span><span lang="EN-US"><font face="Calibri">IDE</font></span><span style="font-family:宋体" lang="ZH-CN">工具</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:133.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">主要开发工具是</span><span lang="EN-US"><font face="Calibri">Visual Studio 2010</font></span><span style="font-family:宋体" lang="ZH-CN">，需要安装</span><span lang="EN-US"><font face="Calibri">Silverlight 4 developer tools </font></span><span style="font-family:宋体" lang="ZH-CN">和相关</span><span lang="EN-US"><font face="Calibri">SDK</font></span><span style="font-family:宋体" lang="ZH-CN">，以及</span><span lang="EN-US"><font face="Calibri">WCF RIA Services 1.0</font></span><span style="font-family:宋体" lang="ZH-CN">安装包。可使用</span><span lang="EN-US"><font face="Calibri">WCF RIA Services</font></span><span style="font-family:宋体" lang="ZH-CN">开发模板，创建</span><span lang="EN-US"><font face="Calibri">n-Tier</font></span><span style="font-family:宋体" lang="ZH-CN">数据存储应用。具有优秀的</span><span lang="EN-US"><font face="Calibri">Debug</font></span><span style="font-family:宋体" lang="ZH-CN">功能。同时具有强大的</span><span lang="EN-US"><font face="Calibri">Silverlight Toolkit</font></span><span style="font-family:宋体" lang="ZH-CN">开发工具包支持。</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:133.75pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">主要开发工具</span><span lang="EN-US"><font face="Calibri">Flash Builder</font></span><span style="font-family:宋体" lang="ZH-CN">可以绑定开发</span><span lang="EN-US"><font face="Calibri">Flash</font></span><span style="font-family:宋体" lang="ZH-CN">和</span><span lang="EN-US"><font face="Calibri">AIR</font></span><span style="font-family:宋体" lang="ZH-CN">应用。但是代码转换过程需要另外的辅助工具</span><span lang="EN-US"><font face="Calibri">BlazeDS</font></span><span style="font-family:宋体" lang="ZH-CN">或者</span><span lang="EN-US"><font face="Calibri">LiveCycle</font></span><span style="font-family:宋体" lang="ZH-CN">支持。</span><span lang="EN-US"><font face="Calibri">ActionScript</font></span><span style="font-family:宋体" lang="ZH-CN">的</span><span lang="EN-US"><font face="Calibri">Debug</font></span><span style="font-family:宋体" lang="ZH-CN">功能相对弱于</span><span lang="EN-US"><font face="Calibri">Visual Studio</font></span><span style="font-family:宋体" lang="ZH-CN">。</span><span lang="EN-US"></span></p></td></tr>
+<tr style="height:141.35pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:141.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri">UI</font></span><span style="font-family:宋体" lang="ZH-CN">设计</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:141.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">主要设计工具</span><span lang="EN-US"><font face="Calibri">Expression Blend 4</font></span><span style="font-family:宋体" lang="ZH-CN">，该工具不仅提供</span><span lang="EN-US"><font face="Calibri">UI</font></span><span style="font-family:宋体" lang="ZH-CN">控制，还可以进行动画设计以及行为代码设计。该工具同时包含</span><span lang="EN-US"><font face="Calibri">Xaml</font></span><span style="font-family:宋体" lang="ZH-CN">代码设计界面和后台代码设计界面。该工具与</span><span lang="EN-US"><font face="Calibri">Visual Studio2010</font></span><span style="font-family:宋体" lang="ZH-CN">无缝结合，使设计和代码后期综合变的轻松异常。另外</span><span lang="EN-US"><font face="Calibri">Visual Studio 2010</font></span><span style="font-family:宋体" lang="ZH-CN">同时支持</span><span lang="EN-US"><font face="Calibri">Silverlight UI</font></span><span style="font-family:宋体" lang="ZH-CN">设计。</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:141.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri">Flash Catalyst</font></span><span style="font-family:宋体" lang="ZH-CN">是</span><span lang="EN-US"><font face="Calibri">Flash</font></span><span style="font-family:宋体" lang="ZH-CN">主要设计工具，与</span><span lang="EN-US"><font face="Calibri">CS5</font></span><span style="font-family:宋体" lang="ZH-CN">设计工具系列无缝结合，可以轻松导入项目。但是其他设计工具修改文件时，不能在</span><span lang="EN-US"><font face="Calibri">Flash Catalyst</font></span><span style="font-family:宋体" lang="ZH-CN">中重新打开，作为设计工具，这点略逊与微软设计工具。</span><span lang="EN-US"></span></p></td></tr>
+<tr style="height:70.35pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:70.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">媒体编码</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:70.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">支持音频</span><span lang="EN-US"><font face="Calibri">/</font></span><span style="font-family:宋体" lang="ZH-CN">视频格式：</span><span lang="EN-US"><font face="Calibri">WMV/WMA, H.264, MP3, AAC</font></span><span style="font-family:宋体" lang="ZH-CN">。</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:70.35pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">支持音频</span><span lang="EN-US"><font face="Calibri">/</font></span><span style="font-family:宋体" lang="ZH-CN">视频格式：</span><span lang="EN-US"><font face="Calibri">Sorenson Spark, ON2 VP6, H.264, F4V. ADPCM, MP3, AAC, Speex.</font></span></p></td></tr>
+<tr style="height:70.55pt">
+<td style="border-bottom:black 1pt solid;border-left:black 1pt solid;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:90.45pt;padding-right:5.4pt;height:70.55pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="121">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">数字版权（</span><span lang="EN-US"><font face="Calibri">DRM</font></span><span style="font-family:宋体" lang="ZH-CN">）</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:191.4pt;padding-right:5.4pt;height:70.55pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="255">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span style="font-family:宋体" lang="ZH-CN">支持</span><span lang="EN-US"><font face="Calibri">Windows Media Digital Rights Management 10 (WMDRM 10)</font></span><span style="font-family:宋体" lang="ZH-CN">和</span><span lang="EN-US"><font face="Calibri">Microsoft PlayReady DRM</font></span><span style="font-family:宋体" lang="ZH-CN">加密流媒体。目前暂时不支持</span><span lang="EN-US"><font face="Calibri">Linux</font></span><span style="font-family:宋体" lang="ZH-CN">客户端。</span><span lang="EN-US"></span></p></td>
+<td style="border-bottom:black 1pt solid;border-left:#f0f0f0;padding-bottom:0cm;background-color:transparent;padding-left:5.4pt;width:151.95pt;padding-right:5.4pt;height:70.55pt;border-top:#f0f0f0;border-right:black 1pt solid;padding-top:0cm" width="203">
+<p style="line-height:normal;margin:0cm 0cm 0pt"><span lang="EN-US"><font face="Calibri">Flash Access 2</font></span><span style="font-family:宋体" lang="ZH-CN">通过</span><span lang="EN-US"><font face="Calibri">Flash</font></span><span style="font-family:宋体" lang="ZH-CN">或者</span><span lang="EN-US"><font face="Calibri">AIR</font></span><span style="font-family:宋体" lang="ZH-CN">客户端提供内容保护和设备存取安全控制。相对来说其验证机制和开发规则较为规范。支持</span><span lang="EN-US"><font face="Calibri">HDCP</font></span><span style="font-family:宋体" lang="ZH-CN">标识。支持</span><span lang="EN-US"><font face="Calibri">Flash Media</font></span><span style="font-family:宋体" lang="ZH-CN">服务平台和</span><span lang="EN-US"><font face="Calibri">Http</font></span><span style="font-family:宋体" lang="ZH-CN">动态数据流。</span><span lang="EN-US"></span></p></td></tr></tbody></table></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>这样看来应该更容易帮助大家理解和认识Silverlight和Flash这两个技术的不同和相同点。</p>
+
+
+<p> </p>
+
+
+<p>那么具体到项目，<strong>该如何取舍两门技术呢？</strong></p>
+
+
+<p>首先我们需要客观的说，Flash在RIA技术中仍旧处于龙头地位，终归Flash Player具有全球浏览器93%的装机量作为支持，为Flash提供了非常广的应用范围。</p>
+
+
+<p>但是，我们也不得不承认Silverlight发展速度的迅速，从Silverlight 1.0到4.0，我们目睹着Silverlight在一天天的进步，逐渐变的强大，而客户群也在稳定增长当中。终归微软仍旧占据浏览器市场的50%份量，作为浏览器插件Silverlight也是具有相当大的潜在力量。</p>
+
+
+<p> </p>
+
+
+<p>个人观点，从微软和Adobe两个公司的发展历史来看，微软的产品更注重于开发人员，而Adobe的产品偏向于设计人员。这也就是说，在项目中，如果需要大量的程序编码和数据存取操作，特别是基于Windows平台的应用，Silverlight自然是首选。而如果项目中涉及少量的服务调用，需要展现大量的图形图像效果，或者是说在开发过程中，美工设计部分属于重点，则推荐使用Adobe的Flash，终归Adobe的设计工具在业界一直作为首选。</p>
+
+
+<p> </p>
+
+
+<p>从目前来看未来Flash和Silverlight的竞争，也许是在移动平台上的表现。Flash被苹果暂时封杀，目前只能向Android平台努力，而Silverlight已经被Windows Phone 7所支持，在Android平台仍旧需要观望，似乎略占先机。下周12号Windows Phone 7正式发布，让我们拭目以待。</p>
+
+
+<p> </p>
+
+
+<p>最后附上InfoWorld.Com对Flash10.1/AIR2和Silverlight 4各项测试评分表，供大家参考：</p>
+
+
+<p> </p>
+
+
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jv9/Image00743.jpg"></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>更多关于Silverlight和Flash对比文章：</p>
+
+
+<p> </p>
+
+
+<p><a href="http://www.silverlightchina.net/html/news/2010/0618/1289.html">网络战国——Flash, Silverlight与HTML5</a></p>
+
+
+<p> </p>
+
+
+<p><a href="http://www.silverlightchina.net/html/news/2010/0124/619.html">Flash与Silverlight多领域实测对比</a></p>
+
+
+<p> </p>
+
+
+<p><a href="http://www.silverlightchina.net/html/news/2009/0713/71.html">Silverlight 3与Flash横向比较</a></p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p><span style="text-align:center;text-transform:none;text-indent:0px;border-collapse:separate;font:12px/18px Verdana,&#39;Lucida Grande&#39;,Geneva,Arial,sans-serif;white-space:normal;letter-spacing:normal;color:rgb(51,51,51);word-spacing:0px"><span style="text-align:left;line-height:25px;font-family:Georgia,&#39;Times New Roman&#39;,Times,san-serif;font-size:14px">欢迎大家加入“专注Silverlight”QQ技术群，目前，1-6群都已经满员，新开500人七群，欢迎大家加入一起学习讨论Silverlight&amp;WPF开发技术。<span> </span><br>22308706(一群) 超级群500人满<span> </span><br>37891947(二群) 超级群500人满<span> </span><br>100844510(三群) 高级群200人满<span> </span><br>32679922(四群) 超级群500人满<span> </span><br>23413513(五群) 高级群200人满<span> </span><br>32679955(六群) 超级群500人满<span> </span><br>61267622(七群 推荐) 超级群500人未满</span></span></p>
+
+
+<p><img src="http://www.cnblogs.com/jv9/aggbug/1845513.html?type=1" width="1" height="1" alt=""><p>评论: 19　<a href="http://www.cnblogs.com/jv9/archive/2010/10/08/1845513.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/jv9/archive/2010/10/08/1845513.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76645/">Facebook十大里程碑事件：今年7月用户达5亿</a><span style="color:gray">(2010-10-08 22:22)</span><br>· <a href="http://news.cnblogs.com/n/76644/">Zynga首席设计师解密FrontierVille成功原因</a><span style="color:gray">(2010-10-08 22:10)</span><br>· <a href="http://news.cnblogs.com/n/76643/">华东代理商与谷歌沟通未果 再发公开信声讨</a><span style="color:gray">(2010-10-08 22:09)</span><br>· <a href="http://news.cnblogs.com/n/76642/">阿联酋与RIM签署和解协议 暂不禁止黑莓服务</a><span style="color:gray">(2010-10-08 22:08)</span><br>· <a href="http://news.cnblogs.com/n/76640/">专访Twitter新任CEO：公司继续保持独立</a><span style="color:gray">(2010-10-08 21:55)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76477/">远离.NET</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>初识 SeaJS</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>初识 SeaJS</h2>
+<p class="meta">15 Sep 2011</p>
+
+<div class="post">
+<h2>初识 SeaJS</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-09-14 20:08:50</h3>
+
+<h3>original <a href="http://ghsky.com/2011/05/seajs-first-view.html">http://ghsky.com/2011/05/seajs-first-view.html</a></h3>
+
+<p>最近<a title="NodeJS" href="http://nodejs.org/">NodeJS</a>和<a title="CommonJS" href="http://www.commonjs.org/">CommonJS</a>真是好火啊，前端真的不再如从前那么“单纯”了，从此需要学习掌握更多的传统软件开发的知识和技能，也就是从前后端开发做的很多工作会逐渐前移到前端工程师。这里为什么要把<a title="NodeJS" href="http://nodejs.org/">NodeJS</a>和<a title="CommonJS" href="http://www.commonjs.org/">CommonJS</a>放在一起说呢，主要是我对里面的模块机制十分感兴趣，正好<a title="NodeJS" href="http://nodejs.org/">NodeJS</a>中的模块实现方式也遵循<a title="CommonJS" href="http://www.commonjs.org/">CommonJS</a>中的相关规范。</p>
+
+
+<h3>神奇的 require</h3>
+
+
+<p>首先还是看一段代码吧：</p>
+
+
+<pre>var http = require('http');
+http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello World\n');
+}).listen(1337, "127.0.0.1");
+console.log('Server running at http://127.0.0.1:1337/');
+</pre>
+
+
+<p>这是<a title="NodeJS" href="http://nodejs.org/">NodeJS</a>首页上的一段代码，我们注意看一下<code>require</code>这个函数的用法，这里的代码需要http这个模块，因此就<code>var http = require('http');</code>但是令我比较疑惑的就是明明<code>require</code>函数是个异步的调用，因为http的模块文件不可能同步在这里堵塞加载执行（当然可能有人会说使用同步的AJAX请求，但是我们同样需要支持跨域问题），虽然这段代码是NodeJS的代码，其主要是运行在服务器端，使用V8引擎驱动，可以使用一些手段让requrie的模块同步加载执行，但是对于一个Web应用看到这样的代码一定会疑惑为什么这里不需要一个回调函数～好吧，就此认为这就是NodeJS在服务器端的神奇之处～～～那么继续看下面一段代码：</p>
+
+
+<pre>define(function(require, exports, module) {
+
+    // 获取依赖的模块：
+    var $ = require('jquery');
+
+    // 向外提供接口：
+    exports.someMethod = someFunction;
+
+});
+</pre>
+
+
+<p>这段代码是来自<a title="SeaJS" href="http://seajs.com/">SeaJS</a>首页的一段代码（额，我们的主角终于现身了～）这里再次出现了<code>var $ = require('jquery');</code>这样一段 require 函数，这里同样会有刚刚上述的问题，明明是个异步的需求怎么在这里可以使用同步的写法呢？一种假设是 require 函数在这里已经事先准备好了 jquery 的对象（加载和执行 jquery.js ），但是这有什么策略么？不可能所有支持的模块都必须这样提前å</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

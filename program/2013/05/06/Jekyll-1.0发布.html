@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Jekyll 1.0发布</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Jekyll 1.0发布</h2>
+<p class="meta">06 May 2013</p>
+
+<div class="post">
+<h2>Jekyll 1.0发布</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-05-06 15:00:00</h3>
+
+<h3>original <a href="http://www.soimort.org/posts/157">http://www.soimort.org/posts/157</a></h3>
+
+<p>Jekyll官方文档：<a href="http://jekyllrb.com/docs/home/">http://jekyllrb.com/docs/home/</a></p>
+
+
+
+
+<h2>新的子命令：<code>new</code>，<code>build</code>，<code>serve</code>，<code>import</code>/<code>migrate</code></h2>
+
+
+
+
+<p>（来自<a href="https://github.com/mojombo/jekyll/pull/690">Issue #690</a>和<a href="https://github.com/mojombo/jekyll/pull/764">Issue #764</a>）</p>
+
+
+
+
+<h3>创建站点框架：<code>new</code>命令</h3>
+
+
+
+
+<p>Jekyll 1.0中增加了<code>jekyll new</code>命令，用于生成一个简单的Jekyll站点框架。</p>
+
+
+
+
+<p>以前用户为了使用Jekyll，要么自己从零开始写基于Liquid的HTML模板，定制度高但不用户友好；要么使用现成的Jekyll博客框架例如<a href="http://jekyllbootstrap.com/">Jekyll-Bootstrap</a>或<a href="http://octopress.org/">Octopress</a>，易于使用但定制度不强。如今Jekyll为一般用户提供了更高的友好性。</p>
+
+
+
+
+<p>用法示例：</p>
+
+
+<div><pre><code>$ jekyll new myblog
+$ cd myblog
+$ jekyll serve
+</code></pre></div>
+
+
+<p>其后，在浏览器中访问<a href="http://localhost:4000">http://localhost:4000</a>查看效果。</p>
+
+
+
+
+<h3>构建站点：<code>build</code>命令</h3>
+
+
+
+
+<p>处理当前目录，将构建的站点生成到默认位置<code>./_site</code>：</p>
+
+
+<div><pre><code>$ jekyll build
+</code></pre></div>
+
+
+<p>处理当前目录，将构建的站点生成到<code>&lt;destination&gt;</code>指定的路径位置：</p>
+
+
+<div><pre><code>$ jekyll build --destination &lt;destination&gt;
+</code></pre></div>
+
+
+<p>处理<code>&lt;source&gt;</code>目录，将构建的站点生成到<code>&lt;destination&gt;</code>指定的路径位置：</p>
+
+
+<div><pre><code>$ jekyll build --source &lt;source&gt; --destination &lt;destination&gt;
+</code></pre></div>
+
+
+<p>处理当前目录，将构建的站点生成到默认位置<code>./_site</code>，同时自动监视文件变化，在发生变化时自动重新生成站点：</p>
+
+
+<div><pre><code>$ jekyll build --watch
+</code></pre></div>
+
+
+<p>在配置文件<code>_config.yml</code>中设定：</p>
+
+
+<div><pre><code>source:      _source
+destination: _deploy
+</code></pre></div>
+
+
+<p>后，可以直接使用命令</p>
+
+
+<div><pre><code>$ jekyll build
+</code></pre></div>
+
+
+<p>代替</p>
+
+
+<div><pre><code>$ jekyll build --source _source --destination _deploy
+</code></pre></div>
+
+
+<h3>开发用服务器：<code>serve</code>命令</h3>
+
+
+
+
+<p>开启一个用于开发测试的服务器：<a href="http://localhost:4000/">http://localhost:4000/</a></p>
+
+
+<div><pre><code>$ jekyll serve
+</code></pre></div>
+
+
+<p>开启一个用于开发测试的服务器，同时自动监视文件变化，在发生变化时自动重新生成站点：</p>
+
+
+<div><pre><code>$ jekyll serve --watch
+</code></pre></div>
+
+
+<h2>Gem <a href="http://rubygems.org/gems/jekyll-import">jekyll-import</a></h2>
+
+
+
+
+<p>（来自<a href="https://github.com/mojombo/jekyll/pull/793">Issue #793</a>）</p>
+
+
+
+
+<p>将用于从其它博客平台import/migrate到Jekyll的代码移出了主项目，成为一个单独的Gem：<a href="http://rubygems.org/gems/jekyll-import">jekyll-import</a>。（<a href="https://github.com/jekyll/jekyll-import">GitHub地址</a>）</p>
+
+
+
+
+<h2>草稿（drafts）</h2>
+
+
+
+
+<p>（来自<a href="https://github.com/mojombo/jekyll/pull/833">Issue #833</a>）</p>
+
+
+
+
+<p>允许使用命令渲染<code>_drafts</code>目录下的（无日期的）草稿内容。</p>
+
+
+
+
+<h2>Gist Liquid标签</h2>
+
+
+
+
+<p>（来自<a href="https://github.com/mojombo/jekyll/pull/822">Issue #822</a>和<a href="https://github.com/mojombo/jekyll/pull/861">Issue #861</a>）</p>
+
+
+
+
+<p>可以通过如下方式在帖子中方便地插入GitHub <a href="https://gist.github.com/">Gist</a>代码段：</p>
+
+
+
+
+<p><code><pre><script src="https://gist.github.com/1234567.js"> </script></pre></code></p>
+
+
+
+
+<p><code><pre><script src="https://gist.github.com/1234567.js?file=file.rb"> </script></pre></code></p>
+
+
+
+
+<h2><code>post.excerpt</code>属性</h2>
+
+
+
+
+<p>（来自<a href="https://github.com/mojombo/jekyll/pull/837">Issue #837</a>）</p>
+
+
+
+
+<p>用于显示帖子的第一段，可用作帖子的摘要。</p>
+
+
+
+
+<h2>其他改进</h2>
+
+
+
+
+<p>详细参见<a href="https://github.com/mojombo/jekyll/blob/v1.0.0/History.txt">https://github.com/mojombo/jekyll/blob/v1.0.0/History.txt</a>。</p>
+
+
+
+
+<ul>
+<li>Major Enhancements
+
+<ul>
+<li>Add <code>jekyll new</code> subcommand: generate a jekyll scaffold (#764)</li>
+<li>Refactored jekyll commands into subcommands: build, serve, and migrate. (#690)</li>
+<li>Removed importers/migrators from main project, migrated to jekyll-import sub-gem (#793)</li>
+<li>Added ability to render drafts in _drafts folder via command line (#833)</li>
+<li>Add ordinal date permalink style (/:categories/:year/:y_day/:title.html) (#928)</li>
+</ul></li>
+<li>Minor Enhancements
+
+<ul>
+<li>Site template HTML5-ified (#964)</li>
+<li>Use post&#39;s directory path when matching for the post_url tag (#998)</li>
+<li>Loosen dependency on Pygments so it&#39;s only required when it&#39;s needed (#1015)</li>
+<li>Parse strings into Time objects for date-related Liquid filters (#1014)</li>
+<li>Tell the user if there is no subcommand specified (#1008)</li>
+<li>Freak out if the destination of <code>jekyll new</code> exists and is non-empty (#981)</li>
+<li>Add <code>timezone</code> configuration option for compilation (#957)</li>
+<li>Add deprecation messages for pre-1.0 CLI options (#959)</li>
+<li>Refactor and colorize logging (#959)</li>
+<li>Refactor Markdown parsing (#955)</li>
+<li>Added application/vnd.apple.pkpass to mime.types served by WEBrick (#907)</li>
+<li>Move template site to default markdown renderer (#961)</li>
+<li>Expose new attribute to Liquid via <code>page</code>: <code>page.path</code> (#951)</li>
+<li>Accept multiple config files from command line (#945)</li>
+<li>Add page variable to liquid custom tags and blocks (#413)</li>
+<li>Add paginator.previous<em>page</em>path and paginator.next<em>page</em>path (#942)</li>
+<li>Backwards compatibility for &#39;auto&#39; (#821, #934)</li>
+<li>Added date<em>to</em>rfc822 used on RSS feeds (#892)</li>
+<li>Upgrade version of pygments.rb to 0.4.2 (#927)</li>
+<li>Added short month (e.g. &quot;Sep&quot;) to permalink style options for posts (#890)</li>
+<li>Expose site.baseurl to Liquid templates (#869)</li>
+<li>Adds excerpt attribute to posts which contains first paragraph of content (#837)</li>
+<li>Accept custom configuration file via CLI (#863)</li>
+<li>Load in GitHub Pages MIME Types on <code>jekyll serve</code> (#847, #871)</li>
+<li>Improve debugability of error message for a malformed highlight tag (#785)</li>
+<li>Allow symlinked files in unsafe mode (#824)</li>
+<li>Add &#39;gist&#39; Liquid tag to core (#822, #861)</li>
+<li>New format of Jekyll output (#795)</li>
+<li>Reinstate --limit_posts and --future switches (#788)</li>
+<li>Remove ambiguity from command descriptions (#815)</li>
+<li>Fix SafeYAML Warnings (#807)</li>
+<li>Relaxed Kramdown version to 0.14 (#808)</li>
+<li>Aliased <code>jekyll server</code> to <code>jekyll serve</code>. (#792)</li>
+<li>Updated gem versions for Kramdown, Rake, Shoulda, Cucumber, and RedCarpet. (#744)</li>
+<li>Refactored jekyll subcommands into Jekyll::Commands submodule, which now contains them (#768)</li>
+<li>Rescue from import errors in Wordpress.com migrator (#671)</li>
+<li>Massively accelerate LSI performance (#664)</li>
+<li>Truncate post slugs when importing from Tumblr (#496)</li>
+<li>Add glob support to include, exclude option (#743)</li>
+<li>Layout of Page or Post defaults to &#39;page&#39; or &#39;post&#39;, respectively (#580)
+REPEALED by (#977)</li>
+<li>&quot;Keep files&quot; feature (#685)</li>
+<li>Output full path &amp; name for files that don&#39;t parse (#745)</li>
+<li>Add source and destination directory protection (#535)</li>
+<li>Better YAML error message (#718)</li>
+</ul></li>
+<li>Bug Fixes
+
+<ul>
+<li>Paginate in subdirectories properly (#1016)</li>
+<li>Ensure post and page URLs have a leading slash (#992)</li>
+<li>Catch all exceptions, not just StandardError descendents (#1007)</li>
+<li>Bullet-proof limit_posts option (#1004)</li>
+<li>Read in YAML as UTF-8 to accept non-ASCII chars (#836)</li>
+<li>Fix the CLI option --plugins to actually accept dirs and files (#993)</li>
+<li>Allow &#39;excerpt&#39; in YAML Front-Matter to override the extracted excerpt (#946)</li>
+<li>Fix cascade problem with site.baseurl, site.port and site.host. (#935)</li>
+<li>Filter out directories with valid post names (#875)</li>
+<li>Fix symlinked static files not being correctly built in unsafe mode (#909)</li>
+<li>Fix integration with directory_watcher 1.4.x (#916)</li>
+<li>Accepting strings as arguments to jekyll-import command (#910)</li>
+<li>Force usage of older directory_watcher gem as 1.5 is broken (#883)</li>
+<li>Ensure all Post categories are downcase (#842, #872)</li>
+<li>Force encoding of the rdiscount TOC to UTF8 to avoid conversion errors (#555)</li>
+<li>Patch for multibyte URI problem with jekyll serve (#723)</li>
+<li>Order plugin execution by priority (#864)</li>
+<li>Fixed Page#dir and Page#url for edge cases (#536)</li>
+<li>Fix broken post_url with posts with a time in their YAML Front-Matter (#831)</li>
+<li>Look for plugins under the source directory (#654)</li>
+<li>Tumblr Migrator: finds _posts dir correctly, fixes truncation of long
+post names (#775)</li>
+<li>Force Categories to be Strings (#767)</li>
+<li>Safe YAML plugin to prevent vulnerability (#777)</li>
+<li>Add SVG support to Jekyll/WEBrick. (#407, #406)</li>
+<li>Prevent custom destination from causing continuous regen on watch (#528, #820, #862)</li>
+</ul></li>
+<li>Site Enhancements
+
+<ul>
+<li>Responsify (#860)</li>
+<li>Fix spelling, punctuation and phrasal errors (#989)</li>
+<li>Update quickstart instructions with <code>new</code> command (#966)</li>
+<li>Add docs for page.excerpt (#956)</li>
+<li>Add docs for page.path (#951)</li>
+<li>Clean up site docs to prepare for 1.0 release (#918)</li>
+<li>Bring site into master branch with better preview/deploy (#709)</li>
+<li>Redesigned site (#583)</li>
+</ul></li>
+<li>Development Fixes
+
+<ul>
+<li>Exclude Cucumber 1.2.4, which causes tests to fail in 1.9.2 (#938)</li>
+<li>Added &quot;features:html&quot; rake task for debugging purposes, cleaned up
+cucumber profiles (#832)</li>
+<li>Explicitly require HTTPS rubygems source in Gemfile (#826)</li>
+<li>Changed Ruby version for development to 1.9.3-p374 from p362 (#801)</li>
+<li>Including a link to the GitHub Ruby style guide in CONTRIBUTING.md (#806)</li>
+<li>Added script/bootstrap (#776)</li>
+<li>Running Simplecov under 2 conditions: ENV(COVERAGE)=true and with Ruby version
+of greater than 1.9 (#771)</li>
+<li>Switch to Simplecov for coverage report (#765)</li>
+</ul></li>
+</ul>
+
+
+
+
+<h2>参考链接</h2>
+
+
+
+
+<ul>
+<li><strong>Jekyll 1.0 Released</strong> by Parker Moore:<br>
+<a href="http://blog.parkermoore.de/2013/05/06/jekyll-1-dot-0-released/">http://blog.parkermoore.de/2013/05/06/jekyll-1-dot-0-released/</a></li>
+<li><strong>Jekyll Documentation</strong>: <a href="http://jekyllrb.com/docs/">http://jekyllrb.com/docs/</a></li>
+<li><a href="https://twitter.com/jekyllrb">@jekyllrb</a> on Twitter</li>
+</ul>
+
+
+
+
+<p><img src="http://octodex.github.com/images/kimonotocat.png" width="40%"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

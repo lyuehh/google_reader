@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[jQuery]3D效果的标签云</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[jQuery]3D效果的标签云</h2>
+<p class="meta">18 Jun 2010</p>
+
+<div class="post">
+<h2>[jQuery]3D效果的标签云</h2>
+
+<h3>by Justin</h3>
+
+<h3>at 2010-06-17 17:15:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/justinw/archive/2010/06/17/1759661.html">http://www.cnblogs.com/justinw/archive/2010/06/17/1759661.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/justinw/"><img src="http://pic.cnblogs.com/face/u7781.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/justinw/">Justin</a> 发表于 2010-06-17 17:15 <a href="http://www.cnblogs.com/justinw/archive/2010/06/17/1759661.html">原文链接</a> 阅读: 1773 评论: 17</p>
+
+
+<p>刚才看了篇园友关于如何<a href="http://www.cnblogs.com/lauyee/archive/2010/06/17/1759390.html">自定义标签云的文章</a>，心痒痒自己也想弄一个，其实原理非常简单，就是动态load标签页里的标签，按需要的格式重新动态生成DOM结构，再通过第三方的js插件(他们用的是Google Visualization API Gallery中的<a href="http://visapi-gadgets.googlecode.com/svn/trunk/termcloud/doc.html">TermCloud</a>)将特定的DOM转换成标签云的效果就OK了！所以最有技术含量的地方还在第三方的js插件里，正好我不久前刚玩过一款很牛叉的3D效果的标签云jQuery插件，挂到自己的博客里试了下效果（<b><span style="font-size:14pt">效果就是现在我博客左边的随笔分类的样子</span></b>），还不错，就是有点耗性能！我博客上不想挂标签云了，就搞了这个随笔分类云,喜欢的朋友拿去玩玩吧。<strong>结合前面自定义标签云那篇文章，同样很容易做出3D效果的标签云。</strong></p>
+
+
+<p><img src="http://pic002.cnblogs.com/img/justinw/201006/2010061719244429.png"></p>
+
+
+<p>我的例子使用方法如下：</p>
+
+
+<p>在<span style="color:#0000ff"> [后台管理]&gt;[设置]&gt;[页脚Html代码] </span>里插入下面代码即可：</p>
+
+
+<p>
+<pre>&lt;script src=&quot;http://files.cnblogs.com/justinw/jquery.engine3D.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://files.cnblogs.com/justinw/jquery.particlePhysics.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;http://files.cnblogs.com/justinw/jquery.starfieldTagCloud.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    jQuery(document).ready(function() {
+    //注意：这里是用的随笔分类做例子，你自己可以根据你自己情况任意设定。
+    $(&quot;.catListPostCategory&gt;ul&quot;).wrap(&quot;&lt;div class=&#39;wrap&#39; &gt;&lt;/div&gt;&quot;).parent().css({ &#39;width&#39;: &#39;245px&#39;, &#39;height&#39;: &#39;496px&#39; });
+    var options = { &quot;range&quot;: [-200, 300], &quot;gravity&quot;: -10, &quot;xPos&quot;: 0.5, &quot;yPos&quot;: 0.5, &quot;gravityVector&quot;: [0, 0, 1], &quot;interval&quot;: 100, &quot;hoverGravityFactor&quot;: 0 };
+    jQuery(&quot;div.wrap&quot;).starfieldTagCloud(options);
+}); 
+&lt;/script&gt;
+</pre>
+</p>
+
+
+<p><span style="font-size:14pt">这里再隆重推荐一下这款牛叉的3D效果的标签云插件：<b><a href="http://bugsoftware.co.uk/jQuery/StarfieldTagCloud/">Starfield Tag Cloud </a></b></span></p>
+
+
+<p> </p>
+
+
+<div style="width:1px;height:1px;overflow:hidden">我博客上不想挂标签云，就搞了一个随笔分类云，</div>
+
+
+<p><img src="http://www.cnblogs.com/justinw/aggbug/1759661.html?type=1" width="1" height="1" alt=""><p>评论: 17　<a href="http://www.cnblogs.com/justinw/archive/2010/06/17/1759661.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/justinw/archive/2010/06/17/1759661.html#commentform">发表评论</a></p><p><a href="http://a4.yeshj.com/rd/35721/">众里寻你千百度，百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/66498/">腾讯思科结盟 联手进军企业级市场</a><span style="color:gray">(2010-06-18 11:22)</span><br>· <a href="http://news.cnblogs.com/n/66497/">戴尔大力宣传Ubuntu 对比与Windows的差异</a><span style="color:gray">(2010-06-18 11:20)</span><br>· <a href="http://news.cnblogs.com/n/66496/">郭台铭的炼狱</a><span style="color:gray">(2010-06-18 11:03)</span><br>· <a href="http://news.cnblogs.com/n/66495/">云计算就是挂羊头卖狗肉</a><span style="color:gray">(2010-06-18 10:48)</span><br>· <a href="http://news.cnblogs.com/n/66494/">VeryCD电驴变身：不再支持eD2K和Kad搜索</a><span style="color:gray">(2010-06-18 10:42)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/lauyee/archive/2010/06/16/1758983.html">程序员这口饭-职业规划解决方案</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>lua程序设计(1) - 数据类型和操作符</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>lua程序设计(1) - 数据类型和操作符</h2>
+<p class="meta">25 Feb 2013</p>
+
+<div class="post">
+<h2>lua程序设计(1) - 数据类型和操作符</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2013-02-24 16:10:07</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/6011744020131242044684">http://snoopyxdy.blog.163.com/blog/static/6011744020131242044684</a></h3>
+
+<div><div><span style="line-height:22px">1、lua支持以下几种变量类型</span></div><div><span style="line-height:22px">print(type(&quot;string&quot;))   string</span></div><div>print(type(10))          number</div><div>print(type(print))       function</div><div>print(type(true))        boolean</div><div>print(type({}))            table</div><div>print(type(nil))           nil</div><div><br></div><div>2、lua变量是弱类型的，赋值什么类型，就是什么类型</div><div><br></div><div>3、nil</div><div>在lua里nil表示null，对于定义一个变量未赋值则是nil，对于想要删除一个变量，则将此变量赋值为nil即可</div><div><br></div><div>4、布尔值</div><div>lua将nil和false视为假，其他都是真，所以数字0和空字符串也为真</div><div><br></div><div>5、数字</div><div>lua的数字没有整形，都是浮点型</div><div><br></div><div>6、字符串</div><div>不能像C那样直接修改字符串的某一个位置的值，而是需要创建一个新的字符串</div><div>例如：</div><div>a = "one string"</div><div>b = string.gsub(a, "one", "another")</div><div>print(a)  -- one string</div><div>print(b)  -- another string</div><div>注意：--表示lua的注释，lua用--[[ --]] 来表示注释块</div><div>在lua中操作100k或1mb的字符串是很常见的事情，可以使用单引号或者双引号来表示lua字符串</div><div>lua还提供了字符串和数字自动转换</div><div>print(&quot;10&quot;+1)  --  11</div><div>print(10+1&quot;)   -- &quot;10+1&quot;</div><div>print(&quot;-5.3e-10&quot;*&quot;2&quot;)   --  -1.06e-09</div><div>print(&quot;hello&quot;+1)   -- 错误不能转换</div><div><br></div><div>7、..是lua中字符串连接操作符，当你直接在一个数字后面使用它时，必须加上空格，否则会理解为一个点</div><div><br></div><div>8、字符串和数字互相转换</div><div>tonumber()</div><div>tostring()</div><div>同样也可以使用 数字加上空字符串来强制转换字符串，例如 10 .. ''</div><div>使用 -0 来强制转换数字  “10” - 0</div><div><br></div><div>9、获取字符串长度，在字符串前加上#号</div><div><br></div><div>10、表-table</div><div>在lua中使用{}来表示一个表，即对象</div><div>a = {}</div><div>k = "x"</div><div>a[k] = 0;     -- key 为 “x”, 值为0</div><div>a[20] = &quot;great&quot;  -- key为20, 值为great</div><div>print(a[&quot;x&quot;])   -- 10</div><div>k=20</div><div>print(a[k]) -- great</div><div><br></div><div>具体用法和其他动态语言无异</div><div><br></div><div>11、lua中table的赋值是引用赋值</div><div><br></div><div>12、循环</div><div>a={}</div><div>for i=1,1000 </div><div>do </div><div>a[i] = i*2</div><div>end</div><div><br></div><div>13、返回talbe最后一个key值可以用#</div><div>例如返回上面的a的最后一个key也就a的长度</div><div>print(#a)</div><div><br></div><div>14、lua习惯使用1开始数组第一个而不是0，因为#一般返回最后一个的key所以作为数组的长度，table.getn()也返回一样的结果。</div><div><br></div><div>15、table.maxn返回一个table的最大正索引</div><div><br></div><div>16、注意10，“10”和“+10”这3个表示不同的key，也就是可以再table中保存不同的数据，尽量避免这样存储他们</div><div><br></div><div>17、函数可以存储在变量中，可以作为参数传递</div><div><br></div><div>18、lua可以调用c语言编写的函数</div><div><br></div><div>19、lua中的算术表达式^表示取指数</div><div>比如 a = 3</div><div>a^3表示3的3次方，为27</div><div><br></div><div>20、x - x%0.01表示精确到小数点后两位的结果，其他依次类推</div><div><br></div><div>21、使用 ~= 来表示不等于</div><div><br></div><div>23、与，或，非表示and，or，not</div><div><br></div><div>22、x = x or v 等价于</div><div>if not x </div><div>then </div><div>x = v</div><div>end</div><div><br></div><div>23、类似于C语言的三元运算符：</div><div>c语言：max = a&gt;b ? a : b</div><div>lua： max = (x&gt;y) and x or y</div><div><br></div><div>24、操作符not永远只返回true或者false，not nil 返回true</div><div><br></div><div>25、优先级：</div><div>^</div><div>not，#，-（一元）</div><div>*，/，%</div><div>+，-</div><div>..</div><div>&lt;，&gt;，&lt;=，&gt;=，~=，==</div><div>and</div><div>or</div><div><br></div><div>26、talbe构造式：</div><div>days={"one","two","three"}</div><div>则表示</div><div>days[1] = "one"</div><div><span style="line-height:22px">days[2] = "</span><span style="line-height:22px">two</span><span style="line-height:22px">"</span></div><div><span style="line-height:22px">days[3] = "</span><span style="line-height:22px">three</span><span style="line-height:22px">"</span></div><div><span style="line-height:22px"><br></span></div><div><span style="line-height:22px">27、table构造式2：</span></div><div><span style="line-height:22px">a = {x=1, y=2}</span></div><div><span style="line-height:22px">等价于</span></div><div><span style="line-height:22px">a={}</span></div><div><span style="line-height:22px">a.x = 1</span></div><div><span style="line-height:22px">a.y = 2</span></div><div><span style="line-height:22px"><br></span></div><div><span style="line-height:22px">28、table写出链表代码：</span></div><div><span style="line-height:22px">list=nil</span></div><div><span style="line-height:22px">for line in io.lines()</span></div><div>do</div><div>list = {next = list, value = line}</div><div><span style="line-height:22px">end</span></div><div><span style="line-height:22px">然后我们可以这样读取每行的内容</span></div><div><span style="line-height:22px">local l = list</span></div><div>while l do</div><div>print(l.value)</div><div>l=l.next</div><div>end</div><div><br></div><div>29、还可以混合存储key和数组例如下面，利用分号隔开</div><div><div>a={a=1;2,3}</div><div>print(a.a)    --1</div><div>print(a[1])   --2</div></div><div><br></div><div><br></div><div><br></div><div><br></div><div><br></div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

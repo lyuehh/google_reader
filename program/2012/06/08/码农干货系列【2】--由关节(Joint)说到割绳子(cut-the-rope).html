@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>码农干货系列【2】--由关节(Joint)说到割绳子(cut the rope)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>码农干货系列【2】--由关节(Joint)说到割绳子(cut the rope)</h2>
+<p class="meta">08 Jun 2012</p>
+
+<div class="post">
+<h2>码农干货系列【2】--由关节(Joint)说到割绳子(cut the rope)</h2>
+
+<h3>by 【当耐特】</h3>
+
+<h3>at 2012-06-08 08:03:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/iamzhanglei/archive/2012/06/08/2541195.html">http://www.cnblogs.com/iamzhanglei/archive/2012/06/08/2541195.html</a></h3>
+
+<p><strong>简介</strong></p>
+
+
+<p>  <p><font size="3" face="新宋体">关节是相互连结且互相约束的物体，常见于各类物理引擎当中。关节的运用非常广泛，例如人体模拟、动物行走模拟、器材、绳子、机关、链桥等都可以灵活利用关节去模拟。</font></p>  <p><a href="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080628405326.png"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080628417650.png" width="276" height="262"></a><font size="3"> 普通的关节分两种，一种是有固定点，一种没有固定点。本文分别对两种关节进行计算并且输出图片进行模拟。</font></p>  <p><strong>关节</strong></p>  <p>关节通常用下面这种表达方式：</p>  <div>   (<span style="color:#0000ff">function</span> (window) {<br>    <span style="color:#0000ff">var</span> Joint = <span style="color:#0000ff">function</span> (segLength, segCount, isFixed, startPoint) {<br>        <span style="color:#0000ff">this</span>.segLength = segLength;<br>        <span style="color:#0000ff">this</span>.segCount = segCount;<br>        <span style="color:#0000ff">this</span>.isFixed = isFixed;<br>        <span style="color:#0000ff">this</span>.startPoint = startPoint;<br>        <span style="color:#0000ff">this</span>.points = [];<br>        <span style="color:#0000ff">for</span> (<span style="color:#0000ff">var</span> i = 0; i &lt; <span style="color:#0000ff">this</span>.segCount; i++) {<br>            <span style="color:#0000ff">this</span>.points.push(<span style="color:#0000ff">new</span> Vector2(<span style="color:#0000ff">this</span>.startPoint.x, <span style="color:#0000ff">this</span>.startPoint.y + i * <span style="color:#0000ff">this</span>.segLength));<br>        }<br>    }<br>    window.Joint = Joint;<br>} (window))  <br></div><p></p><p>其中：</p><blockquote>  <p>segLength表示关节每一段的长度（这里假定关节每一段是相等的）</p>  <p>segCount表示关节个数（包括起点和终点）</p>  <p>isFixed表示关节是否有固定点（如果isFixed为true,假设startPoint为固定点）</p>  <p>startPoint表示关节的起点（这里假定关节的初始状态是笔直向下的）</p>  <p>points表示关节上所有的支点（包括起点和终点）</p></blockquote><p>这里需要了解的是 ，在完整的关节表示当中，为了更好的模拟现实世界当中的物体，关节还会加上一个角度区间限制，即关节的最大张开角度和最小的角度。本文的关节不加此限制，任其360度无障碍旋转。</p><p><strong>图形化输出</strong></p><p>这里使用Easeljs输出关节的图像。先引用相关的脚本：</p>    <span style="color:blue">&lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;script/Vector2.js&quot; </span><span style="color:red">type</span><span style="color:blue">=&quot;text/javascript&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;<br>    &lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;script/joint.js&quot; </span><span style="color:red">type</span><span style="color:blue">=&quot;text/javascript&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;<br>    &lt;</span><span style="color:maroon">script </span><span style="color:red">src</span><span style="color:blue">=&quot;script/easel.js&quot; </span><span style="color:red">type</span><span style="color:blue">=&quot;text/javascript&quot;&gt;&lt;/</span><span style="color:maroon">script</span><span style="color:blue">&gt;<br></span><p><a href="http://11011.net/software/vspaste"></a>定义一个拥有2个关节段，每段长度为60的关节。完整代码如下所示：</p><div>  <span style="color:#0000ff">var</span> joint = <span style="color:#0000ff">new</span> Joint(60,4,<span style="color:#0000ff">false</span>,<span style="color:#0000ff">new</span> Vector2(200,100));<br><span style="color:#0000ff">var</span> canvas;<br><span style="color:#0000ff">var</span> stage;<br><span style="color:#0000ff">var</span> shape;<br>(<span style="color:#0000ff">function</span> (){<br>    canvas = document.getElementById(<span style="color:#006080">&quot;testCanvas&quot;</span>);<br>    stage = <span style="color:#0000ff">new</span> Stage(canvas);<br>  <br>    shape = <span style="color:#0000ff">new</span> Shape();           <br>    stage.addChild(shape);   <br>    drawjoint(joint);<br>}())<br><br><span style="color:#0000ff">function</span> drawjoint(joint) {<br>    shape.graphics.clear();<br>    shape.graphics.ss(14, <span style="color:#006080">'round'</span>, <span style="color:#006080">'round'</span>);<br>    <span style="color:#0000ff">for</span> (<span style="color:#0000ff">var</span> i = 0; i &lt; joint.points.length - 1; i++) {<br>        <span style="color:#0000ff">if</span> (i % 2 === 0) {<br>            shape.graphics.beginStroke(<span style="color:#006080">&quot;green&quot;</span>);<br>        }<br>        <span style="color:#0000ff">else</span> {<br>            shape.graphics.beginStroke(<span style="color:#006080">&quot;red&quot;</span>);<br>        }<br>        shape.graphics.mt(joint.points[i].x, joint.points[i].y).lt(joint.points[i + 1].x, joint.points[i + 1].y);<br>    }<br>    shape.graphics.endStroke();<br>    stage.update();<br>}  <br></div><div>效果如图所示：</div><div><a href="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080703298544.png"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080703304989.png" width="206" height="217"></a>   <br></div><p></p><p><strong>与鼠标交互</strong></p><p>要让关节绕着对应的支点动起来，这里让关节的终点跟随鼠标的位置移动。</p><p>在方法中加入：</p><div>  canvas.onmousemove = canvasMouseMoveHandler; </div><p>所以，当鼠标移动的时候，需要实时的更新关节的位置。如下图所示：</p><p><a href="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/20120608070330561.png"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080703302231.png" width="387" height="320"></a> </p><p>这里需要注意的两点是：</p><blockquote>  <p>上图描述的是一次微小的拉动，真正要呈现如图所示的前后状态，其实已经经历的很多次位置更新</p>  <p>上图反向延长线经过初始点是不准确的，准确的位置是初始点靠右一段距离（取决于两条线段的合力方向，但这不影响关节的模拟）</p></blockquote><p></p><p><a href="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080735263676.png"><img style="border-right-width:0px;display:block;float:none;border-top-width:0px;border-bottom-width:0px;margin-left:auto;border-left-width:0px;margin-right:auto" title="image" border="0" alt="image" src="http://images.cnblogs.com/cnblogs_com/iamzhanglei/201206/201206080735261757.png" width="170" height="195"></a> </p><p>添加鼠标处理的方法：</p><div>  <span style="color:#0000ff">function</span> canvasMouseMoveHandler(e) {<br>    <span style="color:#0000ff">var</span>    r = canvas.getBoundingClientRect();<br>    joint.points[joint.points.length - 1] = <span style="color:#0000ff">new</span> Vector2(e.clientX - r.left, e.clientY - r.top);<br>    joint.updatePointsPosition(joint.points[joint.points.length - 1], joint.points.length - 1);<br>    drawjoint(joint);         <br>}  <br></div><p>在分析完具体的过程之后，利用递归的思路依次更新所有的点。更新方法接收两个参数：一个是更新的点、一个是该点的index，当index为1的时候退出递归。</p><p></p><div>  <br>    <span style="color:#0000ff">var</span> p = Joint.prototype;<br>    p.updatePointsPosition = <span style="color:#0000ff">function</span> (point, index) {<br>        <span style="color:#0000ff">var</span> tempV = <span style="color:#0000ff">this</span>.points[index - 1].sub(point).setLength(<span style="color:#0000ff">this</span>.segLength);<br>        <span style="color:#0000ff">this</span>.points[index - 1] = point.add(tempV);<br>        <span style="color:#0000ff">if</span> (index &gt; 1) {<br>            <span style="color:#0000ff">this</span>.updatePointsPosition(<span style="color:#0000ff">this</span>.points[index - 1], index - 1);<br>        } <br>    }  <br></div><p></p><p>其中<strong><font color="#800080">var tempV = this.points[index - 1].sub(point).setLength(this.segLength);</font></strong>是计算支点的偏移量，Vector2.setLength是经过normalize（转换为该向量的单位向量） 再multiplyScalar（设置长度）。如下代码所示：</p><div>  setLength: <span style="color:#0000ff">function</span> (l) {<br><br>         <span style="color:#0000ff">return</span> <span style="color:#0000ff">this</span>.normalize().multiplyScalar(l);<br><br>     },</div><div>完整代码参见Vector2类。</div><div>运行效果如下所示：</div>请使用现代浏览器观看在线演示！ <p><strong>固定起始点</strong></p><p>上面呈现的是没有固定点的关节，那么如果拥有固定点，该怎么更新关节上所有点的位置呢？需要做的仅仅是校正startPoint（启始点、固定点）的位置。</p><div>  <span style="color:#0000ff">var</span> p = Joint.prototype;<br>p.updatePointsPosition = <span style="color:#0000ff">function</span> (point, index) {<br>    <span style="color:#0000ff">var</span> tempV = <span style="color:#0000ff">this</span>.points[index - 1].sub(point).setLength(<span style="color:#0000ff">this</span>.segLength);<br>    <span style="color:#0000ff">this</span>.points[index - 1] = point.add(tempV);<br>    <span style="color:#0000ff">if</span> (index &gt; 1) {<br>        <span style="color:#0000ff">this</span>.updatePointsPosition(<span style="color:#0000ff">this</span>.points[index - 1], index - 1);<br>    } <span style="color:#0000ff">else</span> {<br>                <span style="color:#0000ff">if</span> (<span style="color:#0000ff">this</span>.isFixed) {<br>                    <span style="color:#0000ff">var</span> v = <span style="color:#0000ff">this</span>.points[0].sub(<span style="color:#0000ff">this</span>.startPoint);<br>                    <span style="color:#0000ff">for</span> (<span style="color:#0000ff">var</span> i = 0; i &lt; <span style="color:#0000ff">this</span>.points.length; i++) {<br>                        <span style="color:#0000ff">this</span>.points[i].subSelf(v);<br>                    }<br>                }<br>            }<br>}  <br></div><p>当递归到最后，如果该关节是有固定点的，校正所有关节点的位置。效果如下所示：</p>请使用现代浏览器观看在线演示！ <p><strong>思考？？</strong></p><p>这样子呢？</p><div>  <span style="color:#0000ff">var</span> joint = <span style="color:#0000ff">new</span> Joint(2,140,<span style="color:#0000ff">true</span>,<span style="color:#0000ff">new</span> Vector2(200,100));  <br></div><p></p><p>一共140个点，点与点之间距离为2，再加上点颜色区间变化。</p>请使用现代浏览器观看在线演示！ <p>它是割绳子（cut the rope）中绳子的表达方式吗？这样表示绳子会有什么问题出现？</p><p><strong><font size="6">那么请继续关注我后续的干货~~~~~</font></strong></p><img src="http://www.cnblogs.com/iamzhanglei/aggbug/2541195.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/iamzhanglei/archive/2012/06/08/2541195.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

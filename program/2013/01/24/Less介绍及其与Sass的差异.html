@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Less介绍及其与Sass的差异</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Less介绍及其与Sass的差异</h2>
+<p class="meta">24 Jan 2013</p>
+
+<div class="post">
+<h2>Less介绍及其与Sass的差异</h2>
+
+<h3>by Airen</h3>
+
+<h3>at 2013-01-23 23:33:24</h3>
+
+<h3>original <a href="http://www.w3cplus.com/css/an-introduction-to-less-and-comparison-to-sass.html">http://www.w3cplus.com/css/an-introduction-to-less-and-comparison-to-sass.html</a></h3>
+
+<div><div><div><p>自从一个月前偶然发现<a href="http://lesscss.org">Less</a>之后我就开始坚定的使用它了。就CSS本身而言，对于我来说从来就不是问题，但是我很好奇的相法，使用变量来沿着一个调色板为我的网站或者模板创建一些东西。拥有一个提供固定数量给我选择的调色板，可以让我避免颜色太过跳跃，以致于从一个已定的风格中脱离。</p>
+<blockquote><p><a href="http://lesscss.org">Less</a>英文官网需要开启VPN才能正常访问，如果你无法打开<a href="http://lesscss.org">Less</a>官网，建议您移步到<a href="http://cloudhead.io">Alexis Sellier</a>领导的团队所译的中文官网<a href="http://www.lesscss.net/">Less中文</a>。</p>
+<p style="text-align:right">——大漠</p>
+</blockquote>
+<p><img alt="Less vs Sass" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/LessAndSassAndStylus/less-sass1.jpg" style="padding:2px;border:1px solid #ccc;width:530px"></p>
+<p>事实证明，Less——以及Sass对于这个功能，远不止这些。LESS和Sass在语法上有些共性，比如下面的这些：</p>
+<ol>
+<li>
+        <strong>混合（Mixins）：</strong>class中的class;</li>
+<li>
+        <strong>参数混合（Parametric）：</strong>可以像函数一样传递参数的class;</li>
+<li>
+        <strong>嵌套规则（Nested Rules）：</strong>class中嵌套class，从而减少重复的代码；</li>
+<li>
+        <strong>运算（Operations）：</strong>css中的数学计算；</li>
+<li>
+        <strong>颜色功能（Color function）：</strong>可以编辑你的颜色；</li>
+<li>
+        <strong>命名空间（Namespaces）：</strong>样式分组，从而方便被调用；</li>
+<li>
+        <strong>作用域（Scope）：</strong>局部修改样式；</li>
+<li>
+        <strong>JavaScript表达式(Javascript evaluation)：</strong>在CSS样式中使用Javascript表达式赋值。</li>
+</ol>
+<blockquote><p>上面八条在LESS和Sass中是一个很重要的概念，只有把上面的概念理解清楚了，才能更好的学习LESS和Sass，在这里我借花献佛，从各处摘抄了一下，对这几个概念的简单的介绍：</p>
+<p><strong>1、Mixins</strong>，此处我译成了混合，也有很多同行朋友将其译成混入，不管是混合也好，还是混入也罢。其主要意思是将一个定义好的class A引入到另一个class B中，从而简单实现class B继承了class A的所有属性。</p>
+<p><strong>2、Parametric</strong>，带参数混合，像函数一样在class A中定义一个参数的默认值、或者参数属性集合，还可以是@arguments蛮量，然后将定义好的class A引入class B中</p>
+<p><strong>3、Nested Rules</strong>译成嵌套规则，指的是在一个选择器中嵌套另一个选择器来实现继承。从而减少了代码量，并且增加了代码的可读性。</p>
+<p><strong>4、Operations</strong>运算，在CSS中使用加、减、乘、除进行数学运算，主要运用于属性值和颜色的运算，可以轻松实现属性值之间的复杂关系。</p>
+<p><strong>5、Color function</strong>颜色功能，颜色的函数运算，颜色会先被转化成HSL色彩空间，然后在通道级别操作。</p>
+<p><strong>6、Namespaces</strong>命名空间，将一些变量或者混合模块打包封装，更好的组织CSS和属性集的重复使用；</p>
+<p><strong>7、Scope</strong>作用域，先从本地查找变量或者混合模块，如果没有找到的话就会去父级作用域中查找，直到找到为止，这一点和其他程序语言的作域非常的相似；</p>
+<p><strong>8、Javascript evaluation</strong>，javascript的表达式,在Less或sass文件中可以使用js的表达式,用来赋值。</p>
+<p style="text-align:right">——大漠</p>
+</blockquote>
+<p>LESS和Sass之间的主要区别是他们的实现方式不同，LESS是基于JavaScript运行,所以LESS是在客户端处理。</p>
+<p>另一方面，Sass是基于Ruby的，是在服务器端处理的。很多开发者不选择LESS是因为LESS输出修改过的CSS到浏览器需要依赖于Javascript引擎，而Javascript引擎需要额外的时间来处理代码。关于这个有很多种方式，我选择的是只在开发环节使用LESS。一旦开发完成，我就复制粘贴LESS输出的到一个压缩器，然后到一个单独的CSS文件来替代LESS文件。另一种方式是使用<a href="http://incident57.com/less">LESS APP</a>来编译和压缩你的LESS文件。两种方式都将是最小化你的样式输出，从而避免由于用户的浏览器不支持Javascript而可能引起的任何问题。尽管这不大可能，但终归是有可能的。</p>
+<blockquote><p>LESS转译工具除了<a href="http://incident57.com/less">LESS APP</a>之外，现在目前流行的主要有：<a href="http://wearekiss.com/simpless">SimpLess</a>、<a href="http://winless.org">WinLess</a>、<a href="http://incident57.com/codekit">CodeKit.app</a>、<a href="http://www.veryued.org/?p=454">LESS编译辅助脚本-LESS2CSS</a>。</p>
+<p style="text-align:right">——大漠</p>
+</blockquote>
+<p><strong>更新：</strong>在Twitter的评论上，LESS和Sass对比讨论也是相当的热烈。也请考虑Adam Stacoviak回复。现实情况，Sass确实需要在Ruby上运行,然而他不需要在服务器上编译CSS。它也可以在本地编译（正如前面提到的LESS）,编译后的CSS可以运用到你的项目上，Wordpress主题中.引擎模板，或者任何服务器就像你的CSS文件。正如Smashiing Magazine读者和其他读者存在很大的差异，我猜想有很大一部分读者正在使用Mac阅读这评论一样。Mac也默认提供了对Sass的安装和支持，只需要一行命令就可以（sudo gem install sass）。</p>
+<p>如果你安装了Sass，你在本地就可以将Sass转译成CSS，并将转译的代码用到你的项目中。如果你还不知道如何安装Sass(或者Compass)，我们也写了一份详细的指南<a href="http://thesassway.com/beginner/getting-started-with-sass-and-compass">Getting Started with Sass and Compass</a>，可以很好的帮你清除这个障碍。</p>
+<h4>
+    LESS Is More</h4>
+<p><strong>安装</strong></p>
+<p>在你的项目中引入LESS很简单：</p>
+<ol>
+<li>
+        去下载一个你要的<a href="http://lesscss.googlecode.com/files/less-1.1.3.min.js" title="下载less.js">less.js</a>脚本；</li>
+<li>
+        创建一个文件来放置你的样式，比如说style.less</li>
+<li>
+        添加下面的代码到你的HTML的&lt;head&gt;中。</li>
+</ol>
+<pre>
+&lt;link rel=&quot;stylesheet/less&quot; type=&quot;text/css&quot; href=&quot;styles.less&quot;&gt;
+&lt;script src=&quot;less.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</pre><p>请注意“link”的“rel”属性。你需要在属性值后面使用“/less”，LESS才起作用。你也需要在“link”样式表后面引入"script"。如果你正在使用“HTML5”语法，我无法想像为什么你不会用呢？你可以少去“type=‘text/css’”和“type='text/javascript'”。</p>
+<blockquote><p>安装LESS有两个细节需要特别强调，往往很多人就是这里出错：</p>
+<ol>
+<li>
+            调用less样式表时，link标签的rel属性一定是“stylesheet/less”，其中“/less”不可缺少；</li>
+<li>
+            less.js脚本只能放在加载less样式的link后面，才能生效。</li>
+</ol>
+<p style="text-align:right">——大漠</p>
+</blockquote>
+<p>LESS还有一个<a href="http://lesscss.org/#-server-side-usage">服务器端的版本</a>。可以通过<a href="http://github.com/isaacs/npm">Node Package Manager</a>简单的在服务器上安装LESS。</p>
+<p><strong>变量</strong></p>
+<p>如果你是一个开发人员，变量应该是你最好朋友之一。如果你要重复使用一个信息（比如例中的颜色color），将它设置为一个变量就可以。使用这种方式，你就可以保证自己的一致性并可能减少滚动代码来查找颜色值、复制和粘贴等繁琐的工作了。你甚至可以使用加或者减颜色值，从而得到你需要的颜色值，例如：</p>
+<pre>
+@blue: #00c;/*定义蓝色变量*/
+@light_blue: @blue + #333;/*定义浅蓝色变量*/
+@dark_blue: @blue - #333;/*定义深蓝变量*/
+</pre><p>如果我们将这些样式应用到3个div上面，我们就可以看到加上和减掉十六进度的颜色值和原始的蓝色形成的渐变效果：</p>
+<p><img alt="Less vs Sass" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/LessAndSassAndStylus/less-sass2.jpg" style="padding:2px;border:1px solid #ccc;width:530px"></p>
+<p>从@light_blue到@blue到@dark_blue的渐变效果</p>
+<blockquote><p>这段LESS代码应该是这样使用的：</p>
+<pre>
+.light_blue {
+  background-color: @light_blue;
+}
+.blue {
+  background-color: @blue;
+}
+.dark_blue {
+  background-color: @dark_blue;
+}
+</pre><p style="text-align:right">——大漠</p>
+</blockquote>
+<p>LESS和Sass中的变量的唯一区别就是，LESS使用<strong>@</strong>，而Sass使用<strong>$</strong>。同时还有一些作用域上的差别，我们后面会介绍。</p>
+<h4>
+    混合（Mixin）</h4>
+<p>有时，我们会创建一些样式，目的是在样式中重复使用这些样式规则。没有人会阻止你在一个HTML中使用多少个class，但是你可以使用LESS，在样式表中完成。为了说明这一点，我粘贴了一些代码示例：</p>
+<pre>
+.border {
+  border-top: 1px dotted #333;
+}
+
+article.post {
+  background: #eee;
+  .border;
+}
+
+ul.menu {
+  background: #ccc;
+  .border;
+}
+</pre><p>这和你在两个元素中分别添加类名“.bordered”得到同样的效果，而且你仅仅在样式表中就完成了。并且它工作的很好：</p>
+<p><img alt="Less vs Sass" src="http://www.w3cplus.com/sites/default/files/styles/print_image/public/blogs/2013/LessAndSassAndStylus/less-sass3.jpg" style="padding:2px;border:1px solid #ccc;width:530px"></p>
+<p>两个文章列表和无序列表都共享同一个边框样式。</p>
+<p>在Sass中，你要在样式规则前面添加@minix声明，规则它是个嵌套。然后，通过@include来调用它：</p>
+<pre>
+@mixin border {
+  border-top: 1px dotted #333;
+}
+
+article.post {
+  background: #eee;
+  @include border;
+}
+
+ul.menu {
+  background: #ccc;
+  @include border;
+}
+</pre><h4>
+    带参数混合（Parametric mixins）</h4>
+<p>在CSS中也有像函数的功能,这些对于那些CSS中看似多余代码非常有用。最好和最有用的例子就是CSS2到CSS3中各浏览器的私有属性前缀。Nettuts+有一篇Jeffre Way写的<a href="http://net.tutsplus.com/tutorials/html-css-techniques/quick-tip-never-type-a-vendor-prefix-again">很赞的视频和文章</a>，内容中包含了有用的参数组成的文件，他们涵盖了大部分使用各个浏览器私有前缀的CSS3属性。例如，在他们的格式中，一个简单的处理圆角的mixin是这样的：</p>
+<pre>
+.border-radius( @radius: 3px ) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+</pre><p>在这个例子中，“.border-radius”有个默认的3px圆角，但是你可以使用你想用的任何圆角属性值。例如“.border-radius(10px)”将会生成半径为10px的圆角。</p>
+<p>在Sass中的语法和LESS的语法很相似，只是使用$声明变量，然后使用前面提到的@mixin和@include来调用。</p>
+<h4>
+    选择器继承</h4>
+<p>下面这些是LESS中没有提供的。通过这个功能，你可以将一个选择器附加到已经预先定义的选择器上，而无需再使用逗号将两者分开的写法了：</p>
+<pre>
+.menu {
+  border: 1px solid #ddd;
+}
+.footer {
+  @extend .menu;
+}
+/* 上面的规则和下面的规则是一样的效果 */
+.menu, .footer {
+  border: 1px solid #ddd;
+}
+</pre><h4>
+    嵌套规则(Nested rules)</h4>
+<p>在CSS中嵌class和id是避免样式干扰或者被别的样式干扰的唯一方式。但是可能变得很乱。使用一个选择器，类似于"#site-body .post .post-header h2"是毫无用处，而且还占用大量没必要的空间。使用LESS,你可以嵌套ID、class以及元素标签。对于前面提到的例子，你可以这样写：</p>
+<pre>
+#site-body { …
+  .post { …
+    .post-header { …
+      h2 { … }
+      a { …
+        &amp;:visited { … }
+        &amp;:hover { … }
+      }
+    }
+  }
+}
+</pre><p>上面的代码最终效果和上面的一大串选择器效果一样，但是要更容易阅读和理解的多，而且它占用很少的空间。你也可以通过&amp;来引用元素样式到他们的伪元素上，这个功能类似于javascript中的this。</p>
+<h4>
+    运算（Operations）</h4>
+<p>你很可能期望在CSS中使用数字或者变量实现数学运算！</p>
+<pre>
+@base_margin: 10px;
+@double_margin: @base_margin * 2;
+
+@full_page: 960px;
+@half_page: @full_page / 2;
+@quarter_page: (@full_page / 2) / 2;
+</pre><p>声明一下，在取得“@quarter_age”变量时，我们也可以直接除以4，但是在这里，我们只是想演示一下圆括号组成的“运算顺序”（这个运算顺序可能小学生也知道的）。在复合型运算中，小括号也是很有必要的，例如：“ border: (@width / 2) solid #000”。</p>
+<p>Sass在数字上要比LESS更专业,他已经可以直接换算单位了。Sass可以处理无法识别的度量单位，并将其输出。这个特性很明显是一个对未来的尝试——证明W3C作出的一些改变。</p>
+<pre>
+/* Sass */
+2in + 3cm + 2pc = 3.514in
+
+/* LESS */
+2in + 3cm + 2pc = Error
+</pre><h4>
+    Color函数</h4>
+<p>前面，我提到了LESS如何帮我们用编码来实现一个调色板。在这里功能最大的一部分就是颜色函数。假设您在样式中使用一个标准的蓝色风格,然后，你想要使用这个颜色在一个表单中制作一个渐变的“提交”。你可以打开Photoshop或者另一个编辑器来得到一个比蓝色稍亮或变暗的十六进制值色作为一个渐变色。或者你可以只使用LESS中的颜色函数。</p>
+<pre>
+@blue: #369;
+.submit {
+  padding: 5px 10px;
+  border: 1px solid @blue;
+  background: -moz-linear-gradient(top, lighten(@blue, 10%), @blue 100%); /*Moz*/
+  background: -webkit-gradient(linear, center top, center bottom, from(lighten(@blue, 10%)), color-stop(100%, @blue)); /*Webkit*/
+  background: -o-linear-gradient(top, lighten(@blue, 10%) 0%, @blue 100%); /*Opera*/
+  background: -ms-linear-gradient(top, lighten(@blue, 10%) 0%, @blue 100%); /*IE 10+*/
+  background: linear-gradient(top, lighten(@blue, 10%) 0%, @blue 100%); /*W3C*/
+  color: #fff;
+  text-shadow: 0 -1px 1px rgba(0,0,0,0.4);
+}
+</pre><p>lighten函数很明显就是用百分比值来减轻颜色。在这个例子中，它将在蓝色的基础上减少10%。这种方法使我们只需要简单的改变基础颜色就可以修改渐变的元素或者其他元素的颜色。这对于制作主题模板来说是非常有用的。而且，如果你使用参数函数，像上面提到的，你还可以更简单的应用到一些浏览器私有前缀的声明中，就像这个例子：“.linear-gradient(lighten(@blue), @blue, 100%);”。</p>
+<p>无论哪种方式,你都会得到一个不错的效果:</p>
+<p><img alt="Less vs Sass" src="http://www.w3cplus.com/sites/default/files/blogs/2013/LessAndSassAndStylus/less-sass4.jpg" style="padding:2px;border:1px solid rgb(204,204,204)"></p>
+<p>很赞的渐变的、基于变量的”Submit”按钮。</p>
+<p>还有很多颜色函数，比如变暗或者调整颜色的饱和度，甚至你可以旋转色盘来使用其他颜色。我建议你亲自尝试下你能想出的用法。</p>
+<p>Sass似乎有更多的颜色函数选择——但我们并不需要这么多。我个人最常用的还是lighten和darken函数功能。如果您想了解更多的东西，你可以详细的阅读<a href="http://nex-3.com/posts/89-powerful-color-manipulation-with-Sass">这里</a>介绍。</p>
+<h4>
+    条件语句和控制</h4>
+<p>这是一个很强大的功能，也是LESS不支持的功能。使用Sass，你可以使用if{}else{}这样的条件语句，以及for{}循环语句，他甚至还支持and、or和not，以及&lt;、&gt;、&lt;=、&gt;=和==等操作符。</p>
+<pre>
+/* Sass中简单的if语句 */
+@if lightness($color) &gt; 30% {
+  background-color: #000;
+} @else {
+  background-color: #fff;
+}
+
+/* Sass中简单的for循环语句*/
+@for $i from 1px to 10px {
+  .border-#{i} {
+    border: $i solid blue;
+  }
+}
+</pre><h4>
+    命名空间（namespaces）</h4>
+<p>命名空间可以用于组织我们的CSS，从而提高到另一个层次，我们将一些公用的样式创建分组，然后在使用的时候直接调用。例如，如果我们创建了一个名为“default”的样式分组，我们就可以在使用到的时候直接从该组中调用。/p&gt;</p>
+<pre>
+#defaults {
+  .nav_list () {
+    list-style: none;
+    margin: 0; padding: 0;
+   }
+   .button () { … }
+   .quote () { … }
+}
+</pre><p>然后，在我们的代码中，如果我们正好在一个nav元素中使用了ul元素，我们就会想到我们需要default样式。那么我们就可以简单的调用它，它也会被直接应用。</p>
+<pre>
+nav ul {
+  #defaults &gt; .nav_list;
+}
+</pre><h4>
+    作用域（scope）</h4>
+<p>作用域是程序中的一个标准，LESS中也是。如果你在你样式表的root级声明一个变量，它在整个文档中都是可以调用的。然而，如果你在一个选择器，比如id或者class中，重新定义了这个变量，那么，它就只能在这个选择器中可用了——当然是重新定义后的新值。</p>
+<pre>
+@color: #00c; /* 蓝色 */
+
+#header {
+  @color: #c00; /* 红色 */
+   border: 1px solid @color; /* 红色边框 */
+}
+
+#footer {
+  border: 1px solid @color; /*蓝色边框 */
+}
+</pre><p>因为我们在#header中重新定义了color变量，变量的值将会是不同的而且只会在该选择器中有效。它之前或者之后的所有地方，如果没有被重新定义，都会保持那个原始的值。</p>
+<p>作用域在Sass中稍有不同。在上面的代码中，当@color变量变为红色后，代码中，此处之后的该变量的值，将会被重写（成为红色）。</p>
+<h4>
+    注解</h4>
+<p>这一部分比较基础。LESS中允许两种注释写法。标准的CSS注释，/* comment */，是有效的，而且能够通过处理并正确输出。当行注释，// comment，同样可以用但是不能够通过处理也不能被输出，然后，结果是，“无声的”。</p>
+<h4>
+    导入</h4>
+<p>导入也相当符合标准。标准的 @import  ‘classes.less’; 处理的很好。然而，如果你想要导入其它的LESS文件，那么文件的扩展名是可选的，所以 @import ‘classes’; 也是可行的。如果你想要导入一些无需LESS处理的内容，你可以使用 .css 扩展 (比如， @import  ‘reset.css’;)。</p>
+<h4>
+    字符串插入</h4>
+<p>字符串也是可以用于变量中的，然后通过@{name}来调用。</p>
+<pre>
+@base_url = 'http://coding.smashingmagazine.com';
+background-image: url("@{base_url}/images/background.png");
+</pre><h4>
+    转义(Escaping)</h4>
+<p>有时候,你需要引入一个值,它是无效的CSS语法或者LESS不能识别。通常是一些IE的Hack。要避免抛出异常并破坏LESS，你将需要避开它们。</p>
+<pre>
+.class {
+  filter: ~"progid:DXImageTransform.Microsoft.Alpha(opacity=20)";
+}
+
+/* 实际上会输出下面的代码: */
+.class {
+  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+}
+</pre><h4>
+    javascript的表达式</h4>
+<p>这是LESS中我最中意的部分：在样式表中使用Javascript——相当精彩。你可以使用表达式，也可以参考环境方向来使用反单引号。</p>
+<pre>
+@string: `'howdy'.toUpperCase()`; /* @string becomes 'HOWDY' */
+
+/* You can also use the previously mentioned interpolation: */
+@string: 'howdy';
+@var: ~`'@{string}'.topUpperCase()`; /* becomes 'HOWDY' */
+
+/* Here we access part of the document */
+@height = `document.body.clientHeight`;
+</pre><h4>
+    输出格式</h4>
+<p>然而LESS并没有输出设置，而Sass提供4中输出选项：nested, compact, compressed 和 expanded。</p>
+<h4>
+    总结</h4>
+<p>这两者有很多共同点。对于写代码的设计师来说，他们都是很棒的工具，并且他们还可以帮助开发者更有效、更快速的工作。如果你是Ruby或HAML的爱好者，那么Sass会是你的好助手。对我来说，一个PHP和Javascript极客，我更倾向于LESS，因为它便于引入和能够使用JavaScript表达式以及文档属性。我怀疑我甚至接近真正理解在样式表中编程的可能行了，但是我仍坚持尝试。如果你在工作中有用到它们中的一个，或者两个都用，我很乐意听到关于它的更多内容，并看到你的成果。当然，技巧、诀窍、更正一直是很欢迎的。</p>
+<p><strong>译者手语：</strong>整个翻译依照原文线路进行，并在翻译过程略加了个人对技术的理解。如果翻译有不对之处，还烦请同行朋友指点。谢谢！</p>
+<p>如需转载烦请注明出处：</p>
+<p>英文原文：<a href="http://coding.smashingmagazine.com/2011/09/09/an-introduction-to-less-and-comparison-to-sass/">http://coding.smashingmagazine.com/2011/09/09/an-introduction-to-less-and-comparison-to-sass/</a></p>
+<p>中文译文：<a href="http://www.w3cplus.com/css/an-introduction-to-less-and-comparison-to-sass.html">http://www.w3cplus.com/css/an-introduction-to-less-and-comparison-to-sass.html</a></p>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/8.html">css</a></li></ul></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/48.html">less</a></li><li><a href="http://www.w3cplus.com/blog/tags/302.html">sass</a></li><li><a href="http://www.w3cplus.com/blog/tags/303.html">stylus</a></li></ul></div>
+
+
+<div><div><div><div>
+      <div>11</div>
+                  <a href="http://www.w3cplus.com/vote/node/617/1/vote/alternate/HPdrymfbOOYcnOGhJLze3_nJFFX6zU_V3zVnK_5y3n4/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/710938705/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/css/an-introduction-to-less-and-comparison-to-sass.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

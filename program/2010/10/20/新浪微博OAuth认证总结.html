@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>新浪微博OAuth认证总结</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>新浪微博OAuth认证总结</h2>
+<p class="meta">20 Oct 2010</p>
+
+<div class="post">
+<h2>新浪微博OAuth认证总结</h2>
+
+<h3>by 梁星</h3>
+
+<h3>at 2010-10-19 22:31:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/liangxing/archive/2010/10/19/1855938.html">http://www.cnblogs.com/liangxing/archive/2010/10/19/1855938.html</a></h3>
+
+<p><p><span style="font-size:12pt">     自从最近Twitter只支持OAuth认证方式以来，各大应用都纷纷转向OAuth认证方式，而新浪微博的开放平台也将在近日停止Base OAuth的认证方式。</span></p>
+<p><span style="font-size:12pt">     为了能够继续使用新浪微博的开放平台，开始研究OAuth的认证方式，经过一段时间的实践，对于新浪微博开放平台的OAuth认证方式，有一定的经验。鉴于网上对于这个平台的OAuth相关资料比较少，因此在此分享一下过程中积累的经验，希望可以帮助到一些要使用OAuth认证调用新浪微博接口的人~~</span></p>
+<p> </p>
+<p><span style="font-size:12pt">1.关于OAuth:</span></p>
+<p><span style="font-size:12pt">　　　OAUth认证方式比于Base OAuth的认证方式最大的特点是，应用方并不需要保存用户的帐户与密码，只需要保存经过用户授权的Key与Secret组合即可对于平台上的所有接口资源进行访问，在传输过程中也可以避免被不怀好意的人通过截包分析的方式获取到用户的帐号与密码。（有一说Twitter全面改用OAuth认证方式的原因就是防止GFW通过截包获取到一些相关名人的帐号和密码)。具体的一些定义可以详细阅读OAuth的规范定义：<a href="http://oauth.net/documentation/spec">OAuth规范</a>。</span></p>
+<p> </p>
+<p><span style="font-size:12pt">2.新浪微博开放平台：</span></p>
+<p><span style="font-size:12pt">　　　　新浪微博的开放平台基本上的接口，参数，返回格式都参考了Twitter的模式。当然，国内的另外一些开放平台都大量参考了Twitter的模式，因此基本上大同小异。要使用新浪微博的开放平台，当然必须先到它的网站上面进行注册：<a href="http://open.t.sina.com.cn/wiki/index.php/%E9%A6%96%E9%A1%B5">新浪微博API</a>。</span></p>
+<p><span style="font-size:12pt">           注册之后，会得到Consumer Key 与 Consumer Secret这两个关键的字段，好好保存下来吧。</span></p>
+<p><span style="font-size:12pt">           新浪微博的这个开发平台上面有充分的文档，能够很快的上手调用这些接口，除了个别较为难办的接口，我们下面再讨论。</span></p>
+<p> </p>
+<p><span style="font-size:12pt">3.对新浪使用OAuth:</span></p>
+<p><span style="font-size:12pt">　　　　　　　　　　<img src="http://www.s2forum.org/wikipic/jieshao.png" alt="" width="355" height="117"></span></p>
+<p><span style="font-size:12pt">           使用OAuth，必须先让用户进行授权，一般来说授权的过程如下：</span><br><span style="font-size:12pt">　　　　　　（1）由应用向新浪开发平台发出请求，获得未授权的Request Token与Request Secret，这个时候Request Secret暂时用不到，好好保存下来。</span></p>
+<p><span style="font-size:12pt">                （2）将上一步获得的Request Token作为参数，引导用户浏览器跳至<a href="http://api.t.sina.com.cn/oauth/authorize">新浪微博的授权页面</a>，用户进入这个页面登录新浪微博，进行Token的授权。如果在（1）中已经向服务器设置了浏览器的回调地址的话，则用户的浏览器将会被重定向至该地址，该地址将会新增一个参数:oauth_verifier，这个参数将在后面用到，好好保存。</span></p>
+<p><span style="font-size:12pt">　　　　　　（3）OAuth认证过程的最后一步，向服务器请求真正的Token,将（1）中得到的Request Token,Request Secret和（2）中得到的oauth_verifier作为参数，传递给新浪微博服务器，服务器将会返回真正的Access Token与Access Secret，新浪微博还会返回用户在新浪微博中的userid。有了用户的Access Token与Access Secret就可以自由便利地调用新浪微博的开放接口了。</span></p>
+<p> </p>
+<p><span style="font-size:12pt">　　　每个调用中，都必须带有OAuth的认证信息，作为OAuth的认证信息，基本上有两种方法可以加入到请求包中：</span></p>
+<p><span style="font-size:12pt">　　　　　　（1）最推荐的方法，采用HTTP的Authorization Header，这个头部的定义在<a href="http://tools.ietf.org/html/rfc2617">RFC2617</a>里面有相关定义。</span></p>
+<p><span style="font-size:12pt">　　　　　　　　　　　　例如：</span></p>
+<pre></pre>
+<div>
+<pre>             　　 Authorization: OAuth realm="http://photos.example.net/", 
+　　　　　　　　　　　　　　　　oauth_consumer_key="dpf43f3p2l4k3l03",  
+　　　　　　　　　　　　　　　　oauth_token="nnch734d00sl2jdk", 
+　　　　　　　　　　　　　　　　oauth_signature_method="HMAC-SHA1", 
+　　　　　　　　　　　　　　　　oauth_signature="tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", 
+　　　　　　　　　　　　　　　　oauth_timestamp="1191242096", oauth_nonce="kllo9940pd9333jh", 
+　　　　　　　　　　　　　　　　oauth_version="1.0"
+</pre>
+</div>
+<pre><span style="font-size:12pt">　　　　　（2）或者可以采用，参数传递的方式，将OAuth的参数与正常的参数一样放置与Get的URL中，或者POST的包体内容中，都是可以的，</span></pre>
+<pre><span style="font-size:12pt">但遇到一些特殊情</span><span style="line-height:24px;font-size:16px">况就较难解决这个问题了。</span></pre>
+<pre>             </pre>
+<pre><span style="font-size:12pt">4.OAuth认证参数解析：</span></pre>
+<pre><span style="font-size:12pt">　在上面可以看到，一个正常的OAuth认证中，包含以下若干参数：</span><br></pre>
+<pre><span style="font-size:12pt">　　（1）oauth_consumer_key: 即是注册时，新浪给你的conusmer key，明文传输</span><br></pre>
+<pre><span style="font-size:12pt">　　（2）oauth_token： 即是用户完成OAuth认证后的Access Token，在进行OAuth认证第三步的时候，为Request Token，</span></pre>
+<pre><span style="font-size:12pt"> </span><span style="font-size:12pt">第一步时不需要</span><span style="line-height:24px;font-size:16px">这个参数</span></pre>
+<pre><span style="font-size:12pt">　　（3）oauth_signature_method：加密的方法，提供<tt>HMAC-SHA1</tt>, <tt>RSA-SHA1</tt>, <tt>PLAINTEXT 几种方法</tt></span><br></pre>
+<pre><span style="font-size:12pt">　　（4）oauth_signature： 对于全部参数进行加密后的字符串，包括consumer secret和access secret</span><br></pre>
+<pre><span style="font-size:12pt">　　（5）oauth_timestamp：发请求的时间戳</span><br></pre>
+<pre><span style="font-size:12pt">　　（6）oauth_version：可选的参数，基本上置为1.0，否则会出错的。</span><br></pre>
+<pre><span style="font-size:12pt">　　（7）oauth_nonce：随机的值，防止重复调用</span><br></pre>
+<pre>　　　　　　<br></pre>
+<pre><span style="font-size:12pt">5.上传图片OAuth之痛：</span></pre>
+<pre><span style="font-size:12pt">　　使用上面的方法，基本上可以解决所有的接口调用。但遇到难搞的上传图片这样的请求时，就需要一些方法取巧了。</span><br></pre>
+<pre><span style="font-size:12pt">　　新浪微博的开放平台，要求上传图片时必须使用multipart/form-data的方式进行上传，但OAuth协议在定义时，描述Content-Type为</span></pre>
+<pre><span style="font-size:12pt">application/x-www-form-urlencoded, 而并没有提及如何在multipart/form-data使用。</span><br></pre>
+<pre><span style="font-size:12pt">　　在网上基本上找不到任何一个地方有提及在新浪微博的开放平台上以OAuth的方式上传图片，经过一个晚上的尝试与借鉴Twitter上的做法后，</span></pre>
+<pre><span style="font-size:12pt">终于发现了</span><span style="line-height:24px;font-size:16px">解决方法。</span></pre>
+<pre><span style="font-size:12pt">　　基本上，在协议上没有说明的内容，就必须由民间采用较为直观的方式进行解决。要在新浪微博的接口中进行图片上传，必须使用multipart/</span></pre>
+<pre><span style="font-size:12pt">form-data</span><span style="line-height:24px;font-size:16px">作为Content-Type，而OAuth的认证参数不能放入form-data中，必须使用Authorization Header来处理，而这时，必须将除了文</span></pre>
+<pre><span style="line-height:24px;font-size:16px">件的参数，</span><span style="line-height:24px;font-size:16px">在这个接口中为</span><span style="line-height:24px;font-size:16px">status加入到oauth的加密中，但并不出现在Authorization Header中，而是后续加入到fom-data中，这样就能够</span></pre>
+<pre><span style="line-height:24px;font-size:16px">正常的上传图片并发表</span><span style="line-height:24px;font-size:16px">微博了。</span><span style="line-height:24px;font-size:16px">通过这个简单而麻烦的方法，终于能够安全地上传图片到新浪微博。</span></pre>
+<pre><span style="font-size:12pt">6.最后</span></pre>
+<pre><span style="font-size:12pt">　　至此，本人已成功调用新浪微博绝大多数的接口，并开始将应用覆盖搜狐微博，网易微博等开放平台，希望可以通过这篇文章，记录下一些经</span></pre>
+<pre><span style="font-size:12pt">验与教训。</span><br></pre>
+<pre><span style="line-height:24px;font-size:12pt"><br></span></pre>
+<pre><span style="line-height:24px;font-size:12pt">7.参考资料</span></pre>
+<p><span style="font-size:12pt">[RFC5849] E. Hammer-Lahav, Ed. <a href="http://tools.ietf.org/html/rfc5849">"</a><span style="line-height:39px"><a href="http://tools.ietf.org/html/rfc5849">The OAuth 1.0 Protocol"</a>,RFC5849</span></span></p>
+<p><span style="font-size:12pt">[RFC1867]<span style="font-family:Verdana,Arial,Helvetica,sans-serif;line-height:19px;white-space:pre">  E. Nebel,L. Masinter,<a href="http://tools.ietf.org/html/rfc1867">"</a></span><span style="line-height:24px"><a href="http://tools.ietf.org/html/rfc1867">Form-based File Upload in HTML"</a>,RFC1867</span></span></p>
+<p><span style="line-height:24px;font-size:12pt">[RFC2616] Fielding,R.,Gettys,J,e <a href="http://tools.ietf.org/html/rfc2616">"Hypertext Transfer Protocol -- HTTP/1.1"</a> , RFC2616</span></p>
+<p><span style="line-height:24px;font-size:12pt">[RFC2617] Franks,J.<a href="http://tools.ietf.org/html/rfc2617">"HTTP Authentication: Basic and Digest Access Authentication"</a>, RFC2617</span></p>
+<p><span style="font-size:12pt">新浪微博开放平台：<a href="http://open.t.sina.com.cn/wiki/index.php/Oauth">http://open.t.sina.com.cn/wiki/index.php/Oauth</a></span></p>
+<pre>  　　　　 </pre><img src="http://www.cnblogs.com/liangxing/aggbug/1855938.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/liangxing/">梁星</a> 发表于 2010-10-19 22:31 <a href="http://www.cnblogs.com/liangxing/archive/2010/10/19/1855938.html">原文链接</a></p><p>评论: 5　<a href="http://www.cnblogs.com/liangxing/archive/2010/10/19/1855938.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/liangxing/archive/2010/10/19/1855938.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/78024/">苹果提供发布会在线视频直播</a><span style="color:gray">(2010-10-20 22:23)</span><br>· <a href="http://news.cnblogs.com/n/78023/">联想称Windows 7操作系统不适于平板电脑</a><span style="color:gray">(2010-10-20 22:12)</span><br>· <a href="http://news.cnblogs.com/n/78020/">盛大创新院许式伟：影响我一生的五个重要选择</a><span style="color:gray">(2010-10-20 22:02)</span><br>· <a href="http://news.cnblogs.com/n/78016/">Facebook开发商：Android和iOS系统都不开放</a><span style="color:gray">(2010-10-20 21:27)</span><br>· <a href="http://news.cnblogs.com/n/78019/">iPad已经开始影响商用PC市场</a><span style="color:gray">(2010-10-20 21:27)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77969/">程序员一族</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

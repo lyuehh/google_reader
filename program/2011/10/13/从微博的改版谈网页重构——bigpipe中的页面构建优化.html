@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>从微博的改版谈网页重构——bigpipe中的页面构建优化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>从微博的改版谈网页重构——bigpipe中的页面构建优化</h2>
+<p class="meta">13 Oct 2011</p>
+
+<div class="post">
+<h2>从微博的改版谈网页重构——bigpipe中的页面构建优化</h2>
+
+<h3>by P迪</h3>
+
+<h3>at 2011-10-12 16:21:18</h3>
+
+<h3>original <a href="http://www.alibuybuy.com/posts/66024.html">http://www.alibuybuy.com/posts/66024.html</a></h3>
+
+<p>题记：搞互联网的同学也许都知道一个数字——<strong>4</strong>秒，有研究表明，如果一个网站没有在<strong>4</strong>秒之内加载完成，用户就会感到焦躁不愉快，并离开这个网站（数据来自性能测试网站http://gtmetrix.com/）。网站的内容、SEO优化、用户体验？哪个更重要呢？在速度面前，也许这些都相对更次要。所以提高网页效率，是我们在新版微博的第一目标。从四个方面来浅谈我们新版微博的优化。</p>
+
+
+<p> </p>
+
+
+<p><span style="color:#990030"><strong>一、</strong><strong>HTTP</strong><strong>请求数的权衡</strong></span></p>
+
+
+<p><strong>1、为什么要关心http请求？</strong></p>
+
+
+<p>当浏览器向Web服务器发出请求时，它向服务器传递了一个数据块，也就是请求信息。在用户打开一个页面的初初，包括等待时间、请求时间、建立响应时间、渲染时间……，都是消耗在前端的。比如下载图片、下载样式表、JavaScript脚本、flash等文件。大家应该都经历过那个“多图杀猫”的时代，加载那样一个网页会花费大量的时间。减少这些资源文件的请求数将是提高网页显示效率的重点。</p>
+
+
+<p>假设用户家的网速是10Mbps，10Mbps=10/8=1.25MB/s，那么他打开一个网页时，如果网页文件小于1.25MB，理论上他可以在一秒之内打开网页。下载网页的快慢在显示速度上占了很大比重，所以，网页本身体积越小，浏览速度就会越快。这就需要产品、交互、设计，从最初就遵循尽量精简的原则。</p>
+
+
+<p>现在，就揭开新版微博的面纱，看看微博3.0和新版微博的区别吧。</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s13.sinaimg.cn/orignal/48261185tac6b3055074c&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/d79bc." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p><strong>微博3.0截图</strong></p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s12.sinaimg.cn/orignal/48261185tac6b3045df2b&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/c5e15." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p><strong>新版微博截图<br>
+</strong></p>
+
+
+<p>微博3.0是大家熟悉的两栏结构，总宽为800px，有一级导航和二级导航、发布框、feed区、个人简介区。新版微博是现在最流行的三栏式布局，总宽950px，除以前的内容一个都不少之外，还整合出了左侧导航和右侧各种引导和公告。所以从理论上讲，虽然内容更丰富了，但新版微博着实比微博3.0的页面体积大了很多。</p>
+
+
+<p> </p>
+
+
+<p><strong>2、什么是bigpipe？</strong></p>
+
+
+<p>网上有个例子举得好：在饭馆点菜吃的时候，如果点了四个菜，厨师没有必要把四个菜一起炒好再上来。微博3.0就是这种把所有菜都炒好再上桌的网页加载模式。所以用户吃上菜的时候，已经是第5秒了。现在新版微博的bigpipe网页加载模式，是炒好一个菜先一个菜，用户可以先吃着，厨师再炒第二个菜。甚至可以几个菜并发同时炒。所以用户吃上第一口菜的时间可能是第1秒，比之前提前了很多。</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s3.sinaimg.cn/orignal/48261185tac6b3045b162&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/48c44." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p><strong>bigpipe模式示意图</strong><br>
+JS工程师把页面分割成若干个小块（pagelet），模块彼此独立，把html语言转变为JS语言，再把CSS通过style的方式加载进这段代码，而不需要用以往的头部link css地址的方式取样式。每个模块有自己对应的html、CSS、JS，一旦开始运行模块，就会寻找到对应的CSS，并显示对应innerHTML内容插入到对应的html元素中，同时渲染出本模块效果。比如执行到feed区域的 id=”pl_content_homeFeed”时，样式表只调用了feed.css。</p>
+
+
+<p> </p>
+
+
+<p><strong>3、为什么新版微博 CSS的HTTP请求数不降反增？</strong></p>
+
+
+<p>通过上面说的这种模式，css被全部link到头部，是为了给后台代码提供出pagelet所需要的样式列表。以前微博3.0头部只link了3个CSS，新版微博首页头部却需要link10多个css。虽然加载文件多了，新版微博CSS加载请求数反而高于v3，看似yslow降级了（这个数据已经不能说明任何问题了）。但实际上新版微博CSS没有像以往一样合并起来，而是用一个加载一个，CSS和JS被分配到不同流水线中，模块的加载变成并行的，先执行完的模块先显示出来。所以新版微博CSS渲染的总时间并不超过V3CSS渲染的总时间，速度反而快了很多，减少了视觉等待。</p>
+
+
+<div>
+<div>
+<table border="0" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="93"> </td>
+<td width="93">请求数</td>
+<td width="87">总大小</td>
+<td width="95">加载时间</td>
+</tr>
+<tr>
+<td width="93">V3 CSS</td>
+<td width="93">3 个请求</td>
+<td width="87">76.3 KB</td>
+<td width="95">8.53s</td>
+</tr>
+<tr>
+<td width="93">V4 CSS</td>
+<td width="93">24个请求</td>
+<td width="87">50.2KB</td>
+<td width="95">6.08s</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<p>上面这张表格，来自yslow的分析。我们通过把页面切成细小模块写样式的做法，虽然请求数比以前大了8倍，但总大小上直降20K。</p>
+
+
+<p>将多个CSS合并的做法固然可以减少请求，但对上亿用户的微博页面来说，完成合并也许会带来5%速度的提升。但是如果按bigpipe模式，即使http请求数提高了，但是整体的速度也许是之前的50%。</p>
+
+
+<p><span style="color:#990030"><strong>二、</strong><strong>对CSS</strong><strong>的优化处理</strong></span></p>
+
+
+<p><strong>1、提取公用模块或公用元素，并反复调用</strong></p>
+
+
+<p>如果用户每次访问微博首页时，就重新下载读取CSS文件。这就会造成给服务器带来额外压力且用户重复读取耗时。新版微博的做法是，把模块分为全局级模块和页面级模块，首页是全站的核心，所有模块都是重要且重复性高的，所以首页的所以模块都是全局级模块。首页所需要的CSS被整理成一个pl列表反馈给工程师，等待处理。而一些非公共的css模块样式被单独写在属于本页面的文件里，这样就最大化的节省了文件大小及利用率。这么做还有一个好处，就是公共模块样式被调用过后，会在浏览器里留下缓存。调用最频繁的模块，反而样式被最快的加载进来。</p>
+
+
+<p>举个简单的例子：</p>
+
+
+<p>.clearfix:after{content: “.”;display: block;height: 0;clear: both;visibility: hidden;}</p>
+
+
+<p>.clearfix {display: inline-block;}</p>
+
+
+<p>这是一段全局代码，基本上每个页面都会用到这个类，我们就没必要把这句写在每个网页的CSS里面，只把它提取到base.css里，并方便进行皮肤管理。</p>
+
+
+<p>又比如，首页右侧栏有个“可能感兴趣的活动”类似的模块都是采用独立的div容器，这个段落的详细代码，如果写在公用CSS文件里，肯定就浪费了。</p>
+
+
+<p> </p>
+
+
+<p><strong>2、尽可能少的使用css images</strong></p>
+
+
+<p>能通过代码或字符实现的，就不用图片去解决。比如“可能感兴趣的人”展开气泡上下三角、返回顶部的箭头、“更多”后面的»符号等。既减小CSS图片请求，又不会面临若干套皮肤升级困难的问题，仅通过对CSS的color、backgroud等属性的控制，就可以换色了。</p>
+
+
+<p> </p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s1.sinaimg.cn/orignal/48261185tac6b3045a9b0&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/2e0b2." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p> </p>
+
+
+<p>可以看看按这个做法之后明显的优势，下图来自yslow的statistics。微博3.0的css image总大小为970.1K，新版微博的css image总大小为693.9K，总量直降30%。</p>
+
+
+<p><strong><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s16.sinaimg.cn/orignal/48261185tac6b30369aff&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/48c4b." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></strong></p>
+
+
+<p><strong>微博3.0 statistics</strong></p>
+
+
+<p> </p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s2.sinaimg.cn/orignal/48261185tac6b30366c81&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/9d386." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p>新版微博 statistics</p>
+
+
+<p> </p>
+
+
+<p><strong>3、尽量使用CSS3等新技术</strong></p>
+
+
+<p>在新版微博里，我们制定了使用CSS3的原则，即非图片类的元素效果图，如圆角、阴影、渐变、半透等效果，可以通过样式控制，而无需切图的元素，在得到设计师认可后，不用图片，只做样式控制。满足高级浏览器的视觉，ie系列不能显示的，有原则的放弃。不仅为速度助力，还在放弃低级浏览器的大方向前进一步。</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s14.sinaimg.cn/orignal/48261185tac6b30369f5d&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/f4d29." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s9.sinaimg.cn/orignal/48261185tac6b30276408&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/08902." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a><br>
+<strong>4、鼠标滑上效果改用伪类实现</strong></p>
+
+
+<p>在逐步放弃ie6的事情上，新版微博已经尽最大的努力做了。为了保证各浏览器的完全兼容，微博3.0以前我们曾经放弃让CSS实现鼠标滑上效果，而由JS控制。随着ie6使用率的日益降低，新版微博又一大革新就是重新使用伪类，仅通过CSS就实现的浏览器原生效果，不仅计算速度比计算一个JS快得多，也终于放弃了低端的ie6。</p>
+
+
+<p>举个评论页feed区的例子：</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s6.sinaimg.cn/orignal/48261185tac6b30276385&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/743a4." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a><br>
+CSS代码如下：</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s7.sinaimg.cn/orignal/48261185tac6b30272956&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/57be3." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p>每个单条feed在鼠标滑上时，都会显示举报和删除链接。这是交互设计出于对页面呈现内容的视觉舒适感所做的设计，我们通过对块元素直接写伪类，实现这个效果，不需要再通过JS了。ie6呢？就让它一直摆着去吧。</p>
+
+
+<p> </p>
+
+
+<p><span style="color:#990030"><strong>三、</strong><strong>对dom</strong><strong>结构的优化处理</strong></span></p>
+
+
+<p><strong>1、bigpipe模式重构并优化垃圾代码</strong></p>
+
+
+<p>v2从v1来，v3从v2来，在v3不堪重负的时候，新版微博的代码优化誓在必行了。所以我们并没有沿用之前的结构和CSS，而是直接推翻v3，重构新版微博。和JS工程师一起搭建的bigpipe模式，把页面分成细小的块，每一个模块对应一个CSS。代码写到最优，结构和样式完全分离，并杜绝内联调用的方式。下图示意了我们用模块配页面的最终效果，模块可以被细分为如此程度。模块拆的细，复用性被提高。</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s15.sinaimg.cn/orignal/48261185tac6b3036766e&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/a64ea." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a></p>
+
+
+<p> </p>
+
+
+<p><strong>2、尽量减少代码体积</strong></p>
+
+
+<p>由于代码行数越少体积就越小，所以我们这次想办法减少网页代码的行数。相同或类似的模块，说服设计师把视觉规范统一。我们只通过对CSS补丁，覆盖原样式，并不改变页面的dom结构，直接降低重复代码率。举个例子，“我的首页”和“我的profile页”，同样是有feed区域的，区别是但一个有头像，一个没有头像。只需要一套feed.css代码，然后在“我的profile页”独立的页面级CSS中，打个去掉头像的补丁即可。</p>
+
+
+<p> </p>
+
+
+<p><strong>3、首页中杜绝Table布局和iframe</strong></p>
+
+
+<p>杜绝首页中出现Table布局。因为传统的table布局，是把内容全部加载完成后，才渲染样式，延迟效果严重。而iframe页面框架，是非语义的，即使为空也会有较大资源消耗，还会阻止页面的onload。</p>
+
+
+<p> </p>
+
+
+<p><strong><span style="color:#990030">四、对图片的优化处理</span></strong></p>
+
+
+<p><strong>1、图片的存储格式</strong></p>
+
+
+<p>我们改变了v3的做法，把icon类小图片或背景类图片，由以前的gif存储尽可能多的转为png8的存储，这是个减小图片体积的好办法。Png8有gif的所有特点，但是相比gif，png8的优势是alpha透明和更优的压缩。png24全透明的图片，只给支持的浏览器使用，ie6在不影响视觉的前提下，改为gif呈现。我们还会利用的图片优化工具处理图片，保证效果但却降低文件大小。下图是主键类页面的images文件夹示意图，除必须独立的icon外，png类型的图片比重大得多。这在之前的V3并没有做到。</p>
+
+
+<p><a href="http://photo.blog.sina.com.cn/showpic.html#blogid=482611850100xpb1&amp;url=http://s14.sinaimg.cn/orignal/48261185tac6b30271f5d&amp;690"><img title="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化" src="http://alibuybuy-img11.stor.sinaapp.com/2011/10/bbf57." alt="从微博的改版谈网页重构鈥斺攂igpipe中的页面构建优化"></a><br>
+<strong>2、css sprites</strong></p>
+
+
+<p>在图片的拼合方面，我们是持之以恒这么做的。在v3里，我们把所有首页和profile页里出现的背景类图片都拼合到一张大图上，新版微博比之前高明在，我们把放置文件夹细分。假设我们把公用型放入common，页面类放入index，换肤类放入skin。把sprites拆分的更细，尽可能在加载首页时，减少图片请求数。</p>
+
+
+<p> </p>
+
+
+<p><strong>3、大图片、小图片</strong></p>
+
+
+<p>对于大背景图，我们的做法是不分割成小区块儿的。首先的因为，原本一个图片的请求数会变成多个。另外，大约80%以上调用图片所消耗的时间，是用来检索缓存和确定链接是否有效的阻塞时间。也就是说，如果把一个大图片，切成若干小图片，虽然解决了图片的加载时间，却花费了更多的阻塞时间。</p>
+
+
+<p> </p>
+
+
+<p><strong>4、在已知宽高的图片标签内，直接指定宽高。</strong></p>
+
+
+<p>Feed区域里头像需求是50*50的，所以后台直接吐出这个尺寸的图片。在已知宽高的情况的，我们在img标签中直接指定了height和width参数。因为如果浏览器没有找到这两个参数，它需要一边下载图片一边计算大小，首页有多少条feed就有多少个头像，浏览器需要不断地调整计算。当浏览器知道了height和width参数后，即使图片暂时无法显示，页面上也会预留空位，继续加载后面的内容。</p>
+
+
+<p> </p>
+
+
+<p>新版上线后，不少公测用户的反馈速度变快了，微博浏览起来更顺畅了。这不是我们页面重构组的功劳，是整个微博团队，或者说是bigpipe思想的功劳。但“速度快了”这句话本身，就是对我们团队工作最好的褒奖，对我们参与开发的团队成员的最好的鼓励。抓住产品改版的机会，就是自己对优化的研究和经验的积累落实到细节的机会。虽然还任重道远。</p>
+
+
+<p>来源：<a href="http://blog.sina.com.cn/s/blog_482611850100xpb1.html">http://blog.sina.com.cn/s/blog_482611850100xpb1.html</a></p>
+
+
+<hr>
+
+
+<p><small>© 推荐 for <a href="http://www.alibuybuy.com">互联网的那点事</a>, 2011. |
+<a href="http://www.alibuybuy.com/posts/66024.html">Permalink</a> |
+<a href="http://www.alibuybuy.com/posts/66024.html#comments">No comment</a> |
+Add to
+<a href="http://del.icio.us/post?url=http://www.alibuybuy.com/posts/66024.html&amp;title=%E4%BB%8E%E5%BE%AE%E5%8D%9A%E7%9A%84%E6%94%B9%E7%89%88%E8%B0%88%E7%BD%91%E9%A1%B5%E9%87%8D%E6%9E%84%E2%80%94%E2%80%94bigpipe%E4%B8%AD%E7%9A%84%E9%A1%B5%E9%9D%A2%E6%9E%84%E5%BB%BA%E4%BC%98%E5%8C%96">del.icio.us</a>
+<br>
+Post tags: <a href="http://www.alibuybuy.com/tag/%e4%ba%a7%e5%93%81%e8%ae%be%e8%ae%a1" rel="tag">产品设计</a>, <a href="http://www.alibuybuy.com/tag/%e5%be%ae%e5%8d%9a" rel="tag">微博</a>, <a href="http://www.alibuybuy.com/tag/%e7%bd%91%e9%a1%b5%e9%87%8d%e6%9e%84" rel="tag">网页重构</a><br>
+</small></p>
+
+
+
+
+<table cellspacing="0" cellpadding="3" border="0" style="clear:both">
+    
+    <tr>
+        <td colspan="5"><b><font size="-1" style="display:block!important;padding:20px 0 5px!important">你可能也喜欢：</font></b></td>
+    </tr>
+    
+        <tr>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important">
+                    <a title="互联网产品重构" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.alibuybuy.com%2F22519.html&amp;from=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F66024.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/09/15/31118267.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">互联网产品重构</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="网页设计应急小技巧" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F65674.html&amp;from=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F66024.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/09/30/8343810.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">网页设计应急小技巧</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="【连载一】twitter的新浪微博式创新系列之注册篇" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.alibuybuy.com%2F21664.html&amp;from=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F66024.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/09/09/29610945.png" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">【连载一】twitter的新浪微博式创新系列之注册篇</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="[译]BigPipe：高性能的“流水线技术”网页" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.alibuybuy.com%2F26590.html&amp;from=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F66024.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2010/12/04/864460.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">[译]BigPipe：高性能的“流水线技术”网页</font>
+                    </a>
+                </td>
+                <td width="102" valign="top" style="padding:5px!important;margin:0!important;border-left:1px solid #dddddd!important">
+                    <a title="小议如何进行网站的重构策划" style="text-decoration:none!important" href="http://app.wumii.com/ext/redirect.htm?url=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F19404.html&amp;from=http%3A%2F%2Fwww.alibuybuy.com%2Fposts%2F66024.html">
+                        <img style="margin:0!important;padding:2px!important;border:1px solid #dddddd!important;width:96px!important;height:96px!important" src="http://static.wumii.com/site_images/2011/04/08/5252517.jpg" width="96px" height="96px"><br>
+                        <font size="-1" color="#333333" style="display:block!important;line-height:15px!important;width:102px!important;font:12px/15px arial!important;height:60px!important;margin:3px 0 0 0!important;padding:0!important;overflow:hidden!important">小议如何进行网站的重构策划</font>
+                    </a>
+                </td>
+        </tr>
+    
+    <tr>
+        <td colspan="5" align="right">
+            <a style="text-decoration:none!important" href="http://www.wumii.com/widget/relatedItems.htm" title="无觅相关文章插件">
+                <font size="-1" color="#bbbbbb" style="display:block!important;font-family:arial!important;padding:5px 0!important;font-size:12px!important;color:#bbb!important">无觅</font>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<p><small>Feed enhanced by <a href="http://planetozh.com/blog/my-projects/wordpress-plugin-better-feed-rss/">Better Feed</a> from  <a href="http://planetozh.com/blog/">Ozh</a></small></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

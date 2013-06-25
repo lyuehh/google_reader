@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>一个Sqrt函数引发的血案</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>一个Sqrt函数引发的血案</h2>
+<p class="meta">07 Oct 2010</p>
+
+<div class="post">
+<h2>一个Sqrt函数引发的血案</h2>
+
+<h3>by 博客园-首页原创精华区</h3>
+
+<h3>at 2010-10-06 17:13:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/pkuoliver/archive/2010/10/06/sotry-about-sqrt.html">http://www.cnblogs.com/pkuoliver/archive/2010/10/06/sotry-about-sqrt.html</a></h3>
+
+<p><a href="http://sr.ju690.cn/meme/item/85229">玩聚SR还知道：</a></p>
+
+<blockquote>
+<div style="background-color:#e1ecfe!important;width:auto">
+    <div style="height:auto;min-height:56px;border-bottom:3px solid #fff">
+        <div style="float:left;margin:0px 10px 5px 5px">
+            <a href="http://sr.ju690.cn/people/Cello@GoogleReader?i=15266" title="Cello通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/images/avatar.gif" width="48" border="0/"></a>
+        </div>
+        <div>我在持续的震惊和膜拜当中！就是这样。
+            <div>
+                <a href="http://sr.ju690.cn/people/Cello@GoogleReader?i=15266" title="Cello通过GoogleReader分享的其他文章">Cello</a> 在 <a href="https://www.google.com/reader/shared/04983351521452458302">GoogleReader</a> 说 
+            </div>
+        </div>
+    </div>
+    <div style="height:auto;min-height:56px;border-bottom:3px solid #fff">
+        <div style="float:left;margin:0px 10px 5px 5px">
+            <a href="http://sr.ju690.cn/people/yshen@GoogleReader?i=6008" title="yshen通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/images/avatar.gif" width="48" border="0/"></a>
+        </div>
+        <div>那个神秘的数字，以前貌似曾经见过
+            <div>
+                <a href="http://sr.ju690.cn/people/yshen@GoogleReader?i=6008" title="yshen通过GoogleReader分享的其他文章">yshen</a> 在 <a href="https://www.google.com/reader/shared/16113725119753988081">GoogleReader</a> 说 
+            </div>
+        </div>
+    </div>
+    <div>还有<a href="http://sr.ju690.cn/people/MagicFish1990@GoogleReader?i=6265" title="MagicFish1990通过GoogleReader分享的其他文章"><img src="http://sr.ju690.cn/static/clogo/4.png?v=690" border="0/"> MagicFish1990</a>, 推荐，<a href="http://sr.ju690.cn/meme/item/85229"><b>查看全部 <big style="color:#ff7b7a;font-family:&#39;Georgia&#39;;font-size:16px">44</big> 个推荐 </b></a>
+    </div>
+</div></blockquote>
+
+
+
+
+<div style="margin:0;padding:10px 0"><a href="http://sr.ju690.cn/author/%E5%8D%9A%E5%AE%A2%E5%9B%AD-%E9%A6%96%E9%A1%B5%E5%8E%9F%E5%88%9B%E7%B2%BE%E5%8D%8E%E5%8C%BA"><b>博客园-首页原创精华区</b></a>发表于2010-10-06 17:13:00</div>
+
+
+<div style="margin:0;padding:5px 0"><p><a href="http://www.cnblogs.com/pkuoliver/"><img src="http://pic.cnblogs.com/face/u160962.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/pkuoliver/">码农1946</a> 发表于 2010-10-06 17:13 <a href="http://www.cnblogs.com/pkuoliver/archive/2010/10/06/sotry-about-sqrt.html">原文链接</a> 阅读: 778 评论: 10</p><p>好吧，我承认我标题党了，不过既然你来了，就认真看下去吧，保证你有收获。</p>
+<p>我们平时经常会有一些数据运算的操作，需要调用sqrt，exp，abs等函数，那么时候你有没有想过：这个些函数系统是如何实现的？就拿最常用的sqrt函数来说吧，系统怎么来实现这个经常调用的函数呢？</p>
+<p><a href="http://blog.redfox66.com/post/story-about-sqrt.aspx">虽然有可能你平时没有想过这个问题，不过正所谓是“临阵磨枪，不快也光”，你“眉头一皱，计上心来”，这个不是太简单了嘛，用二分的方法，在一个区间中，每次拿中间数的平方来试验，如果大了，就再试左区间的中间数；如果小了，就再拿右区间的中间数来试。比如求sqrt(16)的结果，你先试（0+16）/2=8，8*8=64，64比16大，然后就向左移，试（0+8）/2=4，4*4=16刚好，你得到了正确的结果sqrt(16)=4。然后你三下五除二就把程序写出来了</a>：</p>
+<pre>float SqrtByBisection(float n) //用二分法 
+{ 
+    if(n&lt;0) //小于0的按照你需要的处理 
+        return n; 
+    float mid,last; 
+    float low,up; 
+    low=0,up=n; 
+    mid=(low+up)/2; 
+    do
+    {
+        if(mid*mid&gt;n)
+            up=mid; 
+        else 
+            low=mid;
+        last=mid;
+        mid=(up+low)/2; 
+    }while(abs(mid-last) &gt; eps);//精度控制
+    return mid; 
+} </pre>
+<p>然后看看和系统函数性能和精度的差别（其中时间单位不是秒也不是毫秒，而是CPU Tick，不管单位是什么，统一了就有可比性） 
+  <br><img src="http://pic002.cnblogs.com/images/2010/160962/2010100617115874.png" alt=""></p>
+<p>从图中可以看出，二分法和系统的方法结果上完全相同，但是性能上整整差了几百倍。为什么会有这么大的区别呢？难道系统有什么更好的办法？难道。。。。哦，对了，回忆下我们曾经的高数课，曾经老师教过我们“牛顿迭代法快速寻找平方根”，或者这种方法可以帮助我们，具体步骤如下：</p>
+<p>求出根号a的近似值：首先随便猜一个近似值x，然后不断令x等于x和a/x的平均数，迭代个六七次后x的值就已经相当精确了。 
+  <br>例如，我想求根号2等于多少。假如我猜测的结果为4，虽然错的离谱，但你可以看到使用牛顿迭代法后这个值很快就趋近于根号2了： 
+  <br>(       4  + 2/4        ) / 2 = 2.25 
+  <br>(     2.25 + 2/2.25     ) / 2 = 1.56944.. 
+  <br>( 1.56944..+ 2/1.56944..) / 2 = 1.42189.. 
+  <br>( 1.42189..+ 2/1.42189..) / 2 = 1.41423.. 
+  <br>.... <img src="http://pic002.cnblogs.com/images/2010/160962/2010100617122297.gif" alt=""> 
+  <br>这种算法的原理很简单，我们仅仅是不断用(x,f(x))的切线来逼近方程x^2-a=0的根。根号a实际上就是x^2-a=0的一个正实根，这个函数的导数是2x。也就是说，函数上任一点(x,f(x))处的切线斜率是2x。那么，x-f(x)/(2x)就是一个比x更接近的近似值。代入 f(x)=x^2-a得到x-(x^2-a)/(2x)，也就是(x+a/x)/2。 </p>
+<p>相关的代码如下：</p>
+<pre><pre>float SqrtByNewton(float x)
+{
+    float val = x;//最终
+    float last;//保存上一个计算的值
+    do
+    {
+        last = val;
+        val =(val + x/val) / 2;
+    }while(abs(val-last) &gt; eps);
+    return val;
+}</pre>
+</pre>
+<p>然后我们再来看下性能测试：</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/160962/2010100617123967.png" alt=""></p>
+<p>哇塞，性能提高了很多，可是和系统函数相比，还是有这么大差距，这是为什么呀？想啊想啊，想了很久仍然百思不得其解。突然有一天，我在网上看到一个神奇的方法，于是就有了今天的这篇文章，废话不多说，看代码先：</p>
+<pre><pre>float InvSqrt(float x)
+{
+    float xhalf = 0.5f*x;
+    int i = *(int*)&amp;x; // get bits for floating VALUE 
+    i = 0x5f375a86- (i&gt;&gt;1); // gives initial guess y0
+    x = *(float*)&amp;i; // convert bits BACK to float
+    x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
+    x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
+    x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
+
+    return 1/x;
+}
+</pre>
+</pre>
+<p>然后我们最后一次来看下性能测试：</p>
+<p><img src="http://pic002.cnblogs.com/images/2010/160962/2010100617125422.png" alt="">这次真的是质变了，结果竟然比系统的还要好。。。哥真的是震惊了！！！哥吐血了！！！一个函数引发了血案！！！血案，血案。。。</p>
+<p>到现在你是不是还不明白那个“鬼函数”，到底为什么速度那么快吗？不急，先看看下面的故事吧：</p>
+<div>
+<p>Quake-III Arena (雷神之锤3)是90年代的经典游戏之一。该系列的游戏不但画面和内容不错，而且即使计算机配置低，也能极其流畅地运行。这要归功于它3D引擎的开发者约翰-卡马克（John Carmack）。事实上早在90年代初DOS时代，只要能在PC上搞个小动画都能让人惊叹一番的时候，John Carmack就推出了石破天惊的Castle Wolfstein, 然后再接再励，doom, doomII, Quake...每次都把3-D技术推到极致。他的3D引擎代码资极度高效，几乎是在压榨PC机的每条运算指令。当初MS的Direct3D也得听取他的意见，修改了不少API。 </p>
+<p>最近，QUAKE的开发商ID SOFTWARE 遵守GPL协议，公开了QUAKE-III的原代码，让世人有幸目睹Carmack传奇的3D引擎的原码。这是QUAKE-III原代码的下载地址： 
+    <br><a href="http://www.fileshack.com/file.x?fid=7547">http://www.fileshack.com/file.x?fid=7547</a></p>
+<p>(下面是官方的下载网址，搜索 “quake3-1.32b-source.zip” 可以找到一大堆中文网页的。<a href="ftp://ftp.idsoftware.com/idstuff/source/quake3-1.32b-source.zip)">ftp://ftp.idsoftware.com/idstuff/source/quake3-1.32b-source.zip)</a></p>
+<p>我们知道，越底层的函数，调用越频繁。3D引擎归根到底还是数学运算。那么找到最底层的数学运算函数（在game/code/q_math.c）， 必然是精心编写的。里面有很多有趣的函数，很多都令人惊奇，估计我们几年时间都学不完。在game/code/q_math.c里发现了这样一段代码。它的作用是将一个数开平方并取倒，经测试这段代码比(float)(1.0/sqrt(x))快4倍：</p>
+<pre><pre>float Q_rsqrt( float number )
+{
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
+
+    x2 = number * 0.5F;
+    y   = number;
+    i   = * ( long * ) &amp;y;   // evil floating point bit level hacking
+    i   = 0x5f3759df - ( i &gt;&gt; 1 ); // what the fuck?
+    y   = * ( float * ) &amp;i;
+    y   = y * ( threehalfs - ( x2 * y * y ) ); // 1st iteration
+    // y   = y * ( threehalfs - ( x2 * y * y ) ); // 2nd iteration, this can be removed
+
+    #ifndef Q3_VM
+    #ifdef __linux__
+         assert( !isnan(y) ); // bk010122 - FPE?
+    #endif
+    #endif
+    return y;
+}  </pre>
+</pre>
+<p>函数返回1/sqrt(x)，这个函数在图像处理中比sqrt(x)更有用。 
+    <br>注意到这个函数只用了一次叠代！（其实就是根本没用叠代，直接运算）。编译，实验，这个函数不仅工作的很好，而且比标准的sqrt()函数快4倍！要知道，编译器自带的函数，可是经过严格仔细的汇编优化的啊！ 
+    <br>这个简洁的函数，最核心，也是最让人费解的，就是标注了“what the fuck?”的一句 
+    <br>      i = 0x5f3759df - ( i &gt;&gt; 1 ); </p>
+<p>再加上y  = y * ( threehalfs - ( x2 * y * y ) ); 
+    <br>两句话就完成了开方运算！而且注意到，核心那句是定点移位运算，速度极快！特别在很多没有乘法指令的RISC结构CPU上，这样做是极其高效的。 </p>
+<p>算法的原理其实不复杂,就是牛顿迭代法,用x-f(x)/f'(x)来不断的逼近f(x)=a的根。 </p>
+<p>没错，一般的求平方根都是这么循环迭代算的但是卡马克(quake3作者)真正牛B的地方是他选择了一个神秘的常数0x5f3759df 来计算那个猜测值，就是我们加注释的那一行，那一行算出的值非常接近1/sqrt(n)，这样我们只需要2次牛顿迭代就可以达到我们所需要的精度。好吧如果这个还不算NB,接着看: </p>
+<p>普渡大学的数学家Chris Lomont看了以后觉得有趣，决定要研究一下卡马克弄出来的这个猜测值有什么奥秘。Lomont也是个牛人，在精心研究之后从理论上也推导出一个最佳猜测值，和卡马克的数字非常接近, 0x5f37642f。卡马克真牛，他是外星人吗？ </p>
+<p>传奇并没有在这里结束。Lomont计算出结果以后非常满意，于是拿自己计算出的起始值和卡马克的神秘数字做比赛，看看谁的数字能够更快更精确的求得平方根。结果是卡马克赢了... 谁也不知道卡马克是怎么找到这个数字的。 </p>
+<p>最后Lomont怒了，采用暴力方法一个数字一个数字试过来，终于找到一个比卡马克数字要好上那么一丁点的数字，虽然实际上这两个数字所产生的结果非常近似，这个暴力得出的数字是0x5f375a86。 </p>
+<p>Lomont为此写下一篇论文，"Fast Inverse Square Root"。 论文下载地址： 
+    <br><a href="http://www.math.purdue.edu/~clomont/Math/Papers/2003/InvSqrt.pdf">http://www.math.purdue.edu/~clomont/Math/Papers/2003/InvSqrt.pdf</a> 
+    <br><a href="http://www.matrix67.com/data/InvSqrt.pdf">http://www.matrix67.com/data/InvSqrt.pdf</a></p>
+<p>参考：&lt;IEEE Standard 754 for Binary Floating-Point Arithmetic&gt;&lt;FAST INVERSE SQUARE ROOT&gt; </p>
+<p>最后，给出最精简的1/sqrt()函数：</p>
+<pre><pre>float InvSqrt(float x)
+{
+    float xhalf = 0.5f*x;
+    int i = *(int*)&amp;x; // get bits for floating VALUE 
+    i = 0x5f375a86- (i&gt;&gt;1); // gives initial guess y0
+    x = *(float*)&amp;i; // convert bits BACK to float
+    x = x*(1.5f-xhalf*x*x); // Newton step, repeating increases accuracy
+    return x;
+}  </pre>
+</pre>
+<p>大家可以尝试在PC机、51、AVR、430、ARM、上面编译并实验，惊讶一下它的工作效率。 </p>
+<p>前两天有一则新闻，大意是说 Ryszard Sommefeldt 很久以前看到这么样的一段 code (可能出自 Quake III 的 source code)：</p>
+<pre><pre>float InvSqrt (float x) 
+{
+    float xhalf = 0.5f*x;
+    int i = *(int*)&amp;x;
+    i = 0x5f3759df - (i&gt;&gt;1);
+    x = *(float*)&amp;i;
+    x = x*(1.5f - xhalf*x*x);
+    return x;
+}</pre>
+</pre>
+他一看之下惊为天人，想要拜见这位前辈高人，但是一路追寻下去却一直找不到人；同时间也有其他人在找，虽然也没找到出处，但是 Chris Lomont 写了一篇论文 (in PDF) 解析这段 code 的算法 (用的是 Newton’s Method，牛顿法；比较重要的是后半段讲到怎么找出神奇的 0x5f3759df 的)。 
+  <br>PS. 这个 function 之所以重要，是因为求 开根号倒数 这个动作在 3D 运算 (向量运算的部份) 里面常常会用到，如果你用最原始的 sqrt() 然后再倒数的话，速度比上面的这个版本大概慢了四倍吧… XD 
+  <br>PS2. 在他们追寻的过程中，有人提到一份叫做 MIT HACKMEM 的文件，这是 1970 年代的 MIT 强者们做的一些笔记 (hack memo)，大部份是 algorithm，有些 code 是 PDP-10 asm 写的，另外有少数是 C code (有人整理了一份列表) </div>
+<p>好了，故事就到这里结束了，希望大家能有有收获:)</p>
+<p>到我的博客查看原文？：<a href="http://blog.redfox66.com/post/story-about-sqrt.aspx">http://blog.redfox66.com/post/story-about-sqrt.aspx</a></p><img src="http://www.cnblogs.com/pkuoliver/aggbug/1844725.html?type=0" width="1" height="1" alt=""><p>评论: 10　<a href="http://www.cnblogs.com/pkuoliver/archive/2010/10/06/sotry-about-sqrt.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/pkuoliver/archive/2010/10/06/sotry-about-sqrt.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76468/">宏达电Q3净利3.6亿美元 Android手机销量创纪录</a><span>(2010-10-06 22:51)</span><br>· <a href="http://news.cnblogs.com/n/76467/">QQ游戏辉煌无俩 腾讯遭遇“七年之痒”</a><span>(2010-10-06 22:22)</span><br>· <a href="http://news.cnblogs.com/n/76466/">传谷歌应用商店将使用eBay支付系统PayPal</a><span>(2010-10-06 22:18)</span><br>· <a href="http://news.cnblogs.com/n/76465/">美日三科学家获得2010年诺贝尔化学奖</a><span>(2010-10-06 20:08)</span><br>· <a href="http://news.cnblogs.com/n/76464/">传松下正开发便携式游戏机 或重返游戏市场</a><span>(2010-10-06 20:07)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76302/">2010年10月编程语言排行榜：Java的混乱之治</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></div>
+
+
+
+
+<div style="padding-top:20px;border-top:1px solid #cbd9d9;padding-bottom:10px;FONT-SIZE:13px">
+<strong>推荐相关的热文: </strong><br> 
+    <div><img src="https://www.google.com/s2/favicons?domain=group.mtime.com" border="0/"> <a title="数字大赏：50张HIGH图之我爱抢镜头 | 4个推荐" href="http://sr.ju690.cn/meme/item/83522">数字大赏：50张HIGH图之我爱抢镜头 | 4荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=developers.solidot.org" border="0/"> <a title="Google Percolator替代MapReduce | 26个推荐" href="http://sr.ju690.cn/meme/item/83997">Google Percolator替代MapReduce | 26荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=blog.codingnow.com" border="0/"> <a title="关于 getter 和 setter | 9个推荐" href="http://sr.ju690.cn/meme/item/37193">关于 getter 和 setter | 9荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=linuxtoy.org" border="0/"> <a title="FetionWeather: 利用 Crontab+Libfetion 预报天气 | 5个推荐" href="http://sr.ju690.cn/meme/item/22836">FetionWeather: 利用 Crontab+Libfetion 预报天气 | 5荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=blog.devep.net" border="0/"> <a title="&quot;原理小解&quot;读后感 | 67个推荐" href="http://sr.ju690.cn/meme/item/64086">&quot;原理小解&quot;读后感 | 67荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=emacser.com" border="0/"> <a title="介绍一些 emacs 功能强大的函数 | 4个推荐" href="http://sr.ju690.cn/meme/item/70184">介绍一些 emacs 功能强大的函数 | 4荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=blog.codingnow.com" border="0/"> <a title="sequence 的 C 实现 | 25个推荐" href="http://sr.ju690.cn/meme/item/50091">sequence 的 C 实现 | 25荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.gracecode.com" border="0/"> <a title="Mini，又个 Javascript 选择器 | 7个推荐" href="http://sr.ju690.cn/meme/item/41617">Mini，又个 Javascript 选择器 | 7荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.d99net.net" border="0/"> <a title="瑞星和360只顾口水战，软件的安全问题到底还要不要理~~~~ | 32个推荐" href="http://sr.ju690.cn/meme/item/60315">瑞星和360只顾口水战，软件的安全问题到底还要不要理~~~~ | 32荐</a>
+    </div> 
+    <div><img src="https://www.google.com/s2/favicons?domain=www.cnblogs.com" border="0/"> <a title="C++/C#/F#/Java/JS/Lua/Python/Ruby渲染比试 | 11个推荐" href="http://sr.ju690.cn/meme/item/72891">C++/C#/F#/Java/JS/Lua/Python/Ruby渲染比试 | 11荐</a>
+    </div>
+</div>
+
+
+<div style="float:left;margin:2px 10px 2px 2px">
+<a href="http://sr.ju690.cn" title="玩聚SR"><img src="http://sr.ju690.cn/static/images/fish.jpg" border="0" width="80px"></a>
+</div>
+
+
+<div><a href="http://sr.ju690.cn/">The readings, filtered by social network!</a><br>阅读<a href="http://sr.ju690.cn/tag/tech">科技</a>频道热文。手机请登录<a href="http://sr.ju690.cn/m">移动版</a>。</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

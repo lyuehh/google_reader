@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ajax登录页面</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ajax登录页面</h2>
+<p class="meta">05 Sep 2010</p>
+
+<div class="post">
+<h2>Ajax登录页面</h2>
+
+<h3>by Alexis</h3>
+
+<h3>at 2010-09-04 17:51:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/alexis/archive/2010/09/04/1818144.html">http://www.cnblogs.com/alexis/archive/2010/09/04/1818144.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/alexis/"><img src="http://pic.cnblogs.com/face/u97911.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/alexis/">Alexis</a> 发表于 2010-09-04 17:51 <a href="http://www.cnblogs.com/alexis/archive/2010/09/04/1818144.html">原文链接</a> 阅读: 1146 评论: 23</p>
+
+
+<p><span style="font-family:宋体">登录界面是信息系统提供的必备的功能，是提供给用户提供维护信息的接口。接下来，我来带领大家打造一个漂亮、安全的登录界面，使用的技术是</span>ASP.NET+jQuery</p>
+
+
+<p><span style="font-family:宋体">先来看看预览效果</span></p>
+
+
+<p>
+
+
+ </p>
+
+
+<pre><code> &lt;p&gt;Ajax&lt;span style="font-family:宋体"&gt;登录重点在&lt;/span&gt;Ajax&lt;span style="font-family:宋体"&gt;，输入用户名和密码后，使用&lt;/span&gt;Ajax&lt;span style="font-family:宋体"&gt;方式将信息提交到服务器端，服务器端判断时候存在该用户，存在则登录成功并转向管理界面（有时需要写&lt;/span&gt;cookie&lt;span style="font-family:宋体"&gt;或是利用&lt;/span&gt;Session&lt;span style="font-family:宋体"&gt;，此处不作讨论），不存在则提示登录失败。&lt;/span&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;span style="font-family:宋体"&gt;基本流程图如下&lt;/span&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;img alt="" src="http://images.cnblogs.com/cnblogs_com/alexis/ajaxlogin.jpg" border="0"&gt;&lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt;&lt;span style="font-family:宋体"&gt;上面是主要思路，为了打造安全的登录，在使用&lt;/span&gt;ajax&lt;span style="font-family:宋体"&gt;将密码传到服务器端前，我们可以使用&lt;/span&gt;MD5&lt;span style="font-family:宋体"&gt;对密码进行加密，当然数据库中存储的也是加密后的字符串。&lt;/span&gt;jQuery&lt;span style="font-family:宋体"&gt;有一款这样的&lt;/span&gt;MD5&lt;span style="font-family:宋体"&gt;加密插件，使用十分方便。&lt;/span&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;span style="font-family:宋体"&gt;流程知道了，就可以方便实现了。以下是一些主要的代码&lt;/span&gt;&lt;/p&gt;
+ &lt;p&gt;Default.aspx&lt;span style="font-family:宋体"&gt;：主要是提供超链接，点击会调用thickbox，打开弹出页面。&lt;/span&gt;&lt;/p&gt;
+ &lt;br&gt;
+ &lt;div&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" height="16" width="16"&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"&gt;&lt;span&gt;代码&lt;/span&gt;
+ &lt;div&gt;
+ &lt;div&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;div &lt;/span&gt;&lt;span style="color:#ff0000"&gt;style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;margin-left:50px; margin-top:50px; &amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ 欢迎使用后台，&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;a &lt;/span&gt;&lt;span style="color:#ff0000"&gt;href&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;Login.htm?TB_iframe&amp;amp;height=180&amp;amp;width=350&amp;amp;modal=true&amp;quot;&lt;/span&gt;&lt;span style="color:#ff0000"&gt; class&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="thickbox"&lt;/span&gt;&lt;span style="color:#ff0000"&gt;   id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="myToolTip"&lt;/span&gt;&lt;span style="color:#ff0000"&gt;  title&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="点击登录，进入后台管理"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;点击登录！&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;a&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#ff0000"&gt;&amp;amp;nbsp;&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;span style="color:#ff0000"&gt;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;span style="color:#ff0000"&gt;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&amp;amp;nbsp;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ 继续浏览前台，&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;a &lt;/span&gt;&lt;span style="color:#ff0000"&gt;href&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="../Default.aspx"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;返回前台&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;a&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;p&gt;&lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt;login.htm：真正的登录界面，负责登录逻辑&lt;/p&gt;
+ &lt;div&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"&gt;&lt;span&gt;代码&lt;/span&gt;
+ &lt;div&gt;
+ &lt;div&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;script &lt;/span&gt;&lt;span style="color:#ff0000"&gt;type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="text/javascript"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; src&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="js/jquery-1.3.2.js"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;script&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;script &lt;/span&gt;&lt;span style="color:#ff0000"&gt;type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="text/javascript"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;    $().ready(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; () {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#Login&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).click(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; () {&lt;br&gt;
+             &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;if&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; ($(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#username&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).val() &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;==&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;""&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;||&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#password&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).val() &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;==&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;""&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;) {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                alert(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;用户名或密码不能为空！&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;);&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;            }&lt;br&gt;
+             &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;else&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                $.ajax({&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    type: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;POST&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;,&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    url: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;Ajax/LoginHandler.ashx&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;,&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    data: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;username=&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;+&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; escape($(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#username&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).val()) &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;+&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;&amp;amp;password=&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;+&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; escape($(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#password&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;'&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).val()),&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    beforeSend: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; () {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#loading&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).css(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;display&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;, &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;block&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;); &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;//&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;点击登录后显示loading，隐藏输入框&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#login&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).css(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;display&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;, &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;none&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;);&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    },&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    success: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; (msg) {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#loading&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).hide(); &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;//&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;隐藏loading&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;if&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; (msg &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;==&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;success&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;) {&lt;br&gt;
+                             &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;//&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;parent.tb_remove();&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                            parent.document.location.href &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;=&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;admin.htm&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;//&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;如果登录成功则跳到管理界面&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                            parent.tb_remove();&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        }&lt;br&gt;
+                         &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;if&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; (msg &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;==&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;fail&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;) {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                            alert(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;登录失败！&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;);&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        }&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    },&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    complete: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; (data) {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#loading&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).css(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;display&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;, &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;none&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;); &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;//&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;点击登录后显示loading，隐藏输入框&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                        $(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;#login&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;).css(&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;display&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;, &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;block&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;"&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;);&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    },&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    error: &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#0000ff"&gt;function&lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt; (XMLHttpRequest, textStatus, thrownError) {&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                    }&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;                });&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;            }&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;        });&lt;br&gt;
+ &lt;/span&gt;&lt;span style="background-color:#f5f5f5;color:#000000"&gt;    });&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;script&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;div &lt;/span&gt;&lt;span style="color:#ff0000"&gt;id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="loading"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;text-align: center; display: none; padding-top: 10%&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+     &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;img &lt;/span&gt;&lt;span style="color:#ff0000"&gt;src&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="images/loadingajax.gif"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; alt&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="loading"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; &lt;/span&gt;&lt;span style="color:#0000ff"&gt;/&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;div&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;div &lt;/span&gt;&lt;span style="color:#ff0000"&gt;id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="login"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;text-align: center&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;div &lt;/span&gt;&lt;span style="color:#ff0000"&gt;style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;position:absolute; right:0; top:0&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;img &lt;/span&gt;&lt;span style="color:#ff0000"&gt;src&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="images/closebox.png"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; onclick&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="parent.tb_remove()"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; alt&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="点击关闭"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="cursor:pointer"&lt;/span&gt;&lt;span style="color:#ff0000"&gt;  &lt;/span&gt;&lt;span style="color:#0000ff"&gt;/&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;div&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;br&gt;
+     &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;table &lt;/span&gt;&lt;span style="color:#ff0000"&gt;border&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="0"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; cellpadding&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="3"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; cellspacing&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="3"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;margin: 0 auto;&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;tr&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;td &lt;/span&gt;&lt;span style="color:#ff0000"&gt;style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;text-align: right; padding: 10px&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;label&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#000000"&gt;                    用户名:&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;label&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;input &lt;/span&gt;&lt;span style="color:#ff0000"&gt;id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="username"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="text"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; size&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="20"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; &lt;/span&gt;&lt;span style="color:#0000ff"&gt;/&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;tr&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;tr&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;td &lt;/span&gt;&lt;span style="color:#ff0000"&gt;style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;text-align: right; padding: 10px&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;label&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#000000"&gt;                    密码:&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;label&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;input &lt;/span&gt;&lt;span style="color:#ff0000"&gt;id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="password"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="password"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; size&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="20"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; &lt;/span&gt;&lt;span style="color:#0000ff"&gt;/&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;tr&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;tr &lt;/span&gt;&lt;span style="color:#ff0000"&gt;align&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="right"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;td &lt;/span&gt;&lt;span style="color:#ff0000"&gt;colspan&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="2"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;input &lt;/span&gt;&lt;span style="color:#ff0000"&gt;type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="submit"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="Login"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; value&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;&amp;amp;nbsp;&amp;amp;nbsp;登&amp;amp;nbsp;录&amp;amp;nbsp;&amp;amp;nbsp;&amp;quot;&lt;/span&gt;&lt;span style="color:#ff0000"&gt; style&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;margin-right: 50px&amp;quot;&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#ff0000"&gt;&amp;amp;nbsp;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#800000"&gt;input &lt;/span&gt;&lt;span style="color:#ff0000"&gt;type&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="submit"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; id&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="LoginCancel"&lt;/span&gt;&lt;span style="color:#ff0000"&gt; value&lt;/span&gt;&lt;span style="color:#0000ff"&gt;=&amp;quot;&amp;amp;nbsp;&amp;amp;nbsp;取&amp;amp;nbsp;消&amp;amp;nbsp;&amp;amp;nbsp;&amp;quot;&lt;/span&gt;&lt;span style="color:#ff0000"&gt; onclick&lt;/span&gt;&lt;span style="color:#0000ff"&gt;="parent.tb_remove()"&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;td&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+         &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;tr&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+     &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;table&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;lt;/&lt;/span&gt;&lt;span style="color:#800000"&gt;div&lt;/span&gt;&lt;span style="color:#0000ff"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;p&gt;&lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt;LoginHandler.ashx：ajax处理类，简单的逻辑&lt;/p&gt;
+ &lt;div&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""&gt;&lt;img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"&gt;&lt;span&gt;代码&lt;/span&gt;
+ &lt;div&gt;
+ &lt;div&gt;&lt;span style="color:#008000"&gt;//&lt;/span&gt;&lt;span style="color:#008000"&gt;此处连接数据库查看是否有此用户，此处为了方便起见，直接判断&lt;/span&gt;&lt;span style="color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#000000"&gt;            &lt;/span&gt;&lt;span style="color:#0000ff"&gt;if&lt;/span&gt;&lt;span style="color:#000000"&gt; (username &lt;/span&gt;&lt;span style="color:#000000"&gt;==&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#800000"&gt;admin&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;span style="color:#000000"&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span style="color:#000000"&gt; password &lt;/span&gt;&lt;span style="color:#000000"&gt;==&lt;/span&gt;&lt;span style="color:#000000"&gt; &lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#800000"&gt;1&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#000000"&gt;)&lt;br&gt;
+             {&lt;br&gt;
+                 context.Response.Write(&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#800000"&gt;success&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#000000"&gt;);&lt;br&gt;
+                 &lt;/span&gt;&lt;span style="color:#008000"&gt;//&lt;/span&gt;&lt;span style="color:#008000"&gt;存储session&lt;/span&gt;&lt;span style="color:#008000"&gt;&lt;br&gt;
+ &lt;/span&gt;&lt;span style="color:#000000"&gt;            }&lt;br&gt;
+             &lt;/span&gt;&lt;span style="color:#0000ff"&gt;else&lt;/span&gt;&lt;span style="color:#000000"&gt;&lt;br&gt;
+             {&lt;br&gt;
+                 context.Response.Write(&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#800000"&gt;fail&lt;/span&gt;&lt;span style="color:#800000"&gt;"&lt;/span&gt;&lt;span style="color:#000000"&gt;);&lt;br&gt;
+             }&lt;/span&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+ &lt;p&gt;&lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt; ok，一个简单的登录功能就完成了，当然此处在登录的时候没有进行密码加密。&lt;/p&gt;
+ &lt;p&gt;下面我们来看看jQuery的加密插件MD5插件， 使用十分方便，加入md5.js的引用就可以使用$.md5()函数对字符串进行加密，&lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt;如下对上述代码做稍微改变，即可看到加密后的字符串， &lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt;login.htm中： &lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt; data: &amp;quot;username=&amp;quot; + escape($(&amp;#39;#username&amp;#39;).val()) + &amp;quot;&amp;amp;password=&amp;quot; + $.md5(escape($(&amp;#39;#password&amp;#39;).val())),&lt;/p&gt;
+ &lt;p&gt;success: function (msg) {&lt;br&gt;
+                         $(&amp;quot;#loading&amp;quot;).hide(); //隐藏loading&lt;br&gt;
+                         alert(msg);&lt;br&gt;
+                         if (msg == &amp;quot;success&amp;quot;) {&lt;br&gt;
+                             //parent.tb_remove();&lt;br&gt;
+                             parent.document.location.href = &amp;quot;admin.htm&amp;quot;; //如果登录成功则跳到管理界面&lt;br&gt;
+                             parent.tb_remove();&lt;br&gt;
+                         }&lt;br&gt;
+                         if (msg == &amp;quot;fail&amp;quot;) {&lt;br&gt;
+                             alert(&amp;quot;登录失败！&amp;quot;);&lt;br&gt;
+                         }&lt;br&gt;
+                     }&lt;/p&gt;
+ &lt;p&gt; LoginHandler.ashx中加密码返回即可：&lt;/p&gt;
+ &lt;p&gt;context.Response.Write(password); &lt;/p&gt;
+ &lt;p&gt;ok，再次运行程序会弹出 输入密码的MD5加密之后的字符串。&lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;
+ &lt;p&gt;以上是比较简陋的见解，大家需要源代码的可以留言，打包发到邮箱 &lt;br&gt;
+ &lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;
+ &lt;p&gt; &lt;/p&gt;&lt;img src="http://www.cnblogs.com/alexis/aggbug/1818144.html?type=1" width="1" height="1" alt=""&gt;&lt;p&gt;评论: 23　&lt;a href="http://www.cnblogs.com/alexis/archive/2010/09/04/1818144.html#pagedcomment"&gt;查看评论&lt;/a&gt;　&lt;a href="http://www.cnblogs.com/alexis/archive/2010/09/04/1818144.html#commentform"&gt;发表评论&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;a href="http://job.cnblogs.com/"&gt;程序员找工作，就在博客园&lt;/a&gt;&lt;/p&gt;&lt;hr&gt;&lt;p&gt;最新新闻：&lt;br&gt;· &lt;a href="http://news.cnblogs.com/n/73185/"&gt;PC厂商进入微利时代 开辟新市场增加收入&lt;/a&gt;&lt;span style="color:gray"&gt;(2010-09-05 11:43)&lt;/span&gt;&lt;br&gt;· &lt;a href="http://news.cnblogs.com/n/73184/"&gt;方舟子个人保镖下周上岗 律师称将长期进行保护&lt;/a&gt;&lt;span style="color:gray"&gt;(2010-09-05 11:38)&lt;/span&gt;&lt;br&gt;· &lt;a href="http://news.cnblogs.com/n/73183/"&gt;索尼发布GoogleTV 有望今秋在美国销售&lt;/a&gt;&lt;span style="color:gray"&gt;(2010-09-05 11:35)&lt;/span&gt;&lt;br&gt;· &lt;a href="http://news.cnblogs.com/n/73179/"&gt;500部微软Zune HD将登陆美联航班机&lt;/a&gt;&lt;span style="color:gray"&gt;(2010-09-05 11:22)&lt;/span&gt;&lt;br&gt;· &lt;a href="http://news.cnblogs.com/n/73180/"&gt;Vidyo将视频会议押宝于iPad和iPhone&lt;/a&gt;&lt;span style="color:gray"&gt;(2010-09-05 11:20)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;编辑推荐：&lt;a href="http://news.cnblogs.com/n/72989/"&gt;一些鲜为人知的编程事实&lt;/a&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;网站导航：&lt;a href="http://www.cnblogs.com"&gt;博客园首页&lt;/a&gt;  &lt;a href="http://home.cnblogs.com/"&gt;个人主页&lt;/a&gt;  &lt;a href="http://news.cnblogs.com"&gt;新闻&lt;/a&gt;  &lt;a href="http://home.cnblogs.com/ing/"&gt;闪存&lt;/a&gt;  &lt;a href="http://home.cnblogs.com/group/"&gt;小组&lt;/a&gt;  &lt;a href="http://space.cnblogs.com/q/"&gt;博问&lt;/a&gt;  &lt;a href="http://space.cnblogs.com"&gt;社区&lt;/a&gt;  &lt;a href="http://kb.cnblogs.com"&gt;知识库&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

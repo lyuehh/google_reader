@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>［实践经验＋代码］用node.js和express.js和jade搭建轻型cms系统</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>［实践经验＋代码］用node.js和express.js和jade搭建轻型cms系统</h2>
+<p class="meta">10 Aug 2011</p>
+
+<div class="post">
+<h2>［实践经验＋代码］用node.js和express.js和jade搭建轻型cms系统</h2>
+
+<h3>by 胡天硕－tianshuo</h3>
+
+<h3>at 2011-08-10 13:04:17</h3>
+
+<h3>original <a href="http://cnodejs.org/blog/?p=1703">http://cnodejs.org/blog/?p=1703</a></h3>
+
+<h1>用node.js+express.js轻型CMS系统第一讲</h1>
+
+
+<h2></h2>
+
+
+<h2>先看看效果图</h2>
+
+
+<p><a title="秦运恒，专注iPad展示" href="http://qinyh.com"><img src="http://www.qinyh.com/images/snapshot.png" alt="秦运恒官网效果图" width="900" height="540"></a></p>
+
+
+<h2>前言：</h2>
+
+
+<p>我们主要做的是iphone/ipad程序，但关注node.js很久，因为我们多少总是要做网站，做后台。node.js就像一个非常快的ruby。对于我们而言，其实学习node.js起来还是很简单，网上资料很多，但没有看到一些比较完整的例子。<strong>所以回报一下大家，在这里把我们基本上最核心的源码分享给大家了。</strong></p>
+
+
+<h2>背景介绍：</h2>
+
+
+<p>我用node.js已经实现过一些小的应用利用websockets配合移动终端做网页同步显示，但是没有一个真正的项目。</p>
+
+
+<p><strong>最近把公司官网移植到node.js上，已经上线：<a title="秦运恒，专注iPad展示" href="http://qinyh.com">qinyh.com</a>。</strong></p>
+
+
+<p> </p>
+
+
+<p>我们官网内容大概很少会变化，于是我们考虑把内容放在一个js文件里（chinese.json），而所有的路径放在另一个js文件里（route.json）。总共最后用了包括layout和404页面在内的八个视图。虽然不能说是一个完整的cms，但是已经实现了版面与内容的分离。也可以非常轻松地修改内容和图片。</p>
+
+
+<p>我们还用ajax配合node-mailer实现异步的发信功能，这个以后跟大家介绍。</p>
+
+
+<h2>核心技术介绍：</h2>
+
+
+<ul>
+<li><strong>node.js</strong> （<a href="http://nodejs.org/">nodejs.org</a>）运行快开发快的服务器框架，使用v8跑javascript</li>
+<li><strong>express.js</strong>（<a href="http://expressjs.com/">expressjs.com</a>） node.js上目前最好的网站服务器框架，尤其特别合适做REST协议。</li>
+<li><strong>jade</strong> （<a href="http://jade-lang.com/">jade-lang.com</a>）一个非常干净易用的html模板语言</li>
+</ul>
+
+
+<h2>框架结构</h2>
+
+
+<ul>
+<li>代码
+<ul>
+<li>/server.js 80端口上的服务器（负责虚拟主机）</li>
+<li>/app.js 官网服务器</li>
+<li>/email.js 邮件模块（这次没有讲）</li>
+</ul>
+</li>
+<li>路由列表
+<ul>
+<li>/router.json 关联路径，视图和内容</li>
+</ul>
+</li>
+<li>视图
+<ul>
+<li>/views/layout.jade 基础模板</li>
+<li>/views/index.jade 首页</li>
+<li>/views/….  还有6个模板</li>
+<li>/views/404.jade 错误页面</li>
+</ul>
+</li>
+<li>内容
+<ul>
+<li>/chinese.json 存放内容和图片路径</li>
+</ul>
+</li>
+<li>其他静态资源
+<ul>
+<li>/public/js/… 存放js文件</li>
+<li>/public/css/… 存放css文件</li>
+<li>/public/images/… 存放图片</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>联系我们</h2>
+
+
+<p>有什么疑问可以直接留言，或者也可以联系我:hts_某种符号_qinyh.com (也欢迎node.js工程师投简历）</p>
+
+
+<hr>
+
+
+<p>接下来是代码</p>
+
+
+<h2>/server.js</h2>
+
+
+<p>我们使用forever(<a href="https://github.com/indexzero/forever">https://github.com/indexzero/forever</a>)来跑node.js脚本,这样可以保证服务器不会down掉。<br>
+由于我们主机还想做别的项目所以我们要用到虚拟主机：</p>
+
+
+<p> </p>
+
+
+<pre> /**
+ * Module dependencies.
+ */
+
+var express = require('express');
+var offical = require('./app.js');
+
+var site_vhosts=[],vhosts;
+
+// Virtual Hosts
+site_vhosts.push(express.vhost('qinyh.com',offical));
+site_vhosts.push(express.vhost('www.qinyh.com',offical));
+
+vhost=express.createServer.apply(this,site_vhosts);
+
+vhost.listen(80);
+console.log("Express router Listening on port 80");</pre>
+
+
+<p><span style="font-family:monospace"><br>
+</span></p>
+
+
+<hr>
+
+
+<h2>/app.js</h2>
+
+
+<p>以下才是我们程序的主干部分，忽略掉了ajax邮件发送模块⋯⋯下次再讲<br>
+注意只有当在production mode时，才会开启缓存，才保证性能。</p>
+
+
+<pre> /**
+ * Module dependencies.
+ */
+
+var express = require('express');
+var app = module.exports = express.createServer();
+var fs=require('fs');
+
+// Configuration
+var oldconsole=console.log;
+log=function(obj,error){
+    if(process.platform!="win32"){
+        var color=(error)?"33[1;31m":"33[1;32m";
+        process.stdout.write(color);
+        oldconsole(obj);
+        process.stdout.write("33[0m");
+    }else{
+        oldconsole(obj);
+    }
+}
+console.log=function(obj){
+    log(obj,true);
+}
+
+app.configure(function(){
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+  app.use(express.static(__dirname + '/public')); //注意顺序，为了能够用到404，要把这个提前。
+  app.use(app.router);
+});
+
+app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  log("Warning: Server in Development Mode, add NODE_ENV=production",true);
+});
+
+app.configure('production', function(){
+  app.use(express.errorHandler());
+  log("Production Mode");
+});
+
+// Read JSON files
+//这里出现过一个非常恶心的bug，我们发现我们拿windows记事本产生的json文件node.js解析会有问题，于是去掉第一个字节。为了保证安全，文件也上来加了一个回车。
+//由于我们是一上来只解析一次，所以我们采用了同步方式</pre>
+
+
+<pre>var info=JSON.parse(fs.readFileSync('chinese.json', 'utf8').substr(1));
+var routes=JSON.parse(fs.readFileSync('router.json','utf8').substr(1));
+
+// Start router
+
+var    startRouter=function(path){
+        app.get(route, function(req,res){
+            //console.log("Connect to "+path);
+            var page=info[routes[path].data];
+            res.render(routes[path].template,page);//最核心的一句
+        });
+};
+
+for(route in routes){//如果直接for循环而不是调用函数，你就会发现route永远是最后一个
+    startRouter(route);
+}
+
+//File not found
+
+app.get('/*', function(req, res){
+        res.render('404',{status: 404,
+        title:'404 - 文件未找到'});
+});
+
+try{
+app.listen(3000);
+log("Express server listening on port 3000");
+}catch(e){
+    log("Error: "+e.message,1);
+}</pre>
+
+
+<p><span style="font-family:monospace"><br>
+</span></p>
+
+
+<hr>
+
+
+<h2>/router.json</h2>
+
+
+<p>我们通过router.json实现了路由表，可以看到index是view，而data是chinese.json里对应的内容：<span style="font-family:monospace"><br>
+</span></p>
+
+
+<pre>{
+    "/": {
+        "template": "index",
+        "data": "index"
+    },
+    "/products": {
+        "template": "secondary",
+        "data": "products"
+    },
+    "/products/clothes": {
+        "template": "products",
+        "data": "clothes"
+    },
+    "/products/wine": {
+        "template": "products",
+        "data": "wine"
+    },
+    "/products/furniture": {
+        "template": "products",
+        "data": "furniture"
+    },
+    "/solutions": {
+        "template": "secondary",
+        "data": "solutions"
+    },
+    "/solutions/shop": {
+        "template": "solutions",
+        "data": "shop"
+    },
+    "/solutions/e-shop": {
+        "template": "solutions",
+        "data": "eshop"
+    },
+    "/solutions/next-gen": {
+        "template": "solutions",
+        "data": "nextgen"
+    },
+    "/company": {
+        "template": "secondary",
+        "data": "company"
+    },
+    "/company/team": {
+        "template": "about",
+        "data": "team"
+    },
+    "/company/ideals": {
+        "template": "company",
+        "data": "ideals"
+    },
+    "/company/contact": {
+        "template": "contact",
+        "data": "contact"
+    },
+    "/company/jobs": {
+        "template": "secondary",
+        "data": "jobs"
+    },
+    "/company/jobs/it": {
+        "template": "jobs",
+        "data": "it"
+    },
+    "/company/jobs/design": {
+        "template": "jobs",
+        "data": "design"
+    },
+    "/company/jobs/sales": {
+        "template": "jobs",
+        "data": "sales"
+    }
+}</pre>
+
+
+<p><code><br>
+</code></p>
+
+
+<hr>
+
+
+<h2>/chinese.json</h2>
+
+
+<p>然后内容和图片是放在chinese.json里，我们由于一般改动很少，所以直接文本编辑器就很方便。如果经常更新，其实加一个后台也非常容易。<br>
+实际内容太多，只给两个例子<br>
+<code><br>
+</code></p>
+
+
+<pre>{
+    "index": {
+        "title": "首页 | 北京秦运恒信息技术有限公司",
+        "motto": "原来购物可以如此简单和生动",
+        "columns": [
+            {
+                "title": "最新产品",
+                "desc": "使用iPad展示商品为顾客提供更加丰富的渠道来探索和喜爱您的产品。",
+                "img": "/images/index/img1.png",
+                "href": "/products/"
+            },
+            {
+                "title": "解决方案",
+                "desc": "我们会与您一起找到适合您的解决方案，让您的事业蒸蒸日上。",
+                "img": "/images/index/img2.png",
+                "href": "/solutions/"
+            },
+            {
+                "title": "关于我们",
+                "desc": "年轻而专业。梦想加实干。敏捷和执着。这就是我们，您一定会喜欢跟我们合作。",
+                "img": "/images/index/img3.png",
+                "href": "/company/"
+            }
+        ]
+    },
+    "products": {
+        "title": "产品介绍 | 北京秦运恒信息技术有限公司",
+        "motto": "精益求精，宁缺毋滥",
+        "banner": "banner-2",
+        "columns": [
+            {
+                "title": "精品家具专家",
+                "desc": "苹果iPad上展现家具的全部风采，捕捉顾客的想象力和心，连样板间都可以展现上百种家具。",
+                "img": "/images/product/img1.png",
+                "href": "/products/furniture/"
+            },
+            {
+                "title": "葡萄酒指南",
+                "desc": "中国即将成为世界红酒消费第一大国，然而多数消费者只认得电视广告。有了这样的指南，您的好酒再也不愁无人问津。",
+                "img": "/images/product/img2.png",
+                "href": "/products/wine/"
+            },
+            {
+                "title": "服装时尚导购",
+                "desc": "顾客看到苹果iPad上的服装模特会动的那一刻，已经决定了您和其他店的区别。从今以后您的顾客可以和朋友一起坐着逛街了。",
+                "img": "/images/product/img3.png",
+                "href": "/products/clothes/"
+            }
+        ]
+    },
+    ....
+]</pre>
+
+
+<p><code><br>
+</code></p>
+
+
+<hr>
+
+
+<h2>/views/layout.jade</h2>
+
+
+<p>然后就是通用的模板layout.jade，放在views目录下，用jade写的，非常简约。!=body 是插入别的页面的地方。</p>
+
+
+<pre>!!! transitional
+html(xmlns='http://www.w3.org/1999/xhtml')
+  head
+    meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+    title= title
+    link(rel='shortcut icon', href='/favicon.ico', type='image/x-icon')
+    link(rel='stylesheet', type='text/css', href='/css/index.css')
+  body
+    #all
+    div(style='clear:both')
+        #logo.content
+          a(href='/')
+            img(src='/images/logo.png', width='232', height='35', alt='北京秦运恒信息技术有限公司')
+          ul
+            li
+              a(href='/') 首页
+            li
+              a(href='/products/') 产品介绍
+            li
+              a(href='/solutions/') 解决方案
+            li
+              a(href='/company/') 关于我们
+            li
+              a(href='/company/jobs/') 加入我们
+        !=body
+        #footer
+          p(align='center') @2010 北京秦运恒信息技术有限公司  京备ICP10028133号</pre>
+
+
+<hr>
+
+
+<h2>/views/index.jade</h2>
+
+
+<p>有那么多视图就不上传了，我就把首页上传给大家看看</p>
+
+
+<pre>#p-1.content
+  p= motto
+#main.content
+  - for (var i in columns)
+    - var last=(i&lt;columns.length-1)?&#39;&#39;:&#39;last&#39;
+    dl(class=&#39;#{last}&#39;)
+      dt
+        a(href=&#39;#{columns[i].href}&#39;)
+          img(src=&#39;#{columns[i].img}&#39;, width=&#39;276&#39;, height=&#39;164&#39;, alt=&#39;#{columns[i].title}&#39;)
+      dd
+        a(href=&#39;#{columns[i].href}&#39;)
+          span=columns[i].title
+        br
+        | #{columns[i].desc}
+.slider-wrapper.theme-custom
+  .slider-wrapper2
+  #slider.nivoSlider
+    img(src=&#39;../images/index/banner1.png&#39;, width=&#39;100%&#39;, height=&#39;366&#39;, alt=&#39;首页&#39;)
+    img(src=&#39;../images/index/banner2.png&#39;, width=&#39;100%&#39;, height=&#39;366&#39;, alt=&#39;首页&#39;)
+    img(src=&#39;../images/index/banner3.png&#39;, width=&#39;100%&#39;, height=&#39;366&#39;, alt=&#39;首页&#39;)
+  script(type=&#39;text/javascript&#39;, src=&#39;/js/jquery-1.6.1.min.js&#39;)
+  script(type=&#39;text/javascript&#39;, src=&#39;/js/jquery.nivo.slider.js&#39;)
+  script(type=&#39;text/javascript&#39;)
+    $(document).bind(&quot;ready&quot;,function() {
+      $(&#39;#slider&#39;).nivoSlider();
+    });</pre>
+
+
+<hr>
+
+
+<h2>其他资源</h2>
+
+
+<p>其他资源一股脑扔倒/public目录下就可以了。</p>
+
+
+<h2>请关注第二讲，AJAX和邮件系统</h2>
+
+
+<div style="border:1px solid #ccc;font-size:14px;margin:27px auto">
+<div style="padding:7px 10px;border-bottom:1px dotted #ccc">关于作者</div>
+<div style="overflow:hidden">
+<div style="text-align:left;line-height:23px">
+<div style="padding:5px 10px">
+<div style="margin:2px 0;height:23px;overflow:hidden;font-size:14px"><a href="http://42qu.com/-10054748" style="text-decoration:none">胡天硕</a>, 北京秦运恒信息技术有限公司, 研发部部长</div>
+<div>从白日梦中惊醒，准备把梦想转换为现实。</div>
+</div>
+</div>
+</div>
+<div style="text-align:right;border-top:1px dotted #ccc;padding:10px">
+<div style="float:left"><a href="http://10054748.42qu.com/link/29066" style="margin-right:7px;text-decoration:none">豆瓣</a> <a href="http://10054748.42qu.com/link/29067" style="margin-right:7px;text-decoration:none">新浪微博</a> <a href="http://10054748.42qu.com/link/29065" style="margin-right:7px;text-decoration:none">腾讯微博</a> </div>
+<div><a href="http://42qu.com/-10054748/pay?title=%EF%BC%BB%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8B%E4%BB%A3%E7%A0%81%EF%BC%BD%E7%94%A8node.js%E5%92%8Cexpress.js%E5%92%8Cjade%E6%90%AD%E5%BB%BA%E8%BD%BB%E5%9E%8Bcms%E7%B3%BB%E7%BB%9F&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D1703&amp;rel=blog" style="text-decoration:none;margin-right:17px">向文章付费</a> <a href="http://42qu.com/-10054748/pay?title=%EF%BC%BB%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8B%E4%BB%A3%E7%A0%81%EF%BC%BD%E7%94%A8node.js%E5%92%8Cexpress.js%E5%92%8Cjade%E6%90%AD%E5%BB%BA%E8%BD%BB%E5%9E%8Bcms%E7%B3%BB%E7%BB%9F&amp;url=http%3A%2F%2Fcnodejs.org%2Fblog%2F%3Fp%3D1703&amp;cid=1&amp;rel=blog" style="text-decoration:none;margin-right:16px">请作者吃饭</a></div>
+</div>
+</div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

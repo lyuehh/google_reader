@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>读Ext之一</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>读Ext之一</h2>
+<p class="meta">24 Sep 2010</p>
+
+<div class="post">
+<h2>读Ext之一</h2>
+
+<h3>by</h3>
+
+<h3>at 2010-09-24 10:19:12</h3>
+
+<h3>original <a href="http://www.javaeye.com/topic/770292">http://www.javaeye.com/topic/770292</a></h3>
+
+<p>第一句</p>
+
+
+<pre name="code">window.undefined = window.undefined;</pre>
+
+
+<p> </p>
+
+
+<p>兼容IE6以下的浏览器，<a href="http://www.cnitblog.com/yemoo/archive/2007/10/11/34712.html">有人</a> 解释过了。</p>
+
+
+<p> </p>
+
+
+<p>定义Ext全局变量</p>
+
+
+<pre name="code">Ext = {
+    version : '3.1.0'
+};</pre>
+
+
+<p>  </p>
+
+<p>注意这里没有使用var，不使用var声明变量被认为是不好的编程习惯，尤其是函数内声明变量不写var更被称为是无穷无尽的Bug根源。这里则不会，因为变量Ext是该库唯一的全局变量(命名空间)。其它Ext源码中的变量声明都加上了var。</p>
+
+
+<p> </p>
+
+
+<p>给Ext添加静态apply方法，该方法是核心方法之一，会用其扩展Ext。</p>
+
+
+<pre name="code">Ext.apply = function(o, c, defaults){
+    // no &quot;this&quot; reference for friendly out of scope calls
+    if(defaults){
+        Ext.apply(o, defaults);
+    }
+    if(o &amp;&amp; c &amp;&amp; typeof c == &#39;object&#39;){
+        for(var p in c){
+            o[p] = c[p];
+        }
+    }
+    return o;
+};</pre>
+
+
+<p> </p>
+
+
+<p>该方法有两种执行方式：</p>
+
+
+<p>其一，只传o，c时直接将c上的所有属性/方法拷贝给o后返回；</p>
+
+
+<p>其二，defaults也传时，会将defaults，c上的所有属性/方法都拷贝给o。这里实现的很巧妙，同时有点绕人。</p>
+
+
+<p>三个参数都传，会执行Ext.apply(o, defaults)，即自身实现中调用自身。defaults为c，即当传两个参数时会直接进行对象拷贝。举个例子一目了然，在Ext.apply中加上一个输出语句</p>
+
+
+<pre name="code">Ext.apply = function(o, c, defaults){
+    // no &quot;this&quot; reference for friendly out of scope calls
+    if(defaults){
+        Ext.apply(o, defaults);
+    }
+    if(o &amp;&amp; c &amp;&amp; typeof c == &#39;object&#39;){
+        for(var p in c){
+            alert(p); // 此处是添加的输出语句
+            o[p] = c[p];
+        }
+    }
+    return o;
+};
+var obj = {}, obj1 = {name:&#39;jack&#39;}, obj2 = {age:33};
+Ext.apply(obj,obj1,obj2);</pre>
+
+
+<p> </p>
+
+
+<p>会发现先弹出age，再是name。即先拷贝defaults，再是c。</p>
+
+
+<p> </p>
+
+
+<p>接下来是个自执行的匿名函数，执行完后给Ext上扩充许多实用属性或方法。先定义了一些局部变量idSeed，浏览器判断之类。idSeed在做Dom缓存时用到。接下来，</p>
+
+
+<pre name="code">if(isIE6){
+    try{
+        DOC.execCommand("BackgroundImageCache", false, true);
+    }catch(e){}
+}</pre>
+
+
+<p>  </p>
+
+<p>这段代码用来解决IE6下css背景图不缓存bug，也 <a href="http://www.js8.in/557.html">有人</a> 解释过了。</p>
+
+
+<p> </p>
+
+
+<p>接下就是一个Ext.apply(Ext,{...})，给Ext对象扩展许多实用属性及方法。</p>
+
+
+<p> </p>
+
+
+<p>注意 Ext.isStrict 并非判断html文档模式为严格模式，而是指标准模式，如&lt;!DOCTYPE HTML&gt;声明会返回true。关于文档模式猛击：<a href="http://hsivonen.iki.fi/doctype">http://hsivonen.iki.fi/doctype</a>，国内的 <a href="http://dancewithnet.com/2009/06/14/activating-browser-modes-with-doctype">秦歌</a> 翻译了该篇文章。</p>
+
+
+<p> </p>
+
+
+<p>Ext.isSecure 判断采用https或是其它。</p>
+
+
+<p> </p>
+
+
+<p>Ext.applyIf 设计的很巧妙，它会把对象没有的属性和方法拷贝下来，已经有的则不拷贝。Ext.apply 则会覆盖已有的属性/方法。</p>
+
+
+<p>ECMAScript 5已经发布半年多了，添加了一些新的API方法，如Array的indexOf，forEach等方法，部分新版本浏览器已经支持这些方法来，但我们想为老的浏览器扩展该方法。可能会这样写</p>
+
+
+<pre name="code">var proto = Array.prototype;
+if(!proto.indexOf){
+    proto.indexOf = function(){
+        // ...
+    }
+}
+if(!proto.forEach){
+    proto.forEach = function(){
+        // ...
+    }
+}</pre>
+
+
+<div><br></div>
+
+
+<div>即保证优先使用浏览器原生支持的API方法，不支持的使用自定义实现的。但这里每次都需要判断下Array原型上是否存在该方法。</div>
+
+
+<div>
+<a href="http://code.google.com/p/closure-library/source/browse/trunk/closure/goog/array/array.js">google closure</a> 实现方式类似使用了三元运算符，每次都要判断下，相对丑陋。网上有一些对google closure的 <a href="http://almaer.com/blog/getting-closure-dont-just-use-it-dont-just-abuse-it">批评</a>，</div>
+
+
+<div>，及一些效率低下的 <a href="http://blogs.sitepoint.com/2009/11/12/google-closure-how-not-to-write-javascript/">具体分析</a> ，批评者甚至包括大牛：<a href="http://dmitry.baranovskiy.com/">Dmitry Baranovskiy</a>。相对来说，Ext.applyif则使的API的扩展很优雅。</div>
+
+
+<p> </p>
+
+<p>Ext.id方法会为HTMLElement元素随机生成一个id，默认以"ext-gen"开头。</p>
+
+
+<p> </p>
+
+
+<p>接下来是Ext.extend方法，该方法也是核心方法之一，整个ext框架继承都是以该方法来扩展的。该方法实现依赖于Ext.override，先看override</p>
+
+
+<pre name="code">override : function(origclass, overrides){
+    if(overrides){
+        var p = origclass.prototype;
+        Ext.apply(p, overrides);
+        if(Ext.isIE &amp;&amp; overrides.hasOwnProperty(&#39;toString&#39;)){
+            p.toString = overrides.toString;
+        }
+    }
+}</pre>
+
+
+<p> </p>
+
+
+<p>将对象overrides的所有属性/方法拷贝到类origclass的原型上。需要注意的是后面的if判断，IE中for in不能遍历对象的Object的toSting等方法，因此需要特别处理一下。我测试IE9 beta重写对象的内置方法如toString后是可用for in遍历的，见 <a href="http://www.iteye.com/blog/404662">for in的缺陷</a> 。IE9 beta刚刚发布，不知今后Ext团队是否会修改此处的判断。</p>
+
+
+<p> </p>
+
+
+<p>Ext.extend是js继承最经典的实现方式了，我曾经模仿其(简化版)应用在 <a href="http://www.51ditu.com/">51ditu</a>。</p>
+
+
+<pre name="code">extend : function(){
+    // inline overrides
+    var io = function(o){
+        for(var m in o){
+            this[m] = o[m];
+        }
+    };
+    var oc = Object.prototype.constructor;
+    return function(sb, sp, overrides){
+        if(Ext.isObject(sp)){
+            overrides = sp;
+            sp = sb;
+            sb = overrides.constructor != oc ? overrides.constructor : function(){sp.apply(this, arguments);};
+        }
+        var F = function(){},
+            sbp,
+            spp = sp.prototype;
+
+        F.prototype = spp;
+        sbp = sb.prototype = new F();
+        sbp.constructor=sb;
+        sb.superclass=spp;
+        if(spp.constructor == oc){
+            spp.constructor=sp;
+        }
+        sb.override = function(o){
+            Ext.override(sb, o);
+        };
+        sbp.superclass = sbp.supr = (function(){
+            return spp;
+        });
+        sbp.override = io;
+        Ext.override(sb, overrides);
+        sb.extend = function(o){return Ext.extend(sb, o);};
+        return sb;
+    };
+}(),</pre>
+
+
+<p> </p>
+
+
+<p>整体浏览，可以看到 Ext.extend 的实现是通过一个匿名函数执行，执行后返回function，这个function才是真正的Ext.extend。</p>
+
+
+<p>匿名函数中有两个私有函数io，oc。这种组织代码的方式非常简练，通过匿名函数自执行，在匿名函数中你可以做任何复杂的操作，最终的目的返回需要的接口函数或类。</p>
+
+
+<p> </p>
+
+
+<p>有三个参数，sb、sp、overrides分别代表subClass(子类)、superClass(父类)及覆盖子类的配置参数。</p>
+
+
+<p> </p>
+
+
+<p>以下分三种情况讨论，第一，二种情况Ext.extend的第二个参数都是对象类型</p>
+
+
+<p> </p>
+
+
+<p>1， Ext.extend不光是用来实现类继承的，还可以用来写类，一年前 <a href="http://www.iteye.com/blog/418778">讨论</a> 过 。 </p>
+
+
+<p> </p>
+
+
+<p>2， 用来扩展Ext库自身类，这种情况是比较频繁的</p>
+
+
+<pre name="code">MyGridPanel = Ext.extend(Ext.grid.GridPanel, {
+    constructor: function(config) {
+        MyGridPanel.superclass.constructor.apply(this, arguments);
+    },
+    yourMethod: function() {
+        // etc.
+    }
+});</pre>
+
+
+<p> </p>
+
+
+<p>这里以Ext.grid.GridPanel为基础，生成了一个新类MyGridPanel</p>
+
+
+<p> </p>
+
+
+<p>3， 真正意义类继承，即第一，二个参数都是类(function)。1年前也总结过js如何实现 <a href="http://www.iteye.com/blog/423831">继承</a> 及 <a href="http://www.iteye.com/blog/427796">工具函数</a>。</p>
+
+
+<p> </p>
+
+
+<p>篇幅已经很长了，重点说下 Ext.apply, Ext.applyif, Ext.override, Ext.extend 的<strong>区别</strong>：</p>
+
+
+<p> </p>
+
+
+<p>Ext.apply, Ext.applyif, Ext.override 都是对<strong>对象</strong>进行扩展的方法，Ext.extend则是对<strong>类</strong>操作的方法。</p>
+
+
+<p> </p>
+
+
+<p>Ext.apply 扩展时对已经存在的属性/方法会被覆盖掉， 通常用它来扩展普通对象.</p>
+
+
+<p>Ext.applyif 扩展时不会覆盖已经存在的属性/方法，通常用它来扩展核心js，如Array.prototype，String.prototype等。</p>
+
+
+<p>Ext.override 扩展某一个类的原型，可以覆盖toString方法。</p>
+
+
+<p> </p>
+
+
+<p>Ext.extend 用来写类或继承，或者说用来扩展类。</p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<pre><code>      &lt;br&gt;&lt;br&gt;
+      作者: &lt;a href="http://snandy.javaeye.com"&gt;zhouyrt&lt;/a&gt; 
+      &lt;br&gt;
+      声明: 本文系JavaEye网站发布的原创文章，未经作者书面许可，严禁任何网站转载本文，否则必将追究法律责任！
+      &lt;br&gt;&lt;br&gt;
+      &lt;span style="color:red"&gt;
+        &lt;a href="http://www.javaeye.com/topic/770292" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表回复，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+      &lt;/span&gt;
+      &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">JavaEye推荐</span>
+<br></p>
+
+<ul><li><a href="http://www.iteye.com/clicks/138"><span style="color:red;font-weight:bold">上海：高薪诚聘php开发人员</span></a></li><li><a href="http://www.iteye.com/clicks/439"><span style="color:blue;font-weight:bold">限时报名参加Oracle技术大会</span></a></li><li><a href="http://www.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

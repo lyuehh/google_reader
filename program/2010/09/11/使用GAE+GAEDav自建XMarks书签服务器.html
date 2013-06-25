@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>使用GAE+GAEDav自建XMarks书签服务器</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>使用GAE+GAEDav自建XMarks书签服务器</h2>
+<p class="meta">11 Sep 2010</p>
+
+<div class="post">
+<h2>使用GAE+GAEDav自建XMarks书签服务器</h2>
+
+<h3>by GFW BLOG 功夫网</h3>
+
+<h3>at 2010-09-11 08:04:15</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/chinagfwblog/~3/4bisUuZx-9U/gaegaedavxmarks.html">http://feedproxy.google.com/~r/chinagfwblog/~3/4bisUuZx-9U/gaegaedavxmarks.html</a></h3>
+
+<p>作者：<span></span><a href="http://gnap-an.appspot.com/">George Ang</a>   来源：<a href="http://gnap-an.appspot.com/?p=12070">http://gnap-an.appspot.com/?p=12070</a><br><p style="clear:both"><strong>什么是XMarks？</strong><br>   <a href="http://www.xmarks.com/">XMarks</a>是一个书签管理云服务的提供商。通过注册XMarks的帐号，并且在安装XMark插件，可以在世界上任何一台装有FX，IE，Safari或Chrome(beta)的机器上，随时的访问到自己的浏览器书签。<br> 除了自己提供同步帐号以外，XMarks还支持自建服务器空间，任何一台FTP/WebDAV服务器都可以作为书签的存储媒介。并且使用自己的用户名和密码，不再依赖XMarks帐户。<br> <br><strong>为什么要自建服务器？</strong><br> 因为除了Twitter喜欢现实<a href="http://gnap-an.appspot.com/?p=14008">自己有JJ</a>之外，好多其他国外的服务也喜欢展示自己的JJ。这些服务现在全被墙遮住了。XMarks也在其中之列。因此，你为了同步自己的书签，必须在墙内使用自建的服务器。<br><br><strong>为什么要使用GAE?</strong><br> 你问那么多干嘛？我就是喜欢。<br><br><strong>准备工作</strong><strong><br></strong>1）安装XMarks插件<br> 访问 h<a href="http://download.xmarks.com/download">ttp://download.xmarks.com/download</a> 下载自己浏览器的插件。<br>2）注册google帐号<br> 如果你还没有google帐号，你可以去火星了，现在的Internet对你来说太危险了。<br> 3）为自己的dav服务创建GAE application<br> 访问<a href="http://appengine.google.com/">http://appengine.google.com/</a> 点击Create an Application创建一个gae程序。在显示的表单中填入自己的程序名和程序title。程序名决定了你的程序的访问地址，需要记住。<br>4）安装Google App Engine SDK for Python<br>   <a href="http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Python">链接</a><br>5）下载gaedav<br>  </p><blockquote style="clear:both"><p>svn checkout <a href="http://gaedav.googlecode.com/svn/trunk/">http://gaedav.googlecode.com/svn/trunk/</a> gaedav-read-only<br> </p></blockquote><p style="clear:both"><strong>配置gaedav</strong><br>1）将app.yaml.template改名为app.yaml，然后打开。将#application:一行注释去掉，改成:</p><blockquote style="clear:both"><p>application: 你的GAE程序名</p></blockquote><p style="clear:both"> 2）编辑PyFileServerConf.py，将USER配置块中的adduser开头的一行注释去掉，填入自己XMark服务的用户名和密码：</p><blockquote style="clear:both"><p>adduser(&#39;file&#39; , &#39;帐户名&#39;, &#39;密码&#39;, &#39;description&#39;)<br></p></blockquote><p style="clear:both"> 3）使用GAE SDK的appcfg.py上传程序后，在浏览器中数输入http://用户名:密码@GAE<a href="http://xn--eqr77vcjw.appspot.com/file/,">程序名.appspot.com/file/,</a>就可以看到你自己创建的WebDAV服务的根目录了。<br><br><strong>配置XMarks</strong><br>1）打开Xmarks的Preferences对话框。在Status标签里的Account下面添入上面步骤2）设置的用户名和密码。<br> 2）在Advanced标签里Server下面填入：</p><blockquote style="clear:both"><p><a href="http://xn--eqr77vcjw.appspot.com/file/bookmarks">http://程序名.appspot.com/file/bookmarks</a><br></p></blockquote><blockquote style="clear:both"><p> <a href="http://xn--eqr77vcjw.appspot.com/file/auth">http://程序名.appspot.com/file/auth</a><br></p></blockquote><p style="clear:both">作为自己的书签文件和密码文件。<br>3) 回到Status标签，点击Synchronized Now，就可以把自己的书签同步到自建的服务器中了。</p><p style="clear:both">  这样，以后不论是机器重装，还是新到一个环境，只需要参照前面的“配置XMarks”一步的设置，就可以马上把自己的书签同步下来了。</p><br> <div>发一封标题为GFW的邮件到CDTcaonima@gmail.com，就可获取翻墙利器赛风新地址。被墙网站收集：http://delicious.com/GFWbookmark，请使用GFWlist为标签，帮助我们收集被墙网站的信息。敬请订阅GFW Blog：http://feeds2.feedburner.com/chinagfwblog，邮件订阅：https://groups.google.com/group/gfw-blog。更多翻墙工具介绍和下载：
+推客浏览器（http://twitbrowser.net/blog/，墙内镜像：http://tm005.nl.am/)，Sesawe（http://www.sesawwe.net/）。翻墙互助小组邮件列表: http://groups.google.com/group/bypassgfw。<img width="1" height="1" src="https://blogger.googleusercontent.com/tracker/5500297126185736776-2276556613392646053?l=www.chinagfw.org" alt=""></div><img src="http://feeds.feedburner.com/~r/chinagfwblog/~4/4bisUuZx-9U" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

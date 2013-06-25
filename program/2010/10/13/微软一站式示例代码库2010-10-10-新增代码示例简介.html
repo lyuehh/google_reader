@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>微软一站式示例代码库2010-10-10 新增代码示例简介</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>微软一站式示例代码库2010-10-10 新增代码示例简介</h2>
+<p class="meta">13 Oct 2010</p>
+
+<div class="post">
+<h2>微软一站式示例代码库2010-10-10 新增代码示例简介</h2>
+
+<h3>by Jialiang</h3>
+
+<h3>at 2010-10-12 22:40:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/Jialiang/archive/2010/10/12/1849271.html">http://www.cnblogs.com/Jialiang/archive/2010/10/12/1849271.html</a></h3>
+
+<p><p>微软一站式示例代码库2010年10月10日更新</p>
+<p> </p>
+<p><strong>下载地址</strong>： <a href="http://1code.codeplex.com/releases/view/53729">http://1code.codeplex.com/releases/view/53729</a></p>
+<p> </p>
+<p>如果您是第一次听说All-In-One Code Framework这个项目，请参阅主页上的相关介绍<a href="http://1code.codeplex.com/"><font color="#336699">http://1code.codeplex.com/</font></a>,  以及这两篇blog </p>
+<p><a href="http://blog.joycode.com/vsto/archive/2009/03/04/115496.aspx"><font color="#336699">All-In-One Code Framework：一站式微软开发技术框架解决方案</font></a></p>
+<p><a href="http://www.cnblogs.com/Jialiang/archive/2009/06/22/AIOCHS.html"><font color="#336699">微软一站式开发技术框架解决方案 中文说明</font></a></p>
+<p>  </p>
+<h3>Windows Shell 扩展 新示例<br></h3>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jialiang/infotip.png" width="394" height="163"></p>
+<p><em>(Shell Infotip 扩展)</em> </p>
+<p>  </p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jialiang/dragdrop.png"></p>
+<p><em>(Shell Drag-and-drop 扩展）</em></p>
+<p> </p>
+<p>这是 使用.NET 4编写Windows Shell Extension 系列示例的第二部分。在.NET 4发布之前，因为一个进程最多只能host一个CLR runtime, 您是不可以使用.NET语言编写shell extension的。.NET 4.0加入了CLR In-process Side-by-Side 特性。张羿写过一篇相当不错的介绍.NET 4 In Process Side By Side的文章：<a href="http://blogs.msdn.com/b/yizhang/archive/2009/08/25/net-4-0-in-process-side-by-side.aspx">http://blogs.msdn.com/b/yizhang/archive/2009/08/25/net-4-0-in-process-side-by-side.aspx</a>。&gt;=4.0的CLR是可以多个并存的，也就是说V4.0，V5.0，v6.0，等等，都是可以和平共处在同一个进程内。这使得基于.NET Framework 4.0, 5.0, … 开发的managed Windows Shell 扩展成为可能。在这次发布中，我们添加了使用.NET 4 C#, VB.NET 语言 和 native C++ 编写Shell infotip 扩展的例子。</p>
+<p> </p>
+<p><strong>CppShellExtInfotipHandler</strong>   Shell Infotip handler (C++)   <br><strong>CSShellExtInfotipHandler</strong>     Shell Infotip handler (C#)   <br><strong>VBShellExtInfotipHandler</strong>     Shell Infotip handler (VB.NET)   <br><strong>CppShellExtDragDropHandler</strong>   Shell drag-and-drop handler (C++)   </p>
+<p> </p>
+<h3>ASP.NET 新示例</h3>
+<p><br><strong>CSASPNETImagePreviewExtender, VBASPNETImagePreviewExtender</strong> </p>
+<p>Microsoft Ajax 扩展程序控件增强了标准 ASP.NET Web 服务器控件的客户端功能。通过使用一个或多个扩展程序控件可以实现标准的 Web 服务器控件（如 TextBox 控件、Button 控件和 Panel 控件），从而在浏览器中提供更丰富的用户体验。例如，若要使用户在向服务器提交表单之前进行确认，可以使用将客户端功能添加到 Button 控件的扩展程序控件。</p>
+<p> </p>
+<p>一些ASP.NET社区中的程序员经常会问如何写一个自己的ASP.NET Ajax扩展控件，就像AjaxControlToolkit里的空间一样。在这个例子中，我就一步步地描述了如何创建这么一个控件。ASPNETImagePreviewExtender扩展了标准的Image控件，它让Image初始化为一个缩略图，当用户点击这个缩略图时，客户端会自动显示完整的图片而无需回传获取。</p>
+<p> </p>
+<p><strong>CSASPNETAJAXHTMLEditorExtender </strong></p>
+<p>HTML编辑器时AjaxControlToolkit中的一个AJAX控件。它让我们可以输入一些HTML格式的数据。由于这是个非常复杂的控件，经常有人问如何添加一个自定义的工具栏控件来使HTML编辑器实现一些自定义的功能。在这个例子中，我一步步地添加了一个自定义的工具栏按钮，并且点击这个按钮，可以让一个&lt;H1&gt;标记环绕 所选取的字符串。</p>
+<p> </p>
+<p><strong>CSASPNETAddControlDynamically, VBASPNETAddControlDynamically</strong> </p>
+<p>此示例演示了如何在ASP.NET页面中动态地添加各种控件.由于HTTP是无状态网络传输协议,我们无法知道控件何时被创建,已经控件的状态何时被改变.但所有的这些属性都可以通过ViewState保存在页面中.在页面下一次回调的时候,通过读取ViewState中的信息,我们可以重建这些控件以使得用户们能够使用它们。</p>
+<p> </p>
+<p><strong>CSASPNETBingMaps </strong></p>
+<p>在某些时候我们需要在页面中使用地图来表示位置以及周围的信息.而Bing Maps地图API提供了毫不逊色于Google Map 的地图控件,并能够通过编程轻松的控制地图的地点位置,缩放尺度,显示模式等属性.此示例便演示了如何通过简单的AJAX在ASP.NET页面中嵌入Bing Maps地图。</p>
+<p> </p>
+<p><strong>CSASPNETAutoComplete </strong></p>
+<p>此事例演示如何使用Ajax Control Toolkit里面的AutoComplete Control，AutoComplete可以和一个TextBox控件相结合实现类似google suggest的功能；当你在TextBox中输入若干个字时在其下面会弹出一个panle，里面包含以文本框中文字开头的关键字列表。</p>
+<p> </p>
+<p><strong>CSASPNETTheme </strong></p>
+<p>CSASPNETTheme 示例展示了如何在同一页面上套用主题布局， 这样就可以给用户不同风格的页面而不用重写页面代码。</p>
+<p> </p>
+<h3>Office 新示例</h3>
+<p><br><strong>CSOfficeRibbonAccessibility, VBOfficeRibbonAccessibility</strong> </p>
+<p>此示例演示了如何通过Microsoft Active Accessibility API 来做Office 2010的Ribbon用户界面自动化。程序显示一个自定义的主窗体，以层次结构来显示整个Ribbon界面的架构。每页包含若干组, 每组包含若干控件, 以及如何调用这些控件的功能。</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/jialiang/office.png"></p>
+<p> </p>
+<h3>Windows Base 新示例</h3>
+<p><br><strong>CSProcessWatcher，VBProcessWatcher</strong></p>
+<p>有时候我们需要在.Net应用程序中监控某个进程的创建，修改或者删除事件。除了使用复杂的P/Invoke 调用Native API 之外，有没有更容易的方式呢？该示例给出了一个非常简便的方式达到该目的 -- 使用WMI轻松的实现对某个进程的创建，修改，删除事件的监控。</p>
+<p><br><strong>CppPlatformDetector, CSPlatformDetector, VBPlatformDetector</strong> </p>
+<p>这些示例演示了</p>
+<p>1。 如何获取当前操作系统的名字，如"Microsoft Windows 7 Enterprise"</p>
+<p>2。 如何获取当前操作系统的版本号，如&quot;Microsoft Windows NT 6.1.7600.0”</p>
+<p>3。 如何判断当前操作系统是32位的还是64位的。</p>
+<p>4。 如何判断当前进程或者是当前系统上运行着的任何一个进程是运行在32位模式上，还是64位模式。</p>
+<p> </p>
+<h3>WPF 新示例</h3>
+<p><br><strong>VBWPFMVVMPractice</strong> </p>
+<p>这个示例通过一个小游戏, 演示了如何在WPF程序中使用MVVM模式.</p>
+<p> </p>
+<h3>Windows Forms 新示例</h3>
+<p><br><strong>CSWinFormGroupRadioButtons and VBWinFormGroupRadioButtons</strong> </p>
+<p>我们为了实现某些功能而在我们的WinForm项目中使用RadioButton，但是我们只能将一组RadioButton放在同一个容器内，否则对于这些RadioButton单选功能将失效。这个限制使得板面设计有些不便。此例子演示了怎样将不同容器内的RadioButton组成一个组而实现单选功能。</p>
+<p> </p>
+<p><strong>下载</strong><br><a href="http://1code.codeplex.com/releases/view/53729">http://1code.codeplex.com/releases/view/53729</a></p>
+<p> </p>
+<p>最后，感谢园子里的朋友的一贯支持。如您对这些示例有任何建议，请联系我们: <a href="mailto:onecode@microsoft.com">onecode@microsoft.com</a><br></p>
+<p> </p><img src="http://www.cnblogs.com/Jialiang/aggbug/1849271.html?type=0" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/Jialiang/">Jialiang</a> 发表于 2010-10-12 22:40 <a href="http://www.cnblogs.com/Jialiang/archive/2010/10/12/1849271.html">原文链接</a></p><p>评论: 6　<a href="http://www.cnblogs.com/Jialiang/archive/2010/10/12/1849271.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/Jialiang/archive/2010/10/12/1849271.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/77345/">Valve宣布《Dota 2》</a><span style="color:gray">(2010-10-14 23:08)</span><br>· <a href="http://news.cnblogs.com/n/77343/">苹果向获救智利矿工捐赠iPod</a><span style="color:gray">(2010-10-14 22:54)</span><br>· <a href="http://news.cnblogs.com/n/77342/">全能的操作系统——Intel的Meego</a><span style="color:gray">(2010-10-14 22:34)</span><br>· <a href="http://news.cnblogs.com/n/77339/">谷歌与出版商举行谈判 商讨内容收费事宜</a><span style="color:gray">(2010-10-14 21:57)</span><br>· <a href="http://news.cnblogs.com/n/77338/">拯救自己！最新Windows Phone 7广告欣赏</a><span style="color:gray">(2010-10-14 21:48)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/77257/">CodeRun Studio：基于Web的IDE开发工具</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

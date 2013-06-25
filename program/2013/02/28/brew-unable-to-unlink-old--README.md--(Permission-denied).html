@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>brew unable to unlink old 'README.md' (Permission denied)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>brew unable to unlink old 'README.md' (Permission denied)</h2>
+<p class="meta">28 Feb 2013</p>
+
+<div class="post">
+<h2>brew unable to unlink old 'README.md' (Permission denied)</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-02-27 23:50:15</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1816959">http://hlee.iteye.com/blog/1816959</a></h3>
+
+<p>rvm install 2.0.0
+<br>met problem about <a href="https://github.com/mxcl/homebrew/issues/2906">brew</a>
+<br>
+<br><div>引用</div><div>brew unable to unlink old 'README.md' (Permission denied)</div>
+<br>
+<br>solve problem by:
+<br>
+<br><pre name="code"></p>
+
+<p>sudo chmod 777 /usr/local
+cd /usr/local
+git remote add git://github.com/mxcl/homebrew.git
+git reset --hard
+git clean -f -d
+git pull origin master
+brew update
+sudo chmod 775 /usr/local
+</pre></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1816959#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

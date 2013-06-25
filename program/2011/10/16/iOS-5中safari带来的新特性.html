@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>iOS 5中safari带来的新特性</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>iOS 5中safari带来的新特性</h2>
+<p class="meta">16 Oct 2011</p>
+
+<div class="post">
+<h2>iOS 5中safari带来的新特性</h2>
+
+<h3>by 神飞</h3>
+
+<h3>at 2011-10-15 23:32:36</h3>
+
+<h3>original <a href="http://www.qianduan.net/ios-5-brings-new-features-in-safari.html">http://www.qianduan.net/ios-5-brings-new-features-in-safari.html</a></h3>
+
+<p>随着iPhone4s的发布，iOS5也正是发布了，增加了很多很有用的新特性，不过对于前端开发者来说，最关心的还是浏览器，让我们来看一下苹果为iOS5中的safari新增了哪些新特性吧。<span></span></p>
+
+
+<h3>CSS</h3>
+
+
+<ul>
+<li>终于支持position:fixed了；</li>
+<li>支持overflow:scroll了，通过-webkit-overflow-scrolling: touch;来实现：
+
+<div><table><tr><td><pre>1
+2
+3
+4
+</pre></td><td><pre style="font-family:monospace">selector<span style="color:#00aa00">{</span>
+<span style="color:#000000;font-weight:bold">overflow</span><span style="color:#00aa00">:</span><span style="color:#993333">scroll</span><span style="color:#00aa00">;</span>
+-webkit-overflow-scrolling<span style="color:#00aa00">:</span> touch<span style="color:#00aa00">;</span>
+<span style="color:#00aa00">}</span></pre></td></tr></table></div>
+
+</li>
+<li>CSS3 gradient语法更新，将-webkit-gradient(linear|radial)拆分为，-webkit-linear-gradient和-webkit-radial-gradient。PS，年初发表过一篇关于《<a title="查看 webkit对于CSS3渐变样式语法的更新" href="http://www.qianduan.net/webkit-style-syntax-for-the-gradient-update-css3.html">webkit对于CSS3渐变样式语法的更新</a>》的文章，看来现在就剩下android的webkit了。</li>
+</ul>
+
+
+<h3>HTML5</h3>
+
+
+<ol>
+<li>新的兼容HTML5的解释器(parser)</li>
+<li>表单增强新增时间类型date, datetime, month, time和range支持，好赞：
+<p><img title="ios-date-input" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios-date-input.png" alt="" width="320" height="480"></p>
+<p><img title="ios-datetime-input" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios-datetime-input.png" alt="" width="320" height="480"></p>
+<p><img title="ios-month-input" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios-month-input.png" alt="" width="320" height="480"></p>
+<p><img title="ios-time-input" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios-time-input.png" alt="" width="320" height="480"></p>
+<p><img title="ios-range-input" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios-range-input.png" alt=""></p>
+<p>同时iOS5中safari也增强了number类型的input的验证功能。</p></li>
+</ol>
+
+
+<ul>
+<li>支持<a title="web workers on whatwg" href="http://www.whatwg.org/specs/web-apps/current-work/multipage/workers.html">web workers</a> ，传说iOS3中短暂出现过web workers，不过后来消失了，现在又回来了。。。</li>
+<li>增强ECMAScript5，测试结果显示支持情况跟上PC版的Safari 5.1了。</li>
+<li>终于支持contenteditable属性</li>
+<li>支持async script</li>
+</ul>
+
+
+<h3>其它特性：</h3>
+
+
+<ul>
+<li><a title="维基百科：HTTP管线化" href="http://zh.wikipedia.org/wiki/HTTP%E7%AE%A1%E7%B7%9A%E5%8C%96">HTTP Pipelining</a>支持，Android中webkit和Opera都支持了，Mobile Safari也跟进了。想要具体了解的可以看下<a title="HTTP Pipelining – Big in Mobile" href="http://www.blaze.io/mobile/http-pipelining-big-in-mobile/">这里</a>和<a title="HTTP Pipelining – Request Distribution Algorithms " href="http://www.blaze.io/technical/http-pipelining-request-distribution-algorithms/">这里</a>。</li>
+<li>inline SVG</li>
+<li>UIWebView 和主屏幕webapp升级到Nitro引擎(看下面的测试数据)</li>
+<li>支持MathML</li>
+<li>CSS和其它文件<span style="color:#ff0000"><strong>不再并行</strong></span>下载，这貌似挺悲剧的，不过我很感兴趣这和HTTP Pipelining的关系。。。</li>
+<li>GPU硬件加速，虽然这个之前也有，但是效果并不是很显著，现在，在微软用于标榜IE9硬件加速的测试中，iOS达到了40FPS，而Windows Phone 7是24FPS，Nexus 2则只有可怜的10FPS——iOS4中只有2FPS。。。</li>
+</ul>
+
+
+<h3>一些测试数据</h3>
+
+
+<ul>
+<li>HTMLTest：267分，iOS 4.3中是206分</li>
+<li>Sunspider JS Benchmark，JS性能测试：
+<p><img title="ios5benchmark" src="http://www.qianduan.net/wp-content/uploads/2011/10/ios5benchmark.png" alt="" width="564" height="349"></p>
+<p>可见首页webapp是用上Nitro引擎了，但是悲剧的是UIWebView的性能却下降了。</p>
+<p>PS:中间的home screen page，<a href="http://csshouse.net/">@Jeanne</a> 美女说是主屏幕，不过我的理解就是webapp，如有更好的翻译欢迎讨论。</p>
+</li>
+</ul>
+
+
+<h3>总结</h3>
+
+
+<p>可以看出iOS 5中Safari改进还是蛮大的，而从最后webapp和UIWebView的性能测试来看，或许苹果更加重视了webapp，而不太赞成UIWebView+webapp的这种混搭的方式，虽然很多流行的app都是这种实现，比如著名的PhoneGap框架和Facebook/twitter等流行的在国内不能用的APP。。</p>
+
+
+<h4>参考资源：</h4>
+
+
+<ul>
+<li><a href="http://www.blaze.io/mobile/ios5-top10-performance-changes/">iOS 5 Top 10 Browser Performance Changes</a></li>
+<li><a href="http://davidbcalhoun.com/2011/new-mobile-safari-stuff-in-ios5-position-fixed-overflow-scroll-new-input-type-support-web-workers-ecmascript-5">New Mobile Safari stuff in iOS5</a></li>
+<li><a href="http://www.mobilexweb.com/blog/ios-5-iphone-and-ipad-html5">Safari on iOS 5, HTML5 evolution for iPhone and iPad</a></li>
+</ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

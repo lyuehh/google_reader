@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>ASP.NET MVC 3 Beta新特性以及.Net开源的趋势----最新译文</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>ASP.NET MVC 3 Beta新特性以及.Net开源的趋势----最新译文</h2>
+<p class="meta">08 Oct 2010</p>
+
+<div class="post">
+<h2>ASP.NET MVC 3 Beta新特性以及.Net开源的趋势----最新译文</h2>
+
+<h3>by JasenKin</h3>
+
+<h3>at 2010-10-07 20:23:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/jasenkin/archive/2010/10/07/asp_net_mvc_beta.html">http://www.cnblogs.com/jasenkin/archive/2010/10/07/asp_net_mvc_beta.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/jasenkin/"><img src="http://pic.cnblogs.com/face/u102079.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/jasenkin/">JasenKin</a> 发表于 2010-10-07 20:23 <a href="http://www.cnblogs.com/jasenkin/archive/2010/10/07/asp_net_mvc_beta.html">原文链接</a> 阅读: 1999 评论: 24</p>
+
+
+<h2><font size="2" face="arial"><u style="font-size:14pt">NuPack – .NET的开源软件包管理器</u></font></h2>
+
+
+<div>
+<div>
+<p>NuPack是一个开源的软件包管理器，它使你在项目中能够更加容易的查找、安装和使用.NET 库。它能够和所有的.NET 项目类型很好的一起工作(包括,没有任何限制的，ASP.NET Web Forms和ASP.NET MVC).</p>
+<p> </p>
+<p>NuPack 使维护开源项目的开发者(例如, Moq, NHibernate, Ninject, StructureMap, NUnit, Windsor, RhinoMocks, Elmah, 等等) 能够去打包他们的库，并且使用一个在线的，可查找的gallery/catalog 来注册它们。客户端NuPack tools –它与Visual Studio 集成度很高– 让任何一名 .NET开发者在他们的项目中能够轻松的使用这些类库，并且安装它们。</p>
+<p> </p>
+<p>NuPack 处理库之间的依赖管理(例如: library1 依赖于library2). 它同样使你在后续的项目中能够很容易的修改(并且随意的移除) 库. 它支持更新web.config 文件(如果一个包需要配置设置). 同样，它允许程序包来增加PowerShell scripts 到一个项目中 (例如: scaffold commands).最重要的, NuPack 是透明的– 并且在系统层上没有安装任何东西. 相反，它致力于更加容易的让你使用你的项目来管理你的库。</p>
+<p> </p>
+<p>NuPack本身就是一种开源的项目.  The Outercurve Foundation (formerly CodePlex Foundation)今天宣布接纳NuPack 项目到the ASP.NET Open Source Gallery中。</p>
+<p>我们的目标是使NuPack在.NET项目中尽可能简单地整合开源库。它将支持Visual Studio的所有版本。今天，你能够使用它的第一个开发版本来开始。</p>
+<p><u></u> </p>
+<p><u><strong>一个简单的NuPack场景– 使用 ELMAH</strong></u></p>
+<p>作为一个简单的例子来显示了NuPack能够做什么-----让我们假设我们正在进行一项全新的 ASP.NET 应用程序开发，并且想要使用的流行的“ELMAH”库来记录和报告我们网站的错误。ELMAH安装，你需要手动下载，解压它，增加引用到你的项目中，确保你拥有源码控制绑定来正确的安装库，并更新你的应用程序的web.config 文件,包括ELMAH HttpModule记录。所有都是可行的——但有点乏味。<br>　　<br>　　当NuPack安装之后,你能简单地打开新的“Package Manager Console”,在里面键入”Add-Package elmah”。</p>
+<p><a href="http://weblogs.asp.net/blogs/scottgu/image_499C9B80.png"><img style="border-right-width:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px" title="image" border="0" alt="image" src="http://weblogs.asp.net/blogs/scottgu/image_thumb_0102ACAF.png" width="769" height="520"></a> </p>
+<p> </p>
+<p>键入&quot;Add-Package elmah” ，导致NuPack 核查Elmah库的在线定位, 下载它, 增加它的引用到你的项目中, 并且自动的增加适当的Elmah 注册条目在你的应用程序的web.config文件中：</p>
+<p> </p>
+<p><a href="http://weblogs.asp.net/blogs/scottgu/image_5FA30712.png"><img style="border-right-width:0px;display:inline;border-top-width:0px;border-bottom-width:0px;border-left-width:0px" title="image" border="0" alt="image" src="http://weblogs.asp.net/blogs/scottgu/image_thumb_6A7FE85A.png" width="758" height="531"></a> </p>
+<p>现在我们已经为我们的项目设置、安装了Elmah,并且启用了错误报告记录。不需要额外的手工步骤来使它工作。</p>
+<p> </p>
+<p><u>学习和了解更多关于NuPack的知识</u></p>
+<p>点击下面的链接来学习和了解更多关于NuPack的内容和大量的情景:</p>
+<ul><li><a href="http://www.hanselman.com/blog/IntroducingNuPackPackageManagementforNETAnotherpieceoftheWebStack.aspx">Scott Hanselman’s NuPack Tutorial</a></li><li><a href="http://haacked.com/archive/2010/10/06/introducing-nupack-package-manager.aspx">Phil Haack’s NuPack Post</a></li><li><a href="http://weblogs.asp.net/bsimser/archive/2010/10/06/unicorns-triple-rainbows-package-management-and-lasers.aspx">Bill Simser’s Post on NuPack</a> (he is a non-Microsoft dev working on it)</li><li><a href="http://devlicio.us/blogs/rob_reynolds/archive/2010/10/06/the-evolution-of-package-management-for-net.aspx">Rob Reynold’s “Evolution of Package Management on .NET” Post</a> (Rob is one of the leaders of the Nu project and is on the NuPack team)</li><li><a href="http://blogs.msdn.com/b/davidebb/archive/2010/10/05/introducing-nupack-the-smart-way-to-bring-bits-into-your-projects.aspx">David Ebbo’s NuPack Post</a></li><li>文档和教程 <a href="http://nupack.codeplex.com/">nupack.codeplex.com</a> </li></ul>
+<p><u>.NET 和开源</u></p>
+<p>我们认为NuPack将是一个 .NET stack 前进的基本成分。这将鼓励更多的开发者使用开源库。有一个标准的软件包管理器集成到Visual Studio ，将同样很有希望的鼓励更多的开源.NET项目创建。</p>
+<p> </p>
+<h3><u style="font-size:18pt">ASP.NET MVC 3 Beta</u></h3>
+<p>这个版本是 <a href="http://weblogs.asp.net/scottgu/archive/2010/07/27/introducing-asp-net-mvc-3-preview-1.aspx">ASP.NET MVC 3 Preview</a>的一个重要的更新，它包含了大量的功能改善。<br>　　<br>　　除了ASP.NET MVC 3的特性（<a href="http://weblogs.asp.net/scottgu/archive/2010/07/27/introducing-asp-net-mvc-3-preview-1.aspx">introduced with the first preview</a>）,今天的Beta版本包括:</p>
+<ul><li>
+<p><strong>Razor 增强功能</strong>: ASP.NET MVC 3 支持这个新的<a href="http://weblogs.asp.net/scottgu/archive/2010/07/02/introducing-razor.aspx">Razor</a> 视图引擎选项。除了<a href="http://weblogs.asp.net/scottgu/archive/2010/07/27/introducing-asp-net-mvc-3-preview-1.aspx">ASP.NET MVC 3 Preview</a>中的功能外，今天的Beta版本增加大量的额外功能: Cleaner MVC integration – 包括使用一个新的@model 语法来清洁指定类型被传送到视图 。一个新的@helper 语法来申明可重用的HTML helpers 。一个新的 @* *@ 注释语法。 支持使用Razor的C#和VB 风格。</p></li></ul>
+<ul><li>
+<p><strong>新的 View Helpers</strong>: 新的view helper方法现在已经支持.  它包括一个新的Chart() helper method来动态创建charts (和<a href="http://weblogs.asp.net/scottgu/archive/2010/02/07/built-in-charting-controls-vs-2010-and-net-4-series.aspx">&lt;asp:chart&gt; control in ASP.NET 4</a> 一样的特征– 而现在使用view 帮助方法)。同样，一个新的WebGrid() 帮助方法能够被用来创建data-grid 风格的用户界面(包括分页和排序).<br>　　</p></li><li>
+<p><strong>兼容 JavaScript 和HTML 5</strong>: 现在，在 ASP.NET MVC 中，AJAX 和Validation helpers 同时使用<a href="http://en.wikipedia.org/wiki/Unobtrusive_JavaScript">unobtrusive JavaScript</a> 默认的方法。 Unobtrusive JavaScript 避免注入内联的JavaScript至HTML中，并且使用新的HTML 5 数据约定来使行为分离(它同样在旧的浏览器中很方便)。 这将使你的HTML更小，更清洁，同样使它更加容易的交换和定制JS 库。在ASP.NET MVC 3中Validation helpers现在同样支持使用jQueryValidate这个默认的插件。</p></li></ul>
+<ul><li>
+<p><strong>依赖性注射模式:</strong> 最初的<a href="http://weblogs.asp.net/scottgu/archive/2010/07/27/introducing-asp-net-mvc-3-preview-1.aspx">ASP.NET MVC 3 Preview</a> 在Controllers, Views 和Action Filters中更好的支持依赖注入(DI) 。 今天的Beta 版本扩展了该功能，以更好的依赖性注入模式支持Model Binders, Model Validation Providers, Model Metadata Providers, 和Value Providers。它同样支持一个新的IDependencyResolver 接口，这个接口更加容易的集成依赖注入框架。<br><strong></strong></p></li><li>
+<p><strong>NuPack 集成</strong>: ASP.NET MVC 3 自动的安装NuPack 。它将利用NuPack来发现和增加大量的MVC 开展和库到你的项目中。</p></li></ul>
+<ul><li>
+<p><strong>其他的:</strong> 最初的<a href="http://weblogs.asp.net/scottgu/archive/2010/07/27/introducing-asp-net-mvc-3-preview-1.aspx">ASP.NET MVC 3 Preview</a> 增加很多额外的helpers 和类 来更好的日常编码。  这个 beta包括大量额外的改进：更多的颗粒XSS HTML 输入验证，HTML helper 改进以支持HTML 5，Crypto helpers 和散列密码，更加简单的Email APIs, 改进的“New Project” 对话框，等等。  </p></li></ul>
+<p><strong><u>学习和了解更多关于ASP.NET MVC 3的内容</u></strong><br>　　<br>　　点击下面的链接来了解更多的关于ASP.NET MVC 3 Beta:</p>
+<ul><li><a href="http://haacked.com/archive/2010/10/06/asp-net-mvc-3-beta-released.aspx">Phil Haack’s Overview Post</a></li><li><a href="http://bradwilson.typepad.com/blog/2010/10/mvc3-unobtrusive-ajax.html">Brad Wilson’s Unobtrusive JavaScript Post</a></li><li><a href="http://bradwilson.typepad.com/blog/2010/10/mvc3-unobtrusive-validation.html">Brad Wilson’s Unobtrusive JavaScript Validation Post</a></li><li><a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt5-idependencyresolver.html">Brad Wilson’s Dependency Injection Series</a> (<a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt6-model-validation.html">Model Validation</a>, <a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt7-model-metadata.html">Model MetaData</a>, <a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt8-value-providers.html">Value Providers</a>, <a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt9-model-binders.html">Model Binders</a>, <a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt10-controller-activator.html">Controller Activator</a>, <a href="http://bradwilson.typepad.com/blog/2010/10/service-location-pt11-view-page-activator.html">View Page Activator</a>) </li></ul>
+<p><strong><u>下载</u></strong></p>
+<p><a href="http://www.microsoft.com/web/gallery/install.aspx?appid=MVC3">Click here</a> 使用Microsoft Web Platform Installer下载和安装ASP.NET MVC 3 Beta 。</p>
+<p>或者你也可以下载并安装 ASP.NET MVC 3 Beta（使用一个单独的安装文件） <a href="http://go.microsoft.com/fwlink/?LinkID=191795">here</a> (注:对于今天的beta 版本，你需要先安装AspNetWebPages.msi，然后是AspNetMVC3Setup.exe文件).<br>　　</p>
+<h3><u style="font-size:18pt">WebMatrix Beta 2</u></h3>
+<p>这个版本是<a href="http://weblogs.asp.net/scottgu/archive/2010/07/06/introducing-webmatrix.aspx">WebMatrix Beta 1</a> 的改进版本，它包括了大量的特征改进。</p>
+<p>除了WebMatrix 特性 <a href="http://weblogs.asp.net/scottgu/archive/2010/07/06/introducing-webmatrix.aspx">introduced with the first beta</a>，今天的Beta 2 版本还包含：</p>
+<ul><li>
+<p><strong>Web Page 增强功能</strong>: WebMatrix 通过使用一种新的Razor语法来支持创建单独的ASP.NET Web 页面。它包含同样的语法改进(@helper, @* comment *@, etc) 。现在它同样支持使用VB 和C#创建页面。</p></li></ul>
+<ul><li>
+<p><strong>改进的模板</strong>: WebMatrix 包含了针对于常见场景的模板项目 。这些模板项目现在使用HTML 5 和 CSS 3 (并且同样与downlevel browsers一同工作)。一个新的Wishlist 项目模板在Beta 2中增加了。</p></li></ul>
+<ul><li>
+<p><strong>NuPack集成</strong>: WebMatrix 提供NuPack集成并且支持一个基于网页的管理来安装库到你正在致力于的项目中。</p></li></ul>
+<ul><li>
+<p><strong>Toolkit 支持</strong>: 我们正在发布一个Toolkit，它提供方便的能够在ASP.NET 应用程序中使用的helpers 。它包含针对于Analytics, Facebook, GamerCard, Gravatar, LinkShare, Captcha, Twitter 和Video scenarios的helpers。</p></li></ul>
+<p><strong style="color:#0000ff"><u>下载</u></strong></p>
+<p><a href="http://www.microsoft.com/web/webmatrix/">Click here</a> 下载和安装WebMatrix Beta 2。<br></p>
+<h3><u>总结</u></h3>
+<p>今天的发布进一步进化和提升 Microsoft Web Stack。以上所有的功能与.NET 4 and VS 2010整合在一起工作，而不修改现有任何文件(它们都是附加并且安全的在你的机器上安装)。</p>
+<p> </p>
+<p>原文地址：<a href="http://weblogs.asp.net/scottgu/archive/2010/10/06/announcing-nupack-asp-net-mvc-3-beta-and-webmatrix-beta-2.aspx">http://weblogs.asp.net/scottgu/archive/2010/10/06/announcing-nupack-asp-net-mvc-3-beta-and-webmatrix-beta-2.aspx</a></p></div></div>
+
+
+<p> </p>
+
+
+<p> </p>
+
+
+<p>作者：<a href="http://www.cnblogs.com/jasenkin/">JasenKin</a><br>出处：<a href="http://www.cnblogs.com/jasenkin/">http://www.cnblogs.com/jasenkin/</a> <br>本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。 </p>
+
+
+<div>
+<div>
+快速评论通道：        </div></div>
+
+
+<p><img src="http://www.cnblogs.com/jasenkin/aggbug/1845247.html?type=1" width="1" height="1" alt=""><p>评论: 24　<a href="http://www.cnblogs.com/jasenkin/archive/2010/10/07/asp_net_mvc_beta.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/jasenkin/archive/2010/10/07/asp_net_mvc_beta.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76609/">创建在线游戏网络有难度 暴雪改革只是开始</a><span style="color:gray">(2010-10-08 16:36)</span><br>· <a href="http://news.cnblogs.com/n/76608/">评论：“奇虎腾讯相争” 百度在后</a><span style="color:gray">(2010-10-08 16:28)</span><br>· <a href="http://news.cnblogs.com/n/76605/">《魔兽世界》总玩家超越1200万</a><span style="color:gray">(2010-10-08 16:16)</span><br>· <a href="http://news.cnblogs.com/n/76604/">越狱、折腾与创造</a><span style="color:gray">(2010-10-08 16:09)</span><br>· <a href="http://news.cnblogs.com/n/76603/">Mozilla Firefox 4速度比肩Safari 5</a><span style="color:gray">(2010-10-08 16:06)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/76477/">远离.NET</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

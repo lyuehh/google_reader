@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Firebug Console API 与命令行</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Firebug Console API 与命令行</h2>
+<p class="meta">30 May 2011</p>
+
+<div class="post">
+<h2>Firebug Console API 与命令行</h2>
+
+<h3>by 愚人码头</h3>
+
+<h3>at 2011-05-29 20:53:05</h3>
+
+<h3>original <a href="http://www.css88.com/archives/3678">http://www.css88.com/archives/3678</a></h3>
+
+<p>前几天有人问我关于firebug console的问题，其实我平时用的最多也就是console.log,相当于alert()。还真没深入了解其他的api，今天在jsmix上看到了，所以转载过来分享一下 Console API 当打开 firebug (也包括 Chrome 等浏览器的自带调试工具)，window 下面会注册一个叫做 console 的对象，它提供多种方法向控制台输出信息，供开发人员调试使用。下面是这些方法的一个简单介绍，适时地运用它们，对于提高开发效率很有帮助。 console.log(object[, object, ...]) 使用频率最高的一条语句：向控制台输出一条消息。支持 C 语言 printf 式的格式化输出。当然，也可以不使用格式化输出来达到同样的目的。下面两行代码执行的结果是相同的： console.log(“The %s jumped over %d tall buildings”, animal, count); console.log(“The”, animal, “jumped over”, count, “tall buildings”); console.debug(object[, object, ...]) 向控制台输出一条信息，它包括一个指向该行代码位置的超链接。 console.info(object[, object, ...]) 向控制台输出一条信息，该信息包含一个表示“信息”的图标，和指向该行代码位置的超链接。 console.warn(object[, object, ...]) 同 info。区别是图标与样式不同。 console.error(object[, object, ...]) 同 info。区别是图标与样式不同。error 实际上和 throw [...]</p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

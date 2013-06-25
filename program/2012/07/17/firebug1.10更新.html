@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>firebug1.10更新</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>firebug1.10更新</h2>
+<p class="meta">17 Jul 2012</p>
+
+<div class="post">
+<h2>firebug1.10更新</h2>
+
+<h3>by JerryQu</h3>
+
+<h3>at 2012-07-16 22:12:52</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7718.html">http://www.udpwork.com/item/7718.html</a></h3>
+
+<p>几天前，firefox下著名的开发工具firebug发布了<a href="https://getfirebug.com/downloads">1.10版</a>，想必大家都已经用上了。这次firebug更新，又增加了不少好用的功能，简单介绍下~</p>
+
+
+<p>首先是插件自身的改进。这次更新后，firebug采用了新的firefox插件架构，<strong>安装/卸载后，不再需要重启firefox</strong>
+了。另外，<strong>新版firebug插件采用了延迟加载的机制</strong>
+，只在点了插件按钮才开始加载，不会对启动firefox的速度造成影响。</p>
+
+
+<p><strong>集成了firecookie</strong>
+。firecookie之前是一个很好用的查看/管理cookie的插件，依赖于firebug，作为firebug的一个tab来展现，基本也属于web开发必装插件。这次firebug直接内置了firecookie，如果你之前安装过firecookie，在安装firebug1.10后会提示要先卸载它。</p>
+
+
+<p><strong>控制台支持了语法高亮</strong>
+。不得不说这个功能太合我意了，之前经常在firebug控制台里敲代码。这次新增的代码高亮、当前行高亮、括号匹配等功能，让这个临时写js的地方变得强大起来。</p>
+
+
+<p>现在firebug的<strong>自动完成功能也更全面</strong>
+了。无论是改变css属性，还是js调试时新增监控变量，大部分需要输入的地方都有自动完成功能。</p>
+
+
+<p>大家都知道，在“html”这个大类下，有个“计算出的样式”tab。firebug1.10给它增加了新功能，可以方便大家<strong>更好的跟踪样式</strong>
+。如下图：</p>
+
+
+<p><a href="http://st.imququ.com/uploads/2012/07/323CF30A-C867-4AE2-B322-0D3BB0ACD38B.jpg" title="点击查看大图"><img src="http://st.imququ.com/uploads/2012/07/m_323CF30A-C867-4AE2-B322-0D3BB0ACD38B.jpg"></a></p>
+
+
+<p>还有，在查看元素css时，鼠标在web-font字体上右键，可以看到“<strong>查看样式声明</strong>
+”功能，点击后会跳往“css”tab下改web字体定义处。</p>
+
+
+<p>之前，通过firebug修改并实时预览css，是大家用得非常多的功能。如今，这里也会<strong>显示import进来的Media Queries</strong>
+供修改，如图：</p>
+
+
+<p><img src="http://st.imququ.com/uploads/2012/07/m_media-queries.jpg">
+<br>
+（本图片来自<a href="https://hacks.mozilla.org/2012/07/firebug-1-10-new-features/">这里</a>）</p>
+
+
+<p>现在，查看html时可以选择将<strong>字符实体显示为字符、名称或者unicode</strong>
+；查看css时可以选择将<strong>颜色显示为HEX、RGB、HSL</strong>
+，如下图：</p>
+
+
+<p><img src="http://st.imququ.com/uploads/2012/07/m_xxx.jpg"></p>
+
+
+<p>新版firebug在查看元素样式时，<strong>新增了对“:foucs”伪类的模拟</strong>
+。选中一个元素，查看css时选中“:focus”，可以查看元素被focus时的效果。</p>
+
+
+<p>在“网络”tab，那些BFCache (Back-Forward Cache)请求跟其他类型请求外观上有了比较大的区别，完全<strong>走本地Cache的请求有一个灰色条纹背景图</strong>
+，一目了然。另外，通过选项也可以隐藏所有BFCache请求。</p>
+
+
+<p>另外一个很有用的功能是，在查看css样式时右键，有一个“删除xxx”的菜单，点击<strong>可以一次删除整段样式</strong>
+。相比之前一个个禁用rule真是太方便了，继续看图：</p>
+
+
+<p><img src="http://st.imququ.com/uploads/2012/07/xxx2.jpg"></p>
+
+
+<p>另外，1.10版的firebug在易用性上也做了一些改善。所有菜单都有文字说明，鼠标移上去就可以看到；在控制台可以输出help()查看更多帮助内容。</p>
+
+
+<p>firebug1.10新特性介绍得差不多了，基本都是对着<a href="https://hacks.mozilla.org/2012/07/firebug-1-10-new-features/">这篇文章</a>自己实践了一遍。虽然身边越来越多的人都投入了Chrome的怀抱，我依旧还是Firefox的忠实粉丝，这跟自己用得顺手的那些插件们有很大的关系。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7718.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7718.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;1&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7718.html#reviews">评论: 1</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

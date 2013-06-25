@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>C++写node笔记（五）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>C++写node笔记（五）</h2>
+<p class="meta">04 Dec 2012</p>
+
+<div class="post">
+<h2>C++写node笔记（五）</h2>
+
+<h3>by snoopyxdy</h3>
+
+<h3>at 2012-12-03 16:25:17</h3>
+
+<h3>original <a href="http://snoopyxdy.blog.163.com/blog/static/60117440201211341414661">http://snoopyxdy.blog.163.com/blog/static/60117440201211341414661</a></h3>
+
+<div>紧接着上篇，打算用C++ ADDON写一个valiator验证器，于是参照chriso的node-validator写了一个c++版本的，相关连接如下：<div>node.js版本的node-validator地址：<a rel="nofollow" href="https://github.com/chriso/node-validator">https://github.com/chriso/node-validator</a><br>c++版本的node-validator地址：<a rel="nofollow" href="https://github.com/DoubleSpout/node-hvalidator">https://github.com/DoubleSpout/node-hvalidator</a></div><div>我们可以利用以下命令安装</div><div><pre><p>npm install hvalidator</p></pre><div>我也装下13，人家都在redis前加个h，我也在原来的validator前加个h，所以取名为：hvalidator。</div>目前这个模块只是完成了isxxx功能的coding，开发过程中最坑爹就是c++的正则模块了。为了速度，我选择了最原生的regex.h这个标准库，很多c++开发者都没用过，网上资料都少的可怜，大部分使用的boost库。</div><div>相关C++正则库对比文章地址：<a rel="nofollow" href="http://www.cnblogs.com/pmars/archive/2012/10/24/2736831.html">http://www.cnblogs.com/pmars/archive/2012/10/24/2736831.html</a></div><div>这个逆天的坑爹库直接让我给它跪了，为了写个正则表达式匹配得写上10几行代码，而且还有各种的配置，可能是我个人水平有限，花了一个晚上才搞清楚怎么使用它，刚开始各种不匹配，泪崩啊！！让我精疲力尽啊，几次都想放弃了。</div><div>最后终于我还是看懂了文档，为regex.h在编译的时候加上了REG_NOSUB选项，加速匹配。</div><div><br></div><div>目前这个hvalidator的正则不支持中文，而且过滤的功能还没写完，判断的部分开发完毕了，c++代码写的很差，希望大牛们指点一二啊。</div><div>最后献上测试代码，我们看下hvalidator的性能吧：</div><div><p></p><pre><p></p><p>var hv = require('../index.js');<br>var nv = require('validator').check;<br><br></p><p>       console.time('nodejs')<br><br></p><p> nv('aaaa11@aaaa.com').is(/[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3}$/)<br><br>        nv('123').isNumeric()<br><br> nv(122.2).isFloat()<br> <br> nv('123').isInt()<br><br> nv('aa').notEmpty()<br><br> nv(new Date()).isDate()<br><br> nv('abc').isAlpha()<br><br> nv('abc').isLowercase()<br><br> nv('ABC').isUppercase()<br><br> nv('ABC').isIn('ABCDEFG')<br><br> nv('123').isIn('123456789')<br><br> nv('ABC').isIn(['ABCDEFG','123','234','ABC'])<br><br> nv('234').isIn(['ABCDEFG','123','234','abc'])<br><br> nv('sfsd@fsfas.com').isEmail()<br><br> nv('http://bbs.csdn.net/topics/270080323/').isUrl()<br><br> nv('10.10.10.10').isIP()<br><br> console.timeEnd('nodejs')<br><br><br><br>        console.time('c++')<br><br> hv.is('aaaa11@aaaa.com',/[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3}$/)<br><br> hv.isArray([])<br><br> hv.isRegExp(/\d/)<br><br> hv.isNumber(123)<br><br> hv.isPositive(122.2)<br> <br> hv.isInt(123)<br><br> hv.notEmpty("aa")<br><br> hv.isDate(new Date())<br><br> hv.isString('abc')<br><br> hv.isLowercase('abc')<br><br> hv.isUppercase('ABC')<br><br> hv.isIn('ABC','ABCDEFG')<br><br> hv.isIn(123,'123456789')<br><br> hv.isIn('ABC',['ABCDEFG','123','234','ABC'])<br><br> hv.isIn(234,['ABCDEFG','123','234','abc'])<br><br> hv.isLen('ABC',1,5)<br><br> hv.isLen(5,1,5)<br><br> hv.isLen([1,2,3],1,5)<br><br> hv.isEmail('sfsd@fsfas.com')<br><br> hv.isUrl('http://bbs.csdn.net/topics/270080323/')<br><br> hv.isIp('10.10.10.10')<br><br></p><p>       console.timeEnd('c++')</p><p></p></pre><p></p><p><br></p><p>我们看下最后的执行结果，多次执行：</p><p></p><pre><p>nodejs: 8ms<br>c++: 2ms</p><p>nodejs: 9ms</p><p>c++: 2ms</p><p>nodejs: 8ms</p><p>c++: 1ms</p><p>nodejs: 10ms</p><p>c++: 2ms</p><p>nodejs: 8ms</p><p>c++: 3ms</p></pre>还是C++的模块快一些哦~<p></p></div></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

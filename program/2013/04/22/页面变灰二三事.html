@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>页面变灰二三事</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>页面变灰二三事</h2>
+<p class="meta">22 Apr 2013</p>
+
+<div class="post">
+<h2>页面变灰二三事</h2>
+
+<h3>by JerryQu</h3>
+
+<h3>at 2013-04-22 02:04:43</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/9699.html">http://www.udpwork.com/item/9699.html</a></h3>
+
+<p>又一次“天灾”降临，又一次无数工程师彻夜加班，又一次互联网产品集体变灰。有些产品换上灰色logo，有些产品增加了灰色banner，有些产品整个页面变灰。我想，不同的表现形式，表达的含义应该都是哀悼和祈福吧。这里，只想从技术实现上简单说说页面变灰这个话题。</p>
+
+
+<p>大家都知道，利用IE古老的滤镜，以及webkit支持的css3滤镜，可以很方便的让IE和webkit内核浏览器下的元素变灰。如果滤镜作用于html元素，整个页面就变灰了。</p>
+
+
+<pre>html{
+    filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+    -webkit-filter:grayscale(100%);
+}</pre>
+
+
+<p>从体验上来看，用户很难看清全灰页面上的重点，很容易错过重要信息。从技术上，这样做也带来两个问题：1、<strong>消耗更多CPU资源，让网站变卡</strong>
+（手机上更为明显）；2、<strong>-webkit-filter会导致retina设备上的页面变模糊</strong>
+。第1个问题很好理解不用多说。第2个问题，应该出是-webkit-filter的实现上：首先拷贝元素渲染后的图像，再针对图像进行转换。我猜测在拷贝时获取的是小尺寸图片，导致在retina设备（如rmbp、iPad 3+、iPhone 4+）上，对元素使用任何-webkit-filter都会让元素的渲染变模糊（见下图）。这个问题已经有人<a href="https://bugs.webkit.org/show_bug.cgi?id=106241">给webkit报bug</a>了，官方已确认。</p>
+
+
+<p><a href="http://st.imququ.com/uploads/2013/04/QQ20130422-2_2x.png" title="点击查看大图"><img src="http://st.imququ.com/uploads/2013/04/QQ20130422-2_2x.png"></a> <a href="http://st.imququ.com/uploads/2013/04/QQ20130422-1_2x.png" title="点击查看大图"><img src="http://st.imququ.com/uploads/2013/04/QQ20130422-1_2x.png"></a></p>
+
+
+<p>神奇的是，webkit这个bug，居然被我发现可以用一个离奇的方法来解决：给页面引入一个flash即可。。。（iOS就杯具了）。这里<a href="http://qgy18.imququ.com/file/retina/">有个简陋的Demo</a>，有rmbp的同学自己打开看。</p>
+
+
+<p>对于不支持IE滤镜和webkit滤镜的firefox，<a href="http://demosthenes.info/blog/532/Convert-Images-To-Black-And-White-With-CSS">网上</a>流传一个svg方案，先定义svg文件如下：</p>
+
+
+<pre>&lt;svg version=&quot;1.1&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+&lt;filter id=&quot;grayscale&quot;&gt;
+&lt;feColorMatrix type=&quot;matrix&quot; values=&quot;0.3333 0.3333 0.3333 0 0
+0.3333 0.3333 0.3333 0 0
+0.3333 0.3333 0.3333 0 0
+0  0  0  1 0&quot;&gt;&lt;/feColorMatrix&gt;
+&lt;/filter&gt;
+&lt;/svg&gt;</pre>
+
+
+<p>再在要变灰的页面加上这行样式就好了：</p>
+
+
+<pre>html {filter: url(desaturate.svg#grayscale);}</pre>
+
+
+<p>或者像下面这样把外链的svg写到datauri里：</p>
+
+
+<pre>html {filter: url(&quot;data:image/svg+xml;utf8,&lt;svg xmlns=\&#39;http://www.w3.org/2000/svg\&#39;&gt;&lt;filter id=\&#39;grayscale\&#39;&gt;&lt;feColorMatrix type=\&#39;matrix\&#39; values=\&#39;0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\&#39;/&gt;&lt;/filter&gt;&lt;/svg&gt;#grayscale&quot;);}</pre>
+
+
+<p>这个svg能完美的让firefox页面变灰，在retina设备上也完全正常，但毫无疑问的也会消耗更多的CPU。对于尚未更换内核的opera，没有能直接让整个html变灰的样式。</p>
+
+
+<p><strong>上面这些方案既不环保，又可能伤害retina用户的体验，还不能兼容全部浏览器。</strong>
+更极致的做法是彻底改掉整个页面样式，主要是两个地方：1、css中定义的颜色值；2、网站引入的图片。css规则一般都放在外链文件；图片则有css背景图、img前景图、flash焦点图等，css、html、js都需要排查。</p>
+
+
+<p>css中的颜色值，可以用代码自动转换，例如彪叔之前发布的<a href="http://www.twinsenliang.net/skill/20100420.html">CSS演示转换工具</a>。原理是用正则获取颜色值的R,G,B，取平均值A=(R+G+B)/3，最终替换成A,A,A就只有灰度了。这个方案有个缺点，除非内置red=&gt;#ff0000这样的完整对照表，否则用单词表示的颜色值得不到转换。另外，对于计算颜色的灰度值，<a href="http://www.iforeach.com/archives/503.html">网上</a>有另外一个看上去更精确的公式：0.299*R+0.587*G+0.114*B。</p>
+
+
+<p>给图片去色就比较简单了，很多图片工具都支持批量转换。例如大名鼎鼎的<a href="http://www.imagemagick.org/script/index.php">ImageMagick</a>，通过这样一行命令就能搞定：</p>
+
+
+<pre>convert &lt;input&gt; -colorspace Gray &lt;output&gt;</pre>
+
+
+<p>有些产品引用的图片来源多样，处理起来很麻烦。如果平时养成了图片使用统一的图床服务来管理的好习惯，那么通过升级基础服务，就可以实现按照某个规则替换url就输出灰色图片的功能，这就能大大减少业务线的图片替换工作量。如：<a href="http://p2.qhimg.com/t01e8e3e36ea8651f3d.png">原图</a><a href="http://p2.qhimg.com/gray/t01e8e3e36ea8651f3d.png">灰图</a>。</p>
+
+
+<p>网上还有一些现成的工具，可以批量替换项目中的css和图片，例如<a href="http://www.99css.com/archives/634">CssGaga</a>就提供了一体化的解决方案。我们内部统一的编译平台，也可以利用整站源码分析编译的平台优势，自动完成代码和图片同步修改的工作。</p>
+
+
+<p>最后要说的是，从技术上看，让页面变灰是件小事；如何能让自己的代码更环保，如何能让基础服务更快速灵活的支持业务需求，如何通过工具让项目更流程化、自动化，才是需要大家继续思考和努力的。</p>
+
+
+<p><strong>update</strong>
+@2013.04.23, 在ytzong同学博客上看到这个：<a href="http://www.99css.com/archives/1329">解决 -webkit-filter: grayscale(100%) 在 retina 下的模糊问题</a>。对于webkit这个bug，在官方修复之前，这应该是最好的解决方案了。</p>
+
+
+<p>本文链接：<a href="http://www.imququ.com/post/p20130420.html" title="Permalink to 页面变灰二三事">http://www.imququ.com/post/p20130420.html</a></p>
+
+
+<p>--EOF--</p>
+
+
+<div><h3>相关文章推荐</h3>
+<ul><li><a href="http://www.imququ.com/post/the-bug-of-ie-matrix-filter.html">[小Tip]IE矩阵滤镜Matrix一个大坑</a></li>
+<li><a href="http://www.imququ.com/post/56.html">IE与Firefox处理Attribute的几点差异</a></li>
+<li><a href="http://www.imququ.com/post/55.html">如何控制浏览器的历史记录</a></li>
+<li><a href="http://www.imququ.com/post/48.html">不同浏览器处理后退的一些异同</a></li>
+<li><a href="http://www.imququ.com/post/change-hash-in-frameset-cause-reload.html">[小Tip]Webkit下设置hash的一个坑</a></li>
+<li><a href="http://www.imququ.com/post/83.html">FaceBook的NoScript策略</a></li>
+<li><a href="http://www.imququ.com/post/52.html">Maxthon引发的系列问题</a></li>
+<li><a href="http://www.imququ.com/post/80.html">一种效果还不错的图片排列策略</a></li>
+</ul>
+</div>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/9699.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/9699.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">udpwork.com</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/9699.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://www.jikenow.com/">要! 要! 即刻! Now!</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

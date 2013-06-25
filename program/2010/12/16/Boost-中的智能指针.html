@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Boost 中的智能指针</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Boost 中的智能指针</h2>
+<p class="meta">16 Dec 2010</p>
+
+<div class="post">
+<h2>Boost 中的智能指针</h2>
+
+<h3>by sld666666</h3>
+
+<h3>at 2010-12-16 15:19:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/sld666666/archive/2010/12/16/1908265.html">http://www.cnblogs.com/sld666666/archive/2010/12/16/1908265.html</a></h3>
+
+<p><p>    这篇文章主要介绍 boost中的智能指针的使用。</p>
+<p>    内存管理是一个比较繁琐的问题，C++中有两个实现方案： 垃圾回收机制和智能指针。垃圾回收机制因为性能等原因不被C++的大佬们推崇， 而智能指针被认为是解决C++内存问题的最优方案。</p>
+<h2>1. 定义</h2>
+<p>     一个智能指针就是一个C++的对象， 这对象的行为像一个指针，但是它却可以在其不需要的时候自动删除。注意这个“其不需要的时候”， 这可不是一个精确的定义。这个不需要的时候可以指好多方面：局部变量退出函数作用域、类的对象被析构……。所以boost定义了多个不同的智能指针来管理不同的场景。</p>
+<table border="1" cellspacing="0" cellpadding="2" width="526">
+<tbody>
+<tr>
+<td width="200" valign="top">shared_ptr&lt;T&gt;</td>
+<td width="324" valign="top">内部维护一个引用计数器来判断此指针是不是需要被释放。是boost中最常用的智能指针了。</td>
+</tr>
+<tr>
+<td width="200" valign="top">scoped_ptr&lt;t&gt;</td>
+<td width="324" valign="top">当这个指针的作用域消失之后自动释放</td>
+</tr>
+<tr>
+<td width="200" valign="top">intrusive_ptr&lt;T&gt;</td>
+<td width="324" valign="top">也维护一个引用计数器，比shared_ptr有更好的性能。但是要求T自己提供这个计数器。</td>
+</tr>
+<tr>
+<td width="200" valign="top">weak_ptr&lt;T&gt;</td>
+<td width="324" valign="top">弱指针，要和shared_ptr 结合使用</td>
+</tr>
+<tr>
+<td width="200" valign="top">shared_array&lt;T&gt;</td>
+<td width="324" valign="top">和shared_ptr相似，但是访问的是数组</td>
+</tr>
+<tr>
+<td width="200" valign="top">scoped_array&lt;T&gt;</td>
+<td width="324" valign="top">和scoped_ptr相似，但是访问的是数组</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Boost::scoped_ptr&lt;T&gt;</h2>
+<p>    scoped_ptr 是boost中最简单的智能指针。scoped_ptr的目的也是很简单， 当一个指针离开其作用域时候，释放相关资源。特别注意的一定就是scoped_ptr 不能共享指针的所有权也不能转移所有权。也就是说这个内存地址就只能给的声明的变量用，不能给其他使用。</p>
+<p>    下面是scoped_ptr的几个特点：</p>
+<ol>
+<li>scoped_ptr的效率和空间的消耗内置的指针差不多。</li>
+<li>scoped_ptr不能用在标准库的容器上。(用shared_ptr代替)</li>
+<li>scoped_ptr 不能指向一块能够动态增长的内存区域(用scoped_array代替)</li>
+</ol>
+<p>
+<div>
+<pre><div><span style="color:#008080"> 1</span> <span style="color:#0000ff">class</span><span style="color:#000000"> test <br></span><span style="color:#008080"> 2</span> <span style="color:#000000">{ <br></span><span style="color:#008080"> 3</span> <span style="color:#0000ff">public</span><span style="color:#000000">: <br></span><span style="color:#008080"> 4</span> <span style="color:#000000">    </span><span style="color:#0000ff">void</span><span style="color:#000000"> print() <br></span><span style="color:#008080"> 5</span> <span style="color:#000000">    { <br></span><span style="color:#008080"> 6</span> <span style="color:#000000">        cout </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000"> </span><span style="color:#800000">"</span><span style="color:#800000">test print now</span><span style="color:#800000">"</span><span style="color:#000000"> </span><span style="color:#000000">&lt;&lt;</span><span style="color:#000000">endl; <br></span><span style="color:#008080"> 7</span> <span style="color:#000000">    } <br></span><span style="color:#008080"> 8</span> <span style="color:#000000">};<br></span><span style="color:#008080"> 9</span> <span style="color:#0000ff">int</span><span style="color:#000000"> _tmain(</span><span style="color:#0000ff">int</span><span style="color:#000000"> argc, _TCHAR</span><span style="color:#000000">*</span><span style="color:#000000"> argv[]) <br></span><span style="color:#008080">10</span> <span style="color:#000000">{ <br></span><span style="color:#008080">11</span> <span style="color:#000000">    boost::scoped_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> x(</span><span style="color:#0000ff">new</span><span style="color:#000000"> test); <br></span><span style="color:#008080">12</span> <span style="color:#000000">    x</span><span style="color:#000000">-&gt;</span><span style="color:#000000">print(); <br></span><span style="color:#008080">13</span> <span style="color:#000000">    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; <br></span><span style="color:#008080">14</span> <span style="color:#000000">}</span></div></pre>
+</div>
+</p>
+<h2>3.Boost::shared_ptr&lt;T&gt;</h2>
+<p>    shared_ptr 具有如下几个特点：</p>
+<ol>
+<li> 在内部维护一个引用计数器， 当有一个指针指向这块内存区域是引用计数+1， 反之-1， 如果没有任何指针指向这块区域， 引用计数器为0，释放内存区域。</li>
+<li>可以共享和转移所有权。</li>
+<li>可以被标准库的容器所使用</li>
+<li>不能指向一块动态增长的内存(用share_array代替)</li>
+</ol>
+<p>我们可以看下如下例子：</p>
+<p>
+<div>
+<pre><div><span style="color:#008080">1</span> <span style="color:#0000ff">int</span><span style="color:#000000"> _tmain(</span><span style="color:#0000ff">int</span><span style="color:#000000"> argc, _TCHAR</span><span style="color:#000000">*</span><span style="color:#000000"> argv[]) <br></span><span style="color:#008080">2</span> <span style="color:#000000">{ <br></span><span style="color:#008080">3</span> <span style="color:#000000">    boost::shared_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> ptr_1(</span><span style="color:#0000ff">new</span><span style="color:#000000"> test); <br></span><span style="color:#008080">4</span> <span style="color:#000000">    ptr_1</span><span style="color:#000000">-&gt;</span><span style="color:#000000">print();</span><span style="color:#008000">//</span><span style="color:#008000">引用计数为1</span><span style="color:#008000"><br></span><span style="color:#008080">5</span> <span style="color:#000000">    boost::shared_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> ptr_2 </span><span style="color:#000000">=</span><span style="color:#000000"> ptr_1; <br></span><span style="color:#008080">6</span> <span style="color:#000000">    ptr_2</span><span style="color:#000000">-&gt;</span><span style="color:#000000">print();</span><span style="color:#008000">//</span><span style="color:#008000">引用计数为2</span><span style="color:#008000"><br></span><span style="color:#008080">7</span> <span style="color:#000000">    ptr_1</span><span style="color:#000000">-&gt;</span><span style="color:#000000">print();</span><span style="color:#008000">//</span><span style="color:#008000"> 引用计数还是为2</span><span style="color:#008000"><br></span><span style="color:#008080">8</span> <span style="color:#000000">    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; <br></span><span style="color:#008080">9</span> <span style="color:#000000">}</span></div></pre>
+</div>
+</p>
+<h2>4. Boost::intrusive_ptr&lt;T&gt;</h2>
+<p>    intrusive_ptr 的主要和share_ptr一样， 对比share_ptr,其效率更高，但是需要自己维护一个引用计数器， 这里不做详细介绍。</p>
+<h2>5. Boost::weak_ptr&lt;T&gt;</h2>
+<p>    weak_ptr 就是一个弱指针。weak_ptr 被shared_ptr控制， 它可以通过share_ptr的构造函数或者lock成员函数转化为share_ptr。</p>
+<p>    weak_ptr的一个最大特点就是它共享一个share_ptr的内存，但是无论是构造还是析构一个weak_ptr 都不会影响引用计数器。</p>
+<p>
+<div>
+<pre><div><span style="color:#008080"> 1</span> <span style="color:#0000ff">int</span><span style="color:#000000"> _tmain(</span><span style="color:#0000ff">int</span><span style="color:#000000"> argc, _TCHAR</span><span style="color:#000000">*</span><span style="color:#000000"> argv[]) <br></span><span style="color:#008080"> 2</span> <span style="color:#000000">{ <br></span><span style="color:#008080"> 3</span> <span style="color:#000000">    boost::shared_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> sharePtr(</span><span style="color:#0000ff">new</span><span style="color:#000000"> test);;<br></span><span style="color:#008080"> 4</span> <span style="color:#000000">    boost::weak_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> weakPtr(sharePtr); <br></span><span style="color:#008080"> 5</span> <span style="color:#000000">    </span><span style="color:#008000">//</span><span style="color:#008000">weakPtr 就是用來保存指向這塊內存區域的指針的 <br></span><span style="color:#008080"> 6</span> <span style="color:#008000">    </span><span style="color:#008000">//</span><span style="color:#008000">干了一大堆其他事情</span><span style="color:#008000"><br></span><span style="color:#008080"> 7</span> <span style="color:#000000">    boost::shared_ptr</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> sharePtr_2 </span><span style="color:#000000">=</span><span style="color:#000000"> weakPtr.</span><span style="color:#0000ff">lock</span><span style="color:#000000">(); <br></span><span style="color:#008080"> 8</span> <span style="color:#000000">    </span><span style="color:#0000ff">if</span><span style="color:#000000"> (sharePtr_2) <br></span><span style="color:#008080"> 9</span> <span style="color:#000000">        sharePtr_2</span><span style="color:#000000">-&gt;</span><span style="color:#000000">print();<br></span><span style="color:#008080">10</span> <span style="color:#000000">    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; <br></span><span style="color:#008080">11</span> <span style="color:#000000">}</span></div></pre>
+</div>
+</p>
+<h2>6. Boost::shared_array&lt;T&gt; 和Boost::scoped_array&lt;T&gt;</h2>
+<p>    前面提到过shared_ptr和scoped_ptr不能用于数组的内存（new []），所以shared_array和scoped_array就是他们的代替品。我们可以看下shared_array的用法</p>
+<p>
+<div>
+<pre><div><span style="color:#008080">1</span> <span style="color:#0000ff">int</span><span style="color:#000000"> _tmain(</span><span style="color:#0000ff">int</span><span style="color:#000000"> argc, _TCHAR</span><span style="color:#000000">*</span><span style="color:#000000"> argv[]) <br></span><span style="color:#008080">2</span> <span style="color:#000000">{ <br></span><span style="color:#008080">3</span> <span style="color:#000000">    </span><span style="color:#0000ff">const</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000"> size </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">10</span><span style="color:#000000">; <br></span><span style="color:#008080">4</span> <span style="color:#000000">    boost::shared_array</span><span style="color:#000000">&lt;</span><span style="color:#000000">test</span><span style="color:#000000">&gt;</span><span style="color:#000000"> a(</span><span style="color:#0000ff">new</span><span style="color:#000000"> test[]);<br></span><span style="color:#008080">5</span> <span style="color:#000000">    </span><span style="color:#0000ff">for</span><span style="color:#000000"> (</span><span style="color:#0000ff">int</span><span style="color:#000000"> i </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; i </span><span style="color:#000000">&lt;</span><span style="color:#000000"> size; </span><span style="color:#000000">++</span><span style="color:#000000">i) <br></span><span style="color:#008080">6</span> <span style="color:#000000">        a[i].print();<br></span><span style="color:#008080">7</span> <span style="color:#000000">    </span><span style="color:#0000ff">return</span><span style="color:#000000"> </span><span style="color:#800080">0</span><span style="color:#000000">; <br></span><span style="color:#008080">8</span> <span style="color:#000000">}</span></div></pre>
+</div>
+</p>
+<h2>7. 使用智能指针的几个注意点</h2>
+<p>    下面是几个使用智能指针需要注意的地方：</p>
+<ol>
+<li>声明一个智能指针的时候要立即给它实例化， 而且一定不能手动释放它。</li>
+<li>…_ptr&lt;T&gt; 不是T* 类型。所以：</li>
+</ol>
+<p>                a: 声明的时候要…_ptr&lt;T&gt; 而不是….._ptr&lt;T*&gt;</p>
+<p>                b：不能把T* 型的指针赋值给它</p>
+<p>                c: 不能写ptr=NULl, 而用ptr.reset()代替。</p>
+<ol>
+<li>  不能循环引用。</li>
+<li>不要声明临时的share_ptr， 然后把这个指针传递给一个函数</li>
+</ol>
+<h2>8. 总结</h2>
+<p>    智能指针使用上还是比较简单的， 而且能比较有效得解决C++内存泄露的问题，各位使用C++的童鞋赶快用起来吧。</p><img src="http://www.cnblogs.com/sld666666/aggbug/1908265.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/sld666666/">sld666666</a> 发表于 2010-12-16 15:19 <a href="http://www.cnblogs.com/sld666666/archive/2010/12/16/1908265.html">原文链接</a></p><p>评论: 2　<a href="http://www.cnblogs.com/sld666666/archive/2010/12/16/1908265.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/sld666666/archive/2010/12/16/1908265.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/84879/">专访迈克尔·戴尔：我们的员工不喜欢输</a><span style="color:gray">(2010-12-17 08:58)</span><br>· <a href="http://news.cnblogs.com/n/84878/">RIM联合CEO：用户开发商运营商看好Playbook</a><span style="color:gray">(2010-12-17 08:57)</span><br>· <a href="http://news.cnblogs.com/n/84877/">亚马逊Kindle幕后功臣：以色列人和甲骨文</a><span style="color:gray">(2010-12-17 08:56)</span><br>· <a href="http://news.cnblogs.com/n/84876/">当当京东火拼价格战：你砸4000万我抛8000万</a><span style="color:gray">(2010-12-17 08:55)</span><br>· <a href="http://news.cnblogs.com/n/84875/">李嘉诚投资加拿大电子书网Kobo</a><span style="color:gray">(2010-12-17 08:54)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/sumtec/archive/2010/12/16/1908540.html">5年又5个月了</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

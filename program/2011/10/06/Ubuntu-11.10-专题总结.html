@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Ubuntu 11.10 专题总结</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Ubuntu 11.10 专题总结</h2>
+<p class="meta">06 Oct 2011</p>
+
+<div class="post">
+<h2>Ubuntu 11.10 专题总结</h2>
+
+<h3>by tuhaihe</h3>
+
+<h3>at 2011-10-05 16:15:58</h3>
+
+<h3>original <a href="http://www.bentutu.com/2011/10/ubuntu-11-10-post/">http://www.bentutu.com/2011/10/ubuntu-11-10-post/</a></h3>
+
+<p>
+<div>
+<a></a><a></a><a></a><a></a><a href="http://www.jiathis.com/share/"></a><a></a>
+</div>
+<p><br>
+Ubuntu 11.10 正式版本发布前以及发布后的一个月内，都是值得参与讨论的。</p>
+<p>本文是笨兔兔专为各位总结的Ubuntu 11.10 专题，内容还会不断更新，如有错误，敬请指出。</p>
+<h3>一、发布历程</h3>
+<table width="428">
+<tbody>
+<tr>
+<td><strong>时间</strong></td>
+<td><strong>进程</strong></td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-6-2</td>
+<td>Alpha 1</td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-6-30</td>
+<td>Alpha 2</td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-8-4</td>
+<td>Alpha 3</td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-9-1</td>
+<td>Beta 1版</td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-9-22</td>
+<td>Beta 2版</td>
+</tr>
+<tr bgcolor="#e2ebf4">
+<td>2011-10-13</td>
+<td>Ubuntu 11.10正式发布</td>
+</tr>
+</tbody>
+</table>
+<p><img src="http://ubuntuone.com/7IFBcgyBFXlxgpED5v05VU"><br>
+<span></span><br>
+链接：<a href="http://status.ubuntu.com/ubuntu-oneiric/">点击此处查看Ubuntu 11.10 进度</a></p>
+<h3>二、版本升级</h3>
+<p>升级Ubuntu 11.04到Ubuntu 11.10（桌面&amp;服务器）:<a href="http://www.bentutu.com/2011/10/upgrade-from-ubuntu-10upgrade-frome-ubuntu-10-04-to-ubuntu-1110-desktop-a-server/">点击查看详情</a></p>
+<p>提示：升级有风险，做好数据备份</p>
+<h3>三、特性预览</h3>
+<p>具体查看我们先前的文章，虽距正式版发布还有8天时间，功能应该冻结的差不多了；</p>
+<p>具体查看我们先前介绍：</p>
+<p>推荐1：<a href="http://www.bentutu.com/2011/09/ubuntu-11-10-beta-2-oneiric-ocelot-%E5%8F%91%E5%B8%83/">Ubuntu 11.10 Beta 2 (Oneiric Ocelot) 发布</a><br>
+推荐2：<a href="http://www.bentutu.com/2011/05/nine-features-we-may-see-in-ubuntu-11-10-oneiric-ocelot/">Ubuntu 11.10 九大看点</a><br>
+推荐3：<a href="http://www.bentutu.com/2011/09/ubuntu-unity-update%EF%BC%882011-9-19%EF%BC%89/">Ubuntu Unity 更新（2011-9-19）</a><br>
+推荐：<a href="http://www.bentutu.com/2011/09/ubuntu-11-10-development-update-2011-9-26/">Ubuntu 11.10 开发状况简介（2011-9-26）</a><br>
+其他的特性，我们就不赘述了。Ubuntu 11.10 出来之后，自然明了。</p>
+<h3>三、安装后要做的几件事情</h3>
+<p><strong>1，更新升级源</strong></p>
+<p>终端输入下面命令：</p>
+<pre>
+sudo gedit /etc/apt/sources.list
+</pre>
+<p>较快速的升级源有163,台湾源，科大源等，大家将新的升级源全部覆盖原文件内容，保存退出。然后执行下面命令：</p>
+<pre>
+sudo apt-get update
+</pre>
+<p><strong>2，安装更新</strong></p>
+<p>Ubuntu 最新版本，并不意味着你的软件是最新版本。升级你的软件版本：</p>
+<pre>
+sudo apt-get update &amp;&amp; sudo apt-get upgrade
+</pre>
+<p><strong>3，安装gnome 3</strong></p>
+<p>GNOME 3目前已在Ubuntu 11.10 源中，如果喜欢GNOME 3桌面环境，可通过软件中心或下面命令安装gnome 3：</p>
+<pre>
+sudo apt-get install gnome-shell
+</pre>
+<p>安装完成后，注销，选择“GNOME Shell”登录即可；</p>
+<p><strong>4，安装系统工具</strong></p>
+<p>笨兔兔推荐：Ubuntu tweak，Ailurus 小熊猫，Linux Deepin 软件中心（推荐）；</p>
+<p><em>Ubuntu tweak：</em></p>
+<p>稳定版：</p>
+<pre>
+sudo add-apt-repository ppa:tualatrix/ppa
+sudo apt-get update
+sudo apt-get install ubuntu-tweak
+</pre>
+<p>测试版：<br>
+sudo add-apt-repository ppa:ubuntu-tweak-testing/ppa<br>
+sudo apt-get update<br>
+sudo apt-get install ubuntu-tweak</p>
+<p><em>Ailurus 小熊猫：</em></p>
+<p>很久没有更新了，不过仍是一款实用的工具：</p>
+<pre>
+sudo add-apt-repository ppa:ailurus
+sudo apt-get update
+sudo apt-get install ailurus
+</pre>
+<p>也可以从这下载代码和安装包: <a href="http://code.google.com/p/ailurus/downloads/list">http://code.google.com/p/ailurus/downloads/list<br>
+</a></p>
+<p><em>Linux Deepin 软件中心（推荐）</em></p>
+<p>安装：<br>
+(Ubuntu 需先安装aria2: sudo apt-get install aria2)</p>
+<pre>
+sudo apt-get install git-core
+git clone git://github.com/manateelazycat/deepin-software-center.git
+cd src/
+./main.py
+</pre>
+<p><img src="http://ubuntuone.com/514J83KHBUJWAn73I7Ut3Q"></p>
+<p><strong>5，互联网工具：</strong></p>
+<p><em>IM 工具：</em>Ubuntu 11.10默认搭载Empathy，如果喜欢Pidgin：</p>
+<pre>
+sudo apt-get install pidgin
+</pre>
+<p><em>文件同步工具dropbox:</em></p>
+<p><em>下载</em>： <a href="http://www.dropbox.com/download?dl=packages/nautilus-dropbox_0.6.9_i386.deb&amp;src=index">x86</a>｜<a href="http://www.dropbox.com/download?dl=packages/nautilus-dropbox_0.6.9_amd64.deb&amp;src=index">x86—64</a></p>
+<p>针对天朝特殊情况，推荐系统搭载的Ubuntu one，目前免费空间为5G，速度还算可以。</p>
+<p><em>网络浏览器：</em><br>
+Ubuntu 11.10 将搭载Firefox 7。Google chrome,chromuim,opera等浏览器也是很不错的浏览器。</p>
+<p><strong>6，影音视频</strong></p>
+<p>PPS，目前版本为1.0.2，赞！</p>
+<p><em>Fedora rpm包</em> @<a href="http://download.ppstream.com/linux/PPStream.rpm">http://download.ppstream.com/linux/PPStream.rpm</a><br>
+<em>Ubuntu Debian包</em>@<a href="http://download.ppstream.com/linux/PPStream.deb">http://download.ppstream.com/linux/PPStream.deb</a></p>
+<p><strong>Webvox</strong>：可查看文章@<a href="http://www.bentutu.com/2011/09/webvbox-tool/">集网络视频、直播、小游戏、音乐欣赏</a></p>
+<p><strong>7，音频播放</strong></p>
+<p>播放器vlc：</p>
+<pre>
+sudo apt-get install vlc
+</pre>
+<p>安装编码：</p>
+<pre>
+sudo  apt-get install non-free-codecs libxine1-ffmpeg gxine mencoder  libmpcdec3 libquicktime1 flac faac faad sox ffmpeg2theora libmpeg2-4
+uudeview flac libmpeg3-1 mpeg3-utils mpegdemux liba52-dev mpeg2dec  vorbis-tools id3v2 mpg321 mpg123 libflac++6 ffmpeg libmp4v2-0
+totem-mozilla icedax tagtool easytag id3tool lame  nautilus-script-audio-convert libmad0 libjpeg-progs
+</pre>
+<p>若要支持DVD，则安装</p>
+<pre>
+sudo apt-get install libdvdcss2 &amp;&amp; sudo /usr/share/doc/libdvdread4/./install-css.sh
+</pre>
+<p><strong>8，办公：</strong></p>
+<p><em>永中Office</em>：据笨兔兔平日文档编辑所体验，永中office与MS office兼容性极好，wine 的MS Office都不好使，特推荐@<a href="http://www.yozosoft.com/download/zmo.jsp">http://www.yozosoft.com/download/zmo.jsp</a> ！！</p>
+<p><strong>字典</strong>：stardict</p>
+<pre>
+sudo apt-get install stardict
+</pre>
+<p><strong>9，安装解压工具：</strong></p>
+<pre>
+sudo apt-get install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack lha arj cabextract file-roller
+</pre>
+<p><strong>10，图形：</strong></p>
+<p>截图工具：shutter（截图、水印等）;gthumb(调整图片大小、裁剪等功能，很实用)</p>
+<p>shutter: </p>
+<pre>
+sudo apt-get install shutter
+</pre>
+<p>gthumb:</p>
+<pre>sudo apt-get install gthumb</pre>
+<p><strong>11，输入法：</strong></p>
+<p>ibus-googlepinyin 和fcitx-googlepinyin安装方法可参考@<a href="http://code.google.com/p/libgooglepinyin/wiki/INSTALL#ibus-googlepinyin">http://code.google.com/p/libgooglepinyin/wiki/INSTALL#ibus-googlepinyin<br>
+</a><br>
+项目地址：<a href="http://code.google.com/p/libgooglepinyin/">http://code.google.com/p/libgooglepinyin/</a></p>
+<p>同时，近日fcitx 4.1.2 版本发布。这些都是优秀的中文输入法。具体可查看fcitx 主页@<a href="http://code.google.com/p/fcitx/">http://code.google.com/p/fcitx/</a></p>
+<p><strong>12，主题安装：</strong></p>
+<p>Elementary Lion:下载：download here：http://dolsilwa.deviantart.com/art/elementary-Lion-1-1-210121746</p>
+<p>安装Elementary Icon Theme</p>
+<pre>sudo apt-add-repository ppa:elementaryart/elementarydesktop
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install elementary-icon-theme
+</pre>
+<h3>四、APT命令总结</h3>
+<p>apt-get可用来搜索、安装、升级、卸载软件或操作系统，一般命令格式为：</p>
+<pre>
+sudo apt-get xxxx
+</pre>
+<p><strong>apt命令用法</strong></p>
+<p>apt-get update 　　升级软件列表；</p>
+<p>apt-get install
+ 　　安装新软件包</p>
+<p>apt-get remove
+ 　　卸载已安装的软件包（保留配置文档）</p>
+<p>apt-get –purge remove
+ 　　卸载已安装的软件包（删除配置文档）</p>
+<p>apt-get clean 　　清理系统，不影响安装的软件使用</p>
+<p>apt-get upgrade 　　更新任何已安装的软件包</p>
+<p>apt-get dist-upgrade 　　将系统升级到新版本</p>
+<p>apt-cache search      查找软件包</p>
+<p>本文继续更新中。。。欢迎各位同学指出错误，也欢迎提出其他尚未提到的地方，让该专题更加完整，方便大家查阅。</p>
+<p>推荐：<br>
+51cto 网站：<a href="http://os.51cto.com/art/201105/264870.htm">Ubuntu 11.10新版登场:性能不断完善</a></p>
+<p></p>
+<p><strong>声明：</strong>笨兔兔原创文章，博客文章遵循<a href="http://cn.creativecommons.org/licenses/meet-the-licenses/">CC协议</a>，转载需注明@<a href="http://www.bentutu.com/">笨兔兔</a>，本文<a href="http://www.bentutu.com/2011/10/ubuntu-11-10-post/">链接地址</a></p>
+<p><a href="http://www.bentutu.com/upost/">文稿投递|文章写作规范</a>|<small>欢迎加入<span style="color:rgb(0,128,0)">QQ群:121584708（此群已满）；2群：170591351；Gtalk群:ibentutu@roomchinese.appspotchat.com</span></small></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

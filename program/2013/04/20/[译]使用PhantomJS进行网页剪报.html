@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译]使用PhantomJS进行网页剪报</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译]使用PhantomJS进行网页剪报</h2>
+<p class="meta">20 Apr 2013</p>
+
+<div class="post">
+<h2>[译]使用PhantomJS进行网页剪报</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2013-04-20 09:24:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2013/04/20/3029652.html">http://www.cnblogs.com/ziyunfei/archive/2013/04/20/3029652.html</a></h3>
+
+<p>原文:<a href="http://ariya.ofilabs.com/2013/04/web-page-clipping-with-phantomjs.html">http://ariya.ofilabs.com/2013/04/web-page-clipping-with-phantomjs.html</a></p>
+
+
+<p><br><hr><br><p><a href="http://phantomjs.org/">PhantomJS</a>的一个主要用途就是用来抓取网页并将它渲染成图片.在<a href="http://ariya.ofilabs.com/2012/10/web-page-screenshot-with-phantomjs.html">渲染图片</a>时有很多选项可供调整,其中最常用的一个就是缩放选项(调整<span style="color:#660066">zoomFactor</span>属性的值),它经常会被用在制作缩略图的场景下.另外一个不怎么被人熟知的选项就是"按指定矩形区域渲染"选项(调整<span style="color:#660066"><span style="color:#660066">clipRect</span></span>属性的值),也就是生成的图片只包含了目标网页中被指定的那部分区域.</p><br><p>这种只渲染页面指定矩形区域的需求通常表现为你只想获取页面中某个特定元素的内容(就像<a href="https://developer.mozilla.org/zh-CN/docs/DOM/element.getBoundingClientRect">getBoundingClientRect</a>的作用一样).这种截图需求可以很方便的使用<a href="http://casperjs.org/">CasperJS</a>提供的<a href="http://casperjs.org/api.html#casper.captureSelector">captureSelector</a>函数来实现.</p><br><p>另外一种情况就是你想将一个比较长的页面分割成两张图片分别渲染,经常是在查看<a href="http://www.nngroup.com/articles/mobile-site-vs-full-site/">移动网站</a>的时候,下面的图片演示了渲染BBC网站时图片的分割效果.</p><br><p><img src="http://images.cnitblog.com/blog/116671/201304/20020246-3f4fa40f883341768dacf1104d6a2e2d.png" alt=""></p><br><p>用来生成这两张图片的脚本就在下面.</p><br><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><br><pre><span style="color:#000066;font-weight:bold">var</span> page <span style="color:#339933">=</span> require<span style="color:#009900">(</span><span style="color:#3366cc">'webpage'</span><span style="color:#009900">)</span>.<span style="color:#660066">create</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>page.<span style="color:#660066">settings</span>.<span style="color:#660066">userAgent</span> <span style="color:#339933">=</span> <span style="color:#3366cc">'WebKit/534.46 Mobile/9A405 Safari/7534.48.3'</span><span style="color:#339933">;</span><br>page.<span style="color:#660066">settings</span>.<span style="color:#660066">viewportSize</span> <span style="color:#339933">=</span> <span style="color:#009900">{</span> width<span style="color:#339933">:</span> <span style="color:#cc0000">400</span><span style="color:#339933">,</span> height<span style="color:#339933">:</span> <span style="color:#cc0000">600</span> <span style="color:#009900">}</span><span style="color:#339933">;</span><br>page.<span style="color:#660066">open</span><span style="color:#009900">(</span><span style="color:#3366cc">'http://m.bbc.co.uk/news/business'</span><span style="color:#339933">,</span> <span style="color:#000066;font-weight:bold">function</span> <span style="color:#009900">(</span>status<span style="color:#009900">)</span> <span style="color:#009900">{</span><br>    <span style="color:#000066;font-weight:bold">if</span> <span style="color:#009900">(</span>status <span style="color:#339933">!==</span> <span style="color:#3366cc">'success'</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>        console.<span style="color:#660066">log</span><span style="color:#009900">(</span><span style="color:#3366cc">'Unable to load BBC!'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>        phantom.<span style="color:#660066">exit</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>    <span style="color:#009900">}</span> <span style="color:#000066;font-weight:bold">else</span> <span style="color:#009900">{</span><br>        window.<span style="color:#660066">setTimeout</span><span style="color:#009900">(</span><span style="color:#000066;font-weight:bold">function</span> <span style="color:#009900">(</span><span style="color:#009900">)</span> <span style="color:#009900">{</span><br>            page.<span style="color:#660066">clipRect</span> <span style="color:#339933">=</span> <span style="color:#009900">{</span> left<span style="color:#339933">:</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> top<span style="color:#339933">:</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> width<span style="color:#339933">:</span> <span style="color:#cc0000">400</span><span style="color:#339933">,</span> height<span style="color:#339933">:</span> <span style="color:#cc0000">600</span> <span style="color:#009900">}</span><span style="color:#339933">;</span><br>            page.<span style="color:#660066">render</span><span style="color:#009900">(</span><span style="color:#3366cc">'bbc-page1.png'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>            page.<span style="color:#660066">clipRect</span> <span style="color:#339933">=</span> <span style="color:#009900">{</span> left<span style="color:#339933">:</span> <span style="color:#cc0000">0</span><span style="color:#339933">,</span> top<span style="color:#339933">:</span> <span style="color:#cc0000">600</span><span style="color:#339933">,</span> width<span style="color:#339933">:</span> <span style="color:#cc0000">400</span><span style="color:#339933">,</span> height<span style="color:#339933">:</span> <span style="color:#cc0000">600</span> <span style="color:#009900">}</span><span style="color:#339933">;</span><br>            page.<span style="color:#660066">render</span><span style="color:#009900">(</span><span style="color:#3366cc">'bbc-page2.png'</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>            phantom.<span style="color:#660066">exit</span><span style="color:#009900">(</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>        <span style="color:#009900">}</span><span style="color:#339933">,</span> <span style="color:#cc0000">2000</span><span style="color:#009900">)</span><span style="color:#339933">;</span><br>    <span style="color:#009900">}</span><br><span style="color:#009900">}</span><span style="color:#009900">)</span><span style="color:#339933">;</span></pre><br></div><br><p>代码非常简单,尤其是如果你已经熟悉了PhantomJS的这几个<a href="https://github.com/ariya/phantomjs/wiki/Screen-Capture">截屏用例</a>的情况下.改变UA字符串是为了确保抓取到的页面是移动版页面.生成的两张图片,分别对应了用户将要看到的第一屏页面和第二屏页面.这都是通过调整所要截取矩形区域的top偏移量来控制的,非常方便!</p><img src="http://www.cnblogs.com/ziyunfei/aggbug/3029652.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2013/04/20/3029652.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>a.x = a = { }, 深入理解赋值表达式</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>a.x = a = { }, 深入理解赋值表达式</h2>
+<p class="meta">16 Oct 2010</p>
+
+<div class="post">
+<h2>a.x = a = { }, 深入理解赋值表达式</h2>
+
+<h3>by lifesinger</h3>
+
+<h3>at 2010-10-15 22:19:43</h3>
+
+<h3>original <a href="http://lifesinger.org/blog/2010/10/a-x-a/">http://lifesinger.org/blog/2010/10/a-x-a/</a></h3>
+
+<p>直奔代码：</p>
+
+
+<pre>
+var a = {x: 1};
+a.x = a = { };
+alert(a.x); // --&gt; undefined
+</pre>
+
+
+<p>来自 JE: <a href="http://www.javaeye.com/topic/785445">写了 10 年 JavaScript 未必全了解的连续赋值运算</a>. clue 的评论已经从 ECMA 规范分析了具体原因，下面尝试更直观的说明此问题。</p>
+
+
+<p>对于连续赋值语句，我们经常会这样理解：</p>
+
+
+<pre>
+var a = b = 1;
+// 等价：
+var a;
+a = b = 1;
+</pre>
+
+
+<p>上面的理解很容易看出 <code>var a = b = 1;</code> 会造成 b 泄漏到上层作用域，有可能生成全局变量。</p>
+
+
+<p>根据直觉，我们可能会推断：<span></span></p>
+
+
+<pre>
+a = b = 1;
+// 等价：
+b = 1;
+a = b;
+</pre>
+
+
+<p>如果上面的推断成立，可以得出：</p>
+
+
+<pre>
+a.x = a = { };
+// 等价：
+a = { };
+a.x = a;
+// 因此：
+alert(a.x); // --&gt; [object Object]
+</pre>
+
+
+<p>和实际输出值 <code>undefined</code> 不符。<br>
+也就是说，<code>a.x = a = { };</code> 并不能简单等价为 <code>a = { }; a.x  = a;</code></p>
+
+
+<p>JavaScript 里，赋值运算是从右到左的，同等优先级下，右边的会先结合：<br>
+<code>a.x = a = { }</code> 等价为 <code>a.x = (a = { })</code></p>
+
+
+<p>有意思的地方就在这里，对于赋值表达式，解析的规则是：</p>
+
+
+<pre>
+The production AssignmentExpression : LeftHandSideExpression = AssignmentExpression is evaluated as follows:
+1. Evaluate LeftHandSideExpression.
+2. Evaluate AssignmentExpression.
+3. Call GetValue(Result(2)).
+4. Call PutValue(Result(1), Result(3)).
+5. Return Result(3).
+</pre>
+
+
+<p>上面的规范其实非常简单，比如 <code>a = 1</code>, 步骤就是：</p>
+
+
+<pre>
+Step1. 计算 a 的值
+Step2. 计算 1 的值
+Step3. 得到 Step2 的结果
+Step4. 将 Step3 的结果赋值给 Step1 的结果
+Step5. 返回 Step3 的值
+</pre>
+
+
+<p>简直是废话啊，但是特别有意思的也就在于 <strong>Step1 是最先执行的</strong>。理解这一点，问题变得很清晰：</p>
+
+
+<pre>
+a = b = 1; // 等价 a = (b = 1)
+// Step1: 计算 a 的值
+// Step2: 计算 (b = 1) 的值
+// ...
+</pre>
+
+
+<p>而</p>
+
+
+<pre>
+b = 1;
+a = b;
+// Step1: 执行 b = 1; 语句
+// Step2: 计算 a 的值
+// ...
+</pre>
+
+
+<p>是否已经恍然大悟了？</p>
+
+
+<p>因此对于 <code>a = {x: 1}; a.x = a = { }</code>：</p>
+
+
+<pre>
+a.x = a = { } // 等价 a.x = (a = { })
+// Step1: 计算 a.x 的值，此时 a.x 指向 {x: 1} 对象的 x
+// Step2: 计算 (a = { }) 的值，这一步让 a 指向了一个新对象 { }
+// Step3: 得到 Step2 的结果，也就是 { }
+// Step4: 将 Step3 的结果赋值给 Step1 的结果，也就是将 {x: 1} 对象的 x 重新赋值为 { }
+// Step5:  返回 Step3 的结果
+</pre>
+
+
+<p>很显然，执行完毕后，<code>a</code> 指向 <code>{ }</code>, 因此 <code>a.x</code> 为 <code>undefined</code>.</p>
+
+
+<p>不光 JavaScript, Java, C++ 等语言也如此。虽然实际项目中，要坚决杜绝这种晦涩代码，但作为语言研究，思考总能让人看到不少显然背后的不显然，以及不显然背后的显然，也算是一种乐趣吧。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

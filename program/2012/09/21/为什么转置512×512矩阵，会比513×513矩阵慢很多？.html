@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>为什么转置512×512矩阵，会比513×513矩阵慢很多？</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>为什么转置512×512矩阵，会比513×513矩阵慢很多？</h2>
+<p class="meta">21 Sep 2012</p>
+
+<div class="post">
+<h2>为什么转置512×512矩阵，会比513×513矩阵慢很多？</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-20 18:04:21</h3>
+
+<h3>original <a href="http://blog.jobbole.com/28219/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e4%25b8%25ba%25e4%25bb%2580%25e4%25b9%2588%25e8%25bd%25ac%25e7%25bd%25ae%25e4%25b8%2580%25e4%25b8%25aa512x512%25e7%259a%2584%25e7%259f%25a9%25e9%2598%25b5%25ef%25bc%258c%25e4%25bc%259a%25e6%25af%2594513x513%25e7%259a%2584%25e7%259f%25a9%25e9%2598%25b5%25e6%2585%25a2%25e5%25be%2588%25e5%25a4%259a%25ef%25bc%259f">http://blog.jobbole.com/28219/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e4%25b8%25ba%25e4%25bb%2580%25e4%25b9%2588%25e8%25bd%25ac%25e7%25bd%25ae%25e4%25b8%2580%25e4%25b8%25aa512x512%25e7%259a%2584%25e7%259f%25a9%25e9%2598%25b5%25ef%25bc%258c%25e4%25bc%259a%25e6%25af%2594513x513%25e7%259a%2584%25e7%259f%25a9%25e9%2598%25b5%25e6%2585%25a2%25e5%25be%2588%25e5%25a4%259a%25ef%25bc%259f</a></h3>
+
+<p>来源：<a href="http://evol128.is-programmer.com/posts/35453.html">evol128 的博客</a></p>
+
+
+<p>谨以此文，纪念刚退休的Professor Sibert以及Professor Goel。你们尽管已年过70，却还仍然坚持在教导学生，实在令人钦佩。我今天所拥有的编程知识，经验，技巧，很大一部分是从你们那儿学来的。谢谢你们。</p>
+
+
+<p>问题的出处：<a href="http://stackoverflow.com/questions/11413855/why-is-transposing-a-matrix-of-512x512-much-slower-than-transposing-a-matrix-of">Stackoverflow 问答贴</a><span></span></p>
+
+
+<p>事情的起因是这样的，先看下面这段代码：</p>
+
+
+<pre>define SAMPLES 1000
+#define MATSIZE 512
+
+#include &lt;time.h&gt;
+#include &lt;iostream&gt;
+int mat[MATSIZE][MATSIZE];
+
+void transpose()
+{
+   for ( int i = 0 ; i &lt; MATSIZE ; i++ )
+   for ( int j = 0 ; j &lt; MATSIZE ; j++ )
+   {
+       int aux = mat[i][j];
+       mat[i][j] = mat[j][i];
+       mat[j][i] = aux;
+   }
+}
+
+int main()
+{
+   //initialize matrix
+   for ( int i = 0 ; i &lt; MATSIZE ; i++ )
+   for ( int j = 0 ; j &lt; MATSIZE ; j++ )
+       mat[i][j] = i+j;
+
+   int t = clock();
+   for ( int i = 0 ; i &lt; SAMPLES ; i++ )
+       transpose();
+   int elapsed = clock() - t;
+
+   std::cout &lt;&lt; &quot;Average for a matrix of &quot; &lt;&lt; MATSIZE &lt;&lt; &quot;: &quot; &lt;&lt; elapsed / SAMPLES;</pre>
+
+
+<p>很普通的一个求矩阵转置的程序。但是，当MATSIZE取512和513的时候，出现了非常有意思的结果：</p>
+
+
+<p>512 平均 2.19ms</p>
+
+
+<p>513 平均 0.57ms</p>
+
+
+<p>很让人惊讶吧，513竟然比512快。更进一步的研究发现，size=512的时候，运算速度会比同数量级的其它数字慢很多很多。这是怎么一回事呢？</p>
+
+
+<p>stackoverflow上大牛给的解答非常正确，但是这次，我不想做翻译了。我从Professor Sibert那里，从Professor Goel那里，学到的知识，足够帮我解决这个问题了，我不是一个人。下面是我的解答：</p>
+
+
+<p>很容易就联想到，造成这个问题的原因是CPU cache，我们有很多种方式来存储cache，具体可以参考<a href="http://en.wikipedia.org/wiki/CPU_cache">这里</a>。</p>
+
+
+<p>原作者没有给出他的CPU型号，但是如今的pc几乎都是采用的set associative的cache结构，下面我用2-way set associate来做例子，讲解一下cache的工作原理。</p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/FCAF201F-BCC1-426F-B585-23D8CEADDD3E.jpg" rel="lightbox[28219]" title="为什么转置一个512x512的矩阵，会比513x513的矩阵慢很多？"><img title="为什么转置一个512x512的矩阵，会比513x513的矩阵慢很多？" src="http://blog.jobbole.com/wp-content/uploads/2012/09/FCAF201F-BCC1-426F-B585-23D8CEADDD3E.jpg" alt="为什么转置一个512x512的矩阵，会比513x513的矩阵慢很多？" width="525" height="342"></a></p>
+
+
+<p>（图片取自Professor Sibert的讲义，这可是纯ascii画的哦= =）<br>
+一个内存地址，可以划分为block，tag，word，byte 4个部分。10bits的block，对应了1024个cache set，内存地址的block固定了，就必须存储在相应的set里面，这样可以把查询cache的事件从O(n)缩短为O(1)。</p>
+
+
+<p>举个例子，block是1023（1111111111），你的数据就放在第1023个set里面。可能有人会觉得奇怪，为什么block不是取的最前面的10bits，这当然是有道理的，通常在内存里数据都是连续存放的，就是说，同一段程序用的数据，他们前10位几乎都是一样的，如果用前10位来定位block，那么collision的发生率非常高，cache效率非常低下，所以才选了后面的10位来定位block。</p>
+
+
+<p>当然，每个set里面有多条记录，2-way是2条，你得遍历这两条记录，比较前面50位的tag，如果tag一样，并且Valid bit(V)=1，那么恭喜你，你的数据在cache里面，接着就可以通过word和byte来取数据了。</p>
+
+
+<p>如果遍历完这两条记录，还是没有找到tag的话，那么很遗憾，你的数据不在cache里，得从内存里读。从内存里获取相应的数据，然后把它存到对应的cache set里，如果set里有空位的话最好，如果没有的话，用<a href="http://en.wikipedia.org/wiki/Cache_algorithms#Least_Recently_Used">LRU</a>来替换。因为一个set里只有2条数据，所以实现LRU仅仅需要一个额外bit就可以了，非常高效。</p>
+
+
+<p>好了，背景知识介绍的差不多了，让我们回到这个问题上来。为什么512大小的矩阵，会比其它数字慢那么多？</p>
+
+
+<p>让我们来计算一下，512×512的int矩阵，在内存里是连续存放的。每个cache line是16bytes，对应4个int，所以一个n阶矩阵的row可以填充n/4个cache set。假设第一个数据a[0][0]正好对应cache set 0，那么其中每一个数据a[i][j]对应的cache set是(512i+j)/4%1024=(128i+j/4)%1024。可以看到，前面的系数正好可以整除。很不巧的是，在进行矩阵转置的运算时，在第2个for循环中，我们需要依次访问每一个row中对应i的值。这样会造成下面的结果：假设i=0，set(a[0][0])=0, set(a[1][0])=128, set(a[2][0])=256…set(a[7][0])=896,set(a[0][0])=0,后面开始重复了，到a[15][0]的时候刚好填完整个cache的所有128整数倍的set，当读取a[16][0]的时候，将会发生replace，把a[0][0]从cache里移除。这样，当源程序的i=1时，将完全重复i=0的计算过程，每次取数据都需要先从memory读到cache中来，cache的作用完全没有体现。</p>
+
+
+<p>而当size=513的时候，事情就不一样了，mat[i][j]对应的cache set是(513i+j)/4%1024，前面的系数除不尽了，每递增4次结果会比size=512时偏差1。例如：set(a[0][0])=0, set(a[1][0])=128, set(a[2][0])=256，set(a[3][0])=384, <strong>set(a[4][0])=513</strong>…这样就很微妙的把cache set给错开了。a[16][0]不在第0行而是第4行，不会覆盖之前的数据。即使将全部的a[0-15][i]都读入cache，<strong>也不会发生碰撞</strong>。之后，由于一个cache有4个word，a[0-15][i+1]，a[0-15][i+2]，a[0-15][i+3]也同时被读进cache里了，所以计算i+1,i+2,i+3时，仅仅需要读对应行的数据就可以了，同一行的数据都是连续的，所以碰撞率很低。这个计算过程很好的利用了cache，如果不考虑其他因素（实际上，这个已经是影响运行时间的最大因素了），理论上我们可以节省75%的运行时间，可以看到，这个理论预测是和提问者给的数据相符合的。</p>
+
+
+<p>总之，当你的data size是128的整数倍的时候，得特别小心，搞不好cache collision就把你的程序给拖慢了呢</p>
+
+
+<p>Update 1: 原代码有逻辑错误，这点大家都不要吐槽了，代码不是我写的= =</p>
+
+
+<p>Update 2：帅哥问我，为什么可以加速这么多。这个循环包括4次读cache的操作，2次写cache的操作，以及0-2次replace操作。每次replace操作会有一次memory read，有可能会有memory write（假设它是write back）。前面的读写cache时间和读写内存相比，几乎可以忽略，对效率产生显著影响的是后面的内存读写。如果cache的hit率高了，那么内存读写的次数就少了，程序运行时间是会产生很大影响的</p>
+
+
+<p>Update 3：当然，具体效果还视乎CPU架构而定，我自己试验的只有节省25%左右时间</p>
+
+
+<p>Update 4: 有人提出了用划分矩阵（把大矩阵分成若干个小矩阵分别计算）的方法来求转置。划分矩阵可以解决类似的问题（譬如说求两个矩阵乘积），但是对解决这个问题没有任何帮助。因为求转置的时候，每个数据只用到了一次，没有重复访问；即便划分成更小的矩阵，在cache里面的位置也没有发生改变。</p>
+
+
+<p>Update 5: 据说，Professor Goel只是因病休息几个学期，没有退休。。。（原来你还要回来教课！！！）</p>
+
+
+<p><a href="http://blog.jobbole.com/wp-content/uploads/2012/09/cplusplus.jpg" rel="lightbox[28219]" title="为什么转置一个512x512的矩阵，会比513x513的矩阵慢很多？"><img title="为什么转置一个512x512的矩阵，会比513x513的矩阵慢很多？" src="http://blog.jobbole.com/wp-content/uploads/2012/09/cplusplus.jpg" alt="CPP" width="315" height="314"></a></p>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/22176/" title="陈皓：性能调优攻略">陈皓：性能调优攻略</a></li><li><a href="http://blog.jobbole.com/26314/" title="为什么我希望用C而不是C++来实现ZeroMQ（第二篇）">为什么我希望用C而不是C++来实现ZeroMQ（第二篇）</a></li><li><a href="http://blog.jobbole.com/25428/" title="C++ Primer第五版之二：语言修订对写作策略的影响">C++ Primer第五版之二：语言修订对写作策略的影响</a></li><li><a href="http://blog.jobbole.com/25300/" title="C++11各编译器支持情况对比">C++11各编译器支持情况对比</a></li><li><a href="http://blog.jobbole.com/25199/" title="C++ Primer第五版之一：如何修订原书">C++ Primer第五版之一：如何修订原书</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

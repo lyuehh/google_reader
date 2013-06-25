@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>基于Redis构建系统的经验和教训</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>基于Redis构建系统的经验和教训</h2>
+<p class="meta">30 Oct 2012</p>
+
+<div class="post">
+<h2>基于Redis构建系统的经验和教训</h2>
+
+<h3>by ideawu</h3>
+
+<h3>at 2012-10-30 00:59:04</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/8472.html">http://www.udpwork.com/item/8472.html</a></h3>
+
+<p><a href="http://redis.io/">Redis</a>是一个非常快速和强大的 Key-Value 存储(持久化)系统, 相对于一般的 NoSQL 存储系统, 它最大的特点是支持丰富的数据结构. 特别是其 zset(sorted set)数据结构, 堪称表达能力最强的结构之一(其它强大的数据结构如 sorted hashmap), 可以直接地表达业务逻辑.</p>
+
+
+<p>拿一个 Messaging(消息传递)系统来举例, 收件箱发件箱这样的业务逻辑直接用 zset 存储即可, 因为 zset 的每一个元素都有一个用于排序的权重值, 可以非常方便快速地地进行插入和删除操作. 如果使用纯粹的 KV 系统, 存储列表等非字符串结构的数据将是无尽的痛苦.</p>
+
+
+<p>由于 Redis 本身的限制, 它所能处理的数据必须完全放在内存中, 而硬盘上的数据是内存数据的一个镜像, 所以, 限制了它的容量不能超过内存的容量(VM 模式无实际意义, 已在新版本中去除). 当前, 服务器的内存以 32G 为普遍情况, 96G 算较好, 如果一个系统要存储 1T 的数据, 那么必须用上 10 台服务器, 硬件成本非常高 — 且先不谈由此面临的软件的架构改动. 当前, 1T 的数据只能算零头, 对于一个100万活跃用户的系统, 平均每人每天产生 1K 数据, 便需要 1G 的存储空间, 这仅相当于每个用户每天只发10条微博或者10条聊天信息, 真正流行的系统将远远超过这个数据规模.
+<br>
+</p>
+
+
+<h3>持久化, 复制和备份带来的系统和网络问题</h3>
+
+
+<p>一般数据达到几百 M 或者 1G 时, Redis 必须且只能开启 aof 操作日志异步写硬盘的持久化模式, 由于用户记录数据变更日志的 aof 文件体积增加比较严重, 必须定期对 aof 文件进行收缩(rewrite). 收缩的过程其实是将内存数据镜像到硬盘的过程, Redis 主进程需要 fork 一个进程出来, 虽然操作系统有写时拷贝功能, 但仍然要为 fork 出来的进程保留足够的内存空间, 所以 Redis 只能使用内存容量的 50%.</p>
+
+
+<p>在写 aof 文件时, Redis 完全没有任何速度控制策略, 经常导致硬盘读写占满, 其它进程一旦涉及到文件操作, 都将被阻塞住.</p>
+
+
+<p>Redis 自身支持主从模式, 可以方便地进行数据备份, 避免单点失败造成数据丢失. 但是, Redis 的主从模式并不成熟, 例如当网络出现抖动时, 可以导致主从之间发生一次全量复制, 这对网络带宽是一个打击.</p>
+
+
+<h3>无分布式方案导致软件设计的复杂度增加</h3>
+
+
+<p>Redis 是一个单机的存储方案, 当数据超过单台服务器的内存容量时, 必须由软件的设计者在软件逻辑层面设计出一套数据拆分的方案. 这必然导致软件设计者无法关注于业务逻辑, 而将大量的精力放在数据存储层, 即增加了软件的复杂度, 也造成可维护性的下降.</p>
+
+
+<h3>结论</h3>
+
+
+<p>Redis 不适合作为海量数据存储方案. Redis 适合在数据规模较小, 性能要求较高的条件下应用.</p>
+
+
+<h3>海量数据存储的备选方案</h3>
+
+
+<p>根据业务公开的经验, 海量数据的存储方案主要有:</p>
+
+
+<ul><li><a href="http://cassandra.apache.org/">Cassadra</a>, 我们一直作为纯粹的 KV 方案, 对结构化数据表达能力非常弱.</li>
+<li><a href="http://hbase.apache.org/">HBase</a>, 是<a href="http://research.google.com/archive/bigtable.html">Google Bigtable</a>的一种实现, 在 Facebook 有应用. 其对结构化数据的表达能力的最大优点是数据是一维有序的(按 Key 排序).</li>
+<li><a href="http://www.mongodb.org/">mongoDB</a></li>
+</ul>
+
+
+<h3>我们需要什么样的海量数据存储方案(个人看法)?</h3>
+
+
+<p>实际经验来看, 纯粹的 KV 方案太过简单, 简单到几乎无法直接表达任何业务数据, 相当于拿着一堆铁锭, 然后开发者自己再去制作自己需要的零件. 显然, 对于使用者角色的开发者来说, 这不友好.</p>
+
+
+<p>真正友好的还是结构化数据存储方案, 也就是对数据有一定的理论模型, 从而产生一些数据结构. 要创造出一个普遍适用的数据模型是非常困难的, Bigtable 那样的模型并不是经常被创造出来, 而且在 Bigtable 之外仍然需要更多的模型.</p>
+
+
+<p>从我自己的开发经验来看, 最基本的, 数据应该是有序的, 可以根据权重来排序. 一旦数据是有序的, 便能分段访问和传输, 而不必全量拷贝, 海量数据处理的原则是拷贝(传输)最少的数据.</p>
+
+
+<p>大多数业务的模式都是这样的: 首先, 实体被存储在一个空间里, 可通过 key 访问; 其次, 创建实体 key 的若干个有序子集. 这两种结构似乎已经包含了所有的业务逻辑. 所有聊天消息(实体), 为所有的用户创建表示其收件箱消息集合(子集). 所有的微博消息(实体), 为每个用户创建 timeline 消息集合(子集)…</p>
+
+
+<h3>Related posts:</h3>
+
+
+<ol><li><a href="http://www.ideawu.net/blog/archives/648.html" title="Permanent Link: Redis 导数据的 PHP 脚本">Redis 导数据的 PHP 脚本</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/633.html" title="Permanent Link: Redis被bgsave和bgrewriteaof阻塞的解决方法">Redis被bgsave和bgrewriteaof阻塞的解决方法</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/301.html" title="Permanent Link: Google Talk Developer Home 中文翻译">Google Talk Developer Home 中文翻译</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/148.html" title="Permanent Link: 安装和使用Google Earth – Linux">安装和使用Google Earth – Linux</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/482.html" title="Permanent Link: 开发爬虫友好的Ajax网站">开发爬虫友好的Ajax网站</a></li>
+</ol>
+
+
+<div><p><img src="http://www.ideawu.net/favicon.ico">你现在看的文章是:<a href="http://www.ideawu.net/blog/archives/666.html" title="基于Redis构建系统的经验和教训">基于Redis构建系统的经验和教训</a></p>
+<div><a href="http://www.benegg.com/linode-ad.php">Linode VPS - 美国虚拟主机</a>|<a href="http://www.udpwork.com/">IT牛人博客聚合网站</a></div>
+</div>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/8472.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/8472.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/8472.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

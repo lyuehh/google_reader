@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>开发笔记 (8) : 策划公式的 DSL 设计</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>开发笔记 (8) : 策划公式的 DSL 设计</h2>
+<p class="meta">10 Jan 2012</p>
+
+<div class="post">
+<h2>开发笔记 (8) : 策划公式的 DSL 设计</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2012-01-09 23:09:18</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2012/01/dev_note_8.html">http://blog.codingnow.com/2012/01/dev_note_8.html</a></h3>
+
+<p>今天很早就起床了，以至于到了办公室还不到 11 点。中饭前有一个多小时可以做各种杂事。</p>
+
+
+
+
+<p>我把周末做的工作和蜗牛同步了一下信息，然后得到了几个新需求。主要就是还是需要在协议定义中加入 protobuf 中等价于 service 的东西。思索了一下，觉得有必要，就花了一个小时把特性加上。 C Binding API 方面还有一点疏漏的地方。大概是源于基于 Erlang 框架下的一些小困难。略微修改了下 C 接口协议就 OK 了。然后很 happy 的去食堂吃饭。</p>
+
+
+
+
+<p>然后我暂时就可以转向 Client 方面的一些需求分析以及解决了。</p>
+
+
+
+
+<p>在生成动画树的数据方面，我们的交换格式使用了某中文本中间格式，最终利用 protobuf 来做二进制持久化。在解析文本格式方面，我操起了多年前耍过的 <a href="http://www.inf.puc-rio.br/~roberto/lpeg/">LPEG</a> 。（我曾经用 lpeg 写过 protobuf 文本的解析工具）这个绝对是解析文本的利器啊。午饭时在食堂大家围在桌子边吐槽 Java ，说道 Java 社区最二的莫过于抓着个 XML 当救命稻草不放，所以便有了各种淡疼的基于 XML 的框架。如果早期 Java 社区能多那么几个受过 Unix/C 传统熏陶过的程序员，就能知道设计 DSL 来解决问题是多么爽快的事情。也不至于在 XML 的树上吊死了。唉，搞得现在积重难返了。</p>
+
+
+
+
+<p>下午正式和策划进行沟通，观看他们这段时间写的各种 excel 表格。我说，你们放开了想怎么把问题表达清楚吧，只要逻辑清晰有条例，信息不要漏掉，怎么表达那些公式都行。我慢慢看，然后规范写法，最终方便程序解析。</p>
+
+
+
+
+<p>以前见过许多项目，有的设计出繁杂的 excel 表格式，然后 export 给程序用；有的干脆让策划写程序代码；甚至有的做一堆漂亮 UI 的公式编辑器。我想最快也最方便达到效果的，莫过于设计一个最小需求集合的 DSL ，让策划认同其语法，然后使用 DSL 来编辑了。</p>
+
+
+<pre><code>    &lt;p&gt;为什么是 DSL 而不是特定语言代码？因为通用语言往往是为了解决更繁杂的需求，有很多多余的语法会干扰策划的思维。他们会将大量时间浪费在学习语言、检查语法错误上。&lt;/p&gt;
+</code></pre>
+
+<p>另外，限制于特定语言也会局限项目的发展。很有可能以后你会换一种方式去解析公式。比如在性能无所谓的时候，你想用 lua 代码就好。但性能敏感了，你又想用 C 实现，等等。有个中立的 DSL ，为以后留下更多的优化空间。</p>
+
+
+
+
+<p>我们把公式定义和计算这个模块的知识依赖尽量的做小了，只依赖一种简单的 DSL 实现。</p>
+
+
+
+
+<p>当然 DSL 的定义也是在不断发展的，这个需要语言设计的经验以及对问题域的理解。这两点我都不太够。只能试试。我相信对于这样一只小团队，是可以承受某种程度的变化的。更何况 DSL 是我自己实现的，当一些重大修改发生后，我可以自己写工具来批量修正历史代码。</p>
+
+
+
+
+<p>我几个小时来了解需求，并定义 DSL 草稿。</p>
+
+
+
+
+<p>策划需要的大概是列出一些可以做基本四则运算的公式，依靠一些变量（通常是人物属性），计算出新的值，赋给新变量。当公式比较复杂的时候，他们希望可以自定义一些函数，这些函数几乎都是 n:1 的。输入 n 个参数，得到一个值。</p>
+
+
+
+
+<p>最常用的两个外部函数（策划往往不像程序那般思维，他们不把数学运算以外的数据处理称为函数，但程序员却这么看，我们也容易灌输这个观念），一是查表。就是在 excel 里做一张单独的二纬表，查询第几行第几列的值。我想了一下，其实最终这个是一个三纬向量：表名本身是一个维度、行列是另两个；其二是随机数。</p>
+
+
+
+
+<p>有了这些，几乎就可以满足策划的所有计算要求了。</p>
+
+
+
+
+<p>但是有些计算还需要有一点流程控制。以某策划同学爱玩的魔兽世界为例，就需要先产生一个随机数，判定攻击是否被躲闪；一旦被躲闪，后面的计算就不需要了。如果不被躲闪，则算下去。当然在 DSL 中设计流程控制也不无不可。但我觉得仅仅是这种需求还没有必要增加它。我想，如果顺序执行每条表达式的功能足够的话，那么最好不要加新的知识。所以我决定向策划推销 bool 运算规则。</p>
+
+
+
+
+<p>毕竟大家都是理科出生，很快就明白了。lua 风格的 and or not 的短路规则很简单，写几个范例大家就懂了。最后我设计了这么一个粗陋的东西。</p>
+
+
+
+
+<pre>
+DODGE := 50
+PARRY := 30
+CRITICAL := 20
+RACE := &quot;战士&quot;
+LEVEL := 23
+DPS := 100
+
+dodge = roll(DODGE)
+hit = not (dodge or roll(PARRY))
+critical = hit and roll(CRITICAL)
+_critical (race , level) -&gt; table(&quot;cri&quot; , race , level) * 0.1 + 1
+damage = hit and (DPS * (critical and _critical(RACE , LEVEL) or 1))
+</pre>
+
+
+
+
+<p>里面有一张 cri 表，我先用文本格式表达，以后再花半小时去支持 excel 格式。</p>
+
+
+
+
+<pre>
+     10-19  20-29   30
+战士 1      2       3
+牧师 2      4       6
+</pre>
+
+
+
+
+<p>今天就不在 blog 上解释了，反正日后总要花时间写文档的。等明天先口头教一下我们的设置策划去用。</p>
+
+
+
+
+<p>实现这么一套 DSL 解析大约花掉了我大半个下午。应该感谢 lua 和 lpeg 的便利，100 多行代码就把整个模块和应用工具写完了。主要是要方便策划测试使用。</p>
+
+
+
+
+<p>今天的流水账就先记在这里了。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>javascript题目，如何在重写alert后还能正常弹出alert</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>javascript题目，如何在重写alert后还能正常弹出alert</h2>
+<p class="meta">03 Feb 2012</p>
+
+<div class="post">
+<h2>javascript题目，如何在重写alert后还能正常弹出alert</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-02-03 09:21:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/02/03/2335946.html">http://www.cnblogs.com/rubylouvre/archive/2012/02/03/2335946.html</a></h3>
+
+<p>今天在群里遇到一道很有意思的题目，大家发挥所能，给出的答案五花八门。特意整理成博文发表出来：</p>
+
+
+<pre>//原题目：
+window.alert = function(){};______;alert(1); 填空，使后面的alert(1)能正确弹出，至少列举两种不同思路。
+</pre>
+
+
+<div>
+<p>解法一，创建新的执行环境，使用iframe沙箱</p>
+<pre>window.alert = function(){};
+window.alert=function(obj){
+    var iframe=document.createElement("iframe");
+    iframe.src="javascript:void(0);"
+    document.body.appendChild(iframe)
+    iframe.contentWindow.alert(obj);
+}
+alert(1)
+</pre>
+<p>解法二，创建新的执行环境，打开新窗口</p>
+<pre>window.alert = function(){};
+window.alert = function(a){
+    window.open('','').alert(a)
+    //window.createPopup().document.parentWindow.alert(a) //IE only
+}
+alert(1);
+</pre>
+<p>解法三, 弄回原来的alert（IE下失败）</p>
+<pre>window.alert = function(){};
+window.alert = function(a){
+    delete window.alert;
+    window.alert(a);
+}
+alert(1);
+</pre>
+<p>解法四，思路同三（IE下失败）</p>
+<pre>window.alert = function(){};
+window.alert = function(a){
+   window.__proto__.alert.call(window,a);
+  //window.constructor.prototype.alert.call(window,a);
+}
+ alert(1);
+</pre>
+<p>解法五（IE only）</p>
+<pre>window.alert = function(){};
+execScript('sub alert(msg):msgbox msg:end sub', 'vbscript');
+alert(1);
+</pre>
+
+<p>解法六，就是一晕招</p>
+<pre>window.alert = function(){};
+window.alert = function(a){
+    window.confirm(a)
+}
+alert(1);
+</pre>
+</div>
+
+
+
+
+<p></p>
+
+
+<p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2335946.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/02/03/2335946.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

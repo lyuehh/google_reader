@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>转：经典SQL语句大全</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>转：经典SQL语句大全</h2>
+<p class="meta">11 Oct 2010</p>
+
+<div class="post">
+<h2>转：经典SQL语句大全</h2>
+
+<h3>by 黑夜以后</h3>
+
+<h3>at 2010-10-10 19:52:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/justwannaloveyou/archive/2010/10/10/1847341.html">http://www.cnblogs.com/justwannaloveyou/archive/2010/10/10/1847341.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/justwannaloveyou/"><img src="http://pic.cnblogs.com/face/u121289.jpg" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/justwannaloveyou/">黑夜以后</a> 发表于 2010-10-10 19:52 <a href="http://www.cnblogs.com/justwannaloveyou/archive/2010/10/10/1847341.html">原文链接</a> 阅读: 47 评论: 0</p>
+
+
+<p>比较实用所以跟大家一起分享一下。也可以一起讨论一下。</p>
+
+
+<p>一、基础</p>
+
+
+<p><strong>1、说明：创建数据库<br>CREATE DATABASE database-name</strong> <br><strong>2</strong><strong>、说明：删除数据库<br>drop database dbname</strong><br><strong>3、说明：备份sql server<br>--- 创建 备份数据的 device<br>USE master<br>EXEC sp_addumpdevice 'disk', 'testBack', 'c:\mssql7backup\MyNwind_1.dat'<br>--- 开始 备份<br>BACKUP DATABASE pubs TO testBack</strong> <br><strong>4、说明：创建新表<br>create table tabname(col1 type1 [not null] [primary key],col2 type2 [not null],..)</strong></p>
+
+
+<p><strong>根据已有的表创建新表： </strong><br><strong>A：create table tab_new like tab_old (使用旧表创建新表)</strong><br><strong>B</strong><strong>：create table tab_new as select col1,col2… from tab_old definition only</strong><br><strong>5、说明：删除新表<br>drop table tabname</strong> <br><strong>6、说明：增加一个列<br>Alter table tabname add column col type</strong><br><strong>注</strong>：<span style="text-decoration:underline">列增加后将不能删除。DB2中列加上后数据类型也不能改变，唯一能改变的是增加varchar类型的长度。<br></span><strong>7、说明：添加主键</strong>： <strong>Alter table tabname add primary key(col) <br></strong>说明：删除主键：<strong> Alter table tabname drop primary key(col) </strong><br><strong>8、说明：创建索引</strong>：<strong>create [unique] index idxname on tabname(col….) <br></strong>删除索引：<strong>drop index idxname</strong><br>注：索引是不可更改的，想更改必须删除重新建。<br><strong>9</strong><strong>、说明：创建视图</strong>：create view viewname as select statement <br><strong>删除视图</strong>：drop view viewname<br><strong>10</strong><strong>、说明：几个简单的基本的sql语句<br>选择：</strong>select * from table1 where 范围<br><strong>插入：</strong>insert into table1(field1,field2) values(value1,value2)<br><strong>删除：</strong>delete from table1 where 范围<strong><br>更新</strong>：update table1 set field1=value1 where 范围<br><strong>查找</strong>：select * from table1 where field1 like ’%value1%’ ---like的语法很精妙，查资料!<br><strong>排序</strong>：select * from table1 order by field1,field2 [desc]<br><strong>总数</strong>：select count as totalcount from table1<br><strong>求和</strong>：select sum(field1) as sumvalue from table1<br><strong>平均</strong>：select avg(field1) as avgvalue from table1<br><strong>最大</strong>：select max(field1) as maxvalue from table1<br><strong>最小</strong>：select min(field1) as minvalue from table1<br><strong>11、说明：几个高级查询运算词<br>A： UNION 运算符</strong> <br>UNION 运算符通过组合其他两个结果表（例如 TABLE1 和 TABLE2）并消去表中任何重复行而派生出一个结果表。当 ALL 随 UNION 一起使用时（即 UNION ALL），不消除重复行。两种情况下，派生表的每一行不是来自 TABLE1 就是来自 TABLE2。 <br><strong>B： EXCEPT 运算符 <br>EXCEPT</strong> 运算符通过包括所有在 TABLE1 中但不在 TABLE2 中的行并消除所有重复行而派生出一个结果表。当 ALL 随 EXCEPT 一起使用时 (EXCEPT ALL)，不消除重复行。 <br><strong>C： INTERSECT 运算符<br>INTERSECT</strong> 运算符通过只包括 TABLE1 和 TABLE2 中都有的行并消除所有重复行而派生出一个结果表。当 <strong>ALL</strong> 随 INTERSECT 一起使用时 (INTERSECT ALL)，不消除重复行。 <br><strong>注：</strong>使用运算词的几个查询结果行必须是一致的。 <br><strong>12</strong><strong>、说明：使用外连接 <br></strong>A、<strong>left （outer） join</strong>： <br>左外连接（左连接）：结果集几包括连接表的匹配行，也包括左连接表的所有行。 <br>SQL: select a.a, a.b, a.c, b.c, b.d, b.f from a LEFT OUT JOIN b ON a.a = b.c<br><strong>B：right （outer） join: </strong><br>右外连接(右连接)：结果集既包括连接表的匹配连接行，也包括右连接表的所有行。 <br><strong>C：full/cross （outer） join</strong>： <br>全外连接：不仅包括符号连接表的匹配行，还包括两个连接表中的所有记录。<br><strong>12</strong><strong>、分组:Group by:<br>   </strong>一张表，一旦分组 完成后，查询后只能得到组相关的信息。<br>    <strong>组相关的信息：</strong>（统计信息） count,sum,max,min,avg <strong> </strong><strong>分组的标准)<br>  </strong><strong>  在SQLServer中分组时：不能以text,ntext,image类型的字段作为分组依据<br>   在selecte统计函数中的字段，不能和普通的字段放在一起；</strong></p>
+
+
+<p><strong>13、对数据库进行操作：<br>   分离数据库</strong>：<strong> sp_detach_db; 附加数据库</strong>：<strong>sp_attach_db </strong>后接表明，附加需要完整的路径名<br><strong>14.</strong><strong>如何修改数据库的名称:</strong><br>sp_renamedb 'old_name', 'new_name' </p>
+
+
+<p><strong> </strong></p>
+
+
+<p><strong>二、提升</strong><strong></strong></p>
+
+
+<p><strong>1、说明：复制表(只复制结构,源表名：a 新表名：b) (Access可用)<br>法一：</strong>select * into b from a where 1&lt;&gt;1（仅用于SQlServer）<br><strong>法二：</strong>select top 0 * into b from a<br><strong>2、说明：拷贝表(拷贝数据,源表名：a 目标表名：b) (Access可用)<br></strong>insert into b(a, b, c) select d,e,f from b;</p>
+
+
+<p><strong>3、说明：跨数据库之间表的拷贝(具体数据使用绝对路径) (Access可用)<br></strong>insert into b(a, b, c) select d,e,f from b in ‘具体数据库’ where 条件<br>例子：..from b in &#39;&quot;&amp;Server.MapPath(&quot;.&quot;)&amp;&quot;\data.mdb&quot; &amp;&quot;&#39; where..</p>
+
+
+<p><strong>4、说明：子查询(表名1：a 表名2：b)<br></strong>select a,b,c from a where a IN (select d from b ) 或者: select a,b,c from a where a IN (1,2,3)</p>
+
+
+<p><strong>5、说明：显示文章、提交人和最后回复时间<br></strong>select a.title,a.username,b.adddate from table a,(select max(adddate) adddate from table where table.title=a.title) b</p>
+
+
+<p><strong>6、说明：外连接查询(表名1：a 表名2：b)<br></strong>select a.a, a.b, a.c, b.c, b.d, b.f from a LEFT OUT JOIN b ON a.a = b.c</p>
+
+
+<p><strong>7、说明：在线视图查询(表名1：a )<br></strong>select * from (SELECT a,b,c FROM a) T where t.a &gt; 1;</p>
+
+
+<p><strong>8、说明：between的用法,between限制查询数据范围时包括了边界值,not between不包括<br></strong>select * from table1 where time between time1 and time2<br>select a,b,c, from table1 where a not between 数值1 and 数值2</p>
+
+
+<p><strong>9、说明：in 的使用方法<br></strong>select * from table1 where a [not] in (‘值1’,’值2’,’值4’,’值6’)</p>
+
+
+<p><strong>10、说明：两张关联表，删除主表中已经在副表中没有的信息 <br></strong>delete from table1 where not exists ( select * from table2 where table1.field1=table2.field1 )</p>
+
+
+<p><strong>11、说明：四表联查问题：<br></strong>select * from a left inner join b on a.a=b.b right inner join c on a.a=c.c inner join d on a.a=d.d where .....</p>
+
+
+<p><strong>12、说明：日程安排提前五分钟提醒 <br></strong>SQL: select * from 日程安排 where datediff(&#39;minute&#39;,f开始时间,getdate())&gt;5</p>
+
+
+<p><strong>13</strong><strong>、说明：一条</strong><strong>sql </strong><strong>语句搞定数据库分页</strong><strong><br></strong>select top 10 b.* from (select top 20 主键字段,排序字段 from 表名 order by 排序字段 desc) a,表名 b where b.主键字段 = a.主键字段 order by a.排序字段<br><strong>具体实现：</strong><br>关于数据库分页：</p>
+
+
+<p>  declare @start int,@end int </p>
+
+
+<p>  @sql  nvarchar(600)</p>
+
+
+<p>  set @sql=’select top’+str(@end-@start+1)+’+from T where rid not in(select top’+str(@str-1)+’Rid from T where Rid&gt;-1)’</p>
+
+
+<p>  exec sp_executesql @sql</p>
+
+
+<p><br><strong>注意：在</strong><strong>top</strong><strong>后不能直接跟一个变量，所以在实际应用中只有这样的进行特殊的处理。</strong><strong>Rid</strong><strong>为一个标识列，如果</strong><strong>top</strong><strong>后还有具体的字段，这样做是非常有好处的。因为这样可以避免</strong><strong> top</strong><strong>的字段如果是逻辑索引的，查询的结果后实际表中的不一致（</strong><strong>逻辑索引中的数据有可能和数据表中的不一致，而查询时如果处在索引则首先查询索引</strong><strong>）</strong><strong></strong></p>
+
+
+<p><strong>14、说明：前10条记录<br></strong>select top 10 * form table1 where 范围</p>
+
+
+<p><strong>15、说明：选择在每一组b值相同的数据中对应的a最大的记录的所有信息(类似这样的用法可以用于论坛每月排行榜,每月热销产品分析,按科目成绩排名,等等.)<br></strong>select a,b,c from tablename ta where a=(select max(a) from tablename tb where tb.b=ta.b)</p>
+
+
+<p><strong>16、说明：包括所有在 TableA 中但不在 TableB和TableC 中的行并消除所有重复行而派生出一个结果表<br></strong>(select a from tableA ) except (select a from tableB) except (select a from tableC)</p>
+
+
+<p><strong>17、说明：随机取出10条数据<br></strong>select top 10 * from tablename order by <strong>newid()</strong></p>
+
+
+<p><strong>18、说明：随机选择记录<br></strong>select newid()</p>
+
+
+<p><strong>19、说明：删除重复记录<br>1),</strong>delete from tablename where id not in (select max(id) from tablename group by col1,col2,...)<br><strong>2)</strong>,select distinct * into temp from tablename<br>  delete from tablename<br>  insert into tablename select * from temp<br><strong>评价： 这种操作牵连大量的数据的移动，这种做法不适合大容量但数据操作<br>3),例如：在一个外部表中导入数据，由于某些原因第一次只导入了一部分，但很难判断具体位置，这样只有在下一次全部导入，这样也就产生好多重复的字段，怎样删除重复字段</strong><strong></strong></p>
+
+
+<p>alter table tablename<br>--添加一个自增列<br>add  column_b int identity(1,1)<br> delete from tablename where column_b not in(<br>select max(column_b)  from tablename group by column1,column2,...)<br>alter table tablename drop column column_b</p>
+
+
+<p><strong>20、说明：列出数据库里所有的表名<br></strong>select name from sysobjects where type='U' // U代表用户</p>
+
+
+<p><strong>21、说明：列出表里的所有的列名<br></strong>select name from syscolumns where id=object_id('TableName')</p>
+
+
+<p><strong>22、说明：列示type、vender、pcs字段，以type字段排列，case可以方便地实现多重选择，类似select 中的case。<br></strong>select type,sum(case vender when 'A' then pcs else 0 end),sum(case vender when 'C' then pcs else 0 end),sum(case vender when 'B' then pcs else 0 end) FROM tablename group by type<br><strong>显示结果：<br>type vender pcs<br></strong>电脑 A 1<br>电脑 A 1<br>光盘 B 2<br>光盘 A 2<br>手机 B 3<br>手机 C 3</p>
+
+
+<p><strong>23、说明：初始化表table1</strong><strong></strong></p>
+
+
+<p>TRUNCATE TABLE table1</p>
+
+
+<p><strong>24、说明：选择从10到15的记录<br></strong>select top 5 * from (select top 15 * from table order by id asc) table_别名 order by id desc</p>
+
+
+<p><strong>三、技巧</strong><strong></strong></p>
+
+
+<p><strong>1、1=1，1=2的使用，在SQL语句组合时用的较多</strong><strong></strong></p>
+
+
+<p><strong>“where 1=1” 是表示选择全部    “where 1=2”全部不选，</strong><br>如：<br>if @strWhere !='' <br>begin<br>set @strSQL = 'select count(*) as Total from [' + @tblName + '] where ' + @strWhere <br>end<br>else <br>begin<br>set @strSQL = 'select count(*) as Total from [' + @tblName + ']' <br>end </p>
+
+
+<p><strong>我们可以直接写成</strong></p>
+
+
+<p>错误！未找到目录项。<strong><br>set @strSQL = 'select count(*) as Total from [' + @tblName + '] where 1=1 安定 '+ @strWhere 2、收缩数据库<br></strong>--重建索引<br>DBCC REINDEX<br>DBCC INDEXDEFRAG<br>--收缩数据和日志<br>DBCC SHRINKDB<br>DBCC SHRINKFILE</p>
+
+
+<p><strong>3、压缩数据库<br></strong>dbcc shrinkdatabase(dbname)</p>
+
+
+<p><strong>4、转移数据库给新用户以已存在用户权限<br></strong>exec sp_change_users_login 'update_one','newname','oldname'<br>go</p>
+
+
+<p><strong>5、检查备份集<br></strong>RESTORE VERIFYONLY from disk='E:\dvbbs.bak'</p>
+
+
+<p><strong>6、修复数据库<br></strong>ALTER DATABASE [dvbbs] SET SINGLE_USER<br>GO<br>DBCC CHECKDB('dvbbs',repair_allow_data_loss) WITH TABLOCK<br>GO<br>ALTER DATABASE [dvbbs] SET MULTI_USER<br>GO</p>
+
+
+<p><strong>7、日志清除<br></strong>SET NOCOUNT ON<br>DECLARE @LogicalFileName sysname,<br> @MaxMinutes INT,<br> @NewSize INT</p>
+
+
+<p><br>USE tablename -- 要操作的数据库名<br>SELECT  @LogicalFileName = &#39;tablename_log&#39;, -- 日志文件名<br>@MaxMinutes = 10, -- Limit on time allowed to wrap log.<br> @NewSize = 1  -- 你想设定的日志文件的大小(M)</p>
+
+
+<p>Setup / initialize<br>DECLARE @OriginalSize int<br>SELECT @OriginalSize = size <br> FROM sysfiles<br> WHERE name = @LogicalFileName<br>SELECT 'Original Size of ' + db_name() + ' LOG is ' + <br> CONVERT(VARCHAR(30),@OriginalSize) + &#39; 8K pages or &#39; + <br> CONVERT(VARCHAR(30),(@OriginalSize*8/1024)) + &#39;MB&#39;<br> FROM sysfiles<br> WHERE name = @LogicalFileName<br>CREATE TABLE DummyTrans<br> (DummyColumn char (8000) not null)</p>
+
+
+<p><br>DECLARE @Counter    INT,<br> @StartTime DATETIME,<br> @TruncLog   VARCHAR(255)<br>SELECT @StartTime = GETDATE(),<br> @TruncLog = &#39;BACKUP LOG &#39; + db_name() + &#39; WITH TRUNCATE_ONLY&#39;</p>
+
+
+<p>DBCC SHRINKFILE (@LogicalFileName, @NewSize)<br>EXEC (@TruncLog)<br>-- Wrap the log if necessary.<br>WHILE @MaxMinutes &gt; DATEDIFF (mi, @StartTime, GETDATE()) -- time has not expired<br> AND @OriginalSize = (SELECT size FROM sysfiles WHERE name = @LogicalFileName)  <br> AND (@OriginalSize * 8 /1024) &gt; @NewSize  <br> BEGIN -- Outer loop.<br>SELECT @Counter = 0<br> WHILE   ((@Counter &lt; @OriginalSize / 16) AND (@Counter &lt; 50000))<br> BEGIN -- update<br> INSERT DummyTrans VALUES (&#39;Fill Log&#39;) DELETE DummyTrans<br> SELECT @Counter = @Counter + 1<br> END<br> EXEC (@TruncLog)  <br> END<br>SELECT 'Final Size of ' + db_name() + ' LOG is ' +<br> CONVERT(VARCHAR(30),size) + &#39; 8K pages or &#39; + <br> CONVERT(VARCHAR(30),(size*8/1024)) + &#39;MB&#39;<br> FROM sysfiles <br> WHERE name = @LogicalFileName<br>DROP TABLE DummyTrans<br>SET NOCOUNT OFF </p>
+
+
+<p><strong>8、说明：更改某个表<br></strong>exec sp_changeobjectowner 'tablename','dbo'</p>
+
+
+<p><strong>9、存储更改全部表</strong><strong></strong></p>
+
+
+<p>CREATE PROCEDURE dbo.User_ChangeObjectOwnerBatch<br>@OldOwner as NVARCHAR(128),<br>@NewOwner as NVARCHAR(128)<br>AS</p>
+
+
+<p>DECLARE @Name    as NVARCHAR(128)<br>DECLARE @Owner   as NVARCHAR(128)<br>DECLARE @OwnerName   as NVARCHAR(128)</p>
+
+
+<p>DECLARE curObject CURSOR FOR <br>select &#39;Name&#39;    = name,<br>   &#39;Owner&#39;    = user_name(uid)<br>from sysobjects<br>where user_name(uid)=@OldOwner<br>order by name</p>
+
+
+<p>OPEN   curObject<br>FETCH NEXT FROM curObject INTO @Name, @Owner<br>WHILE(@@FETCH_STATUS=0)<br>BEGIN     <br>if @Owner=@OldOwner <br>begin<br>   set @OwnerName = @OldOwner + &#39;.&#39; + rtrim(@Name)<br>   exec sp_changeobjectowner @OwnerName, @NewOwner<br>end<br>-- select @name,@NewOwner,@OldOwner</p>
+
+
+<p>FETCH NEXT FROM curObject INTO @Name, @Owner<br>END</p>
+
+
+<p>close curObject<br>deallocate curObject<br>GO</p>
+
+
+<p><br><strong>10、SQL SERVER中直接循环写入数据<br></strong>declare @i int<br>set @i=1<br>while @i&lt;30<br>begin<br>    insert into test (userid) values(@i)<br>    set @i=@i+1<br>end<br><strong>案例</strong><strong>：<br></strong><strong>有如下表，要求就裱中所有沒有及格的成績，在每次增長0.1的基礎上，使他們剛好及格:</strong></p>
+
+
+<p>    Name     score</p>
+
+
+<p>    Zhangshan   80</p>
+
+
+<p>    Lishi       59</p>
+
+
+<p>    Wangwu      50</p>
+
+
+<p>    Songquan    69</p>
+
+
+<p><strong>while((select </strong><strong>min</strong><strong>(score) from tb_table)&lt;</strong><strong>60</strong><strong>)</strong></p>
+
+
+<p><strong>begin</strong></p>
+
+
+<p><strong>update tb_table set score </strong><strong>=</strong><strong>score*</strong><strong>1.01</strong><strong> </strong></p>
+
+
+<p><strong>where score</strong><strong>&lt;60</strong><strong></strong></p>
+
+
+<p><strong>if  (select </strong><strong>min</strong><strong>(score) from tb_table)</strong><strong>&gt;60</strong><strong></strong></p>
+
+
+<p><strong>  break</strong></p>
+
+
+<p><strong> else</strong></p>
+
+
+<p><strong>    continue</strong></p>
+
+
+<p><strong>end</strong></p>
+
+
+<p> </p>
+
+
+<p><strong>数据开发-经典</strong><strong></strong></p>
+
+
+<p><br><strong>1.按姓氏笔画排序:</strong><br>Select * From TableName Order By CustomerName Collate Chinese_PRC_Stroke_ci_as //从少到多</p>
+
+
+<p><strong>2.数据库加密:</strong><strong><br></strong>select encrypt('原始密码')<br>select pwdencrypt('原始密码')<br>select pwdcompare('原始密码','加密后密码') = 1--相同；否则不相同 encrypt('原始密码')<br>select pwdencrypt('原始密码')<br>select pwdcompare('原始密码','加密后密码') = 1--相同；否则不相同</p>
+
+
+<p><strong>3.取回表中字段:<br></strong>declare @list varchar(1000),<br>@sql nvarchar(1000) <br>select @list=@list+','+b.name from sysobjects a,syscolumns b where a.id=b.id and a.name='表A'<br>set @sql='select '+right(@list,len(@list)-1)+' from 表A' <br>exec (@sql)</p>
+
+
+<p><strong>4.查看硬盘分区:<br>EXEC master..xp_fixeddrives</strong><strong></strong></p>
+
+
+<p><strong>5.比较A,B表是否相等:<br></strong>if (select checksum_agg(binary_checksum(*)) from A)<br>     =<br>    (select checksum_agg(binary_checksum(*)) from B)<br>print '相等'<br>else<br>print '不相等'</p>
+
+
+<p><strong>6.杀掉所有的事件探察器进程:<br></strong>DECLARE hcforeach CURSOR GLOBAL FOR SELECT 'kill '+RTRIM(spid) FROM master.dbo.sysprocesses<br>WHERE program_name IN('SQL profiler',N'SQL 事件探查器')<br>EXEC sp_msforeach_worker '?'</p>
+
+
+<p><strong>7.</strong><strong>记录搜索</strong><strong>:<br></strong><strong>开头到</strong><strong>N</strong><strong>条记录</strong><strong><br></strong>Select Top N * From 表<br>-------------------------------<br><strong>N</strong><strong>到</strong><strong>M</strong><strong>条记录</strong><strong>(</strong><strong>要有主索引</strong><strong>ID)<br></strong>Select Top M-N * From 表 Where ID in (Select Top M ID From 表) Order by ID   Desc<br>----------------------------------<br><strong>N</strong><strong>到结尾记录</strong><strong><br></strong>Select Top N * From 表 Order by ID Desc<br><strong>案例<br></strong><strong>例如1：一张表有一万多条记录，表的第一个字段 RecID 是自增长字段， 写一个SQL语句， 找出表的第</strong><strong>31</strong><strong>到第</strong><strong>40</strong><strong>个记录。</strong></p>
+
+
+<p> select top 10 recid from A where recid not  in(select top 30 recid from A)</p>
+
+
+<p>分析：如果这样写会产生某些问题，如果recid在表中存在逻辑索引。</p>
+
+
+<p>    select top 10 recid from A where……是从索引中查找，而后面的select top 30 recid from A则在数据表中查找，这样由于索引中的顺序有可能和数据表中的不一致，这样就导致查询到的不是本来的欲得到的数据。</p>
+
+
+<p><strong>解决方案</strong></p>
+
+
+<p><strong>1， </strong><strong>用order by </strong>select top 30 recid from A order by ricid <strong>如果该字段不是自增长，就会出现问题</strong></p>
+
+
+<p><strong>2， </strong><strong>在那个子查询中也加条件：</strong>select top 30 recid from A where recid&gt;-1<strong></strong></p>
+
+
+<p><strong>例2</strong><strong>：查询表中的最后以条记录，并不知道这个表共有多少数据,</strong><strong>以及表结构。<br>set @s = &#39;select top 1 * from T   where pid not in (select top &#39; + str(@count-1) + &#39; pid  from  T)&#39;</strong></p>
+
+
+<p><strong>print @s      exec  sp_executesql  @s</strong></p>
+
+
+<p><strong>9：获取当前数据库中的所有用户表</strong><br>select Name from sysobjects where xtype=&#39;u&#39; and status&gt;=0</p>
+
+
+<p><img src="http://www.cnblogs.com/justwannaloveyou/aggbug/1847341.html?type=1" width="1" height="1" alt=""><p>评论: 0　<a href="http://www.cnblogs.com/justwannaloveyou/archive/2010/10/10/1847341.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/justwannaloveyou/archive/2010/10/10/1847341.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/">程序员找工作，就在博客园</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/76809/">Chrome 8下周首度问世</a><span style="color:gray">(2010-10-10 20:19)</span><br>· <a href="http://news.cnblogs.com/n/76805/">Ubuntu 10.10 正式版发布下载地址</a><span style="color:gray">(2010-10-10 20:18)</span><br>· <a href="http://news.cnblogs.com/n/76799/">Windows Phone 官网大改版 WP7正式现身</a><span style="color:gray">(2010-10-10 18:31)</span><br>· <a href="http://news.cnblogs.com/n/76798/">北京时间10月11日晚21点30分 Windows Phone 7 来袭</a><span style="color:gray">(2010-10-10 17:51)</span><br>· <a href="http://news.cnblogs.com/n/76796/">用于Windows Azure的新PHP开发工具</a><span style="color:gray">(2010-10-10 17:36)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/cmt/archive/2010/10/10/1847077.html">博客园电子期刊2010年9月刊发布</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

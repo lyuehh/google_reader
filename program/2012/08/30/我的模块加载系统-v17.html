@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>我的模块加载系统 v17</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>我的模块加载系统 v17</h2>
+<p class="meta">30 Aug 2012</p>
+
+<div class="post">
+<h2>我的模块加载系统 v17</h2>
+
+<h3>by 司徒正美</h3>
+
+<h3>at 2012-08-30 08:13:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/30/2662477.html">http://www.cnblogs.com/rubylouvre/archive/2012/08/30/2662477.html</a></h3>
+
+<p>本版本的重要更新是完全实现AMD规范。整个框架根据此新加载器重写,因此可以方便调用老外用AMD规范写好的JS库了.</p>
+
+
+<p>     <ul>            <li>日志打印可以通过设置$.core.level排除某些不重要的日志打印。</li>            <li>添加config方法来设置框架的一些重要信息或对模块进行别名。</li>            <li>在VS系列实现智能提示。</li>        </ul><p>有关本模块加载系统的使用,可以到<a href="https://github.com/RubyLouvre/mass-Framework/issues/24">这里</a>详看教程.新加载器是同时支持AMD与玉伯搞的seajs的CMD.如果你在模块定义中的回调带有"require","exports","modules"中的任两个,加载器就视为CMD.不过无视是AMD与CMD,函数里面require, modules, exports都是可用的,完全可以像node.js这样加载模块.</p><p>有关require方法的模块标识,可以见<a href="https://github.com/RubyLouvre/mass-Framework/issues/28">这里</a></p><p>有关为什么要用AMD来管理我们的脚本，我想做过一些大项目的人应该心中有数，这不是一个合并JS所能取替的，<a href="https://github.com/RubyLouvre/mass-Framework/issues/25">详见此文</a>。</p><hr><p>下面揭载我的加载器的运作机理，姑且从一个没有依赖的模块着手，比如</p><pre>            $.require("$lang_fix", function(){                console.log("xxxxxxxxxxxxxx")            })</pre><p>不用说，进入$.require（希望大家看这东西时，打开<a href="https://github.com/RubyLouvre/mass-Framework/blob/master/mass.js">源码</a>对照着看。）</p><pre> String(list).replace( $.rword, function(el){  }）el  = "$lang_fix"</pre><p>进入Module.<em>resolveFilename</p><pre>url = $.core.base + el + ".js"</pre><p>初次加载，肯定没有在modules中注册， modules[url]为undefined</p><p>于是进入 loadJS( url, id );</p><ul>    <li>创建一个iframe，</li>    <li>在第一个script节点 用nick, Ns, nick分别保存url, $, innerDefine</li>    <li>在第二个script节点 用url去加载目标节点</li></ul><p>第二个节点视情况不同分别绑定onreadystatechange, onload, onerror</p><p>值得注意的是我们在注册模块时state还是为undefined，它会在innerDefine中修改state。</p>然后我们通过iframe中的script加载模块,而模块一般是这样的格式<pre>define("lang_fix", function( ){  //==========略============})</pre><p>这里的define实质上是innerDefine</p><p>innerDefine里面做了几个很重要的事情（我们现在只需看第一，第二）</p><ol><li>第一个事情把lang_fix这第一个参数换掉,换成nick, nick就是加载它的那个script的src。</li><li>第二个事情是将它对应的模块的状态改为1，也是modules[url].state = 1。</li><li>第三个事情是$, exports, require, module等对象强塞进模块工厂</li><li>第四个事情是转交真正的$.define去处理</li></ol><p>在第二事情中，我们将模块的状态修改了，于是节点执行onreadystatechange/onload时</p><pre>if(/loaded|complete|undefined/i.test(this.readyState) }{    Ns.</em>checkDeps();     Ns.<em>checkFail(self.document, nick);}</pre><p>Ns.</em>checkFail发挥效力</p><pre><em>checkFail : function(  doc, id, error ){    doc &amp;&amp; (doc.ok = 1);    if( error || !modules[ id ].state ){         this.log(&quot;Failed to load [[ &quot;+id+&quot; ]]&quot;+modules[ id ].state);    }},</pre><p>如果是死链，那无法调用define函数，也就无法调用innerDefine，状态为undefine</p><p><strong>!modules[ id ].state == true</strong>，于是打印错误日志，当然以后我们讨论一下，是不是该throw</p><p>如果在旧式opera,它是会无法进入onreadystatechange, onload, onerror任一回调</p><p>在</em>checkFail中，我们会修复doc.ok = 1，那么在iframe中onload中我们检测doc.ok不等于1时，</p><p>就在<em>checkFail传入第三个参数true，让它打印错误日志</p><p>如果在FF，chrome, IE9，它们就会进入onerror回调，那里的调用代码中</p><pre>Ns.</em>checkFail(self.document, nick, true)</pre><p>因此也顺利检测到死链。</p><p>反正只要加载失败,我们就立即把对应iframe移出DOM树!</p><p>好了，如果成功加载，我们就通过innerDefine到达$.define，并也把对应iframe移出DOM树</p><p>$.define干了如下几个事情</p><ol><li>第一个事情，检测第二个参数是否为布尔，是说明其是补丁模块，如果布尔值为true，说明这个补丁模块对这个浏览器是没有用的，直接return，不执行它的模块工厂了。如果为false，比如IE6，补丁模块对它总是有用，先去掉此参数，继续往下执行。</li><li>第二个事情，检测参数个数，如果只有两个，说明只有模块名与模块的回调（亦有可能不是回调），那么我们插入一个空数组作为依赖列表</li><li>第三个就是检测第三个参数是否为函数，不是函数，比如说是个对象，我们要将它塞入一个函数</li></ol><p>比如</p><pre>define({  aaa:2})</pre><p>经上面几次转换，依次变为</p><pre>define(&quot;http://xxxxxxx/aa.js&quot;,{  aaa:2});//----&gt;define(&quot;http://xxxxxxx/aa.js&quot; ,[],{  aaa:2});//----&gt;define(&quot;http://xxxxxxx/aa.js&quot; ,[], function(){ return {    aaa:2  }});//----&gt;$.require([], function(){ return {    aaa:2  }}), &quot;http://xxxxxxx/aa.js&quot;)</pre><p>最后我们将参数的顺序重排一下，再次调用$.require</p><pre> //0,1,2 --&gt; 1,2,0 this.require( args[1], args[2], parent );</pre><p>由于lang_fix是没有依赖的，因此dn === cn 相当于 0 == 0，执行install( id, args, factory );</p><p>install简而言之是将模块工厂执行，将state改为2。</p><p>我们还需要注意一下，我们每次调用$.require或加载一个脚本时都执行_checkDeps方法。</p><p>当lang_fix的状态改为2后</p><pre> $.require("$lang_fix", function(){      console.log("xxxxxxxxxxxxxx") })</pre><p>这个回调也将执行！</p><p>控制台打印xxxxxxxxxxxxxxxx</p><p>源码位于<a href="https://github.com/RubyLouvre/mass-Framework/blob/master/mass.js">这里</a></p><img src="http://www.cnblogs.com/rubylouvre/aggbug/2662477.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/rubylouvre/archive/2012/08/30/2662477.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

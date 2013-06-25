@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>2012大数据盘点</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>2012大数据盘点</h2>
+<p class="meta">17 Feb 2013</p>
+
+<div class="post">
+<h2>2012大数据盘点</h2>
+
+<h3>by flyinweb</h3>
+
+<h3>at 2013-02-16 17:21:02</h3>
+
+<h3>original <a href="http://www.alidata.org/archives/2370">http://www.alidata.org/archives/2370</a></h3>
+
+<p align="left"><strong><em>备注：这是刊登在《程序员》杂志2012年12期杂志的稿件，略有删减。</em></strong><br>
+从2012年3月29日美国政府投资2亿美元启动“大数据研究和发展计划”到11月份被视为大数据时代的总统选举，大数据处理技术有一种“旧时王谢堂前燕，飞入寻常百姓家”的迹象。已有的技术逐渐落地承接核心业务，新的技术则独辟蹊径，在特定领域一展所长，同时，大数据处理技术的平台化、商业化开始兴起。本文将从数据的<strong>传输、存储、计算、挖掘、展现、开发者平台和应用市场</strong>七个方面来阐释2012年大数据领域的发展和变化。</p>
+
+
+<h2>数据传输</h2>
+
+
+<p align="left">在持续不断产生大数据量的生产系统的情况下，作为数据处理的入口，数据传输和同步一般会采用两种读取方案。</p>
+
+
+<h3 align="left">1) 基于时间线的实时同步方案。</h3>
+
+
+<p align="left">通过解析生产库的日志（如MySQL的binlog、Oracle的redolog、业务系统自身日志），收集数据变更事件发布到消息队列，下游订阅消息队列然后同步到指定的数据仓库或其他数据处理系统中。</p>
+
+
+<p align="left">典型的系统有以下两种。</p>
+
+
+<p align="left">a)基于数据库日志解析，如Linkedin的<a href="http://data.linkedin.com/projects/databus">Databus</a>+<a href="http://kafka.apache.org">Kafaka</a>组合、淘宝开源的<a href="http://code.taobao.org/p/TimeTunnel">TimeTunnel</a>。</p>
+
+
+<p align="left">b)基于业务系统日志，如Facebook开源的<a href="https://github.com/facebook/scribe">Scribe</a>、Cloudera开源的<a href="https://github.com/cloudera/flume">Flume</a>、Hadoop社区开源的<a href="http://incubator.apache.org/chukwa/">Chukwa</a>。</p>
+
+
+<h3 align="left">2) 批量同步方案。</h3>
+
+
+<p align="left">主要是将异构数据源的数据以离线方式批量同步到数据仓库或分布式文件系统中。</p>
+
+
+<p align="left">典型的系统有淘宝开源的<a href="http://code.taobao.org/p/datax/src/">DataX</a>、Hadoop社区开源的<a href="http://sqoop.apache.org/">Sqoop</a>。</p>
+
+
+<h2>数据存储</h2>
+
+
+<p align="left">在数据量超过单机承载能力时，数据存储在扩展性和可用性上会面临较大的挑战，解决此类存储问题的系统主要分为三类：</p>
+
+
+<h3 align="left">1) 内核级分布式存储</h3>
+
+
+<p align="left">此类系统和操作系统内核紧密集成，提供PB级别文件存储和处理能力。典型的有支持object、block、file的统一文件系统Ceph、支持大文件的GlusterFS、HPC（高性能计算计算）领域的LustreFS。</p>
+
+
+<p align="left">2012年10月发布的Ceph版本已经兼容OpenStack Swift和Amazon S3，可以直接与Hadoop集成。</p>
+
+
+<h3 align="left">2) 用户级分布式文件存储</h3>
+
+
+<p align="left">这类系统一般基于操作系统底层文件系统存储，在此之上采用定长block方式存储文件。典型的有HDFS、GFS、阿里云的盘古、淘宝的TFS、OpenStack的Swift。</p>
+
+
+<p align="left">在2012年发布的Hadoop 2.0 alpha系列中，HDFS NameNode HA和Automatic Failover大大增强，让单集群HDFS的规模接近无限扩展。</p>
+
+
+<h3 align="left">3) 业务级数据存储</h3>
+
+
+<p align="left">这类系统一般会存储带有一定业务含义的数据，构建于文件系统之上。主要分为列式数据库领域、文档数据库领域、K/V型数据库领域、图形数据库领域以及传统数据库五个部分。</p>
+
+
+<h4 align="left">a) 列式数据库存储</h4>
+
+
+<p align="left">列存储数据库具有读取数据量少、高压缩比的特性，很适合大数据处理。典型的有Apache HBase、阿里云OTS，HBase在2012年发布的0.92、0.94版本在性能、错误检测和恢复、事务支持、动态分区、Coprocessors、文件格式上都有较大改进和完善。HBase社区主要贡献者Facebook的Messages HBase集群每天写请求110亿次，读请求900亿次，并且数据量以每个月400TB的速度增长；在今年双11狂欢购物节中淘宝700台HBase服务器峰值QPS超过400万。</p>
+
+
+<h4 align="left">b) 文档数据库存储</h4>
+
+
+<p align="left">文档数据库有丰富的数据模型，数据格式自由，具有一个自包含的数据单元，支持多版本，性能相对较高。典型的有MongoDB和CouchDB。MongoDB今年在Aggregation Framework上进行了重新设计，同时MongoDB+Hadoop Connector发布了1.0版本，已经可以与Hadoop进行双向数据读取。</p>
+
+
+<h4 align="left">c) K/V型数据库领域</h4>
+
+
+<p align="left">K/V型数据库结构简单、易分布、在读写方面具有极高的性能。随着K/V型数据库技术的逐渐成熟，相关产品在多租户、服务化上取得了不错的进展。典型的如Cassandra、Riak、Voldemort、Tair等K/V型分布式存储系统在Twitter、Linkedin、淘宝等公司得到了大规模应用。随着Cassandra在多数据中心、多租户和Hadoop兼容上的改进，其用户数在2012年得到了大幅增长，包括eBay、Netflix等互联网企业以及IBM、HP等传统IT企业都在使用它来做大数据量存储和分析。</p>
+
+
+<h4 align="left">d) 图形数据库</h4>
+
+
+<p align="left">图形数据库领域应用图形理论存储实体之间的关系信息，可以用来处理复杂的数据关系，这些关系都规模超大，在图谱关系类模型中得到了大量应用。典型的有Neo4j和InfiniteGraph。Neo4j发布的1.8版本对核心遍历以及路径算法都进行了大幅改进。开发Neo4j 的 Neo Technology 在2012年11月获得了1100万美元的风险投资。</p>
+
+
+<h4 align="left">e) 传统数据库</h4>
+
+
+<p align="left">传统数据库在稳定性、易用性和可运维性上久经考验，基于常规数据库进行分库、分区和分表搭建的集群系统也有广泛的应用。例如，Facebook、淘宝就有多个基于MySQL数据库搭建的数据库集群项目。MySQL今年开发中的5.6版在扩展性、复制、InnoDB引擎、运行信息收集上都充满亮点。淘宝的MySQL集群服务器规模达到了上千台，今年双11购物狂欢节某核心集群总共执行293亿次SQL/天，集群总QPS达86万/秒，单机QPS高达6.5万/秒，集群TPS 高达11万/秒。</p>
+
+
+<h2>数据计算</h2>
+
+
+<p align="left">大数据进行计算处理有很多分类方法，本文将按照离线计算、流式计算、即时计算、图计算4个关注热点来进行盘点。</p>
+
+
+<h3 align="left">1) 离线计算</h3>
+
+
+<p align="left">离线计算经过多年的积累和沉淀，已经成为验证业务模型、数据挖掘、数据回流到在线系统的首选平台，承载了绝大多数的数据处理任务。</p>
+
+
+<p align="left">作为离线计算事实上的标准， Hadoop也在今年发生了重大变化，官方社区发布了Hadoop 1.0.0版。发布的MapReduceV2（YARN）版本在可靠性、可用性和可扩展性（集群数量在6000-10000机器）方面有大幅提升。在年底Facebook发布的Hadoop分支Corona 项目则将资源调度与任务调度分离，在多租户、小任务、扩展性、利用率上有大幅改进。另外，阿里集团研发的ODPS离线数据处理系统今年也在淘宝、支付宝、天猫、阿里金融得到了广泛应用，承载了整个阿里集团最有价值的商业数据并作了很好的安全控制和隔离。</p>
+
+
+<p align="left">虽然是离线系统，对离线平台性能、架构的优化也是层出不穷，典型的就有另辟蹊径的Spark+Shark组合。今年基于内存集群的计算框架Spark发布了0.6版，进一步提升性能，并兼容Hadoop YARN,同时推出的基于Spark的数据处理引擎Shark在完全兼容Hive下性能提升超过70倍。</p>
+
+
+<h3 align="left">2) 流式计算</h3>
+
+
+<p align="left">随着获取数据的时间增长，数据的价值会快速下降。就数据的实时获取和计算而言，去年还处于观望试水阶段，今年已经开始逐渐落地并在一些在线系统中得到应用。流式计算系统需要依赖上游数据传输的正确性和实时性以及下游的存储系统的高吞吐。在此领域，基本都是使用Twitter开源的Storm框架进行扩展和业务开发。Storm发布的0.8版中的Trident特性提供了更高级抽象，在吞吐、低延时、易用性上大幅改善，大幅度简化开发成本，同时引入的Disrupter库大幅提升消息处理能力。</p>
+
+
+<h3 align="left">3) 即时计算</h3>
+
+
+<p align="left">即时计算是指根据查询需求从海量数据中即时进行排重、排名、汇总等运算，面对的是海量数据并且无法预算的情况。在个性化推荐、数据化运营中具有广泛的使用场景。</p>
+
+
+<p align="left">此类系统分为两类。</p>
+
+
+<p align="left">a) 在线数据应用型：一种可以预先建立全索引的满足互联网应用要求的即时计算系统，具有高并发、低延时（毫秒级）的特性。此类系统相对来说具有高成本初始化低成本复用的特点，一般会采用类似于IMDG（In-Memory Data Grid内存数据网格）模型，提前将数据按分区模式加载到内存，典型的有今年Google公开的PowerDrill项目和阿里集团数据平台的Garuda项目。目前淘宝研发的Garuda高并发即时计算系统数据量超过300亿行，QPS超过300，平均每次请求涉及到的数据超过300万行，响应时间小于100ms。</p>
+
+
+<p align="left">b) 在线数据分析型：是一种采用定制数据结构的类似于并行暴力扫描的方式进行快速计算的即时查询系统，基本无并发，响应时间在秒级。典型的有Google BigQuery产品中用到的Dremel技术，Dremel通过采用查询树、列式存储、大集群并发模式来处理半结构化数据，能做到秒级延时；Cloudera今年也开源了类似Dremel技术的Impala系统，可分析HDFS或HBase数据，与Hive共享元数据，与Hadoop完美集成，一时成为关注热点；类似于Dremel技术的Apache Drill开源项目今年也在如火如荼的开发中。</p>
+
+
+<h3 align="left">4) 图计算</h3>
+
+
+<p align="left">对用户关系、网页关系等数据的深度挖掘，涉及到大型的矩阵计算(matrix)、图计算(graphic)、网络计算(network)。这些运算都规模超大，常常达到数十亿的顶点和上万亿的边。解决此类问题需要引入MPI(Message Passing Interface Model)或BSP模型（Bluk Synchronous Parallell Model）来进行规模化、高效的图形计算。</p>
+
+
+<p align="left">今年基于Google Pregel原理底层为Hadoop的Apache Hama项目成为Apache顶级项目，发布了0.5.0版本，公开的多项性能基准测试都远胜传统的计算模型。</p>
+
+
+<h2>数据挖掘</h2>
+
+
+<p align="left">随着数据的增长以及业务模型的抽象，就需要用数据挖掘算法和模型来进行数据掘金。一般会建立一个运行在分布式计算集群上的公用算法平台来进行各种数据处理，典型的有Apache Mahout机器学习库和Revolution Analytics发布的RHadoop，Mahout今年发布的两个版本在内存管理、算法抽象上都有较大改善，今年Revolution Analytics的RHadoop已全面覆盖Hadoop生态圈，包括RMR（Map Reduce）、RHDFS、RHBase。</p>
+
+
+<p align="left">数据挖掘的结果已不再仅仅是作为一个离线数据报告的模式存在，已经变成定期运行，将结果回流到在线存储系统（如HBase、MySQL），与整个网站体系联动，形成正反馈。今年Facebook、Linkedin、淘宝包括首页、个人主页在内都大量存在采用数据挖掘技术显示的个性化信息。</p>
+
+
+<h2>数据展现</h2>
+
+
+<p align="left">随着数据分析结果的多样性，多角度、多层次展示带来的需求变化已经超过简单的表格、饼图、柱状图的展示范畴，出现了很多新的展现形式，比如Treemap、Chord。</p>
+
+
+<p align="left">今年在数据可视化领域先后有不少优秀的可视化库和软件涌现出来，比如阿里集团数据平台可视化实验室推出的dataV.js就大受好评，能做到开箱即用；Facebook Insights在针对广告投放信息的可视化展示上也获得了不错的反响。</p>
+
+
+<p align="left">另外,今年除了数据可视化外，基于已有数据的信息可视化在微博上也引起了多轮转发和评论热潮，通过对海量数据处理结果的简化和具象化展示，让大数据处理结果通俗易懂。</p>
+
+
+<h2>数据开发平台</h2>
+
+
+<p align="left">数据处理涉及到的环节错综复杂，盘根错节，如何让大家易使用、保障所有系统的稳定运行，需要有一个统一的数据开发平台完成用户认证、数据鉴权、工作流、监控告警、数据管理(元数据管理、数据质量管理、数据生命周期管理)等工作。今年阿里集团的在云端，腾讯的TDW都在进行大量的类似功能集成和平台完善。</p>
+
+
+<h2>数据应用市场</h2>
+
+
+<p align="left">大数据处理在软件、硬件层面都曾在较高的门槛，如何让企业能用较低的成本或按需付费的模式降低使用门槛？如何让自身的数据价值最大化？如何展现数据的多样化？这些需求让一些专业的数据处理公司在今年迅速崛起，DAAS（Data as a service）也在今年成为大数据的热门词汇。典型的公司有Precog，Precog公司提供大数据存储和分析服务，该服务负责处理数据的抽取、转换、集成分析和可视化等过程，以及服务运行所基于的基础架构，提供一整套IDE和Quirrel查询分析语言，并且开发者可以将自己Precog网站上的数据、处理程序打包成APP在Precog Store上进行销售。</p>
+
+
+<h2>总结</h2>
+
+
+<h3>1) 数据处理要因地制宜，根据需要来选择技术。</h3>
+
+
+<p align="left">根据业务场景和数据规模，其实也有一些简单快速易行的方案来做数据分析和计算，比如Craigslist 、Github、bit.ly就采用MongoDB的Aggregation Framework和Hadoop Connector来做一些数据分析和实时统计，Facebook、淘宝也有一些基于HBase的Coprocessors特性做的数据分析和统计场景。<strong></strong></p>
+
+
+<h3>2) 流式计算加速普及，即时计算落地。</h3>
+
+
+<p align="left">如何实时获取产品使用情况？如何实时反馈运营情况？用户时间的碎片化、数据本身随时间消逝急速贬值都会加速流式计算系统的普及。</p>
+
+
+<p align="left">随着个性化的需求逐渐铺开，基于用户以及网站资源的偏好实时个性化展现给用户想要的信息将会成为网站标配，高并发低延时的互联网即时计算系统将会迅速落地。</p>
+
+
+<h3>3) 数据资源和数据处理能力会服务化和市场化</h3>
+
+
+<p align="left">一些公司随着数据的急剧增长，会快速积累起一整套数据处理技术以及数据挖掘能力，并建立起相对完整的数据处理平台。他们会利用已掌握的数据资源或数据处理能力来建立一个完整的大数据生态圈，来进行数据本身的交换、数据应用的交换、数据处理能力的交换。</p>
+
+
+<p align="left"></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

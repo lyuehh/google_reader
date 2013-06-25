@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>JavaScript:undefined不是字面量</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>JavaScript:undefined不是字面量</h2>
+<p class="meta">12 Nov 2012</p>
+
+<div class="post">
+<h2>JavaScript:undefined不是字面量</h2>
+
+<h3>by 紫云飞</h3>
+
+<h3>at 2012-11-11 20:15:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/11/2765096.html">http://www.cnblogs.com/ziyunfei/archive/2012/11/11/2765096.html</a></h3>
+
+<p>今天看了一下<span>《高性能JavaScript》</span>,发现一个问题,就是书中把undefined也当成了字面量(直接量),这是不对的.</p>
+
+
+<p>中文版:</p>
+
+
+<p><img src="http://pic002.cnblogs.com/images/2012/116671/2012111113421781.png" alt=""></p>
+
+
+<p>英文原版:</p>
+
+
+<blockquote>Literal values<br><p>Any value that represents just itself and isn’t stored in a particular location. JavaScript can represent strings, numbers, Booleans, objects, arrays, functions, regular expressions, and the special values null and <span style="color:#ff9900">undefined </span>as literals. </p></blockquote>
+
+
+<p><strong>什么是字面量</strong></p>
+
+
+<p>我想,这个名词很难去定义,因为ES规范上也没有明确给出到底什么是字面量.维基百科上是这么定义的:</p>
+
+
+<blockquote><p>一个字面量就是在源代码中表示某个固定值的符号.</p></blockquote>
+
+
+<p>我的理解是:编译器或者解释器看到一个字面量,就知道它表示的是哪个具体的值.比如我们把符号1规定为值1的字面量,这只是规定,如果把符号一规定成是值1的字面量,那么一就成了字面量.再比如字符串字面量,常见的表示法是用引号"string",但在perl中,q/string/也是一个字符串字面量.也就是说,,每种语言的字面量有不同的符号表示法.字面量和标识符是冲突的,这也就是为什么标识符不能以数字开头,a1可以是标识符,11可就不行了.null是字面量(同时也符合标识符的语法),所以得把它规定成为保留字,不能作为标识符使用.</p>
+
+
+<p><strong>undefined不是字面量</strong></p>
+
+
+<p>书中说特殊值undefined也是字面量,这是不对的.我们可以在ES5规范中找一下,只能找到下面这些字面量语法:</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#000000">ArrayLiteral<br>BooleanLiteral<br>DecimalIntegerLiteral<br>DecimalLiteral<br>HexIntegerLiteral<br>JSONBooleanLiteral<br>JSONNullLiteral<br>NullLiteral<br>NumericLiteral<br>ObjectLiteral<br>OctalIntegerLiteral<br>RegularExpressionLiteral<br>StrDecimalLiteral<br>StringLiteral<br>StringNumericLiteral<br>StrNumericLiteral<br>StrUnsignedDecimalLiteral</span></div>
+
+
+<p>你可以看到,这里面有数组字面量,布尔值字面量,十进制整数字面量等,就是没有undefined字面量.为什么呢,那我们写在JavaScript源代码中的undefined到底是什么.</p>
+
+
+<p><strong>undefined是什么</strong></p>
+
+
+<p>ES5规范中讲了:</p>
+
+
+<blockquote><p><strong><span>8.1</span> Undefined类型</strong></p><p>Undefined类型只有一个值,叫做<strong>undefined</strong>.任何没有被赋过值的变量的值为<strong>undefined</strong>.</p></blockquote>
+
+
+<p>Undefined是种类型,就像Number类型一样.Number类型有无数个值,比如0,1,3.14等等.String类型也有无数个值,比如"123","abc"等等,Boolean类型有两个值true和false.而Undefined类型只有一个值,就是undefined.类似的还有Null类型,它也只有一个值null.</p>
+
+
+<blockquote><div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">ReservedWord ::                 <span style="color:#008000">//</span><span style="color:#008000">保留字包括下面的几种:</span><br>Keyword                         <span style="color:#008000">//</span><span style="color:#008000">关键字</span><br>FutureReservedWord              <span style="color:#008000">//</span><span style="color:#008000">未来保留字</span><br>NullLiteral                     <span style="color:#008000">//</span><span style="color:#008000">null字面量</span><br>BooleanLiteral                  <span style="color:#008000">//</span><span style="color:#008000">布尔值字面量,也就是true和false</span></div></blockquote>
+
+
+<p>null是个保留字,你不能把null作为变量名,单独的null(不被包含在字符串或正则字面量中)在JavaScript代码中的意思就是null值.而undefined不是保留字,你可以定义一个名为undefined的局部变量.而且JavaScript引擎已经内置了一个undefined全局变量,它的值是undefined.</p>
+
+
+<blockquote><p><strong><span>15.1.1</span> 全局对象的属性</strong></p><p><strong><span>15.1.1.1</span> NaN</strong></p><p><code>NaN</code>的值是<strong>NaN</strong> (see 8.5).</p><p><strong><span>15.1.1.2</span> Infinity</strong></p><p><code>Infinity的值是</code><strong>+∞</strong> (see 8.5). </p><p><strong><span>15.1.1.3</span> undefined</strong></p><p><code>undefined的值是</code><strong>undefined</strong> (see 8.1).</p></blockquote>
+
+
+<p>更明确点讲,我们写在JavaScript代码中的undefined,并不是undefined值本身.而是一个局部变量或者是全局对象的一个属性.但大部分时候它们的值是undefined.NaN和Infinity也同理.</p>
+
+
+<p><strong> 有什么影响</strong></p>
+
+
+<p> 维基百科上有一段话讲了<a href="http://en.wikipedia.org/wiki/JavaScript_syntax#Undefined%20">undefined的这个特点</a>:</p>
+
+
+<blockquote><p>注意:根本不存在undefined字面量.因此<tt>(x == undefined)并不能说明变量x的值就是undefined</tt>,因为在ECMAScript 5之前的规范中,可以使用语句var <tt>undefined = "I'm defined now"来修改undefined的值</tt>.更可靠的检测方法是<tt>(typeof x === 'undefined')</tt>.</p></blockquote>
+
+
+<p>现在有不少人在自己的代码中使用了jQuery的这种写法,为什么要这么写呢.</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">;(<span style="color:#0000ff">function</span><span style="color:#000000">(window,undefined){<br><br>})(window)</span></div>
+
+
+<p>其中一个原因就是防止全局的undefined变量被修改成其他值,但随着ES5的普及以及几乎不可能有人去改这个值,我觉得这种考虑越来越多余.这种写法还有其他两个考虑,一个是避免查找作用域链(这种性能差异真的值得考虑吗?),还有就是为了代码压缩了.</p>
+
+
+<p><strong>证明</strong></p>
+
+
+<p>我们可以使用Ariya Hidayat(phantomjs的作者)写的基于<strong>Esprima(纯JavaScript编写)</strong>的<a href="http://esprima.org/demo/parse.html">ECMAScript解析器</a>来解析一下这几个符号</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#000000">Infinity <br>undefined<br>NaN<br></span><span style="color:#0000ff">null</span><br>100</div>
+
+
+<p>解析得到的语法树是:</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px"><span style="color:#000000">{<br>    </span>"type":"Program"<span style="color:#000000">,<br>    </span>"body"<span style="color:#000000">:[{<br>            </span>"type":"ExpressionStatement"<span style="color:#000000">,<br>            </span>"expression"<span style="color:#000000">:{<br>                </span>"type":"Identifier"<span style="color:#000000">,<br>                </span>"name":"Infinity"<span style="color:#000000"><br>            }<br>        },<br>        {<br>            </span>"type":"ExpressionStatement"<span style="color:#000000">,<br>            </span>"expression"<span style="color:#000000">:{<br>                </span>"type":"Identifier"<span style="color:#000000">,<br>                </span>"name":"undefined"<span style="color:#000000"><br>            }<br>        },<br>        {<br>            </span>"type":"ExpressionStatement"<span style="color:#000000">,<br>            </span>"expression"<span style="color:#000000">:{<br>                </span>"type":"Identifier"<span style="color:#000000">,<br>                </span>"name":"NaN"<span style="color:#000000"><br>            }<br>        },<br>        {<br>            </span>"type":"ExpressionStatement"<span style="color:#000000">,<br>            </span>"expression"<span style="color:#000000">:{<br>                </span>"type":"Literal"<span style="color:#000000">,<br>                </span>"value":<span style="color:#0000ff">null</span><span style="color:#000000">,<br>                </span>"raw":"null"<span style="color:#000000"><br>            }<br>        },<br>        {<br>            </span>"type":"ExpressionStatement"<span style="color:#000000">,<br>            </span>"expression"<span style="color:#000000">:{<br>                </span>"type":"Literal"<span style="color:#000000">,<br>                </span>"value":100<span style="color:#000000">,<br>                </span>"raw":"100"<span style="color:#000000"><br>            }<br>        }<br>    ]<br>}</span></div>
+
+
+<p>可以看到,前三个名称都是标识符,后两个才是字面量.如果你还不放心,可以试试SpiderMonkey<a href="https://developer.mozilla.org/zh-CN/docs/SpiderMonkey/Parser_API">自己的解析器</a>,运行结果如下:</p>
+
+
+<div style="background-color:#f5f5f5;border:1px solid #cccccc;padding:10px">js&gt; Reflect.parse(&#39;undefined&#39;).body[0<span style="color:#000000">].expression.type<br></span>"Identifier"<span style="color:#000000"><br>js</span>&gt; Reflect.parse(&#39;null&#39;).body[0<span style="color:#000000">].expression.type<br></span>"Literal"</div>
+
+
+<p><img src="http://www.cnblogs.com/ziyunfei/aggbug/2765096.html?type=1" width="1" height="1" alt=""><p><a href="http://www.cnblogs.com/ziyunfei/archive/2012/11/11/2765096.html">本文链接</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

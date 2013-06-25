@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>前端优化之图片优化自动化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>前端优化之图片优化自动化</h2>
+<p class="meta">22 Oct 2011</p>
+
+<div class="post">
+<h2>前端优化之图片优化自动化</h2>
+
+<h3>by editor</h3>
+
+<h3>at 2011-10-21 19:07:11</h3>
+
+<h3>original <a href="http://stblog.baidu-tech.com/?p=1011">http://stblog.baidu-tech.com/?p=1011</a></h3>
+
+<h2>前端图片优化介绍</h2>
+
+
+<p>随着前端页面越来越复杂，尤其是一些社区型的页面中，图片成了页面中不可或缺的资源，并且随着产品功能的叠加图片大小越来越多。以下是几个网站的图片所占的比重。</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=2011-01-13_0855281318398874.png&amp;type=image%2Fpng&amp;width=557&amp;height=160"><img title="2011-01-13_085528" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=2011-01-13_0855281318398874.png&amp;type=image%2Fpng&amp;width=557&amp;height=160" alt="" width="557" height="160"></a></p>
+
+
+<p>由于图片是二进制文件，并不能像js、css、html那些源代码文件一样可以通过gzip压缩大大减小文件的大小。所以图片优化主要是选择合适的图片格式，在不降低图片质量的情况下去掉图片里的元数据信息。<span></span></p>
+
+
+<h2>常用的一些优化方案</h2>
+
+
+<p>目前图片优化使用比较多的主要是下面几种方式：</p>
+
+
+<ol>
+<li>选择合适的图片格式，如：png代替gif，尽量使用png8</li>
+<li>png使用pngout优化，jpg使用jpgtran</li>
+<li>通过yahoo的smush进行</li>
+<li>通过google的page speed插件进行</li>
+</ol>
+
+
+<p><img title="2011-01-13_085827" src="http://www.welefen.com/wp-content/uploads/2011/01/2011-01-13_085827.png" alt="" width="481" height="169"></p>
+
+
+<p>这些优化方案虽然结果都能将图片优化，但需要比较多的人工操作。如使用smush，先要上传文件，优化完了后还要下载文件。在项目时间限制或者改动很频繁的情况下很多时候就把图片优化这一非常重要的优化步骤给忽略了。</p>
+
+
+<p>那如何尽量减少人工操作带来的麻烦和不确定因素呢？</p>
+
+
+<p>如果在前端模块编译的时候，有图片自动优化的功能，上线前模块编译的时候得到就是优化后的图片，开发人员完全不用管图片优化了，但又不影响线上图片优化的结果。</p>
+
+
+<p>如何结合一些工具做到图片优化完全自动化呢？先要考虑目前开发中经常用到的图片格式。</p>
+
+
+<h2>图片格式</h2>
+
+
+<p>开发中经常用到的图片格式主要有如下几种：</p>
+
+
+<ol>
+<li>不透明的gif，全透明的gif，动画gif</li>
+<li>不透明的png，全透明的png，半透明(alpha透明)的png</li>
+<li>jpg图片</li>
+</ol>
+
+
+<p>对于全透明的png，ie6要通过下面的filter进行hack。</p>
+
+
+<p><img title="2011-01-13_090219" src="http://www.welefen.com/wp-content/uploads/2011/01/2011-01-13_090219.png" alt="" width="563" height="138"></p>
+
+
+<p>对于alpha透明的png，ie6下必须使用png24，目前还没有找到ie6下hack alpha透明png8的方式，如果有哪位大拿对这个有解决方案，麻烦告诉我。</p>
+
+
+<p>经过筛选和优化原则要满足上面的图片格式的条件，选择的软件如下：</p>
+
+
+<ol>
+<li>动画gif使用gifsicle</li>
+<li>png使用pngcrush</li>
+<li>jpeg使用jpegtran</li>
+</ol>
+
+
+<h2>软件安装</h2>
+
+
+<p>需要安装imagmagick, gifsicle, jpegtran, pngcrush，安装脚本如下：</p>
+
+
+<pre>#!/bin/sh
+#安装imagemagick
+wget ftp://ftp.kddlabs.co.jp/graphics/ImageMagick/ImageMagick-6.6.4-10.tar.gz
+tar zxvf ImageMagick-6.6.4-10.tar.gz
+cd ImageMagick-6.6.4-10
+./configure
+make
+make install
+cd ../
+#安装gifsicle
+wget http://www.lcdf.org/gifsicle/gifsicle-1.60.tar.gz
+tar zxvf gifsicle-1.60.tar.gz
+cd gifsicle-1.60
+make
+make install
+cd ../
+#安装jpegtran
+wget http://jpegclub.org/droppatch.v8.tar.gz
+tar zxvf droppatch.v8.tar.gz
+sudo cp ./jpegtran /usr/local/bin
+#安装pngcrush
+wget http://sourceforge.net/projects/pmt/files/pngcrush/00-1.7.13/pngcrush-1.7.13.tar.gz/download
+tar zxvf pngcrush-1.7.13.tar.gz
+cd pngcrush-1.7.13
+sudo make
+sudo cp ./pngcrush /usr/local/bin</pre>
+
+
+<p>将上面的代码拷贝到一个文件如：image.s，执行dos2unix image.sh，然后执行sh image.sh安装软件</p>
+
+
+<h2>图片优化</h2>
+
+
+<div>图片优化的代码如下：</div>
+
+
+<pre>#/bin/bash
+OPTI_PATH=$1
+cd $OPTI_PATH;
+CURRENT_PATH=$PWD;
+SH_LIST=&#39;jpegtran gifsicle pngcrush&#39;;
+COMMOND_EXIST=1
+#先检查相关的软件是否已经正确安装
+for ITEM in $SH_LIST
+do
+    SH_EXIST=`which $ITEM 2&gt;/dev/null | wc -l`;
+    if [[ $SH_EXIST == &#39;0&#39; ]]; then
+        echo &quot;$ITEM commond not exist&quot;;
+        COMMOND_EXIST=0;
+    fi
+done
+if [[ &quot;COMMOND_EXIST&quot; == &quot;0&quot; ]]; then
+exit 1;
+fi
+#优化jpg
+JPG_FILES=`find . -type f -name &quot;*.jpg&quot; -or -name &quot;*.jpeg&quot;`;
+for FILE in $JPG_FILES
+do
+    OUTPUT_FILE=&quot;$FILE.png&quot;
+    jpegtran -optimize -progressive -copy none -outfile $OUTPUT_FILE $FILE &gt; /dev/null
+    mv $OUTPUT_FILE $FILE
+done
+#优化gif
+GIF_FILES=`find . -type f -name &quot;*.gif&quot;`;
+for FILE in $GIF_FILES
+do
+    DEPTH=`identify $FILE | wc -l`;
+    if [[ &quot;$DEPTH&quot; == &quot;1&quot; ]]; then
+        OUTPUT_FILE=&quot;$FILE.png&quot;;
+        OUTPUT_FILE_LEN=${#OUTPUT_FILE}-8;
+        NEW_FILE_SUB=${OUTPUT_FILE:0:$OUTPUT_FILE_LEN};
+        NEW_FILE=&quot;$NEW_FILE_SUB.png&quot;
+        convert $FILE $NEW_FILE &gt; /dev/null;
+    else
+        OUTPUT_FILE=&quot;$FILE.gif&quot;
+        gifsicle -o $OUTPUT_FILE $FILE &gt; /dev/null
+        mv $OUTPUT_FILE $FILE
+    fi
+done
+#优化png
+PNG_FILES=`find . -type f -name &quot;*.png&quot;`;
+for FILE in $PNG_FILES
+do
+    OUTPUT_FILE=&quot;$FILE.png&quot;
+    pngcrush -rem alla -brute -reduce $FILE $OUTPUT_FILE &gt; /dev/null
+    mv $OUTPUT_FILE $FILE
+done
+cd $CURRENT_PATH;</pre>
+
+
+<div>将上面的代码保存如：image-optimation.sh，执行dosunix image-optizimation.sh，<br>
+然后执行sh image-optizimation.sh imgdir 就可以将imgdir目录下的图片进行优化，上线的时候只要拷贝优化后的图片就可以了。</div>
+
+
+<h2>优化结果</h2>
+
+
+<div>以下是前端一个模块的优化前后的文件大小比较:</div>
+
+
+<p><img title="2011-01-13_090456" src="http://www.welefen.com/wp-content/uploads/2011/01/2011-01-13_090456.png" alt="" width="455" height="506"></p>
+
+
+<p>优化后，图片大小减小了66.6K，优化率达到35.2%。</p>
+
+
+<p>从数据中可以发现，png图片优化还是非常多的，也是优化准则里尽量使用png图片的原因。</p>
+
+
+<h2>其他优化工具</h2>
+
+
+<p>除了上面用到的图片优化工具，还有其他很多可以优化图片的工具。但各种各样的小问题，最终并没有使用它们。</p>
+
+
+<ol>
+<li>pngrewrite</li>
+<li>optpng</li>
+<li>pngout</li>
+<li>pngquant</li>
+</ol>
+
+
+<h2>参考文档</h2>
+
+
+<ol>
+<li><a href="http://www.slideshare.net/stoyan/image-optimization-for-the-web-at-phpworks-presentation">http://www.slideshare.net/stoyan/image-optimization-for-the-web-at-phpworks-presentation</a> 图片优化方面的ppt</li>
+<li><a href="http://www.smushit.com/ysmush.it/">http://www.smushit.com/ysmush.it/</a> smush</li>
+<li><a href="https://github.com/thebeansgroup/smush.py">https://github.com/thebeansgroup/smush.py</a> smush的python实现</li>
+<li><a href="http://code.google.com/speed/page-speed/docs/payload.html#CompressImages">http://code.google.com/speed/page-speed/docs/payload.html#CompressImages</a> google关于图片优化的文档</li>
+<li><a href="http://www.welefen.com/fcp-introduce.html">http://www.welefen.com/fcp-introduce.html</a> FCP前端编译平台里包含了图片优化功能</li>
+</ol>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

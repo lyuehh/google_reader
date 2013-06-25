@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>读取远程图片或者文件并存储到本地的nodejs模块（readof)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>读取远程图片或者文件并存储到本地的nodejs模块（readof)</h2>
+<p class="meta">15 Sep 2012</p>
+
+<div class="post">
+<h2>读取远程图片或者文件并存储到本地的nodejs模块（readof)</h2>
+
+<h3>by admin</h3>
+
+<h3>at 2012-09-14 16:27:56</h3>
+
+<h3>original <a href="http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064732/6618683/1/item.html">http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064732/6618683/1/item.html</a></h3>
+
+<p></p>
+
+
+<div>
+<h1><a name="nodejs读取远程图片或者文件并存储到本地">nodejs读取远程图片或者文件并存储到本地</a></h1>
+<div>
+<p>这个模块有点蛋疼，原理很简单，给搞不清楚原理的同学直接用的。一句话读取远程文件到本地。
+</p>
+</div>
+<h3><a name="summary">summary</a></h3>
+<div>
+<ul>
+<li>
+<div> 读取远程文件到指定路径并提供回调</div>
+</li>
+<li>
+<div> @param picUrl string 要读取的图片的路径</div>
+</li>
+<li>
+<div> @param targetPath string 目标存储路径，写完整，类型自行判断，无法根据content-type判断，可伪装</div>
+</li>
+<li>
+<div> @param callback function 回调方法，写入完成或者出错的时候回调 callback(info,error)</div>
+</li>
+<li>
+<div> 回调数据 出错时为空对象{}，成功时为</div>
+</li>
+</ul>
+<pre>{
+ targetPath:targetPath,
+ picUrl:picUrl
+}</pre>
+<ul>
+<li>
+<div> @author yutou</div>
+</li>
+<li>
+<div> @email xinyu198736@gmail.com</div>
+</li>
+<li>
+<div> @blog <a href="http://www.html-js.com" title="http://www.html-js.com" rel="nofollow">http://www.html-js.com</a></div>
+</li>
+</ul>
+</div>
+<h3><a name="install">install</a></h3>
+<div>
+<pre>
+npm install readof
+</pre>
+</div>
+<h3><a name="clone">clone</a></h3>
+<div>
+<pre>
+$ git clone https://bitbucket.org/xinyu198736/readonlinefile.git/wiki
+</pre>
+</div>
+<h3><a name="code">code</a></h3>
+<div>
+<pre> <span>var</span> readOF=require<span>(</span><span>&quot;readof&quot;</span><span>)</span>;
+ readOF.<span>read</span><span>(</span>pic,target_path,<span>function</span><span>(</span>data,error<span>)</span><span>{</span>
+     <span>//do something</span>
+ <span>}</span><span>)</span>;</pre>
+</div>
+</div>
+
+
+<p></p>
+
+
+<p><img src="http://www1.feedsky.com/t1/703064732/helloJavaScript/feedsky/s.gif?r=http://item.feedsky.com/~feedsky/helloJavaScript/~8514355/703064732/6618683/1/item.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

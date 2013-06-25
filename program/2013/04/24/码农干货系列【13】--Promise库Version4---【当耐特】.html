@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>码农干货系列【13】--Promise库Version4 - 【当耐特】</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>码农干货系列【13】--Promise库Version4 - 【当耐特】</h2>
+<p class="meta">24 Apr 2013</p>
+
+<div class="post">
+<h2>码农干货系列【13】--Promise库Version4 - 【当耐特】</h2>
+
+<h3>by 【当耐特】</h3>
+
+<h3>at 2013-04-24 12:24:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/iamzhanglei/archive/2013/04/24/3039941.html">http://www.cnblogs.com/iamzhanglei/archive/2013/04/24/3039941.html</a></h3>
+
+<p><strong>代码</strong></p>
+
+
+<p>  <div>   <span>var</span> Promise = <span>function</span> () {      <span>this</span>.thens = [];  };  Promise.prototype = {      resolve: <span>function</span> () {          <span>if</span> (<span>this</span>.promiseArr) {              <span>if</span> (<span>this</span>.promiseArr[0].action !== <span>&quot;any&quot;</span>) {                  <span>for</span> (<span>var</span> i = 0, j = <span>this</span>.promiseArr.length; i &lt; j; i++) {                      <span>this</span>.promiseArr[i].resolveCount++;                  }                  <span>if</span> (<span>this</span>.resolveCount !== <span>this</span>.promiseArr.length) {                      <span>return</span>;                  }              }          }             <span>var</span> t, n;          <span>while</span> (t = <span>this</span>.thens.shift()) {              <span>var</span> doneFn = t.done, action = t.action;              <span>if</span> (doneFn.length) {                  <span>var</span> arr = [];                  <span>for</span> (<span>var</span> i = 0, j = doneFn.length; i &lt; j; i++) {                      <span>var</span> m = doneFn[i].apply(<span>null</span>, arguments);                      <span>if</span> (m instanceof Promise) {                          m.thens = <span>this</span>.thens;                          arr.push(m);                      }                  }                     <span>var</span> l = arr.length;                  <span>if</span> (l === 0) {                      <span>continue</span>;                  } <span>else</span> {                      <span>for</span> (<span>var</span> i = 0; i &lt; l; i++) {                          arr[i].promiseArr = arr;                          arr[i].action = action;                          arr[i].resolveCount = 0;                      }                      <span>break</span>;                  }              } <span>else</span> {                  n = doneFn.apply(<span>null</span>, arguments);                  <span>if</span> (n instanceof Promise) {                      n.thens = <span>this</span>.thens;                      <span>break</span>;                  }                  <span>continue</span>;              }          }      },         reject: <span>function</span> () {          <span>if</span> (<span>this</span>.promiseArr &amp;&amp; <span>this</span>.promiseArr[0].action === <span>&quot;any&quot;</span>) {              <span>if</span> (<span>this</span>.promiseArr[<span>this</span>.promiseArr.length - 1] !== <span>this</span>) {                  <span>return</span>;              }          }          <span>var</span> t;          <span>while</span> (t = <span>this</span>.thens.shift()) {              <span>if</span> (t.fail) t.fail.apply(<span>null</span>, arguments);              <span>break</span>;          }      },         then: <span>function</span> (done, fail) {          <span>this</span>.thens.push({ done: done, fail: fail, action: <span>&quot;then&quot;</span> });          <span>return</span> <span>this</span>;      },         any: <span>function</span> (done, fail) {          <span>this</span>.thens.push({ done: done, fail: fail, action: <span>&quot;any&quot;</span> });          <span>return</span> <span>this</span>;      }  }</div><p><strong>更新</strong></p><blockquote>  <p>增加any方法，任何一个task完成都出发resolve</p>  <p>去除_handle方法</p></blockquote><p><strong>测试</strong></p><div>         f1()         .then(function () {             console.log(arguments)             <span>return</span> f2();         })         .then(function () {             f3();         })         .then(f4)         .then(f5)         .then([f6, f7])         .any([f8, f9, f10])         .then(f11, function () {             console.log(<span>&quot;fail&quot;</span>);         })          function f1() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(1);                  promise.resolve(<span>&quot;from f1&quot;</span>);              }, 1500)                 <span>return</span> promise;          }             function f2() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(2);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }             function f3() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(3);                  promise.resolve();              }, 1500)                 <span>return</span> promise;             }             function f4() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(4);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }          function f5() {                  console.log(5);          }             function f6() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(6);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }             function f7() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(7);                  promise.resolve();              }, 5500)                 <span>return</span> promise;          }             function f8() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(8);                  promise.reject();              }, 1500)                 <span>return</span> promise;          }             function f9() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(9);                  promise.reject();              }, 1500)                 <span>return</span> promise;          }             function f10() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(10);                  promise.reject();              }, 4500)                 <span>return</span> promise;          }             function f11() {              var promise = <span>new</span> Promise();              setTimeout(function () {                     console.log(11);                  promise.resolve();              }, 1500)                 <span>return</span> promise;          }</div><img src="http://www.cnblogs.com/iamzhanglei/aggbug/3039941.html?type=1" width="1" height="1" alt=""><br><p>本文链接：<a href="http://www.cnblogs.com/iamzhanglei/archive/2013/04/24/3039941.html">http://www.cnblogs.com/iamzhanglei/archive/2013/04/24/3039941.html</a>，转载请注明。</p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

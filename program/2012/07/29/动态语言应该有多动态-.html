@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>动态语言应该有多动态?</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>动态语言应该有多动态?</h2>
+<p class="meta">29 Jul 2012</p>
+
+<div class="post">
+<h2>动态语言应该有多动态?</h2>
+
+<h3>by ideawu</h3>
+
+<h3>at 2012-07-29 01:00:33</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/7817.html">http://www.udpwork.com/item/7817.html</a></h3>
+
+<p>一加一等于几, 这是个问题</p>
+
+
+<p>某些所谓的动态语言是名不副实的 – 我称之为伪动态语言. 这些伪动态语言之所以是伪的, 是因为它们只是在代码层面的变量是动态的, 而它们的类型系统并不是真正动态的, 一个简单的例子, 考虑字符串能否直接和整数进行拼接成为一个新的字符串.</p>
+
+
+<p>当然, 语言维护者用另一个名词”类型强度(type strength)”来表示这种行为, 然后把这种本质上不动态的行为称为”强类型(strong typing)”, 把真正的动态称为”弱类型(weak typing)”.</p>
+
+
+<p>但我认为, “动态语言”的概念应该重新定义, “动态”应该脱离字面的意义, 去探究真正本质的动态.</p>
+
+
+<p></p>
+
+
+<h3>类型动态转换的动态语言</h3>
+
+
+<p>1 + “1″ = ?</p>
+
+
+<p>考虑”不动态”的 Java 语言的例子:</p>
+
+
+<pre>
+int i = 1;
+String s = &quot;1&quot;;
+i + s; // ?
+</pre>
+
+
+<p>“i + s”应该表示什么? 是字符串拼接, 还是整数加法? 先跳过这个问题, 大部分被称为动态语言的编程语言都能这样表示:</p>
+
+
+<pre>
+i = 1;
+s = &quot;1&quot;;
+i + s; // ?
+</pre>
+
+
+<p>大部分编程语言声明变量时不需要声明类型, 这种字面上的”动态”没有太多的用处, 象征意义更大. 虽然变量本身没有类型, 但还是会遇到刚才的问题, 到底是字符串拼接整数加法? 看看主流的编程语言是如何处理的:</p>
+
+
+<table><tr><th>编程语言</th>
+<th>行为</th>
+</tr>
+<tr><td>Java</td>
+<td>编译时异常</td>
+</tr>
+<tr><td>Python</td>
+<td>运行时异常</td>
+</tr>
+<tr><td>JavaScript</td>
+<td>字符串拼接</td>
+</tr>
+<tr><td>PHP</td>
+<td>整数加法</td>
+</tr>
+</table>
+
+
+<p>Java 的表现很容易理解, 但 Python 却报运行时异常, 显然, Python 不够动态. JavaScript 看到只要有一个参数是字符串, 就认为是字符串拼接, 这样预期就可以固定(某些语言根据参数的顺序来动态决定是何种操作, 导致有不同的预期). 而 PHP 另辟蹊径, 使用点号(“.”)符号来表示字符串拼接, 完美地解决了决策问题.</p>
+
+
+<p>当然, 某些人并不认为 PHP 的解决方案是完美的.</p>
+
+
+<h3>动态成员的动态语言</h3>
+
+
+<p>对待 a.b.c 的态度; null 也是对象.</p>
+
+
+<p>对”a.b.c”的处理方式决定一种编程语言是否是动态的. “a.b.c”表示对象 a 的 b 成员(也是一个对象)的 c 成员. 如果要操作 a.b.c, 不同的编程语言如何处理?</p>
+
+
+<pre>
+Object a = null;
+Object v = a.b.c; // ?
+</pre>
+
+
+<table><tr><th>编程语言</th>
+<th>行为</th>
+</tr>
+<tr><td>Java</td>
+<td>编译时异常</td>
+</tr>
+<tr><td>Python</td>
+<td>运行时异常</td>
+</tr>
+<tr><td>JavaScript</td>
+<td>运行时异常</td>
+</tr>
+<tr><td>PHP</td>
+<td>v = null</td>
+</tr>
+</table>
+
+
+<p>Java, Python 和 JavaScript 都报了异常, 只有 PHP 能正常执行(假设关闭了 E_NOTICE). 这一个小小细节, 体现了一种编程语言的(对程序员)友好程度. 对于报了异常的语言, 程序员必须繁琐地进行”是否定义”的判断(也就是防御性编程), 例如 JavaScript:</p>
+
+
+<pre>
+a = null;
+if(a != undefined &amp;&amp; a.b != undefined &amp;&amp; a.b.c != undefined){
+    v = a.b.c;
+}
+</pre>
+
+
+<p>而 PHP 却非常简单:</p>
+
+
+<pre>
+$a = null;
+$v = $a-&gt;b-&gt;c;
+</pre>
+
+
+<p>PHP 处理方式有什么好处? 假设 a 是用户的 profile, b 是用户的配置, 而 c 是用户配置的其中一个配置项, 表示用户是否接收邮件通知. 那么, 业务上会有两种考虑: 是否需要用户明确地表示其接受或者拒绝之后, 才做判断是否发送?</p>
+
+
+<p>如果业务需要, 用户必须配置过这个选项之后, 才决定是否发送邮件, 否则不发送(默认不发送). PHP 可以简单地判断:</p>
+
+
+<pre>
+if($a-&gt;b-&gt;c){
+    // sendmail
+}
+</pre>
+
+
+<p>或者业务需要, 只要用户不拒绝, 就发送邮件(默认发送). PHP 还是可以简单地判断:</p>
+
+
+<pre>
+if($a-&gt;b-&gt;c !== 0){ // 用了强类型判断
+    // sendmail
+}
+</pre>
+
+
+<p>PHP 的这种能力叫做”和业务逻辑的简单对应”, 也就是说, 人的每一项思维都可以用编程语言的一个表达式来很好地表示, 这才是真正的动态语言. 我想, 这也是 PHP 为什么如此流行的原因(我以前从不同的角度谈过<a href="http://www.ideawu.net/blog/archives/632.html">PHP的优势</a>). 当然, PHP 还有一些缺点, 例如不够对象化, 函数不是对象, GC 不成熟等.</p>
+
+
+<p>所以, 我们还是需要一种新的动态语言, 但应该是足够”动态”的.</p>
+
+
+<h3>后记</h3>
+
+
+<p>脱离低级趣味的语言之争.</p>
+
+
+<p><a href="http://en.wikipedia.org/wiki/Type_system">类型系统</a>是编程语言最本质的因素, 语法是其外衣, 而类库的丰富程度是语言自身能力的最直接体现.</p>
+
+
+<p>类型系统才是编程语言是否接近人类思维的判断标准, 而某些编程语言把关键字”null”改成”nothing”, “{}”改成”begin … end”类似的大量使用英文单词的做法, 无非是一种无关紧要的个人喜好, 如果非要说成是对人亲切, 那就是本末倒置了. 我们写”a * b”, 而不是写”甲乘以乙”, 就是同样的道理.</p>
+
+
+<h3>Related posts:</h3>
+
+
+<ol><li><a href="http://www.ideawu.net/blog/archives/647.html" title="Permanent Link: 用C语法来写Python代码">用C语法来写Python代码</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/499.html" title="Permanent Link: PyPy – 吞下自己尾巴的小蟒蛇">PyPy – 吞下自己尾巴的小蟒蛇</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/269.html" title="Permanent Link: 开始学习 Python">开始学习 Python</a></li>
+<li><a href="http://www.ideawu.net/blog/archives/591.html" title="Permanent Link: jQuery延时绑定事件(lazy-bind)">jQuery延时绑定事件(lazy-bind)</a></li>
+</ol>
+
+
+<div><p><img src="http://www.ideawu.net/favicon.ico">你现在看的文章是:<a href="http://www.ideawu.net/blog/archives/657.html" title="动态语言应该有多动态?">动态语言应该有多动态?</a></p>
+<div><a href="http://www.benegg.com/linode-ad.php">Linode VPS - 美国虚拟主机</a>|<a href="http://www.udpwork.com/">IT牛人博客聚合网站</a></div>
+</div>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/7817.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/7817.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/7817.html#reviews">评论: 0</a>
+                    |
+                    <a href="http://book.benegg.com/tag/%E7%BC%96%E7%A8%8B?from=udpwork-feed">10000+ 本编程/Linux PDF/CHM 电子书下载</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jvm垃圾回收</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>jvm垃圾回收</h2>
+<p class="meta">12 May 2011</p>
+
+<div class="post">
+<h2>jvm垃圾回收</h2>
+
+<h3>by boqian</h3>
+
+<h3>at 2011-05-12 11:45:00</h3>
+
+<h3>original <a href="http://www.alidata.org/archives/1773">http://www.alidata.org/archives/1773</a></h3>
+
+<p>在jvm中堆空间划分为三个代：年轻代（Young Generation）、年老代（Old Generation）和永久代（Permanent Generation）。年轻代和年老代是存储动态产生的对象。永久带主要是存储的是java的类信息，包括解析得到的方法、属性、字段等等。永久带基本不参与垃圾回收。我们这里讨论的垃圾回收主要是针对年轻代和年老代。具体如下图。</p>
+
+
+<p><a href="http://www.tbdata.org/wp-content/uploads/2011/05/1.bmp"><img src="http://www.tbdata.org/wp-content/uploads/2011/05/1.bmp" alt=""></a><img src="http://www.alidata.org/DOCUME%7E1/boqian.zwq/LOCALS%7E1/Temp/moz-screenshot.png" alt=""></p>
+
+
+<p>年轻代又分成3个部分，一个eden区和两个相同的survior区。刚开始创建的对象都是放置在eden区的。分成这样3个部分，主要是为了生命周期短的对象尽量留在年轻带。当eden区申请不到空间的时候，进行minorGC，把存活的对象拷贝到survior。年老代主要存放生命周期比较长的对象，比如缓存对象。具体jvm内存回收过程描述如下（可以结合上图）：</p>
+
+
+<p>1、对象在Eden区完成内存分配<br>
+2、当Eden区满了，再创建对象，会因为申请不到空间，触发minorGC，进行young(eden+1survivor)区的垃圾回收<br>
+3、minorGC时，Eden不能被回收的对象被放入到空的survivor（Eden肯定会被清空），另一个survivor里不能被GC回收的对象也会被放入这个survivor，始终保证一个survivor是空的<br>
+4、当做第3步的时候，如果发现survivor满了，则这些对象被copy到old区，或者survivor并没有满，但是有些对象已经足够Old，也被放入Old区 XX:MaxTenuringThreshold<br>
+5、当Old区被放满的之后，进行fullGC</p>
+
+
+<p>在知道垃圾回收机制以后，大家可以在对jvm中堆的各个参数进行优化设置，来提高性能。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

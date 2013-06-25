@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>安装Fedora 15后需做的25件事情</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>安装Fedora 15后需做的25件事情</h2>
+<p class="meta">04 Jun 2011</p>
+
+<div class="post">
+<h2>安装Fedora 15后需做的25件事情</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-06-04 11:20:41</h3>
+
+<h3>original <a href="http://www.cnbeta.com/articles/144798.htm">http://www.cnbeta.com/articles/144798.htm</a></h3>
+
+<div><a rel="nofollow" href="http://www.cnbeta.com/topics/368.htm"><img src="http://img.cnbeta.com/topics/fedora.gif" alt="RedHat Fedora" name="sign" align="right"></a>
+        <p><b>感谢<a rel="nofollow" href="http://www.bentutu.com">笨兔兔</a>的投递</b><br>
+Fedora 15于5.24正是发布，这篇文章姗姗来迟。但是，我们曾在文章《<a rel="nofollow" href="http://www.bentutu.com/2011/05/fedora-15-setting-and-configure-list/">Fedora 15 安装与配置一览</a>》中给大家介绍过Fedora 15的一些相关配置。本篇文章与上述文章不同，着重讲解一些软件安装方面的技巧。如果有什么错误，欢迎大家积极提出指正。本文仅供参考。</p>
+        <p><p> <img src="http://img.cnbeta.com/newsimg/110604/11204101006066767.png" alt=""></p>
+<pre><span style="color:#800080"><strong>#1，设置sudo</strong></span></pre> <p>在Ubuntu或其他发行版本下用惯sudo，我们可以通过下面方式来实现sudo。在命令行下输入</p>
+<div><div><pre style="font-family:monospace"><span style="color:#666666;font-style:italic"># visudo</span></pre></div>
+</div>
+<p>然后，在配置文件中找到下面的几行内容：</p>
+<div><div><pre style="font-family:monospace"><span style="color:#666666;font-style:italic">## Allow root to run any commands anywhere</span> root    <span style="color:#007800">ALL</span>=<span style="color:#7a0874;font-weight:bold">(</span>ALL<span style="color:#7a0874;font-weight:bold">)</span>       ALL</pre></div>
+</div>
+<p>然后，在上行内容下面添加下面内容</p>
+<div><div><pre style="font-family:monospace">bentu  <span style="color:#007800">ALL</span>=<span style="color:#7a0874;font-weight:bold">(</span>ALL<span style="color:#7a0874;font-weight:bold">)</span>  ALL</pre></div>
+</div>
+<p>提示，其中的bentu改成自己的用户名即可。</p>
+<pre><strong><span style="color:#800080">#2，安装自动选择最快镜像插件</span></strong></pre> <p>安装插件fastestmirror，可以让yum管理器自动搜索最快源下载</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#660033">-y</span> <span style="color:#c20cb9;font-weight:bold">install</span> yum-fastestmirror</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#3，安装下载加速插件</span></strong></pre> <p>大家可以参见文章<a rel="nofollow" href="http://www.bentutu.com/2011/05/fedora-yum-fast-downloader-and-one-beatiful-conky/">《Fedora yum加速下载插件》</a></p>
+<div><div><pre style="font-family:monospace"> yum <span style="color:#c20cb9;font-weight:bold">install</span> yum-presto</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#4，安装Flash player</span></strong></pre> <p>64位安装：</p>
+<div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">su</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> <span style="color:#c20cb9;font-weight:bold">wget</span> <span style="color:#7a0874;font-weight:bold">cd</span> <span style="color:#000000;font-weight:bold">/</span>tmp<span style="color:#c20cb9;font-weight:bold">wget</span> http:<span style="color:#000000;font-weight:bold">//</span>download.macromedia.com<span style="color:#000000;font-weight:bold">/</span>pub<span style="color:#000000;font-weight:bold">/</span>labs<span style="color:#000000;font-weight:bold">/</span>flashplayer10<span style="color:#000000;font-weight:bold">/</span>flashplayer10_2_p3_64bit_linux_111710.tar.gz<span style="color:#c20cb9;font-weight:bold">tar</span> xzvf flashplayer10_2_p3_64bit_linux_111710.tar.gz<span style="color:#c20cb9;font-weight:bold">mv</span> <span style="color:#000000;font-weight:bold">/</span>tmp<span style="color:#000000;font-weight:bold">/</span>libflashplayer.so <span style="color:#000000;font-weight:bold">/</span>usr<span style="color:#000000;font-weight:bold">/</span>lib64<span style="color:#000000;font-weight:bold">/</span>mozilla<span style="color:#000000;font-weight:bold">/</span>plugins<span style="color:#000000;font-weight:bold">/</span></pre></div>
+</div>
+<p>32位：</p>
+<div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">su</span> rpm <span style="color:#660033">-ivh</span> http:<span style="color:#000000;font-weight:bold">//</span>linuxdownload.adobe.com<span style="color:#000000;font-weight:bold">/</span>adobe-release<span style="color:#000000;font-weight:bold">/</span>adobe-release-i386-<span style="color:#000000">1.0</span>-<span style="color:#000000">1</span>.noarch.rpm
+rpm <span style="color:#660033">--import</span> <span style="color:#000000;font-weight:bold">/</span>etc<span style="color:#000000;font-weight:bold">/</span>pki<span style="color:#000000;font-weight:bold">/</span>rpm-gpg<span style="color:#000000;font-weight:bold">/</span>RPM-GPG-KEY-adobe-linux
+yum update
+yum <span style="color:#c20cb9;font-weight:bold">install</span> flash-plugin</pre></div>
+</div>
+<p>安装完毕后重启浏览器即可查看效果。</p>
+<pre><strong><span style="color:#800080">#5，安装GNOME-tweak-tool</span></strong></pre> <div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> gnome-tweak-tool</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#6，标题栏添加“最大化/最小化/关闭”按钮</span></strong></pre> <p>关于此项设置，大家可以通过安装gnome-tweak-tool来设置。打开gnome-tweak-tool，“shell-Arrangement of buttons on the titlebar”可选择相关配置。<br>
+我们也可以通过下面设置来调出gnome-tweak-tool“最大化/最小化/关闭”按钮：<br>
+安装gconf-editor：</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> gconf-editor.i686</pre></div>
+</div>
+<p>然后启动gconf-editor(按住Alt+F2，输入gconf-editor启动)，依次打开“ 
+desktop&gt;gnome&gt;shell&gt;windows”，在右侧一栏找到”button_layout”最大化/最小化设置,我们
+将其值设置为：</p>
+<div><div><pre style="font-family:monospace">:minimize,maximize,close</pre></div>
+</div>
+<p>若是大家喜欢Ubuntu风格，则设置为：</p>
+<div><div><pre style="font-family:monospace">close,minimize,maximize:</pre></div>
+</div>
+<p>注销后重新登陆即可。</p>
+<pre><strong><span style="color:#800080">#7，设置’Delete’键直接删除文件</span></strong></pre> <p>可以参考文章《<a rel="nofollow" href="http://www.bentutu.com/2011/06/enable-%E2%80%9Cdelete%E2%80%9D-key-in-fedora-15/">设置’Delete’键直接删除文件(Fedora 15)</a>》</p>
+<pre><strong><span style="color:#800080">#8，让桌面显示文件，激活右键功能</span></strong></pre> <p>首先安装gnome-tweak-tool,然后打开gnome-tweak-tool，进行下图设置即可：<br>
+<img src="http://img.cnbeta.com/newsimg/110604/1120421596404911.png" alt="" width="480"></p>
+<pre><strong><span style="color:#800080">#9，在顶部面板上显示日期</span></strong></pre> <p>在GNOME 3环境下，我们打开终端，输入下面命令即可在顶部面板上显示日期：</p>
+<div><div><pre style="font-family:monospace">gsettings <span style="color:#000000;font-weight:bold">set</span> org.gnome.shell.clock show-date <span style="color:#c20cb9;font-weight:bold">true</span></pre></div>
+</div>
+<pre><strong><span style="color:#800080">#10，安装鼠标右键“在终端中打开”</span></strong></pre> <div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> nautilus-open-terminal</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#11，安装BT下载软件</span></strong></pre> <p>azureus</p>
+<div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> azureus</pre></div>
+</div>
+<p>deluge:</p>
+<div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> deluge</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#12，安装Google chrome</span></strong></pre> <p>下载地址@<a rel="nofollow" href="http://www.google.com/chrome/">here</a>，选择rpm软件包格式</p>
+<pre><strong><span style="color:#800080">#13，安装Libreoffice</span></strong></pre> <p>若没有安装该办公套件，大家可以可到libreoffice官网下载安装包。解压。按照README文件里面的说明进行安装。</p>
+<pre><span style="color:#800080"><strong>#14，安装邮件客户端：</strong></span></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> thunderbird</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#15，安装IM工具Pidgin</span></strong></pre> <p>Fedora 15默认IM为Empathy，如果喜欢Pidgin，则使用下面命令安装：</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> pidgin</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#16,安装剪贴板</span></strong></pre> <p>使用下面命令安装剪贴板工具parcellite：</p>
+<div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> parcellite</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#17，安装Google voice video chat：</span></strong></pre> <p>使用GTALK的同学，可以使用下面命令安装该插件：<br>
+下载地址@<a rel="nofollow" href="http://www.google.com/chat/video/download.html">here</a></p>
+<pre><strong><span style="color:#800080">#18,安装MP#，avi等其他媒体格式编码</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">su</span> yum localinstall --nogpgcheck http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-rawhide.noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-rawhide.noarch.rpm
+rpm -ivh http://rpm.livna.org/livna-release.rpm
+
+yum update</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#19，安装解压缩软件7z</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> p7zip p7zip-plugins</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#20，安装GIMP</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> <span style="color:#c20cb9;font-weight:bold">gimp</span></pre></div>
+</div>
+<pre><strong><span style="color:#800080">#21，安装截图工具shutter</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> shutter</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#22,安装星际译王</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> starditc</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#23,安装多功能播放器vlc</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">sudo</span> yum <span style="color:#c20cb9;font-weight:bold">install</span> vlc</pre></div>
+</div>
+<pre><strong><span style="color:#800080">#24,安装输入法</span></strong></pre> <p>在Fedora 15中，我们可以应用下面的命令来安装输入法<br>
+ibus：</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> ibus</pre></div>
+</div>
+<p>ibus-sunpinyin:</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> ibus-sunpinyin</pre></div>
+</div>
+<p>Fcitx小企鹅输入法：</p>
+<div><div><pre style="font-family:monospace">yum <span style="color:#c20cb9;font-weight:bold">install</span> fcitx</pre></div>
+</div>
+<p>小小输入法，大家可到相关官网下载安装使用。<br>
+安装完成后，在“输入法设置”里面，选择添加上述输入法即可。</p>
+<pre><strong><span style="color:#800080">#25，安装小熊猫</span></strong></pre> <div><div><pre style="font-family:monospace"><span style="color:#c20cb9;font-weight:bold">su</span> <span style="color:#660033">-c</span> <span style="color:#ff0000">'wget http://homerxing.fedorapeople.org/ailurus.repo -O /etc/yum.repos.d/ailurus.repo'</span> <span style="color:#c20cb9;font-weight:bold">su</span> <span style="color:#660033">-c</span> <span style="color:#ff0000">'yum makecache'</span> <span style="color:#c20cb9;font-weight:bold">su</span> <span style="color:#660033">-c</span> <span style="color:#ff0000">'yum install ailurus</span></pre></div>
+</div>
+<pre><strong><span style="color:#008000">推荐阅读文章</span></strong>：<span style="font-family:Georgia,&#39;Times New Roman&#39;,&#39;Bitstream Charter&#39;,Times,serif;font-size:13px;line-height:19px;white-space:normal"><a rel="nofollow" href="http://www.bentutu.com/2011/05/fedora-15-setting-and-configure-list/">Fedora 15 安装与配置一览</a></span></pre> 供稿/<a rel="nofollow" href="http://www.bentutu.com/">笨兔兔</a><br></p></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

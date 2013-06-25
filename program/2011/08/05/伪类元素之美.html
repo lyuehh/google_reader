@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>伪类元素之美</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>伪类元素之美</h2>
+<p class="meta">05 Aug 2011</p>
+
+<div class="post">
+<h2>伪类元素之美</h2>
+
+<h3>by alon</h3>
+
+<h3>at 2011-08-04 20:44:35</h3>
+
+<h3>original <a href="http://varhi.com/?p=4657">http://varhi.com/?p=4657</a></h3>
+
+<p>通过使用:before和:after，你能创作出让人称奇的视觉效果。对页面中的每个元素，你都有两个额外的可以控制的元素，本来这些是需要额外的元素来实现。他们给设计带来了更多的趣味性的空间，而不是增加无语义的有负面影响的标签。这里给大家整理了一堆让人称奇的东西。让我们开始吧！<span></span></p>
+
+
+<h3>给了你多层背景画布</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/multiplecanvases.jpg" alt=""><br>
+因为你可以相对于他们的父元素绝对定位伪类元素，你可以把他们想象他们是每个元素的两个额外层。<a href="http://nicolasgallagher.com/multiple-backgrounds-and-borders-with-css2/">Nicolas Gallagher shows us</a> 给我们展示了很多这种应用，包括多层的边框，结合css3的多重背景和等高列。</p>
+
+
+<h3>扩展通过单一元素表现更多图形的可能</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/shapes.png" alt=""><br>
+所有上面的图形<a href="http://css-tricks.com/examples/ShapesOfCSS/">any many more</a>都可以通过一个单一的元素创造出来，这是一个很现实的方法。和“make a coffee cup with pure CSS!”的这类案例相反（使用了1700的div），这种方法更加实用。<br>
+下面是这段代码可以让我们得到六角星的例子：</p>
+
+
+<pre>
+#star-six {
+        width: 0;
+        height: 0;
+        border-left: 50px solid transparent;
+        border-right: 50px solid transparent;
+        border-bottom: 100px solid red;
+        position: relative;
+}
+#star-six:after {
+        width: 0;
+        height: 0;
+        border-left: 50px solid transparent;
+        border-right: 50px solid transparent;
+        border-top: 100px solid red;
+        position: absolute;
+        content: &quot;&quot;;
+        top: 30px;
+        left: -50px;
+}
+</pre>
+
+
+<h3>将链接文字的链接地址打印出来</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/printpreview.png" alt=""></p>
+
+
+<pre>
+@media print {
+  a[href]:after {
+    content: &quot; (&quot; attr(href) &quot;) &quot;;
+  }
+}
+</pre>
+
+
+<h3>清除浮动</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/floatclear.png" alt=""><br>
+和增加而外的没有语义的标签来清除容器浮动相比，我们可以使用伪类元素来为我们做这件事情。就是我们熟悉的<a href="http://css-tricks.com/snippets/css/clear-fix/">“clearfix”</a>，和另外一个更有语义的被命名为类名“group”。</p>
+
+
+<pre>
+.group:before,
+.group:after {
+    content:&quot;&quot;;
+    display:table;
+}
+.group:after {
+    clear:both;
+}
+.group {
+    zoom:1; /* For IE 6/7 (trigger hasLayout) */
+}
+</pre>
+
+
+<h3>模拟居中浮动</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/f7e9_catinmiddle1.png" alt=""><br>
+浮动属性中实际上并不包含居中的值，除非我们自己希望有这个属性。浮动虽然有左和右属性，但是通过占位的伪类元素我们可以在两列布局中间开辟出一个区域放一张图片，我们可以模拟出这种效果<a href="http://css-tricks.com/float-center/">simulate the effect</a>。</p>
+
+
+<h3>表示出区块中代码使用的是哪种语言</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/codeblock.png" alt=""><br>
+你现在正在使用的这个网站，通过伪类元素标示出了代码块她是用哪种语言。</p>
+
+
+<pre>
+&lt;pre rel=&quot;CSS&quot;&gt;&lt;/pre&gt;
+</pre>
+
+
+<pre>
+pre:after {
+  content: attr(rel);
+  position: absolute;
+  top: 22px;
+  right: 12px;
+}
+</pre>
+
+
+<h3>创造一系列图标</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/icons.png" alt=""><br>
+Nicolas Gallagher 再次通过不使用图片的情况下，拓展了上面的想法创造了另一个层次的<a href="http://nicolasgallagher.com/pure-css-gui-icons/">a massive set of icons</a>Icon，最多只有两个伪类元素。</p>
+
+
+<h3>更有效的使用空间</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/mediaqueriesandpseudos.png" alt=""><br>
+CSS带来的，CSS也能带走。这句话的意思是伪类元素内容可以通过媒体查询<a href="http://css-tricks.com/css-media-queries/">applied or removed conditionally via media queries</a>。或许你可以在空间充裕的情况下使用Icon，当空间充裕的时候使用更有描述性的文字。</p>
+
+
+<h3>使用更有装饰性的排版</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/typographicflourishheader.jpg" alt=""><br>
+如果你的伪类元素是文字，他们将会继承他们父类元素的排版样式。但是当你设置内容时，你也可以对它们使用样式。也就是说，你可以使用不同的字体和颜色让你的标题更有装饰效果。</p>
+
+
+<pre>
+h2 {
+     text-align: center;
+}
+h2:before, h2:after {
+    font-family: &quot;Some cool font with glyphs&quot;, serif;
+    content: &quot;\00d7&quot;;  /* Some fancy character */
+    color: #c83f3f;
+}
+h2:before {
+    margin-right: 10px;
+}
+h2:after {
+    margin-left: 10px;
+}
+</pre>
+
+
+<h3>创造浏览器宽度的条</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/fullwidthbrowserbars.jpg" alt=""><br>
+当你需要元素，它的内容很很少，但是你需要它的背景可以填充整个宽度，你通常采用的做法是追加一个没有语义的内部包含容器，或者使用一个可以重复空间定义。或者你可以通过使用一个元素，将他的伪类元素延伸到边缘。<a href="http://css-tricks.com/full-browser-width-bars/">simulate the effect</a></p>
+
+
+<h3>给 body 标签加边框</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/bodyborder.png" alt=""><br>
+想在页面的左右增加一个规则的边框，并使用固定位置的伪类元素将条定义在头部和顶部，我们可以使用<a href="http://css-tricks.com/body-border/">“body border” effect</a>而并不需要使用额外的标签。</p>
+
+
+<pre>
+body:before, body:after {
+    content: &quot;&quot;;
+    position: fixed;
+    background: #900;
+    left: 0;
+    right: 0;
+    height: 10px;
+}
+body:before {
+    top: 0;
+}
+body:after {
+    bottom: 0;
+}
+body {
+    border-left: 10px solid #900;
+    border-right: 10px solid #900;
+}
+</pre>
+
+
+<h3>制作有发光的按钮</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/gleamingbutton.png" alt=""><br>
+如果你使用块伪类元素，并让它们有从透明到白色，并将他们定位到按钮之外（通过overflow隐藏），当鼠标悬浮的时候通过使用动画效果你就会发现按钮有了光感。这个效果你可以在 Firefox4 或者 Firefox5使用了，因为这是目前唯一允许给伪类元素增加动画效果的浏览器。</p>
+
+
+<p>Anton Trollbäck制作的<a href="http://anton.trollback.se/shine-effect/">原始版</a> Nicolas Gallagher 的<a href="http://jsfiddle.net/necolas/KbNq7/">伪类元素优化版</a>; 我的<a href="http://jsfiddle.net/chriscoyier/hk6z9/1/">另一个版本</a></p>
+
+
+<h3>当特殊链接触发时，页面渐隐</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/pagefadeout.jpg" alt=""><br>
+如果你没有设置一个相对属性来定位一个元素，绝对定位的伪类元素将会被定位在它的设置相对定位的父级元素。如果没有其它的元素，那它就会相对于它的根元素。你可以通过它创造一个充满浏览器窗口的元素，把它放在主元素的下面，这样我们就能通过链接创造一种“页面渐隐的效果”。</p>
+
+
+<h3>让标题看上去像丝带般的三维效果</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/ribbon.png" alt=""><br>
+每个人都喜欢丝带！看看通过html和css创造的丝带<a href="http://css-tricks.com/snippets/css/ribbon/">Check out this snippet</a>。这使用了一点 z-index负值的形式，这在有些时候需要一个额外的容器元素去防止下面的伪类元素在一个透明的背景之下。</p>
+
+
+<h3>修饰有序表单的数字列表</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/orderedlist.png" alt=""><br>
+你是不是曾经试图给有序表单的数字定义样式？你可能会把这些数字包在一个span标签内，并给他们定义样式，但是当我们移除span的样式的时候就乱掉了。或者我们还可能使用更疯狂的方法，用数字图片当背景。或者移除表单样式去掉，使用你自己的数字。诸如种种。更好的方法是使用伪类元素来做这件事情<a href="http://www.456bereastreet.com/archive/201105/styling_ordered_list_numbers/">pseudo elements as counters</a>。</p>
+
+
+<h3>让数据表单有更好的适用性</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/mobiletable.jpg" alt=""><br>
+用小屏幕看一个大的数据表单是一个噩梦。不仅是放大还是需要垂直或者水平滚动，并且当他们缩小的时候他们会变得太小而无法阅读。我们可以通过使用CSS 媒体查询使用伪类元素来重新格式化它们，使其在小屏幕上让他们有更强的可阅读性<a href="http://css-tricks.com/responsive-data-tables/">make the data table responsive</a>。</p>
+
+
+<h3>创造样式化的提示</h3>
+
+
+<p><img src="http://varhi.com/wp-content/uploads/2011/08/tooltip.png" alt=""><br>
+使用HTML5的data属性，然后将这些属性取出来，样式化后放到伪类元素里面，我们可以通过<a href="http://jsbin.com/pseudotooltip/4">create completely custom tooltips</a>css创造完整的定制提示。</p>
+
+
+<p>中文原文：<a href="http://varhi.com/?p=4657">伪类元素之美</a><br>
+英文原文：<a href="http://css-tricks.com/9516-pseudo-element-roundup/">A Whole Bunch of Amazing Stuff Pseudo Elements Can Do</a><br>
+<strong style="color:red">转载请注明以上信息，以表示对作者和译者的尊重，多谢！</strong></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

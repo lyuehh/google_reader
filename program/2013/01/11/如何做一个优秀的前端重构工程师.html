@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>如何做一个优秀的前端重构工程师</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>如何做一个优秀的前端重构工程师</h2>
+<p class="meta">11 Jan 2013</p>
+
+<div class="post">
+<h2>如何做一个优秀的前端重构工程师</h2>
+
+<h3>by</h3>
+
+<h3>at 2013-01-11 12:40:31</h3>
+
+<h3>original <a href="http://blog.jobbole.com/32195/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%25a6%2582%25e4%25bd%2595%25e5%2581%259a%25e4%25b8%2580%25e4%25b8%25aa%25e4%25bc%2598%25e7%25a7%2580%25e7%259a%2584%25e5%2589%258d%25e7%25ab%25af%25e9%2587%258d%25e6%259e%2584%25e5%25b7%25a5%25e7%25a8%258b%25e5%25b8%2588">http://blog.jobbole.com/32195/?utm_source=rss&amp;utm_medium=rss&amp;utm_campaign=%25e5%25a6%2582%25e4%25bd%2595%25e5%2581%259a%25e4%25b8%2580%25e4%25b8%25aa%25e4%25bc%2598%25e7%25a7%2580%25e7%259a%2584%25e5%2589%258d%25e7%25ab%25af%25e9%2587%258d%25e6%259e%2584%25e5%25b7%25a5%25e7%25a8%258b%25e5%25b8%2588</a></h3>
+
+<p>来源：<a href="http://tgideas.qq.com/webplat/info/news_version3/804/808/811/m579/201212/183630.shtml">腾讯TGideas – smallni</a></p>
+
+
+<p>用这个标题，是因为前一段时间组里有一个开放式讨论：怎样才算一个好<span><a href="http://www.amazon.cn/gp/product/B003BY6PLK/ref=as_li_qf_sp_asin_il_tl?ie=UTF8&amp;tag=vastwork-23&amp;linkCode=as2&amp;camp=536&amp;creative=3200&amp;creativeASIN=B003BY6PLK" title="重构:改善既有代码的设计" rel="nofollow">重构</a></span>？<br>
+其实，”好”与”坏”向来都是相对的，因为每个人眼中看待”好”与”坏”的标准不一样，不如从自身的角度考虑一下：如何做一个好重构？</p>
+
+
+<p><strong>先来看一个平时我们遇到的最多的两栏布局：<span></span></strong><br>
+<a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131779910.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131779910.jpg" alt="如何做一个优秀的前端重构工程师" width="327" height="286"></a></p>
+
+
+<p>基本的html代码：</p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131723864.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131723864.jpg" alt="如何做一个优秀的前端重构工程师" width="558" height="24"></a></p>
+
+
+<p>来看具体的CSS代码实现（忽略margin）：</p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131764646.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131764646.jpg" alt="如何做一个优秀的前端重构工程师" width="558" height="192"></a></p>
+
+
+<p>很明显在保持同样html结构的情况下，实现两栏布局可以有多种CSS方案实现（左栏定宽），主要方向是用浮动或不用浮动，右栏定宽或者不定宽：</p>
+
+
+<p>Qzone、朋友网、Facebook都给左栏浮动，唯一不同的是右栏的写法，Qzone给右栏定宽并且浮动，而朋友网和Facebook则并没有给右栏定宽也未浮动，而是利用了创建BFC并且为低版本IE触发hasLayout的原理让右栏自适应宽度。</p>
+
+
+<p>Yahoo和Google两栏都未用浮动，唯一不同的是Yahoo用了绝对定位的方法，而谷歌用了inline-block，Google已经宣布旗下一些产品放弃对IE8 的支持，所以Google可以大胆的使用inline-block去实现布局，不用去为其他低版本<span><a href="http://blog.jobbole.com/12749/" title="浏览器">浏览器</a></span>写一大堆的hack。</p>
+
+
+<p>这其中有最好的方案么？上面每一种方案都有各自的优劣，可能适合于某种项目背景，同样选用的方案可能和用户群体也有关系。虽然无论选用哪一种方案，从用户层面来讲，无法感知到，但我们不能因此去随意的使用一种方案。</p>
+
+
+<p>为了项目后期的易维护性和易用性，必须要选择一种最佳的方案，而我们如果连基本的BFC、hasLayout这些知识都不了解便会显得力不从心。同时要明确自己的定位：我们不仅仅是一个”切图仔”或”美工”，我们不能忽视一些障碍用户群体，我们必须去使项目的代码变得更优雅、更易用。虽然重构的基本岗位职责是：PSD转html + css + js，但要知道仅仅做到这些还不算一个好重构，更好的沟通能力，更多的分享、思考和总结，如何正确的去关注一些前端的动态，这都是我们需要做的，当然最重要的还需要我们有一个乐观的态度和幸福的心态，下面本人将详细阐述到底如何做一个好重构，当然这只是鄙人的个人观点，还请各位拍砖。</p>
+
+
+<p><strong>从专业角度：</strong></p>
+
+
+<p><strong>明确的自身定位</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131761196.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131761196.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>目前国内将前端分为重构和JS开发的并不多，虽然PS是重构必用的一个软件，但要知道重构不是”切图仔”，切图只是重构工作内容的一部分。我们没有理由因为自己是重构，而不去学习其他技术，因为你知道你不会干一辈子的重构，JS不能丢，同样的对前端新技术要熟知。重构页面时应该把大部分的时间花在页面模块的抽离、性能优化、易维护性、易用性的探索上，而应该花最少的时间去代码实现。也许你写出来的页面有百万级的用户在使用，这里可能有障碍用户，所以你要考虑各种用户的感受与体验，而不仅仅是局限于代码的完成度上。</p>
+
+
+<p><strong>注重前端基础技能</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/1354613181827.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/1354613181827.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>前端的基础知识就像一个房子的地基，如果地基打不好，一旦遇到一点地震可能就会倒。同时也像一个城堡的各扇门，哪边的门造的不好，敌人的枪火就可以马上攻破，所以打好基础是前端学习更多知识的基石。CSS属性的特性、html标签的语义化、JS的基础知识、W3C的规范（块格式化上下文、层叠上下文、框模型等），这些可以多花点时间去学习和巩固，做到能正确合理的使用某个前端技术方案。</p>
+
+
+<p><strong>正确对待前沿技术</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131797669.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131797669.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>互联网发展日新月异，前端技术更新也很快，当我们在学css2时，css3已经风靡全球，当我们在学css3时，css4已经被提上了日程。前端的路上永远学无止境，所以在某项新技术诞生时，就需要我们正确的去审视。<br>
+在做好自己本职工作的同时，保持一颗学习的热情，新技术可以尝试使用，但请先一定了解为什么要用这个新技术？使用这个技术能为我们带来什么改进？在前端技术上，永远没有最好的技术方案，只有最合适的技术方案。最新的不一定是最好的，旧的也不一定是差的，切忌盲目跟风学习新技术，要知道自己正在学的是否能够学以致用。(笔者注：其实更多的时候并不是某项新技术，技术早就诞生，只是一个新的前端解决方案或标准被推动出来了，如CSS3其实在03年就诞生了）</p>
+
+
+<p><strong>更好的沟通能力</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131746149.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131746149.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>我们每天可能要和开发、产品、设计、交互、测试等不同的人打交道，所以这就需要我们有一个更好的沟通协调能力，注重一个更好的沟通技巧，减少沟通上的成本。”一切以用户的价值为依归”，这也正是互联网行业所需要的一种理念，在与其他同事沟通时除了真诚待人以外，还需要多为用户去考虑：我们真的需要这么做么？</p>
+
+
+<p><strong>有选择的参加技术论坛</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131751747.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131751747.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>如果自己呆在一个小公司，前端人也不是很多，没有一个很好的氛围，那么这时我们就只能通过两种方式来拓宽人脉：网络和论坛。网络如QQ群、蓝色理想等，而面对面的论坛无疑是最真实的一种拓宽人脉的方式。其实现在国内大的环境下，前端类的技术论坛我自己都数不过来，这时有选择的参加一个论坛显得尤为重要，而不该不管自己懂不懂、免费还是收费什么论坛都去参加，其实适合自己的是最重要的。</p>
+
+
+<p><strong>关注浏览器厂商</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131722865.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131722865.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>10年前，IE统治了大半个地球，如今，其他的各大浏览器厂商已挤进全球化份额争夺战，最离不开前端的就是浏览器，关注浏览器厂商的动作与格局可以让你拥有前瞻性的视角。一些浏览器厂商的开发者库：微软的MSDN，火狐的MDN，谷歌的开发者库，欧朋的开发者库。另外可以关注下各浏览器厂商的推广活动，火狐中国会在每一次推出新版本时有体验活动，微软的最新的IE10推出时国内也有推广活动，可以了解这些新版本浏览器的特性以及对css3\html5的支持性如何。</p>
+
+
+<p><strong>更多的承担和分享</strong></p>
+
+
+<p>在平时更多的去承担一些额外的工作，譬如在重构团队的协作规范、编码规范上提出自己的一些合理化建议，输出一些利于其他同事更快、更高效提升的文档。平时在自己工作遇到了一些好的工作方法或者对一些新技术的研究可以拿出来和大家分享。重构的团队氛围很重要，谁都不希望呆在一个整天只管自己写代码的团队，那样不管对于个人还是团队都是不利的。</p>
+
+
+<p><strong>更多的思考与总结</strong></p>
+
+
+<p>思考指的是”意识流”，具体是我们在重构过程中的想法和理念，怎么想决定了我们怎么做。<br>
+作为重构，很多人拿到设计稿之后就是开始埋头切图，用各种”奇技淫巧”实现各种需求，我们甚至不会在拿到设计稿之后仔细的做一下分析：如何做一个合理的架构、如何抽取合适的模块、如何用更优雅的方式和轻量的代码实现页面中的需求。<br>
+也许是目前大的环境下在催促着我们不断的向前跑：各种前端论坛大多数都在讲某个技术，纠结于某一技术细节的实现，讲烂掉的性能优化，可很少有人去讲该如何合理的选择一个前端解决方案，如何解决重构中遇到的一系列不同场景中的问题，以及最重要的我们自己的职业生涯思考：我们是准备写一辈子代码么？<br>
+总结也叫”review”，是复习、回顾的意思，review对于重构来讲，显得尤为重要，定期的项目回顾能够发现项目中存在的问题从而规避以后再次出现。<br>
+当然项目回顾是一方面，更重要的是代码层面的review，不定期的review可以促使我们在一些代码的细节把控方面做的更优雅，review除了可以提高代码的品质外，还能加强团队的协作精神，以及提高团队的整体技术能力。显然这是一件非常有意义的事。团队成员可以在一起review大家的代码，发现每个人身上的不足和亮点，不然我们真的是只管埋头自己代码的苦逼代码仔了。</p>
+
+
+<p><strong>从生活角度：</strong><br>
+<strong>保持阅读的热情</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131799343.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131799343.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>网络的信息是碎片化的，在我们没有很好的梳理碎片能力的时候，一本实物书籍对于慰藉我们的心灵显得尤为重要。有时生活、工作会让人压的喘不过气来，这时，我们需要去寻找一种方式去释放压力，嗯，阅读是一种很好的方式。</p>
+
+
+<p><strong>坚持一项运动爱好</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131805283.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131805283.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>平时工作太忙时，切记一定要改变自己的工作方法，梳理好需求的优先级，预留出一定的时间来放松自己，这个放松一定要让自己的筋骨活动开，可以是去打打羽毛球，或者去跑步，再或者去健身。只有让自己的身体变得强大起来，才有更多的能量值去砍怪升级。</p>
+
+
+<p><strong>保持乐观的生活态度</strong></p>
+
+
+<p style="text-align:center"><a href="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131787178.jpg" rel="lightbox[32195]" title="如何做一个优秀的前端重构工程师"><img title="如何做一个优秀的前端重构工程师" src="http://blog.jobbole.com/wp-content/uploads/2013/01/13546131787178.jpg" alt="如何做一个优秀的前端重构工程师" width="569" height="173"></a></p>
+
+
+<p>善于捕捉生活中的一些细小的幸福颗粒，我们就会经常活在快乐中。上次在腾讯健康加油站听了一次关于生活的分享，其中提到”生活就像炖鸡汤，有时需要加点调料和沾料”，的确，这些沾料就是发现生活中的细小幸福，做一个乐观、豁达、开朗的前端人士。调节好工作和生活的平衡，让自己不要再活的那么累。</p>
+
+
+<p>————————————-</p>
+
+
+<p>嗯，做个好重构真的挺不容易的，无论是从专业角度还是从生活角度，缺一不可，保持一个乐观、热情、积极的心，不断学习，让自己活得简单、快乐，此足矣。</p>
+
+
+<p>其实，你不仅是在重构代码，也是在重构人生！</p>
+
+
+<hr><small>Copyright © 2008<br> This feed is for personal, non-commercial use only. <br> The use of this feed on other websites breaches copyright. If this content is not in your news reader, it makes the page you are viewing an infringement of the copyright. (Digital Fingerprint:<br> )</small>
+
+
+<h2>相关文章</h2>
+
+
+<ul><li><a href="http://blog.jobbole.com/30760/">如何成为一名优秀的web前端工程师</a></li><li><a href="http://blog.jobbole.com/10011/">前端开发人员需要了解的CSS原理 </a></li><li><a href="http://blog.jobbole.com/24955/">黄锦诚：前端工程师新手必读</a></li><li><a href="http://blog.jobbole.com/25114/">@拔赤：前端开发十日谈</a></li><li><a href="http://blog.jobbole.com/10026/">前端工程师的职业发展路线在哪？</a></li><li><a href="http://blog.jobbole.com/25147/">前端的归宿与价值</a></li><li><a href="http://blog.jobbole.com/30091/">前端工程师的价值体现在哪里？</a></li><li><a href="http://blog.jobbole.com/29454/">常用的Javascript设计模式</a></li><li><a href="http://blog.jobbole.com/10926/">2011年回顾：把Javascript推到极限的20个网站</a></li><li><a href="http://blog.jobbole.com/29269/">前端工程师面试问题列表</a></li></ul>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>rails 3 undefined method `model_name' for ActiveRecord::Relation:Class.</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>rails 3 undefined method `model_name' for ActiveRecord::Relation:Class.</h2>
+<p class="meta">09 Jun 2011</p>
+
+<div class="post">
+<h2>rails 3 undefined method `model_name' for ActiveRecord::Relation:Class.</h2>
+
+<h3>by</h3>
+
+<h3>at 2011-06-09 10:19:47</h3>
+
+<h3>original <a href="http://hlee.iteye.com/blog/1073937">http://hlee.iteye.com/blog/1073937</a></h3>
+
+<p>rails 3 form_for 的问题
+<br>
+<br>undefined method `model_name' for ActiveRecord::Relation:Class.
+<br>
+<br><pre name="code">
+def edit
+   @office = Office.where("id = ? AND company_id = ?", params[:id], @company.id )
+end
+</pre>
+<br><pre name="code">
+&lt;%= simple_form_for @office, :url =&gt; settings_office_path, :html =&gt; { :class =&gt; &quot;office_form&quot; } do |f| %&gt;
+  &lt;h1&gt;Edit &lt;%= @office.office_name %&gt; Details&lt;/h1&gt;
+  &lt;%= render :partial =&gt; &#39;form&#39;, :locals =&gt; { :f =&gt; f } %&gt;
+&lt;% end %&gt;
+</pre>
+<br>
+<br>需要修改
+<br>
+<br><pre name="code">@office = Office.where(:company_id =&gt; @company.id).find(params[:id])</p>
+
+<p>@office = @company.offices.find(params[:id])</pre>
+<br>
+<br>
+<br>下面有个人和我类似
+<br>
+<br><pre name="code">class Event &lt; ActiveRecord::Base
+  belongs_to :user</p>
+
+<p>  attr_accessible :event_name, :Starts_at, :finish, :tracks
+end</pre>
+<br>
+<br><pre name="code">class User &lt; ActiveRecord::Base
+  has_many :events, :dependent =&gt; :destroy</p>
+
+<p>  attr_accessible :name, :event_attributes</p>
+
+<p>  accepts_nested_attributes_for :events,  :allow_destroy =&gt; true</p>
+
+<p>end</pre>
+<br>
+<br><pre name="code">ActiveRecord::Schema.define(:version =&gt; 20101201180355) do</p>
+
+<p>  create_table &quot;events&quot;, :force =&gt; true do |t|</p>
+
+<pre><code>t.string   &amp;quot;event_name&amp;quot;
+t.string   &amp;quot;tracks&amp;quot;
+t.datetime &amp;quot;starts_at&amp;quot;
+t.datetime &amp;quot;finish&amp;quot;
+t.datetime &amp;quot;created_at&amp;quot;
+t.datetime &amp;quot;updated_at&amp;quot;
+t.integer  &amp;quot;user_id&amp;quot;
+</code></pre>
+
+<p>  end
+end</pre>
+<br><div>引用</div><div>
+<br>NoMethodError in Users#index
+<br>undefined method <code>events&amp;#39; for #&amp;lt;ActiveRecord::Relation:0x4177518&amp;gt;
+&lt;br&gt;
+&lt;br&gt;Extracted source (around line #10):
+&lt;br&gt;
+&lt;br&gt;7:  &amp;lt;th&amp;gt;&amp;lt;%= sortable &amp;quot;Tracks&amp;quot; %&amp;gt;&amp;lt;/th&amp;gt;
+&lt;br&gt;
+&lt;br&gt;8:   &amp;lt;/tr&amp;gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;10:  &amp;lt;% @users.events.each do |event| %&amp;gt;
+&lt;br&gt;
+&lt;br&gt;11: &amp;lt;% debugger %&amp;gt;
+&lt;br&gt;
+&lt;br&gt;12:   &amp;lt;tr&amp;gt;
+&lt;br&gt;
+&lt;br&gt;13:     &amp;lt;td&amp;gt;&amp;lt;%= event.starts_at %&amp;gt;&amp;lt;/td&amp;gt;
+&lt;br&gt;
+&lt;br&gt;Trace of template inclusion: app/views/users/index.html.erb
+&lt;br&gt;
+&lt;br&gt;Rails.root: C:/rails_project1/events_manager
+&lt;br&gt;Application Trace | Framework Trace | Full Trace
+&lt;br&gt;
+&lt;br&gt;app/views/users/_event_user.html.erb:10:in</code><em>app_views_users<strong>event_user_html_erb</strong>412443848_34308540_1390678'
+<br>app/views/users/index.html.erb:7:in `</em>app_views_users_index_html_erb___603337143_34316016_0'
+<br></div>
+<br>
+<br>
+<br>问题解决：
+<br>
+<br><pre name="code">@users = User.find(&lt;conditions go here&gt;)</p>
+
+<h1>要变成</h1>
+
+<p>@users = User.where(&lt;conditions go here&gt;).all</p>
+
+<h1>或者如下</h1>
+
+<p>@users = User.where(:admin =&gt; true).where(&#39;created_at &gt; ?&#39;, min_date).order(&#39;created_at&#39;).limit(10).all</pre>
+<br></p>
+
+<pre><code>          &lt;br&gt;&lt;br&gt;
+          &lt;span style="color:red"&gt;
+            &lt;a href="http://hlee.iteye.com/blog/1073937#comments" style="color:red"&gt;已有 &lt;strong&gt;0&lt;/strong&gt; 人发表留言，猛击-&amp;gt;&amp;gt;&lt;strong&gt;这里&lt;/strong&gt;&amp;lt;&amp;lt;-参与讨论&lt;/a&gt;
+          &lt;/span&gt;
+          &lt;br&gt;&lt;br&gt;&lt;br&gt;
+</code></pre>
+
+<p><span style="color:#e28822">ITeye推荐</span>
+<br></p>
+
+<ul><li><a href="http://hlee.iteye.com/clicks/433"><span style="color:red;font-weight:bold">—软件人才免语言低担保 赴美带薪读研！— </span></a></li></ul>
+
+
+<p><br><br><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

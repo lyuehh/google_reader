@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>sizeof  我的一个误区</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>sizeof  我的一个误区</h2>
+<p class="meta">22 Mar 2011</p>
+
+<div class="post">
+<h2>sizeof  我的一个误区</h2>
+
+<h3>by 付翔</h3>
+
+<h3>at 2011-03-21 17:38:00</h3>
+
+<h3>original <a href="http://www.cppblog.com/397993401/archive/2011/03/21/142389.html">http://www.cppblog.com/397993401/archive/2011/03/21/142389.html</a></h3>
+
+<pre># include&lt;stdio.h&gt;
+
+<span>int</span> main()
+{
+    <span>char</span> *p;
+    <span>int</span> a,b,c;
+    printf(<span>"%d"</span>,<span>sizeof</span> a);
+    printf(<span>"%d\n"</span>,<span>sizeof</span> (a));
+    printf(<span>"%d\n"</span>,<span>sizeof</span> *p);
+    printf(<span>"%d\n"</span>,<span>sizeof</span> p);
+    printf(<span>"%d\n"</span>,4 * <span>sizeof</span> *p);
+
+    <span>///  sizeof  的操作数 是类型名时 必须加上括号 这个让很多人以为sizeof 是个函数 </span>
+    a = -1;
+    <span>if</span>(a &gt; <span>sizeof</span>(10 * <span>sizeof</span>(<span>int</span> ))) <span>// sizeof 是返回 unsigned int 的 当 int 和 unsigned int 遇上 会升级至 unsigned </span>
+            printf(<span>"%ud 这个你也会很郁闷\n"</span>,a);    <span>//-1 就变成一个很大的数</span>
+    <span>return</span> 0;
+}</pre>
+
+
+<p><img src="http://www.cppblog.com/397993401/aggbug/142389.html" width="1" height="1"><br><br><div align="right"><a style="text-decoration:none" href="http://www.cppblog.com/397993401/">付翔</a> 2011-03-21 17:38 <a href="http://www.cppblog.com/397993401/archive/2011/03/21/142389.html#Feedback" style="text-decoration:none">发表评论</a></div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>虚数的意义</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>虚数的意义</h2>
+<p class="meta">25 Sep 2012</p>
+
+<div class="post">
+<h2>虚数的意义</h2>
+
+<h3>by</h3>
+
+<h3>at 2012-09-24 23:49:30</h3>
+
+<h3>original <a href="http://www.ruanyifeng.com/blog/2012/09/imaginary_number.html">http://www.ruanyifeng.com/blog/2012/09/imaginary_number.html</a></h3>
+
+<p>有人在<a href="http://math.stackexchange.com/questions/199676/what-are-imaginary-numbers">Stack Exchange</a>问了一个问题：</p>
+
+
+<blockquote>
+
+<p>　　"我一直觉得虚数（imaginary number）很难懂。</p>
+
+<p>　　中学老师说，虚数就是-1的平方根。</p>
+
+<p>　　<img src="http://chart.googleapis.com/chart?cht=tx&amp;chl=i%3D%5Csqrt%7B-1%7D&amp;chs=80" style="border:none"></p>
+
+<p>　　可是，什么数的平方等于-1呢？计算器直接显示出错！</p>
+
+<p>　　直到今天，我也没有搞懂。谁能解释，虚数到底是什么？</p>
+
+<p>　　它有什么用？"</p>
+
+</blockquote>
+
+
+
+
+<p>帖子的下面，很多人给出了自己的解释，还推荐了一篇非常棒的文章<a href="http://betterexplained.com/articles/a-visual-intuitive-guide-to-imaginary-numbers/">《虚数的图解》</a>。我读后恍然大悟，醍醐灌顶，原来虚数这么简单，一点也不奇怪和难懂！</p>
+
+
+
+
+<p>下面，我就用自己的语言，讲述我所理解的虚数。</p>
+
+
+
+
+<p><strong>一、什么是虚数？</strong></p>
+
+
+
+
+<p>首先，假设有一根数轴，上面有两个反向的点：+1和-1。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092401.png"></p>
+
+
+
+
+<p>这根数轴的正向部分，可以绕原点旋转。显然，逆时针旋转180度，+1就会变成-1。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092402.png"></p>
+
+
+
+
+<p>这相当于两次逆时针旋转90度。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092403.png"></p>
+
+
+
+
+<p>因此，我们可以得到下面的关系式：</p>
+
+
+
+
+<blockquote>
+
+<p>　　(+1) * (逆时针旋转90度) * (逆时针旋转90度) = (-1)</p>
+
+</blockquote>
+
+
+
+
+<p>如果把+1消去，这个式子就变为：</p>
+
+
+
+
+<blockquote>
+
+<p>　　(逆时针旋转90度)^2 = (-1)</p>
+
+</blockquote>
+
+
+
+
+<p>将"逆时针旋转90度"记为 i ：</p>
+
+
+
+
+<blockquote>
+
+<p>　　i^2 = (-1)</p>
+
+</blockquote>
+
+
+
+
+<p>这个式子很眼熟，它就是虚数的定义公式。</p>
+
+
+
+
+<p>所以，我们可以知道，<strong>虚数 i 就是逆时针旋转90度，i 不是一个数，而是一个旋转量。</strong></p>
+
+
+
+
+<p><strong>二、复数的定义</strong></p>
+
+
+
+
+<p>既然 i 表示旋转量，我们就可以用 i ，表示任何实数的旋转状态。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092404.png"></p>
+
+
+
+
+<p>将实数轴看作横轴，虚数轴看作纵轴，就构成了一个二维平面。旋转到某一个角度的任何正实数，必然唯一对应这个平面中的某个点。</p>
+
+
+
+
+<p>只要确定横坐标和纵坐标，比如( 1 , i )，就可以确定某个实数的旋转量（45度）。</p>
+
+
+
+
+<p>数学家用一种特殊的表示方法，表示这个二维坐标：用 + 号把横坐标和纵坐标连接起来。比如，把 ( 1 , i ) 表示成 1 + i 。<strong>这种表示方法就叫做复数（complex number），其中 1 称为实数部，i 称为虚数部。</strong></p>
+
+
+
+
+<p>为什么要把二维坐标表示成这样呢，下一节告诉你原因。</p>
+
+
+
+
+<p><strong>三、虚数的作用：加法</strong></p>
+
+
+
+
+<p>虚数的引入，大大方便了涉及到旋转的计算。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092405.png"></p>
+
+
+
+
+<p>比如，物理学需要计算"力的合成"。假定一个力是 3 + i ，另一个力是 1 + 3i ，请问它们的合成力是多少？</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092406.png"></p>
+
+
+
+
+<p>根据"平行四边形法则"，你马上得到，合成力就是 ( 3 + i ) + ( 1 + 3i ) = ( 4 + 4i )。</p>
+
+
+
+
+<p>这就是虚数加法的物理意义。</p>
+
+
+
+
+<p><strong>四、虚数的作用：乘法</strong></p>
+
+
+
+
+<p>如果涉及到旋转角度的改变，处理起来更方便。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092407.png"></p>
+
+
+
+
+<p>比如，一条船的航向是 3 + 4i 。</p>
+
+
+
+
+<p>如果该船的航向，逆时针增加45度，请问新航向是多少？</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092408.png"></p>
+
+
+
+
+<p>45度的航向就是 1 + i 。计算新航向，只要把这两个航向 3 + 4i 与 1 + i 相乘就可以了（原因在下一节解释）：</p>
+
+
+
+
+<blockquote>
+
+<p>　　( 3 + 4i ) * ( 1 + i ) = ( -1 + 7i )</p>
+
+</blockquote>
+
+
+
+
+<p>所以，该船的新航向是 -1 + 7i 。</p>
+
+
+
+
+<p>如果航向逆时针增加90度，就更简单了。因为90度的航向就是 i ，所以新航向等于：</p>
+
+
+
+
+<blockquote>
+
+<p>　　( 3 + 4i ) * i = ( -4 + 3i )</p>
+
+</blockquote>
+
+
+
+
+<p>这就是虚数乘法的物理意义：改变旋转角度。</p>
+
+
+
+
+<p><strong>五、虚数乘法的数学证明</strong></p>
+
+
+
+
+<p>为什么一个复数改变旋转角度，只要做乘法就可以了？</p>
+
+
+
+
+<p>下面就是它的数学证明，实际上很简单。</p>
+
+
+
+
+<p><img src="http://image.beekka.com/blog/201209/bg2012092409.png"></p>
+
+
+
+
+<p>任何复数 a + bi，都可以改写成旋转半径 r 与横轴夹角 θ 的形式。</p>
+
+
+
+
+<p>假定现有两个复数 a + bi 和 c + di，可以将它们改写如下：</p>
+
+
+
+
+<blockquote>
+
+<p>　　a + bi = r1 * ( cosα + isinα )</p>
+
+<p>　　c + di = r2 * ( cosβ + isinβ )</p>
+
+</blockquote>
+
+
+
+
+<p></p>
+
+
+
+
+<p>这两个复数相乘，( a + bi )( c + di ) 就相当于</p>
+
+
+
+
+<blockquote>
+
+<p>　　r1 * r2 * ( cosα + isinα ) * ( cosβ + isinβ )</p>
+
+</blockquote>
+
+
+
+
+<p></p>
+
+
+
+
+<p>展开后面的乘式，得到</p>
+
+
+
+
+<blockquote>
+
+<p>　　cosα * cosβ - sinα * sinβ + i( cosα * sinβ + sinα * cosβ )</p>
+
+</blockquote>
+
+
+
+
+<p></p>
+
+
+
+
+<p>根据三角函数公式，上面的式子就等于</p>
+
+
+
+
+<blockquote>
+
+<p>　　cos(α+β) + isin(α+β)</p>
+
+</blockquote>
+
+
+
+
+<p></p>
+
+
+
+
+<p>所以，</p>
+
+
+
+
+<blockquote>
+
+<p>　　( a + bi )( c + di )　＝　r1 * r2 * ( cos(α+β) + isin(α+β) )</p>
+
+</blockquote>
+
+
+
+
+<p></p>
+
+
+
+
+<p>这就证明了，两个复数相乘，就等于旋转半径相乘、旋转角度相加。</p>
+
+
+
+
+<p>（完）</p>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;border:1px solid #d3d3d3;margin:1em;background-color:#aad2f0;border-radius:10px"><h3>文档信息</h3>
+<ul>
+<li>版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh">Creative Commons BY-NC-ND 3.0</a></li>
+<li>原文网址：<a href="http://www.ruanyifeng.com/blog/2012/09/imaginary_number.html">http://www.ruanyifeng.com/blog/2012/09/imaginary_number.html</a></li>
+<li>最后修改时间：2012年11月 7日 23:54</li>
+<li>付费支持：<a href="https://me.alipay.com/ruanyf"><img src="http://www.ruanyifeng.com/blog/images/rmb_32.png" title="人民币" alt="人民币 - 支付宝" style="border:none;vertical-align:middle"></a> | <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=yifeng.ruan@gmail.com&amp;currency_code=USD&amp;amount=0.99&amp;return=http://www.ruanyifeng.com/thank.html&amp;item_name=Ruan%20YiFeng&#39;s%20Blog&amp;undefined_quantity=1&amp;no_note=0"><img src="http://www.ruanyifeng.com/blog/images/dollar_32.png" alt="美元 - paypal" title="美元" style="border:none;vertical-align:middle"></a> </li>
+</ul></div>
+
+
+<div style="color:#556677;line-height:160%;padding:0.3em 0.5em;margin:1em;border-radius:10px"></div>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[译文]Ext4新进展：bigalloc, inline data, 和元数据校验和</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[译文]Ext4新进展：bigalloc, inline data, 和元数据校验和</h2>
+<p class="meta">04 Feb 2012</p>
+
+<div class="post">
+<h2>[译文]Ext4新进展：bigalloc, inline data, 和元数据校验和</h2>
+
+<h3>by gnawux</h3>
+
+<h3>at 2012-02-04 00:04:24</h3>
+
+<h3>original <a href="http://www.udpwork.com/item/6783.html">http://www.udpwork.com/item/6783.html</a></h3>
+
+<p>原文：http://lwn.net/Articles/469805/
+<br>
+原作者：Jonathan Corbet
+<br>
+原文发布时间：November 29, 2011
+<br>
+译者：王旭 （ @gnawux ;  http://wangxu.me/blog/ ）
+<br>
+翻译时间：2012年2月3日</p>
+
+
+<p>ext4是一个刚刚发布一两年的文件系统。不过，这个坚实稳定的系统是基于一个很古老的设计演化而来的。对于一些被作为“下一代文件系统”开发的 FS，比如 btrfs，本文要提到的一些特性可能都已经具备了。然而，btrfs这样的文件系统还需要相当长的时间，才能在更广泛的用户群中获得足够的信心，同时，日益增长的 ext4 用户对这些特性同样心仪已久。近来提交的一些补丁就让我们看到，虽然 ext4 在很久以前就已经进入一个相对稳定的阶段了，但新特性的开发也并未停止。</p>
+
+
+<h2>Bigalloc</h2>
+
+
+<p>在 Linux 早期，磁盘的大小还是MB级的，文件系统的块大小也只是 1KB 到 4KB。而在本文写作的时候，TB级的硬盘虽然在最近涨了一点价，但无碍一个事实——硬盘已经变大太多了，存储在上面的文件也是如此。但 ext4 文件系统仍然以 4KB 为单位来管理数据。其结果就是要管理的块数太多了，相关联的位图大小必然随之增长，管理这些块的开销也就极具增大。</p>
+
+
+<p>在内核中增加文件系统的块大小会对内存管理、page cache 等产生深远影响，因此是件很恐怖的工作。所以大家都不愿意一下子触及这么多地方，但这并不能阻止文件系统被放在越来越大的磁盘上。在 3.2 内核中，ext4 将可以解决这个问题。“bigalloc”补丁给文件系统引入了一个“块簇（block cluster）”的概念，这样，在一个更大的块组中进行分配时，将一次分配一个块簇而不是一个单独的块。在内核中，这些更大的块和原始的4KB块的映射关系由文件系统负责维护。</p>
+
+
+<p>簇的大小由管理员在创建文件系统时确定（使用 e2fsprogs 的一个开发版本），不过这个值必须是 2 的整数次幂。在很多情况下，64KB 是个合适的值，对于那些只存放大文件的文件系统，1MB 的簇大小可能是更佳选择。必须指出的是，如果文件系统专用于存放小文件，那么指定一个过大的簇大小回造成很多空间浪费。</p>
+
+
+<p>使用簇可以减少块位图和其他管理用数据结构的开销。但是，根据 Ted Ts’o 在 7 月份给出的<a href="http://lwn.net/Articles/469821/">数据</a>。因为这个特性可以降低磁盘的碎片化，对文件IO的性能同样有改进。这个特性预计会成为 3.2 内核（以及 e2fsprogs 1.42）对很多用户的一个杀手级特性。</p>
+
+
+<h2>inline data</h2>
+
+
+<p>inode 是文件系统中用于描述一个文件的数据结构。对于大多数文件系统而言，有两类 inode：文件系统无关的内核数据结构（struct inode），以及文件系统相关的 on-disk 版本。常规地说，如果内核没有一份 inode 的副本的话，就根本无法操作一个文件。所以，本质上说，inode 是很多 block I/O 的关键入口点。</p>
+
+
+<p>在 ext4 文件系统中，磁盘上的 inode 尺寸可以在文件系统创建时指定，缺省是 256 字节。不过，磁盘数据结构(struct ext4_inode) 只需要大概一般的空间。ext4_inode 结构之后剩下的空间通常用于存储扩展属性。比如 SELinux label 就存放在这里。在没大量使用扩展属性的系统中，磁盘 inode 结构的空余空间就直接浪费掉了。</p>
+
+
+<p>同时，文件数据的空间分配是以文件系统块为单位的，与 inode 彼此独立。如果一个文件非常小（即使在现在的文件系统中，还是有很多小文件），用于存放这个文件的块就浪费了很多空间。如果文件系统使用了上面提到的块簇，那么浪费的空间还会更多，这里，用户可能就会开始抱怨了。</p>
+
+
+<p>马涛（<a href="http://www.weibo.com/pagefault">@淘伯瑜</a>）同学的 <a href="http://lwn.net/Articles/468678/">ext4 inline data 补丁</a>将会改变这一局面。这个想法非常简单：很小的数据可以直接存放在 inode 之间的空余空间里，根本无需单独分配数据块。对于使用 256个字节的 inode 的文件系统，全部空余空间将会被用于存放这些小文件。如果文件系统使用更大的 inode，只有一半的剩余空间会用于存储文件，剩下的空间留给后面可能要添加的扩展属性，否则的话，这些扩展属性就不得不存放在 inode 之外了。</p>
+
+
+<p>涛哥提到，在使用了这个补丁的情况下，用于存放内核源码的空间会减少大约 1%，而 /usr 会减少大约 3%。当启用簇之后，节省的空间应该会更多，但这也不能保证对所有情况都能减少。仍然有些细节问题没有完全完成——包括 e2fsck 支持以及扩展属性存放在 inode 之外带来的开销——所以，这个特性最早要在 3.4 kernel 中才会出现。</p>
+
+
+<h2>元数据校验和</h2>
+
+
+<p>存储设备并不总是像我们期望的那样可靠的，由于硬件原因造成的数据损坏案例屡见不鲜。正因为如此，关心数据安全的人们使用了 RAID 这样的技术，或者像 Btrfs 这样的文件系统可以保存数据和元数据的校验和，以确保内容不被硬件弄丢。不过，ext4 文件系统没有这一能力。</p>
+
+
+<p>Darrick Wong 的<a href="http://lwn.net/Articles/469717/">校验和补丁</a>并没有解决全部问题。实际上，它似乎进一步印证了那个老笑话——文件系统开发者并不真的关心他们存储数据的正确性，只要文件系统的元数据没错就行了。这组补丁通过给 ext4 文件系统的各个数据结构加上校验和，包括 superblock、bitmap、inode、dir index、extent tree 等，并在读取时检验校验和，以保证元数据的正确性。校验和失败可能导致文件系统失败，如果这发生在一个挂载着的文件系统上，会把它变为只读，并在系统日志中输出一些相关信息。</p>
+
+
+<p>Darrick并未提及任何给用户数据添加校验和的计划。给数据添加校验会是一个更宏大的工程——为已有的元数据数据结构添加一个校验字段相对简单，但要存储数据块的校验和就得给文件系统增加全新的数据结构了。而且，全数据校验的性能损失也会更高。所以，尽管未来可能有人会来介入这个问题，但迄今为止还没有这个动向。</p>
+
+
+<p>即使只是元数据的校验和，对文件系统的改变仍然是很大的，不过相当一部分工作是属于 e2fsprogs 的。特别的，e2fsck 将具有检查元数据校验和的功能，并在某些校验和出错时进行修复。校验和可以在 mke2fs 时打开，或是通过 tune2fs 开启。总的说，这是个很大的工作，但确实可以帮助用户增加对文件系统结构的信心。根据 Darrick 的介绍，计算和检验校验和的开销在大部分情况下是可以忽略不计的。这个特性目前还没有收到很多反馈，或许已经接近被接纳进内核，但还不清楚什么时候会进来。</p>
+
+
+<pre><code>        &lt;div style="margin-top:8px;padding:6px 0;border-top:1px solid #3cf"&gt;
+            &lt;div style="text-align:center;margin:16px 0;padding:6px;border:0px dashed #999;font-family:arial;font-size:26px;font-weight:bold"&gt;
+&lt;a href="http://www.udpwork.com/item/6783.html#review_form" title="不喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_down24.gif" alt=""&gt;
+    &lt;span style="color:#f33"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+   
+&lt;a href="http://www.udpwork.com/item/6783.html#review_form" title="喜欢" style="text-decoration:none"&gt;
+    &lt;img src="http://www.udpwork.com//images/thumb_up24.gif" alt=""&gt;
+    &lt;span style="color:#3c3"&gt;0&lt;/span&gt;
+&lt;/a&gt;
+</code></pre>
+
+<p></div>              <p>
+                    由 <a href="http://www.udpwork.com/">IT 牛人博客聚合网站(udpwork.com)</a> 聚合
+                    |
+                    <a href="http://www.udpwork.com/item/6783.html#reviews">评论: 0</a>
+                </p>
+            </div></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

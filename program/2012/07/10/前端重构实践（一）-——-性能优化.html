@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>前端重构实践（一） —— 性能优化</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>前端重构实践（一） —— 性能优化</h2>
+<p class="meta">10 Jul 2012</p>
+
+<div class="post">
+<h2>前端重构实践（一） —— 性能优化</h2>
+
+<h3>by editor</h3>
+
+<h3>at 2012-07-09 17:34:32</h3>
+
+<h3>original <a href="http://stblog.baidu-tech.com/?p=1900">http://stblog.baidu-tech.com/?p=1900</a></h3>
+
+<ul>
+<li><strong>前言：</strong></li>
+</ul>
+
+
+<p>最近一直在做性能优化和模块化改造的工作，并完成了一次前端重构。在这里总结出一些经验和得失来帮助大家思考。共两篇文章，第一篇讨论性能优化，第二篇讨论模块化框架。而之所以把这两个话题放到一起，是因为这两项工作都涉及到对前端代码进行不同程度的重构，而且模块化改造其实是我们在对性能优化做到一定程度之后发现必须要做的一件事情。本篇是性能优化的部分，下面我把我们的产品简称为N页面。</p>
+
+
+<ul>
+<li><strong>应用场景分析：</strong></li>
+</ul>
+
+
+<p>N页面作为一个入口页面，对页面加载速度有着极高的要求。同时，N页面内部却又有着非常复杂的功能与交互。N页面的第一版上线时，页面引用的js文件有3个，一共40-50k（压缩&amp;Gzip之后）。页面onload时间在1.3秒。</p>
+
+
+<p>1.3秒的load时间，相比较绝大多数网站来说都是一个不错的数值。但老板一句话“怎么这个页面打开这么慢”，立刻像是给我们的后背安了一枚定时炸弹。性能优化成了N页面下一步工作的重中之重。</p>
+
+
+<p>老板重视页面速度，对于Web前端开发人员来说其实是件幸事，这表明你将有更丰富的时间和资源去实践Web性能优化这一课题，不用被翻来覆去的产品升级需求所打扰。那么对于N页面，我们做了哪些实践：</p>
+
+
+<p><span></span></p>
+
+
+<p><strong> 常规优化手段包括</strong>：</p>
+
+
+<p>CSS置顶，JS置底。</p>
+
+
+<p>静态资源外联、合并、压缩。</p>
+
+
+<p>图片优化。（Png使用pngcrush；Gif使用gifsicle；Jpeg使用jpegtran）</p>
+
+
+<p>图片延迟加载。（主要针对首屏外的图片。）</p>
+
+
+<p>使用CSS Sprite，首屏图片全部合到一张图上。</p>
+
+
+<p>静态文件上CDN。（静态文件的下载能提速20%左右。）</p>
+
+
+<p>静态文件设置强缓存。（命中强缓存82.4%；命中若缓存3.4%；未命中缓存14.2%。）</p>
+
+
+<p>HTML压缩。（Gzip后减少%5。）</p>
+
+
+<p><strong>增强型手段</strong>：</p>
+
+
+<p>基础库定制。（用代码分析代码，自动打包被使用到的方法作为基础库，使基础库从原来的压缩后25K减小为9.8K,减小了61%）</p>
+
+
+<p>页面数据存储优化。（从原来的直接写json形式的script，变为将json隐藏在textarea中，初始化或用到的时候才去提取并进行解析。）</p>
+
+
+<p>首屏CSS检测。（对首屏用到的CSS进行检测，将不属于首屏的CSS代码单独打包并移到首屏之外进行延迟加载）</p>
+
+
+<p>js按需加载。（在后面做重点介绍）</p>
+
+
+<ul>
+<li><strong>监控&amp; 测量</strong></li>
+</ul>
+
+
+<p>性能优化最重要的工作不是优化而是监控。这个道理很简单：没有监控体系就没办法衡量性能优化的效果，那么你所做的任何工作都是盲目的。</p>
+
+
+<p>我们对性能的监控是从多个维度展开的，包括平均时间、时段分布、浏览器分布、省份、运营商等。便于发现和定位任何一个细节的问题。</p>
+
+
+<p>而在平均时间这一维度，我们又分为四个级别：</p>
+
+
+<p>Head时间– head标签加载完成的时间</p>
+
+
+<p>TTi时间– 页面可交互时间（即首屏第一次渲染出来的时间）</p>
+
+
+<p>Dom时间– Dom Ready的时间</p>
+
+
+<p>Load 时间– 页面完全加载完成的时间</p>
+
+
+<p>这样划分的好处是，页面加载每个环节的耗时一目了然：</p>
+
+
+<p>Head ：CSS加载时间</p>
+
+
+<p>TTI ：整体HTML加载和渲染时间</p>
+
+
+<p>DOM 减TTI ： js文件网络传输时间和在浏览器进行解析的时间</p>
+
+
+<p>Load 减Dom : js初始化+ 图片加载的时间</p>
+
+
+<p>而且，我们通过移动tti时间点的位置，发现了一个有趣的现象，如下图</p>
+
+
+<p><a href="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=13418258501.gif&amp;type=image%2Fgif&amp;width=568&amp;height=451"><img title="1" src="http://stblog.baidu-tech.com/wp-content/uploads/wp-display-data.php?filename=13418258501.gif&amp;type=image%2Fgif&amp;width=568&amp;height=451" alt=""></a></p>
+
+
+<p>可以看出，页面加载的性能瓶颈就在script的下载和解析时间。</p>
+
+
+<p>为了进一步定位性能瓶颈，我们在页面内对用户网速进行了测试，结果很震惊：有2%的用户网速小于2k/s，5%的用户网速小于10k/s。（国内的网络状况真是惨不忍睹啊）</p>
+
+
+<p>那么，优化方案就很明显了：最大限度地减小js文件大小，以减小网络传输时间，提升页面性能。</p>
+
+
+<p>通过后来的优化工作我们发现：js代码压缩、Gzip后每减小1k，页面加载时间就能减小10ms左右。</p>
+
+
+<ul>
+<li><strong>按需加载：</strong></li>
+</ul>
+
+
+<p>这是除了js压缩外，你能想到的最有效减小js文件大小的办法了。</p>
+
+
+<p>按需加载，顾名思义，就是在页面首次加载的时候只提供最需要的js给用户，而剩余的js等用户使用到了相关的功能再去加载。</p>
+
+
+<p>按需加载适合哪种类型的网站：如果80%的用户来到你的页面只使用20%的功能，那么就有必要把这20%的js作为首屏加载，而剩余的js做按需加载。</p>
+
+
+<p>从这个角度来讲，几乎所有网站都可以做按需加载，因为总有一些功能是用户很少会用到的。</p>
+
+
+<p>那么，如何做按需加载：</p>
+
+
+<p>按需加载需要有一套js模块加载的框架。这个框架的作用是：保障在所需的js加载完成后才去执行回调方法。</p>
+
+
+<p>按需加载还需要有一套触发条件。在我们的页面中，对鼠标移动和鼠标点击都进行了监听，以保障在用户想使用某个功能之前或进行了相应操作时，触发js加载。</p>
+
+
+<p>除此之外，我们还对js基础库进行了进一步拆分，分为首屏用到的基础方法，和延迟加载的js所需的基础方法。以最大限度地保证首屏js量的最小化。</p>
+
+
+<p>通过按需加载的拆分，我们将首屏的js代码从原来的gzip之后40-50k减小到了只有24k。</p>
+
+
+<p>同时，我们对CSS的加载也进行拆分，首屏不需要的CSS代码也随JS进行延迟加载。</p>
+
+
+<ul>
+<li><strong>效果 &amp; 总结</strong></li>
+</ul>
+
+
+<p>性能优化是一个非常繁琐的工作，页面性能受很多因素的制约，不过相信一点：方法总比问题多。我们通过优化，最终将页面加载时间降到了650ms，仅为优化前的一半。所有优化工作中，效果最明显的就是js按需加载了。</p>
+
+
+<p>不过按需加载也为我们的代码结构带来了很大的冲击，极大地改变了我们写代码的方式，也制造了很多问题，我会在下一篇《前端重构——模块化框架实践》中进行详细介绍。</p>
+
+
+<p style="text-align:right">by lizhouquan</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Java 6 JVM参数选项大全（中文版）</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Java 6 JVM参数选项大全（中文版）</h2>
+<p class="meta">15 Mar 2011</p>
+
+<div class="post">
+<h2>Java 6 JVM参数选项大全（中文版）</h2>
+
+<h3>by xiaofeng</h3>
+
+<h3>at 2011-03-15 08:15:30</h3>
+
+<h3>original <a href="http://rdc.taobao.com/team/jm/archives/754">http://rdc.taobao.com/team/jm/archives/754</a></h3>
+
+<p>本文是基于最新的SUN官方文档<a title="Java SE 6 Hotspot VM Options" href="http://java.sun.com/javase/technologies/hotspot/vmoptions.jsp">Java SE 6 Hotspot VM Options</a> 编写的译文。主要介绍JVM中的非稳态选项及其使用说明。</p>
+
+
+<p>为了让读者明白每个选项的含义，作者在原文基础上<strong>补充了大量的资料</strong>。希望这份文档，对正在研究JVM参数的朋友有帮助！</p>
+
+
+<p>另外，考虑到本文档是初稿，如有描述错误，敬请指正。</p>
+
+
+<p><strong>非稳态</strong><strong>选项使用说明</strong></p>
+
+
+<p>-XX:+&lt;option&gt; 启用选项</p>
+
+
+<p>-XX:-&lt;option&gt; 不启用选项</p>
+
+
+<p>-XX:&lt;option&gt;=&lt;number&gt; 给选项设置一个数字类型值，可跟单位，例如 32k, 1024m, 2g<br>
+-XX:&lt;option&gt;=&lt;string&gt; 给选项设置一个字符串值，例如-XX:HeapDumpPath=./dump.core</p>
+
+
+<p><strong>行为</strong><strong>选项</strong></p>
+
+
+<table border="1" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top"><strong>选项</strong></td>
+<td width="10%" valign="top"><strong>默认值与限制</strong></td>
+<td width="74%" valign="top"><strong>描述</strong></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-AllowUserSignalHandlers</td>
+<td width="10%" valign="top">限于Linux和Solaris，默认不启用</td>
+<td width="74%" valign="top">允许为java进程安装信号处理器。<br>
+Java信号处理相关知识，详见 <a href="http://kenwublog.com/java-asynchronous-notify-based-on-signal">http://kenwublog.com/java-asynchronous-notify-based-on-signal</a></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-DisableExplicitGC</td>
+<td width="10%" valign="top">默认不启用</td>
+<td width="74%" valign="top">禁止在运行期显式地调用 System.gc()。开启该选项后，GC的触发时机将由Garbage Collector全权掌控。<br>
+注意：你熟悉的代码里没调用System.gc()，不代表你依赖的框架工具没在使用。例如RMI就在多数用户毫不知情的情况下，显示地调用GC来防止自身OOM。
+<p>请仔细权衡禁用带来的影响。</p></td>
+</tr>
+<tr>
+<td width="15%">-XX:-RelaxAccessControlCheck</td>
+<td width="10%" valign="top">默认不启用</td>
+<td width="74%">在Class校验器中，放松对访问控制的检查。作用与reflection里的setAccessible类似。</td>
+</tr>
+<tr>
+<td width="15%">-XX:-UseConcMarkSweepGC</td>
+<td width="10%" valign="top">默认不启用</td>
+<td width="74%">启用CMS低停顿垃圾收集器。资料详见：<a href="http://kenwublog.com/docs/CMS_GC.pdf">http://kenwublog.com/docs/CMS_GC.pdf</a></td>
+</tr>
+<tr>
+<td width="15%">-XX:-UseParallelGC</td>
+<td width="10%" valign="top">-server时启用其他情况下，默认不启用</td>
+<td width="74%">策略为新生代使用并行清除，年老代使用单线程Mark-Sweep-Compact的垃圾收集器。</td>
+</tr>
+<tr>
+<td width="15%">-XX:-UseParallelOldGC</td>
+<td width="10%" valign="top">默认不启用</td>
+<td width="74%">策略为老年代和新生代都使用并行清除的垃圾收集器。</td>
+</tr>
+<tr>
+<td width="15%">-XX:-UseSerialGC</td>
+<td width="10%" valign="top">-client时启用其他情况下，默认不启用</td>
+<td width="74%">使用串行垃圾收集器。</td>
+</tr>
+<tr>
+<td width="15%">-XX:+UseSplitVerifier</td>
+<td width="10%" valign="top">java5默认不启用java6默认启用</td>
+<td width="74%">使用新的Class类型校验器 。<br>
+<strong>新Class类型校验器有什么特点？</strong><br>
+新Class类型校验器，将老的校验步骤拆分成了两步：<br>
+1，类型推断。<br>
+2，类型校验。新类型校验器通过在javac编译时嵌入类型信息到bytecode中，省略了类型推断这一步，从而提升了classloader的性能。Classload顺序（供参考）<br>
+load -&gt; <strong>verify</strong> -&gt; prepare -&gt; resove -&gt; init<br>
+<strong>关联选项：</strong><br>
+-XX:+FailOverToOldVerifier</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+FailOverToOldVerifier</td>
+<td width="10%" valign="top">Java6新引入选项，默认启用</td>
+<td width="74%" valign="top">如果新的Class校验器检查失败，则使用老的校验器。<strong> </strong>
+<p><strong>为什么会失败？</strong></p>
+<p>因为JDK6最高向下兼容到JDK1.2，而JDK1.2的class info 与JDK6的info存在较大的差异，所以新校验器可能会出现校验失败的情况。</p>
+<p><strong><br>
+关联选项：<br>
+</strong>-XX:+UseSplitVerifier</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+HandlePromotionFailure</td>
+<td width="10%" valign="top">java5以前是默认不启用，java6默认启用</td>
+<td width="74%" valign="top">关闭新生代收集担保。<br>
+<strong>什么是新生代收集</strong><strong>担保？</strong><br>
+在一次理想化的minor gc中，Eden和First Survivor中的活跃对象会被复制到Second Survivor。<br>
+然而，Second Survivor不一定能容纳下所有从E和F区copy过来的活跃对象。为了确保minor gc能够顺利完成，GC需要在年老代中额外保留一块足以容纳所有活跃对象的内存空间。<br>
+这个预留操作，就被称之为新生代收集担保（New Generation Guarantee）。如果预留操作无法完成时，仍会触发major gc(full gc)。<strong>为什么要关闭新生代收集</strong><strong>担保？</strong><br>
+因为在年老代中预留的空间大小，是无法精确计算的。<strong> </strong>为了确保极端情况的发生，GC参考了最坏情况下的新生代内存占用，即Eden+First Survivor。
+<p>这种策略无疑是在浪费年老代内存，从时序角度看，还会提前触发Full GC。</p>
+<p>为了避免如上情况的发生，JVM允许开发者手动关闭新生代收集担保。</p>
+<p>在开启本选项后，minor gc将不再提供新生代收集担保，而是在出现survior或年老代不够用时，抛出promotion failed异常。</p></td>
+</tr>
+<tr>
+<td width="15%">-XX:+UseSpinning</td>
+<td width="10%" valign="top">java1.4.2和1.5需要手动启用, java6默认已启用</td>
+<td width="74%">启用多线程自旋锁优化。<br>
+<strong>自旋锁优化原理</strong>大家知道，Java的多线程安全是基于Lock机制实现的，而Lock的性能往往不如人意。<br>
+原因是，monitorenter与monitorexit这两个控制多线程同步的bytecode原语，是JVM依赖操作系统互斥(mutex)来实现的。<br>
+互斥是一种会导致线程挂起，并在较短的时间内又必须重新调度回原线程的，较为消耗资源的操作。为了避免进入OS互斥，Java6的开发者们提出了自旋锁优化。自旋锁优化的原理是在线程进入OS互斥前，通过CAS自旋一定的次数来检测锁的释放。
+<p>如果在自旋次数未达到预设值前锁已被释放，则当前线程会立即持有该锁。</p>
+<p>CAS检测锁的原理详见: <a href="http://kenwublog.com/theory-of-lightweight-locking-upon-cas">http://kenwublog.com/theory-of-lightweight-locking-upon-cas</a><br>
+<strong>关联选项：</strong><br>
+-XX:PreBlockSpin=10</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:PreBlockSpin=10</td>
+<td width="10%" valign="top">-XX:+UseSpinning 必须先启用，对于java6来说已经默认启用了，这里默认自旋10次</td>
+<td width="74%" valign="top">控制多线程自旋锁优化的自旋次数。(什么是自旋锁优化？见 -XX:+UseSpinning 处的描述)<br>
+<strong>关联选项：</strong><br>
+-XX:+UseSpinning</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+ScavengeBeforeFullGC</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="74%" valign="top">在Full GC前触发一次Minor GC。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+UseGCOverheadLimit</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="74%" valign="top">限制GC的运行时间。如果GC耗时过长，就抛OOM。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+UseTLAB</td>
+<td width="10%" valign="top">1.4.2以前和使用-client选项时，默认不启用，其余版本默认启用</td>
+<td width="74%" valign="top">启用线程本地缓存区（Thread Local）。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+UseThreadPriorities</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="74%" valign="top">使用本地线程的优先级。</td>
+</tr>
+<tr>
+<td width="15%">-XX:+UseAltSigs</td>
+<td width="10%" valign="top">限于Solaris，默认启用</td>
+<td width="74%">为了防止与其他发送信号的应用程序冲突，允许使用候补信号替代 SIGUSR1和SIGUSR2。</td>
+</tr>
+<tr>
+<td width="15%">-XX:+UseBoundThreads</td>
+<td width="10%" valign="top">限于Solaris, 默认启用</td>
+<td width="74%">绑定所有的用户线程到内核线程。<br>
+减少线程进入饥饿状态（得不到任何cpu time）的次数。</td>
+</tr>
+<tr>
+<td width="15%">-XX:+UseLWPSynchronization</td>
+<td width="10%" valign="top">限于solaris，默认启用</td>
+<td width="74%">使用轻量级进程（内核线程）替换线程同步。</td>
+</tr>
+<tr>
+<td width="15%">-XX:+MaxFDLimit</td>
+<td width="10%" valign="top">限于Solaris，默认启用</td>
+<td width="74%">设置java进程可用文件描述符为操作系统允许的最大值。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+UseVMInterruptibleIO</td>
+<td width="10%" valign="top">限于solaris，默认启用</td>
+<td width="74%" valign="top">在solaris中，允许运行时中断线程 。</td>
+</tr>
+</tbody>
+</table>
+
+
+<hr size="2"><strong>性能选项</strong>
+
+
+<table border="1" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td width="16%" valign="top"><strong>选项与默认值</strong></td>
+<td width="10%" valign="top"><strong>默认值与限制</strong></td>
+<td width="72%" valign="top"><strong>描述</strong></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+AggressiveOpts</td>
+<td width="10%" valign="top">JDK 5 update 6后引入，但需要手动启用。JDK6默认启用。</td>
+<td width="72%" valign="top">启用JVM开发团队最新的调优成果。例如编译优化，偏向锁，并行年老代收集等。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:CompileThreshold=10000</td>
+<td width="10%" valign="top">1000</td>
+<td width="72%" valign="top">通过JIT编译器，将方法编译成机器码的触发阀值，可以理解为调用方法的次数，例如调1000次，将方法编译为机器码。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:LargePageSizeInBytes=4m</td>
+<td width="10%" valign="top">默认4mamd64位：2m</td>
+<td width="72%" valign="top">设置堆内存的内存页大小。调整内存页的方法和性能提升原理，详见 <a href="http://kenwublog.com/tune-large-page-for-jvm-optimization">http://kenwublog.com/tune-large-page-for-jvm-optimization</a></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:MaxHeapFreeRatio=70</td>
+<td width="10%" valign="top">70</td>
+<td width="72%" valign="top">GC后，如果发现空闲堆内存占到整个预估上限值的70%，则收缩预估上限值。<strong>什么是预估上限值？</strong>
+<p>JVM在启动时，会申请最大值（-Xmx指定的数值）的地址空间，但其中绝大部分空间不会被立即分配(virtual)。</p>
+<p>它们会一直保留着，直到运行过程中，JVM发现实际占用接近已分配上限值时，才从virtual里再分配掉一部分内存。</p>
+<p>这里提到的已分配上限值，也可以叫做预估上限值。<br>
+引入预估上限值的好处是，可以有效地控制堆的大小。堆越小，GC效率越高嘛。</p>
+<p>注意：预估上限值的大小一定小于或等于最大值。</p></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:MaxNewSize=size</td>
+<td width="10%" valign="top">1.3.1 Sparc: 32m1.3.1 x86: 2.5m</td>
+<td width="72%" valign="top">新生代占整个堆内存的最大值。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:MaxPermSize=64m</td>
+<td width="10%" valign="top">5.0以后: 64 bit VMs会增大预设值的30%1.4 amd64: 96m
+<p>1.3.1 -client: 32m</p>
+<p>其他默认 64m</p></td>
+<td width="72%" valign="top">Perm（俗称方法区）占整个堆内存的最大值。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:MinHeapFreeRatio=40</td>
+<td width="10%" valign="top">40</td>
+<td width="72%" valign="top">GC后，如果发现空闲堆内存占到整个预估上限值的40%，则增大上限值。(什么是预估上限值？见 -XX:MaxHeapFreeRatio 处的描述)
+<p><strong>关联选项：</strong></p>
+<p>-XX:MaxHeapFreeRatio=70</p></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:NewRatio=2</td>
+<td width="10%" valign="top">Sparc -client: 8×86 -server: 8
+<p>x86 -client: 12</p>
+<p>-client: 4 (1.3)</p>
+<p>8 (1.3.1+)</p>
+<p>x86: 12</p>
+<p>其他默认 2</p></td>
+<td width="72%" valign="top">新生代和年老代的堆内存占用比例。例如2例如2表示新生代占年老代的1/2，占整个堆内存的1/3。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:NewSize=2.125m</td>
+<td width="10%" valign="top">5.0以后: 64 bit Vms会增大预设值的30%x86: 1m
+<p>x86, 5.0以后: 640k</p>
+<p>其他默认 2.125m</p></td>
+<td width="72%" valign="top">新生代预估上限的默认值。(什么是预估上限值？见 -XX:MaxHeapFreeRatio 处的描述)</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:ReservedCodeCacheSize=32m</td>
+<td width="10%" valign="top">Solaris 64-bit, amd64, -server x86: 48m1.5.0_06之前, Solaris 64-bit amd64: 1024m
+<p>其他默认 32m</p></td>
+<td width="72%" valign="top">设置代码缓存的最大值，编译时用。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:SurvivorRatio=8</td>
+<td width="10%" valign="top">Solaris amd64: 6Sparc in 1.3.1: 25
+<p>Solaris platforms5.0以前: 32</p>
+<p>其他默认 8</p></td>
+<td width="72%" valign="top">Eden与Survivor的占用比例。例如8表示，一个survivor区占用 1/8 的Eden内存，即1/10的新生代内存，为什么不是1/9？因为我们的新生代有2个survivor，即S1和S22。所以survivor总共是占用新生代内存的 2/10，Eden与新生代的占比则为 8/10。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:TargetSurvivorRatio=50</td>
+<td width="10%" valign="top">50</td>
+<td width="72%" valign="top">实际使用的survivor空间大小占比。默认是50%，最高90%。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:ThreadStackSize=512</td>
+<td width="10%" valign="top">Sparc: 512Solaris x86: 320(5.0以前 256)
+<p>Sparc 64 bit: 1024</p>
+<p>Linux amd64: 1024 (5.0 以前 0)</p>
+<p>其他默认 512.</p></td>
+<td width="72%" valign="top">线程堆栈大小</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+UseBiasedLocking</td>
+<td width="10%" valign="top">JDK 5 update 6后引入，但需要手动启用。JDK6默认启用。</td>
+<td width="72%" valign="top">启用4。偏向锁原理详见 <a href="http://kenwublog.com/theory-of-java-biased-locking">http://kenwublog.com/theory-of-java-biased-locking</a></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+UseFastAccessorMethods</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="72%" valign="top">优化原始类型的getter方法性能。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:-UseISM</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="72%" valign="top">启用solaris的ISM。详见<a href="http://java.sun.com/docs/hotspot/ism.html">Intimate Shared Memory</a>.</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+UseLargePages</td>
+<td width="10%" valign="top">JDK 5 update 5后引入，但需要手动启用。JDK6默认启用。</td>
+<td width="72%" valign="top">启用大内存分页。调整内存页的方法和性能提升原理，详见<a href="http://kenwublog.com/tune-large-page-for-jvm-optimization">http://kenwublog.com/tune-large-page-for-jvm-optimization</a>
+<p><strong>关联选项</strong></p>
+<p>-XX:LargePageSizeInBytes=4m<strong> </strong></p></td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+UseMPSS</td>
+<td width="10%" valign="top">1.4.1 之前: 不启用其余版本默认启用</td>
+<td width="72%" valign="top">启用solaris的MPSS，不能与ISM同时使用。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:+StringCache</td>
+<td width="10%" valign="top">默认启用</td>
+<td width="72%" valign="top">启用字符串缓存。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:AllocatePrefetchLines=1</td>
+<td width="10%" valign="top">1</td>
+<td width="72%" valign="top">与机器码指令预读相关的一个选项，资料比较少，本文档不做解释。有兴趣的朋友请自行阅读官方doc。</td>
+</tr>
+<tr>
+<td width="16%" valign="top">-XX:AllocatePrefetchStyle=1</td>
+<td width="10%" valign="top">1</td>
+<td width="72%" valign="top">与机器码指令预读相关的一个选项，资料比较少，本文档不做解释。有兴趣的朋友请自行阅读官方doc。</td>
+</tr>
+</tbody>
+</table>
+
+
+<hr size="2"><strong>调试选项</strong>
+
+
+<table border="1" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td><strong>选项与默认值</strong></td>
+<td width="11%" valign="top"><strong>默认值与限制</strong></td>
+<td width="72%" valign="top"><strong>描述</strong></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-CITime</td>
+<td width="11%" valign="top">1.4引入。默认启用</td>
+<td width="72%" valign="top">打印JIT编译器编译耗时。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:ErrorFile=<br>
+./hs_err_pid&lt;pid&gt;.log</td>
+<td width="11%" valign="top">Java 6引入。</td>
+<td width="72%" valign="top">如果JVM crashed，将错误日志输出到指定文件路径。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-ExtendedDTraceProbes</td>
+<td width="11%" valign="top">Java6引入，限于solaris默认不启用</td>
+<td width="72%" valign="top">启用<a href="http://java.sun.com/javase/6/docs/technotes/guides/vm/dtrace.html">dtrace</a>诊断。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:HeapDumpPath=<br>
+./java_pid&lt;pid&gt;.hprof</td>
+<td width="11%" valign="top">默认是java进程启动位置，即user.dir</td>
+<td width="72%" valign="top">堆内存快照的存储文件路径。<br>
+<strong>什么是堆内存快照？</strong>
+<p>当java进程因OOM或crash被OS强制终止后，</p>
+<p>会生成一个hprof（Heap PROFling）格式的堆内存快照文件。</p>
+<p>该文件用于线下调试，诊断，查找问题。</p>
+<p>文件名一般为</p>
+<p>java_&lt;pid&gt;_&lt;date&gt;_&lt;time&gt;_heapDump.hprof</p>
+<p>解析快照文件，可以使用 jhat, eclipse MAT，gdb等工具。</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-HeapDump<br>
+OnOutOfMemoryError</td>
+<td width="11%" valign="top">1.4.2 update12 和 5.0 update 7 引入。默认不启用</td>
+<td width="72%" valign="top">在OOM时，输出一个dump.core文件，<br>
+ 记录当时的堆内存快照<br>
+（什么是堆内存快照? 见 -XX:HeapDumpPath 处的描述）。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:OnError=<br>
+“&lt;cmd args&gt;;&lt;cmd args&gt;”</td>
+<td width="11%" valign="top">1.4.2 update 9引入</td>
+<td width="72%" valign="top">当java每抛出一个ERROR时，运行指定命令行指令集。
+<p>指令集是与OS环境相关的，</p>
+<p>在linux下多数是bash脚本，windows下是dos批处理。</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:OnOutOfMemoryError=<br>
+“&lt;cmd args&gt;;&lt;cmd args&gt;”</td>
+<td width="11%" valign="top">1.4.2 update 12和java6时引入</td>
+<td width="72%" valign="top">当第一次发生OOM时，运行指定命令行指令集。<br>
+指令集是与OS环境相关的，在linux下多数是bash脚本，<br>
+windows下是dos批处理。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintClassHistogram</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">在Windows下, 按ctrl-break或Linux下是<br>
+执行kill -3（发送SIGQUIT信号）时，<br>
+打印class柱状图。Jmap –histo pid也实现了相同的功能。
+<p>详见 <a href="http://java.sun.com/javase/6/docs/technotes/tools/share/jmap.html">http://java.sun.com/javase/6/docs/<br>
+technotes/tools/share/jmap.html</a></p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintConcurrentLocks</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">在thread dump的同时，打印java.util.concurrent的锁状态。<br>
+Jstack –l pid 也同样实现了同样的功能。
+<p>详见 <a href="http://java.sun.com/javase/6/docs/technotes/tools/share/jstack.html">http://java.sun.com/javase/6/docs/<br>
+technotes/tools/share/jstack.html</a></p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintCommandLineFlags</td>
+<td width="11%" valign="top">5.0 引入，默认不启用</td>
+<td width="72%" valign="top">Java启动时，往stdout打印当前启用的非稳态jvm options。<br>
+例如：
+<p>-XX:+UseConcMarkSweepGC<br>
+-XX:+HeapDumpOnOutOfMemoryError<br>
+-XX:+DoEscapeAnalysis</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintCompilation</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">往stdout打印方法被JIT编译时的信息。例如：
+<p>1       java.lang.String::charAt (33 bytes)</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintGC</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">开启GC日志打印。打印格式例如：
+<p>[Full GC 131115K-&gt;7482K(1015808K), 0.1633180 secs]</p>
+<p>该选项可通过<br>
+com.sun.management.HotSpotDiagnosticMXBean API<br>
+和 Jconsole 动态启用。</p>
+<p>详见 <a href="http://java.sun.com/developer/technicalArticles/J2SE/monitoring/%23Heap_Dump">http://java.sun.com/developer/<br>
+technicalArticles/J2SE/monitoring/#Heap_Dump</a></p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintGCDetails</td>
+<td width="11%" valign="top">1.4.0引入，默认不启用</td>
+<td width="72%" valign="top">打印GC回收的细节。打印格式例如：
+<p>[Full GC (System) [Tenured: 0K-&gt;2394K(466048K),<br>
+0.0624140 secs] 30822K-&gt;2394K(518464K),</p>
+<p>[Perm : 10443K-&gt;10443K(16384K)], 0.0625410 secs]<br>
+[Times: user=0.05 sys=0.01, real=0.06 secs]</p>
+<p>该选项可通过<br>
+com.sun.management.HotSpotDiagnosticMXBean API<br>
+和 Jconsole 动态启用。</p>
+<p>详见 <a href="http://java.sun.com/developer/technicalArticles/J2SE/monitoring/%23Heap_Dump">http://java.sun.com/developer/<br>
+technicalArticles/J2SE/monitoring/#Heap_Dump</a></p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-PrintGCTimeStamps</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">打印GC停顿耗时。打印格式例如：
+<p><strong>2.744</strong>: [Full GC (System) 2.744:<br>
+[Tenured: 0K-&gt;2441K(466048K), 0.0598400 secs]<br>
+31754K-&gt;2441K(518464K),</p>
+<p>[Perm : 10717K-&gt;10717K(16384K)], 0.0599570 secs]<br>
+[Times: user=0.06 sys=0.00, real=0.06secs]</p>
+<p>该选项可通过<br>
+com.sun.management.HotSpotDiagnosticMXBean API<br>
+和 Jconsole 动态启用。</p>
+<p>详见 <a href="http://java.sun.com/developer/technicalArticles/J2SE/monitoring/%23Heap_Dump">http://java.sun.com/developer/<br>
+technicalArticles/J2SE/monitoring/#Heap_Dump</a></p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:<br>
+-PrintTenuringDistribution</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">打印对象的存活期限信息。打印格式例如：
+<p>[GC<br>
+Desired survivor size 4653056 bytes, new threshold 32 (max 32)<br>
+- age 1: 2330640 bytes, 2330640 total<br>
+- age 2: 9520 bytes, 2340160 total</p>
+<p>204009K-&gt;21850K(515200K), 0.1563482 secs]</p>
+<p>Age1 2表示在第1和2次GC后存活的对象大小。</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-TraceClassLoading</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">打印class装载信息到stdout。记Loaded状态。例如：
+<p>[Loaded java.lang.Object from /opt/taobao/install/jdk1.6.0_07/jre/lib/rt.jar]</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:<br>
+-TraceClassLoadingPreorder</td>
+<td width="11%" valign="top">1.4.2引入，默认不启用</td>
+<td width="72%" valign="top">按class的引用/依赖顺序打印类装载信息到stdout。不同于 TraceClassLoading，本选项只记 Loading状态。
+<p>例如：</p>
+<p>[Loading java.lang.Object from /home/confsrv/jdk1.6.0_14/jre/lib/rt.jar]</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-TraceClassResolution</td>
+<td width="11%" valign="top">1.4.2引入，默认不启用</td>
+<td width="72%" valign="top">打印所有静态类，常量的代码引用位置。用于debug。例如：
+<p>RESOLVE java.util.HashMap java.util.HashMap$Entry HashMap.java:209</p>
+<p>说明HashMap类的209行引用了静态类 java.util.HashMap$Entry</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-TraceClassUnloading</td>
+<td width="11%" valign="top">默认不启用</td>
+<td width="72%" valign="top">打印class的卸载信息到stdout。记Unloaded状态。</td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:-TraceLoaderConstraints</td>
+<td width="11%" valign="top">Java6 引入，默认不启用</td>
+<td width="72%" valign="top">
+<p>打印class的装载策略变化信息到stdout。例如：</p>
+<p>[Adding new constraint for name: java/lang/String,<br>
+loader[0]: sun/misc/Launcher$ExtClassLoader,<br>
+loader[1]: &lt;bootloader&gt; ]</p>
+<p>[Setting class object in existing constraint for name:<br>
+[Ljava/lang/Object;<br>
+and loader sun/misc/Launcher$ExtClassLoader ]</p>
+<p>[Updating constraint for name org/xml/sax/InputSource,<br>
+loader &lt;bootloader&gt;, by setting class object ]</p>
+<p>[Extending constraint for name java/lang/Object<br>
+by adding loader[15]:<br>
+sun/reflect/DelegatingClassLoader  ]</p>
+<p>装载策略变化是实现classloader<br>
+隔离/名称空间一致性的关键技术。</p>
+<p>对此感兴趣的朋友，详见<br>
+<a href="http://kenwublog.com/docs/Dynamic+Class+Loading+in+the+Java+Virtual+Machine.pdf">http://kenwublog.com/docs/<br>
+Dynamic+Class+Loading+in+the+<br>
+Java+Virtual+Machine.pdf</a><br>
+中的 contraint rules一章。</p></td>
+</tr>
+<tr>
+<td width="15%" valign="top">-XX:+PerfSaveDataToFile</td>
+<td width="11%" valign="top">默认启用</td>
+<td width="72%" valign="top">当java进程因OOM或crashed被强制终止后，生成一个堆快照文件（什么是堆内存快照? 见 -XX:HeapDumpPath 处的描述）。</td>
+</tr>
+</tbody>
+</table>
+
+
+<p><strong>作者敬告</strong></p>
+
+
+<p>完善的单元测试，功能回归测试，和性能基准测试可以减少因调整非稳态JVM选项带来的风险。</p>
+
+
+<p>参考资料</p>
+
+
+<p>Java6性能调优白皮书</p>
+
+
+<p><a href="http://java.sun.com/performance/reference/whitepapers/6_performance.html">http://java.sun.com/performance/reference/whitepapers/6_performance.html</a></p>
+
+
+<p>Java6 GC调优指南</p>
+
+
+<p><a href="http://java.sun.com/javase/technologies/hotspot/gc/gc_tuning_6.html">http://java.sun.com/javase/technologies/hotspot/gc/gc_tuning_6.html</a></p>
+
+
+<p>更为全面的options列表</p>
+
+
+<p><a href="http://blogs.sun.com/watt/resource/jvm-options-list.html">http://blogs.sun.com/watt/resource/jvm-options-list.html</a></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

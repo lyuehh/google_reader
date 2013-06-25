@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>IronRuby练手系列之一:写个进程管理器</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>IronRuby练手系列之一:写个进程管理器</h2>
+<p class="meta">26 Jul 2010</p>
+
+<div class="post">
+<h2>IronRuby练手系列之一:写个进程管理器</h2>
+
+<h3>by skandhas</h3>
+
+<h3>at 2010-07-25 20:06:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/skandhas/archive/2010/07/25/1784807.html">http://www.cnblogs.com/skandhas/archive/2010/07/25/1784807.html</a></h3>
+
+<p>作者: <a href="http://www.cnblogs.com/skandhas/">skandhas</a> 发表于 2010-07-25 20:06 <a href="http://www.cnblogs.com/skandhas/archive/2010/07/25/1784807.html">原文链接</a> 阅读: 485 评论: 0</p>
+
+
+<p><span style="font-size:10pt">      用IronRuby+SharpDevelop 来开发GUI程序是十分便利的。《IronRuby练手系列》计划是用Ruby来写一系列的小工具，目的是来进一步熟悉IronRuby.</span><br><span style="font-size:10pt">      我的机器装的IronRuby是 <strong>IronRuby 1.0 for .NET 2.0 SP1</strong></span><br><span style="font-size:10pt">      IronRuby的下载地址:<a href="http://ironruby.codeplex.com/releases">http://ironruby.codeplex.com/releases</a></span></p>
+
+
+<p><span style="font-size:10pt"><a href="http://ironruby.codeplex.com/releases"><br></a></span></p>
+
+
+<p><span style="font-size:10pt">      <strong>本文示例代码下载</strong>:<img src="http://www.w-yong.com/images/download.gif" alt="下载文件"><a href="http://www.w-yong.com/attachments/month_1007/r2010725191825.rar">点击下载此文件</a>。解压缩后，运行run.dat即可。</span></p>
+
+
+<p><span style="font-size:10pt">  </span></p>
+
+
+<p><span style="font-size:10pt">       本文章是写一个进程管理器，需要的主要知识点是:Ruby语言，WinForm，Win32 API等。本文的重点如题，是以Ruby为主，而不是以&quot;列举进程&quot;为主。</span><br><span style="font-size:10pt">      不过，还是略微提一下,取得系统中的进程信息的方法主要有：</span><br><span style="font-size:10pt">      1.通过 Tool Help API 获取</span><br><span style="font-size:10pt">      2.通过 PSAPI 获取</span><br><span style="font-size:10pt">      3.通过 Native API 获取</span><br><span style="font-size:10pt">      4.通过 驱动来遍历EPROCESS 获取</span><br><span style="font-size:10pt">      5.对于.NET,可以通过System.Diagnostics 命名空间下的Process类来获取</span><br><span style="font-size:10pt">      6....</span><br> <br><span style="font-size:10pt">      我们采用方式1，利用Tool Help API来获取进程信息。程序可以列举出系统中正在运行的进程，选中某个进程，程序可以显示出该进程加载的模块，还可以终止选中的进程。程序的运行结果如下:</span></p>
+
+
+<p><span style="font-size:10pt"><img alt="procmgr" src="http://images.cnblogs.com/cnblogs_com/skandhas/252952/o_prcmgr.JPG" height="492" width="600"><br></span></p>
+
+
+<p><span style="font-size:10pt">     这个程序的主要功能实际上是由 <strong>ProcessManager</strong>这个类提供的。具体代码的实现，大家可以看process_manager.rb这个文件。ProcessManager中使用了<strong>CStruct</strong>这个类。CStruct是用ruby来模拟C语言的结构体，类似BitStruct。我写CStruct这个类目的很明确，它不需要大而全，功能适中，使用起来比较方便。有了CStruct，我们就可以很方便的和Win API打交道了。关于<strong>CStruct</strong>，我会另写一篇文章来介绍它。在这里，它只是跑龙套的。</span></p>
+
+
+<p><span style="font-size:10pt">     我们先来看看 ProcessManager类提供的功能:</span></p>
+
+
+<p><span style="font-size:10pt">
+<div>
+<pre>require 'process_manager'
+
+#下面是一些使用procmgr的例子
+procmgr = ProcessManager.new
+
+# 列举所有进程
+procmgr.procs {|proc| puts proc.name}
+
+# 根据名称查询进程信息.(同名的都会被列举)
+procmgr.query("svchost.exe"){|proc|  puts "#{proc.name} id = #{proc.id}\n"}
+
+# 按名称终止进程(同名的都会终止)
+procmgr.kill("notepad.exe")
+
+# 按ID终止进程
+procmgr.kill(3412)
+
+# 找出系统中载入了advapi32.dll的进程,
+# 并打印出advapi32.dll在进程中的加载位置
+procmgr.procs do |proc| 
+    proc.modules do |mod|
+        if mod.name.casecmp('advapi32.dll')==0
+            printf"#{proc.name} loaded 'advapi32.dll' at %08X\n",mod.image_base
+            break
+        end
+    end
+end
+</pre>
+</div>
+<br></span></p>
+
+
+<p> </p>
+
+
+<p><span style="font-size:10pt">     有了ProcessManager提供的procs(列举进程)和modules(列举模块)这个两个方法，我们就可以写我们的GUI版的进程管理器。大部分工作就是利用 SharpDevelop 做好界面布局。<strong>有一点需要说明，SharpDevelop 生成的变量名不太符合Ruby的命名约定，你若觉得不习惯，可以改改。反正本文没有改，两者兼有之。</strong></span></p>
+
+
+<p><span style="font-size:10pt">      程序中有两个主要函数，show_processes和show_modules,代码如下：</span><br><span style="font-size:10pt">show_processes:</span>
+</p>
+
+
+<p><span style="font-size:10pt">
+<div>
+<pre>def show_processes
+    # 清空 ListView 控件
+    @procListView.Items.clear
+    @proc_cache.clear
+    
+    # 列举系统进程
+    @procmgr.procs do |proc|
+        
+        # 缓存proc对象
+        @proc_cache&lt;&lt;proc
+        proc_mod = nil
+        
+        # 取出进程对应的自身模块
+        proc.modules do |mod|
+            if File.basename(mod.path).casecmp(proc.name)==0
+                proc_mod = mod
+                break 
+            end
+        end
+        # 如果取不到自身模块,则造个假的。
+        unless proc_mod
+            proc_mod = Struct.new(:path, :image_base,:image_size).new(proc.name,0,0)
+        end
+        # 取出进程文件的图标               
+        @small_proc_imagelist.Images.Add AppUtils.get_file_small_icon(proc_mod.path.gsub(&quot;\\??\\&quot;,&#39;&#39;),AppUtils.is_system_process(proc_mod.path))
+
+        # 将相关信息插入到ListView控件中。
+        proc_items = @procListView.Items
+        
+        proc_items &lt;&lt; System::String.new(System::Text::Encoding.GetEncoding(0).GetChars(proc_mod.path))
+        proc_items[proc_items.Count-1].ImageIndex = @small_proc_imagelist.Images.size-1
+        proc_items[proc_items.Count-1].SubItems.Add sprintf(&quot;%08X&quot;,proc.id)
+        proc_items[proc_items.Count-1].SubItems.Add sprintf(&quot;%08X&quot;,proc_mod.image_base)
+        proc_items[proc_items.Count-1].SubItems.Add sprintf(&quot;%08X&quot;,proc_mod.image_size)
+    
+    end
+        # 设置 ImageList
+  @procListView.SmallImageList  = @small_proc_imagelist
+
+end
+
+</pre>
+</div>
+<br></span></p>
+
+
+<p><span style="font-size:10pt">show_modules:</span></p>
+
+
+<div>
+<pre>def show_modules seleced_proc
+    return unless seleced_proc
+    # 列举选中进程的模块    
+    seleced_proc.modules do |mod|
+        mod_items = @modListView.Items
+    
+        # 取出模块文件的图标       
+        @small_mod_imagelist.Images.Add AppUtils.get_file_small_icon(mod.path.gsub(&quot;\\??\\&quot;,&#39;&#39;),AppUtils.is_system_process(mod.path))
+    
+        # 将相关信息插入到ListView控件中。
+        mod_items &lt;&lt; System::String.new(System::Text::Encoding.GetEncoding(0).GetChars(mod.path))
+        mod_items[mod_items.Count-1].ImageIndex = @small_mod_imagelist.Images.size-1
+        mod_items[mod_items.Count-1].SubItems.Add sprintf(&quot;%08X&quot;,mod.image_base)
+        mod_items[mod_items.Count-1].SubItems.Add sprintf(&quot;%08X&quot;,mod.image_size)
+    end
+  # 设置 ImageList
+  @modListView.SmallImageList  = @small_mod_imagelist
+end
+</pre>
+</div>
+
+
+<p> </p>
+
+
+<p><span style="font-size:10pt">      具体的代码，请参考附件中的源码。</span></p>
+
+
+<p><img src="http://www.cnblogs.com/skandhas/aggbug/1784807.html?type=1" width="1" height="1" alt=""><p>评论: 0　<a href="http://www.cnblogs.com/skandhas/archive/2010/07/25/1784807.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/skandhas/archive/2010/07/25/1784807.html#commentform">发表评论</a></p><p><a href="http://www.cnblogs.com/cmt/archive/2010/06/08/1753881.html">购买博客园2010T恤，留下2010年的纪念</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/69227/">Windows Phone 7硬件伙伴未定 或临阵倒戈</a><span style="color:gray">(2010-07-26 08:27)</span><br>· <a href="http://news.cnblogs.com/n/69226/">Facebook移动战略：开放API打造平台的平台</a><span style="color:gray">(2010-07-26 08:20)</span><br>· <a href="http://news.cnblogs.com/n/69225/">微软：Mac专用Office2011测试邀请已发出</a><span style="color:gray">(2010-07-26 08:20)</span><br>· <a href="http://news.cnblogs.com/n/69224/">3名名牌大学IT精英制作“后门程序”泄愤</a><span style="color:gray">(2010-07-26 08:19)</span><br>· <a href="http://news.cnblogs.com/n/69223/">意大利科研人员通过 Google Earth 发现现存最完整的陨石坑</a><span style="color:gray">(2010-07-26 08:17)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/69179/">腾讯：搅局者还是终结者？</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Android OpenGL 学习笔记 --开始篇</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Android OpenGL 学习笔记 --开始篇</h2>
+<p class="meta">10 Jul 2010</p>
+
+<div class="post">
+<h2>Android OpenGL 学习笔记 --开始篇</h2>
+
+<h3>by Terry_龙</h3>
+
+<h3>at 2010-07-09 16:37:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/TerryBlog/archive/2010/07/09/1774475.html">http://www.cnblogs.com/TerryBlog/archive/2010/07/09/1774475.html</a></h3>
+
+<p><a href="http://www.cnblogs.com/TerryBlog/"><img src="http://pic.cnblogs.com/face/u107203.png" alt="" border="0"></a><br>作者: <a href="http://www.cnblogs.com/TerryBlog/">Terry_龙</a> 发表于 2010-07-09 16:37 <a href="http://www.cnblogs.com/TerryBlog/archive/2010/07/09/1774475.html">原文链接</a> 阅读: 1110 评论: 6</p>
+
+
+<p><strong>1、什么是 OpenGL?</strong></p>
+
+
+<p>　　<strong>OpenGL</strong> 是个专业的3D程序接口，是一个功能强大，调用方便的底层3D图形库。<strong>OpenGL</strong>  的前身是 SGI 公司为其图形工作站开的 IRIS GL。IRIS GL 是一个工业标准的3D图形软件接口，功能虽然强大但是移植性不好，于是 SGI 公司便在 IRIS GL 的基础上开发 <strong>OpenGL</strong>  。具体详细的介绍请 <a style="color:#ff0000" href="http://detail.zol.com.cn/product_param/index3397.html">点击这里</a> 。</p>
+
+
+<p><strong>2、OpenGL 的发展历程</strong></p>
+
+
+<p>　　1992年7月 发布了 <strong>OpenGL 1.0</strong> 版本，并与微软共同推出 Windows NT 版本的 <strong>OpenGL</strong> 。</p>
+
+
+<p>　　1995年 <strong>OpenGL 1.1</strong> 版本面市，加入了新功能，并引入了纹理特性等等。</p>
+
+
+<p>　　一直到 2009年8月Khronos小组发布了<strong>OpenGL</strong> 3.2，这是一年以来<strong>OpenGL</strong>进行的第三次重要升级。</p>
+
+
+<p>具体特点及功能、 <strong>OpenGL</strong> 现状、发展历程、<strong>OpenGL</strong> 规范、编程入门请 <a style="color:#ff0000" href="http://baike.baidu.com/view/9222.htm">点击这里</a> 。</p>
+
+
+<p><strong>3、OpenGL  ES 简介</strong></p>
+
+
+<p>      Android 3D <span style="font-family:宋体">引擎采用的是</span><strong>OpenGL ES</strong><span style="font-family:宋体">。</span><strong>OpenGL ES</strong><span style="font-family:宋体">是一套为手持和嵌入式系统设计的</span>3D<span style="font-family:宋体">引擎</span>API<span style="font-family:宋体">，由</span>Khronos<span style="font-family:宋体">公司维护。在</span>PC<span style="font-family:宋体">领域，一直有两种标准的</span>3D API<span style="font-family:宋体">进行竞争，</span><strong>OpenGL</strong> <span style="font-family:宋体">和</span> DirectX<span style="font-family:宋体">。一般主流的游戏和显卡都支持这两种渲染方式，</span>DirectX<span style="font-family:宋体">在</span>Windows<span style="font-family:宋体">平台上有很大的优势，但是 </span><strong>OpenGL </strong><span style="font-family:宋体">具有更好的跨平台性。</span></p>
+
+
+<p style="text-indent:21pt"><span style="font-family:宋体">由于嵌入式系统和</span>PC<span style="font-family:宋体">相比，一般说来，</span>CPU<span style="font-family:宋体">、内存等都比</span>PC<span style="font-family:宋体">差很多，而且对能耗有着特殊的要求，许多嵌入式设备并没有浮点运算协处理器，针对嵌入式系统的以上特点，</span>Khronos<span style="font-family:宋体">对标准的 </span><strong>OpenGL</strong> <span style="font-family:宋体">系统进行了维护和改动，以期望满足嵌入式设备对</span>3D<span style="font-family:宋体">绘图的要求。</span></p>
+
+
+<p><strong>4、<span lang="EN-US"><span><span style="font:7pt &#39;Times New Roman&#39;"> </span></span></span><span lang="EN-US"><font face="Cambria">Android OpenGL ES </font></span><span style="font-family:宋体">简介</span></strong><span style="font-family:宋体"></span></p>
+
+
+<p style="text-indent:18pt">Android<span style="font-family:宋体">系统使用 </span><strong>OpenGL</strong> <span style="font-family:宋体">的标准接口来支持</span>3D<span style="font-family:宋体">图形功能，</span>android 3D <span style="font-family:宋体">图形系统也分为 </span>java <span style="font-family:宋体">框架和本地代码两部分。本地代码主要实现的</span> <strong>OpenGL</strong> <span style="font-family:宋体">接口的库，在 </span>Java <span style="font-family:宋体">框架层，</span>javax.microedition.khronos.opengles <span style="font-family:宋体">是 </span>java <span style="font-family:宋体">标准的</span> <strong>OpenGL</strong> <span style="font-family:宋体">包，</span>android.opengl<span style="font-family:宋体">包提供了</span> <strong>OpenGL</strong> <span style="font-family:宋体">系统和 </span>Android GUI <span style="font-family:宋体">系统之间的联系。</span></p>
+
+
+<p> <strong>5、Android 支持 OpenGL 列表</strong></p>
+
+
+<ul><li>1、GL</li><li>2、GL 10</li><li>3、GL 10 EXT</li><li>4、GL 11</li><li>5、GL 11 EXT</li><li>6、GL 11 ExtensionPack</li></ul>
+
+
+<p>我们将使用 GL10 这个类开始接触 <strong>OpenGL</strong> ，探索3D 领域。</p>
+
+
+<p><strong>6、一步一步实现自己的 Renderer 类</strong></p>
+
+
+<p>在 Android 中我们使用 GLSurfaceView 来显示 <strong>OpenGL</strong> 视图，该类位于 android.opengl 包里面。它提供了一个专门用于渲染3D 的接口 Renderer 。接下来我们就来一步步构建自己的 Renderer 类。</p>
+
+
+<ul><li>1、为 Renderer 类赶回命名空间<br>
+<div>
+<div><span style="color:#0000ff">import</span><span style="color:#000000"> android.opengl.GLSurfaceView.Renderer;</span></div></div>
+<p> </p></li><li>2、新建一个类来实现 Renderer 接口，代码如下：<br>
+<div>
+<div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> ThreeDGl </span><span style="color:#0000ff">implements</span><span style="color:#000000"> Renderer <br>{<br>}</span></div></div>
+<p> </p></li><li>3、如上代码所写，程序实现了 Renderer 类，则必须重写以下方法<br>
+<div>
+<div><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onDrawFrame(GL10 gl) <br>{<br>}<br></span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onSurfaceChanged(GL10 gl, </span><span style="color:#0000ff">int</span><span style="color:#000000"> width, </span><span style="color:#0000ff">int</span><span style="color:#000000"> height)<br>{}<br></span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onSurfaceCreated(GL10 gl, EGLConfig config)<br>{}</span></div></div>
+<p> </p></li><li>4、当窗口被创建时需要调用 onSurfaceCreate ，我们可以在这里对 <strong>OpenGL</strong> 做一些初始化工作，例如：<br>
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif">
+<div>
+<div><span style="color:#000000">                </span><span style="color:#008000">//</span><span style="color:#008000"> 启用阴影平滑</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glShadeModel(GL10.GL_SMOOTH);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 黑色背景</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glClearColor(</span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置深度缓存</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glClearDepthf(</span><span style="color:#000000">1.0f</span><span style="color:#000000">);                            <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 启用深度测试</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glEnable(GL10.GL_DEPTH_TEST);                        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 所作深度测试的类型</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glDepthFunc(GL10.GL_LEQUAL);                            <br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 告诉系统对透视进行修正</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);</span></div></div></div>
+<p> </p>glHint 用于告诉 <strong>OpenGL</strong> 我们希望进行最好的透视修正，这会轻微地影响性能，但会使得透视图更好看。<br>glClearColor 设置清除屏幕时所用的颜色，色彩值的范围从 0.0f~1.0f 大小从暗到这的过程。<br>glShadeModel 用于启用阴影平滑度。阴影平滑通过多边形精细地混合色彩，并对外部光进行平滑。<br>glDepthFunc 为将深度缓存设想为屏幕后面的层，它不断地对物体进入屏幕内部的深度进行跟踪。<br>glEnable 启用深度测试。</li><li>5、当窗口大小发生改变时系统将调用 onSurfaceChange 方法，可以在该方法中设置 <strong>OpenGL </strong>场景大小 ，代码如下：<br>
+<div>
+<div><span style="color:#008000">//</span><span style="color:#008000">设置OpenGL场景的大小</span><span style="color:#008000"><br></span><span style="color:#000000">gl.glViewport(</span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, width, height);</span></div></div>
+<p> </p></li><li>6、场景画出来了，接下来我们就要实现场景里面的内容，比如：设置它的透视图，让它有种越远的东西看起来越小的感觉，代码如下：<br>
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif">
+<div>
+<div><span style="color:#008000">//</span><span style="color:#008000">设置投影矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glMatrixMode(GL10.GL_PROJECTION);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">重置投影矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置视口的大小</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glFrustumf(</span><span style="color:#000000">-</span><span style="color:#000000">ratio, ratio, </span><span style="color:#000000">-</span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">10</span><span style="color:#000000">);<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 选择模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glMatrixMode(GL10.GL_MODELVIEW);    <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 重置模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();    </span></div></div></div>
+<p> </p>gl.glMatrixMode(GL10.GL_PROJECTION); 指明接下来的代码将影响 projection matrix （投影矩阵），投影矩阵负责为场景增加透视度。<br> gl.glLoadIdentity(); 此方法相当于我们手机的重置功能，它将所选择的矩阵状态恢复成原始状态，调用  glLoadIdentity(); 之后为场景设置透视图。<br>gl.glMatrixMode(GL10.GL_MODELVIEW);   指明任何新的变换将会影响 modelview matrix （模型观察矩阵）。<br>gl.glFrustumf(<span style="color:#000000">-</span><span style="color:#000000">ratio, ratio, </span><span style="color:#000000">-</span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">10</span><span style="color:#000000">);</span> 此方法，前面4个参数用于确定窗口的大小，而后面两个参数分别是在场景中所能绘制深度的起点和终点。</li><li>7、了解了上面两个重写方法的作用和功能之后，第三个方法 onDrawFrame 从字面上理解就知道此方法做绘制图操作的。嗯，没错。在绘图之前，需要将屏幕清除成前面所指定的颜色，清除尝试缓存并且重置场景，然后就可以绘图了， 代码如下：<br>
+<div>
+<div><span style="color:#008000">//</span><span style="color:#008000"> 清除屏幕和深度缓存</span><span style="color:#008000"><br></span><span style="color:#000000">gl.glClear(GL10.GL_COLOR_BUFFER_BIT </span><span style="color:#000000">|</span><span style="color:#000000"> GL10.GL_DEPTH_BUFFER_BIT);<br></span><span style="color:#008000">//</span><span style="color:#008000"> 重置当前的模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">gl.glLoadIdentity();</span></div></div>
+<p> </p></li><li>8、Renderer 类在实现了上面的三个重写之后，在程序入口中只需要调用<br>
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif">
+<div>
+<div><span style="color:#000000">Renderer render</span><span style="color:#000000">=</span><span style="color:#0000ff">new</span><span style="color:#000000"> ThreeDGl(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>    </span><span style="color:#008000">/**</span><span style="color:#008000"> Called when the activity is first created. </span><span style="color:#008000">*/</span><span style="color:#000000"><br>    @Override<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onCreate(Bundle savedInstanceState) {<br>        </span><span style="color:#0000ff">super</span><span style="color:#000000">.onCreate(savedInstanceState);<br>        GLSurfaceView gview</span><span style="color:#000000">=</span><span style="color:#0000ff">new</span><span style="color:#000000"> GLSurfaceView(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>        gview.setRenderer(render);<br>        setContentView(gview);<br>    }</span></div></div></div>
+<p> </p>即可将我们绘制的图形显示出来。</li></ul>
+
+
+<p>下面分享一段使用Renderer类绘制的三角形和四边形的代码：</p>
+
+
+<p> </p>
+
+
+<div><img src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt=""><img src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif"><span>OpenGL 参考代码</span>
+<div>
+<div><span style="color:#0000ff">package</span><span style="color:#000000"> com.terry;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> java.nio.IntBuffer;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> javax.microedition.khronos.egl.EGLConfig;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> javax.microedition.khronos.opengles.GL10;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.opengl.GLSurfaceView.Renderer;<br><br></span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> GLRender </span><span style="color:#0000ff">implements</span><span style="color:#000000"> Renderer{<br><br>    </span><span style="color:#0000ff">float</span><span style="color:#000000"> rotateTri,rotateQuad;<br>    </span><span style="color:#0000ff">int</span><span style="color:#000000"> one</span><span style="color:#000000">=</span><span style="color:#000000">0x10000</span><span style="color:#000000">;<br>    <br>    </span><span style="color:#008000">//</span><span style="color:#008000">三角形的一个顶点</span><span style="color:#008000"><br></span><span style="color:#000000">    </span><span style="color:#0000ff">private</span><span style="color:#000000"> IntBuffer triggerBuffer</span><span style="color:#000000">=</span><span style="color:#000000">IntBuffer.wrap(</span><span style="color:#0000ff">new</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000">[]{<br>            </span><span style="color:#000000">0</span><span style="color:#000000">,one,</span><span style="color:#000000">0</span><span style="color:#000000">,     </span><span style="color:#008000">//</span><span style="color:#008000">上顶点</span><span style="color:#008000"><br></span><span style="color:#000000">            </span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">0</span><span style="color:#000000">,    </span><span style="color:#008000">//</span><span style="color:#008000">左顶点</span><span style="color:#008000"><br></span><span style="color:#000000">            one,</span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">0</span><span style="color:#000000">    </span><span style="color:#008000">//</span><span style="color:#008000">右下点</span><span style="color:#008000"><br></span><span style="color:#000000">    });<br>    <br>    </span><span style="color:#008000">//</span><span style="color:#008000">正方形的四个顶点</span><span style="color:#008000"><br></span><span style="color:#000000">    </span><span style="color:#0000ff">private</span><span style="color:#000000"> IntBuffer quateBuffer</span><span style="color:#000000">=</span><span style="color:#000000">IntBuffer.wrap(</span><span style="color:#0000ff">new</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000">[]{<br>            one,one,</span><span style="color:#000000">0</span><span style="color:#000000">,<br>            </span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">0</span><span style="color:#000000">,<br>            one,</span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">0</span><span style="color:#000000">,<br>            </span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">-</span><span style="color:#000000">one,</span><span style="color:#000000">0</span><span style="color:#000000"><br>    });<br>    <br>    <br>    </span><span style="color:#0000ff">private</span><span style="color:#000000"> IntBuffer colorBuffer</span><span style="color:#000000">=</span><span style="color:#000000">IntBuffer.wrap(</span><span style="color:#0000ff">new</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000">[]{<br>            one,</span><span style="color:#000000">0</span><span style="color:#000000">,</span><span style="color:#000000">0</span><span style="color:#000000">,one,<br>            </span><span style="color:#000000">0</span><span style="color:#000000">,one,</span><span style="color:#000000">0</span><span style="color:#000000">,one,<br>            </span><span style="color:#000000">0</span><span style="color:#000000">,</span><span style="color:#000000">0</span><span style="color:#000000">,one,one<br>    });<br>    <br>    <br>    <br>    @Override<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onDrawFrame(GL10 gl) {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> TODO Auto-generated method stub<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 清除屏幕和深度缓存</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glClear(GL10.GL_COLOR_BUFFER_BIT </span><span style="color:#000000">|</span><span style="color:#000000"> GL10.GL_DEPTH_BUFFER_BIT);<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 重置当前的模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();<br><br><br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 左移 1.5 单位，并移入屏幕 6.0</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glTranslatef(</span><span style="color:#000000">-</span><span style="color:#000000">1.5f</span><span style="color:#000000">, </span><span style="color:#000000">0.0f</span><span style="color:#000000">, </span><span style="color:#000000">-</span><span style="color:#000000">6.0f</span><span style="color:#000000">);<br>         </span><span style="color:#008000">//</span><span style="color:#008000">设置旋转</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glRotatef(rotateTri, </span><span style="color:#000000">0.0f</span><span style="color:#000000">, </span><span style="color:#000000">1.0f</span><span style="color:#000000">, </span><span style="color:#000000">0.0f</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置定点数组</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置颜色数组</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glEnableClientState(GL10.GL_COLOR_ARRAY);<br>        <br>        gl.glColorPointer(</span><span style="color:#000000">4</span><span style="color:#000000">, GL10.GL_FIXED, </span><span style="color:#000000">0</span><span style="color:#000000">, colorBuffer);<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置三角形顶点</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glVertexPointer(</span><span style="color:#000000">3</span><span style="color:#000000">, GL10.GL_FIXED, </span><span style="color:#000000">0</span><span style="color:#000000">, triggerBuffer);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">绘制三角形</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glDrawArrays(GL10.GL_TRIANGLES, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">3</span><span style="color:#000000">);<br>        <br>        gl.glDisableClientState(GL10.GL_COLOR_ARRAY);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">绘制三角形结束</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glFinish();<br>        <br>        </span><span style="color:#008000">/**</span><span style="color:#008000">********************</span><span style="color:#008000">*/</span><span style="color:#000000"><br>        </span><span style="color:#008000">/*</span><span style="color:#008000"> 渲染正方形 </span><span style="color:#008000">*/</span><span style="color:#000000"><br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 重置当前的模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 左移 1.5 单位，并移入屏幕 6.0</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glTranslatef(</span><span style="color:#000000">1.5f</span><span style="color:#000000">, </span><span style="color:#000000">0.0f</span><span style="color:#000000">, </span><span style="color:#000000">-</span><span style="color:#000000">6.0f</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置当前色为蓝色</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glColor4f(</span><span style="color:#000000">0.5f</span><span style="color:#000000">, </span><span style="color:#000000">0.5f</span><span style="color:#000000">, </span><span style="color:#000000">1.0f</span><span style="color:#000000">, </span><span style="color:#000000">1.0f</span><span style="color:#000000">);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置旋转</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glRotatef(rotateQuad, </span><span style="color:#000000">1.0f</span><span style="color:#000000">, </span><span style="color:#000000">0.0f</span><span style="color:#000000">, </span><span style="color:#000000">0.0f</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置和绘制正方形</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glVertexPointer(</span><span style="color:#000000">3</span><span style="color:#000000">, GL10.GL_FIXED, </span><span style="color:#000000">0</span><span style="color:#000000">, quateBuffer);<br>        gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">4</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">绘制正方形结束</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glFinish();<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000">取消顶点数组</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000">改变旋转的角度</span><span style="color:#008000"><br></span><span style="color:#000000">        rotateTri </span><span style="color:#000000">+=</span><span style="color:#000000"> </span><span style="color:#000000">0.5f</span><span style="color:#000000">;<br>        rotateQuad </span><span style="color:#000000">-=</span><span style="color:#000000"> </span><span style="color:#000000">0.5f</span><span style="color:#000000">;<br>    }<br><br>    @Override<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onSurfaceChanged(GL10 gl, </span><span style="color:#0000ff">int</span><span style="color:#000000"> width, </span><span style="color:#0000ff">int</span><span style="color:#000000"> height) {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> TODO Auto-generated method stub</span><span style="color:#008000"><br></span><span style="color:#000000">        <br>        </span><span style="color:#0000ff">float</span><span style="color:#000000"> ratio </span><span style="color:#000000">=</span><span style="color:#000000"> (</span><span style="color:#0000ff">float</span><span style="color:#000000">) width </span><span style="color:#000000">/</span><span style="color:#000000"> height;<br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置OpenGL场景的大小</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glViewport(</span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, width, height);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">设置投影矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glMatrixMode(GL10.GL_PROJECTION);<br>        </span><span style="color:#008000">//</span><span style="color:#008000">重置投影矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置视口的大小</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glFrustumf(</span><span style="color:#000000">-</span><span style="color:#000000">ratio, ratio, </span><span style="color:#000000">-</span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">1</span><span style="color:#000000">, </span><span style="color:#000000">10</span><span style="color:#000000">);<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 选择模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glMatrixMode(GL10.GL_MODELVIEW);    <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 重置模型观察矩阵</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glLoadIdentity();    <br>        <br>    }<br><br>    @Override<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onSurfaceCreated(GL10 gl, EGLConfig config) {<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> TODO Auto-generated method stub<br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 启用阴影平滑</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glShadeModel(GL10.GL_SMOOTH);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 黑色背景</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glClearColor(</span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">, </span><span style="color:#000000">0</span><span style="color:#000000">);<br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 设置深度缓存</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glClearDepthf(</span><span style="color:#000000">1.0f</span><span style="color:#000000">);                            <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 启用深度测试</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glEnable(GL10.GL_DEPTH_TEST);                        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 所作深度测试的类型</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glDepthFunc(GL10.GL_LEQUAL);                            <br>        <br>        </span><span style="color:#008000">//</span><span style="color:#008000"> 告诉系统对透视进行修正</span><span style="color:#008000"><br></span><span style="color:#000000">        gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);<br>    }<br><br>}<br></span></div></div></div>
+
+
+<p> </p>
+
+
+<p>到此基本对 OpenGL 有一些了解，当然OpenGL 还有更多的东西需要我们去探索，努力吧。</p>
+
+
+<p><img src="http://www.cnblogs.com/TerryBlog/aggbug/1774475.html?type=1" width="1" height="1" alt=""><p>评论: 6　<a href="http://www.cnblogs.com/TerryBlog/archive/2010/07/09/1774475.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/TerryBlog/archive/2010/07/09/1774475.html#commentform">发表评论</a></p><p><a href="http://job.cnblogs.com/enterprise/2453/">百度期待您的加盟</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/67992/">国务院发文通知取消互联网电子公告服务专项审批</a><span style="color:gray">(2010-07-10 11:21)</span><br>· <a href="http://news.cnblogs.com/n/67991/">大学生网络商务调查：和讯酷六最受欢迎</a><span style="color:gray">(2010-07-10 11:20)</span><br>· <a href="http://news.cnblogs.com/n/67989/">Android份额飙升4％</a><span style="color:gray">(2010-07-10 07:20)</span><br>· <a href="http://news.cnblogs.com/n/67988/">谷歌CEO施密特：Facebook并非竞争对手</a><span style="color:gray">(2010-07-10 07:06)</span><br>· <a href="http://news.cnblogs.com/n/67987/">知名文档分享网站Scribd将放弃Flash，采用HTML5</a><span style="color:gray">(2010-07-10 07:05)</span><br></p><p>编辑推荐：<a href="http://www.cnblogs.com/firelong/archive/2010/07/09/1774490.html">关于近期C#大论战的回应</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">个人主页</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://space.cnblogs.com">社区</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

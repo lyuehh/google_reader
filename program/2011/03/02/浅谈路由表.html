@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>浅谈路由表</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>浅谈路由表</h2>
+<p class="meta">02 Mar 2011</p>
+
+<div class="post">
+<h2>浅谈路由表</h2>
+
+<h3>by GFW BLOG 功夫网与翻墙</h3>
+
+<h3>at 2011-03-01 17:10:01</h3>
+
+<h3>original <a href="http://feedproxy.google.com/~r/chinagfwblog/~3/j1xD3MS1afU/blog-post.html">http://feedproxy.google.com/~r/chinagfwblog/~3/j1xD3MS1afU/blog-post.html</a></h3>
+
+<p>作者：江东   来源：<a href="http://www.storyday.com/html/y2011/2887_on-the-routing-table.html">http://www.storyday.com/html/y2011/2887_on-the-routing-table.html</a><br><p>还是按照我自己的风格，用比较通俗的语言来介绍一下路由表知识。</p> <p>只要通信就涉及到数据的交换，比如传统的信件，都是通过邮局来进行邮递运输的，那么同样，ip设备之间的通信，也一样需要数据交换，也需要通过“邮递员”来进行投递。</p> <p>邮递员怎么投递呢？这个时候就需要一种规则，这个规则就是路由表。</p> <p>下面我们来看看本机的路由表，在windows开始菜单-&gt;运行-&gt;cmd，然后在弹出的命令行中输入route print即可看到本机的路由表。</p> <table border="1"> <tbody> <tr> <td><strong><br> </strong></td> <td><strong>Network Destination</strong></td> <td><strong>Netmask</strong></td> <td><strong>Gateway</strong></td> <td><strong>Interface</strong></td> <td><strong>Metric</strong></td> </tr> <tr> <td>1</td> <td>0.0.0.0</td> <td>0.0.0.0</td> <td>192.168.111.5</td> <td>192.168.111.6</td> <td>1</td> </tr> <tr> <td>2</td> <td>211.96.0.0</td> <td>255.248.0.0</td> <td>192.168.1.1</td> <td>192.168.1.110</td> <td>5</td> </tr> <tr> <td>3</td> <td>211.136.0.0</td> <td>255.248.0.0</td> <td>192.168.1.1</td> <td>192.168.1.110</td> <td>5</td> </tr> <tr> <td>4</td> <td>211.144.0.0</td> <td>255.240.0.0</td> <td>192.168.1.1</td> <td>192.168.1.110</td> <td>5</td> </tr> <tr> <td>5</td> <td>218.192.0.0</td> <td>255.240.0.0</td> <td>192.168.1.1</td> <td>192.168.1.110</td> <td>5</td> </tr> </tbody> </table> <p>上面列表中是我的计算机中的路由表，和你的肯定不一样，其中192.168.1.110 是我本地网络的IP地址，192.168.111.6是我<a href="http://blockcn.com/">vpn</a>所对应的IP地址(相当于第二块网卡，您的计算机上一般来说只有一块生效的网卡)。</p> <p>Network Destination 和Netmask一起决定了目标网络，就相当于您信件上的 “成都市锦江区”一样，我们拿第2条路由规则来举例，这条路由规则告诉我们，凡是属于网络 211.96.0.0 子网掩码是255.248.0.0的IP包，请通过网卡192.1681.1.10(本机的无线网卡)扔给192.168.1.1（<a href="http://huichuan365.com/">我公司</a>无线路由器的IP地址），至于下一步怎么投递，那是其他路由器（邮局）干的事情了，我只负责�过去即可，当然其他路由器也一样的会按照路由规则投递下去，直到达到目标，或者失败。</p> <p>所以，同样的方法，您可以试着解释一下第3条，第4条路由规则了。</p> <p>这个时候您可能要问，第一条路由规则是什么意思？第一条，0.0.0.0 MASK 0.0.0.0 这个网络的意思是任何网络，也就是说，不管目标网络是谁，都通过192.168.111.6（我<a href="http://blockcn.com/">vpn</a>所对应的本机网卡地址）扔给192.168.111.5（我<a href="http://blockcn.com/">vpn</a>服务器的IP地址）。</p> <p>问题出来了，有了第一条不就全部搞定了，后面的几条路由表规则怎么可能生效呢？这里我要告诉大家，0.0.0.0这条路由表就是常说的默认网关，他的优先级要低于任何具体的路由规则，所以，只有当目标ip不满足其他规则的时候，才通过默认网关发送出去。</p> <p>确实，如果你的计算机只有一个网卡，一般来说，有用的路由表就只需要第一条，因为你电脑就一个出口呀，理所当然将所有的数据包通过这个网卡扔给路由器。</p> <p>因此通过改变本机路由表，让不同的网络从本机的不同网卡（其中的网卡也可以是<a href="http://blockcn.com/">vpn</a>的虚拟网卡）就能达到国内走本地网络，国外走vpn的目的。</p> <p><a href="http://code.google.com/p/chnroutes/downloads/list">chnroutes</a>这个项目就是将国内所有的网络列举出来，添加到路由表中，指定从本地网卡走，然后默认网关设置为vpn的网卡（这样非国内IP都走默认网关），从而达到这个目的的。</p> <p>您大体懂了么？</p><h4>—————————————————————————————————————————</h4><h4>需要翻墙利器赛风? 请<a href="https://www.google.com/profiles/112915952962578336480">阅读和关注中国数字时代</a>。<br><br>推特用户请点击<a href="http://qinzhigang.in/login.php">这里</a>免翻墙上推特</h4> <p><font size="2">请点击<a href="https://sesawe.net/-Tools-zh-.html">这里</a>下载翻墙软件 <br></font></p><p><font size="2">更多翻墙方法请发电邮(最好用Gmail)到：<a href="mailto:fanqiang70ma@gmail.com">fanqiang70ma@gmail.com</a> <br> </font></p><p><font size="2">请阅读和关注<a href="https://www.google.com/profiles/112915952962578336480">中国数字时代</a>、</font><small><font size="2">翻墙技术博客<a href="https://www.google.com/profiles/chinagfwblog">GFW BLOG</a>（免翻墙） <br> </font></small></p>请使用<a href="https://www.google.com/reader/view/">Google Reader</a><a href="https://www.google.com/reader/view/feed/http://chinadigitaltimes.net/chinese/feed">订阅中国数字时代中文版</a>（<a href="http://chinadigitaltimes.net/chinese/feed">http://chinadigitaltimes.net/chinese/feed</a>），阅读最有价值的中文信息；以及<a href="https://www.google.com/reader/view/feed/http://feeds2.feedburner.com/chinagfwblog">GFW BLOG（功夫网与翻墙）</a><a href="http://feeds2.feedburner.com/chinagfwblog">http://feeds2.feedburner.com/chinagfwblog</a>，获取最新翻墙工具和翻墙技巧信息。<br> <br> <br> <div><img width="1" height="1" src="https://blogger.googleusercontent.com/tracker/5500297126185736776-3140879351053648482?l=www.chinagfw.org" alt=""></div><img src="http://feeds.feedburner.com/~r/chinagfwblog/~4/j1xD3MS1afU" height="1" width="1"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

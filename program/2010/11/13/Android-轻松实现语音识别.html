@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Android 轻松实现语音识别</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>Android 轻松实现语音识别</h2>
+<p class="meta">13 Nov 2010</p>
+
+<div class="post">
+<h2>Android 轻松实现语音识别</h2>
+
+<h3>by Terry_龙</h3>
+
+<h3>at 2010-11-12 17:01:00</h3>
+
+<h3>original <a href="http://www.cnblogs.com/TerryBlog/archive/2010/11/12/1875875.html">http://www.cnblogs.com/TerryBlog/archive/2010/11/12/1875875.html</a></h3>
+
+<p><p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/yysb.jpg"></p>
+<p>苹果的iphone 有语音识别用的是Google 的技术，做为Google 力推的Android 自然会将其核心技术往Android 系统里面植入，并结合google 的云端技术将其发扬光大。</p>
+<p>所以Google Voice Recognition在Android 的实现就变得极其轻松。</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/googlevoice.jpg"></p>
+<p>语音识别，借助于云端技术可以识别用户的语音输入，包括语音控制等技术，下面我们将利用Google 提供的Api 实现这一功能。</p>
+<p>功能点为：通过用户语音将用户输入的语音识别出来，并打印在列表上。</p>
+<p>功能界面如下：</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/20101111.jpg"></p>
+<p> </p>
+<p>用户通过点击speak按钮显示界面：</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/201011121.jpg" width="476" height="408"></p>
+<p>用户说完话后，将提交到云端搜索：</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/201011123.jpg" width="473" height="415"></p>
+<p>在云端搜索完成后，返回打印数据：</p>
+<p><img border="0" alt="" src="http://images.cnblogs.com/cnblogs_com/terryblog/201011124.jpg" width="479" height="232"></p>
+<p> </p>
+<p>完整代码如下：</p>
+<p> </p>
+<div>
+<div><span style="color:#008000">/*</span><span style="color:#008000"> <br> * Copyright (C) 2008 The Android Open Source Project<br> *<br> * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);<br> * you may not use this file except in compliance with the License.<br> * You may obtain a copy of the License at<br> *<br> *      </span><span style="color:#008000;text-decoration:underline">http://www.apache.org/licenses/LICENSE-2.0</span><span style="color:#008000"><br> *<br> * Unless required by applicable law or agreed to in writing, software<br> * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,<br> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br> * See the License for the specific language governing permissions and<br> * limitations under the License.<br> </span><span style="color:#008000">*/</span><span style="color:#000000"><br><br></span><span style="color:#0000ff">package</span><span style="color:#000000"> com.example.android.apis.app;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> com.example.android.apis.R;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.app.Activity;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.content.Intent;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.content.pm.PackageManager;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.content.pm.ResolveInfo;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.os.Bundle;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.speech.RecognizerIntent;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.view.View;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.view.View.OnClickListener;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.widget.ArrayAdapter;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.widget.Button;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> android.widget.ListView;<br><br></span><span style="color:#0000ff">import</span><span style="color:#000000"> java.util.ArrayList;<br></span><span style="color:#0000ff">import</span><span style="color:#000000"> java.util.List;<br><br></span><span style="color:#008000">/**</span><span style="color:#008000"><br> * Sample code that invokes the speech recognition intent API.<br> </span><span style="color:#008000">*/</span><span style="color:#000000"><br></span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">class</span><span style="color:#000000"> VoiceRecognition </span><span style="color:#0000ff">extends</span><span style="color:#000000"> Activity </span><span style="color:#0000ff">implements</span><span style="color:#000000"> OnClickListener {<br>    <br>    </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">static</span><span style="color:#000000"> </span><span style="color:#0000ff">final</span><span style="color:#000000"> </span><span style="color:#0000ff">int</span><span style="color:#000000"> VOICE_RECOGNITION_REQUEST_CODE </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#000000">1234</span><span style="color:#000000">;<br>    <br>    </span><span style="color:#0000ff">private</span><span style="color:#000000"> ListView mList;<br><br>    </span><span style="color:#008000">/**</span><span style="color:#008000"><br>     * Called with the activity is first created.<br>     </span><span style="color:#008000">*/</span><span style="color:#000000"><br>    @Override<br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onCreate(Bundle savedInstanceState) {<br>        </span><span style="color:#0000ff">super</span><span style="color:#000000">.onCreate(savedInstanceState);<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000"> Inflate our UI from its XML layout description.</span><span style="color:#008000"><br></span><span style="color:#000000">        setContentView(R.layout.voice_recognition);<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000"> Get display items for later interaction</span><span style="color:#008000"><br></span><span style="color:#000000">        Button speakButton </span><span style="color:#000000">=</span><span style="color:#000000"> (Button) findViewById(R.id.btn_speak);<br>        <br>        mList </span><span style="color:#000000">=</span><span style="color:#000000"> (ListView) findViewById(R.id.list);<br><br>        </span><span style="color:#008000">//</span><span style="color:#008000"> Check to see if a recognition activity is present</span><span style="color:#008000"><br></span><span style="color:#000000">        PackageManager pm </span><span style="color:#000000">=</span><span style="color:#000000"> getPackageManager();<br>        List</span><span style="color:#000000">&lt;</span><span style="color:#000000">ResolveInfo</span><span style="color:#000000">&gt;</span><span style="color:#000000"> activities </span><span style="color:#000000">=</span><span style="color:#000000"> pm.queryIntentActivities(<br>                </span><span style="color:#0000ff">new</span><span style="color:#000000"> Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), </span><span style="color:#000000">0</span><span style="color:#000000">);<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (activities.size() </span><span style="color:#000000">!=</span><span style="color:#000000"> </span><span style="color:#000000">0</span><span style="color:#000000">) {<br>            speakButton.setOnClickListener(</span><span style="color:#0000ff">this</span><span style="color:#000000">);<br>        } </span><span style="color:#0000ff">else</span><span style="color:#000000"> {<br>            speakButton.setEnabled(</span><span style="color:#0000ff">false</span><span style="color:#000000">);<br>            speakButton.setText(</span><span style="color:#000000">"</span><span style="color:#000000">Recognizer not present</span><span style="color:#000000">"</span><span style="color:#000000">);<br>        }<br>    }<br><br>    </span><span style="color:#008000">/**</span><span style="color:#008000"><br>     * Handle the click on the start recognition button.<br>     </span><span style="color:#008000">*/</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">public</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onClick(View v) {<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (v.getId() </span><span style="color:#000000">==</span><span style="color:#000000"> R.id.btn_speak) {<br>            startVoiceRecognitionActivity();<br>        }<br>    }<br><br>    </span><span style="color:#008000">/**</span><span style="color:#008000"><br>     * Fire an intent to start the speech recognition activity.<br>     </span><span style="color:#008000">*/</span><span style="color:#000000"><br>    </span><span style="color:#0000ff">private</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> startVoiceRecognitionActivity() {<br>        Intent intent </span><span style="color:#000000">=</span><span style="color:#000000"> </span><span style="color:#0000ff">new</span><span style="color:#000000"> Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);<br>        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,<br>                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);<br>        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, </span><span style="color:#000000">"</span><span style="color:#000000">Speech recognition demo</span><span style="color:#000000">"</span><span style="color:#000000">);<br>        startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);<br>    }<br><br>    </span><span style="color:#008000">/**</span><span style="color:#008000"><br>     * Handle the results from the recognition activity.<br>     </span><span style="color:#008000">*/</span><span style="color:#000000"><br>    @Override<br>    </span><span style="color:#0000ff">protected</span><span style="color:#000000"> </span><span style="color:#0000ff">void</span><span style="color:#000000"> onActivityResult(</span><span style="color:#0000ff">int</span><span style="color:#000000"> requestCode, </span><span style="color:#0000ff">int</span><span style="color:#000000"> resultCode, Intent data) {<br>        </span><span style="color:#0000ff">if</span><span style="color:#000000"> (requestCode </span><span style="color:#000000">==</span><span style="color:#000000"> VOICE_RECOGNITION_REQUEST_CODE </span><span style="color:#000000">&amp;&amp;</span><span style="color:#000000"> resultCode </span><span style="color:#000000">==</span><span style="color:#000000"> RESULT_OK) {<br>            </span><span style="color:#008000">//</span><span style="color:#008000"> Fill the list view with the strings the recognizer thought it could have heard</span><span style="color:#008000"><br></span><span style="color:#000000">            ArrayList</span><span style="color:#000000">&lt;</span><span style="color:#000000">String</span><span style="color:#000000">&gt;</span><span style="color:#000000"> matches </span><span style="color:#000000">=</span><span style="color:#000000"> data.getStringArrayListExtra(<br>                    RecognizerIntent.EXTRA_RESULTS);<br>            mList.setAdapter(</span><span style="color:#0000ff">new</span><span style="color:#000000"> ArrayAdapter</span><span style="color:#000000">&lt;</span><span style="color:#000000">String</span><span style="color:#000000">&gt;</span><span style="color:#000000">(</span><span style="color:#0000ff">this</span><span style="color:#000000">, android.R.layout.simple_list_item_1,<br>                    matches));<br>        }<br><br>        </span><span style="color:#0000ff">super</span><span style="color:#000000">.onActivityResult(requestCode, resultCode, data);<br>    }<br>}<br></span></div></div>
+<p> </p>
+<p> </p>Tip：本篇 从Api Demo直接复制过来，必须有网络支持。<img src="http://www.cnblogs.com/TerryBlog/aggbug/1875875.html?type=1" width="1" height="1" alt=""><p>作者: <a href="http://www.cnblogs.com/TerryBlog/">Terry_龙</a> 发表于 2010-11-12 17:01 <a href="http://www.cnblogs.com/TerryBlog/archive/2010/11/12/1875875.html">原文链接</a></p><p>评论: 5　<a href="http://www.cnblogs.com/TerryBlog/archive/2010/11/12/1875875.html#pagedcomment">查看评论</a>　<a href="http://www.cnblogs.com/TerryBlog/archive/2010/11/12/1875875.html#commentform">发表评论</a></p><hr><p>最新新闻：<br>· <a href="http://news.cnblogs.com/n/80927/">为什么 Google 做不出 Instagram</a><span style="color:gray">(2010-11-13 16:39)</span><br>· <a href="http://news.cnblogs.com/n/80926/">2001年-2010年十年间互联网改变生活</a><span style="color:gray">(2010-11-13 16:32)</span><br>· <a href="http://news.cnblogs.com/n/80925/">58同城走进校园 启动2010年招聘活动</a><span style="color:gray">(2010-11-13 16:32)</span><br>· <a href="http://news.cnblogs.com/n/80924/">宏基推法拉利特别版智能手机 限量20万部</a><span style="color:gray">(2010-11-13 16:31)</span><br>· <a href="http://news.cnblogs.com/n/80918/">iPad不久将能使用Android系统</a><span style="color:gray">(2010-11-13 13:30)</span><br></p><p>编辑推荐：<a href="http://news.cnblogs.com/n/80896/">风雨20年：我所积累的20条编程经验</a><br></p><p>网站导航：<a href="http://www.cnblogs.com">博客园首页</a>  <a href="http://home.cnblogs.com/">我的园子</a>  <a href="http://news.cnblogs.com">新闻</a>  <a href="http://home.cnblogs.com/ing/">闪存</a>  <a href="http://home.cnblogs.com/group/">小组</a>  <a href="http://space.cnblogs.com/q/">博问</a>  <a href="http://kb.cnblogs.com">知识库</a></p></p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

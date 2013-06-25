@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>lua cothread</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>lua cothread</h2>
+<p class="meta">14 Dec 2010</p>
+
+<div class="post">
+<h2>lua cothread</h2>
+
+<h3>by 云风</h3>
+
+<h3>at 2010-12-14 08:05:14</h3>
+
+<h3>original <a href="http://blog.codingnow.com/2010/12/lua_cothread.html">http://blog.codingnow.com/2010/12/lua_cothread.html</a></h3>
+
+<p>前段时间在玩 <a href="http://blog.codingnow.com/2010/11/go_prime.html">Go</a> ，非常喜欢 goroutine 的编程模型。采用 chan 进行 thread 间的通讯写起来很舒适。今天花了一个下午，为 lua 写了一个简单的库，模拟这种编程方式。暂且把这个东西叫作 lua cothread 。它基于 lua 的 coroutine ，只是写了个简单的调度器。</p>
+
+
+
+
+<p>这个库有如下几个 api ：</p>
+
+
+<pre><code>    &lt;p&gt;cothread.run(f,...)&lt;/p&gt;
+</code></pre>
+
+<p>启动一个函数 f ，放在调度器中。... 会被传入这个函数。这类似于 Go 的 go 关键字。</p>
+
+
+
+
+<p>cothread.resume()</p>
+
+
+
+
+<p>运行一个 tick 。这个库不同于 Go 的多线程模型。它是按 tick 一步步运行的。这适合于嵌入别的框架中。由框架调用一次 resume ，所有被 cothread 调度器管理的 thread 都运行一个 tick 。</p>
+
+
+
+
+<p>resume 函数会返回当前活跃的 thread 数量。</p>
+
+
+
+
+<p>cothread.sleep(ti)</p>
+
+
+
+
+<p>当前 thread 休眠 ti 个 tick 。ti 可以为 0 ，但这可能会使得 resume 一直运行下去。</p>
+
+
+
+
+<p>cothread.chan()</p>
+
+
+
+
+<p>创建一个 chan （消息通道），不同于 Go ，这段玩具代码只有阻塞模式。当向 chan 写入时，thread 会阻塞到有另一个 thread 从这个 chan 中读取数据，或是把 chan 关闭。反之读操作亦然。</p>
+
+
+
+
+<p>chan:read()</p>
+
+
+
+
+<p>从 chan 中阻塞读取一个数据。如果 chan 被关闭，则返回 nil 。</p>
+
+
+
+
+<p>chan:write()</p>
+
+
+
+
+<p>向 chan 阻塞写一个数据，并返回 true 。如果 chan 被关闭，函数会返回 nil 。</p>
+
+
+
+
+<p>cothread.select(tbl)</p>
+
+
+
+
+<p>类似于 Go 的 select 。可以传入一张表。表中任何一项 chan 有数据可读时，便会触发对应的分支。表项可以填入 default 项，当没有任何备选数据时，将执行 default 项。若无 default 分支，select 将阻塞等待第一次的 chan 输入。具体使用见示例。</p>
+
+
+
+
+<p><a href="http://blog.codingnow.com/cloud/LuaCothread">代码和示例可以看这里</a>。</p>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

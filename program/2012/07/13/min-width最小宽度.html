@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>min-width最小宽度</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>min-width最小宽度</h2>
+<p class="meta">13 Jul 2012</p>
+
+<div class="post">
+<h2>min-width最小宽度</h2>
+
+<h3>by Airen</h3>
+
+<h3>at 2012-07-13 12:49:30</h3>
+
+<h3>original <a href="http://www.w3cplus.com/code/331.html">http://www.w3cplus.com/code/331.html</a></h3>
+
+<div><div><div><p>最小宽度同样不被ie6支持，js解决方案如下：</p>
+<pre>////直接操作需要的元素
+var container = document.getElementById(&#39;container&#39;);
+container.style.width = (container.clientWidth &lt; width) ? &quot;500px&quot; : &quot;auto&quot;;
+
+//定义函数，多次调用
+function setMinWidth(elementId, width){
+var container = document.getElementById(elementId);
+container.style.width = (container.clientWidth &lt; width) ? width + &quot;px&quot; : &quot;auto&quot;;
+}
+//调用函数
+setMinWidth(&#39;container1&#39;, 200);
+setMinWidth(&#39;container2&#39;, 500);</pre></div></div></div>
+
+
+<div><div><div><div>
+      <div>5</div>
+                  <a href="http://www.w3cplus.com/vote/node/331/1/vote/alternate/zt-cg3VzzwS5Ioa06_CVqHz-rBiH5qLlStmSCSlp8lg/nojs" rel="nofollow">
+                <div title="Vote up!"></div>
+          <div>Vote up!</div>
+              </a>
+                </div>
+</div></div></div>
+
+
+<div><ul><li><a href="http://www.w3cplus.com/blog/tags/161.html">min-width</a></li><li><a href="http://www.w3cplus.com/blog/tags/159.html">ie6</a></li><li><a href="http://www.w3cplus.com/blog/tags/158.html">js代码</a></li></ul></div>
+
+
+<p><img src="http://www1.feedsky.com/t1/659938797/W3CPlus/feedsky/s.gif?r=http://www.w3cplus.com/code/331.html" border="0" height="0" width="0"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

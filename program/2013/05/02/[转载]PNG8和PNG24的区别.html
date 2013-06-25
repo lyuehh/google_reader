@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>[转载]PNG8和PNG24的区别</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>[转载]PNG8和PNG24的区别</h2>
+<p class="meta">02 May 2013</p>
+
+<div class="post">
+<h2>[转载]PNG8和PNG24的区别</h2>
+
+<h3>by 晴方好玲</h3>
+
+<h3>at 2013-05-02 13:46:17</h3>
+
+<h3>original <a href="http://blog.sina.com.cn/s/blog_897db7b50101b4c5.html">http://blog.sina.com.cn/s/blog_897db7b50101b4c5.html</a></h3>
+
+<div style="padding-top:15px;margin:20px 0;border:none;border-top:1px dotted #ccc"><div style="margin-bottom:12px"><span style="margin-right:25px"><strong>原文地址：</strong><a href="http://blog.sina.com.cn/s/blog_9050e71e0100yvtf.html" title="PNG8和PNG24的区别">PNG8和PNG24的区别</a></span><span><strong>作者：</strong><a href="http://blog.sina.com.cn/u/2421221150" title="用户体验设计中心">用户体验设计中心</a></span></div><div><p style="TexT-inDenT:21pt"><strong><span style="FonT-siZe:10.5pt;CoLor:#ed1c24;FonT-FAMiLY:宋体">
+如果觉得有用请关注一下以下网址哦，谢谢</span></strong><span style="FonT-siZe:10.5pt;CoLor:#ed1c24">！</span><span lang="EN-US" style="FonT-siZe:10.5pt"><a href="http://meihaoduo.taobao.com/"><span style="CoLor:#ed1c24">http://meihaoduo.taobao.com/</span></a></span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt"> </span></p>
+<p><span style="FonT-siZe:10.5pt">今天我做了一个图，因为需要透明，所以我存为了<span lang="EN-US">PNG8</span>格式，结果发现图片变了，图片变得四周都</span></p>
+<p><span style="FonT-siZe:10.5pt">不光滑了，四周都变得有锯齿了，而且阴影也不见了，后来存为<span lang="EN-US">PNG24</span>，这些问题就消失了。</span></p>
+<p><span style="FonT-siZe:10.5pt">我去百度搜索了关于<span lang="EN-US">PNG8</span>和<span lang="EN-US">PNG24</span>的区别，看到下面的文章，原来<span lang="EN-US">PNG8</span>要么完全透明，要么完全不透</span></p>
+<p><span style="FonT-siZe:10.5pt">明，不支持半透明，所以才会出现上面的问题，但<span lang="EN-US">PNG24</span>支持半透明的。</span></p>
+<p><span style="FonT-siZe:10.5pt">详细请看以下文章，希望能帮到您哦，呵呵</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt"> </span></p>
+<p><span style="FonT-siZe:10.5pt">一直在<span lang="EN-US">png</span>图片透明这块，模糊着，虽然<span lang="EN-US">XXX</span>，就是因为懒没有认真测试测试。今天看到同事要做一个这样的效果时，发现得弄弄了，于是去新浪微博看下它<span lang="EN-US">logo</span>的实现时，遇到这个问题（想知道它用的什么格式的<span lang="EN-US">png</span>图）。</span></p>
+<p><span style="FonT-siZe:10.5pt">首先先做下比较，因为估计做前端的人和我一样知道最多的就是<span lang="EN-US">png</span>是一种包含半透明格式的图片。其实我们还要知道：</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">1.png8</span><span style="FonT-siZe:10.5pt">和<span lang="EN-US">png24</span>的根本区别，不是颜色位的区别，而是存储方式不同。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">2.png8</span><span style="FonT-siZe:10.5pt">有<span lang="EN-US">1</span>位的布尔透明通道（要么完全透明，要么完全不透明），<span lang="EN-US">png24</span>则有<span lang="EN-US">8</span>位（<span lang="EN-US">256</span>阶）的布尔透明通道（所谓半透明）。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">png-8</span> <span style="FonT-siZe:10.5pt">和 <span lang="EN-US">gif</span> 有一些相似之处，模式都是索引颜色，只支持像素级的纯透明，不支持
+<span lang="EN-US">alpha</span> 透明。</span></p>
+<p><span style="FonT-siZe:10.5pt">我们通常说的“<span lang="EN-US">IE6</span> 不支持 <span lang="EN-US">PNG</span> 透明”，是指不支持 <span lang="EN-US">PNG-24</span> 的透明。但是 <span lang="EN-US">IE6</span> 支持 <span lang="EN-US">PNG-8</span> 的透明，就像支持 <span lang="EN-US">gif</span> 的透明一样。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt"> </span></p>
+<p><strong><span style="FonT-siZe:10.5pt;CoLor:red;FonT-FAMiLY:宋体">
+这样我们在工作中就有了方向：</span></strong></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">1.</span><span style="FonT-siZe:10.5pt">色彩丰富的、大的图片切成<span lang="EN-US">jpg</span>的；<span lang="EN-US"><br>
+2.</span>尺寸小的，色彩不丰富的和背景透明的切成<span lang="EN-US">gif</span>或者<span lang="EN-US">png8</span>的；<span lang="EN-US"><br>
+3.</span>半透明的切成<span lang="EN-US">png24</span>。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt"> </span></p>
+<p><span style="FonT-siZe:10.5pt">回到本文开头的问题，<strong><span style="CoLor:red;FonT-FAMiLY:宋体">如何区别（最简单的<span lang="EN-US">2</span>种办法）</span></strong>：</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">1.</span><span style="FonT-siZe:10.5pt">在<span lang="EN-US">ps</span>里看图像<span lang="EN-US">---</span>模式，<span lang="EN-US">png8</span>当然只有<span lang="EN-US">8</span>位<span lang="EN-US">/</span>通道了。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">2.</span><span style="FonT-siZe:10.5pt">当打开<span lang="EN-US">png8</span>的图片时，<span lang="EN-US">ps</span>会默认给它的图片标题上加上“索引”两字，<span lang="EN-US">png24</span>的则没有。</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt"> </span></p>
+<p><span style="FonT-siZe:10.5pt">最后说下<span lang="EN-US">png</span>透明<span lang="EN-US">ie6</span>下的解决问题：</span></p>
+<p><span style="FonT-siZe:10.5pt">因为懒原来只搜集了办法，没实践，发现看起来很不好，周末好好测试一番，总结一下。</span></p>
+<p><span style="FonT-siZe:10.5pt">新浪微博的<span lang="EN-US">logo</span>（<span lang="EN-US">png24</span>）采用了下面的方法来实现透明：</span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">_background:none;  </span></p>
+<p><span lang="EN-US" style="FonT-siZe:10.5pt">_filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='logo.png',sizingMethod='crop');</span></p>
+<p><span style="FonT-siZe:10.5pt">但是测试发现当给<span lang="EN-US">background:red url(logo.png) no-repeat
+center;</span>加了红色时，别的浏览器正常识别，<span lang="EN-US">ie6</span>会出现依旧不识别的情况。</span></p>
+<p><span style="FonT-siZe:10.5pt">解决办法是在外面套的标签，或<span lang="EN-US">body</span>加背景色，其他办法等周末细弄吧。（<span lang="EN-US">background-color:red;</span>单独写就可以了）</span></p>
+<p><strong><span style="FonT-siZe:10.5pt;CoLor:#ed1c24;FonT-FAMiLY:宋体">
+如果觉得有用请关注一下以下网址哦，谢谢</span></strong><span style="FonT-siZe:10.5pt;CoLor:#ed1c24">！</span><span lang="EN-US" style="FonT-siZe:10.5pt"><a href="http://meihaoduo.taobao.com/"><span style="CoLor:#ed1c24">http://meihaoduo.taobao.com/</span></a></span></p>
+<p style="TexT-inDenT:21.1pt"><span style="FonT-siZe:10.5pt">文章来源：<span lang="EN-US">dou917</span>的空间</span></p></div></div>
+
+
+<p><br><img src="http://simg.sinajs.cn/blog7style/images/special/1265.gif"> <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469641,474922&amp;cid=0,0,0&amp;sid=473458&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E5%86%99%E7%9C%9F">青春就应该这样绽放</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469645,474926&amp;cid=0,0,0&amp;sid=473464&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http%3A%2F%2Funion.9173.com%2Fpub%3Fp%3D1%26u%3D1008">游戏测试：三国时期谁是你最好的兄弟！！</a>  <a href="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,469646,474927&amp;cid=0,0,0&amp;sid=473465&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://qing.blog.sina.com.cn/tag/%E6%98%9F%E5%BA%A7">你不得不信的星座秘密</a><img src="http://sina.allyes.com/main/adfclick?db=sina&amp;bid=204720,470173,475454&amp;cid=0,0,0&amp;sid=474001&amp;advid=358&amp;camid=37389&amp;show=ignore&amp;url=http://simg.sinajs.cn/blog7style/images/common/sg_trans.gif?t=9"></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

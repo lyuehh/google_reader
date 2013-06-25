@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>获取 html 注释节点</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>获取 html 注释节点</h2>
+<p class="meta">04 May 2013</p>
+
+<div class="post">
+<h2>获取 html 注释节点</h2>
+
+<h3>by dron</h3>
+
+<h3>at 2013-05-03 22:48:59</h3>
+
+<h3>original <a href="http://ucren.com/blog/archives/448">http://ucren.com/blog/archives/448</a></h3>
+
+<p>因 Tracker 需要移除页面的 html 注释节点，鉴于注释的复杂性，为了靠谱点，不走正则的路子了，顺手写了个获取 html 注释节点的工具函数：</p>
+
+
+<pre><code>var getHtmlCommentNodes = function(){
+    var cn, push;
+    
+    cn = document.COMMENT_NODE;
+    push = [].push;
+
+    return function f( node ){
+        var result, c, l, i;
+
+        result = [];
+
+        if( node.nodeType == cn )
+            result.push( node );
+        else if( c = node.childNodes, l = c.length )
+            for( i = 0; i &lt; l; i ++ )
+                push.apply( result, f( c[ i ] ) );
+        
+        return result;
+    }
+}();</code></pre>
+
+
+<p>用法举例：</p>
+
+
+<pre><code>getHtmlCommentNodes( document.documentElement );</code></pre>
+
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>

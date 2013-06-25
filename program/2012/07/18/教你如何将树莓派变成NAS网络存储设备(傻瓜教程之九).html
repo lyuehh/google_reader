@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>教你如何将树莓派变成NAS网络存储设备(傻瓜教程之九)</title>
+        <meta name="viewport" content="width=device-width">
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="/css/syntax.css">
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+
+    </head>
+    <body>
+
+        <div class="container">
+          <div class="site">
+            <div class="header">
+              <h1 class="title"><a href="/">Your New Jekyll Site</a></h1>
+              <a class="extra" href="/">home</a>
+            </div>
+
+                <h2>教你如何将树莓派变成NAS网络存储设备(傻瓜教程之九)</h2>
+<p class="meta">18 Jul 2012</p>
+
+<div class="post">
+<h2>教你如何将树莓派变成NAS网络存储设备(傻瓜教程之九)</h2>
+
+<h3>by shumeipainet@163.com (ukonline2000)</h3>
+
+<h3>at 2012-07-18 15:44:29</h3>
+
+<h3>original <a href="http://www.shumeipai.net/read.php?tid-502.html">http://www.shumeipai.net/read.php?tid-502.html</a></h3>
+
+<p><span style="color:#ff0000">最近一大堆破事缠身，发现都好久没写教程了，今天抽个空给大家写一个吧！ 教你如何将树莓派变成NAS网络存储设备！！！</span><br><span style="color:#ff0000">我想可能会对大家有所帮助！</span><br><span style="color:#ff0000">开始前大家请确认树莓派的网络是否正常！</span><br><span style="color:#ff0000">1.安装samba，打开终端，输入</span><br><span style="color:#ff0000">sudo apt-get install samba</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">2.备份samba配置文件(以防万一)，输入</span><br><span style="color:#ff0000">sudo cp /etc/samba/smb.conf  /etc/samba/smb.conf.bak</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">3.编辑samba配置文件（图形界面下建议使用xedit）,这里使用的是nano编辑器，记住“ctrl+o”是保存，“ctrl+x”是退出</span><br><span style="color:#ff0000">sudo nano /etc/samba/smb.conf</span><br><span style="color:#ff0000">找到“# security = user”，将“#”去掉，变成“security = user”   （在“##### Authentication #####”下面）</span><br><span style="color:#ff0000">然后找到“read only = yes”，替换为“read only = no”，保存，退出</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">4.重启samba服务，完成刚才的配置，输入</span><br><span style="color:#ff0000">sudo /etc/init.d/samba restart</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">5.设置用户pi的密码，输入</span><br><span style="color:#ff0000">sudo smbpasswd -a pi</span><br><span style="color:#ff0000">然后输入你要设置的密码</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">如果你不想使用默认的pi用户名，也可以自己添加用户和密码，比如添加guest的用户，就输入</span><br><span style="color:#ff0000">sudo useradd guest -m -G users</span><br><span style="color:#ff0000">sudo passwd guest</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">5.配置网络存储的文件夹目录，输入</span><br><span style="color:#ff0000">sudo mkdir /home/shares</span><br><span style="color:#ff0000">sudo mkdir /home/shares/public</span><br><span style="color:#ff0000">sudo chown -R root:users /home/shares/public</span><br><span style="color:#ff0000">sudo chmod -R ug=rwx,o=rx /home/shares/public</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">6.再次编辑samba配置文件，输入</span><br><span style="color:#ff0000">sudo nano /etc/samba/smb.conf</span><br><span style="color:#ff0000">在文件末尾处添加下面内容：</span><br><span style="color:#ff0000">[public]</span><br><span style="color:#ff0000">  comment = Public Storage</span><br><span style="color:#ff0000">  path = /home/shares/public</span><br><span style="color:#ff0000">  valid users = @users</span><br><span style="color:#ff0000">  force group = users</span><br><span style="color:#ff0000">  create mask = 0660</span><br><span style="color:#ff0000">  directory mask = 0771</span><br><span style="color:#ff0000">  read only = no</span><br><span style="color:#ff0000">然后保存，退出</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">7.再次重启samba服务，完成刚才的配置，输入</span><br><span style="color:#ff0000">sudo /etc/init.d/samba restart</span><br><span style="color:#ff0000"><br></span><br><span style="color:#ff0000">8.在windows系统下，运行“\树莓派IP”，就大功搞成了，试试吧</span><br> <span><span style="display:inline-block"><img src="http://www.shumeipai.net/attachment/thumb/Mon_1207/4_133_c4e525cd9e01095.jpg?70" border="0" style="max-width:575px"></span><div><div><div><p><span>图片:_9K]9N}H}HBFHTJYJ4R01M2.jpg</span></p></div></div></div></span><br></p>
+
+</div>
+
+
+            <div class="footer">
+              <div class="contact">
+                <p>
+                  Your Name<br />
+                  What You Are<br />
+                  your@email.com
+                </p>
+              </div>
+              <div class="contact">
+                <p>
+                  <a href="http://github.com/yourusername/">github.com/yourusername</a><br />
+                  <a href="http://twitter.com/yourusername/">twitter.com/yourusername</a><br />
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /container -->
+
+    </body>
+</html>
